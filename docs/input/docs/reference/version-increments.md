@@ -115,6 +115,11 @@ If you create a branch with the version number in the branch name, such as
 from the branch name as a source. However, GitVersion can't use the [branch
 name as a version source for _other branches_][faq-branch-name-source].
 
+### Detached HEAD
+If HEAD is in detached state tag will be `-no-branch-`. 
+
+Example: `0.0.1--no-branch-.1+4`
+
 ### Tagging commit
 
 By tagging a commit, GitVersion will use that tag for the version of that
@@ -130,7 +135,7 @@ explicitly tagged as stable.
 Then the build metadata (which is the commit count) is promoted to the
 pre-release tag. Applying these rules, the above commit-graph would produce:
 
-```
+```log
 e137e9 -> 1.0.0+0
 a5f6c5 -> 1.0.1-ci.1
 adb29a -> 1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
@@ -148,7 +153,7 @@ will produce a stable `2.0.0` package.
 For more information/background on why we have come to this conclusion, read
 [Xavier Decoster's blog post on the subject][auto-incremented-nuget-package].
 
-[auto-incremented-nuget-package]: http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+[auto-incremented-nuget-package]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
 [conventional-commits]: https://www.conventionalcommits.org/
 [faq-branch-name-source]: /docs/learn/faq#merged-branch-names-as-version-source

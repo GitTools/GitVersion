@@ -13,15 +13,15 @@
         <GitVersion_NoNormalizeEnabled Condition="$(GitVersion_NoNormalizeEnabled) == ''">false</GitVersion_NoNormalizeEnabled>
         <GitVersion_NoCacheEnabled Condition="$(GitVersion_NoCacheEnabled) == ''">false</GitVersion_NoCacheEnabled>
 
-        <GitVersion_ToolArgments>-output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments>$(GitVersion_CommandLineArguments) -output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofetch</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nocache</GitVersion_ToolArgments>
     </PropertyGroup>
 
     <PropertyGroup>
-        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)net6.0/gitversion.dll&quot;</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)net6.0/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -33,7 +33,7 @@
 
         <!-- Property that enables UpdateAssemblyInfo. -->
         <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
-        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
+        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</UpdateAssemblyInfo>
         <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
         <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
         <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
@@ -48,7 +48,7 @@
           (The global property "_TargetAssemblyProjectName" is injected by XAML's above-mentioned task)
         -->
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(_TargetAssemblyProjectName)' != '' ">false</GenerateGitVersionInformation>
-        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
         <!--
           Compounding on the previous "GenerateTemporaryTargetAssembly" explanation, "UpdateAssemblyInfo" is
           also called in this temp-build. This results in a warning since we already updated assembly info.

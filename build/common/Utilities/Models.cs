@@ -1,3 +1,4 @@
+using Cake.Incubator.AssertExtensions;
 using Common.Addins.GitVersion;
 
 namespace Common.Utilities;
@@ -10,9 +11,11 @@ public record GitHubCredentials(string Token, string? UserName = null);
 
 public record NugetCredentials(string ApiKey);
 
+public record DockerHubCredentials(string Username, string Password);
+
 public record ChocolateyCredentials(string ApiKey);
 
-public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion)
+public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion, bool IsPreRelease)
 {
     public static BuildVersion Calculate(GitVersion gitVersion)
     {
@@ -23,7 +26,11 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
 
         if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag))
         {
-            chocolateyVersion += $"-{gitVersion.PreReleaseTag?.Replace(".", "-")}";
+            // Chocolatey does not support pre-release tags with dots, so we replace them with dashes
+            // if the pre-release tag is a number, we add a "a" prefix to the pre-release tag
+            // the trick should be removed when Chocolatey supports semver 2.0
+            var prefix = int.TryParse(gitVersion.PreReleaseLabel, out _) ? "a" : string.Empty;
+            chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseTag?.Replace(".", "-")}";
         }
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData))
@@ -36,10 +43,11 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
         return new BuildVersion(
             GitVersion: gitVersion,
             Version: version,
-            Milestone: version,
+            Milestone: semVersion,
             SemVersion: semVersion,
             NugetVersion: nugetVersion?.ToLowerInvariant(),
-            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant()
+            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant(),
+            IsPreRelease: !gitVersion.PreReleaseLabel.IsNullOrEmpty()
         );
     }
 }

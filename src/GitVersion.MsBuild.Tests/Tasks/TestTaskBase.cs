@@ -1,9 +1,10 @@
-using GitTools.Testing;
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
+using GitVersion.Output;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
 
@@ -21,23 +22,23 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateLocalRepositoryFixture();
         task.SolutionDirectory = fixture.RepositoryPath;
-
+        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var result = msbuildFixture.Execute(task);
-        if (result.Success == false) Console.WriteLine(result.Log);
+        if (!result.Success) Console.WriteLine(result.Log);
         return result;
     }
 
-    protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject)
+    protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject, string language = "C#")
     {
         var fixture = CreateLocalRepositoryFixture();
 
-        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.RepositoryPath);
+        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
 
         var result = msbuildFixture.Execute();
-        if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
         return result;
     }
 
@@ -45,11 +46,12 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
+        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var environmentVariables = new List<KeyValuePair<string, string?>>(env.ToArray());
         if (buildNumber != null)
         {
-            environmentVariables.Add(new KeyValuePair<string, string?>("BUILD_BUILDNUMBER", buildNumber));
+            environmentVariables.Add(new("BUILD_BUILDNUMBER", buildNumber));
         }
         msbuildFixture.WithEnv(environmentVariables.ToArray());
         if (configurationText != null)
@@ -59,7 +61,7 @@ public class TestTaskBase : TestBase
 
         var result = msbuildFixture.Execute(task);
 
-        if (result.Success == false) Console.WriteLine(result.Log);
+        if (!result.Success) Console.WriteLine(result.Log);
         return result;
     }
 
@@ -67,30 +69,37 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
+        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         msbuildFixture.WithEnv(
             new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"),
             new KeyValuePair<string, string?>("GITHUB_ENV", envFilePath)
         );
         var result = msbuildFixture.Execute(task);
-        if (result.Success == false)
+        if (!result.Success)
             Console.WriteLine(result.Log);
         return result;
     }
 
-    protected static MsBuildExeFixtureResult ExecuteMsBuildExeInAzurePipeline(Action<ProjectCreator> extendProject)
+    protected static MsBuildExeFixtureResult ExecuteMsBuildExeInAzurePipeline(Action<ProjectCreator> extendProject, string language = "C#")
     {
         var fixture = CreateRemoteRepositoryFixture();
 
-        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath);
+        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
         msbuildFixture.WithEnv(env.ToArray());
 
         var result = msbuildFixture.Execute();
-        if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
         return result;
     }
+    private static void AddOverrides(GitVersionTaskBase task) =>
+        task.WithOverrides(services =>
+        {
+            services.AddModule(new GitVersionBuildAgentsModule());
+            services.AddModule(new GitVersionOutputModule());
+        });
 
     private static EmptyRepositoryFixture CreateLocalRepositoryFixture()
     {
@@ -109,7 +118,7 @@ public class TestTaskBase : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch("develop");
 
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();
@@ -118,7 +127,7 @@ public class TestTaskBase : TestBase
 
     private static void CreateConfiguration(string repoFolder, string content)
     {
-        var configFilePath = PathHelper.Combine(repoFolder, ConfigFileLocator.DefaultFileName);
+        var configFilePath = PathHelper.Combine(repoFolder, ConfigurationFileLocator.DefaultFileName);
         File.WriteAllText(configFilePath, content);
     }
 }

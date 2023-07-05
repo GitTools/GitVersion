@@ -1,5 +1,5 @@
 using Cake.Git;
-using Cake.Wyam;
+using Common.Addins.Cake.Wyam;
 using Common.Utilities;
 
 namespace Docs.Tasks;
@@ -27,7 +27,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.DirectoryExists(Paths.Docs), "Wyam documentation directory is missing");
-        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease || context.ForcePublish, $"{nameof(PublishDocs)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsStableRelease || context.ForcePublish, $"{nameof(PublishDocs)} works only for releases.");
 
         return shouldRun;
     }
@@ -68,7 +68,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         var sourceCommit = context.GitLogTip("./");
 
         var publishFolder = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("_published").Combine(DateTime.Now.ToString("yyyyMMdd_HHmmss")));
-        context.Information("Publishing Folder: {0}", publishFolder);
+        context.Information($"Publishing Folder: {publishFolder}");
         context.Information("Getting publish branch...");
         context.GitClone($"https://github.com/{Constants.RepoOwner}/{Constants.Repository}", publishFolder, new GitCloneSettings
         {
@@ -81,6 +81,10 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
             context.WyamSettings.NoClean = true;
             context.Wyam(context.WyamSettings);
         }
+
+        var schemaTargetDir = publishFolder.Combine("schemas");
+        context.EnsureDirectoryExists(schemaTargetDir);
+        context.CopyDirectory(Paths.Schemas, schemaTargetDir);
 
         if (!context.GitHasUncommitedChanges(publishFolder)) return;
 

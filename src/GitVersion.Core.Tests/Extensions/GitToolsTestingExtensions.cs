@@ -1,16 +1,13 @@
-using GitTools.Testing;
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NSubstitute;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 
@@ -22,11 +19,11 @@ public static class GitToolsTestingExtensions
     public static ICommit CreateMockCommit()
     {
         var objectId = Substitute.For<IObjectId>();
-        objectId.Sha.Returns(Guid.NewGuid().ToString("n") + "00000000");
-
+        var sha = Guid.NewGuid().ToString("n") + "00000000";
+        objectId.Sha.Returns(sha);
         var commit = Substitute.For<ICommit>();
         commit.Id.Returns(objectId);
-        commit.Sha.Returns(objectId.Sha);
+        commit.Sha.Returns(sha);
         commit.Message.Returns("Commit " + commitCount++);
         commit.Parents.Returns(Enumerable.Empty<ICommit>());
         commit.When.Returns(when.AddSeconds(1));
@@ -48,48 +45,58 @@ public static class GitToolsTestingExtensions
         return branch;
     }
 
-    public static IBranch? FindBranch(this IGitRepository repository, string branchName) => repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
+    public static IBranch FindBranch(this IGitRepository repository, string branchName)
+        => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
+            ?? throw new GitVersionException($"Branch {branchName} not found");
 
-    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
+    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null)
+        => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 
-    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
+        => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
+    public static GitVersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
+        IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
-        configuration ??= new ConfigurationBuilder().Build();
-
         repository ??= fixture.Repository;
+        configuration ??= GitFlowConfigurationBuilder.New.Build();
+        Console.WriteLine("---------");
 
+        var overrideConfiguration = new Dictionary<object, object?>();
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = repository.Info.WorkingDirectory,
-            ConfigInfo = { OverrideConfig = configuration },
+            ConfigurationInfo = { OverrideConfiguration = overrideConfiguration },
             RepositoryInfo =
             {
-                TargetBranch = branch,
+                TargetBranch = targetBranch,
                 CommitId = commitId
             },
             Settings = { OnlyTrackedBranches = onlyTrackedBranches }
         });
 
-        var sp = ConfigureServices(services => services.AddSingleton(options));
-
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
-        var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
-
-        var context = contextOptions.Value;
-
         try
         {
-            var semanticVersion = nextVersionCalculator.FindVersion();
-            var variables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            var configurationProviderMock = Substitute.For<IConfigurationProvider>();
+            configurationProviderMock.Provide(overrideConfiguration).Returns(configuration);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(configurationProviderMock);
+            });
+            var variableProvider = sp.GetRequiredService<IVariableProvider>();
+            var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
+            var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 
-            return variables;
+            var context = contextOptions.Value;
+
+            var nextVersion = nextVersionCalculator.FindVersion();
+            return variableProvider.GetVariablesFor(
+                nextVersion.IncrementedVersion, nextVersion.Configuration, context.CurrentCommitTaggedVersion
+            );
         }
         catch (Exception)
         {
-            Console.WriteLine("Test failing, dumping repository graph");
             repository.DumpGraph();
             throw;
         }
@@ -97,32 +104,23 @@ public static class GitToolsTestingExtensions
 
     public static void WriteVersionVariables(this RepositoryFixtureBase fixture, string versionFile)
     {
-        var versionInfo = fixture.GetVersion();
+        var versionVariables = fixture.GetVersion();
 
         using var stream = File.Open(versionFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
         using var writer = new StreamWriter(stream);
-        writer.Write(versionInfo.ToString());
+        writer.Write(versionVariables.ToJsonString());
     }
 
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
-        configuration ??= new Config();
-        configuration = new ConfigurationBuilder().Add(configuration).Build();
-        Console.WriteLine("---------");
+        repository ??= fixture.Repository;
 
-        try
-        {
-            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch);
-            variables.FullSemVer.ShouldBe(fullSemver);
-        }
-        catch (Exception)
-        {
-            (repository ?? fixture.Repository).DumpGraph();
-            throw;
-        }
+        var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+        variables.FullSemVer.ShouldBe(fullSemver);
         if (commitId == null)
         {
-            fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName, color: "#D3D3D3");
+            fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
         }
     }
 
@@ -148,6 +146,13 @@ public static class GitToolsTestingExtensions
 
         var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
+    }
+
+    internal static IGitRepository ToGitRepository(this IRepository repository)
+    {
+        var gitRepository = new GitRepository(new NullLog());
+        gitRepository.DiscoverRepository(repository.Info.Path);
+        return gitRepository;
     }
 
     private static IServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)

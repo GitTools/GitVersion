@@ -20,7 +20,7 @@ public static class StringExtensions
 
         try
         {
-            _ = Path.GetFullPath(path);
+            _ = PathHelper.GetFullPath(path);
         }
         catch
         {
@@ -28,7 +28,7 @@ public static class StringExtensions
 
             try
             {
-                _ = Path.GetFullPath(path);
+                _ = PathHelper.GetFullPath(path);
             }
             catch
             {
@@ -50,12 +50,12 @@ public static class StringExtensions
 
         if (value.StartsWith("-"))
         {
-            value = value.Substring(1);
+            value = value[1..];
         }
 
         if (value.StartsWith("/"))
         {
-            value = value.Substring(1);
+            value = value[1..];
         }
 
         return string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase);
@@ -77,7 +77,7 @@ public static class StringExtensions
             "nocache"
         };
 
-        var argumentMightRequireValue = !booleanArguments.Contains(argument.Substring(1), StringComparer.OrdinalIgnoreCase);
+        var argumentMightRequireValue = !booleanArguments.Contains(argument[1..], StringComparer.OrdinalIgnoreCase);
 
         // If this is the first argument that might be a target path, the argument starts with slash and we're on an OS that supports paths with slashes, the argument does not require a value.
         if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith("/") && Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
@@ -102,4 +102,9 @@ public static class StringExtensions
 
     /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
     public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
+
+    public static bool IsEmpty([NotNullWhen(false)] this string? value) => string.Empty.Equals(value);
+
+    public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
+        => string.IsNullOrEmpty(value) ? value : prefix + value;
 }

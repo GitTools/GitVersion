@@ -45,7 +45,7 @@ internal static class StringFormatWithExtension
             throw new ArgumentNullException(nameof(source));
         }
 
-        foreach (Match match in TokensRegex.Matches(template))
+        foreach (Match match in TokensRegex.Matches(template).Cast<Match>())
         {
             string propertyValue;
             string? fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
@@ -71,12 +71,12 @@ internal static class StringFormatWithExtension
         return template;
     }
 
-    private static Func<object?, object> CompileDataBinder(Type type, string expr)
+    private static Func<object?, object?> CompileDataBinder(Type type, string expr)
     {
         ParameterExpression param = Expression.Parameter(typeof(object));
         Expression body = Expression.Convert(param, type);
         body = expr.Split('.').Aggregate(body, Expression.PropertyOrField);
         body = Expression.Convert(body, typeof(object)); // Convert result in case the body produces a Nullable value type.
-        return Expression.Lambda<Func<object?, object>>(body, param).Compile();
+        return Expression.Lambda<Func<object?, object?>>(body, param).Compile();
     }
 }

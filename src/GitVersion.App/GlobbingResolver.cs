@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace GitVersion;
 
-public class GlobbingResolver : IGlobbingResolver
+internal class GlobbingResolver : IGlobbingResolver
 {
     private readonly Matcher matcher = new(StringComparison.OrdinalIgnoreCase);
 

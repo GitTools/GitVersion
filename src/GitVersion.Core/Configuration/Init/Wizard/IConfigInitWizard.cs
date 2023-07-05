@@ -1,8 +1,6 @@
-using GitVersion.Model.Configuration;
-
 namespace GitVersion.Configuration.Init.Wizard;
 
-public interface IConfigInitWizard
+internal interface IConfigInitWizard
 {
-    Config? Run(Config config, string workingDirectory);
+    IGitVersionConfiguration? Run(IGitVersionConfiguration configuration, string workingDirectory);
 }

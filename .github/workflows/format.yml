@@ -1,15 +1,17 @@
-name: Validate Commit
-
+name: Code Format
 on:
   push:
     branches:
     - main
     - 'fix/*'
     - 'feature/*'
+    - 'poc/*'
     - 'support/*'
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/format.yml
 
   pull_request:
     branches:
@@ -18,9 +20,17 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/format.yml
 
 permissions:
   contents: read
+
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
 
 jobs:
   format:
@@ -30,12 +40,18 @@ jobs:
       - uses: actions/checkout@v3
       -
         name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
+          global-json-file: global.json
       -
-        name: Run Format Build solution
+        name: Run Format 'ci' solution
         run: dotnet format ./build/ --verify-no-changes
       -
-        name: Run Format GitVersion solution
+        name: Build 'new-cli' solution
+        run: dotnet build ./new-cli
+      -
+        name: Run Format 'new-cli' solution
+        run: dotnet format ./new-cli/ --exclude ~/.nuget/packages --verify-no-changes
+      -
+        name: Run Format 'GitVersion' solution
         run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes

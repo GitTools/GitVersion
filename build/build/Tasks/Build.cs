@@ -5,7 +5,7 @@ namespace Build.Tasks;
 [TaskName(nameof(Build))]
 [TaskDescription("Builds the solution")]
 [IsDependentOn(typeof(Clean))]
-[IsDependentOn(typeof(CodeFormat))]
+// [IsDependentOn(typeof(CodeFormat))]
 public sealed class Build : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
@@ -16,7 +16,7 @@ public sealed class Build : FrostingTask<BuildContext>
         context.DotNetRestore(sln, new DotNetRestoreSettings
         {
             Verbosity = DotNetVerbosity.Minimal,
-            Sources = new[] { "https://api.nuget.org/v3/index.json" },
+            Sources = new[] { Constants.NugetOrgUrl },
             MSBuildSettings = context.MsBuildSettings
         });
 

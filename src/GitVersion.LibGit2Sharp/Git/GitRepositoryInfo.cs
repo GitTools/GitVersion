@@ -1,5 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
+using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -62,17 +63,13 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
             ? DynamicGitRepositoryPath
-            : GitRepository.Discover(gitVersionOptions.WorkingDirectory);
+            : Repository.Discover(gitVersionOptions.WorkingDirectory);
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        var directoryInfo = Directory.GetParent(gitDirectory);
-        if (directoryInfo == null)
-        {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
-        }
+        var directoryInfo = Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
         return gitDirectory.Contains(PathHelper.Combine(".git", "worktrees"))
             ? Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
@@ -85,12 +82,12 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             return gitVersionOptions.WorkingDirectory;
         }
 
-        var gitDirectory = GitRepository.Discover(gitVersionOptions.WorkingDirectory);
+        var gitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
 
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        return new GitRepository(gitDirectory).WorkingDirectory;
+        return new Repository(gitDirectory).Info.WorkingDirectory;
     }
 
     private string? GetGitRootPath()
@@ -105,13 +102,12 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
-            var gitRepository = new GitRepository(possiblePath);
-            return gitRepository.Remotes.Any(r => r.Url == targetUrl);
+            var gitRepository = new Repository(possiblePath);
+            return gitRepository.Network.Remotes.Any(r => r.Url == targetUrl);
         }
         catch (Exception)
         {
             return false;
         }
     }
-
 }

@@ -1,8 +1,6 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.App.Tests;
 
@@ -30,9 +28,13 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.IsHelp), "/?" },
             { nameof(Arguments.IsVersion), "/version" },
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
-            { nameof(Arguments.ConfigFile), "/config" },
+            { nameof(Arguments.ConfigurationFile), "/config" },
             { nameof(Arguments.Verbosity), "/verbosity" },
-            { nameof(Arguments.CommitId), "/c" }
+            { nameof(Arguments.CommitId), "/c" },
+            { nameof(Arguments.ShowConfiguration), "/showconfig" },
+            { nameof(Arguments.OverrideConfiguration), "/overrideconfig" },
+            { nameof(Arguments.ShowVariable), "/showvariable" },
+            { nameof(Arguments.Format), "/format" }
         };
         string helpText = string.Empty;
 

@@ -1,10 +1,9 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public class ConfigInitWizard : IConfigInitWizard
+internal class ConfigInitWizard : IConfigInitWizard
 {
     private readonly IConsole console;
     private readonly IConfigInitStepFactory stepFactory;
@@ -15,21 +14,22 @@ public class ConfigInitWizard : IConfigInitWizard
         this.stepFactory = stepFactory.NotNull();
     }
 
-    public Config? Run(Config config, string workingDirectory)
+    public IGitVersionConfiguration? Run(IGitVersionConfiguration configuration, string workingDirectory)
     {
         this.console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
         var steps = new Queue<ConfigInitWizardStep>();
         steps.Enqueue(this.stepFactory.CreateStep<EditConfigStep>());
 
+        var configurationBuilder = ConfigurationBuilder.New.WithConfiguration(configuration);
         while (steps.Count > 0)
         {
             var currentStep = steps.Dequeue();
-            if (!currentStep.Apply(steps, config, workingDirectory))
+            if (!currentStep.Apply(steps, configurationBuilder, workingDirectory))
             {
                 return null;
             }
         }
 
-        return config;
+        return configurationBuilder.Build();
     }
 }

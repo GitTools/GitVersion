@@ -8,6 +8,9 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
+    - '!.github/**'
+    - .github/workflows/codeql-analysis.yml
 
   pull_request:
     branches:
@@ -16,12 +19,20 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
+    - '!.github/**'
+    - .github/workflows/codeql-analysis.yml
 
   schedule:
     - cron: '0 12 * * *'
 
 permissions:
   contents: read
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
 
 jobs:
   analyze:
@@ -52,19 +63,16 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     -
-      name: Install .NET SDKs
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: |
-          3.1.x
-          5.0.x
-          6.0.x
+        global-json-file: global.json
 
     -
       name: '[Prepare]'
@@ -74,7 +82,7 @@ jobs:
     -
       name: '[Build]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Build
+      run: dotnet run/build.dll --target=BuildPrepare --exclusive
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

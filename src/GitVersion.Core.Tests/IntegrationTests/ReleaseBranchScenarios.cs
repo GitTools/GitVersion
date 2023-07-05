@@ -1,11 +1,7 @@
-using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 using LibGit2Sharp;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -47,12 +43,12 @@ public class ReleaseBranchScenarios : TestBase
 
         // Merge to develop
         fixture.Checkout("develop");
+        fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
         fixture.AssertFullSemver("1.1.0-alpha.2");
-
         fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("1.1.0-alpha.3");
         fixture.Repository.Branches.Remove("release/1.0.0");
-
         fixture.AssertFullSemver("1.1.0-alpha.3");
     }
 
@@ -91,47 +87,41 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
         fixture.Repository.CreateBranch("releases/2.0.0");
         fixture.Checkout("releases/2.0.0");
-        fixture.Repository.ApplyTag("v2.0.0-1");
+        fixture.Repository.ApplyTag("v2.0.0-beta.1");
 
         var variables = fixture.GetVersion();
-        Assert.AreEqual("2.0.0-1", variables.FullSemVer);
+        Assert.That(variables.FullSemVer, Is.EqualTo("2.0.0-beta.1"));
     }
 
     [Test]
     public void ReleaseBranchWithNextVersionSetInConfig()
     {
-        var config = new Config
-        {
-            NextVersion = "2.0.0"
-        };
+        var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("2.0.0").Build();
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeCommits(5);
         fixture.BranchTo("release-2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-beta.1+2", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
     }
 
     [Test]
-    public void CanTakeVersionFromReleaseBranchWithTagOverridden()
+    public void CanTakeVersionFromReleaseBranchWithLabelOverridden()
     {
-        var config = new Config
-        {
-            Branches =
-            {
-                { "release", new BranchConfig { Tag = "rc" } }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("release", builder => builder.WithLabel("rc"))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.3");
         fixture.Repository.MakeCommits(5);
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-rc.1+0", config);
+        fixture.AssertFullSemver("2.0.0-rc.1+0", configuration);
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-rc.1+2", config);
+        fixture.AssertFullSemver("2.0.0-rc.1+2", configuration);
     }
 
     [Test]
@@ -163,9 +153,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0+2");
+        fixture.AssertFullSemver("2.0.0-2");
     }
 
     [Test]
@@ -180,7 +170,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("2.0.0-0");
     }
 
     [Test]
@@ -195,10 +185,12 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("2.0.0-0");
+        fixture.Repository.Branches.Remove("release-2.0.0");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.Repository.ApplyTag("2.0.0");
         fixture.Repository.MakeCommits(1);
-        fixture.AssertFullSemver("2.0.1+1");
+        fixture.AssertFullSemver("2.0.1-1");
     }
 
     [Test]
@@ -243,7 +235,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+5");
+        fixture.AssertFullSemver("2.0.0-5");
     }
 
     [Test]
@@ -271,7 +263,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("3.0.0+10");
+        fixture.AssertFullSemver("3.0.0-10");
     }
 
     [Test]
@@ -297,7 +289,7 @@ public class ReleaseBranchScenarios : TestBase
 
         fixture.Repository.MakeCommits(1);
 
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         //merge down to develop
         fixture.Checkout("develop");
@@ -305,18 +297,15 @@ public class ReleaseBranchScenarios : TestBase
 
         //but keep working on the release
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+3");
+        fixture.AssertFullSemver("2.0.0-beta.2+2");
     }
 
     [Test]
     public void HotfixOffReleaseBranchShouldNotResetCount()
     {
-        var config = new Config
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -329,12 +318,12 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MakeCommits(1);
 
-        fixture.AssertFullSemver("2.0.0-beta.1", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         //tag it to bump to beta 2
         fixture.Repository.MakeCommits(4);
 
-        fixture.AssertFullSemver("2.0.0-beta.5", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
 
         //merge down to develop
         fixture.Repository.CreateBranch("hotfix-2.0.0");
@@ -344,17 +333,16 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MergeNoFF("hotfix-2.0.0", Generate.SignatureNow());
         fixture.Repository.Branches.Remove(fixture.Repository.Branches["hotfix-2.0.0"]);
-        fixture.AssertFullSemver("2.0.0-beta.7", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+7", configuration);
     }
 
     [Test]
     public void MergeOnReleaseBranchShouldNotResetCount()
     {
-        var config = new Config
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -367,23 +355,20 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release/2.0.0-xxx");
         fixture.Checkout("release/2.0.0-xxx");
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         fixture.Checkout("release/2.0.0");
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         fixture.Repository.MergeNoFF("release/2.0.0-xxx");
-        fixture.AssertFullSemver("2.0.0-beta.2", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
     }
 
     [Test]
     public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
     {
-        var config = new Config
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial");
@@ -391,12 +376,12 @@ public class ReleaseBranchScenarios : TestBase
 
         // Create release from develop
         fixture.BranchTo("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.0", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
 
         // Make some commits on release
         fixture.MakeACommit("release 1");
         fixture.MakeACommit("release 2");
-        fixture.AssertFullSemver("2.0.0-beta.2", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         // First forward merge release to develop
         fixture.Checkout("develop");
@@ -405,24 +390,24 @@ public class ReleaseBranchScenarios : TestBase
         // Make some new commit on release
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MakeACommit("release 3 - after first merge");
-        fixture.AssertFullSemver("2.0.0-beta.3", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
 
         // Make new commit on develop
         fixture.Checkout("develop");
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.3", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
         fixture.Checkout("develop");
         fixture.Repository.MakeACommit("develop after merge");
 
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.3", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
 
         // Make some new commit on release
         fixture.Repository.MakeACommit("release 4");
         fixture.Repository.MakeACommit("release 5");
-        fixture.AssertFullSemver("2.0.0-beta.5", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
 
         // Second merge release to develop
         fixture.Checkout("develop");
@@ -430,16 +415,13 @@ public class ReleaseBranchScenarios : TestBase
 
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.5", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
     }
 
     [Test]
     public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
     {
-        var config = new Config
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("initial");
@@ -447,12 +429,12 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.CreateBranch("release-2.0.0");
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.0", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
 
         // Make some commits on release
         var commit1 = fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         // Merge release to develop - emulate commit between other person release commit push and this commit merge to develop
         Commands.Checkout(fixture.Repository, "develop");
@@ -461,15 +443,17 @@ public class ReleaseBranchScenarios : TestBase
 
         // Check version on release after merge to develop
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.2", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         // Check version on release after making some new commits
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.4", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
     }
 
-    public static void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
+    [Test]
+    [Ignore("Needs investigation")]
+    public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0");
@@ -511,10 +495,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureFromReleaseBranchShouldNotResetCount()
     {
-        var config = new Config
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("initial");
@@ -522,11 +503,11 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.CreateBranch("release-2.0.0");
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.0", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
 
         // Make some commits on release
         fixture.Repository.MakeCommits(10);
-        fixture.AssertFullSemver("2.0.0-beta.10", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+10", configuration);
 
         // Create feature from release
         fixture.BranchTo("feature/xxx");
@@ -535,9 +516,9 @@ public class ReleaseBranchScenarios : TestBase
 
         // Check version on release
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.10", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+10", configuration);
         fixture.Repository.MakeACommit("release 11");
-        fixture.AssertFullSemver("2.0.0-beta.11", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+11", configuration);
 
         // Make new commit on feature
         Commands.Checkout(fixture.Repository, "feature/xxx");
@@ -545,52 +526,39 @@ public class ReleaseBranchScenarios : TestBase
 
         // Checkout to release (no new commits)
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.11", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+11", configuration);
 
         // Merge feature to release
         fixture.Repository.MergeNoFF("feature/xxx", Generate.SignatureNow());
-        fixture.AssertFullSemver("2.0.0-beta.15", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+15", configuration);
 
         fixture.Repository.MakeACommit("release 13 - after feature merge");
-        fixture.AssertFullSemver("2.0.0-beta.16", config);
+        fixture.AssertFullSemver("2.0.0-beta.1+16", configuration);
     }
 
     [Test]
     public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
     {
-        var config = new ConfigurationBuilder()
-            .Add(new Config
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                Branches =
-                {
-                    {
-                        "release", new BranchConfig
-                        {
-                            PreReleaseWeight = 1000
-                        }
-                    }
-                }
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
+            .WithBranch("release", builder => builder.WithPreReleaseWeight(1000))
             .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.3");
         fixture.Repository.MakeCommits(5);
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
 
-        var variables = fixture.GetVersion(config);
-        Assert.AreEqual("2.0.0.1001", variables.AssemblySemFileVer);
+        var variables = fixture.GetVersion(configuration);
+        Assert.That(variables.AssemblySemFileVer, Is.EqualTo("2.0.0.1001"));
     }
 
     [Test]
     public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
     {
-        var config = new ConfigurationBuilder()
-            .Add(new Config
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -598,8 +566,8 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
-        var variables = fixture.GetVersion(config);
-        Assert.AreEqual("2.0.0.30001", variables.AssemblySemFileVer);
+        var variables = fixture.GetVersion(configuration);
+        Assert.That(variables.AssemblySemFileVer, Is.EqualTo("2.0.0.30001"));
     }
 
     /// <summary>
@@ -608,11 +576,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchDeleted()
     {
-        var config = new Config
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";
@@ -625,7 +591,7 @@ public class ReleaseBranchScenarios : TestBase
         // begin the release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", config);
+        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
 
         fixture.Repository.CreateBranch(featureBranch);
         Commands.Checkout(fixture.Repository, featureBranch);
@@ -634,7 +600,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
 
-        fixture.AssertFullSemver("4.5.0-beta.2", config);
+        fixture.AssertFullSemver("4.5.0-beta.1+2", configuration);
     }
 
     /// <summary>
@@ -643,11 +609,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchNotDeleted()
     {
-        var config = new Config
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";
@@ -660,7 +624,7 @@ public class ReleaseBranchScenarios : TestBase
         // begin the release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", config);
+        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
 
         fixture.Repository.CreateBranch(featureBranch);
         Commands.Checkout(fixture.Repository, featureBranch);
@@ -668,6 +632,21 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, release450);
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
 
-        fixture.AssertFullSemver("4.5.0-beta.2", config);
+        fixture.AssertFullSemver("4.5.0-beta.1+2", configuration);
+    }
+
+    [TestCase("release/1.2.0", "1.2.0-beta.1+1", SemanticVersionFormat.Loose)]
+    [TestCase("release/1.2.0", "1.2.0-beta.1+1", SemanticVersionFormat.Strict)]
+    [TestCase("release/1.2", "1.2.0-beta.1+1", SemanticVersionFormat.Loose)]
+    [TestCase("release/1", "1.0.0-beta.1+1", SemanticVersionFormat.Loose)]
+    public void ShouldDetectVersionInReleaseBranch(string branchName, string expectedVersion, SemanticVersionFormat semanticVersionFormat)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithSemanticVersionFormat(semanticVersionFormat)
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture(branchName);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver(expectedVersion, configuration);
     }
 }

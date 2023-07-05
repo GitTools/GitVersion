@@ -1,8 +1,6 @@
-using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using LibGit2Sharp;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -30,15 +28,14 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Config
-        {
-            Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
+            .Build();
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.BranchTo("support/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+1", config);
+        fixture.AssertFullSemver("2.0.0-1", configuration);
     }
 
     [Test]
@@ -47,7 +44,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("origin/release/2.0.0");
 
@@ -61,10 +58,10 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.1.0-beta.1+5");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1-upstream-release-2-0-0.1+6");
     }
 }

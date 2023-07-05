@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using GitVersion.Extensions;
 
 namespace GitVersion.Helpers;
 
@@ -192,12 +191,11 @@ public static class ProcessHelper
             }
         }
 
-
         void IDisposable.Dispose()
         {
             try
             {
-                SetErrorMode(this.oldMode);
+                _ = SetErrorMode(this.oldMode);
             }
             catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
             {

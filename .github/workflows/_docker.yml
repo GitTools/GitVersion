@@ -1,0 +1,71 @@
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+      arch:
+        required: true
+        type: string
+
+env:
+  DOTNET_INSTALL_DIR: "./.dotnet"
+
+jobs:
+  docker:
+    name: ${{ matrix.distro }} - net${{ matrix.targetFramework }}
+    runs-on: ${{ inputs.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [ alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.11, ubuntu.20.04, ubuntu.22.04 ]
+        targetFramework: [ '7.0', '6.0' ]
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    -
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
+    -
+      uses: actions/download-artifact@v3
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: Setup QEMU
+      if: inputs.arch == 'arm64'
+      uses: docker/setup-qemu-action@v2
+    -
+      name: Docker Test
+      if: success() && github.event_name == 'pull_request' || github.repository_owner != 'GitTools'
+      uses: ./.github/actions/docker-test
+      with:
+        arch: ${{ inputs.arch }}
+        distro: ${{ matrix.distro }}
+        targetFramework: ${{ matrix.targetFramework }}
+    -
+      name: Docker Publish
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
+      uses: ./.github/actions/docker-publish
+      with:
+        arch: ${{ inputs.arch }}
+        distro: ${{ matrix.distro }}
+        targetFramework: ${{ matrix.targetFramework }}
+        docker_registry_username: ${{ secrets.DOCKER_USERNAME }}
+        docker_registry_password: ${{ secrets.DOCKER_PASSWORD }}
+        github_registry_username: ${{ github.repository_owner }}
+        github_registry_password: ${{ secrets.DOCKER_GITHUB_TOKEN }}
+    -
+      name: DockerHub Publish Readme
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerHubReadmePublish
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+

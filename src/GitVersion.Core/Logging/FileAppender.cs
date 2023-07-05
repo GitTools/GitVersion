@@ -1,6 +1,6 @@
 namespace GitVersion.Logging;
 
-public class FileAppender : ILogAppender
+internal class FileAppender : ILogAppender
 {
     private readonly string filePath;
 
@@ -23,7 +23,7 @@ public class FileAppender : ILogAppender
         {
             WriteLogEntry(this.filePath, message);
         }
-        catch (Exception)
+        catch
         {
             //
         }

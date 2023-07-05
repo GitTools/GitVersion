@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -7,18 +8,20 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-public class ConfigNextVersionVersionStrategy : VersionStrategyBase
+internal class ConfigNextVersionVersionStrategy : VersionStrategyBase
 {
     public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : base(versionContext)
     {
     }
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        var nextVersion = Context.Configuration.NextVersion;
-        if (nextVersion.IsNullOrEmpty() || Context.IsCurrentCommitTagged)
-            yield break;
-        var semanticVersion = SemanticVersion.Parse(nextVersion, Context.Configuration.GitTagPrefix, Context.Configuration.SemanticVersionFormat);
-        yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
+        var contextConfiguration = Context.Configuration;
+        var nextVersion = contextConfiguration.NextVersion;
+        if (!nextVersion.IsNullOrEmpty() && !Context.IsCurrentCommitTagged)
+        {
+            var semanticVersion = SemanticVersion.Parse(nextVersion, contextConfiguration.TagPrefix, contextConfiguration.SemanticVersionFormat);
+            yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
+        }
     }
 }

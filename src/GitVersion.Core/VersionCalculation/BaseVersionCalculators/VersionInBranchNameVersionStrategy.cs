@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -9,52 +10,47 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-public class VersionInBranchNameVersionStrategy : VersionStrategyBase
+internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
 {
     private readonly IRepositoryStore repositoryStore;
 
-    public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
+    public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        var currentBranch = Context.CurrentBranch;
-        var tagPrefixRegex = Context.Configuration.GitTagPrefix;
-        return GetVersions(tagPrefixRegex, currentBranch);
-    }
-
-    internal IEnumerable<BaseVersion> GetVersions(string? tagPrefixRegex, IBranch? currentBranch)
-    {
-        if (currentBranch == null ||
-            Context.FullConfiguration.IsReleaseBranch(NameWithoutOrigin(currentBranch)) != true)
+        if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
         {
-            yield break;
-        }
-
-        var branchName = currentBranch.Name.Friendly;
-        var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
-        if (versionInBranch != null)
-        {
-            var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
-            var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-            yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
+            yield return baseVersion;
         }
     }
 
-    private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex)
+    private bool TryGetBaseVersion([NotNullWhen(true)] out BaseVersion? baseVersion, EffectiveBranchConfiguration configuration)
     {
-        var branchParts = branchName.Split('/', '-');
-        foreach (var part in branchParts)
+        baseVersion = null;
+
+        Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
+            () => this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration)
+        );
+        foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion))
+            if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
+                configuration.Value.TagPrefix, configuration.Value.SemanticVersionFormat))
             {
-                return Tuple.Create(part, semanticVersion);
+                string? branchNameOverride = null;
+                if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
+                {
+                    branchNameOverride = result.Name;
+                }
+
+                baseVersion = new BaseVersion(
+                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Value.Commit, branchNameOverride
+                );
+                break;
             }
         }
 
-        return null;
+        return baseVersion != null;
     }
-
-    private static string NameWithoutOrigin(IBranch branch) => branch.IsRemote && branch.Name.Friendly.StartsWith("origin/")
-        ? branch.Name.Friendly.Substring("origin/".Length)
-        : branch.Name.Friendly;
 }

@@ -1,19 +1,19 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.OutputVariables;
 
 namespace GitVersion;
 
-public class ArgumentParser : IArgumentParser
+internal class ArgumentParser : IArgumentParser
 {
     private readonly IEnvironment environment;
     private readonly ICurrentBuildAgent buildAgent;
     private readonly IConsole console;
     private readonly IGlobbingResolver globbingResolver;
     private const string defaultOutputFileName = "GitVersion.json";
+    private static readonly IEnumerable<string> availableVariables = GitVersionVariables.AvailableVariables;
 
     public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
     {
@@ -48,7 +48,7 @@ public class ArgumentParser : IArgumentParser
             return args;
         }
 
-        var firstArgument = commandLineArguments.First();
+        var firstArgument = commandLineArguments[0];
 
         if (firstArgument.IsInit())
         {
@@ -107,7 +107,26 @@ public class ArgumentParser : IArgumentParser
         if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
         arguments.NoFetch = arguments.NoFetch || this.buildAgent.PreventFetch();
 
+        ValidateConfigurationFile(arguments);
+
         return arguments;
+    }
+
+    private static void ValidateConfigurationFile(Arguments arguments)
+    {
+        if (arguments.ConfigurationFile.IsNullOrWhiteSpace()) return;
+
+        if (Path.IsPathRooted(arguments.ConfigurationFile))
+        {
+            if (!File.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
+            arguments.ConfigurationFile = Path.GetFullPath(arguments.ConfigurationFile);
+        }
+        else
+        {
+            var configFilePath = Path.GetFullPath(Path.Combine(arguments.TargetPath!, arguments.ConfigurationFile));
+            if (!File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
+            arguments.ConfigurationFile = configFilePath;
+        }
     }
 
     private void ParseSwitchArguments(Arguments arguments, NameValueCollection switchesAndValues, int i)
@@ -170,7 +189,7 @@ public class ArgumentParser : IArgumentParser
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
         if (parseEnded)
         {
-            if (name != null && name.StartsWith("/"))
+            if (name?.StartsWith("/") == true)
             {
                 if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
                 {
@@ -205,7 +224,7 @@ public class ArgumentParser : IArgumentParser
 
         if (name.IsSwitch("diag"))
         {
-            if (value == null || value.IsTrue())
+            if (value?.IsTrue() != false)
             {
                 arguments.Diag = true;
             }
@@ -234,6 +253,12 @@ public class ArgumentParser : IArgumentParser
         if (name.IsSwitch("v") || name.IsSwitch("showvariable"))
         {
             ParseShowVariable(arguments, value, name);
+            return true;
+        }
+
+        if (name.IsSwitch("format"))
+        {
+            ParseFormat(arguments, value);
             return true;
         }
 
@@ -288,7 +313,7 @@ public class ArgumentParser : IArgumentParser
         if (name.IsSwitch("config"))
         {
             EnsureArgumentValueCount(values);
-            arguments.ConfigFile = value;
+            arguments.ConfigurationFile = value;
             return true;
         }
 
@@ -301,9 +326,8 @@ public class ArgumentParser : IArgumentParser
         if (!name.IsSwitch("showConfig"))
             return false;
 
-        arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
+        arguments.ShowConfiguration = value.IsTrue() || !value.IsFalse();
         return true;
-
     }
 
     private static bool ParseRemoteArguments(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
@@ -359,17 +383,34 @@ public class ArgumentParser : IArgumentParser
 
         if (!value.IsNullOrWhiteSpace())
         {
-            versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
+            versionVariable = availableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
         }
 
         if (versionVariable == null)
         {
             var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
-                          string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'")));
+                          string.Join(", ", availableVariables.Select(x => string.Concat("'", x, "'")));
             throw new WarningException(message);
         }
 
         arguments.ShowVariable = versionVariable;
+    }
+
+    private static void ParseFormat(Arguments arguments, string? value)
+    {
+        if (value.IsNullOrWhiteSpace())
+        {
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", availableVariables));
+        }
+
+        var foundVariable = availableVariables.Any(variable => value.Contains(variable, StringComparison.CurrentCultureIgnoreCase));
+
+        if (!foundVariable)
+        {
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", availableVariables));
+        }
+
+        arguments.Format = value;
     }
 
     private static void ParseEnsureAssemblyInfo(Arguments arguments, string? value)
@@ -420,7 +461,7 @@ public class ArgumentParser : IArgumentParser
         if (values == null || values.Count == 0)
             return;
 
-        var parser = new OverrideConfigOptionParser();
+        var parser = new OverrideConfigurationOptionParser();
 
         // key=value
         foreach (var keyValueOption in values)
@@ -432,13 +473,13 @@ public class ArgumentParser : IArgumentParser
             }
 
             var optionKey = keyAndValue[0].ToLowerInvariant();
-            if (!OverrideConfigOptionParser.SupportedProperties.Contains(optionKey))
+            if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
             {
                 throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
             }
             parser.SetValue(optionKey, keyAndValue[1]);
         }
-        arguments.OverrideConfig = parser.GetConfig();
+        arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 
     private static void ParseUpdateAssemblyInfo(Arguments arguments, string? value, IReadOnlyCollection<string>? values)
@@ -538,7 +579,7 @@ public class ArgumentParser : IArgumentParser
         string? currentKey = null;
         var argumentRequiresValue = false;
 
-        for (var i = 0; i < namedArguments.Count; i += 1)
+        for (var i = 0; i < namedArguments.Count; ++i)
         {
             var arg = namedArguments[i];
 

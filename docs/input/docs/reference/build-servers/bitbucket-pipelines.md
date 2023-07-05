@@ -28,7 +28,7 @@ pipelines:
       script:
         - export PATH="$PATH:/root/.dotnet/tools"
         - dotnet tool install --global GitVersion.Tool --version 5.*
-        - dotnet-gitversion /buildserver
+        - dotnet-gitversion /output buildserver
         - source gitversion.properties
         - echo Building with semver $GITVERSION_FULLSEMVER
         - dotnet build
@@ -38,10 +38,10 @@ pipelines:
 **Important**
 
 You must set the `clone:depth` setting as shown above; without it, BitBucket Pipelines will perform a shallow clone, which will
-cause GitVersion will display an error message.
+cause GitVersion to display an error message.
 :::
 
-When the action `dotnet-gitversion /buildserver` is executed, it will detect that it is running in BitBucket Pipelines by the presence of
+When the action `dotnet-gitversion /output buildserver` is executed, it will detect that it is running in BitBucket Pipelines by the presence of
 the `BITBUCKET_WORKSPACE` environment variable, which is set by the BitBucket Pipelines engine. It will generate a text file named `gitversion.properties`
 which contains all the output of the GitVersion tool, exported as individual environment variables prefixed with `GITVERSION_`.
 These environment variables can then be imported back into the build step using the `source gitversion.properties` action.
@@ -62,7 +62,7 @@ pipelines:
       script:
         - export PATH="$PATH:/root/.dotnet/tools"
         - dotnet tool install --global GitVersion.Tool --version 5.*
-        - dotnet-gitversion /buildserver
+        - dotnet-gitversion /output buildserver
       artifacts:
         - gitversion.properties
     - step:

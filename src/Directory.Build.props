@@ -1,5 +1,7 @@
 <Project>
     <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+
         <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
         <Copyright>Copyright GitTools $(EndYear).</Copyright>
@@ -16,69 +18,86 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>1591,8618</NoWarn>
+        <NoWarn>1591,8618,SYSLIB10</NoWarn>
+        <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>
+
         <DebugType>embedded</DebugType>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 
-        <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <!-- Latest = version of the analyzers included in latest installed SDK -->
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisLevel>latest</AnalysisLevel>
-        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-    </PropertyGroup>
-    <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0182</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
-
-        <PackageVersion_JetBrainsAnnotations>2022.1.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>12.0.0</PackageVersion_YamlDotNet>
-        <PackageVersion_MicrosoftExtensions>6.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MicrosoftJson>6.0.0</PackageVersion_MicrosoftJson>
-        <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
-        <PackageVersion_MsBuild>17.2.0</PackageVersion_MsBuild>
-
-        <PackageVersion_MicrosoftTestSdk>17.3.1</PackageVersion_MicrosoftTestSdk>
-        <PackageVersion_NSubstitute>4.4.0</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
-        <PackageVersion_NUnit>3.13.3</PackageVersion_NUnit>
-        <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_JunitXmlTestLogger>3.0.114</PackageVersion_JunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.1.0</PackageVersion_Shouldly>
-        <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.3</PackageVersion_MicrosoftPublicApiAnalyzers>
+        <IsUnitTestProject>false</IsUnitTestProject>
+        <DisableApiAnalyzers>false</DisableApiAnalyzers>
+        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
     </PropertyGroup>
 
-    <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftTextEncoding)" />
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="System.Text.Encodings.Web"/>
+        <PackageReference Include="Roslynator.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false' and '$(DisableApiAnalyzers)' == 'false'">
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 
-        <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
-        <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
-        <PackageReference Include="JunitXml.TestLogger" Version="$(PackageVersion_JunitXmlTestLogger)" />
-        <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All"/>
+        <PackageReference Include="NSubstitute"/>
 
-        <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="JunitXml.TestLogger"/>
+        <PackageReference Include="Shouldly"/>
+
+        <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="NUnit.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
 
-        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
+        <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj"/>
 
+        <Using Include="GitVersion.Testing"/>
+        <Using Include="NSubstitute"/>
+        <Using Include="NUnit.Framework"/>
+        <Using Include="Shouldly"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="System.Collections" />
-        <Using Include="System.Collections.Specialized" />
-        <Using Include="System.Diagnostics" />
-        <Using Include="System.Reflection" />
-        <Using Include="System.Text" />
-        <Using Include="System.Xml" />
+        <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Specialized"/>
+        <Using Include="System.Diagnostics"/>
+        <Using Include="System.Reflection"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Text.Json"/>
+        <Using Include="System.Text.Json.Serialization"/>
+        <Using Include="System.Xml"/>
     </ItemGroup>
 
     <ItemGroup>

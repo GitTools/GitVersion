@@ -1,8 +1,8 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyInjection;
-using Mono.Cecil;
-using NUnit.Framework;
 
 namespace GitVersion.App.Tests;
 
@@ -24,9 +24,11 @@ public class VersionWriterTests : TestBase
 
         string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
-
-        Assert.IsNotNull(asm);
-        Assert.AreEqual("1.0.0", version);
+        Assert.Multiple(() =>
+        {
+            Assert.That(asm, Is.Not.Null);
+            Assert.That(version, Is.EqualTo("1.0.0"));
+        });
     }
 
     [Test]
@@ -36,24 +38,25 @@ public class VersionWriterTests : TestBase
 
         string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
-
-        Assert.IsNotNull(asm);
-        Assert.AreEqual("1.0.0-beta4", version);
+        Assert.Multiple(() =>
+        {
+            Assert.That(asm, Is.Not.Null);
+            Assert.That(version, Is.EqualTo("1.0.0-beta4"));
+        });
     }
 
     private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
     {
-        var definition = new AssemblyNameDefinition("test-asm", fileVersion);
-
-        var asmDef = AssemblyDefinition.CreateAssembly(definition, "test-asm", ModuleKind.Dll);
-        var constructor = typeof(AssemblyInformationalVersionAttribute).GetConstructor(new[] { typeof(string) });
-        var methodReference = asmDef.MainModule.ImportReference(constructor);
-        var customAttribute = new CustomAttribute(methodReference);
-        customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(asmDef.MainModule.TypeSystem.String, fileVersion + prereleaseInfo));
-        asmDef.CustomAttributes.Add(customAttribute);
+        var attribute = typeof(AssemblyInformationalVersionAttribute);
+        var csharpCode = $@"[assembly: {attribute.FullName}(""{fileVersion + prereleaseInfo}"")]";
+        var compilation = CSharpCompilation.Create("test-asm")
+            .WithOptions(new(OutputKind.DynamicallyLinkedLibrary))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddReferences(MetadataReference.CreateFromFile(attribute.Assembly.Location))
+            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(csharpCode));
 
         using var memoryStream = new MemoryStream();
-        asmDef.Write(memoryStream);
+        compilation.Emit(memoryStream);
 
         return Assembly.Load(memoryStream.ToArray());
     }

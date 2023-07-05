@@ -1,10 +1,11 @@
 namespace GitVersion;
 
-public interface IGitRepository
+public interface IGitRepository : IDisposable
 {
     string Path { get; }
     string WorkingDirectory { get; }
     bool IsHeadDetached { get; }
+    bool IsShallow { get; }
     IBranch Head { get; }
     ITagCollection Tags { get; }
     IReferenceCollection Refs { get; }
@@ -14,4 +15,5 @@ public interface IGitRepository
 
     ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
     int GetNumberOfUncommittedChanges();
+    void DiscoverRepository(string? gitDirectory);
 }

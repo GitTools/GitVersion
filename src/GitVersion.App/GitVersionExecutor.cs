@@ -1,31 +1,30 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model;
 
 namespace GitVersion;
 
-public class GitVersionExecutor : IGitVersionExecutor
+internal class GitVersionExecutor : IGitVersionExecutor
 {
     private readonly ILog log;
     private readonly IConsole console;
-    private readonly IConfigFileLocator configFileLocator;
-    private readonly IHelpWriter helpWriter;
-    private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly IConfigProvider configProvider;
+    private readonly IConfigurationFileLocator configurationFileLocator;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IGitVersionCalculateTool gitVersionCalculateTool;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IVersionWriter versionWriter;
+    private readonly IHelpWriter helpWriter;
+    private readonly IGitRepositoryInfo repositoryInfo;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigFileLocator configFileLocator, IConfigProvider configProvider,
+        IConfigurationFileLocator configurationFileLocator, IConfigurationProvider configurationProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {
         this.log = log.NotNull();
         this.console = console.NotNull();
-        this.configFileLocator = configFileLocator.NotNull();
-        this.configProvider = configProvider.NotNull();
+        this.configurationFileLocator = configurationFileLocator.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
 
         this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
@@ -65,9 +64,9 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
+            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
-            this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
+            this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
             this.gitVersionOutputTool.UpdateWixVersionFile(variables);
         }
@@ -144,19 +143,21 @@ public class GitVersionExecutor : IGitVersionExecutor
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        this.configFileLocator.Verify(gitVersionOptions, this.repositoryInfo);
-
         if (gitVersionOptions.Init)
         {
-            this.configProvider.Init(workingDirectory);
+            this.configurationProvider.Init(workingDirectory);
             exitCode = 0;
             return true;
         }
 
-        if (gitVersionOptions.ConfigInfo.ShowConfig)
+        if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
         {
-            var config = this.configProvider.Provide(workingDirectory);
-            this.console.WriteLine(config.ToString());
+            if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+            {
+                this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
+            }
+            var configuration = this.configurationProvider.Provide();
+            this.console.WriteLine(configuration.ToJsonString());
             exitCode = 0;
             return true;
         }

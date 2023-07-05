@@ -1,9 +1,6 @@
-using GitTools.Testing;
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.App.Tests;
 
@@ -36,9 +33,9 @@ public class TagCheckoutInBuildAgentTests
 
     private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
     {
-        using var fixture = new EmptyRepositoryFixture();
+        using var fixture = new EmptyRepositoryFixture("main");
         var remoteRepositoryPath = ExecutableHelper.GetTempPath();
-        RepositoryFixtureBase.Init(remoteRepositoryPath);
+        RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");
@@ -54,7 +51,7 @@ public class TagCheckoutInBuildAgentTests
             remoteRepository.MergeNoFF("release/0.2.0", Generate.SignatureNow());
             remoteRepository.MakeATaggedCommit("0.2.0");
 
-            Commands.Fetch((Repository)fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
+            Commands.Fetch(fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
             Commands.Checkout(fixture.Repository, "0.2.0");
         }
 

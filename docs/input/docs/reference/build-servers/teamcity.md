@@ -7,7 +7,7 @@ RedirectFrom: docs/build-server-support/build-server/teamcity
 
 ## Basic Usage
 
-In [TeamCity] you can create a build step as follows:
+In [TeamCity][teamcity] you can create a build step as follows:
 
 *   **Runner type:** Command Line
 *   **Run:** Executable with parameters
@@ -25,7 +25,6 @@ passed to your build scripts to use.
 TeamCity has support for meta-runners which allow custom tasks. There is a
 [GitVersion meta-runner][meta-runner] available which makes it easy to use
 GitVersion.
-
 
 ## Running inside TeamCity
 
@@ -70,7 +69,7 @@ See [dynamic repositories][dynamic-repo] for more info.
 
 ### NuGet in TeamCity
 
-*   Add a dummy [parameter] to the project called `GitVersion.NuGetVersion`. If
+*   Add a dummy [parameter][parameter] to the project called `GitVersion.NuGetVersion`. If
     many of your projects uses git-flow and SemVer you can add the parameter to
     the "root-project" (TeamCity 8.x+). You need a dummy param because
     GitVersion creates the variables at runtime, and you cannot reference a
@@ -104,9 +103,9 @@ Sorry
 
 *   [Continuous Delivery Setup in TeamCity][cd]
 
-[cd]: http://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
+[cd]: https://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
 [dynamic-repo]: /docs/learn/dynamic-repositories
-[general-settings]: https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings
-[parameter]: http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters
+[general-settings]: https://www.jetbrains.com/help/teamcity/git.html#General+Settings
+[parameter]: https://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters
 [teamcity]: https://www.jetbrains.com/teamcity/
 [meta-runner]: https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion

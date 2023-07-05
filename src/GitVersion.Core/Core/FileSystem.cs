@@ -2,7 +2,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion;
 
-public class FileSystem : IFileSystem
+internal class FileSystem : IFileSystem
 {
     public void Copy(string from, string to, bool overwrite) => File.Copy(from, to, overwrite);
 

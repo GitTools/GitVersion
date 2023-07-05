@@ -9,15 +9,23 @@ public enum Architecture
 }
 public static class DockerContextExtensions
 {
-    public static bool SkipImage(this ICakeContext context, DockerImage dockerImage)
+    public static bool SkipImageForArtifacts(this ICakeContext context, DockerImage dockerImage)
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
-        if (distro == Constants.Ubuntu2204 && targetFramework == Constants.Version31) return true;
+        if (architecture == Architecture.Amd64) return false;
+        if (!Constants.DistrosToSkipForArtifacts.Contains(distro)) return false;
 
-        if (architecture != Architecture.Arm64) return false;
-        if (!Constants.DistrosToSkip.Contains(distro)) return false;
+        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
+        return true;
+    }
+
+    public static bool SkipImageForDocker(this ICakeContext context, DockerImage dockerImage)
+    {
+        var (distro, targetFramework, architecture, _, _) = dockerImage;
+
+        if (architecture == Architecture.Amd64) return false;
+        if (!Constants.DistrosToSkipForDocker.Contains(distro)) return false;
 
         context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
         return true;
@@ -31,7 +39,7 @@ public static class DockerContextExtensions
 
         context.Information($"Building image: {dockerImage}");
 
-        var workDir = Paths.Src.Combine("Docker");
+        var workDir = Paths.Build.Combine("docker");
         var tags = context.GetDockerTags(dockerImage, arch);
 
         var suffix = arch.ToSuffix();
@@ -66,7 +74,7 @@ public static class DockerContextExtensions
         }
     }
 
-    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image)
+    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image = false)
     {
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
@@ -148,7 +156,8 @@ public static class DockerContextExtensions
         var output = context.DockerRunImage(settings, image, command, args);
         context.Information("Output : " + output);
 
-        Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
+        Assert.NotNull(context.Version?.GitVersion);
+        Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
     }
     private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
     {
@@ -163,15 +172,12 @@ public static class DockerContextExtensions
             $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
         };
 
-        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version60)
+        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
         {
             tags.AddRange(new[]
             {
                 $"{name}:{context.Version.Version}",
                 $"{name}:{context.Version.SemVersion}",
-
-                $"{name}:{context.Version.Version}-{distro}",
-                $"{name}:{context.Version.SemVersion}-{distro}"
             });
 
             if (context.IsStableRelease)

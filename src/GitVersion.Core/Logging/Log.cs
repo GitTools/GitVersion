@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Logging;
 
-public sealed class Log : ILog
+internal sealed class Log : ILog
 {
     private IEnumerable<ILogAppender> appenders;
     private readonly Regex obscurePasswordRegex = new("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
@@ -49,7 +49,7 @@ public sealed class Log : ILog
         return Disposable.Create(() =>
         {
             var length = this.indent.Length - 2;
-            this.indent = length > 0 ? this.indent.Substring(0, length) : this.indent;
+            this.indent = length > 0 ? this.indent[..length] : this.indent;
             Write(Verbosity.Normal, LogLevel.Info, string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
         });
     }

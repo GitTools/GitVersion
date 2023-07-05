@@ -2,17 +2,16 @@ using GitVersion.Configuration.Init.BuildServer;
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init;
 
-public class EditConfigStep : ConfigInitWizardStep
+internal class EditConfigStep : ConfigInitWizardStep
 {
     public EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         switch (result)
         {
@@ -46,7 +45,10 @@ public class EditConfigStep : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => $@"Which would you like to change?
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory)
+    {
+        var configuration = configurationBuilder.Build();
+        return $@"Which would you like to change?
 
 0) Save changes and exit
 1) Exit without saving
@@ -55,9 +57,10 @@ public class EditConfigStep : ConfigInitWizardStep
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {config.VersioningMode})
-6) Assembly versioning scheme (Current: {config.AssemblyVersioningScheme})
+5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode ?? VersionCalculation.VersioningMode.ContinuousDeployment})
+6) Assembly versioning scheme (Current: {configuration.AssemblyVersioningScheme})
 7) Setup build scripts";
+    }
 
     protected override string? DefaultResult => null;
 }

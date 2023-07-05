@@ -1,146 +1,225 @@
-using GitVersion.Common;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-public class NextVersionCalculator : INextVersionCalculator
+internal class NextVersionCalculator : INextVersionCalculator
 {
     private readonly ILog log;
-    private readonly IBaseVersionCalculator baseVersionCalculator;
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-    private readonly IRepositoryStore repositoryStore;
+    private readonly IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator;
+    private readonly IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator;
+    private readonly IManualDeploymentVersionCalculator manualDeploymentVersionCalculator;
     private readonly Lazy<GitVersionContext> versionContext;
-    private GitVersionContext context => this.versionContext.Value;
+    private readonly IVersionStrategy[] versionStrategies;
+    private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder;
+    private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
-    public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
-        IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
-        Lazy<GitVersionContext> versionContext)
+    private GitVersionContext Context => this.versionContext.Value;
+
+    public NextVersionCalculator(ILog log,
+                                 Lazy<GitVersionContext> versionContext,
+                                 IMainlineVersionCalculator mainlineVersionCalculator,
+                                 IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator,
+                                 IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator,
+                                 IManualDeploymentVersionCalculator manualDeploymentVersionCalculator,
+                                 IEnumerable<IVersionStrategy> versionStrategies,
+                                 IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
+                                 IIncrementStrategyFinder incrementStrategyFinder)
     {
         this.log = log.NotNull();
-        this.baseVersionCalculator = baseVersionCalculator.NotNull();
-        this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
         this.versionContext = versionContext.NotNull();
+        this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
+        this.continuousDeploymentVersionCalculator = continuousDeploymentVersionCalculator.NotNull();
+        this.continuousDeliveryVersionCalculator = continuousDeliveryVersionCalculator.NotNull();
+        this.manualDeploymentVersionCalculator = manualDeploymentVersionCalculator.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
+        this.versionStrategies = versionStrategies.NotNull().ToArray();
+        this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
-    public SemanticVersion FindVersion()
+    public virtual NextVersion FindVersion()
     {
-        this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
-        if (context.IsCurrentCommitTagged)
+        this.log.Info($"Running against branch: {Context.CurrentBranch} ({Context.CurrentCommit?.ToString() ?? "-"})");
+        if (Context.IsCurrentCommitTagged)
         {
-            this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
-        }
-        else
-        {
-            EnsureHeadIsNotDetached(context);
+            this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, version calculation is for meta data only.");
         }
 
-        SemanticVersion? taggedSemanticVersion = null;
+        var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
+        var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.VersioningMode, nextVersion);
+        return new(incrementedVersion, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
+    }
 
-        if (context.IsCurrentCommitTagged)
-        {
-            // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
-            semanticVersionBuildMetaData.CommitsSinceTag = null;
+    private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion) => versioningMode switch
+    {
+        VersioningMode.ContinuousDelivery => this.manualDeploymentVersionCalculator.Calculate(nextVersion),
+        VersioningMode.ContinuousDeployment => nextVersion.Configuration.IsMainline && nextVersion.Configuration.Label is null
+            ? this.continuousDeploymentVersionCalculator.Calculate(nextVersion)
+            : this.continuousDeliveryVersionCalculator.Calculate(nextVersion),
+        VersioningMode.Mainline => this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion),
+        _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
+    };
 
-            var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
-            taggedSemanticVersion = semanticVersion;
-        }
+    private NextVersion Calculate(IBranch branch, IGitVersionConfiguration configuration)
+    {
+        using (log.IndentLog("Calculating the base versions"))
+        {
+            var nextVersions = GetNextVersions(branch, configuration).ToArray();
+            var maxVersion = nextVersions.Max()!;
 
-        var baseVersion = this.baseVersionCalculator.GetBaseVersion();
-        baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
-        SemanticVersion semver;
-        if (context.Configuration.VersioningMode == VersioningMode.Mainline)
-        {
-            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
-        }
-        else
-        {
-            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
+            var matchingVersionsOnceIncremented = nextVersions
+                .Where(v => v.BaseVersion.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
+                .ToList();
+            ICommit? latestBaseVersionSource;
+
+            if (matchingVersionsOnceIncremented.Any())
             {
-                semver = PerformIncrement(baseVersion);
-                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+                static NextVersion CompareVersions(
+                    NextVersion versions1,
+                    NextVersion version2)
+                {
+                    if (versions1.BaseVersion.BaseVersionSource == null)
+                    {
+                        return version2;
+                    }
+                    if (version2.BaseVersion.BaseVersionSource == null)
+                    {
+                        return versions1;
+                    }
+
+                    return versions1.BaseVersion.BaseVersionSource.When
+                        < version2.BaseVersion.BaseVersionSource.When ? versions1 : version2;
+                }
+
+                var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
+                latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;
+                maxVersion = latestVersion;
+                log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion})," +
+                    $" taking oldest source for commit counting ({latestVersion.BaseVersion.Source})");
             }
             else
             {
-                semver = baseVersion.SemanticVersion;
+                IEnumerable<NextVersion> filteredVersions = nextVersions;
+                if (!maxVersion.IncrementedVersion.PreReleaseTag.HasTag())
+                {
+                    // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
+                    // base source which are not coming from pre-release tag.
+                    filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.PreReleaseTag.HasTag());
+                }
+
+                var versions = filteredVersions as NextVersion[] ?? filteredVersions.ToArray();
+                var version = versions
+                    .Where(v => v.BaseVersion.BaseVersionSource != null)
+                    .OrderByDescending(v => v.IncrementedVersion)
+                    .ThenByDescending(v => v.BaseVersion.BaseVersionSource?.When)
+                    .FirstOrDefault();
+
+                version ??= versions.Where(v => v.BaseVersion.BaseVersionSource == null)
+                    .OrderByDescending(v => v.IncrementedVersion)
+                    .First();
+                latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
             }
-        }
 
-        var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-        var tag = context.Configuration.Tag;
-        var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-#pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
-        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
-        {
-            UpdatePreReleaseTag(semver, baseVersion.BranchNameOverride);
-        }
+            var calculatedBase = new BaseVersion(
+                maxVersion.BaseVersion.Source,
+                maxVersion.BaseVersion.ShouldIncrement,
+                maxVersion.BaseVersion.SemanticVersion,
+                latestBaseVersionSource,
+                maxVersion.BaseVersion.BranchNameOverride
+            );
 
-        if (taggedSemanticVersion != null)
+            log.Info($"Base version used: {calculatedBase}");
+
+            return new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.Branch, maxVersion.Configuration);
+        }
+    }
+
+    private IReadOnlyCollection<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
+    {
+        if (branch.Tip == null)
+            throw new GitVersionException("No commits found on the current branch.");
+
+        var nextVersions = GetNextVersionsInternal().ToList();
+        if (nextVersions.Count == 0)
+            throw new GitVersionException("No base versions determined on the current branch.");
+        return nextVersions;
+
+        IEnumerable<NextVersion> GetNextVersionsInternal()
         {
-            // replace calculated version with tagged version only if tagged version greater or equal to calculated version
-            if (semver.CompareTo(taggedSemanticVersion, false) > 0)
+            foreach (var effectiveConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
             {
-                taggedSemanticVersion = null;
+                var atLeastOneBaseVersionReturned = false;
+                foreach (var versionStrategy in this.versionStrategies)
+                {
+                    foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveConfiguration))
+                    {
+                        log.Info(baseVersion.ToString());
+
+                        if (IncludeVersion(baseVersion, configuration.Ignore)
+                            && TryGetNextVersion(out var nextVersion, effectiveConfiguration, baseVersion))
+                        {
+                            yield return nextVersion;
+                            atLeastOneBaseVersionReturned = true;
+                        }
+                    }
+                }
+
+                if (!atLeastOneBaseVersionReturned)
+                {
+                    var baseVersion = new BaseVersion("Fallback base version", true, SemanticVersion.Empty, null, null);
+                    if (TryGetNextVersion(out var nextVersion, effectiveConfiguration, baseVersion)) yield return nextVersion;
+                }
             }
-            else if (taggedSemanticVersion.BuildMetaData != null)
+        }
+    }
+
+    private bool TryGetNextVersion([NotNullWhen(true)] out NextVersion? result,
+        EffectiveBranchConfiguration effectiveConfiguration, BaseVersion baseVersion)
+    {
+        result = null;
+
+        var label = effectiveConfiguration.Value.GetBranchSpecificLabel(
+            Context.CurrentBranch.Name, baseVersion.BranchNameOverride
+        );
+        if (effectiveConfiguration.Value.Label != label)
+            log.Info("Using current branch name to calculate version tag");
+
+        var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
+        if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
+        {
+            result = effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
+        }
+        return result is not null;
+    }
+
+    private SemanticVersion GetIncrementedVersion(EffectiveBranchConfiguration configuration, BaseVersion baseVersion, string? label)
+    {
+        var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
+            currentCommit: Context.CurrentCommit,
+            baseVersion: baseVersion,
+            configuration: configuration.Value
+        );
+        return baseVersion.SemanticVersion.IncrementVersion(incrementStrategy, label);
+    }
+
+    private bool IncludeVersion(BaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
+    {
+        foreach (var versionFilter in ignoreConfiguration.ToFilters())
+        {
+            if (versionFilter.Exclude(baseVersion, out var reason))
             {
-                // set the commit count on the tagged ver
-                taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
+                if (reason != null)
+                {
+                    log.Info(reason);
+                }
+                return false;
             }
         }
-
-        return taggedSemanticVersion ?? semver;
+        return true;
     }
-
-    private SemanticVersion PerformIncrement(BaseVersion baseVersion)
-    {
-        var semver = baseVersion.SemanticVersion;
-        var increment = this.repositoryStore.DetermineIncrementedField(baseVersion, context);
-        if (increment != null)
-        {
-            semver = semver.IncrementVersion(increment.Value);
-        }
-        else this.log.Info("Skipping version increment");
-        return semver;
-    }
-
-    private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
-    {
-        var tagToUse = context.Configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
-
-        long? number = null;
-
-        var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
-            .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
-
-        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)
-        {
-            number = lastTag.PreReleaseTag.Number + 1;
-        }
-
-        number ??= 1;
-
-        semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
-    }
-
-    private static void EnsureHeadIsNotDetached(GitVersionContext context)
-    {
-        if (context.CurrentBranch.IsDetachedHead != true)
-        {
-            return;
-        }
-
-        var message = string.Format(
-            "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " + "Without a proper branch name GitVersion cannot determine the build version.",
-            context.CurrentCommit?.Id.ToString(7));
-        throw new WarningException(message);
-    }
-
-    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
 }

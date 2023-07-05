@@ -1,0 +1,46 @@
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    -
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
+    -
+      name: '[Build]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Package
+    -
+      name: 'Upload nuget packages'
+      uses: actions/upload-artifact@v3
+      if: matrix.os == 'windows-latest'
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: 'Upload native packages'
+      uses: actions/upload-artifact@v3
+      if: matrix.os == 'windows-latest'
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.zip
+    -
+      name: 'Upload native packages'
+      uses: actions/upload-artifact@v3
+      if: matrix.os != 'windows-latest'
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz

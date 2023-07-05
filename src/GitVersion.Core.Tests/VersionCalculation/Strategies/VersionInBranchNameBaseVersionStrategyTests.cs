@@ -1,12 +1,7 @@
-using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.VersionCalculation.Strategies;
 
@@ -18,71 +13,122 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     public void CanTakeVersionFromNameOfReleaseBranch(string branchName, string expectedBaseVersion)
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        fixture.MakeACommit();
+        fixture.CreateBranch(branchName);
+
+        var repository = fixture.Repository.ToGitRepository();
+
+        var strategy = GetVersionStrategy(repository);
+        var branch = repository.FindBranch(branchName);
+
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+
+        strategy.ShouldNotBeNull();
+        var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    [TestCase("hotfix-2.0.0")]
-    [TestCase("hotfix/2.0.0")]
+    [TestCase("origin/hotfix-2.0.0")]
+    [TestCase("remotes/origin/hotfix-2.0.0")]
+    [TestCase("origin/hotfix/2.0.0")]
+    [TestCase("remotes/origin/hotfix/2.0.0")]
     [TestCase("custom/JIRA-123")]
+    [TestCase("remotes/custom/JIRA-123")]
     [TestCase("hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version")]
+    [TestCase("remotes/hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version")]
     public void ShouldNotTakeVersionFromNameOfNonReleaseBranch(string branchName)
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersions = strategy.GetVersions();
+        fixture.MakeACommit();
+        fixture.CreateBranch(branchName);
+
+        var repository = fixture.Repository.ToGitRepository();
+
+        var strategy = GetVersionStrategy(repository);
+        var branch = repository.FindBranch(branchName);
+
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+
+        strategy.ShouldNotBeNull();
+        var baseVersions = strategy.GetBaseVersions(effectiveBranchConfiguration);
 
         baseVersions.ShouldBeEmpty();
     }
 
-    [TestCase("support/lts-2.0.0", "2.0.0")]
+    [TestCase("release-2.0.0", "2.0.0")]
+    [TestCase("release/3.0.0", "3.0.0")]
+    [TestCase("support/2.0.0-lts", "2.0.0")]
     [TestCase("support-3.0.0-lts", "3.0.0")]
+    [TestCase("hotfix/2.0.0", "2.0.0")]
+    [TestCase("hotfix-3.0.0", "3.0.0")]
+    [TestCase("hotfix/2.0.0-lts", "2.0.0")]
+    [TestCase("hotfix-3.0.0-lts", "3.0.0")]
     public void CanTakeVersionFromNameOfConfiguredReleaseBranch(string branchName, string expectedBaseVersion)
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        fixture.Repository.CreateBranch(branchName);
 
-        var config = new ConfigurationBuilder()
-            .Add(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
+        fixture.MakeACommit();
+        fixture.CreateBranch(branchName);
+
+        var repository = fixture.Repository.ToGitRepository();
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
             .Build();
+        ConfigurationHelper configurationHelper = new(configuration);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName, config);
+        var strategy = GetVersionStrategy(repository, null, configurationHelper.Dictionary);
+        var branch = repository.FindBranch(branchName);
 
-        var baseVersion = strategy.GetVersions().Single();
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+
+        strategy.ShouldNotBeNull();
+        var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    [TestCase("release-2.0.0", "2.0.0")]
-    [TestCase("release/3.0.0", "3.0.0")]
-    public void CanTakeVersionFromNameOfRemoteReleaseBranch(string branchName, string expectedBaseVersion)
+    [TestCase("origin", "release-2.0.0", "2.0.0")]
+    [TestCase("origin", "release/3.0.0", "3.0.0")]
+    public void CanTakeVersionFromNameOfRemoteReleaseBranch(string origin, string branchName, string expectedBaseVersion)
     {
         using var fixture = new RemoteRepositoryFixture();
-        var branch = fixture.Repository.CreateBranch(branchName);
-        Commands.Checkout(fixture.Repository, branch);
-        fixture.MakeACommit();
 
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
-        fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
+        fixture.CreateBranch(branchName);
+        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", origin);
+        fixture.LocalRepositoryFixture.Fetch(origin);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();
+
+        var strategy = GetVersionStrategy(localRepository);
+        var branch = localRepository.FindBranch(branchName);
+
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+
+        strategy.ShouldNotBeNull();
+        var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
+    private static IVersionStrategy GetVersionStrategy(IGitRepository repository,
+        string? targetBranch = null, IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var sp = BuildServiceProvider(workingDirectory, repository, branch, config);
-        return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
+        var serviceProvider = BuildServiceProvider(repository, targetBranch, overrideConfiguration);
+        return serviceProvider.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
     }
 }

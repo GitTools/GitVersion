@@ -1,27 +1,32 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
+
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 
-public class GitVersionTaskExecutor : IGitVersionTaskExecutor
+internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options)
+    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool,
+                                  IConfigurationProvider configurationProvider, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
         this.options = options.NotNull();
     }
 
     public void GetVersion(GetVersion task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
         var outputType = typeof(GetVersion);
         foreach (var (key, value) in versionVariables)
         {
@@ -31,7 +36,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
@@ -44,18 +49,18 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = options.Value;
-        gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
-        gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
+        var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-        gitVersionOptions.AssemblyInfo.Files.Add(fileWriteInfo.FileName);
+        gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
+        gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo = true;
+        gitVersionOptions.AssemblySettingsInfo.Files.Add(fileWriteInfo.FileName);
 
         gitVersionOutputTool.UpdateAssemblyInfo(versionVariables);
     }
 
     public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
@@ -82,7 +87,11 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
-        gitVersionOutputTool.OutputVariables(versionVariables, false);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
+
+        var gitVersionOptions = this.options.Value;
+        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
+
+        gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }
 }

@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cake.Coverlet" Version="2.5.4" />
-      <PackageReference Include="xunit.assert" Version="2.4.1" />
+        <PackageReference Include="Cake.Coverlet" />
+        <PackageReference Include="xunit.assert" />
     </ItemGroup>
 
 </Project>

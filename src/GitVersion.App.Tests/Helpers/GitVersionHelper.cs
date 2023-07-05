@@ -1,4 +1,4 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -52,14 +52,7 @@ public static class GitVersionHelper
 
         foreach (var (key, value) in environments)
         {
-            if (environmentalVariables.ContainsKey(key))
-            {
-                environmentalVariables[key] = value;
-            }
-            else
-            {
-                environmentalVariables.Add(key, value);
-            }
+            environmentalVariables[key] = value;
         }
 
         var exitCode = -1;

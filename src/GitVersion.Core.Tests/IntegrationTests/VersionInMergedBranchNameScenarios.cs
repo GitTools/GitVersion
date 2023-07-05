@@ -1,8 +1,6 @@
-using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using LibGit2Sharp;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -28,18 +26,32 @@ public class VersionInMergedBranchNameScenarios : TestBase
         fixture.AssertFullSemver("1.1.0-alpha.5");
     }
 
+    [TestCase("release")]
+    [TestCase("hotfix")]
+    public void DoesNotTakeVersionFromBranchWithAccidentalVersion(string branch)
+    {
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo($"{branch}/downgrade-some-lib-to-3.2.1");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.MergeNoFF($"{branch}/downgrade-some-lib-to-3.2.1");
+
+        fixture.AssertFullSemver("1.0.1-2");
+    }
+
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Config
-        {
-            Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
+            .Build();
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
-        fixture.AssertFullSemver("2.1.0-alpha.2", config);
+        fixture.AssertFullSemver("2.1.0-alpha.2", configuration);
     }
 
     [Test]
@@ -48,11 +60,11 @@ public class VersionInMergedBranchNameScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0+0");
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-0");
     }
 
     [Test]
@@ -62,11 +74,11 @@ public class VersionInMergedBranchNameScenarios : TestBase
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        fixture.LocalRepositoryFixture.Fetch("upstream");
 
         fixture.LocalRepositoryFixture.MergeNoFF("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.1.0+6");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1-7");
     }
 }
 

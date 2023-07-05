@@ -1,15 +1,13 @@
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Utilities.ProjectCreation;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.MsBuild.Tests.Tasks;
 
 [TestFixture]
 public class WriteVersionInfoTest : TestTaskBase
 {
-    private string GitHubEnvFilePath { get; set; } = Path.GetTempFileName();
+    private string GitHubEnvFilePath { get; } = Path.GetTempFileName();
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
@@ -41,9 +39,8 @@ public class WriteVersionInfoTest : TestTaskBase
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
+        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1-1");
     }
-
 
     [TestCase("2021-02-14.1")]
     public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
@@ -58,12 +55,11 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Log.ShouldNotContain("##vso[build.updatebuildnumber]");
     }
 
-
-    [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1+1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-    [TestCase("2021-02-14.1-$(GITVERSION.SemVer)", "2021-02-14.1-1.0.1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-    [TestCase("2021-02-14.1-$(GITVERSION.minor)", "2021-02-14.1-0", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-    [TestCase("2021-02-14.1-$(GITVERSION_MAJOR)", "2021-02-14.1-1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-    [TestCase("2021-02-14.1", "1.0.1+1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
+    [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1-1")]
+    [TestCase("2021-02-14.1-$(GITVERSION.SemVer)", "2021-02-14.1-1.0.1")]
+    [TestCase("2021-02-14.1-$(GITVERSION.minor)", "2021-02-14.1-0")]
+    [TestCase("2021-02-14.1-$(GITVERSION_MAJOR)", "2021-02-14.1-1")]
+    [TestCase("2021-02-14.1", "1.0.1-1")]
     public void WriteVersionInfoTaskShouldUpdateBuildNumberInAzurePipeline(string buildNumber, string expected)
     {
         var task = new WriteVersionInfoToBuildLog();
@@ -108,14 +104,15 @@ public class WriteVersionInfoTest : TestTaskBase
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
+        using var result = ExecuteMsBuildExeInAzurePipeline(project =>
+            AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
         result.MsBuild.Count.ShouldBeGreaterThan(0);
         result.MsBuild.OverallSuccess.ShouldBe(true);
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
-        result.Output.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
+        result.Output.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1-1");
     }
 
     private static void AddWriteVersionInfoToBuildLogTask(ProjectCreator project, string targetToRun, string taskName)

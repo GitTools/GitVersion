@@ -1,9 +1,7 @@
-using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -11,27 +9,18 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class VersionBumpingScenarios : TestBase
 {
     [Test]
-    public void AppliedPrereleaseTagCausesBump()
+    public void AppliedPreReleaseLabelCausesBump()
     {
-        var configuration = new Config
-        {
-            Branches =
-            {
-                {
-                    MainBranch, new BranchConfig
-                    {
-                        Tag = "pre",
-                        SourceBranches = new HashSet<string>()
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch(MainBranch, builder => builder.WithLabel("pre").WithSourceBranches())
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeATaggedCommit("1.0.0-pre.1");
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-pre.2+1", configuration);
+        fixture.AssertFullSemver("1.0.0-pre.2", configuration);
     }
 
     [Test]
@@ -42,11 +31,11 @@ public class VersionBumpingScenarios : TestBase
         fixture.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeACommit("+semver:minor");
 
-        fixture.AssertFullSemver("1.1.0+1");
+        fixture.AssertFullSemver("1.1.0-1");
 
         fixture.Repository.MakeACommit("+semver:major");
 
-        fixture.AssertFullSemver("2.0.0+2");
+        fixture.AssertFullSemver("2.0.0-2");
     }
 
     [Test]
@@ -57,13 +46,13 @@ public class VersionBumpingScenarios : TestBase
 
         repo.MakeATaggedCommit("1.0.0");
         repo.MakeACommit("+semver:major");
-        fixture.AssertFullSemver("2.0.0+1");
+        fixture.AssertFullSemver("2.0.0-1");
 
         repo.ApplyTag("1.1.0");
         fixture.AssertFullSemver("1.1.0");
 
         repo.MakeACommit();
-        fixture.AssertFullSemver("1.1.1+1");
+        fixture.AssertFullSemver("1.1.1-1");
     }
 
     [Theory]
@@ -90,19 +79,17 @@ public class VersionBumpingScenarios : TestBase
     [TestCase("feat: Major update\n\nSome descriptive text\nWith a second line\n\nBREAKING CHANGE: A reason", "2.0.0")]
     public void CanUseConventionalCommitsToBumpVersion(string commitMessage, string expectedVersion)
     {
-        var configuration = new Config
-        {
-            VersioningMode = VersioningMode.Mainline,
-
+        var configuration = GitFlowConfigurationBuilder.New
             // For future debugging of this regex: https://regex101.com/r/CRoBol/2
-            MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
-
+            .WithMajorVersionBumpMessage("^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)")
             // For future debugging of this regex: https://regex101.com/r/9ccNam/3
-            MinorVersionBumpMessage = "^(feat)(\\([\\w\\s-]*\\))?:",
-
+            .WithMinorVersionBumpMessage("^(feat)(\\([\\w\\s-]*\\))?:")
             // For future debugging of this regex: https://regex101.com/r/oFpqxA/2
-            PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
-        };
+            .WithPatchVersionBumpMessage("^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:")
+            .WithVersioningMode(VersioningMode.Mainline)
+            .WithBranch("develop", builder => builder.WithVersioningMode(null))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
         fixture.MakeATaggedCommit("1.0.0");
@@ -118,7 +105,7 @@ public class VersionBumpingScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeACommit("+semver:minor");
-        fixture.AssertFullSemver("1.1.0+1");
+        fixture.AssertFullSemver("1.1.0-1");
 
         fixture.ApplyTag("2.0.0");
 
@@ -126,6 +113,6 @@ public class VersionBumpingScenarios : TestBase
 
         // Default bump is patch
 
-        fixture.AssertFullSemver("2.0.1+1");
+        fixture.AssertFullSemver("2.0.1-1");
     }
 }

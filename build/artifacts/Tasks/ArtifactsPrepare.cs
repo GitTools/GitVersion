@@ -5,8 +5,8 @@ namespace Artifacts.Tasks;
 [TaskName(nameof(ArtifactsPrepare))]
 [TaskDescription("Pulls the docker images needed for testing the artifacts")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 public class ArtifactsPrepare : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
@@ -21,7 +21,7 @@ public class ArtifactsPrepare : FrostingTask<BuildContext>
     {
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImage(dockerImage)) continue;
+            if (context.SkipImageForArtifacts(dockerImage)) continue;
             context.DockerPullImage(dockerImage);
         }
     }

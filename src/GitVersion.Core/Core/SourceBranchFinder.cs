@@ -1,16 +1,15 @@
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
 internal class SourceBranchFinder
 {
-    private readonly Config configuration;
+    private readonly IGitVersionConfiguration configuration;
     private readonly IEnumerable<IBranch> excludedBranches;
 
-    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, Config configuration)
+    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVersionConfiguration configuration)
     {
         this.excludedBranches = excludedBranches.NotNull();
         this.configuration = configuration.NotNull();
@@ -27,7 +26,7 @@ internal class SourceBranchFinder
         private readonly IBranch branch;
         private readonly IEnumerable<string> sourceBranchRegexes;
 
-        public SourceBranchPredicate(IBranch branch, Config configuration)
+        public SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
         {
             this.branch = branch;
             this.sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
@@ -38,25 +37,24 @@ internal class SourceBranchFinder
             if (Equals(sourceBranchCandidate, this.branch))
                 return false;
 
-            var branchName = sourceBranchCandidate.Name.Friendly;
+            var branchName = sourceBranchCandidate.Name.WithoutOrigin;
 
-            return this.sourceBranchRegexes
-                .Any(regex => Regex.IsMatch(branchName, regex));
+            return this.sourceBranchRegexes.Any(regex => Regex.IsMatch(branchName, regex));
         }
 
-        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, Config configuration)
+        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, IGitVersionConfiguration configuration)
         {
-            var branchName = branch.Name.WithoutRemote;
-            var currentBranchConfig = configuration.GetConfigForBranch(branchName);
-            if (currentBranchConfig?.SourceBranches == null)
+            var currentBranchConfig = configuration.GetBranchConfiguration(branch.Name);
+            if (currentBranchConfig.SourceBranches == null)
             {
                 yield return ".*";
             }
             else
             {
+                var branches = configuration.Branches;
                 foreach (var sourceBranch in currentBranchConfig.SourceBranches)
                 {
-                    var regex = configuration.Branches[sourceBranch]?.Regex;
+                    var regex = branches[sourceBranch].RegularExpression;
                     if (regex != null)
                         yield return regex;
                 }

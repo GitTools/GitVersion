@@ -1,7 +1,5 @@
-using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -46,7 +44,6 @@ public class PullRequestScenarios : TestBase
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/Foo"));
         fixture.Repository.MakeACommit();
 
-
         fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
         fixture.Repository.DumpGraph();
@@ -89,13 +86,13 @@ public class PullRequestScenarios : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit("one");
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0.0"));
-        fixture.Repository.MakeACommit();
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit("two");
+        fixture.Repository.MakeACommit("three");
 
         fixture.Repository.CreatePullRequestRef("release/2.0.0", MainBranch, normalise: true);
 
-        fixture.AssertFullSemver("2.0.0-PullRequest2.0");
+        fixture.AssertFullSemver("2.0.0-PullRequest2.3");
     }
 }

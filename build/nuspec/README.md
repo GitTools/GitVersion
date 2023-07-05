@@ -5,11 +5,10 @@ works out the [Semantic Version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 
-| Artifact                   |                Stable                                              |   |
-| :------------------------- | :----------------------------------------------------------------- | - |
-| **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
-| **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask] before v5.6.0 |
+| Artifact               | Stable                       |                                                         |
+|:-----------------------|:-----------------------------|---------------------------------------------------------|
+| **GitVersion.Tool**    | [![NuGet][gvgt-badge]][gvgt] |
+| **GitVersion.MsBuild** | [![NuGet][gvt-badge]][gvt]   | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
 
 ## Compatibility
 
@@ -44,8 +43,6 @@ from The Noun Project.
 [gitter]:                          https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-badge]:                    https://badges.gitter.im/Join+Chat.svg
 [docs]:                            https://gitversion.net/docs/
-[gh-rel]:                          https://github.com/GitTools/GitVersion/releases/latest
-[gh-rel-badge]:                    https://img.shields.io/github/release/gittools/gitversion.svg?logo=github
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
 [gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/

@@ -5,8 +5,8 @@ namespace Artifacts.Tasks;
 [TaskName(nameof(ArtifactsNativeTest))]
 [TaskDescription("Tests the native executables in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsNativeTest : FrostingTask<BuildContext>
 {
@@ -27,13 +27,15 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImage(dockerImage)) continue;
+            if (context.SkipImageForArtifacts(dockerImage)) continue;
 
-            var runtime = dockerImage.Architecture == Architecture.Amd64 ? "linux-x64" : "linux-arm64";
+            var runtime = "linux";
             if (dockerImage.Distro.StartsWith("alpine"))
             {
-                runtime = "linux-musl-x64";
+                runtime += "-musl";
             }
+            runtime += dockerImage.Architecture == Architecture.Amd64 ? "-x64" : "-arm64";
+
 
             var cmd = $"{rootPrefix}/scripts/test-native-tool.sh --version {version} --repoPath {rootPrefix}/repo --runtime {runtime}";
 

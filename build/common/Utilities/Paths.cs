@@ -8,9 +8,9 @@ public class Paths
     public static readonly DirectoryPath Src = Root.Combine("src");
     public static readonly DirectoryPath Docs = Root.Combine("docs");
     public static readonly DirectoryPath Build = Root.Combine("build");
+    public static readonly DirectoryPath Schemas = Root.Combine("schemas");
+    public static readonly DirectoryPath Tools = Root.Combine("tools");
     public static readonly DirectoryPath Integration = Root.Combine("tests").Combine("integration");
-
-    public static readonly DirectoryPath Nuspec = Build.Combine("nuspec");
 
     public static readonly DirectoryPath TestOutput = Artifacts.Combine("test-results");
     public static readonly DirectoryPath Packages = Artifacts.Combine("packages");
@@ -18,6 +18,5 @@ public class Paths
 
     public static readonly DirectoryPath Native = Packages.Combine("native");
     public static readonly DirectoryPath Nuget = Packages.Combine("nuget");
-    public static readonly DirectoryPath ArtifactsBinCmdline = Packages.Combine("prepare").Combine("cmdline");
     public static readonly DirectoryPath ArtifactsBinPortable = Packages.Combine("prepare").Combine("portable");
 }

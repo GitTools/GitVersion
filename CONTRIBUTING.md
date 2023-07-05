@@ -2,10 +2,10 @@
 
 We love contributions to get started contributing you might need:
 
-*   [Get started with git](http://rogerdudler.github.io/git-guide)
+*   [Get started with git](https://rogerdudler.github.io/git-guide)
 *   [How to create a pull request](https://help.github.com/articles/using-pull-requests)
-*   [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](http://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
-*   An understanding of our [architecture](http://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
+*   [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](https://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
+*   An understanding of our [architecture](https://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
 
 Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.
@@ -23,7 +23,7 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 ## How it works
 
-See [how it works](http://gitversion.net/docs/learn/how-it-works/) in GitVersion's documentation
+See [how it works](https://gitversion.net/docs/learn/how-it-works) in GitVersion's documentation
 
 ## Writing Tests
 
@@ -39,7 +39,25 @@ Find where your issue would logically sit. Or create a new scenario class if it 
 
 We are currently using NUnit, so just create a descriptive test method and attribute it with `[Test]`
 
-### 3. Use a fixture
+### 3. Create a configuration
+
+We use a builder pattern to create a configuration. You can use the `GitFlowConfigurationBuilder` or `GitHubConfigurationBuilder` or `EmptyConfigurationBuilder` to create a configuration builder.
+
+```csharp
+var configurationBuilder = GitFlowConfigurationBuilder.New;
+```
+
+We can then customize the configuration by chaining methods of the builder. At the end we build the configuration.
+
+For example:
+```csharp
+var configuration = configurationBuilder
+    .WithVersioningMode(VersioningMode.ContinuousDeployment)
+    .WithNextVersion("1.0.0")
+    .Build();
+```
+
+### 4. Use a fixture
 
 We have a few fixtures for different scenarios.
 
@@ -50,14 +68,8 @@ We have a few fixtures for different scenarios.
 You can use a fixture by just `using` it. Like this
 
 ```csharp
-using (var fixture = new EmptyRepositoryFixture(new Config()))
-{
-}
+using var repo = new EmptyRepositoryFixture();
 ```
-
-### 4. Customize config
-
-If you are using non-default configuration just modify the `Config` class before creating the fixture
 
 ### 5. Writing the scenario
 
@@ -72,7 +84,7 @@ fixture.Repository.Checkout("feature-test");
 fixture.Repository.MakeACommit();
 fixture.Repository.MakeCommits(4);
 
-fixture.AssertFullSemver("1.0.1-test.1+5");
+fixture.AssertFullSemver("1.0.1-test.1-5", configuration);
 ```
 
 The last line is the most important. `AssertFullSemver` will run GitVersion and assert that the full SemVer it calculates is what you expect.
@@ -81,47 +93,49 @@ The last line is the most important. `AssertFullSemver` will run GitVersion and 
 
 Even better include the fix, but a failing test is a great start
 
-## Build / Release Process
+## Release Process
 
-We use Cake for our build and deployment process. The way the build / release process is setup is:
+We use Cake for our build and deployment process. The way the release process is setup is:
 
-1.  We build releasable artifacts on AppVeyor
-2.  Login to AppVeyor
-3.  Deploy the latest main build
-    ![docs/input/docs/img/release-1-deploy.png](docs/input/docs/img/release-1-deploy.png)
-4.  Choose GitVersion release, when you press deploy it will create a _non-released_ GitHub release, this _will not_ create a Git tag. This step is so we can validate the release and release notes before pushing the button.
-    ![docs/input/docs/img/release-2-deploy.png](docs/input/docs/img/release-2-deploy.png)
-5.  All the artifacts should upload nicely
-    ![docs/input/docs/img/release-3-deploy.png](docs/input/docs/img/release-3-deploy.png)
-6.  Head over to GitHub releases, you should have a draft release, download a copy of the release notes
-    ![docs/input/docs/img/release-4-deploy.png](docs/input/docs/img/release-4-deploy.png)
-7.  Edit the release and do the following:
-    1.  Remove the build metadata from the tag and title (the + and everything after it)
-    2.  Paste the downloaded release notes in, you can clean them up if you want otherwise there may be closed issues which were questions etc.
-    3.  Tick the pre-release box if it's pre-release
-    4.  Press Publish
-8.  Publishing tags (a git tag) the release commit, this will trigger another appveyor build which only builds tags, this build uses deploy.cake. It downloads the artifacts from that GitHub release, then performs the release
-
-## Docker
-
-It is a manual release step after the release now, first download the appropriate ZIP and put into a `releaseArtifacts` folder in the GitVersion repository, then run:
-
-```bash
-docker build . --build-arg GitVersionZip=GitVersion_<VERSION>.zip --tag gittools/gitversion
-```
+1.  We build releasable artifacts with GitHub Actions
+2.  We create a milestone for the release if it's not already created. Our milestones are named using the semver.
+    For example `5.12.0` or `6.0.0-beta.2`
+3.  We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
+4.  We check that all the issues and pull requests that are going to be included in the release have a label assigned,
+    otherwise it will fail the release.
+5.  We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
+6.  We specify if the release is a pre-release or latest release in the GitHub UI.
+7.  We publish the release.
+8.  The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
+    and other distribution channels.
+9.  The issues and pull requests will get updated with message specifying in which release it was included.
 
 ## Code Style
 
 In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`](https://github.com/dotnet/format).
 
-1.  Install [`dotnet-format`](https://github.com/dotnet/format) as a global tool:
+Change to the root folder of the GitVersion repository and use the following command to apply the code style:
 
 ```shell
-dotnet tool install -g dotnet-format
+dotnet format ./src/ --exclude **/AddFormats/
 ```
 
-2.  Change to the root folder of the GitVersion repository and use the following command to apply the code style:
+## Documentation
+
+The documentation is stored in the repository under the [`docs`](docs) folder.
+Have a look at the [documentation readme file](docs/readme.md) for guidance.
+
+In order to check locally how the documentation looks like you can use the following command:
 
 ```shell
-dotnet format ./ --folder --exclude **/AddFormats/ --fix-codestyle
+./build.ps1 -Stage docs -Target PreviewDocs
+```
+
+## Schemas generation
+
+If there are changes to the GitVersionVariables or to the GitVersionConfiguration, the following command should be executed to update the schema files:
+
+```shell
+./build.ps1 -Stage build -Target BuildPrepare
+./build.ps1 -Stage docs -Target GenerateSchemas
 ```

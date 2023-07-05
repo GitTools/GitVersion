@@ -1,8 +1,7 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 
@@ -24,13 +23,12 @@ public class JsonVersionBuilderTests : TestBase
             BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var sp = ConfigureServices();
+        var serviceProvider = ConfigureServices();
 
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
-        var json = variables.ToString();
-        json.ShouldMatchApproved(c => c.SubFolder("Approved"));
+        var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
+        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

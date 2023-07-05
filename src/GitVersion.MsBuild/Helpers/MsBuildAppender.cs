@@ -3,7 +3,7 @@ using Microsoft.Build.Utilities;
 
 namespace GitVersion.MsBuild;
 
-public class MsBuildAppender : ILogAppender
+internal class MsBuildAppender : ILogAppender
 {
     private readonly TaskLoggingHelper taskLog;
 
@@ -15,7 +15,7 @@ public class MsBuildAppender : ILogAppender
         {
             WriteLogEntry(level, message);
         }
-        catch (Exception)
+        catch
         {
             //
         }
@@ -23,7 +23,7 @@ public class MsBuildAppender : ILogAppender
 
     private void WriteLogEntry(LogLevel level, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{Environment.NewLine}";
         switch (level)
         {
             case LogLevel.Fatal:

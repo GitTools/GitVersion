@@ -1,5 +1,10 @@
 next-version: 2.0.0
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
 branches: {}
 ignore:
   sha: []
-merge-message-formats: {}
+increment: None
+source-branches: []
+is-source-branch-for: []

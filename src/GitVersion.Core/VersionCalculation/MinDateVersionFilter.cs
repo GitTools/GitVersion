@@ -1,8 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class MinDateVersionFilter : IVersionFilter
+internal class MinDateVersionFilter : IVersionFilter
 {
     private readonly DateTimeOffset minimum;
 
@@ -10,7 +11,7 @@ public class MinDateVersionFilter : IVersionFilter
 
     public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
     {
-        if (version == null) throw new ArgumentNullException(nameof(version));
+        version.NotNull();
 
         reason = null;
 

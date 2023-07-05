@@ -1,0 +1,25 @@
+name: 'Artifacts restore'
+description: 'Artifacts restore'
+
+runs:
+  using: 'composite'
+  steps:
+  -
+    name: Use cached cake frosting
+    id: cache-cake
+    uses: actions/cache@v3
+    with:
+      path: run
+      key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+  -
+    name: Use cached tools
+    id: cache-tools
+    uses: actions/cache@v3
+    with:
+      path: tools
+      key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+  -
+    name: Setup .NET SDK
+    uses: actions/setup-dotnet@v3
+    with:
+      global-json-file: global.json

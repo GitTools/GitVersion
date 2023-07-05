@@ -5,8 +5,6 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.Init;
 
@@ -28,10 +26,11 @@ public class InitScenarios : TestBase
             services.AddSingleton(options);
         });
 
-        var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+        var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         configurationProvider.Init(workingDirectory);
 
-        fileSystem.ReadAllText(PathHelper.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
+        var configFile = PathHelper.Combine(workingDirectory, ConfigurationFileLocator.DefaultFileName);
+        fileSystem.ReadAllText(configFile).ShouldMatchApproved();
     }
 }

@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-
         <PackageId>GitVersion.MsBuild</PackageId>
         <Title>GitVersionMsBuild</Title>
         <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
@@ -13,19 +11,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(PackageVersion_MicrosoftPublicApiAnalyzers)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" PrivateAssets="All" />
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Win32.Registry" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
     <Import Project="nuget-files.props" />

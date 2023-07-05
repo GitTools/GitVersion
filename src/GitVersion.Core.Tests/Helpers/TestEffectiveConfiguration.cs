@@ -1,5 +1,5 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
@@ -13,13 +13,12 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         string? assemblyFileVersioningFormat = null,
         string? assemblyInformationalFormat = null,
         VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
-        string gitTagPrefix = "v",
-        string tag = "",
+        string tagPrefix = ConfigurationConstants.DefaultTagPrefix,
+        string label = "ci",
         string? nextVersion = null,
         string branchPrefixToTrim = "",
-        bool preventIncrementForMergedBranchVersion = false,
-        string? tagNumberPattern = null,
-        string continuousDeploymentFallbackTag = "ci",
+        bool preventIncrementOfMergedBranchVersion = false,
+        string? labelNumberPattern = null,
         bool trackMergeTarget = false,
         string? majorMessage = null,
         string? minorMessage = null,
@@ -29,6 +28,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         IEnumerable<IVersionFilter>? versionFilters = null,
         bool tracksReleaseBranches = false,
         bool isRelease = false,
+        bool isMainline = false,
         string commitDateFormat = "yyyy-MM-dd",
         bool updateBuildNumber = false) :
         base(assemblyVersioningScheme,
@@ -37,14 +37,13 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
             assemblyVersioningFormat,
             assemblyFileVersioningFormat,
             versioningMode,
-            gitTagPrefix,
-            tag,
+            tagPrefix,
+            label,
             nextVersion,
             IncrementStrategy.Patch,
             branchPrefixToTrim,
-            preventIncrementForMergedBranchVersion,
-            tagNumberPattern,
-            continuousDeploymentFallbackTag,
+            preventIncrementOfMergedBranchVersion,
+            labelNumberPattern,
             trackMergeTarget,
             majorMessage,
             minorMessage,
@@ -54,6 +53,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
             versionFilters ?? Enumerable.Empty<IVersionFilter>(),
             tracksReleaseBranches,
             isRelease,
+            isMainline,
             commitDateFormat,
             updateBuildNumber,
             SemanticVersionFormat.Strict,

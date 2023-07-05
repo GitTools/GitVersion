@@ -2,8 +2,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Mocks;
 using Microsoft.Build.Framework;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.MsBuild.Tests;
 

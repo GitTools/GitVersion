@@ -1,5 +1,4 @@
 using GitVersion;
-using NUnit.Framework;
 
 namespace GitVersionExe.Tests;
 

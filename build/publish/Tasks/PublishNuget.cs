@@ -18,7 +18,7 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishNuget)} works only on GitHub Actions.");
-        shouldRun &= context.ShouldRun(context.IsPreRelease || context.IsStableRelease, $"{nameof(PublishNuget)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease || context.IsInternalPreRelease, $"{nameof(PublishNuget)} works only for releases.");
 
         return shouldRun;
     }
@@ -26,25 +26,28 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         // publish to github packages for commits on main and on original repo
-        if (context.IsGitHubActionsBuild && context.IsOnMainOrSupportBranchOriginalRepo)
+        if (context.IsInternalPreRelease)
         {
+            context.StartGroup("Publishing to GitHub Packages");
             var apiKey = context.Credentials?.GitHub?.Token;
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet GitHub Packages API key.");
             }
             PublishToNugetRepo(context, apiKey, Constants.GithubPackagesUrl);
+            context.EndGroup();
         }
-        // publish to nuget.org for stable releases
-        if (context.IsStableRelease)
+        // publish to nuget.org for tagged releases
+        if (context.IsStableRelease || context.IsTaggedPreRelease)
         {
+            context.StartGroup("Publishing to Nuget.org");
             var apiKey = context.Credentials?.Nuget?.ApiKey;
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet org API key.");
             }
-
             PublishToNugetRepo(context, apiKey, Constants.NugetOrgUrl);
+            context.EndGroup();
         }
     }
     private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)

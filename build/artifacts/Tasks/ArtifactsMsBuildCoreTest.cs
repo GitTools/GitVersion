@@ -5,8 +5,8 @@ namespace Artifacts.Tasks;
 [TaskName(nameof(ArtifactsMsBuildCoreTest))]
 [TaskDescription("Tests the msbuild package in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
 {
@@ -14,6 +14,11 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(ArtifactsMsBuildCoreTest)} works only on Docker on Linux agents.");
+
+        if (context.Architecture is Architecture.Arm64)
+        {
+            shouldRun &= context.ShouldRun(context.TestArm64Artifacts, $"{nameof(ArtifactsMsBuildCoreTest)} works only when TEST_ARM64_ARTIFACTS is enabled.");
+        }
 
         return shouldRun;
     }
@@ -27,20 +32,17 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImage(dockerImage)) continue;
+            if (context.SkipImageForArtifacts(dockerImage)) continue;
 
-            string distro = dockerImage.Distro;
-            string targetFramework = dockerImage.TargetFramework;
+            var framework = dockerImage.TargetFramework;
 
-            if (targetFramework == Constants.Version31 && distro == Constants.Centos8) continue; // TODO check why this one fails
-            targetFramework = targetFramework switch
+            var targetFramework = framework switch
             {
-                Constants.Version31 => $"netcoreapp{targetFramework}",
-                Constants.Version60 => $"net{targetFramework}",
-                _ => targetFramework
+                Constants.Version60 or Constants.Version70 => $"net{framework}",
+                _ => framework
             };
 
-            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration/core --targetframework {targetFramework}";
+            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework {targetFramework}";
 
             context.DockerTestArtifact(dockerImage, cmd);
         }

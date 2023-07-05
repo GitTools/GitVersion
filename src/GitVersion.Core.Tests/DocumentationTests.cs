@@ -1,10 +1,7 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
-using NUnit.Framework;
-using Shouldly;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.Core.Tests;
 
@@ -22,12 +19,12 @@ public class DocumentationTests : TestBase
         var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
-        var configProperties = typeof(Config)
+        var configProperties = typeof(GitVersionConfiguration)
             .GetProperties(bindingFlags)
-            .Union(typeof(BranchConfig).GetProperties(bindingFlags))
-            .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
+            .Union(typeof(BranchConfiguration).GetProperties(bindingFlags))
+            .Select(p => p.GetCustomAttribute<JsonPropertyNameAttribute>())
             .Where(a => a != null)
-            .Select(a => a?.Alias)
+            .Select(a => a?.Name)
             .ToList();
 
         configProperties.ShouldNotBeEmpty();
@@ -40,12 +37,11 @@ public class DocumentationTests : TestBase
         }
     }
 
-
     [Test]
     public void VariableDocumentationIsUpToDate()
     {
         var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
-        var variables = VersionVariables.AvailableVariables.ToList();
+        var variables = GitVersionVariables.AvailableVariables.ToList();
 
         variables.ShouldNotBeEmpty();
 
@@ -88,7 +84,7 @@ public class DocumentationTests : TestBase
             currentDirectory = currentDirectory.Parent;
         }
 
-        if (currentDirectory == null || !currentDirectory.Name.Equals("docs", StringComparison.Ordinal))
+        if (currentDirectory?.Name.Equals("docs", StringComparison.Ordinal) != true)
         {
             throw new DirectoryNotFoundException("Couldn't find the 'docs' directory.");
         }

@@ -2,12 +2,12 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.Cache;
+using GitVersion.VersionCalculation.Caching;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitVersionCalculateTool : IGitVersionCalculateTool
+internal class GitVersionCalculateTool : IGitVersionCalculateTool
 {
     private readonly ILog log;
     private readonly IGitVersionCache gitVersionCache;
@@ -38,19 +38,21 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
         this.versionContext = versionContext.NotNull();
     }
 
-    public VersionVariables CalculateVersionVariables()
+    public GitVersionVariables CalculateVersionVariables()
     {
         this.gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
 
         var gitVersionOptions = this.options.Value;
 
-        var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
+        var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
         var versionVariables = gitVersionOptions.Settings.NoCache ? default : this.gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
         if (versionVariables != null) return versionVariables;
 
-        var semanticVersion = this.nextVersionCalculator.FindVersion();
-        versionVariables = this.variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+        var nextVersion = this.nextVersionCalculator.FindVersion();
+        versionVariables = this.variableProvider.GetVariablesFor(
+            nextVersion.IncrementedVersion, nextVersion.Configuration, context.CurrentCommitTaggedVersion
+        );
 
         if (gitVersionOptions.Settings.NoCache) return versionVariables;
         try

@@ -1,0 +1,9 @@
+#nullable enable
+GitVersion.IGitVersionOutputTool
+GitVersion.IGitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo) -> void
+GitVersion.IGitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber) -> void
+GitVersion.IGitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.IGitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.Output.GitVersionOutputModule
+GitVersion.Output.GitVersionOutputModule.GitVersionOutputModule() -> void
+GitVersion.Output.GitVersionOutputModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

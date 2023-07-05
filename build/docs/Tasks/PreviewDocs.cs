@@ -1,4 +1,4 @@
-using Cake.Wyam;
+using Common.Addins.Cake.Wyam;
 using Common.Utilities;
 
 namespace Docs.Tasks;
@@ -20,8 +20,13 @@ public sealed class PreviewDocs : FrostingTask<BuildContext>
     {
         if (context.WyamSettings is not null)
         {
+            var schemaTargetDir = Paths.ArtifactsDocs.Combine("preview").Combine("schemas");
+            context.EnsureDirectoryExists(schemaTargetDir);
+            context.CopyDirectory(Paths.Schemas, schemaTargetDir);
+
             context.WyamSettings.Preview = true;
             context.WyamSettings.Watch = true;
+            context.WyamSettings.NoClean = true;
             context.WyamSettings.Settings.Add("Host", "gittools.github.io");
             context.Wyam(context.WyamSettings);
         }

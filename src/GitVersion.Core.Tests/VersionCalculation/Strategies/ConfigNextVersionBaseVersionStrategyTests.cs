@@ -1,9 +1,8 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using NUnit.Framework;
-using Shouldly;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests.VersionCalculation.Strategies;
 
@@ -18,33 +17,50 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         baseVersion.ShouldBe(null);
     }
 
-    [TestCase("1.0.0", "1.0.0")]
-    [TestCase("2.12.654651698", "2.12.654651698")]
-    public void ConfigNextVersionTest(string nextVersion, string expectedVersion)
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Strict)]
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Loose)]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Strict)]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Loose)]
+    [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
+    public void ConfigNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
     {
-        var baseVersion = GetBaseVersion(new Config
+        var overrideConfiguration = new Dictionary<object, object?>()
         {
-            NextVersion = nextVersion
-        });
+            { "next-version", nextVersion },
+            { "semantic-version-format", versionFormat }
+        };
+        var baseVersion = GetBaseVersion(overrideConfiguration);
 
         baseVersion.ShouldNotBeNull();
         baseVersion.ShouldIncrement.ShouldBe(false);
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
     }
 
-    private static BaseVersion? GetBaseVersion(Config? config = null)
+    [TestCase("0.1", SemanticVersionFormat.Strict)]
+    public void ConfigNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
     {
-        var contextBuilder = new GitVersionContextBuilder();
-
-        if (config != null)
+        var overrideConfiguration = new Dictionary<object, object?>()
         {
-            contextBuilder = contextBuilder.WithConfig(config);
-        }
+            { "next-version", nextVersion },
+            { "semantic-version-format", versionFormat }
+        };
 
+        Should.Throw<WarningException>(() => GetBaseVersion(overrideConfiguration))
+            .Message.ShouldBe($"Failed to parse {nextVersion} into a Semantic Version");
+    }
+
+    private static BaseVersion? GetBaseVersion(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
+    {
+        var contextBuilder = new GitVersionContextBuilder().WithOverrideConfiguration(overrideConfiguration);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfigNextVersionVersionStrategy>();
+        var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
+        var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+        var branchConfiguration = context.Configuration.GetBranchConfiguration(branchMock);
+        var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
 
-        return strategy.GetVersions().SingleOrDefault();
+        strategy.ShouldNotBeNull();
+        return strategy.GetBaseVersions(new(branchMock, effectiveConfiguration)).SingleOrDefault();
     }
 }

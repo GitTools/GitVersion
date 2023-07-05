@@ -1,6 +1,5 @@
 using Buildalyzer;
 using Buildalyzer.Environment;
-using GitTools.Testing;
 using GitVersion.Core.Tests;
 using GitVersion.Helpers;
 using Microsoft.Build.Framework;
@@ -21,10 +20,11 @@ public class MsBuildExeFixture
     private readonly AnalyzerManager manager = new();
     private readonly string ProjectPath;
 
-    public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "")
+    public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "", string language = "C#")
     {
+        var projectExtension = FileHelper.GetProjectExtension(language);
         this.fixture = fixture;
-        this.ProjectPath = PathHelper.Combine(workingDirectory, "app.csproj");
+        this.ProjectPath = PathHelper.Combine(workingDirectory, $"app.{projectExtension}");
 
         var versionFile = PathHelper.Combine(workingDirectory, "gitversion.json");
 

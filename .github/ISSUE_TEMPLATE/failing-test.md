@@ -1,6 +1,6 @@
 ---
 name: Failing test
-about: Describe this issue template's purpose here.
+about: Describe the scenario you have as a unit test.
 title: "[Failing test]"
 labels: failing test case
 assignees: ''

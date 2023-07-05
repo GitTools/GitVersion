@@ -36,7 +36,7 @@ enter the following into a terminal:
 brew install gitversion
 ```
 
-Switches are available with `gitversion --help`. Even though the documentation
+Switches are available with `gitversion -h`. Even though the documentation
 uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
 is interpreted as a root path on POSIX based operating systems.
 
@@ -45,7 +45,7 @@ of writing: Linux and macOS).
 
 ### Chocolatey
 
-Available on [Chocolatey](http://chocolatey.org) as
+Available on [Chocolatey](https://chocolatey.org) as
 [`GitVersion.Portable`][choco].
 
 ```shell
@@ -84,7 +84,7 @@ of writing: Linux, macOS, Windows).
 
 [dotnet-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool
 [tool]: https://www.nuget.org/packages/GitVersion.Tool/
-[brew]: https://formulae.brew.sh/formula-linux/gitversion
+[brew]: https://formulae.brew.sh/formula/gitversion
 [homebrew]: https://brew.sh/
 [docker]: https://hub.docker.com/r/gittools/gitversion
-[choco]: http://chocolatey.org/packages/GitVersion.Portable
+[choco]: https://chocolatey.org/packages/GitVersion.Portable

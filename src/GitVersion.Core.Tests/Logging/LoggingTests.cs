@@ -1,5 +1,4 @@
 using GitVersion.Logging;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.Logging;
 

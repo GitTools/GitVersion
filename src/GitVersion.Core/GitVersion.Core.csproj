@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
 
@@ -10,34 +9,29 @@
         <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
 
         <Product>$(AssemblyName)</Product>
-        <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Polly" Version="7.2.3" />
-        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(PackageVersion_MicrosoftPublicApiAnalyzers)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitFlow\v1.yml" />
+      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitHubFlow\v1.yml" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
-        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
+        <PackageReference Include="Polly" />
+        <PackageReference Include="System.Net.Requests" />
+
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="YamlDotNet" />
     </ItemGroup>
-    
+
     <ItemGroup>
+        <InternalsVisibleTo Include="schema" />
+        <InternalsVisibleTo Include="gitversion" />
+        <InternalsVisibleTo Include="GitVersion.Output" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>

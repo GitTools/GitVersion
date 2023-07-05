@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion;
 
-public class GitVersionAppModule : IGitVersionModule
+internal class GitVersionAppModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {

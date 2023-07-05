@@ -1,0 +1,42 @@
+on:
+  workflow_call:
+
+jobs:
+  prepare:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+    -
+      name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v3
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    - name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v3
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    -
+      name: '[Build]'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+    -
+      name: '[Prepare]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=BuildPrepare

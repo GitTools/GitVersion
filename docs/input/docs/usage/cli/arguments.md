@@ -15,7 +15,7 @@ Example: `-output json` vs. `/output json`
 Below is the output from `gitversion /help` as a best effort to provide
 documentation for which arguments GitVersion supports and their meaning.
 
-```
+```bash
 Use convention to derive a SemVer product version from a GitFlow or GitHub based
 repository.
 
@@ -37,10 +37,14 @@ GitVersion [path]
     /showvariable   Used in conjuntion with /output json, will output just a
                     particular variable. E.g. /output json /showvariable SemVer
                     - will output `1.2.3+beta.4`
+    /format         Used in conjuntion with /output json, will output a format
+                    containing version variables.
+                    E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
+                         /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.
-    /config         Path to config file (defaults to GitVersion.yml)
+    /config         Path to config file (defaults to GitVersion.yml or GitVersion.yaml)
     /showconfig     Outputs the effective GitVersion config (defaults + custom
-                    from GitVersion.yml) in yaml format
+                    from GitVersion.yml or GitVersion.yaml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-
                     separated key value pairs e.g. /overrideconfig
                     tag-prefix=Foo)
@@ -99,7 +103,7 @@ gitversion init     Configuration utility for gitversion
 
 ## Override config
 
-`/overrideconfig [key=value]` will override appropriate `key` from 'GitVersion.yml'.
+`/overrideconfig [key=value]` will override appropriate `key` from 'GitVersion.yml' or 'GitVersion.yaml'.
 
 To specify multiple options add multiple `/overrideconfig [key=value]` entries:
 `/overrideconfig key1=value1 /overrideconfig key2=value2`.
@@ -117,7 +121,7 @@ Following options are supported:
 5.  `assembly-versioning-scheme`
 7.  `commit-date-format`
 8.  `commit-message-incrementing`
-10. `continuous-delivery-fallback-tag`
+10. `label`
 11. `increment`
 13. `major-version-bump-message`
 14. `minor-version-bump-message`
@@ -131,7 +135,7 @@ Following options are supported:
 
 Read more about [Configuration](/docs/reference/configuration).
 
-Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`.
+Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml` or `GitVersion.yaml`.
 
 ### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 

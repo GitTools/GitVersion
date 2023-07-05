@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
-using Shouldly;
 
 namespace GitVersion.MsBuild.Tests.Mocks;
 
@@ -90,7 +89,6 @@ internal sealed class MockEngine : IBuildEngine4
         string[] toolsVersion,
         bool useResultsCache,
         bool unloadProjectsOnCompletion) => false;
-
 
     public BuildEngineResult BuildProjectFilesInParallel(
         string[] projectFileNames,

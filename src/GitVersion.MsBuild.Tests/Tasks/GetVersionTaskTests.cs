@@ -3,8 +3,6 @@ using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.OutputVariables;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities.ProjectCreation;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.MsBuild.Tests.Tasks;
 
@@ -19,7 +17,7 @@ public class GetVersionTaskTests : TestTaskBase
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
 
-        var variablesProperties = VersionVariables.AvailableVariables;
+        var variablesProperties = GitVersionVariables.AvailableVariables;
 
         taskProperties.ShouldBe(variablesProperties, true);
     }
@@ -37,7 +35,7 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("2");
         result.Task.Patch.ShouldBe("4");
         result.Task.MajorMinorPatch.ShouldBe("1.2.4");
-        result.Task.FullSemVer.ShouldBe("1.2.4+1");
+        result.Task.FullSemVer.ShouldBe("1.2.4-1");
     }
 
     [Test]
@@ -53,14 +51,14 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("0");
         result.Task.Patch.ShouldBe("1");
         result.Task.MajorMinorPatch.ShouldBe("1.0.1");
-        result.Task.FullSemVer.ShouldBe("1.0.1+1");
+        result.Task.FullSemVer.ShouldBe("1.0.1-1");
     }
 
-    [TestCase(nameof(VersionVariables.Major), "1")]
-    [TestCase(nameof(VersionVariables.Minor), "2")]
-    [TestCase(nameof(VersionVariables.Patch), "4")]
-    [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.2.4")]
-    [TestCase(nameof(VersionVariables.FullSemVer), "1.2.4+1")]
+    [TestCase(nameof(GitVersionVariables.Major), "1")]
+    [TestCase(nameof(GitVersionVariables.Minor), "2")]
+    [TestCase(nameof(GitVersionVariables.Patch), "4")]
+    [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.2.4")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.2.4-1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuild(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);
@@ -75,16 +73,17 @@ public class GetVersionTaskTests : TestTaskBase
         result.Output.ShouldContain($"GitVersion_{outputProperty}: {version}");
     }
 
-    [TestCase(nameof(VersionVariables.Major), "1")]
-    [TestCase(nameof(VersionVariables.Minor), "0")]
-    [TestCase(nameof(VersionVariables.Patch), "1")]
-    [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.0.1")]
-    [TestCase(nameof(VersionVariables.FullSemVer), "1.0.1+1")]
+    [TestCase(nameof(GitVersionVariables.Major), "1")]
+    [TestCase(nameof(GitVersionVariables.Minor), "0")]
+    [TestCase(nameof(GitVersionVariables.Patch), "1")]
+    [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.0.1")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.0.1-1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuildInBuildServer(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);
 
-        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddGetVersionTask(project, taskName, taskName, outputProperty));
+        using var result = ExecuteMsBuildExeInAzurePipeline(project =>
+            AddGetVersionTask(project, taskName, taskName, outputProperty));
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
         result.MsBuild.Count.ShouldBeGreaterThan(0);

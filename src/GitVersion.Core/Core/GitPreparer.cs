@@ -1,13 +1,13 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitPreparer : IGitPreparer
+internal class GitPreparer : IGitPreparer
 {
     private readonly ILog log;
     private readonly IEnvironment environment;
@@ -114,7 +114,7 @@ public class GitPreparer : IGitPreparer
         using (this.log.IndentLog($"Creating dynamic repository at '{gitDirectory}'"))
         {
             var gitVersionOptions = this.options.Value;
-            var authentication = gitVersionOptions.Authentication;
+            var authentication = gitVersionOptions.AuthenticationInfo;
             if (!Directory.Exists(gitDirectory))
             {
                 CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);
@@ -151,52 +151,59 @@ public class GitPreparer : IGitPreparer
     /// </summary>
     private void NormalizeGitDirectory(bool noFetch, string? currentBranchName, bool isDynamicRepository)
     {
-        var authentication = this.options.Value.Authentication;
+        var authentication = this.options.Value.AuthenticationInfo;
         // Need to ensure the HEAD does not move, this is essentially a BugCheck
         var expectedSha = this.repository.Head.Tip?.Sha;
         var expectedBranchName = this.repository.Head.Name.Canonical;
 
-        try
+        var remote = EnsureOnlyOneRemoteIsDefined();
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureOnlyOneRemoteIsDefined), expectedSha);
+        FetchRemotesIfRequired(remote, noFetch, authentication);
+        EnsureRepositoryHeadDuringNormalisation(nameof(FetchRemotesIfRequired), expectedSha);
+        EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureLocalBranchExistsForCurrentBranch), expectedSha);
+        CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
+        EnsureRepositoryHeadDuringNormalisation(nameof(CreateOrUpdateLocalBranchesFromRemoteTrackingOnes), expectedSha);
+
+        var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
+        // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
+        // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
+        if (expectedSha != this.repository.Head.Tip?.Sha)
         {
-            var remote = EnsureOnlyOneRemoteIsDefined();
-
-            FetchRemotesIfRequired(remote, noFetch, authentication);
-            EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
-            CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
-
-            var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
-            // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
-            // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-            if (expectedSha != this.repository.Head.Tip?.Sha)
+            if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
             {
-                if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
-                {
-                    var newExpectedSha = this.repository.Head.Tip?.Sha;
-                    var newExpectedBranchName = this.repository.Head.Name.Canonical;
+                var newExpectedSha = this.repository.Head.Tip?.Sha;
+                var newExpectedBranchName = this.repository.Head.Name.Canonical;
 
-                    this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+                this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
-                    expectedSha = newExpectedSha;
-                }
+                expectedSha = newExpectedSha;
             }
-
-            EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         }
-        finally
-        {
-            if (this.repository.Head.Tip?.Sha != expectedSha)
-            {
-                if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
-                {
-                    // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
-                    throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.
 
+        EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
+
+        if (this.repository.IsShallow)
+        {
+            throw new WarningException("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
+        }
+    }
+
+    private void EnsureRepositoryHeadDuringNormalisation(string occasion, string? expectedSha)
+    {
+        expectedSha.NotNull();
+        if (this.repository.Head.Tip?.Sha == expectedSha)
+            return;
+
+        if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") == "1")
+            return;
+
+        // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
+        throw new BugException($@"
+GitVersion has a bug, your HEAD has moved after repo normalisation after step '{occasion}'
 To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
-
 Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
-                }
-            }
-        }
     }
 
     private void EnsureHeadIsAttachedToBranch(string? currentBranchName, AuthenticationInfo authentication)
@@ -250,11 +257,11 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
         this.log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-        var mainBranch = localBranches.SingleOrDefault(n => n.Name.EquivalentTo(Config.MainBranchKey));
+        var mainBranch = localBranches.SingleOrDefault(n => n.Name.EquivalentTo(ConfigurationConstants.MainBranchKey));
         if (mainBranch != null)
         {
             this.log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
-            Checkout(Config.MainBranchKey);
+            Checkout(ConfigurationConstants.MainBranchKey);
         }
         else
         {
@@ -320,7 +327,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         foreach (var remoteTrackingReference in remoteTrackingReferences)
         {
             var remoteTrackingReferenceName = remoteTrackingReference.Name.Canonical;
-            var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
+            var branchName = remoteTrackingReferenceName[prefix.Length..];
             var localReferenceName = ReferenceName.FromBranchName(branchName);
 
             // We do not want to touch our current branch
@@ -354,19 +361,19 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         }
     }
 
-    public void EnsureLocalBranchExistsForCurrentBranch(IRemote? remote, string? currentBranch)
+    public void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string? currentBranch)
     {
         remote.NotNull();
 
         if (currentBranch.IsNullOrEmpty()) return;
 
-        var isRef = currentBranch.Contains("refs");
-        var isBranch = currentBranch.Contains("refs/heads");
-        var localCanonicalName = !isRef
-            ? "refs/heads/" + currentBranch
-            : isBranch
+        var referencePrefix = "refs/";
+        var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
+        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
+            ? ReferenceName.LocalBranchPrefix + currentBranch
+            : isLocalBranch
                 ? currentBranch
-                : currentBranch.Replace("refs/", "refs/heads/");
+                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 
@@ -385,14 +392,14 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             var referenceName = ReferenceName.Parse(localCanonicalName);
             if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
             {
-                this.log.Info(isBranch
+                this.log.Info(isLocalBranch
                     ? $"Creating local branch {referenceName}"
                     : $"Creating local branch {referenceName} pointing at {repoTipId}");
                 this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
-                this.log.Info(isBranch
+                this.log.Info(isLocalBranch
                     ? $"Updating local branch {referenceName} to point at {repoTipId}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = this.repository.Refs[localCanonicalName];

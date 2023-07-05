@@ -1,29 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
-
-        <IsTestProject>true</IsTestProject>
-    </PropertyGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <PackageReference Include="Microsoft.Build" Version="16.9.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
+    <ItemGroup>
+        <PackageReference Include="MSBuild.ProjectCreation" />
+        <PackageReference Include="Buildalyzer" />
+        <PackageReference Include="LibGit2Sharp" />
+        <PackageReference Include="Microsoft.Build" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Buildalyzer" Version="4.1.4" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.2.1" />
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />

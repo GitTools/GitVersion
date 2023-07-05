@@ -1,7 +1,4 @@
-using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -139,7 +136,7 @@ public class DocumentationSamples : TestBase
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.0-beta.2+2");
+        fixture.AssertFullSemver("1.3.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);
@@ -194,7 +191,7 @@ public class DocumentationSamples : TestBase
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);
@@ -205,7 +202,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
 
@@ -236,7 +233,7 @@ public class DocumentationSamples : TestBase
         fixture.Checkout("1.3.0");
         fixture.BranchToFromTag("support/1.x", "1.3.0", MainBranch, "support");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.1+1");
+        fixture.AssertFullSemver("1.3.1-1");
 
         fixture.BranchTo("hotfix/1.3.1", "hotfix2");
         fixture.SequenceDiagram.Activate("hotfix/1.3.1");
@@ -251,7 +248,7 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("hotfix/1.3.1");
         fixture.SequenceDiagram.Destroy("hotfix/1.3.1");
         fixture.SequenceDiagram.NoteOver("Hotfix branches are deleted once merged", "hotfix/1.3.1");
-        fixture.AssertFullSemver("1.3.1+4");
+        fixture.AssertFullSemver("1.3.1-4");
         fixture.ApplyTag("1.3.1");
         fixture.AssertFullSemver("1.3.1");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
@@ -294,12 +291,11 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
-        fixture.AssertFullSemver("1.4.0+0");
+        fixture.AssertFullSemver("1.4.0-0");
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
-
 
     [Test]
     public void GitHubFlowFeatureBranch()
@@ -313,7 +309,7 @@ public class DocumentationSamples : TestBase
 
         // Branch to develop
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.2.1+1");
+        fixture.AssertFullSemver("1.2.1-1");
 
         // Open Pull Request
         const string branchName = "feature/myFeature";
@@ -328,7 +324,7 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF(branchName);
         fixture.SequenceDiagram.Destroy(branchName);
         fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
-        fixture.AssertFullSemver("1.2.1+3");
+        fixture.AssertFullSemver("1.2.1-3");
     }
 
     [Test]
@@ -343,7 +339,7 @@ public class DocumentationSamples : TestBase
 
         // Branch to develop
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.2.1+1");
+        fixture.AssertFullSemver("1.2.1-1");
 
         // Open Pull Request
         fixture.BranchTo("pull/2/merge", "pr");
@@ -358,7 +354,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("pull/2/merge");
         fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
                                          "be deleted once merged", "pull/2/merge");
-        fixture.AssertFullSemver("1.2.1+3");
+        fixture.AssertFullSemver("1.2.1-3");
     }
 
     [Test]
@@ -384,11 +380,11 @@ public class DocumentationSamples : TestBase
 
         // test that the CommitsSinceVersionSource should still return commit count
         var version = fixture.GetVersion();
-        version.CommitsSinceVersionSource.ShouldBe("2");
+        version.CommitsSinceVersionSource.ShouldBe("0");
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+3");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);
@@ -396,11 +392,11 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
         fixture.MakeACommit();
         fixture.Repository.DumpGraph();
-        fixture.AssertFullSemver("2.0.1+1");
+        fixture.AssertFullSemver("2.0.1-1");
     }
 }

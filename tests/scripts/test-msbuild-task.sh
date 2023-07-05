@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# sh /scripts/test-msbuild-task.sh --version 5.7.1-beta1.56 --nugetPath /nuget --repoPath /repo/tests/integration/core --targetframework net5.0
+# sh /scripts/test-msbuild-task.sh --version 5.7.1-beta1.56 --nugetPath /nuget --repoPath /repo/tests/integration --targetframework net7.0
 while test "$#" -gt 0
 do
     case $1 in
@@ -19,6 +19,7 @@ do
     shift
 done
 
+git config --global --add safe.directory '*'
 result=$(dotnet build $repoPath --source $nugetPath --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion=$version -p:TargetFrameworks=$targetframework) # >/dev/null
 status=$?
 if test $status -eq 0
@@ -27,3 +28,5 @@ then
 else
     echo $result
 fi
+rm -rf $repoPath/build >/dev/null
+rm -rf $repoPath/obj >/dev/null

@@ -1,0 +1,43 @@
+name: Stale Issues
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 11 * * *'
+
+permissions:
+  # contents: write # only for delete-branch option
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          operations-per-run: 100
+          # set 'stale' label
+          stale-issue-label: stale
+          # remove 'stale' label on update
+          remove-issue-stale-when-updated: true
+          labels-to-remove-when-unstale: stale
+          # only stale the issues
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            recent activity. After 30 days from now, it will be closed if no further
+            activity occurs.
+          close-issue-message: >
+            This issue was closed because it has been stalled for 30 days with no activity.
+            Thank you for your contributions
+          days-before-issue-stale: 90
+          days-before-issue-close: 30
+          # skip issues that have a milestone
+          exempt-issue-milestones: true
+          # skip those that are assigned
+          exempt-issue-assignees: true
+          # skip issues with label 'pinned'
+          exempt-issue-labels: pinned,security,failing test case,help wanted
+
+          # do not stale PRs
+          days-before-pr-stale: -1
+          days-before-pr-close: -1

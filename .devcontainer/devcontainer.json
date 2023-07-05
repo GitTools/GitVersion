@@ -6,7 +6,7 @@
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
-            "VARIANT": "6.0",
+            "VARIANT": "7.0",
         }
     },
 

@@ -1,0 +1,46 @@
+name: 'Docker Manifests'
+description: 'Docker Publish Manifests'
+inputs:
+  distro:
+    description: 'Linux Distro'
+    required: true
+  targetFramework:
+    description: '.net version'
+    required: true
+  docker_registry_username:
+    description: 'DockerHub Registry Username'
+    required: true
+  docker_registry_password:
+    description: 'DockerHub Registry Password'
+    required: true
+  github_registry_username:
+    description: 'GitHub Registry Username'
+    required: true
+  github_registry_password:
+    description: 'GitHub Registry Password'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+  -
+    name: Login to DockerHub
+    uses: docker/login-action@v2
+    with:
+      username: ${{ inputs.docker_registry_username }}
+      password: ${{ inputs.docker_registry_password }}
+  -
+    name: '[Docker Publish Manifests] DockerHub'
+    shell: pwsh
+    run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry dockerhub
+  -
+    name: Login to GitHub
+    uses: docker/login-action@v2
+    with:
+      registry: ghcr.io
+      username: ${{ inputs.github_registry_username }}
+      password: ${{ inputs.github_registry_password }}
+  -
+    name: '[Docker Publish Manifests] GitHub'
+    shell: pwsh
+    run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry github

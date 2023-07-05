@@ -1,12 +1,18 @@
-﻿<Project>
-    <ItemGroup>
-        <PackageReference Include="Cake.Common" Version="2.2.0" />
-        <PackageReference Include="Cake.Compression" Version="0.2.6" />
-        <PackageReference Include="Cake.Frosting" Version="2.2.0" />
-        <PackageReference Include="Cake.Incubator" Version="7.0.0" />
-        <PackageReference Include="Cake.DotNetLocalTools.Module" Version="1.0.2" />
-
-        <PackageReference Include="Cake.Docker" Version="1.1.2" />
-
-    </ItemGroup>
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Cake.Compression" Version="0.3.0" />
+    <PackageVersion Include="Cake.Codecov" Version="1.0.1" />
+    <PackageVersion Include="Cake.Coverlet" Version="3.0.4" />
+    <PackageVersion Include="Cake.Frosting" Version="3.0.0" />
+    <PackageVersion Include="Cake.Http" Version="3.0.2" />
+    <PackageVersion Include="Cake.Incubator" Version="8.0.0" />
+    <PackageVersion Include="Cake.DotNetLocalTools.Module" Version="3.0.12" />
+    <PackageVersion Include="Cake.Docker" Version="1.2.0" />
+    <PackageVersion Include="Cake.Git" Version="3.0.0" />
+    <PackageVersion Include="Cake.Json" Version="7.0.1" />
+    <PackageVersion Include="xunit.assert" Version="2.4.2" />
+  </ItemGroup>
 </Project>

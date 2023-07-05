@@ -15,7 +15,7 @@ public class ExecutionResults
     public string Output { get; }
     public string? Log { get; }
 
-    public virtual VersionVariables OutputVariables
+    public virtual GitVersionVariables OutputVariables
     {
         get
         {
@@ -23,7 +23,7 @@ public class ExecutionResults
             var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return VersionVariables.FromJson(json);
+            return VersionVariablesHelper.FromJson(json);
         }
     }
 }

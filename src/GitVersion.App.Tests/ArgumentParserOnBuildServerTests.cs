@@ -1,9 +1,7 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.App.Tests;
 
@@ -33,9 +31,10 @@ public class ArgumentParserOnBuildServerTests : TestBase
 
     private class MockBuildAgent : ICurrentBuildAgent
     {
+        public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-        public void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();
+        public void WriteIntegration(Action<string> writer, GitVersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();
 
         public string GetCurrentBranch(bool usingDynamicRepos) => throw new NotImplementedException();
 

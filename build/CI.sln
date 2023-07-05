@@ -22,6 +22,39 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docs", "docs\docs.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "release", "release\release.csproj", "{8DAB65D8-57E8-4185-96FC-8A7C7373FC23}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8E5B758F-925A-49E4-9011-20AD2A9E1F43}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\ci.yml = ..\.github\workflows\ci.yml
+		..\.github\workflows\codeql-analysis.yml = ..\.github\workflows\codeql-analysis.yml
+		..\.github\workflows\docs.yml = ..\.github\workflows\docs.yml
+		..\.github\workflows\format.yml = ..\.github\workflows\format.yml
+		..\.github\workflows\homebrew.yml = ..\.github\workflows\homebrew.yml
+		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
+		..\.github\workflows\_artifacts_linux.yml = ..\.github\workflows\_artifacts_linux.yml
+		..\.github\workflows\_artifacts_windows.yml = ..\.github\workflows\_artifacts_windows.yml
+		..\.github\workflows\_build.yml = ..\.github\workflows\_build.yml
+		..\.github\workflows\_docker.yml = ..\.github\workflows\_docker.yml
+		..\.github\workflows\_docker_manifests.yml = ..\.github\workflows\_docker_manifests.yml
+		..\.github\workflows\_prepare.yml = ..\.github\workflows\_prepare.yml
+		..\.github\workflows\_publish.yml = ..\.github\workflows\_publish.yml
+		..\.github\workflows\_unit_tests.yml = ..\.github\workflows\_unit_tests.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9B92261-AB9C-47D6-A8A7-616A5A62B063}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\artifacts-restore\action.yml = ..\.github\actions\artifacts-restore\action.yml
+		..\.github\actions\docker-manifests\action.yml = ..\.github\actions\docker-manifests\action.yml
+		..\.github\actions\docker-publish\action.yml = ..\.github\actions\docker-publish\action.yml
+		..\.github\actions\docker-test\action.yml = ..\.github\actions\docker-test\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{960DC223-117E-41DE-8A89-C85E3D69A8E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\tests\scripts\test-global-tool.sh = ..\tests\scripts\test-global-tool.sh
+		..\tests\scripts\test-msbuild-task.sh = ..\tests\scripts\test-msbuild-task.sh
+		..\tests\scripts\test-native-tool.sh = ..\tests\scripts\test-native-tool.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

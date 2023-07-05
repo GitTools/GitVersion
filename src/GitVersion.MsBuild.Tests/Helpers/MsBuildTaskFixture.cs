@@ -1,5 +1,4 @@
-using GitTools.Testing;
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Mocks;

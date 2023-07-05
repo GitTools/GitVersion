@@ -4,7 +4,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild;
 
-public static class FileHelper
+internal static class FileHelper
 {
     private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new()
     {
@@ -51,6 +51,14 @@ public static class FileHelper
         _ => throw new ArgumentException($"Unknown language detected: '{language}'")
     };
 
+    public static string GetProjectExtension(string language) => language switch
+    {
+        "C#" => "csproj",
+        "F#" => "fsproj",
+        "VB" => "vbproj",
+        _ => throw new ArgumentException($"Unknown language detected: '{language}'")
+    };
+
     public static void CheckForInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
     {
         if (GetInvalidFiles(compileFiles, projectFile).FirstOrDefault() is { } invalidCompileFile)
@@ -76,7 +84,7 @@ public static class FileHelper
         var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
-        allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+        allText += Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
         const string blockComments = @"/\*(.*?)\*/";
         const string lineComments = @"//(.*?)\r?\n";
@@ -85,7 +93,7 @@ public static class FileHelper
 
         var noCommentsOrStrings = Regex.Replace(allText,
             blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-            me => me.Value.StartsWith("//") ? System.Environment.NewLine : string.Empty,
+            me => me.Value.StartsWith("//") ? Environment.NewLine : string.Empty,
             RegexOptions.Singleline);
 
         return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace
@@ -104,14 +112,14 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
         var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
-        allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+        allText += Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
         const string lineComments = @"'(.*?)\r?\n";
         const string strings = @"""((\\[^\n]|[^""\n])*)""";
 
         var noCommentsOrStrings = Regex.Replace(allText,
             lineComments + "|" + strings,
-            me => me.Value.StartsWith("'") ? System.Environment.NewLine : string.Empty,
+            me => me.Value.StartsWith("'") ? Environment.NewLine : string.Empty,
             RegexOptions.Singleline);
 
         return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace

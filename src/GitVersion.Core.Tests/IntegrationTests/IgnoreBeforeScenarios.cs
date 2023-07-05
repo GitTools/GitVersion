@@ -1,33 +1,40 @@
-using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
 [TestFixture]
 public class IgnoreBeforeScenarios : TestBase
 {
-    [Test]
-    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored()
+    [TestCase(null, "0.0.1-0")]
+    [TestCase("0.0.1", "0.0.1-0")]
+    [TestCase("0.1.0", "0.1.0-0")]
+    [TestCase("1.0.0", "1.0.0-0")]
+    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
-        var objectId = fixture.Repository.MakeACommit();
-        var commit = Substitute.For<ICommit>();
-        commit.Sha.Returns(objectId.Sha);
-        commit.When.Returns(DateTimeOffset.Now);
+        var dateTimeNow = DateTimeOffset.Now;
+        fixture.MakeACommit();
 
-        var config = new ConfigurationBuilder()
-            .Add(new Config
-            {
-                Ignore = new IgnoreConfig
-                {
-                    Before = commit.When.AddMinutes(1)
-                }
-            }).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithNextVersion(nextVersion)
+            .WithIgnoreConfiguration(new IgnoreConfiguration() { Before = dateTimeNow.AddDays(1) }).Build();
 
-        fixture.AssertFullSemver("0.1.0+0", config);
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
+    }
+
+    [TestCase(null, "0.0.1-1")]
+    [TestCase("0.0.1", "0.0.1-1")]
+    [TestCase("0.1.0", "0.1.0-1")]
+    [TestCase("1.0.0", "1.0.0-1")]
+    public void ShouldNotFallbackToBaseVersionWhenAllCommitsAreNotIgnored(string? nextVersion, string expectedFullSemVer)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var dateTimeNow = DateTimeOffset.Now;
+        fixture.MakeACommit();
+
+        var configuration = GitFlowConfigurationBuilder.New.WithNextVersion(nextVersion)
+            .WithIgnoreConfiguration(new IgnoreConfiguration() { Before = dateTimeNow.AddDays(-1) }).Build();
+
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 }

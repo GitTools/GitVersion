@@ -1,6 +1,6 @@
 namespace GitVersion.Logging;
 
-public sealed class NullLog : ILog
+internal sealed class NullLog : ILog
 {
     public Verbosity Verbosity { get; set; }
 

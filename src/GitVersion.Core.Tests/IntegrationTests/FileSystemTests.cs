@@ -1,6 +1,4 @@
 using GitVersion.Core.Tests.Helpers;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -32,7 +30,7 @@ public class FileSystemTests : TestBase
         using var stream = File.OpenRead(TempFilePath);
         var preamble = encoding.GetPreamble();
         var bytes = new byte[preamble.Length];
-        stream.Read(bytes, 0, preamble.Length);
+        _ = stream.Read(bytes, 0, preamble.Length);
 
         bytes.ShouldBe(preamble);
     }
@@ -48,7 +46,7 @@ public class FileSystemTests : TestBase
         using var stream = File.OpenRead(TempFilePath);
         var preamble = encoding.GetPreamble();
         var bytes = new byte[preamble.Length];
-        stream.Read(bytes, 0, preamble.Length);
+        _ = stream.Read(bytes, 0, preamble.Length);
 
         bytes.ShouldBe(preamble);
     }

@@ -27,7 +27,7 @@ public sealed class ProgramFixture
 
         this.environment = new TestEnvironment();
 
-        Overrides.Add(services =>
+        WithOverrides(services =>
         {
             services.AddSingleton(log);
             services.AddSingleton(consoleAdapter);
@@ -45,6 +45,8 @@ public sealed class ProgramFixture
             this.environment.SetEnvironmentVariable(key, value);
         }
     }
+
+    public void WithOverrides(Action<IServiceCollection> action) => Overrides.Add(action);
 
     public Task<ProgramFixtureResult> Run(string arg)
     {
@@ -78,7 +80,7 @@ public class ProgramFixtureResult
     public string? Output { get; set; }
     public string Log { get; set; }
 
-    public VersionVariables? OutputVariables
+    public GitVersionVariables? OutputVariables
     {
         get
         {
@@ -88,8 +90,7 @@ public class ProgramFixtureResult
             var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return VersionVariables.FromJson(json);
+            return VersionVariablesHelper.FromJson(json);
         }
     }
-
 }

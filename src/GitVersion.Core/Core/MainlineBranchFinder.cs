@@ -1,33 +1,30 @@
 using System.Text.RegularExpressions;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
 internal class MainlineBranchFinder
 {
-    private readonly Config configuration;
+    private readonly IGitVersionConfiguration configuration;
     private readonly ILog log;
-    private readonly IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs;
+    private readonly List<IBranchConfiguration> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
-
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
-                                Config configuration,
-                                IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs,
+                                IGitVersionConfiguration configuration,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        this.mainlineBranchConfigs = mainlineBranchConfigs;
+        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
         this.log = log.NotNull();
     }
-
 
     public IDictionary<string, List<IBranch>> FindMainlineBranches(ICommit commit)
     {
@@ -40,11 +37,10 @@ internal class MainlineBranchFinder
             .ToDictionary(group => group.Key, x => x.ToList());
     }
 
-
     private bool BranchIsMainline(INamedReference branch)
     {
         var matcher = new MainlineConfigBranchMatcher(branch, this.log);
-        return this.mainlineBranchConfigs?.Any(matcher.IsMainline) == true;
+        return this.mainlineBranchConfigurations.Any(matcher.IsMainline);
     }
 
     private class MainlineConfigBranchMatcher
@@ -58,29 +54,27 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(KeyValuePair<string, BranchConfig> mainlineBranchConfig)
+        public bool IsMainline(IBranchConfiguration value)
         {
-            var (_, value) = mainlineBranchConfig;
-            if (value?.Regex == null)
+            if (value.RegularExpression == null)
                 return false;
 
-            var mainlineRegex = value.Regex;
-            var branchName = this.branch.Name.WithoutRemote;
+            var mainlineRegex = value.RegularExpression;
+            var branchName = this.branch.Name.WithoutOrigin;
             var match = Regex.IsMatch(branchName, mainlineRegex);
             this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
             return match;
         }
     }
 
-
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
-        private readonly Config configuration;
+        private readonly IGitVersionConfiguration configuration;
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
 
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, Config configuration, ILog log)
+        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, IGitVersionConfiguration configuration, ILog log)
         {
             this.repositoryStore = repositoryStore;
             this.commit = commit;
@@ -95,7 +89,6 @@ internal class MainlineBranchFinder
                 ? BranchCommit.Empty
                 : new BranchCommit(branchOrigin, branch);
         }
-
 
         private ICommit? FindBranchOrigin(IBranch branch)
         {

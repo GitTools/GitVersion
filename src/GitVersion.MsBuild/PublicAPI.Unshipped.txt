@@ -1,3 +1,103 @@
+#nullable enable
+GitVersion.MsBuild.GitVersionMsBuildModule
+GitVersion.MsBuild.GitVersionMsBuildModule.GitVersionMsBuildModule() -> void
+GitVersion.MsBuild.GitVersionMsBuildModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
+GitVersion.MsBuild.GitVersionTaskBase
+GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.get -> Microsoft.Build.Framework.IBuildEngine!
+GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.Execute() -> bool
+GitVersion.MsBuild.GitVersionTaskBase.GitVersionTaskBase() -> void
+GitVersion.MsBuild.GitVersionTaskBase.HostObject.get -> Microsoft.Build.Framework.ITaskHost!
+GitVersion.MsBuild.GitVersionTaskBase.HostObject.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.Log.get -> Microsoft.Build.Utilities.TaskLoggingHelper!
+GitVersion.MsBuild.GitVersionTaskBase.Overrides.get -> System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>?
+GitVersion.MsBuild.GitVersionTaskBase.Overrides.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.get -> string!
+GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.VersionFile.get -> string!
+GitVersion.MsBuild.GitVersionTaskBase.VersionFile.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.WithOverrides(System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>! overrides) -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformation() -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFilePath.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFilePath.set -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.IntermediateOutputPath.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.IntermediateOutputPath.set -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.Language.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.Language.set -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.ProjectFile.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.ProjectFile.set -> void
+GitVersion.MsBuild.Tasks.GetVersion
+GitVersion.MsBuild.Tasks.GetVersion.AssemblySemFileVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.AssemblySemFileVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.AssemblySemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.AssemblySemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.BranchName.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.BranchName.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CommitDate.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitDate.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CommitsSinceVersionSource.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitsSinceVersionSource.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.FullBuildMetaData.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.FullBuildMetaData.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.FullSemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.FullSemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.GetVersion() -> void
+GitVersion.MsBuild.Tasks.GetVersion.InformationalVersion.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.InformationalVersion.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.Major.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.Major.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.MajorMinorPatch.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.MajorMinorPatch.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.Minor.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.Minor.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.Patch.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.Patch.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseLabel.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseLabel.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseLabelWithDash.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseLabelWithDash.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseNumber.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseNumber.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseTag.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseTag.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseTagWithDash.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.PreReleaseTagWithDash.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.Sha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.Sha.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.ShortSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.ShortSha.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.WeightedPreReleaseNumber.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.WeightedPreReleaseNumber.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.AssemblyInfoTempFilePath.get -> string!
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.AssemblyInfoTempFilePath.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.CompileFiles.get -> Microsoft.Build.Framework.ITaskItem![]!
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.CompileFiles.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.IntermediateOutputPath.get -> string!
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.IntermediateOutputPath.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.Language.get -> string!
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.Language.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.get -> string!
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.set -> void
+GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.UpdateAssemblyInfo() -> void
+GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog
+GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.WriteVersionInfoToBuildLog() -> void
+abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
+override GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.OnExecute() -> bool
+override GitVersion.MsBuild.Tasks.GetVersion.OnExecute() -> bool
+override GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.OnExecute() -> bool
+override GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.OnExecute() -> bool
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformationInUniqueNamespace.get -> string?
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformationInUniqueNamespace.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string!

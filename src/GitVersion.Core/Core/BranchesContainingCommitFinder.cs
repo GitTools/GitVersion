@@ -73,7 +73,7 @@ internal class BranchesContainingCommitFinder
     }
 
     private static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked)
-        => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
+        => (includeOnlyTracked && branch.IsTracking) || !includeOnlyTracked;
 
     private static bool BranchTipIsNullOrCommit(IBranch branch, IGitObject commit)
         => branch.Tip == null || branch.Tip.Sha == commit.Sha;

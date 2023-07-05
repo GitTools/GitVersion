@@ -1,12 +1,16 @@
+using Common.Lifetime;
 using Common.Utilities;
+using Docker.Utilities;
 
 namespace Docker;
 
 public class BuildLifetime : BuildLifetimeBase<BuildContext>
 {
-    public override void Setup(BuildContext context)
+    public override void Setup(BuildContext context, ISetupContext info)
     {
-        base.Setup(context);
+        base.Setup(context, info);
+
+        context.Credentials = Credentials.GetCredentials(context);
 
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
@@ -30,7 +34,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         LogBuildInformation(context);
 
-        context.Information("IsDockerOnLinux:   {0}", context.IsDockerOnLinux);
+        context.Information($"IsDockerOnLinux:      {context.IsDockerOnLinux}");
         context.Information($"Building for Version: {dotnetVersion}, Distro: {dockerDistro}");
         context.EndGroup();
     }

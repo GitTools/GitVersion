@@ -4,5 +4,5 @@ namespace GitVersion;
 
 public interface IGitVersionCalculateTool
 {
-    VersionVariables CalculateVersionVariables();
+    GitVersionVariables CalculateVersionVariables();
 }

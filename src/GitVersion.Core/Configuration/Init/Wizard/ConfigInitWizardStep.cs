@@ -1,10 +1,9 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public abstract class ConfigInitWizardStep
+internal abstract class ConfigInitWizardStep
 {
     protected readonly IConsole Console;
     protected readonly IFileSystem FileSystem;
@@ -19,10 +18,10 @@ public abstract class ConfigInitWizardStep
         this.StepFactory = stepFactory.NotNull();
     }
 
-    public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    public bool Apply(Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         this.Console.WriteLine();
-        this.Console.WriteLine(GetPrompt(config, workingDirectory));
+        this.Console.WriteLine(GetPrompt(configurationBuilder, workingDirectory));
         this.Console.WriteLine();
         this.Console.Write("> ");
         var input = this.Console.ReadLine();
@@ -30,8 +29,8 @@ public abstract class ConfigInitWizardStep
         {
             this.Console.WriteLine("Would you like to save changes? (y/n)");
             input = this.Console.ReadLine();
-            if (input == null || input.ToLower() == "n") return false;
-            if (input.ToLower() == "y")
+            if (input == null || string.Equals(input, "n", StringComparison.OrdinalIgnoreCase)) return false;
+            if (string.Equals(input, "y", StringComparison.OrdinalIgnoreCase))
             {
                 steps.Clear();
                 return true;
@@ -41,7 +40,7 @@ public abstract class ConfigInitWizardStep
             return true;
         }
         var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
-        var stepResult = HandleResult(resultWithDefaultApplied, steps, config, workingDirectory);
+        var stepResult = HandleResult(resultWithDefaultApplied, steps, configurationBuilder, workingDirectory);
         if (stepResult.InvalidResponse)
         {
             InvalidResponse(steps);
@@ -64,7 +63,7 @@ public abstract class ConfigInitWizardStep
         steps.Enqueue(this);
     }
 
-    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory);
-    protected abstract string GetPrompt(Config config, string workingDirectory);
+    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory);
+    protected abstract string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory);
     protected abstract string? DefaultResult { get; }
 }

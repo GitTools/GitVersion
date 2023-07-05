@@ -5,8 +5,8 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerPublish))]
 [TaskDescription("Publish the docker images containing the GitVersion Tool")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
 [IsDependentOn(typeof(DockerPublishInternal))]
 public class DockerPublish : FrostingTask<BuildContext>
@@ -31,11 +31,11 @@ public class DockerPublishInternal : FrostingTask<BuildContext>
         shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(DockerPublish)} works only on Docker on Linux agents.");
         if (context.DockerRegistry == DockerRegistry.GitHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for releases.");
+            shouldRun &= context.ShouldRun(context.IsInternalPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for internal releases.");
         }
         if (context.DockerRegistry == DockerRegistry.DockerHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(DockerPublish)} DockerHub works only for tagged releases.");
+            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(DockerPublish)} to DockerHub works only for tagged releases.");
         }
 
         return shouldRun;
@@ -45,7 +45,7 @@ public class DockerPublishInternal : FrostingTask<BuildContext>
     {
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImage(dockerImage)) continue;
+            if (context.SkipImageForDocker(dockerImage)) continue;
             context.DockerPushImage(dockerImage);
         }
     }

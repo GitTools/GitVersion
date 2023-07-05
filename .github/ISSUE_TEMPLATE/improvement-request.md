@@ -1,6 +1,6 @@
 ---
 name: Improvement request
-about: Describe this issue template's purpose here.
+about: Describe the change you want to request.
 title: "[Improvement]"
 labels: improvement
 assignees: ''

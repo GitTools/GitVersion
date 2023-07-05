@@ -3,7 +3,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class ShaVersionFilter : IVersionFilter
+internal class ShaVersionFilter : IVersionFilter
 {
     private readonly IEnumerable<string> shas;
 
@@ -11,7 +11,7 @@ public class ShaVersionFilter : IVersionFilter
 
     public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
     {
-        if (version == null) throw new ArgumentNullException(nameof(version));
+        version.NotNull();
 
         reason = null;
 
@@ -20,6 +20,5 @@ public class ShaVersionFilter : IVersionFilter
 
         reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
         return true;
-
     }
 }

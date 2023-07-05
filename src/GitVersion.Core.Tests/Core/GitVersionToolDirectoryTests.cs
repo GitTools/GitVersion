@@ -3,7 +3,6 @@ using GitVersion.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests;
 
@@ -18,7 +17,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     {
         this.workDirectory = PathHelper.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
-        Assert.NotNull(this.gitDirectory);
+        Assert.That(this.gitDirectory, Is.Not.Null);
     }
 
     [TearDown]
@@ -44,7 +43,6 @@ public class GitVersionTaskDirectoryTests : TestBase
             Assert.IsNotAssignableFrom<RepositoryNotFoundException>(ex);
         }
     }
-
 
     [Test]
     public void FindsGitDirectoryInParent()

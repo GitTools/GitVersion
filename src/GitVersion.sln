@@ -1,24 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28714.193
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.App", "GitVersion.App\GitVersion.App.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core.Tests", "GitVersion.Core.Tests\GitVersion.Core.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
-	ProjectSection(SolutionItems) = preProject
-		..\.editorconfig = ..\.editorconfig
-		..\.gitattributes = ..\.gitattributes
-		..\.gitignore = ..\.gitignore
-		..\azure-pipelines.yml = ..\azure-pipelines.yml
-		..\build.ps1 = ..\build.ps1
-		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
-		Directory.Build.props = Directory.Build.props
-		..\GitVersion.yml = ..\GitVersion.yml
-		..\LICENSE = ..\LICENSE
-		..\README.md = ..\README.md
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core", "GitVersion.Core\GitVersion.Core.csproj", "{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}"
 EndProject
@@ -28,9 +14,42 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild", "GitVe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild.Tests", "GitVersion.MsBuild.Tests\GitVersion.MsBuild.Tests.csproj", "{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Testing", "GitTools.Testing\GitTools.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Testing", "GitVersion.Testing\GitVersion.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.LibGit2Sharp", "GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj", "{093AFCF2-68F4-49B1-8173-7CB88467E783}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.BuildAgents", "GitVersion.BuildAgents\GitVersion.BuildAgents.csproj", "{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.BuildAgents.Tests", "GitVersion.BuildAgents.Tests\GitVersion.BuildAgents.Tests.csproj", "{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Output", "GitVersion.Output\GitVersion.Output.csproj", "{843450BC-3A6D-4DA6-8520-2D9A9C8218AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Output.Tests", "GitVersion.Output.Tests\GitVersion.Output.Tests.csproj", "{13C60949-7225-4B08-BE63-CAAC5E25FD16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{69C36B9D-E496-42A2-B091-C055E999686C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Schema", "GitVersion.Schema\GitVersion.Schema.csproj", "{22026A20-261C-4EF5-836C-EA6F6D37B5E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{542E443E-14C3-45A7-A2E9-ACF27286A3B2}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\GitVersion.yml = ..\GitVersion.yml
+		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
+		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE015-699F-464A-8FF0-D8762102421A}"
+	ProjectSection(SolutionItems) = preProject
+		..\BREAKING_CHANGES.md = ..\BREAKING_CHANGES.md
+		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+		..\SECURITY.md = ..\SECURITY.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,9 +89,37 @@ Global
 		{093AFCF2-68F4-49B1-8173-7CB88467E783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{093AFCF2-68F4-49B1-8173-7CB88467E783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{093AFCF2-68F4-49B1-8173-7CB88467E783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13C60949-7225-4B08-BE63-CAAC5E25FD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13C60949-7225-4B08-BE63-CAAC5E25FD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13C60949-7225-4B08-BE63-CAAC5E25FD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13C60949-7225-4B08-BE63-CAAC5E25FD16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{093AFCF2-68F4-49B1-8173-7CB88467E783} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{13C60949-7225-4B08-BE63-CAAC5E25FD16} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{1F4BE015-699F-464A-8FF0-D8762102421A} = {542E443E-14C3-45A7-A2E9-ACF27286A3B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}

@@ -1,11 +1,8 @@
-using GitTools.Testing;
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -16,8 +13,8 @@ public class RemoteRepositoryScenarios : TestBase
     public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalShouldMatchRemoteVersion()
     {
         using var fixture = new RemoteRepositoryFixture();
-        fixture.AssertFullSemver("0.1.0+4");
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1-5");
+        fixture.AssertFullSemver("0.0.1-5", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]
@@ -79,33 +76,31 @@ public class RemoteRepositoryScenarios : TestBase
     {
         using var fixture = new RemoteRepositoryFixture();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("0.1.0+5");
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1-6");
+        fixture.AssertFullSemver("0.0.1-5", repository: fixture.LocalRepositoryFixture.Repository);
         var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
-        Commands.Pull((Repository)fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
-        fixture.AssertFullSemver("0.1.0+5", repository: fixture.LocalRepositoryFixture.Repository);
+        Commands.Pull(fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
+        fixture.AssertFullSemver("0.0.1-6", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationThrowsException()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationHandleDetachedBranch()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(
             fixture.LocalRepositoryFixture.Repository,
             fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-        Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false),
-            $"It looks like the branch being examined is a detached Head pointing to commit '{fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)}'. Without a proper branch name GitVersion cannot determine the build version.");
+        fixture.AssertFullSemver("0.0.1--no-branch-.1+5", repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false);
     }
 
     [Test]
-    [Ignore("Needs more investigations.")]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1--no-branch-.1+5", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]
@@ -139,5 +134,23 @@ public class RemoteRepositoryScenarios : TestBase
                 }
             }
         }
+    }
+
+    [TestCase("origin", "release-2.0.0", "2.1.0-alpha.0")]
+    [TestCase("custom", "release-2.0.0", "0.1.0-alpha.5")]
+    [TestCase("origin", "release/3.0.0", "3.1.0-alpha.0")]
+    [TestCase("custom", "release/3.0.0", "0.1.0-alpha.5")]
+    public void EnsureRemoteReleaseBranchesAreTracked(string origin, string branchName, string expectedVersion)
+    {
+        using var fixture = new RemoteRepositoryFixture("develop");
+
+        fixture.CreateBranch(branchName);
+        fixture.MakeACommit();
+
+        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", origin);
+        fixture.LocalRepositoryFixture.Fetch(origin);
+        fixture.LocalRepositoryFixture.Checkout("develop");
+
+        fixture.LocalRepositoryFixture.AssertFullSemver(expectedVersion);
     }
 }

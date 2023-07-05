@@ -1,19 +1,1 @@
 #nullable enable
-GitVersion.GitVersionLibGit2SharpModule
-GitVersion.GitVersionLibGit2SharpModule.GitVersionLibGit2SharpModule() -> void
-GitVersion.GitVersionLibGit2SharpModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
-GitVersion.RefSpec
-GitVersion.RefSpec.CompareTo(GitVersion.IRefSpec! other) -> int
-GitVersion.RefSpec.Destination.get -> string!
-GitVersion.RefSpec.Direction.get -> GitVersion.RefSpecDirection
-GitVersion.RefSpec.Equals(GitVersion.IRefSpec? other) -> bool
-GitVersion.RefSpec.Source.get -> string!
-GitVersion.RefSpec.Specification.get -> string!
-GitVersion.RepositoryExtensions
-override GitVersion.RefSpec.Equals(object! obj) -> bool
-override GitVersion.RefSpec.GetHashCode() -> int
-override GitVersion.RefSpec.ToString() -> string!
-static GitVersion.RepositoryExtensions.RunSafe(System.Action! operation) -> void
-static GitVersion.RepositoryExtensions.RunSafe<T>(System.Func<T>! operation) -> T
-static GitVersion.RepositoryExtensions.ToGitRepository(this LibGit2Sharp.IRepository! repository) -> GitVersion.IGitRepository!
-static GitVersion.RepositoryExtensions.ToGitRepositoryInfo(Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> GitVersion.IGitRepositoryInfo!

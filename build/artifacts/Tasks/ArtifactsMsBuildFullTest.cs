@@ -22,15 +22,14 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
 
         var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
 
-        context.Information("\nTesting msbuild task with dotnet build (for .net core)\n");
-        var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion60 };
+        context.Information("\nTesting msbuild task with dotnet build\n");
+        var frameworks = new[] { Constants.NetVersion60, Constants.NetVersion70 };
         foreach (var framework in frameworks)
         {
             var dotnetMsBuildSettings = new DotNetMSBuildSettings();
-            dotnetMsBuildSettings.WithProperty("TargetFrameworks", framework);
-            dotnetMsBuildSettings.WithProperty("TargetFramework", framework);
+            dotnetMsBuildSettings.SetTargetFramework(framework);
             dotnetMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
-            var projPath = context.MakeAbsolute(Paths.Integration.Combine("core"));
+            var projPath = context.MakeAbsolute(Paths.Integration);
 
             context.DotNetBuild(projPath.FullPath, new DotNetBuildSettings
             {
@@ -40,8 +39,8 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
                 Sources = new[] { nugetSource }
             });
 
-            var netcoreExe = Paths.Integration.Combine("core").Combine("build").Combine(framework).CombineWithFilePath("app.dll");
-            context.ValidateOutput("dotnet", netcoreExe.FullPath, context.Version.GitVersion.FullSemVer);
+            var exe = Paths.Integration.Combine("build").Combine(framework).CombineWithFilePath("app.dll");
+            context.ValidateOutput("dotnet", exe.FullPath, context.Version.GitVersion.FullSemVer);
         }
     }
 }

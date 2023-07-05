@@ -1,22 +1,22 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
 internal class MergeCommitFinder
 {
-    private readonly IEnumerable<IBranch> excludedBranches;
+    private readonly IEnumerable<IBranch> branches;
     private readonly ILog log;
-    private readonly Dictionary<IBranch?, List<BranchCommit>> mergeBaseCommitsCache = new();
+    private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly RepositoryStore repositoryStore;
-    private readonly Config configuration;
+    private readonly IGitVersionConfiguration configuration;
 
-    public MergeCommitFinder(RepositoryStore repositoryStore, Config configuration, IEnumerable<IBranch> excludedBranches, ILog log)
+    public MergeCommitFinder(RepositoryStore repositoryStore, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.configuration = configuration.NotNull();
-        this.excludedBranches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
+        this.branches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
         this.log = log.NotNull();
     }
 
@@ -24,10 +24,10 @@ internal class MergeCommitFinder
     {
         branch = branch.NotNull();
 
-        if (this.mergeBaseCommitsCache.ContainsKey(branch))
+        if (this.mergeBaseCommitsCache.TryGetValue(branch, out var mergeCommitsFor))
         {
-            this.log.Debug($"Cache hit for getting merge commits for branch {branch?.Name.Canonical}.");
-            return this.mergeBaseCommitsCache[branch];
+            this.log.Debug($"Cache hit for getting merge commits for branch {branch.Name.Canonical}.");
+            return mergeCommitsFor;
         }
 
         var branchMergeBases = FindMergeBases(branch)
@@ -36,12 +36,12 @@ internal class MergeCommitFinder
 
         this.mergeBaseCommitsCache.Add(branch, branchMergeBases);
 
-        return branchMergeBases.Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutRemote));
+        return branchMergeBases.Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutOrigin));
     }
 
     private IEnumerable<BranchCommit> FindMergeBases(IBranch branch)
     {
-        var sourceBranches = new SourceBranchFinder(this.excludedBranches, this.configuration)
+        var sourceBranches = new SourceBranchFinder(this.branches, this.configuration)
             .FindSourceBranchesOf(branch);
 
         foreach (var sourceBranch in sourceBranches)
