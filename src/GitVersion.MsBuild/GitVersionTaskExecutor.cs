@@ -48,7 +48,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = options.Value;
+        var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
         gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo = true;
@@ -70,7 +70,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = options.Value;
+        var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         var targetNamespace = getTargetNamespace(task);
         gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo, targetNamespace);
@@ -95,8 +95,8 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
 
-        var gitVersionOptions = options.Value;
-        var configuration = configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
+        var gitVersionOptions = this.options.Value;
+        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }

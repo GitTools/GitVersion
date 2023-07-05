@@ -31,7 +31,7 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         if (File.Exists(filePath))
         {
-            originalFileContents = fileSystem.ReadAllText(filePath);
+            originalFileContents = this.fileSystem.ReadAllText(filePath);
         }
 
         var fileExtension = Path.GetExtension(filePath);
