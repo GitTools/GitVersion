@@ -945,7 +945,3 @@ virtual GitVersion.Agents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.Agents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber = true) -> void
 GitVersion.GitVersionOptions.UniqueNamespace.get -> bool
 GitVersion.GitVersionOptions.UniqueNamespace.set -> void
-GitVersion.GitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo, string? targetNamespace = null) -> void
-GitVersion.IGitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo, string? targetNamespace = null) -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.GitVersionInfoContext(string! workingDirectory, string! fileName, string! fileExtension, string? targetNamespace = null) -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.TargetNamespace.get -> string?

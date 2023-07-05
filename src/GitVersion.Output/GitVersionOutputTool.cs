@@ -72,7 +72,7 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo, string? targetNamespace = null))
+    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo, string? targetNamespace = null)
     {
         using (gitVersionInfoGenerator)
         {
@@ -80,5 +80,5 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo) => GenerateGitVersionInformation(variables, fileWriteInfo, null);
+    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo) => GenerateGitVersionInformation(variables, fileWriteInfo, null);
 }
