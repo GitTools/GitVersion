@@ -258,6 +258,18 @@ For SDK-style projects, `UpdateVersionProperties` controls setting the default
 variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 `InformationalVersion`, `AssemblyVersion` and `FileVersion`.
 
+### Namespace generation
+
+You can configure GitVersion to generate the `GitVersionInformation` class in a namespace that matches the current assembly. By default this class is created in the global namespace. If `GenerateGitVersionInformationInUniqueNamespace` is set to true, the `GitVersionInfomation` class will instead be generated in a namespace matching the current project. If the property `<RootNamespace>` is set that value will be used, otherwise the name of the project file is used. 
+
+```xml
+<PropertyGroup>
+  ...
+  <GenerateGitVersionInformationInUniqueNamespace>true</GenerateGitVersionInformationInUniqueNamespace>
+  ...
+</PropertyGroup>
+```
+
 ## Extra properties
 
 There are properties that correspont to certain 
