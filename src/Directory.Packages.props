@@ -26,7 +26,7 @@
     <PackageVersion Include="NUnit" Version="3.13.3" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageVersion Include="JunitXml.TestLogger" Version="3.0.124" />
+    <PackageVersion Include="JunitXml.TestLogger" Version="3.0.125" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.3.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.3.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
