@@ -40,6 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{542E443E-14C
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
 		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
+		..\global.json = ..\global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE015-699F-464A-8FF0-D8762102421A}"
