@@ -105,7 +105,7 @@ created.
 
 If your CI/CD workflow uses semantic-release's commit-analyzer, change `(fix|perf)` to `(fix|perf|revert)`. [Why?](https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38)
 
-Alternatively, you can override this rule in the [configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage) of \@semantic-release/commit-analyzer.
+Alternatively, you can override this rule in the [configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage) of \@semantic-release/commit-analyzer. If you intend to write rules with patterns, note that instead of using Regular Expression, \@semantic-release/commit-analyzer uses [micromatch's glob implementation](https://github.com/micromatch/micromatch#matching-features).
 
 ### GitVersion.yml
 
