@@ -95,9 +95,9 @@ you can leverage this feature as follows:
 
 ```yaml
 mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
-major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
-minor-version-bump-message: "^(feat)(\\([\\w\\s-]*\\))?:"
-patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-]*\\))?:"
+major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
+minor-version-bump-message: "^(feat)(\\([\\w\\s-,/\\\\]*\\))?:"
+patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:"
 ```
 
 This will ensure that your version gets bumped according to the commits you've
