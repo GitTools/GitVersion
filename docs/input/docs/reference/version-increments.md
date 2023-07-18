@@ -103,6 +103,10 @@ patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-]*\\))?:"
 This will ensure that your version gets bumped according to the commits you've
 created.
 
+If your CI/CD workflow uses semantic-release's commit-analyzer, change `(fix|perf)` to `(fix|perf|revert)`. [Why?](https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38)
+
+Alternatively, you can override this rule in the [configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage) of \@semantic-release/commit-analyzer.
+
 ### GitVersion.yml
 
 The first is by setting the `next-version` property in the GitVersion.yml file.
