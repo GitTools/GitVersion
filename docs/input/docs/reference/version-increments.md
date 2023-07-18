@@ -120,7 +120,7 @@ from the branch name as a source. However, GitVersion can't use the [branch
 name as a version source for _other branches_][faq-branch-name-source].
 
 ### Detached HEAD
-If HEAD is in detached state tag will be `-no-branch-`. 
+If HEAD is in detached state tag will be `-no-branch-`.
 
 Example: `0.0.1--no-branch-.1+4`
 
