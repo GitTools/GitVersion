@@ -943,5 +943,3 @@ virtual GitVersion.Agents.BuildAgentBase.IsDefault.get -> bool
 virtual GitVersion.Agents.BuildAgentBase.PreventFetch() -> bool
 virtual GitVersion.Agents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.Agents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber = true) -> void
-GitVersion.GitVersionOptions.UniqueNamespace.get -> bool
-GitVersion.GitVersionOptions.UniqueNamespace.set -> void

@@ -219,7 +219,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [TestCaseSource(nameof(Languages))]
-    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUniqueNamespaceIsSpecifiedAndRootNamespaceIsSet(string language)
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUseProjectNamespaceIsSpecifiedAndRootNamespaceIsSet(string language)
     {
         const string taskName = nameof(GenerateGitVersionInformation);
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
@@ -229,7 +229,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         using var result = ExecuteMsBuildExe(project =>
         {
             var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
-            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("GenerateGitVersionInformationInUniqueNamespace", "True").Property("RootNamespace", "Test.Root");
+            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True").Property("RootNamespace", "Test.Root");
         }, language);
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
@@ -253,7 +253,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [TestCaseSource(nameof(Languages))]
-    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUniqueNamespaceIsSpecifiedAndRootNamespaceIsNotSet(string language)
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUseProjectNamespaceIsSpecifiedAndRootNamespaceIsNotSet(string language)
     {
         const string taskName = nameof(GenerateGitVersionInformation);
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
@@ -263,7 +263,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
             var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
-            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("GenerateGitVersionInformationInUniqueNamespace", "True");
+            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True");
         }, language);
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
@@ -285,13 +285,13 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [TestCaseSource(nameof(Languages))]
-    public void GenerateGitVersionInformationTaskShouldCreateFileWithUniqueNamespaceSetAndRootNamespaceUnSet(string language)
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceUnSet(string language)
     {
         var extension = FileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation
         {
             Language = language,
-            GenerateGitVersionInformationInUniqueNamespace = "true",
+            UseProjectNamespaceForGitVersionInformation = "true",
             ProjectFile = "App.Project.csproj",
         };
         using var result = ExecuteMsBuildTask(task);
@@ -311,14 +311,14 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [TestCaseSource(nameof(Languages))]
-    public void GenerateGitVersionInformationTaskShouldCreateFileWithUniqueNamespaceSetAndRootNamespaceIsSet(string language)
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceIsSet(string language)
     {
 
         var extension = FileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation
         {
             Language = language,
-            GenerateGitVersionInformationInUniqueNamespace = "true",
+            UseProjectNamespaceForGitVersionInformation = "true",
             ProjectFile = "App.Project.csproj",
             RootNamespace = "App.Project.RootNamespace",
         };
@@ -356,7 +356,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
                 { "ProjectFile", "$(MSBuildProjectFullPath)" },
                 { "Language", "$(Language)" },
                 { "IntermediateOutputPath", intermediateOutputPath },
-                { "GenerateGitVersionInformationInUniqueNamespace", "$(GenerateGitVersionInformationInUniqueNamespace)" },
+                { "UseProjectNamespaceForGitVersionInformation", "$(UseProjectNamespaceForGitVersionInformation)" },
                 { "RootNamespace", "$(RootNamespace)" },
             })
             .TaskOutputProperty(outputProperty, outputProperty)

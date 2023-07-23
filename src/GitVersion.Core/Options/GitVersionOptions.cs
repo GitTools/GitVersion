@@ -13,7 +13,7 @@ public class GitVersionOptions
     public WixInfo WixInfo { get; } = new();
     public Settings Settings { get; } = new();
 
-    public bool UniqueNamespace { get; set; }
+
 
     public bool Init;
     public bool Diag;

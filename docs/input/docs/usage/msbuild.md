@@ -260,24 +260,24 @@ variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 
 ### Namespace generation
 
-You can configure GitVersion to generate the `GitVersionInformation` class in a namespace that matches the current assembly. By default this class is created in the global namespace. If `GenerateGitVersionInformationInUniqueNamespace` is set to true, the `GitVersionInfomation` class will instead be generated in a namespace matching the current project. If the property `<RootNamespace>` is set that value will be used, otherwise the name of the project file is used. 
+You can configure GitVersion to generate the `GitVersionInformation` class in a namespace that matches the current assembly. By default this class is created in the global namespace. If `UseProjectNamespaceForGitVersionInformation` is set to true, the `GitVersionInfomation` class will instead be generated in a namespace matching the current project. If the property `<RootNamespace>` is set that value will be used, otherwise the name of the project file is used.
 
 ```xml
 <PropertyGroup>
   ...
-  <GenerateGitVersionInformationInUniqueNamespace>true</GenerateGitVersionInformationInUniqueNamespace>
+  <UseProjectNamespaceForGitVersionInformation>true</UseProjectNamespaceForGitVersionInformation>
   ...
 </PropertyGroup>
 ```
 
 ## Extra properties
 
-There are properties that correspont to certain 
+There are properties that correspont to certain
 [command line arguments](/docs/usage/cli/arguments) for GetVersion task.
-In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch` 
-during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables 
+In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch`
+during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables
 normalize step on a build server, setting `GitVersion_NoCacheEnabled` to `true`
-makes GetVersion ignore cache. All the rest command line arguments can be passed via 
+makes GetVersion ignore cache. All the rest command line arguments can be passed via
 `GitVersion_CommandLineArguments` variable.
 
 ## My Git repository requires authentication. What should I do?

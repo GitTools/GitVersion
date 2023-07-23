@@ -78,7 +78,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
         static string? getTargetNamespace(GenerateGitVersionInformation task)
         {
             string? targetNamespace = null;
-            if (string.Equals(task.GenerateGitVersionInformationInUniqueNamespace, "true", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(task.UseProjectNamespaceForGitVersionInformation, "true", StringComparison.OrdinalIgnoreCase))
             {
                 targetNamespace = task.RootNamespace;
                 if (string.IsNullOrWhiteSpace(targetNamespace))

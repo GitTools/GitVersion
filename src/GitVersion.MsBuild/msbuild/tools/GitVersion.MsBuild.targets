@@ -101,7 +101,7 @@
                                        ProjectFile="$(MSBuildProjectFullPath)"
                                        IntermediateOutputPath="$(IntermediateOutputPath)"
                                        Language="$(Language)"
-                                       GenerateGitVersionInformationInUniqueNamespace="$(GenerateGitVersionInformationInUniqueNamespace)"
+                                       UseProjectNamespaceForGitVersionInformation="$(UseProjectNamespaceForGitVersionInformation)"
                                        RootNamespace="$(RootNamespace)">
 
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
