@@ -13,6 +13,8 @@ public class GitVersionOptions
     public WixInfo WixInfo { get; } = new();
     public Settings Settings { get; } = new();
 
+
+
     public bool Init;
     public bool Diag;
     public bool IsVersion;

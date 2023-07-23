@@ -218,12 +218,133 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.0.1-1"));
     }
 
-    private static void AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName,
+    [TestCaseSource(nameof(Languages))]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUseProjectNamespaceIsSpecifiedAndRootNamespaceIsSet(string language)
+    {
+        const string taskName = nameof(GenerateGitVersionInformation);
+        const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
+        var randDir = Guid.NewGuid().ToString("N");
+
+        var extension = FileHelper.GetFileExtension(language);
+        using var result = ExecuteMsBuildExe(project =>
+        {
+            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True").Property("RootNamespace", "Test.Root");
+        }, language);
+
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
+
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+
+        var fileContent = File.ReadAllText(generatedFilePath);
+        TestContext.WriteLine(fileContent);
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
+        fileContent.ShouldContain("namespace Test.Root", Case.Insensitive);
+
+    }
+
+    [TestCaseSource(nameof(Languages))]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUseProjectNamespaceIsSpecifiedAndRootNamespaceIsNotSet(string language)
+    {
+        const string taskName = nameof(GenerateGitVersionInformation);
+        const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
+        var randDir = Guid.NewGuid().ToString("N");
+
+        var extension = FileHelper.GetFileExtension(language);
+        using var result = ExecuteMsBuildExeInAzurePipeline(project =>
+        {
+            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True");
+        }, language);
+
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
+
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+
+        var fileContent = File.ReadAllText(generatedFilePath);
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.0.1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.0.1-1"));
+        fileContent.ShouldContain("namespace App", Case.Insensitive);
+    }
+
+    [TestCaseSource(nameof(Languages))]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceUnSet(string language)
+    {
+        var extension = FileHelper.GetFileExtension(language);
+        var task = new GenerateGitVersionInformation
+        {
+            Language = language,
+            UseProjectNamespaceForGitVersionInformation = "true",
+            ProjectFile = "App.Project.csproj",
+        };
+        using var result = ExecuteMsBuildTask(task);
+
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
+        result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
+
+        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
+        fileContent.ShouldContain("namespace App.Project", Case.Insensitive);
+    }
+
+    [TestCaseSource(nameof(Languages))]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceIsSet(string language)
+    {
+
+        var extension = FileHelper.GetFileExtension(language);
+        var task = new GenerateGitVersionInformation
+        {
+            Language = language,
+            UseProjectNamespaceForGitVersionInformation = "true",
+            ProjectFile = "App.Project.csproj",
+            RootNamespace = "App.Project.RootNamespace",
+        };
+        using var result = ExecuteMsBuildTask(task);
+
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
+        result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
+
+        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
+        fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
+
+        fileContent.ShouldContain("namespace App.Project.RootNamespace");
+    }
+
+    private static ProjectCreator AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName,
                                                              string outputProperty, string language,
                                                              string intermediateOutputPath = "$(MSBuildProjectDirectory)")
     {
         var assemblyFileLocation = typeof(GitVersionTaskBase).Assembly.Location;
-        project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
+        return project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("ManagePackageVersionsCentrally", "false")
             .Property("GenerateAssemblyInfo", "false")
             .Property("Language", language)
@@ -235,6 +356,8 @@ public class GenerateGitVersionInformationTest : TestTaskBase
                 { "ProjectFile", "$(MSBuildProjectFullPath)" },
                 { "Language", "$(Language)" },
                 { "IntermediateOutputPath", intermediateOutputPath },
+                { "UseProjectNamespaceForGitVersionInformation", "$(UseProjectNamespaceForGitVersionInformation)" },
+                { "RootNamespace", "$(RootNamespace)" },
             })
             .TaskOutputProperty(outputProperty, outputProperty)
             .ItemGroup()

@@ -23,10 +23,10 @@ namespace System.Diagnostics.CodeAnalysis
     internal sealed class ExcludeFromCodeCoverageAttribute : global::System.Attribute {{ }}
 }}
 #endif
-
-[global::System.Runtime.CompilerServices.CompilerGenerated]
-[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-static class GitVersionInformation
-{{
+{1}{2}
+{4}[global::System.Runtime.CompilerServices.CompilerGenerated]
+{4}[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+{4}static class GitVersionInformation
+{4}{{
 {0}
-}}
+{4}}}{3}

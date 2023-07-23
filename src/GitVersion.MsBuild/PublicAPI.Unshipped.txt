@@ -98,3 +98,7 @@ override GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.OnExecute() -> b
 override GitVersion.MsBuild.Tasks.GetVersion.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.OnExecute() -> bool
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.UseProjectNamespaceForGitVersionInformation.get -> string?
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.UseProjectNamespaceForGitVersionInformation.set -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.set -> void
