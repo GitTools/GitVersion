@@ -8,7 +8,7 @@
     <PackageVersion Include="LibGit2Sharp" Version="0.27.2" />
     <PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageVersion Include="Microsoft.Build" Version="17.6.3" />
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.6.3" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="7.0.0" />
