@@ -110,7 +110,7 @@ jobs:
       uses: chabad360/htmlproofer@master
       with:
         directory: ./artifacts/docs/preview
-        arguments: --ignore-urls /api/,/docs/ --allow-hash-href --assume-extension --disable-external
+        arguments: --ignore-urls /api/,/docs/ --allow-hash-href --assume-extension --disable-external --no-check_external_hash
     -
       name: '[Reviewdog Reporter]'
       id: reporter
