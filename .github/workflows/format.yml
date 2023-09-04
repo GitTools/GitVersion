@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     name: DotNet Format
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       -
         name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
