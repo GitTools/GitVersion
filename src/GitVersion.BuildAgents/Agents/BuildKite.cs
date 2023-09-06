@@ -28,12 +28,10 @@ internal class BuildKite : BuildAgentBase
         {
             return Environment.GetEnvironmentVariable("BUILDKITE_BRANCH");
         }
-        else
-        {
-            // For pull requests BUILDKITE_BRANCH refers to the head, so adjust the
-            // branch name for pull request versioning to function as expected
-            return string.Format("refs/pull/{0}/head", pullRequest);
-        }
+
+        // For pull requests BUILDKITE_BRANCH refers to the head, so adjust the
+        // branch name for pull request versioning to function as expected
+        return string.Format("refs/pull/{0}/head", pullRequest);
     }
 
     public override bool PreventFetch() => true;

@@ -412,7 +412,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "tag-prefix-from-override-configuration" }
         };
@@ -426,7 +426,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
         };
@@ -441,7 +441,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
         };
@@ -455,7 +455,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "custom-tag-prefix-from-console" }
         };

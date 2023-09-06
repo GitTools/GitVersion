@@ -24,7 +24,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
     public void ConfigNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
     {
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", nextVersion },
             { "semantic-version-format", versionFormat }
@@ -39,7 +39,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     [TestCase("0.1", SemanticVersionFormat.Strict)]
     public void ConfigNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
     {
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", nextVersion },
             { "semantic-version-format", versionFormat }

@@ -2,6 +2,7 @@ using GitVersion.Configuration.Init.BuildServer;
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init;
 
@@ -57,7 +58,7 @@ internal class EditConfigStep : ConfigInitWizardStep
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode ?? VersionCalculation.VersioningMode.ContinuousDeployment})
+5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode ?? VersioningMode.ContinuousDeployment})
 6) Assembly versioning scheme (Current: {configuration.AssemblyVersioningScheme})
 7) Setup build scripts";
     }

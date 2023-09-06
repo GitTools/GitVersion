@@ -9,7 +9,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
 
     private GitHubFlowConfigurationBuilder()
     {
-        WithConfiguration(new GitVersionConfiguration()
+        WithConfiguration(new GitVersionConfiguration
         {
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
@@ -36,7 +36,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             IsMainline = false
         });
 
-        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration()
+        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Patch,
             RegularExpression = MainBranch.RegexPattern,
@@ -52,7 +52,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 55000
         });
 
-        WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration()
+        WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
@@ -70,7 +70,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration()
+        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
@@ -84,7 +84,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration()
+        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
@@ -99,7 +99,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration()
+        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
             RegularExpression = UnknownBranch.RegexPattern,
             Label = ConfigurationConstants.BranchNamePlaceholder,

@@ -28,7 +28,6 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         string? originalFileContents = null;
 
-
         if (File.Exists(filePath))
         {
             originalFileContents = this.fileSystem.ReadAllText(filePath);
@@ -41,8 +40,6 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         if (string.IsNullOrWhiteSpace(template) || string.IsNullOrWhiteSpace(addFormat) || targetNamespace == targetNamespaceSentinelValue)
             return;
-
-
 
         var indentation = GetIndentation(fileExtension);
         string? closeBracket = null;
@@ -59,7 +56,6 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         var lines = variables.OrderBy(x => x.Key).Select(v => string.Format(indentation + addFormat, v.Key, v.Value));
         var members = string.Join(System.Environment.NewLine, lines);
-
 
         var fileContents = string.Format(template, members, targetNamespace, openBracket, closeBracket, indent);
 

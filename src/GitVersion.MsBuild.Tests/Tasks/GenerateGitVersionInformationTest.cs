@@ -248,8 +248,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
-        fileContent.ShouldContain("namespace Test.Root", Case.Insensitive);
-
+        fileContent.ShouldContain("namespace Test.Root");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -281,7 +280,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.0.1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.0.1-1"));
-        fileContent.ShouldContain("namespace App", Case.Insensitive);
+        fileContent.ShouldContain("namespace App");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -307,13 +306,12 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
-        fileContent.ShouldContain("namespace App.Project", Case.Insensitive);
+        fileContent.ShouldContain("namespace App.Project");
     }
 
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceIsSet(string language)
     {
-
         var extension = FileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation
         {
