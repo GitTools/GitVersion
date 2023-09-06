@@ -6,7 +6,7 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <NoWarn>8625;2254</NoWarn>
+        <NoWarn>8625;2254;IDE0005</NoWarn>
 
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
