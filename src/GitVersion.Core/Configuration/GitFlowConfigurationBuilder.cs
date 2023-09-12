@@ -24,7 +24,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             TagPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
             VersioningMode = VersioningMode.ContinuousDeployment,
-            RegularExpression = string.Empty,
+            RegularExpression = "(?<BranchName>.+)",
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,

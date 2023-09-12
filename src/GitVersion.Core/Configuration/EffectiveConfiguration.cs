@@ -44,7 +44,7 @@ public class EffectiveConfiguration
         Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
-        BranchPrefixToTrim = branchConfiguration.RegularExpression;
+        RegularExpression = branchConfiguration.RegularExpression;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;
@@ -75,7 +75,7 @@ public class EffectiveConfiguration
         string label,
         string? nextVersion,
         IncrementStrategy increment,
-        string? branchPrefixToTrim,
+        string? regularExpression,
         bool preventIncrementOfMergedBranchVersion,
         string? labelNumberPattern,
         bool trackMergeTarget,
@@ -104,7 +104,7 @@ public class EffectiveConfiguration
         Label = label;
         NextVersion = nextVersion;
         Increment = increment;
-        BranchPrefixToTrim = branchPrefixToTrim;
+        RegularExpression = regularExpression;
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion;
         LabelNumberPattern = labelNumberPattern;
         TrackMergeTarget = trackMergeTarget;
@@ -150,7 +150,7 @@ public class EffectiveConfiguration
 
     public IncrementStrategy Increment { get; }
 
-    public string? BranchPrefixToTrim { get; }
+    public string? RegularExpression { get; }
 
     public bool PreventIncrementOfMergedBranchVersion { get; }
 

@@ -184,7 +184,6 @@ public class FeatureBranchScenarios : TestBase
     }
 
     [TestCase("alpha", "JIRA-123", "alpha")]
-    [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
     [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "alpha.JIRA-123")]
     public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
     {

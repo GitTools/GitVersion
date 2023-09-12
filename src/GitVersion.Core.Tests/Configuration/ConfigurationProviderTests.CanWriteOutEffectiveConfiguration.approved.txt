@@ -59,7 +59,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: ^features?[/-]
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -114,7 +114,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: .*
+    regex: (?<BranchName>.*)
     source-branches:
     - main
     - develop
@@ -133,7 +133,7 @@ prevent-increment-of-merged-branch-version: false
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
-regex: ''
+regex: (?<BranchName>.+)
 source-branches: []
 is-source-branch-for: []
 tracks-release-branches: false

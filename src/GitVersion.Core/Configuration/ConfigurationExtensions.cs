@@ -68,32 +68,32 @@ public static class ConfigurationExtensions
         configuration.NotNull();
 
         var label = configuration.Label;
-        if (label == "useBranchName")
+        if (label is null)
         {
-            label = ConfigurationConstants.BranchNamePlaceholder;
+            return label;
         }
 
-        var value = branchNameOverride ?? branchName;
+        var effectiveBranchName = branchNameOverride ?? branchName;
 
-        if (label?.Contains(ConfigurationConstants.BranchNamePlaceholder) == true)
+        if (!configuration.RegularExpression.IsNullOrWhiteSpace() && !effectiveBranchName.IsNullOrEmpty())
         {
-            if (!configuration.BranchPrefixToTrim.IsNullOrWhiteSpace())
+            effectiveBranchName = effectiveBranchName.RegexReplace("[^a-zA-Z0-9-]", "-");
+            var pattern = new Regex(configuration.RegularExpression, RegexOptions.IgnoreCase);
+            var match = pattern.Match(effectiveBranchName);
+            if (match.Success)
             {
-                var branchNameTrimmed = value?.RegexReplace(
-                    configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase
-                );
-                value = branchNameTrimmed.IsNullOrEmpty() ? value : branchNameTrimmed;
+                // ReSharper disable once LoopCanBeConvertedToQuery
+                foreach (var groupName in pattern.GetGroupNames())
+                {
+                    label = label.Replace("{" + groupName + "}", match.Groups[groupName].Value);
+                }
             }
-
-            value = value?.RegexReplace("[^a-zA-Z0-9-]", "-");
-
-            label = label.Replace(ConfigurationConstants.BranchNamePlaceholder, value);
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        if (!configuration.LabelNumberPattern.IsNullOrEmpty() && !value.IsNullOrEmpty() && label is not null)
+        if (!configuration.LabelNumberPattern.IsNullOrEmpty() && !effectiveBranchName.IsNullOrEmpty())
         {
-            var match = Regex.Match(value, configuration.LabelNumberPattern);
+            var match = Regex.Match(effectiveBranchName, configuration.LabelNumberPattern);
             var numberGroup = match.Groups["number"];
             if (numberGroup.Success)
             {

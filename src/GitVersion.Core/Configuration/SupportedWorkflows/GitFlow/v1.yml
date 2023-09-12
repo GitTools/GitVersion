@@ -55,7 +55,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: ^features?[/-]
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -105,7 +105,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: .*
+    regex: (?<BranchName>.*)
     source-branches:
     - main
     - develop
