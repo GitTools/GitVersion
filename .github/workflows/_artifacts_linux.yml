@@ -49,7 +49,7 @@ jobs:
     -
       name: Setup QEMU
       if: inputs.arch == 'arm64'
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     -
       name: Echo
       shell: pwsh
