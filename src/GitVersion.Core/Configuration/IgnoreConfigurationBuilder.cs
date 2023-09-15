@@ -32,7 +32,7 @@ internal sealed class IgnoreConfigurationBuilder
         return this;
     }
 
-    public IIgnoreConfiguration Build() => new IgnoreConfiguration()
+    public IIgnoreConfiguration Build() => new IgnoreConfiguration
     {
         Before = before,
         Shas = shas

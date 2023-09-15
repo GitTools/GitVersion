@@ -176,7 +176,7 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
 
     private static readonly object?[] BitBucketCloudPullMergeMessages =
     {
-        new object?[] { $@"Merged in release/2.301.0 (pull request #1789)
+        new object?[] { @"Merged in release/2.301.0 (pull request #1789)
 
 Release/2.301.0
 

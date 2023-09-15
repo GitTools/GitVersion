@@ -17,7 +17,7 @@ SemVer compatible versions from this structure.
     prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 *   Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
 *   The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
-    specifies branches with a "-" separator while the [git flow extensions](https://github.com/nvie/gitflow)
+    specifies branches with a "-" separator while the [git flow extensions](https://github.com/CJ-Systems/gitflow-cjs)
     default to a "/" separator.  Either work with GitVersion.
 *   Tags are used on the main branch and reflects the SemVer of each stable
     release eg 3.3.8 , 4.0.0, etc

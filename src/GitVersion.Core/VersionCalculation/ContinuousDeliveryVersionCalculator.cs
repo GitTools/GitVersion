@@ -47,13 +47,11 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
                 }
             };
         }
-        else
+
+        var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+        return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
         {
-            var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
-            return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
-            {
-                BuildMetaData = baseVersionBuildMetaData
-            };
-        }
+            BuildMetaData = baseVersionBuildMetaData
+        };
     }
 }

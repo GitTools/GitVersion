@@ -95,13 +95,17 @@ you can leverage this feature as follows:
 
 ```yaml
 mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
-major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
-minor-version-bump-message: "^(feat)(\\([\\w\\s-]*\\))?:"
-patch-version-bump-message: "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
+major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
+minor-version-bump-message: "^(feat)(\\([\\w\\s-,/\\\\]*\\))?:"
+patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:"
 ```
 
 This will ensure that your version gets bumped according to the commits you've
 created.
+
+If your CI/CD workflow uses semantic-release's commit-analyzer, change `(fix|perf)` to `(fix|perf|revert)`. [Why?](https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38)
+
+Alternatively, you can override this rule in the [configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage) of \@semantic-release/commit-analyzer. If you intend to write rules with patterns, note that instead of using Regular Expression, \@semantic-release/commit-analyzer uses [micromatch's glob implementation](https://github.com/micromatch/micromatch#matching-features).
 
 ### GitVersion.yml
 
@@ -116,7 +120,7 @@ from the branch name as a source. However, GitVersion can't use the [branch
 name as a version source for _other branches_][faq-branch-name-source].
 
 ### Detached HEAD
-If HEAD is in detached state tag will be `-no-branch-`. 
+If HEAD is in detached state tag will be `-no-branch-`.
 
 Example: `0.0.1--no-branch-.1+4`
 

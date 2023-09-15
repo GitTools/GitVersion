@@ -51,13 +51,11 @@ internal abstract class NonTrunkBasedVersionCalculatorBase
                 BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
             };
         }
-        else
+
+        return new SemanticVersion(nextVersion.IncrementedVersion)
         {
-            return new SemanticVersion(nextVersion.IncrementedVersion)
-            {
-                BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
-            };
-        }
+            BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
+        };
     }
 
     protected SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)

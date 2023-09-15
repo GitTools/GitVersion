@@ -72,8 +72,23 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
+        var targetNamespace = getTargetNamespace(task);
+        gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo, targetNamespace);
 
-        gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
+        static string? getTargetNamespace(GenerateGitVersionInformation task)
+        {
+            string? targetNamespace = null;
+            if (string.Equals(task.UseProjectNamespaceForGitVersionInformation, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                targetNamespace = task.RootNamespace;
+                if (string.IsNullOrWhiteSpace(targetNamespace))
+                {
+                    targetNamespace = Path.GetFileNameWithoutExtension(task.ProjectFile);
+                }
+            }
+
+            return targetNamespace;
+        }
     }
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)

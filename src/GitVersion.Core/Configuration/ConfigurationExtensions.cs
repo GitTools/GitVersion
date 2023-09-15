@@ -20,7 +20,7 @@ public static class ConfigurationExtensions
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= new BranchConfiguration()
+        branchConfiguration ??= new BranchConfiguration
         {
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,

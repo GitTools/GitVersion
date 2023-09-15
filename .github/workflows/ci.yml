@@ -11,7 +11,6 @@ on:
     paths:
       - '**'
       - '!docs/**'
-      - '!new-cli/**'
 
   pull_request:
     branches:
@@ -20,7 +19,6 @@ on:
     paths:
       - '**'
       - '!docs/**'
-      - '!new-cli/**'
 
   repository_dispatch:
     types: [ release ]
@@ -107,7 +105,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     -

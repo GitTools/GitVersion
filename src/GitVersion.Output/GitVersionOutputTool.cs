@@ -71,11 +71,13 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo)
+    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo, string? targetNamespace = null)
     {
         using (this.gitVersionInfoGenerator)
         {
-            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
+            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension, targetNamespace));
         }
     }
+
+    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo) => GenerateGitVersionInformation(variables, fileWriteInfo, null);
 }

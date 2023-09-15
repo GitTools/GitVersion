@@ -30,12 +30,10 @@ internal sealed class ManualDeploymentVersionCalculator : NonTrunkBasedVersionCa
         {
             return CalculateIncrementedVersion(nextVersion);
         }
-        else
+
+        return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
         {
-            return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
-            {
-                BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
-            };
-        }
+            BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
+        };
     }
 }

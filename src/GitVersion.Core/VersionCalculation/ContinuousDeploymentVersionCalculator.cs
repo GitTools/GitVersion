@@ -47,21 +47,19 @@ internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersi
                 }
             };
         }
-        else
+
+        var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+
+        Contract.Assume(baseVersionBuildMetaData.CommitsSinceTag.HasValue);
+
+        return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
         {
-            var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
-
-            Contract.Assume(baseVersionBuildMetaData.CommitsSinceTag.HasValue);
-
-            return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
+            PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
+            BuildMetaData = new SemanticVersionBuildMetaData(baseVersionBuildMetaData)
             {
-                PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
-                BuildMetaData = new SemanticVersionBuildMetaData(baseVersionBuildMetaData)
-                {
-                    CommitsSinceVersionSource = baseVersionBuildMetaData.CommitsSinceTag.Value,
-                    CommitsSinceTag = null
-                }
-            };
-        }
+                CommitsSinceVersionSource = baseVersionBuildMetaData.CommitsSinceTag.Value,
+                CommitsSinceTag = null
+            }
+        };
     }
 }
