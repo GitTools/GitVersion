@@ -23,5 +23,5 @@ internal static class ConfigurationConstants
     public const string PullRequestBranchRegex = @"^(pull|pull\-requests|pr)[/-]";
     public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
     public const string SupportBranchRegex = "^support[/-]";
-    public const string UnknownBranchRegex = "(?<BranchName>.*)";
+    public const string UnknownBranchRegex = "(?<BranchName>.+)";
 }
