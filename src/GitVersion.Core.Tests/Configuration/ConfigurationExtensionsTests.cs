@@ -57,4 +57,20 @@ public class ConfigurationExtensionsTests : TestBase
         actual.IsTag.ShouldBe(expectedIsTag);
         isReleaseBranch.ShouldBe(expectedIsReleaseBranch);
     }
+
+    [TestCase("feature/sc-1000/Description", "^features?[/-](?<BranchName>.+)", "{BranchName}", "sc-1000-Description")]
+    [TestCase("feature/sc-1000/Description", "^features?[/-](?<StoryNo>sc-\\d+)[-/].+", "{StoryNo}", "sc-1000")]
+    public void EnsureGetBranchSpecificLabelWorksAsExpected(string branchName, string regularExpression, string label, string expectedLabel)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch(branchName, builder => builder
+                .WithLabel(label)
+                .WithRegularExpression(regularExpression))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(branchName));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(branchName), null);
+        actual.ShouldBe(expectedLabel);
+    }
 }
