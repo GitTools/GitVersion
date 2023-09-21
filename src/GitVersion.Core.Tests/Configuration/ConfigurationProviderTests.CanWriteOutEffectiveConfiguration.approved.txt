@@ -133,7 +133,7 @@ prevent-increment-of-merged-branch-version: false
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
-regex: (?<BranchName>.+)
+regex: ''
 source-branches: []
 is-source-branch-for: []
 tracks-release-branches: false
