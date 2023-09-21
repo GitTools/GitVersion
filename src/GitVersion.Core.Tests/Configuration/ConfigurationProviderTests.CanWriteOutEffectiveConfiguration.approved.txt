@@ -114,7 +114,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: (?<BranchName>.*)
+    regex: (?<BranchName>.+)
     source-branches:
     - main
     - develop
