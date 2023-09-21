@@ -77,7 +77,7 @@ public static class ConfigurationExtensions
 
         if (!configuration.RegularExpression.IsNullOrWhiteSpace() && !effectiveBranchName.IsNullOrEmpty())
         {
-            effectiveBranchName = effectiveBranchName.RegexReplace("[^a-zA-Z0-9-]", "-");
+            effectiveBranchName = effectiveBranchName.RegexReplace("[^a-zA-Z0-9-_]", "-");
             var pattern = new Regex(configuration.RegularExpression, RegexOptions.IgnoreCase);
             var match = pattern.Match(effectiveBranchName);
             if (match.Success)
