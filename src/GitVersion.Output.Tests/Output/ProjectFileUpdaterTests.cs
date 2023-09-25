@@ -35,6 +35,9 @@ public class ProjectFileUpdaterTests : TestBase
         this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
     }
 
+    [TearDown]
+    public void Teardown() => this.projectFileUpdater.Dispose();
+
     [TestCase("Microsoft.NET.Sdk")]
     [TestCase("Microsoft.NET.Sdk.Worker")]
     [TestCase("Microsoft.NET.Sdk.Web")]

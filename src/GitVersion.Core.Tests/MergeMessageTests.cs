@@ -31,7 +31,7 @@ public class MergeMessageTests : TestBase
     [TestCase("")]
     [TestCase("\t\t  ")]
     [TestCase(null)]
-    public void EmptyTagPrefix(string prefix)
+    public void EmptyTagPrefix(string? prefix)
     {
         // Arrange
         const string message = "Updated some code.";
