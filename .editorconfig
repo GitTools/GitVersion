@@ -61,11 +61,11 @@ dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 
 # Dispose rules (CA2000 and CA2213) ported to IDE analyzers. We already execute the CA rules on the repo, so disable the IDE ones.
+dotnet_diagnostic.IDE0005.severity = none
 dotnet_diagnostic.IDE0067.severity = none
 dotnet_diagnostic.IDE0068.severity = none
 dotnet_diagnostic.IDE0069.severity = none
 dotnet_diagnostic.CA1016.severity = none
-
 #### C# Coding Conventions ####
 
 # Prefer "var" everywhere

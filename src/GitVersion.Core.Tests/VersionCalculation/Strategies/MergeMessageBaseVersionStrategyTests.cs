@@ -136,7 +136,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'support/0.2.0'", "support", "0.2.0")]
     [TestCase("Merge branch 'support/0.2.0'", null, null)]
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
-    public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
+    public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string? expectedVersion)
     {
         var configurationBuilder = GitFlowConfigurationBuilder.New;
         if (releaseBranch != null)
