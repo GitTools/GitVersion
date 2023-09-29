@@ -484,7 +484,9 @@ values, but here they are if you need to:
 ### regex
 
 This is the regex which is used to match the current branch to the correct
-branch configuration.
+branch configuration. 
+
+[Named groups](https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions) can be used to dynamically label pre-releases based on the branch name, or parts of it. See [Label](#label) for more details and examples.
 
 ### source-branches
 
@@ -572,11 +574,13 @@ Same as for the [global configuration, explained above](#mode).
 
 ### label
 
-The pre release label to use for this branch. Use the value `useBranchName` to use
-the branch name instead. For example `feature/foo` would become a pre-release
-label of `foo` with this value. Use the value `{BranchName}` as a placeholder to
-insert the branch name. For example `feature/foo` would become a pre-release label
-of `alpha.foo` with the value of `alpha.{BranchName}`.
+The pre-release label to use for this branch. Use the value `{BranchName}` as a placeholder to
+insert the value of the named group `BranchName` from the [regular expression](#regex). 
+
+For example: branch `feature/foo` would become a pre-release label
+of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[/-](?<BranchName>.+)'`.
+
+Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[/-](?<StoryNo>sc-\d+)[-/].+'`.
 
 **Note:** To clear a default use an empty string: `label: ''`
 

@@ -19,9 +19,9 @@ internal static class ConfigurationConstants
     public const string MainBranchRegex = "^master$|^main$";
     public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
     public const string ReleaseBranchRegex = "^releases?[/-]";
-    public const string FeatureBranchRegex = "^features?[/-]";
+    public const string FeatureBranchRegex = "^features?[/-](?<BranchName>.+)";
     public const string PullRequestBranchRegex = @"^(pull|pull\-requests|pr)[/-]";
     public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
     public const string SupportBranchRegex = "^support[/-]";
-    public const string UnknownBranchRegex = ".*";
+    public const string UnknownBranchRegex = "(?<BranchName>.+)";
 }

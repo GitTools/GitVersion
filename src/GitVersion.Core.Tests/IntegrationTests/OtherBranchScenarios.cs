@@ -34,7 +34,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromReleaseBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("release", _ => _.WithLabel("{BranchName}"))
+            .WithBranch("release", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.*)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -52,7 +52,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromHotfixBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}"))
+            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.*)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -83,7 +83,7 @@ public class OtherBranchScenarios : TestBase
     {
         // * 1c08923 54 minutes ago  (HEAD -> develop)
         // | * 03dd6d5 56 minutes ago  (tag: 1.0.1-feature.1, feature)
-        // |/  
+        // |/
         // * e2ff13b 58 minutes ago  (tag: 1.0.0-unstable.0, main)
 
         var configuration = GitFlowConfigurationBuilder.New
@@ -106,14 +106,13 @@ public class OtherBranchScenarios : TestBase
     }
 
     [TestCase("alpha", "JIRA-123", "alpha")]
-    [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
     [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "alpha.JIRA-123")]
     public void LabelIsBranchNameForBranchesWithoutPrefixedBranchName(string label, string branchName, string preReleaseTagName)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("other", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
-                .WithRegularExpression(".*")
+                .WithRegularExpression("(?<BranchName>.*)")
                 .WithSourceBranches()
                 .WithLabel(label))
             .Build();

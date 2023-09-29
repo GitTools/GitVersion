@@ -11,7 +11,7 @@ internal record BranchConfiguration : IBranchConfiguration
     public VersioningMode? VersioningMode { get; internal set; }
 
     [JsonPropertyName("label")]
-    [JsonPropertyDescription("The label to use for this branch. Can be 'useBranchName' to extract the label from the branch name. Use the value {BranchName} as a placeholder to insert the branch name.")]
+    [JsonPropertyDescription("The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).")]
     public string? Label { get; internal set; }
 
     [JsonPropertyName("increment")]

@@ -182,7 +182,7 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToUseBranchName()
+    public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToBranchName()
     {
         var semanticVersion = new SemanticVersion
         {

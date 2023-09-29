@@ -265,7 +265,7 @@
       }
     },
     "string": {
-      "description": "The label to use for this branch. Can be \u0027useBranchName\u0027 to extract the label from the branch name. Use the value {BranchName} as a placeholder to insert the branch name.",
+      "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
       "type": "string"
     },
     "string1": {

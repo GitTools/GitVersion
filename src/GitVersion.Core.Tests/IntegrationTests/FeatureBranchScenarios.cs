@@ -183,13 +183,15 @@ public class FeatureBranchScenarios : TestBase
         fixture.AssertFullSemver("0.3.0-PROJ-1.1+3", configuration);
     }
 
-    [TestCase("alpha", "JIRA-123", "alpha")]
-    [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
-    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "alpha.JIRA-123")]
-    public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
+    [TestCase("alpha", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha")]
+    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha.JIRA-123")]
+    [TestCase("{BranchName}-of-task-number-{TaskNumber}", "4711_this-is-a-feature", "^features?[/-](?<TaskNumber>\\d+)_(?<BranchName>.+)", "this-is-a-feature-of-task-number-4711")]
+    public void ShouldUseConfiguredLabel(string label, string featureName, string regularExpression, string preReleaseLabelName)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("feature", builder => builder.WithLabel(tag))
+            .WithBranch("feature", builder => builder
+                .WithLabel(label)
+                .WithRegularExpression(regularExpression))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -198,7 +200,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.BranchTo(featureBranchName);
         fixture.Repository.MakeCommits(5);
 
-        var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
+        var expectedFullSemVer = $"1.0.1-{preReleaseLabelName}.1+5";
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
