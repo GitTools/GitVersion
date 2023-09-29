@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
 
     <PropertyGroup>
         <GenerateGitVersionFiles>false</GenerateGitVersionFiles>
@@ -127,7 +128,7 @@
                             ProjectFile="$(MSBuildProjectFullPath)"
                             IntermediateOutputPath="$(IntermediateOutputPath)"
                             Language="$(Language)"
-                            CompileFiles ="@(Compile)">
+                            CompileFiles="@(Compile)">
 
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
         </UpdateAssemblyInfo>
