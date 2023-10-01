@@ -30,7 +30,7 @@
   "devDependencies": {
     "remark": "^14.0.3",
     "remark-cli": "^11.0.0",
-    "remark-frontmatter": "^4.0.1",
+    "remark-frontmatter": "^5.0.0",
     "remark-heading-gap": "^5.0.1",
     "remark-lint": "^9.1.2",
     "remark-lint-blockquote-indentation": "^3.1.2",
