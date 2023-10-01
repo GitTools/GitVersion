@@ -43,6 +43,10 @@ updates:
     - "dependencies"
   commit-message:
     prefix: "(docs deps)"
+  groups:
+    remark:
+      patterns:
+      - "remark*"
   directory: "/"
   schedule:
     interval: monthly
