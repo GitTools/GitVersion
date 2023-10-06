@@ -718,28 +718,19 @@ GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Enabled = 0 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.MergeMessageOnly = 2 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
-GitVersion.VersionCalculation.IContinuousDeliveryVersionCalculator
-GitVersion.VersionCalculation.IContinuousDeliveryVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.IContinuousDeploymentVersionCalculator
-GitVersion.VersionCalculation.IContinuousDeploymentVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
 GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
-GitVersion.VersionCalculation.IMainlineVersionCalculator
-GitVersion.VersionCalculation.IMainlineVersionCalculator.CreateVersionBuildMetaData(GitVersion.ICommit? baseVersionSource) -> GitVersion.SemanticVersionBuildMetaData!
-GitVersion.VersionCalculation.IMainlineVersionCalculator.FindMainlineModeVersion(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.IManualDeploymentVersionCalculator
-GitVersion.VersionCalculation.IManualDeploymentVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
-GitVersion.VersionCalculation.ITrunkBasedVersionCalculator
-GitVersion.VersionCalculation.ITrunkBasedVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVariableProvider
 GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.VersionCalculation.IVersionFilter
 GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
+GitVersion.VersionCalculation.IVersionModeCalculator
+GitVersion.VersionCalculation.IVersionModeCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.NextVersion
@@ -834,6 +825,7 @@ static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value,
 static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.IDictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
+static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
 static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.ObjectExtensions.Deconstruct<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value) -> void

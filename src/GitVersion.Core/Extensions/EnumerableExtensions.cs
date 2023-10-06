@@ -18,4 +18,14 @@ public static class EnumerableExtensions
         var current = e.Current;
         return !e.MoveNext() ? current : default;
     }
+
+    public static T SingleOfType<T>(this IEnumerable source)
+    {
+        if (source == null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        return source.OfType<T>().Single();
+    }
 }

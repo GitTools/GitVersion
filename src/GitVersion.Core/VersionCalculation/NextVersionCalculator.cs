@@ -9,11 +9,8 @@ namespace GitVersion.VersionCalculation;
 internal class NextVersionCalculator : INextVersionCalculator
 {
     private readonly ILog log;
-    private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-    private readonly IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator;
-    private readonly IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator;
-    private readonly IManualDeploymentVersionCalculator manualDeploymentVersionCalculator;
     private readonly Lazy<GitVersionContext> versionContext;
+    private readonly IEnumerable<IVersionModeCalculator> versionModeCalculators;
     private readonly IVersionStrategy[] versionStrategies;
     private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder;
     private readonly IIncrementStrategyFinder incrementStrategyFinder;
@@ -22,21 +19,14 @@ internal class NextVersionCalculator : INextVersionCalculator
 
     public NextVersionCalculator(ILog log,
                                  Lazy<GitVersionContext> versionContext,
-                                 IMainlineVersionCalculator mainlineVersionCalculator,
-                                 IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator,
-                                 IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator,
-                                 IManualDeploymentVersionCalculator manualDeploymentVersionCalculator,
+                                 IEnumerable<IVersionModeCalculator> versionModeCalculators,
                                  IEnumerable<IVersionStrategy> versionStrategies,
                                  IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
                                  IIncrementStrategyFinder incrementStrategyFinder)
     {
         this.log = log.NotNull();
         this.versionContext = versionContext.NotNull();
-        this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
-        this.continuousDeploymentVersionCalculator = continuousDeploymentVersionCalculator.NotNull();
-        this.continuousDeliveryVersionCalculator = continuousDeliveryVersionCalculator.NotNull();
-        this.manualDeploymentVersionCalculator = manualDeploymentVersionCalculator.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
+        this.versionModeCalculators = versionModeCalculators;
         this.versionStrategies = versionStrategies.NotNull().ToArray();
         this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
         this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
@@ -55,15 +45,19 @@ internal class NextVersionCalculator : INextVersionCalculator
         return new(incrementedVersion, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
     }
 
-    private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion) => versioningMode switch
+    private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion)
     {
-        VersioningMode.ContinuousDelivery => this.manualDeploymentVersionCalculator.Calculate(nextVersion),
-        VersioningMode.ContinuousDeployment => nextVersion.Configuration is { IsMainline: true, Label: null }
-            ? this.continuousDeploymentVersionCalculator.Calculate(nextVersion)
-            : this.continuousDeliveryVersionCalculator.Calculate(nextVersion),
-        VersioningMode.Mainline => this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion),
-        _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
-    };
+        IVersionModeCalculator calculator = versioningMode switch
+        {
+            VersioningMode.ContinuousDelivery => this.versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
+            VersioningMode.ContinuousDeployment => nextVersion.Configuration is { IsMainline: true, Label: null }
+                ? this.versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>()
+                : this.versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
+            VersioningMode.Mainline => this.versionModeCalculators.SingleOfType<MainlineVersionCalculator>(),
+            _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
+        };
+        return calculator.Calculate(nextVersion);
+    }
 
     private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {

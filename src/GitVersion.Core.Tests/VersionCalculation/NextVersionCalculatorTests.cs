@@ -496,7 +496,7 @@
 //            null
 //        );
 //        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
-//        mainlineVersionCalculatorMock.FindMainlineModeVersion(Arg.Any<NextVersion>()).Returns(lowerVersion.SemanticVersion);
+//        mainlineVersionCalculatorMock.Calculate(Arg.Any<NextVersion>()).Returns(lowerVersion.SemanticVersion);
 //        var continuousDeploymentVersionCalculatorMock = Substitute.For<IContinuousDeploymentVersionCalculator>();
 
 //        var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(preReleaseVersion, lowerVersion) };

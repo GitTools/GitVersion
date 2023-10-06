@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation;
 
-public interface ITrunkBasedVersionCalculator
+public interface IVersionModeCalculator
 {
     SemanticVersion Calculate(NextVersion nextVersion);
 }

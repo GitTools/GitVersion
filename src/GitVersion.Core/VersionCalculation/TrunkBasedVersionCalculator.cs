@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation;
 
-internal sealed class TrunkBasedVersionCalculator : ITrunkBasedVersionCalculator
+internal sealed class TrunkBasedVersionCalculator : IVersionModeCalculator
 {
     // TODO: Please implement trunk based version here and remove MainlineVersionCalculator.
     public SemanticVersion Calculate(NextVersion nextVersion) =>

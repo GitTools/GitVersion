@@ -4,7 +4,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersionCalculatorBase, IContinuousDeliveryVersionCalculator
+internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersionCalculatorBase, IVersionModeCalculator
 {
     public ContinuousDeliveryVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(log, repositoryStore, versionContext)

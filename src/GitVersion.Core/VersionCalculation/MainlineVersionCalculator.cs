@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal class MainlineVersionCalculator : IMainlineVersionCalculator
+internal class MainlineVersionCalculator : IVersionModeCalculator
 {
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;
@@ -21,7 +21,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
-    public SemanticVersion FindMainlineModeVersion(NextVersion nextVersion)
+    public SemanticVersion Calculate(NextVersion nextVersion)
     {
         var baseVersion = nextVersion.BaseVersion;
 
