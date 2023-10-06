@@ -14,5 +14,9 @@ internal sealed class NullLog : ILog
     {
     }
 
+    public void Separator()
+    {
+    }
+
     public string? Indent { get; set; }
 }

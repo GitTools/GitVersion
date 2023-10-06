@@ -417,6 +417,7 @@ GitVersion.Logging.IConsole.WriteLine(string? msg) -> void
 GitVersion.Logging.ILog
 GitVersion.Logging.ILog.AddLogAppender(GitVersion.Logging.ILogAppender! logAppender) -> void
 GitVersion.Logging.ILog.IndentLog(string! operationDescription) -> System.IDisposable!
+GitVersion.Logging.ILog.Separator() -> void
 GitVersion.Logging.ILog.Verbosity.get -> GitVersion.Logging.Verbosity
 GitVersion.Logging.ILog.Verbosity.set -> void
 GitVersion.Logging.ILog.Write(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void

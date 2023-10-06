@@ -37,6 +37,6 @@ public class BaseVersion
     public override string ToString()
     {
         var externalSource = BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha;
-        return $"{Source}: {SemanticVersion.ToString("f")} with commit count source {externalSource}";
+        return $"{Source}: {SemanticVersion:f} with commit source '{externalSource}'";
     }
 }

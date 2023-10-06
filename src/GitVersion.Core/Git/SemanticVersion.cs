@@ -31,7 +31,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
 
     public bool IsMatchForBranchSpecificLabel(string? value)
-        => PreReleaseTag.Name == string.Empty || value is null || IsLabeledWith(value);
+        => PreReleaseTag.Name.Length == 0 || value is null || IsLabeledWith(value);
 
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
@@ -292,7 +292,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             case "s":
                 return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
             case "t":
-                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag:t}" : ToString("j");
             case "f":
                 {
                     var buildMetadata = this.BuildMetaData.ToString();

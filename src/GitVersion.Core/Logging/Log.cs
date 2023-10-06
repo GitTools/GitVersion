@@ -43,16 +43,18 @@ internal sealed class Log : ILog
     public IDisposable IndentLog(string operationDescription)
     {
         var start = DateTime.Now;
-        Write(Verbosity.Normal, LogLevel.Info, $"Begin: {operationDescription}");
+        Write(Verbosity.Normal, LogLevel.Info, $"-< Begin: {operationDescription} >-");
         this.indent += "  ";
 
         return Disposable.Create(() =>
         {
             var length = this.indent.Length - 2;
-            this.indent = length > 0 ? this.indent[..length] : this.indent;
-            Write(Verbosity.Normal, LogLevel.Info, string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
+            this.indent = length > 0 ? this.indent[..length] : "";
+            Write(Verbosity.Normal, LogLevel.Info, string.Format(CultureInfo.InvariantCulture, "-< End: {0} (Took: {1:N}ms) >-", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
         });
     }
+
+    public void Separator() => Write(Verbosity.Normal, LogLevel.Info, "-------------------------------------------------------");
 
     public void AddLogAppender(ILogAppender logAppender) => this.appenders = this.appenders.Concat(new[] { logAppender });
 

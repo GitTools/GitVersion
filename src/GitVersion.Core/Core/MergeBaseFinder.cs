@@ -52,14 +52,14 @@ internal class MergeBaseFinder
 
             if (findMergeBase == null)
             {
-                this.log.Info($"No merge base of {first}' and '{second} could be found.");
+                this.log.Info($"No merge base of '{first}' and '{second}' could be found.");
                 return null;
             }
 
             // Store in cache.
             this.mergeBaseCache.Add(key, findMergeBase);
 
-            this.log.Info($"Merge base of {first}' and '{second} is {findMergeBase}");
+            this.log.Info($"Merge base of '{first}' and '{second}' is '{findMergeBase}'");
             return findMergeBase;
         }
     }
@@ -70,7 +70,7 @@ internal class MergeBaseFinder
         if (findMergeBase == null)
             return null;
 
-        this.log.Info($"Found merge base of {findMergeBase}");
+        this.log.Info($"Found merge base of '{findMergeBase}'");
 
         // We do not want to include merge base commits which got forward merged into the other branch
         ICommit? forwardMerge;
@@ -103,7 +103,7 @@ internal class MergeBaseFinder
 
             findMergeBase = mergeBase;
             commitToFindCommonBase = second;
-            this.log.Info($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
+            this.log.Info($"next merge base --> {findMergeBase}");
         } while (forwardMerge != null);
 
         return findMergeBase;

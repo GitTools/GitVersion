@@ -24,6 +24,6 @@ internal sealed class Commit : GitObject, ICommit
     public string Message => this.innerCommit.Message;
     public override bool Equals(object? obj) => Equals(obj as ICommit);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
-    public override string ToString() => $"{Id.ToString(7)} {this.innerCommit.MessageShort}";
+    public override string ToString() => $"'{Id.ToString(7)}' - {this.innerCommit.MessageShort}";
     public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 }

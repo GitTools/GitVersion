@@ -50,5 +50,7 @@ internal sealed class WixVersionFileUpdater : IWixVersionFileUpdater
         return builder.ToString();
     }
 
-    public void Dispose() => this.log.Info($"Done writing {this.wixVersionFile}");
+    public void Dispose()
+    {
+    }
 }
