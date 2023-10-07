@@ -29,7 +29,7 @@ internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfiguratio
     {
         if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
 
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
         if (childBranchConfiguration != null)
         {
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
@@ -66,7 +66,7 @@ internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfiguratio
         }
         else
         {
-            yield return new(branch, new EffectiveConfiguration(configuration, branchConfiguration));
+            yield return new(new(configuration, branchConfiguration), branch);
         }
     }
 }

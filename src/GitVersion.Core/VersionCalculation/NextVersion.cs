@@ -9,21 +9,15 @@ public class NextVersion : IComparable<NextVersion>, IEquatable<NextVersion>
 
     public SemanticVersion IncrementedVersion { get; }
 
-    public IBranch Branch { get; }
+    public EffectiveBranchConfiguration BranchConfiguration { get; }
 
-    public EffectiveConfiguration Configuration { get; }
+    public EffectiveConfiguration Configuration => BranchConfiguration.Value;
 
     public NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, EffectiveBranchConfiguration configuration)
-        : this(incrementedVersion, baseVersion, configuration.NotNull().Branch, configuration.NotNull().Value)
-    {
-    }
-
-    public NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, IBranch branch, EffectiveConfiguration configuration)
     {
         IncrementedVersion = incrementedVersion.NotNull();
         BaseVersion = baseVersion.NotNull();
-        Configuration = configuration.NotNull();
-        Branch = branch.NotNull();
+        BranchConfiguration = configuration;
     }
 
     public int CompareTo(NextVersion? other) => IncrementedVersion.CompareTo(other?.IncrementedVersion);

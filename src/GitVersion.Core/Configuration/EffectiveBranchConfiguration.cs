@@ -3,23 +3,17 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public class EffectiveBranchConfiguration
+public record EffectiveBranchConfiguration(EffectiveConfiguration Value, IBranch Branch)
 {
-    public IBranch Branch { get; }
+    public IBranch Branch { get; } = Branch.NotNull();
 
-    public EffectiveConfiguration Value { get; }
-
-    public EffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration value)
-    {
-        Branch = branch.NotNull();
-        Value = value.NotNull();
-    }
+    public EffectiveConfiguration Value { get; } = Value.NotNull();
 
     public NextVersion CreateNextVersion(BaseVersion baseVersion, SemanticVersion incrementedVersion)
     {
         incrementedVersion.NotNull();
         baseVersion.NotNull();
 
-        return new NextVersion(incrementedVersion, baseVersion, new EffectiveBranchConfiguration(Branch, Value));
+        return new(incrementedVersion, baseVersion, this);
     }
 }

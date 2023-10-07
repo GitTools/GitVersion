@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-public class TestEffectiveConfiguration : EffectiveConfiguration
+public record TestEffectiveConfiguration : EffectiveConfiguration
 {
     public TestEffectiveConfiguration(
         AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,

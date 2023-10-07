@@ -126,7 +126,7 @@ internal class RepositoryStore : IRepositoryStore
 
         foreach (var branch in this.repository.Branches)
         {
-            var branchConfiguration = configuration.GetBranchConfiguration(branch);
+            var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
             if (branchConfiguration.IsMainline == true)
             {
                 yield return branch;

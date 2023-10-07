@@ -345,7 +345,7 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
 
     private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, IBranch branch)
     {
-        var increment = context.Configuration.GetEffectiveConfiguration(branch).Increment;
+        var increment = context.Configuration.GetEffectiveConfiguration(branch.Name).Increment;
         if (increment == IncrementStrategy.Inherit) increment = IncrementStrategy.Patch;
         return increment.ToVersionField();
     }

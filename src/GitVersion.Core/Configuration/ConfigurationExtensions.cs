@@ -5,17 +5,17 @@ namespace GitVersion.Configuration;
 
 public static class ConfigurationExtensions
 {
-    public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
-        => GetEffectiveConfiguration(configuration, branch.NotNull().Name);
+    public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
+    {
+        var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name);
+        return new(effectiveConfiguration, branch);
+    }
 
     public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
-        IBranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
-        return new EffectiveConfiguration(configuration, branchConfiguration);
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        return new(configuration, branchConfiguration);
     }
-
-    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
-        => GetBranchConfiguration(configuration, branch.NotNull().Name);
 
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
