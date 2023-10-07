@@ -5,6 +5,7 @@
         <PackageReference Include="Buildalyzer" />
         <PackageReference Include="LibGit2Sharp" />
         <PackageReference Include="Microsoft.Build" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" />
     </ItemGroup>
 
     <ItemGroup>

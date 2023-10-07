@@ -18,7 +18,7 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>1591,8618,SYSLIB10</NoWarn>
+        <NoWarn>$(NoWarn);1591,8618,SYSLIB10;EnableGenerateDocumentationFile</NoWarn>
         <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>
 
         <DebugType>embedded</DebugType>
