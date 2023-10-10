@@ -91,6 +91,12 @@ versioning your assemblies like a champ. However, more can be done to further
 customize the build process. Keep reading to find out how the version variables
 are set and how you can use them in MSBuild tasks.
 
+## Configuration
+
+The [configuration file](/docs/reference/configuration), if any, is read from a file
+the `GitVersion.yml` the root of the repository or the project directory. Since version 3, 
+the path to the configuration file itself [cannot be configured](https://github.com/GitTools/GitVersion/issues/3009).
+
 ## How does it work?
 
 After being installed into a project, the MSBuild task will wire GitVersion into
