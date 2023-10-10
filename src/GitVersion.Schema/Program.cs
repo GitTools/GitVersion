@@ -22,8 +22,8 @@ AttributeHandler.AddHandler<PatternAttributeHandler>();
 var builder = new JsonSchemaBuilder();
 builder.Schema("http://json-schema.org/draft-07/schema#");
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.configuration.json");
-builder.Title("GitVersion Configuration");
-builder.Description("GitVersion configuration schema");
+builder.Title($"GitVersion Configuration ({schemaVersion})");
+builder.Description($"GitVersion configuration schema ({schemaVersion})");
 var schema = builder.FromType<GitVersionConfiguration>(configuration).Build();
 
 var fileName = Path.Combine(schemasDirectory, schemaVersion, "GitVersion.configuration.json");

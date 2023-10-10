@@ -4,7 +4,6 @@
     <PropertyGroup>
         <GitVersionOutputFile Condition="'$(GitVersionOutputFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
 
-        <Language Condition=" '$(Language)' == '' Or '$(DefaultLanguageSourceExtension)' == ''">C#</Language>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
         <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>

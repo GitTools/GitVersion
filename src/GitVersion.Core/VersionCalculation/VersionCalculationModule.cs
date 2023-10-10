@@ -10,11 +10,11 @@ public class VersionCalculationModule : IGitVersionModule
         services.AddModule(new VersionStrategyModule());
 
         services.AddSingleton<IVariableProvider, VariableProvider>();
-        services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
-        services.AddSingleton<ITrunkBasedVersionCalculator, TrunkBasedVersionCalculator>();
-        services.AddSingleton<IContinuousDeploymentVersionCalculator, ContinuousDeploymentVersionCalculator>();
-        services.AddSingleton<IContinuousDeliveryVersionCalculator, ContinuousDeliveryVersionCalculator>();
-        services.AddSingleton<IManualDeploymentVersionCalculator, ManualDeploymentVersionCalculator>();
+        services.AddSingleton<IVersionModeCalculator, MainlineVersionCalculator>();
+        services.AddSingleton<IVersionModeCalculator, TrunkBasedVersionCalculator>();
+        services.AddSingleton<IVersionModeCalculator, ContinuousDeploymentVersionCalculator>();
+        services.AddSingleton<IVersionModeCalculator, ContinuousDeliveryVersionCalculator>();
+        services.AddSingleton<IVersionModeCalculator, ManualDeploymentVersionCalculator>();
         services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
         services.AddSingleton<IIncrementStrategyFinder, IncrementStrategyFinder>();
         services.AddSingleton<IEffectiveBranchConfigurationFinder, EffectiveBranchConfigurationFinder>();

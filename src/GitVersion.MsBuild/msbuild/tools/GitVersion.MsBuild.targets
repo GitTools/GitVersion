@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)"/>
-    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
 
     <PropertyGroup>
         <GenerateGitVersionFiles>false</GenerateGitVersionFiles>
@@ -107,14 +108,9 @@
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
         </GenerateGitVersionInformation>
         <!-- <Message Importance="High" Text="Info: $(GitVersionInformationFilePath)" /> -->
-
-        <ItemGroup Condition="'$(Language)' == 'F#'">
-            <CompileBefore Include="$(GitVersionInformationFilePath)" />
-        </ItemGroup>
-        <ItemGroup Condition="'$(Language)' != 'F#'">
-            <Compile Include="$(GitVersionInformationFilePath)" />
-        </ItemGroup>
         <ItemGroup>
+            <CompileBefore Include="$(GitVersionInformationFilePath)" Condition=" '$(Language)' == 'F#' " />
+            <Compile Include="$(GitVersionInformationFilePath)" Condition=" '$(Language)' == 'C#' Or '$(Language)' == 'VB' " />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
             <_GeneratedCodeFiles Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
@@ -127,18 +123,14 @@
                             ProjectFile="$(MSBuildProjectFullPath)"
                             IntermediateOutputPath="$(IntermediateOutputPath)"
                             Language="$(Language)"
-                            CompileFiles ="@(Compile)">
+                            CompileFiles="@(Compile)">
 
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
         </UpdateAssemblyInfo>
         <!-- <Message Importance="High" Text="Assembly: $(AssemblyInfoTempFilePath)" /> -->
-        <ItemGroup Condition="'$(Language)' == 'F#'">
-            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
-        </ItemGroup>
-        <ItemGroup Condition="'$(Language)' != 'F#'">
-            <Compile Include="$(AssemblyInfoTempFilePath)" />
-        </ItemGroup>
         <ItemGroup>
+            <CompileBefore Include="$(AssemblyInfoTempFilePath)" Condition=" '$(Language)' == 'F#' " />
+            <Compile Include="$(AssemblyInfoTempFilePath)" Condition=" '$(Language)' == 'C#' Or '$(Language)' == 'VB' " />
             <FileWrites Include="$(AssemblyInfoTempFilePath)" />
             <_GeneratedCodeFiles Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>

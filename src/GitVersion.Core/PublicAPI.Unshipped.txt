@@ -100,7 +100,7 @@ GitVersion.Configuration.ConfigurationModule.RegisterTypes(Microsoft.Extensions.
 GitVersion.Configuration.EffectiveBranchConfiguration
 GitVersion.Configuration.EffectiveBranchConfiguration.Branch.get -> GitVersion.IBranch!
 GitVersion.Configuration.EffectiveBranchConfiguration.CreateNextVersion(GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.SemanticVersion! incrementedVersion) -> GitVersion.VersionCalculation.NextVersion!
-GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.IBranch! branch, GitVersion.Configuration.EffectiveConfiguration! value) -> void
+GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.Configuration.EffectiveConfiguration! Value, GitVersion.IBranch! Branch) -> void
 GitVersion.Configuration.EffectiveBranchConfiguration.Value.get -> GitVersion.Configuration.EffectiveConfiguration!
 GitVersion.Configuration.EffectiveConfiguration
 GitVersion.Configuration.EffectiveConfiguration.AssemblyFileVersioningFormat.get -> string?
@@ -108,11 +108,11 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyFileVersioningScheme.get
 GitVersion.Configuration.EffectiveConfiguration.AssemblyInformationalFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme
-GitVersion.Configuration.EffectiveConfiguration.BranchPrefixToTrim.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration) -> void
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? tagPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int tagPreReleaseWeight) -> void
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? tagPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? regularExpression, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int tagPreReleaseWeight) -> void
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainline.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
@@ -417,6 +417,7 @@ GitVersion.Logging.IConsole.WriteLine(string? msg) -> void
 GitVersion.Logging.ILog
 GitVersion.Logging.ILog.AddLogAppender(GitVersion.Logging.ILogAppender! logAppender) -> void
 GitVersion.Logging.ILog.IndentLog(string! operationDescription) -> System.IDisposable!
+GitVersion.Logging.ILog.Separator() -> void
 GitVersion.Logging.ILog.Verbosity.get -> GitVersion.Logging.Verbosity
 GitVersion.Logging.ILog.Verbosity.set -> void
 GitVersion.Logging.ILog.Write(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void
@@ -717,39 +718,29 @@ GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Enabled = 0 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.MergeMessageOnly = 2 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
-GitVersion.VersionCalculation.IContinuousDeliveryVersionCalculator
-GitVersion.VersionCalculation.IContinuousDeliveryVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.IContinuousDeploymentVersionCalculator
-GitVersion.VersionCalculation.IContinuousDeploymentVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
 GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
-GitVersion.VersionCalculation.IMainlineVersionCalculator
-GitVersion.VersionCalculation.IMainlineVersionCalculator.CreateVersionBuildMetaData(GitVersion.ICommit? baseVersionSource) -> GitVersion.SemanticVersionBuildMetaData!
-GitVersion.VersionCalculation.IMainlineVersionCalculator.FindMainlineModeVersion(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.IManualDeploymentVersionCalculator
-GitVersion.VersionCalculation.IManualDeploymentVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
-GitVersion.VersionCalculation.ITrunkBasedVersionCalculator
-GitVersion.VersionCalculation.ITrunkBasedVersionCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVariableProvider
 GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.VersionCalculation.IVersionFilter
 GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
+GitVersion.VersionCalculation.IVersionModeCalculator
+GitVersion.VersionCalculation.IVersionModeCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.NextVersion
 GitVersion.VersionCalculation.NextVersion.BaseVersion.get -> GitVersion.VersionCalculation.BaseVersion!
-GitVersion.VersionCalculation.NextVersion.Branch.get -> GitVersion.IBranch!
+GitVersion.VersionCalculation.NextVersion.BranchConfiguration.get -> GitVersion.Configuration.EffectiveBranchConfiguration!
 GitVersion.VersionCalculation.NextVersion.CompareTo(GitVersion.VersionCalculation.NextVersion? other) -> int
 GitVersion.VersionCalculation.NextVersion.Configuration.get -> GitVersion.Configuration.EffectiveConfiguration!
 GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion? other) -> bool
 GitVersion.VersionCalculation.NextVersion.IncrementedVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void
-GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.IBranch! branch, GitVersion.Configuration.EffectiveConfiguration! configuration) -> void
 GitVersion.VersionCalculation.VersionCalculationModule
 GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void
@@ -816,11 +807,10 @@ readonly GitVersion.Agents.BuildAgentBase.Log -> GitVersion.Logging.ILog!
 static GitVersion.BranchCommit.operator !=(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.BranchCommit.operator ==(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.Configuration.ConfigurationExtensions.FindGitDir(this string! path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
-static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificLabel(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.ReferenceName! branchName, string? branchNameOverride) -> string?
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificLabel(this GitVersion.Configuration.EffectiveConfiguration! configuration, string? branchName, string? branchNameOverride) -> string?
-static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.EffectiveConfiguration!
+static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.EffectiveBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.EffectiveConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetFallbackBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetReleaseBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.IBranchConfiguration!>>!
@@ -833,6 +823,7 @@ static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value,
 static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.IDictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
+static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
 static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.ObjectExtensions.Deconstruct<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value) -> void

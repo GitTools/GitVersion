@@ -23,9 +23,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var branch = repository.FindBranch(branchName);
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+        var effectiveBranchConfiguration = configuration.GetEffectiveBranchConfiguration(branch);
 
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
@@ -54,9 +52,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var branch = repository.FindBranch(branchName);
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+        var effectiveBranchConfiguration = configuration.GetEffectiveBranchConfiguration(branch);
 
         strategy.ShouldNotBeNull();
         var baseVersions = strategy.GetBaseVersions(effectiveBranchConfiguration);
@@ -89,9 +85,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var strategy = GetVersionStrategy(repository, null, configurationHelper.Dictionary);
         var branch = repository.FindBranch(branchName);
 
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+        var effectiveBranchConfiguration = configuration.GetEffectiveBranchConfiguration(branch);
 
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
@@ -115,9 +109,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var branch = localRepository.FindBranch(branchName);
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branch, effectiveConfiguration);
+        var effectiveBranchConfiguration = configuration.GetEffectiveBranchConfiguration(branch);
 
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();

@@ -64,9 +64,9 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
         // Find the commit where the child branch was created.
         var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-        var configuration = Context.Configuration.GetEffectiveConfiguration(releaseBranch);
+        var effectiveBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
         return this.releaseVersionStrategy
-            .GetBaseVersions(new(releaseBranch, configuration))
+            .GetBaseVersions(effectiveBranchConfiguration)
             .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
     }
 }

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://gitversion.net/schemas/6.0/GitVersion.configuration.json",
-  "title": "GitVersion Configuration",
-  "description": "GitVersion configuration schema",
+  "title": "GitVersion Configuration (6.0)",
+  "description": "GitVersion configuration schema (6.0)",
   "type": "object",
   "properties": {
     "assembly-file-versioning-format": {
@@ -41,7 +41,7 @@
       "description": "The header for all the individual branch configuration.",
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/$defs/BranchConfiguration"
+        "$ref": "#/$defs/branchConfiguration"
       }
     },
     "commit-date-format": {
@@ -51,31 +51,31 @@
       "type": "string"
     },
     "commit-message-incrementing": {
-      "$ref": "#/$defs/Nullable\u00601"
+      "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
     },
     "ignore": {
       "description": "The header property for the ignore configuration.",
       "type": "object",
       "properties": {
         "commits-before": {
-          "$ref": "#/$defs/Nullable\u006019"
+          "$ref": "#/$defs/nullableOfDateTimeOffset"
         },
         "sha": {
-          "$ref": "#/$defs/array2"
+          "$ref": "#/$defs/hashSetOfString2"
         }
       }
     },
     "increment": {
-      "$ref": "#/$defs/IncrementStrategy"
+      "$ref": "#/$defs/incrementStrategy"
     },
     "is-mainline": {
-      "$ref": "#/$defs/Nullable\u006011"
+      "$ref": "#/$defs/nullableOfBoolean"
     },
     "is-release-branch": {
-      "$ref": "#/$defs/Nullable\u006012"
+      "$ref": "#/$defs/nullableOfBoolean1"
     },
     "is-source-branch-for": {
-      "$ref": "#/$defs/array"
+      "$ref": "#/$defs/hashSetOfString"
     },
     "label": {
       "$ref": "#/$defs/string"
@@ -119,10 +119,10 @@
       "type": "string"
     },
     "pre-release-weight": {
-      "$ref": "#/$defs/Nullable\u006013"
+      "$ref": "#/$defs/nullableOfInt32"
     },
     "prevent-increment-of-merged-branch-version": {
-      "$ref": "#/$defs/Nullable\u006014"
+      "$ref": "#/$defs/nullableOfBoolean2"
     },
     "regex": {
       "$ref": "#/$defs/string2"
@@ -135,7 +135,7 @@
       ]
     },
     "source-branches": {
-      "$ref": "#/$defs/array1"
+      "$ref": "#/$defs/hashSetOfString1"
     },
     "tag-prefix": {
       "description": "A regular expression which is used to trim Git tags before processing. Defaults to [vV]?",
@@ -149,13 +149,13 @@
       ]
     },
     "track-merge-message": {
-      "$ref": "#/$defs/Nullable\u006015"
+      "$ref": "#/$defs/nullableOfBoolean3"
     },
     "track-merge-target": {
-      "$ref": "#/$defs/Nullable\u006016"
+      "$ref": "#/$defs/nullableOfBoolean4"
     },
     "tracks-release-branches": {
-      "$ref": "#/$defs/Nullable\u006017"
+      "$ref": "#/$defs/nullableOfBoolean5"
     },
     "update-build-number": {
       "description": "Whether to update the build number in the project file. Defaults to true.",
@@ -166,7 +166,7 @@
       "type": "string"
     },
     "mode": {
-      "$ref": "#/$defs/Nullable\u006018"
+      "$ref": "#/$defs/nullableOfVersioningMode"
     },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1",
@@ -174,23 +174,23 @@
     }
   },
   "$defs": {
-    "BranchConfiguration": {
+    "branchConfiguration": {
       "type": "object",
       "properties": {
         "commit-message-incrementing": {
-          "$ref": "#/$defs/Nullable\u00601"
+          "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
         },
         "increment": {
-          "$ref": "#/$defs/IncrementStrategy"
+          "$ref": "#/$defs/incrementStrategy"
         },
         "is-mainline": {
-          "$ref": "#/$defs/Nullable\u006011"
+          "$ref": "#/$defs/nullableOfBoolean"
         },
         "is-release-branch": {
-          "$ref": "#/$defs/Nullable\u006012"
+          "$ref": "#/$defs/nullableOfBoolean1"
         },
         "is-source-branch-for": {
-          "$ref": "#/$defs/array"
+          "$ref": "#/$defs/hashSetOfString"
         },
         "label": {
           "$ref": "#/$defs/string"
@@ -199,32 +199,32 @@
           "$ref": "#/$defs/string1"
         },
         "pre-release-weight": {
-          "$ref": "#/$defs/Nullable\u006013"
+          "$ref": "#/$defs/nullableOfInt32"
         },
         "prevent-increment-of-merged-branch-version": {
-          "$ref": "#/$defs/Nullable\u006014"
+          "$ref": "#/$defs/nullableOfBoolean2"
         },
         "regex": {
           "$ref": "#/$defs/string2"
         },
         "source-branches": {
-          "$ref": "#/$defs/array1"
+          "$ref": "#/$defs/hashSetOfString1"
         },
         "track-merge-message": {
-          "$ref": "#/$defs/Nullable\u006015"
+          "$ref": "#/$defs/nullableOfBoolean3"
         },
         "track-merge-target": {
-          "$ref": "#/$defs/Nullable\u006016"
+          "$ref": "#/$defs/nullableOfBoolean4"
         },
         "tracks-release-branches": {
-          "$ref": "#/$defs/Nullable\u006017"
+          "$ref": "#/$defs/nullableOfBoolean5"
         },
         "mode": {
-          "$ref": "#/$defs/Nullable\u006018"
+          "$ref": "#/$defs/nullableOfVersioningMode"
         }
       }
     },
-    "Nullable\u00601": {
+    "nullableOfCommitMessageIncrementMode": {
       "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be \u0027Disabled\u0027, \u0027Enabled\u0027 or \u0027MergeMessageOnly\u0027.",
       "enum": [
         "Enabled",
@@ -232,7 +232,7 @@
         "MergeMessageOnly"
       ]
     },
-    "IncrementStrategy": {
+    "incrementStrategy": {
       "description": "The increment strategy for this branch. Can be \u0027Inherit\u0027, \u0027Patch\u0027, \u0027Minor\u0027, \u0027Major\u0027, \u0027None\u0027.",
       "enum": [
         "None",
@@ -242,21 +242,21 @@
         "Inherit"
       ]
     },
-    "Nullable\u006011": {
+    "nullableOfBoolean": {
       "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006012": {
+    "nullableOfBoolean1": {
       "description": "Indicates this branch configuration represents a release branch in GitFlow.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "array": {
+    "hashSetOfString": {
       "description": "The branches that this branch is a source branch.",
       "type": "array",
       "items": {
@@ -265,7 +265,7 @@
       }
     },
     "string": {
-      "description": "The label to use for this branch. Can be \u0027useBranchName\u0027 to extract the label from the branch name. Use the value {BranchName} as a placeholder to insert the branch name.",
+      "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
       "type": "string"
     },
     "string1": {
@@ -274,14 +274,14 @@
       "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
       "type": "string"
     },
-    "Nullable\u006013": {
+    "nullableOfInt32": {
       "description": "Provides a way to translate the PreReleaseLabel to a number.",
       "type": [
         "integer",
         "null"
       ]
     },
-    "Nullable\u006014": {
+    "nullableOfBoolean2": {
       "description": "Prevent increment of merged branch version.",
       "type": [
         "boolean",
@@ -292,7 +292,7 @@
       "description": "The regular expression pattern to use to match this branch.",
       "type": "string"
     },
-    "array1": {
+    "hashSetOfString1": {
       "description": "The source branches for this branch.",
       "type": "array",
       "items": {
@@ -300,28 +300,28 @@
         "type": "string"
       }
     },
-    "Nullable\u006015": {
+    "nullableOfBoolean3": {
       "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006016": {
+    "nullableOfBoolean4": {
       "description": "Strategy which will look for tagged merge commits directly off the current branch.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006017": {
+    "nullableOfBoolean5": {
       "description": "Indicates this branch configuration represents develop in GitFlow.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006018": {
+    "nullableOfVersioningMode": {
       "description": "The versioning mode for this branch. Can be \u0027ContinuousDelivery\u0027, \u0027ContinuousDeployment\u0027, \u0027Mainline\u0027.",
       "enum": [
         "ContinuousDelivery",
@@ -329,17 +329,20 @@
         "Mainline"
       ]
     },
-    "DateTimeOffset": {
+    "nullableOfDateTimeOffset": {
+      "format": "date-time",
+      "pattern": "\u0027yyyy-MM-ddTHH:mm:ss\u0027",
+      "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
       "type": [
         "object",
         "null"
       ],
       "properties": {
         "date": {
-          "$ref": "#/$defs/DateTime"
+          "$ref": "#/$defs/dateTime"
         },
         "date-time": {
-          "$ref": "#/$defs/DateTime"
+          "$ref": "#/$defs/dateTime"
         },
         "day": {
           "$ref": "#/$defs/integer"
@@ -363,7 +366,7 @@
           "$ref": "#/$defs/integer"
         },
         "local-date-time": {
-          "$ref": "#/$defs/DateTime"
+          "$ref": "#/$defs/dateTime"
         },
         "microsecond": {
           "$ref": "#/$defs/integer"
@@ -381,7 +384,7 @@
           "$ref": "#/$defs/integer"
         },
         "offset": {
-          "$ref": "#/$defs/TimeSpan"
+          "$ref": "#/$defs/timeSpan"
         },
         "second": {
           "$ref": "#/$defs/integer"
@@ -390,10 +393,10 @@
           "$ref": "#/$defs/integer1"
         },
         "time-of-day": {
-          "$ref": "#/$defs/TimeSpan"
+          "$ref": "#/$defs/timeSpan"
         },
         "utc-date-time": {
-          "$ref": "#/$defs/DateTime"
+          "$ref": "#/$defs/dateTime"
         },
         "utc-ticks": {
           "$ref": "#/$defs/integer1"
@@ -403,7 +406,81 @@
         }
       }
     },
-    "DateTime": {
+    "dateTimeOffset": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "date-time": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "day": {
+          "$ref": "#/$defs/integer"
+        },
+        "day-of-week": {
+          "enum": [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "readOnly": true
+        },
+        "day-of-year": {
+          "$ref": "#/$defs/integer"
+        },
+        "hour": {
+          "$ref": "#/$defs/integer"
+        },
+        "local-date-time": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "microsecond": {
+          "$ref": "#/$defs/integer"
+        },
+        "millisecond": {
+          "$ref": "#/$defs/integer"
+        },
+        "minute": {
+          "$ref": "#/$defs/integer"
+        },
+        "month": {
+          "$ref": "#/$defs/integer"
+        },
+        "nanosecond": {
+          "$ref": "#/$defs/integer"
+        },
+        "offset": {
+          "$ref": "#/$defs/timeSpan"
+        },
+        "second": {
+          "$ref": "#/$defs/integer"
+        },
+        "ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "time-of-day": {
+          "$ref": "#/$defs/timeSpan"
+        },
+        "utc-date-time": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "utc-ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "year": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "dateTime": {
       "type": "string",
       "format": "date-time",
       "readOnly": true
@@ -412,15 +489,7 @@
       "type": "integer",
       "readOnly": true
     },
-    "integer1": {
-      "type": "integer",
-      "readOnly": true
-    },
-    "number": {
-      "type": "number",
-      "readOnly": true
-    },
-    "TimeSpan": {
+    "timeSpan": {
       "type": "object",
       "properties": {
         "days": {
@@ -471,84 +540,15 @@
       },
       "readOnly": true
     },
-    "Nullable\u006019": {
-      "format": "date-time",
-      "pattern": "\u0027yyyy-MM-ddTHH:mm:ss\u0027",
-      "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "date": {
-          "$ref": "#/$defs/DateTime"
-        },
-        "date-time": {
-          "$ref": "#/$defs/DateTime"
-        },
-        "day": {
-          "$ref": "#/$defs/integer"
-        },
-        "day-of-week": {
-          "enum": [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-          ],
-          "readOnly": true
-        },
-        "day-of-year": {
-          "$ref": "#/$defs/integer"
-        },
-        "hour": {
-          "$ref": "#/$defs/integer"
-        },
-        "local-date-time": {
-          "$ref": "#/$defs/DateTime"
-        },
-        "microsecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "millisecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "minute": {
-          "$ref": "#/$defs/integer"
-        },
-        "month": {
-          "$ref": "#/$defs/integer"
-        },
-        "nanosecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "offset": {
-          "$ref": "#/$defs/TimeSpan"
-        },
-        "second": {
-          "$ref": "#/$defs/integer"
-        },
-        "ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "time-of-day": {
-          "$ref": "#/$defs/TimeSpan"
-        },
-        "utc-date-time": {
-          "$ref": "#/$defs/DateTime"
-        },
-        "utc-ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "year": {
-          "$ref": "#/$defs/integer"
-        }
-      }
+    "integer1": {
+      "type": "integer",
+      "readOnly": true
     },
-    "array2": {
+    "number": {
+      "type": "number",
+      "readOnly": true
+    },
+    "hashSetOfString2": {
       "description": "A sequence of SHAs to be excluded from the version calculations.",
       "type": "array",
       "items": {

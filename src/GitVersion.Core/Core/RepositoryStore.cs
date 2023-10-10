@@ -126,7 +126,7 @@ internal class RepositoryStore : IRepositoryStore
 
         foreach (var branch in this.repository.Branches)
         {
-            var branchConfiguration = configuration.GetBranchConfiguration(branch);
+            var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
             if (branchConfiguration.IsMainline == true)
             {
                 yield return branch;
@@ -283,11 +283,9 @@ internal class RepositoryStore : IRepositoryStore
             return this.taggedSemanticVersionsCache;
         }
 
-        using (this.log.IndentLog($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}"))
-        {
-            this.taggedSemanticVersionsCache = GetTaggedSemanticVersionsInternal().ToList();
-            return this.taggedSemanticVersionsCache;
-        }
+        this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
+        this.taggedSemanticVersionsCache = GetTaggedSemanticVersionsInternal().ToList();
+        return this.taggedSemanticVersionsCache;
 
         IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersionsInternal()
         {

@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-public class TestEffectiveConfiguration : EffectiveConfiguration
+public record TestEffectiveConfiguration : EffectiveConfiguration
 {
     public TestEffectiveConfiguration(
         AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
@@ -16,7 +16,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         string tagPrefix = ConfigurationConstants.DefaultTagPrefix,
         string label = "ci",
         string? nextVersion = null,
-        string branchPrefixToTrim = "",
+        string regularExpression = "",
         bool preventIncrementOfMergedBranchVersion = false,
         string? labelNumberPattern = null,
         bool trackMergeTarget = false,
@@ -41,7 +41,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
             label,
             nextVersion,
             IncrementStrategy.Patch,
-            branchPrefixToTrim,
+            regularExpression,
             preventIncrementOfMergedBranchVersion,
             labelNumberPattern,
             trackMergeTarget,

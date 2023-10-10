@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class ManualDeploymentVersionCalculator : NonTrunkBasedVersionCalculatorBase, IManualDeploymentVersionCalculator
+internal sealed class ManualDeploymentVersionCalculator : NonTrunkBasedVersionCalculatorBase, IVersionModeCalculator
 {
     public ManualDeploymentVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(log, repositoryStore, versionContext)
