@@ -11,7 +11,7 @@ var schemaVersion = configurationManager["Version"]!;
 
 var configuration = new SchemaGeneratorConfiguration
 {
-    PropertyNamingMethod = PropertyNamingMethods.KebabCase,
+    PropertyNameResolver = PropertyNameResolvers.KebabCase,
     Nullability = Nullability.AllowForNullableValueTypes,
     PropertyOrder = PropertyOrder.ByName,
 };
@@ -30,7 +30,7 @@ var fileName = Path.Combine(schemasDirectory, schemaVersion, "GitVersion.configu
 Console.WriteLine($"Writing schema to {fileName}");
 schema.WriteToFile(fileName);
 
-configuration.PropertyNamingMethod = PropertyNamingMethods.AsDeclared;
+configuration.PropertyNameResolver = PropertyNameResolvers.AsDeclared;
 
 builder = new JsonSchemaBuilder();
 builder.Schema("http://json-schema.org/draft-07/schema#");
