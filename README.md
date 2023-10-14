@@ -10,15 +10,16 @@ works out the [Semantic Version][semver] of the commit being built.
 
 | Artifact                   | Stable                                                             |                                                         |
 |:---------------------------|:-------------------------------------------------------------------|---------------------------------------------------------|
-| **GitHub Release**         | [![GitHub release][gh-rel-badge]][gh-rel]                          |
-| **GitVersion.Portable**    | [![Chocolatey][choco-badge]][choco]                                |
-| **GitVersion.Tool**        | [![NuGet][gvgt-badge]][gvgt]                                       |
-| **GitVersion.CommandLine** | [![NuGet][gvcl-badge]][gvcl]                                       |
+| **GitHub Release**         | [![GitHub release][gh-rel-badge]][gh-rel]                          |                                                         |
+| **GitVersion.Portable**    | [![Chocolatey][choco-badge]][choco]                                |                                                         |
+| **GitVersion.Tool**        | [![NuGet][gvgt-badge]][gvgt]                                       |                                                         |
+| **GitVersion.CommandLine** | [![NuGet][gvcl-badge]][gvcl]                                       |                                                         |
 | **GitVersion.MsBuild**     | [![NuGet][gvt-badge]][gvt]                                         | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
-| **Homebrew**               | [![homebrew][brew-badge]][brew]                                    |
-| **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
-| **Github Action**          | [![Github Action][gh-actions-badge]][gh-actions]                   |
-| **Docker**                 | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |
+| **Homebrew**               | [![homebrew][brew-badge]][brew]                                    |                                                         |
+| **Winget**                 | [![winget][winget-badge]][winget]                                  | `winget install gitversion`                             |
+| **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |                                                         |
+| **Github Action**          | [![Github Action][gh-actions-badge]][gh-actions]                   |                                                         |
+| **Docker**                 | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |                                                         |
 
 ## Compatibility
 
@@ -55,7 +56,7 @@ from The Noun Project.
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
-[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
+[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
 [codecov-badge]:                   https://codecov.io/gh/GitTools/GitVersion/branch/main/graph/badge.svg
 [docs]:                            https://gitversion.net/docs/
@@ -72,6 +73,8 @@ from The Noun Project.
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
 [brew]:                            https://formulae.brew.sh/formula/gitversion
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
+[winget]:                          https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitTools/GitVersion
+[winget-badge]:                    https://img.shields.io/badge/winget-v5.12.0-blue.svg?logo=microsoft
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg?logo=docker
 [az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=gittools.gittools
