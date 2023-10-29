@@ -9,7 +9,7 @@ public class BuildContext : BuildContextBase
 
     public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
     {
-        [PlatformFamily.Windows] = new[] { "win-x64", "win-x86", "win-arm64" },
+        [PlatformFamily.Windows] = new[] { "win-x64", "win-arm64" },
         [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64", "linux-arm64", "linux-musl-arm64" },
         [PlatformFamily.OSX] = new[] { "osx-x64", "osx-arm64" },
     };
