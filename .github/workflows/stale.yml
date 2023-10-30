@@ -32,9 +32,9 @@ jobs:
           days-before-issue-stale: 90
           days-before-issue-close: 30
           # skip issues that have a milestone
-          exempt-issue-milestones: true
+          exempt-all-issue-milestones: true
           # skip those that are assigned
-          exempt-issue-assignees: true
+          exempt-all-issue-assignees: true
           # skip issues with label 'pinned'
           exempt-issue-labels: pinned,security,failing test case,help wanted
 
