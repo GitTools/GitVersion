@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -74,6 +75,12 @@ public class WriteVersionInfoTest : TestTaskBase
     [Test]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && System.Environment.Version.Major == 7)
+        {
+            Assert.Ignore("GitHub Actions is disabled on macOS and .Net 7.0");
+            return;
+        }
+
         var task = new WriteVersionInfoToBuildLog();
 
         using var result = ExecuteMsBuildTaskInGitHubActions(task, GitHubEnvFilePath);
