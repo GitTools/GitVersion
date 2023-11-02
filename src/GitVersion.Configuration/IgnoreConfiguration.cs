@@ -6,7 +6,7 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
 {
     [JsonPropertyName("commits-before")]
     [JsonPropertyDescription("Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.")]
-    [JsonPropertyPattern("'yyyy-MM-ddTHH:mm:ss'", PatternFormat.DateTime)]
+    [JsonPropertyFormat(Format.DateTime)]
     public DateTimeOffset? Before { get; init; }
 
     [JsonIgnore]

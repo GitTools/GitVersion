@@ -87,8 +87,8 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public int? TagPreReleaseWeight { get; internal set; }
 
     [JsonPropertyName("commit-date-format")]
-    [JsonPropertyDescription("The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'.")]
-    [JsonPropertyDefault("'yyyy-MM-dd'", PatternFormat.DateTime)]
+    [JsonPropertyDescription("The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).")]
+    [JsonPropertyDefault("'yyyy-MM-dd'")]
     public string? CommitDateFormat { get; internal set; }
 
     [JsonPropertyName("merge-message-formats")]
