@@ -24,6 +24,6 @@ GitHub Flow allows and encourages [continuous delivery](/docs/reference/modes/co
 ## Resources
 
 *   [GitHubFlow guide by GitHub](https://docs.github.com/en/get-started/quickstart/github-flow#introduction)
-*   [GitHubFlow original blog post](https://scottchacon.com/2011/08/31/github-flow.html)
+*   [GitHubFlow original blog post](https://scottchacon.com/2011/08/31/github-flow)
 *   [Phil Haack's (haacked) GitHubFlow aliases](https://haacked.com/archive/2014/07/28/github-flow-aliases/)
 *   [GitHubFlow vs GitFlow](https://lucamezzalira.com/2014/03/10/git-flow-vs-github-flow/)
