@@ -43,7 +43,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             output = string.Join("\n", process.GetStandardOutput());
             if (log.Verbosity < Verbosity.Diagnostic)
             {
-                var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)").Cast<Match>()
+                var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)")
                     .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
                 foreach (var error in errors)
                 {
