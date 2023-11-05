@@ -3,6 +3,7 @@ on:
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
+  DOTNET_ROLL_FORWARD: "Major"
 
 jobs:
   manifest:

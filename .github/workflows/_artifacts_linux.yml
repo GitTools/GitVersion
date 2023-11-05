@@ -14,7 +14,8 @@ on:
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
-
+  DOTNET_ROLL_FORWARD: "Major"
+  
 jobs:
   artifacts:
     name: ${{ matrix.distro }} - net${{ matrix.targetFramework }}
