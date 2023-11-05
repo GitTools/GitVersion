@@ -4,6 +4,9 @@
     <option name="PROGRAM_PARAMETERS" value="--target=DockerPublish --arch amd64 --docker_dotnetversion=6.0 --docker_distro=debian.11" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
+    <envs>
+      <env name="DOTNET_ROLL_FORWARD" value="Major" />
+    </envs>
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
