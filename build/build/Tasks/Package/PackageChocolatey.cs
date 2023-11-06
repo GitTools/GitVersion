@@ -37,7 +37,7 @@ public class PackageChocolatey : FrostingTask<BuildContext>
 
         metaPackageSettings.Dependencies = new[]
         {
-            new ChocolateyNuSpecDependency { Id = "GitVersion.Portable", Version = context.Version?.ChocolateyVersion }
+            new ChocolateyNuSpecDependency { Id = "GitVersion.Portable", Version = context.Version?.NugetVersion }
         };
 
         context.ChocolateyPack(metaPackageSettings);
@@ -48,7 +48,7 @@ public class PackageChocolatey : FrostingTask<BuildContext>
         var chocolateySettings = new ChocolateyPackSettings
         {
             Id = id,
-            Version = context.Version?.ChocolateyVersion,
+            Version = context.Version?.NugetVersion,
             Title = "GitVersion",
             Description = "Derives SemVer information from a repository following GitFlow or GitHubFlow.",
             Authors = new[] { "GitTools and Contributors" },
@@ -61,7 +61,7 @@ public class PackageChocolatey : FrostingTask<BuildContext>
             IconUrl = new Uri("https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/Color/icon_100x100.png"),
             RequireLicenseAcceptance = false,
             Tags = new[] { "Git", "Versioning", "GitVersion", "GitFlowVersion", "GitFlow", "GitHubFlow", "SemVer" },
-            ReleaseNotes = new[] { $"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.ChocolateyVersion}" },
+            ReleaseNotes = new[] { $"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.NugetVersion}" },
             OutputDirectory = Paths.Nuget,
             LimitOutput = true,
         };
