@@ -8,6 +8,9 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+
+        <BinPath>bin/$(Configuration)</BinPath>
+        <ExePublishPath>../GitVersion.App/$(BinPath)</ExePublishPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +29,14 @@
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
-    <Import Project="nuget-files.props" />
+    <ItemGroup Condition="$(IsPackaging) != ''">
+        <None Include="msbuild/tools/*.*" Pack="true" PackagePath="tools" />
+        <None Include="msbuild/build/*.*" Pack="true" PackagePath="build" />
+        <None Include="msbuild/buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+
+        <None Include="$(ExePublishPath)/net6.0/publish/**/*;$(BinPath)/net6.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net6.0" />
+        <None Include="$(ExePublishPath)/net7.0/publish/**/*;$(BinPath)/net7.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net7.0" />
+        
+    </ItemGroup>
 
 </Project>
