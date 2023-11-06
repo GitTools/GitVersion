@@ -139,8 +139,8 @@ rules for that branch (some branches bump patch, some minor).
 
 Be aware that tags are local to a repository and will not be transferred when
 you perform a default `git push`. Instead, tags can be pushed separately with
-their own command. For more information, read the git documentation on tagging
-at [git-scm.com][git-tagging].
+their own command. For more information, read the [git documentation on
+tagging][git-tagging].
 
 
 ### Incrementing per commit
