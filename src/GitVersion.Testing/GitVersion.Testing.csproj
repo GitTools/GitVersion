@@ -5,4 +5,8 @@
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
     </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\GitVersion.Core\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+        <Compile Include="..\GitVersion.Core\Helpers\ProcessHelper.cs" Link="Helpers\ProcessHelper.cs" />
+    </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion.Core.Tests.Helpers;
@@ -13,9 +14,9 @@ public class TestConsole : IConsole
         this.responses = new Queue<string>(responses);
     }
 
-    public void WriteLine(string? msg) => this.log.Info(msg + System.Environment.NewLine);
+    public void WriteLine(string? msg) => this.log.Info(msg + PathHelper.NewLine);
 
-    public void WriteLine() => this.log.Info(System.Environment.NewLine);
+    public void WriteLine() => this.log.Info(PathHelper.NewLine);
 
     public void Write(string? msg) => this.log.Info(msg ?? throw new ArgumentNullException(nameof(msg)));
 

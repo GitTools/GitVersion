@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -61,7 +62,7 @@ internal class GitVersionCalculateTool : IGitVersionCalculateTool
         }
         catch (AggregateException e)
         {
-            this.log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
+            this.log.Warning($"One or more exceptions during cache write:{PathHelper.NewLine}{e}");
         }
 
         return versionVariables;

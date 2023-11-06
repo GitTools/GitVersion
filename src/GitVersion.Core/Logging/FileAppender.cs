@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Logging;
 
 internal class FileAppender : ILogAppender
@@ -31,7 +33,7 @@ internal class FileAppender : ILogAppender
 
     private static void WriteLogEntry(string logFilePath, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{PathHelper.NewLine}";
         File.AppendAllText(logFilePath, contents);
     }
 }

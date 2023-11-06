@@ -350,7 +350,7 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void WorkingDirectoryWithoutGit()
     {
-        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = System.Environment.SystemDirectory };
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = SysEnv.SystemDirectory };
 
         var exception = Assert.Throws<DirectoryNotFoundException>(() =>
         {

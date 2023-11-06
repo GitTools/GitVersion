@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -23,8 +24,7 @@ internal class HelpWriter : IHelpWriter
         this.versionWriter.WriteTo(assembly, v => version = v);
 
         var args = ArgumentList();
-        var nl = System.Environment.NewLine;
-        var message = "GitVersion " + version + nl + nl + args;
+        var message = $"GitVersion {version}{PathHelper.NewLine}{PathHelper.NewLine}{args}";
 
         writeAction(message);
     }

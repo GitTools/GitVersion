@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Output;
 using LibGit2Sharp;
 
@@ -142,7 +143,7 @@ public class PullRequestInBuildAgentTest
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture("main");
-        var remoteRepositoryPath = ExecutableHelper.GetTempPath();
+        var remoteRepositoryPath = PathHelper.GetTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {

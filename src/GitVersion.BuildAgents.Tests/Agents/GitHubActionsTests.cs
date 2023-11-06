@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Agents.Tests;
@@ -136,8 +137,8 @@ public class GitHubActionsTests : TestBase
         // Assert
         var expected = new List<string> { "Executing GenerateSetVersionMessage for 'GitHubActions'.", "", "Executing GenerateBuildLogOutput for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
 
-        string.Join(Environment.NewLine, list)
-            .ShouldBe(string.Join(Environment.NewLine, expected));
+        string.Join(PathHelper.NewLine, list)
+            .ShouldBe(string.Join(PathHelper.NewLine, expected));
 
         var expectedFileContents = new List<string> { "GitVersion_Major=1.0.0" };
 

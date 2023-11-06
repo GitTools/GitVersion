@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -92,7 +93,7 @@ internal partial class GitRepository : IMutatingGitRepository
                 : network.ListReferences(remote))
             .Select(r => r.ResolveToDirectReference()).ToList();
 
-        this.log.Info($"Remote Refs:{Environment.NewLine}" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+        this.log.Info($"Remote Refs:{PathHelper.NewLine}" + string.Join(PathHelper.NewLine, remoteTips.Select(r => r.CanonicalName)));
         var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
         switch (refs.Count)

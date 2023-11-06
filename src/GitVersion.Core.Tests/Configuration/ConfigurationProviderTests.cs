@@ -81,7 +81,7 @@ branches:
         label: bugfix";
         SetupConfigFileContent(text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
+        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{PathHelper.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 
@@ -96,7 +96,7 @@ branches:
         source-branches: [notconfigured]";
         SetupConfigFileContent(text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{System.Environment.NewLine}" +
+        ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{PathHelper.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 

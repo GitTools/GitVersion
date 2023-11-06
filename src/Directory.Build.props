@@ -98,6 +98,7 @@
         <Using Include="System.Text.Json"/>
         <Using Include="System.Text.Json.Serialization"/>
         <Using Include="System.Xml"/>
+        <Using Include="System.Environment" Alias="SysEnv"/>
     </ItemGroup>
 
     <ItemGroup>

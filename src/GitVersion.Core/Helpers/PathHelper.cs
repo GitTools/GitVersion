@@ -1,15 +1,28 @@
-using GitVersion.Extensions;
-
 namespace GitVersion.Helpers;
 
-public static class PathHelper
+internal static class PathHelper
 {
+    public static string NewLine => SysEnv.NewLine;
+
+    public static string GetCurrentDirectory() => AppContext.BaseDirectory ?? throw new InvalidOperationException();
+
+    public static string GetTempPath()
+    {
+        var tempPath = GetCurrentDirectory();
+        if (!string.IsNullOrWhiteSpace(SysEnv.GetEnvironmentVariable("RUNNER_TEMP")))
+        {
+            tempPath = SysEnv.GetEnvironmentVariable("RUNNER_TEMP");
+        }
+        return Combine(tempPath, "TestRepositories", Guid.NewGuid().ToString());
+    }
+
     public static string GetFullPath(string? path)
     {
-        path.NotNull();
+        ArgumentNullException.ThrowIfNull(path, nameof(path));
 
         return Path.GetFullPath(path);
     }
+
     public static string Combine(string? path1, string? path2)
     {
         if (path1 == null || path2 == null)
@@ -20,7 +33,7 @@ public static class PathHelper
 
     public static string Combine(string? path1)
     {
-        path1.NotNull();
+        ArgumentNullException.ThrowIfNull(path1, nameof(path1));
 
         return Path.Combine(path1);
     }

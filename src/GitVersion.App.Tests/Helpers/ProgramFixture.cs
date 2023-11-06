@@ -67,7 +67,7 @@ public sealed class ProgramFixture
 
         return new ProgramFixtureResult
         {
-            ExitCode = System.Environment.ExitCode,
+            ExitCode = SysEnv.ExitCode,
             Output = this.output.Value,
             Log = this.logger.Value
         };

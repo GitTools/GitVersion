@@ -49,13 +49,13 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
         if (!string.IsNullOrWhiteSpace(targetNamespace) && fileExtension == ".cs")
         {
             indent = "    ";
-            closeBracket = System.Environment.NewLine + "}";
-            openBracket = System.Environment.NewLine + "{";
+            closeBracket = PathHelper.NewLine + "}";
+            openBracket = PathHelper.NewLine + "{";
             indentation += "    ";
         }
 
         var lines = variables.OrderBy(x => x.Key).Select(v => string.Format(indentation + addFormat, v.Key, v.Value));
-        var members = string.Join(System.Environment.NewLine, lines);
+        var members = string.Join(PathHelper.NewLine, lines);
 
         var fileContents = string.Format(template, members, targetNamespace, openBracket, closeBracket, indent);
 
@@ -67,7 +67,7 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
         string getTargetNamespace(string fileExtension) => fileExtension switch
         {
             ".vb" => context.TargetNamespace ?? "Global",
-            ".cs" => context.TargetNamespace != null ? $"{System.Environment.NewLine}namespace {context.TargetNamespace};" : "",
+            ".cs" => context.TargetNamespace != null ? $"{PathHelper.NewLine}namespace {context.TargetNamespace};" : "",
             ".fs" => context.TargetNamespace ?? "global",
             _ => targetNamespaceSentinelValue,
         };

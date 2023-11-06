@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.Testing.Internal;
 using LibGit2Sharp;
 

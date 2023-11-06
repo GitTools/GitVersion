@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig;
@@ -41,7 +42,7 @@ internal class ConfigureBranches : ConfigInitWizardStep
         return @"Which branch would you like to configure:
 
 0) Go Back
-" + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
+" + string.Join(PathHelper.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
     }
 
     private static IOrderedEnumerable<KeyValuePair<string, IBranchConfiguration>> OrderedBranches(IGitVersionConfiguration configuration)

@@ -274,8 +274,6 @@ GitVersion.Helpers.LambdaEqualityHelper<T>.GetHashCode(T instance) -> int
 GitVersion.Helpers.LambdaEqualityHelper<T>.LambdaEqualityHelper(params System.Func<T, object?>![]! equalityContributorAccessors) -> void
 GitVersion.Helpers.LambdaKeyComparer<TSource, TKey>
 GitVersion.Helpers.LambdaKeyComparer<TSource, TKey>.LambdaKeyComparer(System.Func<TSource!, TKey>! keySelector, System.Collections.Generic.IComparer<TKey>? innerComparer = null) -> void
-GitVersion.Helpers.PathHelper
-GitVersion.Helpers.ProcessHelper
 GitVersion.Helpers.RetryAction<T, Result>
 GitVersion.Helpers.RetryAction<T, Result>.Execute(System.Func<Result>! operation) -> Result
 GitVersion.Helpers.RetryAction<T, Result>.RetryAction(int maxRetries = 5) -> void
@@ -849,12 +847,6 @@ static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, s
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! value, string! prefix) -> string!
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(System.Collections.Generic.IList<byte>! bytes) -> System.Text.Encoding?
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(string? filename) -> System.Text.Encoding?
-static GitVersion.Helpers.PathHelper.Combine(string? path1) -> string!
-static GitVersion.Helpers.PathHelper.Combine(string? path1, string? path2) -> string!
-static GitVersion.Helpers.PathHelper.Combine(string? path1, string? path2, string? path3) -> string!
-static GitVersion.Helpers.PathHelper.Combine(string? path1, string? path2, string? path3, string? path4) -> string!
-static GitVersion.Helpers.PathHelper.GetFullPath(string? path) -> string!
-static GitVersion.Helpers.ProcessHelper.Run(System.Action<string!>! output, System.Action<string!>! errorOutput, System.IO.TextReader? input, string! exe, string! args, string! workingDirectory, params System.Collections.Generic.KeyValuePair<string!, string?>[]! environmentalVariables) -> int
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
 static GitVersion.IncrementStrategyExtensions.ToVersionField(this GitVersion.IncrementStrategy strategy) -> GitVersion.VersionField
 static GitVersion.Logging.Disposable.Create(System.Action! disposer) -> System.IDisposable!

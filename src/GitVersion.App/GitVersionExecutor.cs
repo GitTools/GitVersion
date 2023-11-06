@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -72,13 +73,13 @@ internal class GitVersionExecutor : IGitVersionExecutor
         }
         catch (WarningException exception)
         {
-            var error = $"An error occurred:{System.Environment.NewLine}{exception.Message}";
+            var error = $"An error occurred:{PathHelper.NewLine}{exception.Message}";
             this.log.Warning(error);
             return 1;
         }
         catch (Exception exception)
         {
-            var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
+            var error = $"An unexpected error occurred:{PathHelper.NewLine}{exception}";
             this.log.Error(error);
 
             this.log.Info("Attempting to show the current git graph (please include in issue): ");

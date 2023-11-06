@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GitVersion.Helpers;
 
-public static class ProcessHelper
+internal static class ProcessHelper
 {
     private static readonly object LockObject = new();
 

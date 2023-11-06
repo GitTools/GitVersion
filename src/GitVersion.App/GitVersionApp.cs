@@ -25,12 +25,12 @@ internal class GitVersionApp : IHostedService
         {
             var gitVersionOptions = this.options.Value;
             this.log.Verbosity = gitVersionOptions.Verbosity;
-            System.Environment.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+            SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception.Message);
-            System.Environment.ExitCode = 1;
+            SysEnv.ExitCode = 1;
         }
 
         this.applicationLifetime.StopApplication();

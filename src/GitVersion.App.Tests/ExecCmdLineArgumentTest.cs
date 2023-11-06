@@ -49,7 +49,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
     {
-        var result = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, null, false);
+        var result = GitVersionHelper.ExecuteIn(SysEnv.SystemDirectory, null, false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldContain("Cannot find the .git directory");
@@ -69,7 +69,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
     {
-        var workingDirectory = PathHelper.Combine(ExecutableHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
+        var workingDirectory = PathHelper.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
         var executable = ExecutableHelper.GetDotNetExecutable();
 
         var output = new StringBuilder();
@@ -81,7 +81,7 @@ public class ExecCmdLineArgumentTest
             null,
             executable,
             args,
-            ExecutableHelper.GetCurrentDirectory());
+            PathHelper.GetCurrentDirectory());
 
         exitCode.ShouldNotBe(0);
         var outputString = output.ToString();

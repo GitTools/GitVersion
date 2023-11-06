@@ -1,5 +1,6 @@
 using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
@@ -34,7 +35,7 @@ public class TagCheckoutInBuildAgentTests
     private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture("main");
-        var remoteRepositoryPath = ExecutableHelper.GetTempPath();
+        var remoteRepositoryPath = PathHelper.GetTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {

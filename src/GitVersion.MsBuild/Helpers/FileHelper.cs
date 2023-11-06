@@ -84,7 +84,7 @@ internal static class FileHelper
         var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
-        allText += Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+        allText += PathHelper.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
         const string blockComments = @"/\*(.*?)\*/";
         const string lineComments = @"//(.*?)\r?\n";
@@ -93,7 +93,7 @@ internal static class FileHelper
 
         var noCommentsOrStrings = Regex.Replace(allText,
             blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-            me => me.Value.StartsWith("//") ? Environment.NewLine : string.Empty,
+            me => me.Value.StartsWith("//") ? PathHelper.NewLine : string.Empty,
             RegexOptions.Singleline);
 
         return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace
@@ -112,14 +112,14 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
         var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
-        allText += Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+        allText += PathHelper.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
         const string lineComments = @"'(.*?)\r?\n";
         const string strings = @"""((\\[^\n]|[^""\n])*)""";
 
         var noCommentsOrStrings = Regex.Replace(allText,
             lineComments + "|" + strings,
-            me => me.Value.StartsWith("'") ? Environment.NewLine : string.Empty,
+            me => me.Value.StartsWith("'") ? PathHelper.NewLine : string.Empty,
             RegexOptions.Singleline);
 
         return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace

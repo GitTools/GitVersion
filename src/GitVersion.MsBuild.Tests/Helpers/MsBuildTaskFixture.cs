@@ -75,7 +75,7 @@ public class MsBuildTaskFixture
         if (envs == null) return;
         foreach (var (key, value) in envs)
         {
-            System.Environment.SetEnvironmentVariable(key, value);
+            SysEnv.SetEnvironmentVariable(key, value);
         }
     }
 }

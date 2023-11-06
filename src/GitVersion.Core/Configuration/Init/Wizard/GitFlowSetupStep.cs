@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Init.SetConfig;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
@@ -10,5 +11,5 @@ internal class GitFlowSetupStep : GlobalModeSetting
     }
 
     protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory)
-        => $"By default GitVersion will only increment the version of the 'develop' branch every commit, all other branches will increment when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(configurationBuilder, workingDirectory);
+        => $"By default GitVersion will only increment the version of the 'develop' branch every commit, all other branches will increment when tagged{PathHelper.NewLine}{PathHelper.NewLine}" + base.GetPrompt(configurationBuilder, workingDirectory);
 }

@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -215,8 +216,8 @@ internal class RepositoryStore : IRepositoryStore
                 return possibleBranches.SingleOrDefault();
 
             var first = possibleBranches[0];
-            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
-                          $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
+            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{PathHelper.NewLine}" +
+                          $"This may result in incorrect commit counting.{PathHelper.NewLine}Options were:{PathHelper.NewLine}" +
                           string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
             return first;
         }

@@ -36,7 +36,7 @@ internal class ArgumentParser : IArgumentParser
         {
             var args = new Arguments
             {
-                TargetPath = System.Environment.CurrentDirectory
+                TargetPath = SysEnv.CurrentDirectory
             };
 
             args.Output.Add(OutputType.Json);
@@ -54,7 +54,7 @@ internal class ArgumentParser : IArgumentParser
         {
             return new Arguments
             {
-                TargetPath = System.Environment.CurrentDirectory,
+                TargetPath = SysEnv.CurrentDirectory,
                 Init = true
             };
         }
@@ -99,7 +99,7 @@ internal class ArgumentParser : IArgumentParser
         // If the first argument is a switch, it should already have been consumed in the above loop,
         // or else a WarningException should have been thrown and we wouldn't end up here.
         arguments.TargetPath ??= firstArgumentIsSwitch
-            ? System.Environment.CurrentDirectory
+            ? SysEnv.CurrentDirectory
             : firstArgument;
 
         arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
@@ -388,7 +388,7 @@ internal class ArgumentParser : IArgumentParser
 
         if (versionVariable == null)
         {
-            var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
+            var message = $"{name} requires a valid version variable. Available variables are:{PathHelper.NewLine}" +
                           string.Join(", ", availableVariables.Select(x => string.Concat("'", x, "'")));
             throw new WarningException(message);
         }

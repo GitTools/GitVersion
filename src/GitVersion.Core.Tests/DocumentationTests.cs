@@ -33,7 +33,7 @@ public class DocumentationTests : TestBase
         {
             var formattedConfigProperty = $"### {configProperty}";
             configurationDocumentationFile.ShouldContain(formattedConfigProperty, Case.Insensitive,
-                System.Environment.NewLine + configurationDocumentationFile);
+                PathHelper.NewLine + configurationDocumentationFile);
         }
     }
 
@@ -48,7 +48,7 @@ public class DocumentationTests : TestBase
         foreach (var variable in variables)
         {
             variableDocumentationFile.ShouldContain(variable, Case.Insensitive,
-                System.Environment.NewLine + variableDocumentationFile);
+                PathHelper.NewLine + variableDocumentationFile);
         }
     }
 

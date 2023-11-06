@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Build.Utilities;
 
@@ -23,7 +24,7 @@ internal class MsBuildAppender : ILogAppender
 
     private void WriteLogEntry(LogLevel level, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{Environment.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{PathHelper.NewLine}";
         switch (level)
         {
             case LogLevel.Fatal:

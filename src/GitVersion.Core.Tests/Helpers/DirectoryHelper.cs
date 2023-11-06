@@ -73,7 +73,7 @@ public static class DirectoryHelper
                                           "{0}Known and common causes include:" +
                                           "{0}- Windows Search Indexer (go to the Indexing Options, in the Windows Control Panel, and exclude the bin folder of LibGit2Sharp.Tests)" +
                                           "{0}- Antivirus (exclude the bin folder of LibGit2Sharp.Tests from the paths scanned by your real-time antivirus){0}",
-                System.Environment.NewLine, Path.GetFullPath(directoryPath)));
+                PathHelper.NewLine, Path.GetFullPath(directoryPath)));
         }
     }
 }

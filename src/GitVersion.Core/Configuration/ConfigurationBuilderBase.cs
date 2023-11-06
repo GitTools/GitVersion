@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -432,7 +433,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
+            var helpUrl = $"{PathHelper.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
             if (branchConfiguration.RegularExpression == null)
             {

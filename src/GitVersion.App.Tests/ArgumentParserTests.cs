@@ -30,7 +30,7 @@ public class ArgumentParserTests : TestBase
     public void EmptyMeansUseCurrentDirectory()
     {
         var arguments = this.argumentParser.ParseArguments("");
-        arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+        arguments.TargetPath.ShouldBe(SysEnv.CurrentDirectory);
         arguments.LogFilePath.ShouldBe(null);
         arguments.IsHelp.ShouldBe(false);
     }
@@ -48,7 +48,7 @@ public class ArgumentParserTests : TestBase
     public void NoPathAndLogfileShouldUseCurrentDirectoryTargetDirectory()
     {
         var arguments = this.argumentParser.ParseArguments("-l logFilePath");
-        arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+        arguments.TargetPath.ShouldBe(SysEnv.CurrentDirectory);
         arguments.LogFilePath.ShouldBe("logFilePath");
         arguments.IsHelp.ShouldBe(false);
     }
