@@ -52,7 +52,7 @@ public static class DockerContextExtensions
             File = workDir.CombineWithFilePath("Dockerfile").FullPath,
             BuildArg = new[]
             {
-                $"contentFolder=/content",
+                "contentFolder=/content",
                 $"REGISTRY={registry}",
                 $"DOTNET_VERSION={targetFramework}",
                 $"DISTRO={distro}",

@@ -5,6 +5,7 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
+      <env name="DOTNET_ROLL_FORWARD" value="Major" />
       <env name="NUGET_API_KEY" value="" />
     </envs>
     <option name="USE_EXTERNAL_CONSOLE" value="0" />

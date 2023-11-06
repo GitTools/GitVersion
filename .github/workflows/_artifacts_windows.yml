@@ -1,6 +1,10 @@
 on:
   workflow_call:
 
+env:
+  DOTNET_INSTALL_DIR: "./.dotnet"
+  DOTNET_ROLL_FORWARD: "Major"
+  
 jobs:
   artifacts:
     name: ${{ matrix.package }}

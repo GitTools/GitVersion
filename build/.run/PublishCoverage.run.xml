@@ -1,11 +1,12 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PublishCoverage" type="DotNetProject" factoryName=".NET Project" folderName="Unit Test">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/build.exe" />
-    <option name="PROGRAM_PARAMETERS" value="--target=PublishCoverage --dotnet_target=net7.0" />
+    <option name="PROGRAM_PARAMETERS" value="--target=PublishCoverage --dotnet_target=net8.0" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
       <env name="CODECOV_TOKEN" value="&lt;token&gt;" />
+      <env name="DOTNET_ROLL_FORWARD" value="Major" />
     </envs>
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
