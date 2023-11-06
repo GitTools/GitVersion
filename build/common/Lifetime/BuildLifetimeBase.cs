@@ -30,12 +30,12 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
             context.Information("Running BuildPrepare...");
             return;
         }
-        var gitversionTool = context.GetGitVersionDotnetToolLocation();
+        var gitVersionTool = context.GetGitVersionDotnetToolLocation();
         var gitVersionSettings = new GitVersionSettings
         {
-            OutputTypes = new HashSet<GitVersionOutput> { GitVersionOutput.Json, GitVersionOutput.BuildServer },
+            OutputTypes = new() { GitVersionOutput.Json, GitVersionOutput.BuildServer },
             ToolPath = context.Tools.Resolve(new[] { "dotnet.exe", "dotnet" }),
-            ArgumentCustomization = args => args.Prepend(gitversionTool!.FullPath)
+            ArgumentCustomization = args => args.Prepend(gitVersionTool!.FullPath)
         };
 
         var gitVersion = context.GitVersion(gitVersionSettings);

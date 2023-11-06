@@ -10,7 +10,7 @@
 
     <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
     <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
