@@ -56,6 +56,41 @@ public class VersionBumpingScenarios : TestBase
     }
 
     [Theory]
+    [TestCase("", "NotAVersion", "2.0.0-1", "1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("", "1.5.0", "1.5.0", "1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("prefix", "1.5.0", "2.0.0-1", "1.9.0", "2.0.0-1", "2.0.0-2")]
+    [TestCase("prefix", "1.5.0", "2.0.0-1", "prefix1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("prefix", "prefix1.5.0", "1.5.0", "1.9.0", "1.5.0", "1.5.1-1")]
+    public void CanUseCommitMessagesToBumpVersion_TagsTakePriorityOnlyIfVersions(
+        string tagPrefix,
+        string firstTag,
+        string expectedAfterFirstTag,
+        string secondTag,
+        string expectedAfterSecondTag,
+        string expectedVersionAfterNewCommit)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithTagPrefix(tagPrefix)
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        var repo = fixture.Repository;
+
+        repo.MakeATaggedCommit($"{tagPrefix}1.0.0");
+        repo.MakeACommit("+semver:major");
+        fixture.AssertFullSemver("2.0.0-1", configuration);
+
+        repo.ApplyTag(firstTag);
+        fixture.AssertFullSemver(expectedAfterFirstTag, configuration);
+
+        repo.ApplyTag(secondTag);
+        fixture.AssertFullSemver(expectedAfterSecondTag, configuration);
+
+        repo.MakeACommit();
+        fixture.AssertFullSemver(expectedVersionAfterNewCommit, configuration);
+    }
+
+    [Theory]
     [TestCase("build: Cleaned up various things", "1.0.1")]
     [TestCase("build: Cleaned up various things\n\nSome descriptive text", "1.0.1")]
     [TestCase("build: Cleaned up various things\n\nSome descriptive text\nWith a second line", "1.0.1")]

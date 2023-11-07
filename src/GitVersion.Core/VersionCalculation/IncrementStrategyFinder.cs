@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 
@@ -16,7 +17,6 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private readonly Dictionary<string, VersionField?> commitIncrementCache = new();
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = new();
     private readonly Dictionary<string, ICommit[]> headCommitsCache = new();
-    private readonly Lazy<IReadOnlySet<string?>> tagsShaCache;
 
     private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -24,11 +24,14 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private static readonly Regex DefaultNoBumpPatternRegex = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly IGitRepository repository;
+    private readonly IRepositoryStore repositoryStore;
 
-    public IncrementStrategyFinder(IGitRepository repository)
+    public IncrementStrategyFinder(
+        IGitRepository repository,
+        IRepositoryStore repositoryStore)
     {
         this.repository = repository.NotNull();
-        this.tagsShaCache = new Lazy<IReadOnlySet<string?>>(ReadRepositoryTagsSha);
+        this.repositoryStore = repositoryStore.NotNull();
     }
 
     public VersionField DetermineIncrementedField(ICommit? currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
@@ -84,10 +87,16 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         }
 
         var commits = GetIntermediateCommits(baseCommit, currentCommit);
+        //get tags with valid version - depends on configuration (see #3757)
+        var versionTags = new Lazy<IReadOnlySet<string?>>(() =>
+            this.repositoryStore.GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
+                .Select(x => x.Tag.TargetSha)
+                .ToHashSet());
+
         // consider commit messages since latest tag only (see #3071)
         commits = commits
             .Reverse()
-            .TakeWhile(x => !this.tagsShaCache.Value.Contains(x.Sha))
+            .TakeWhile(x => !versionTags.Value.Contains(x.Sha))
             .Reverse();
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
@@ -103,8 +112,6 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             commits: commits
         );
     }
-
-    private IReadOnlySet<string?> ReadRepositoryTagsSha() => repository.Tags.Select(t => t.TargetSha).ToHashSet();
 
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
         messageRegex == null
