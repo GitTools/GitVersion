@@ -58,7 +58,7 @@ internal class GitHubActions : BuildAgentBase
         // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
         // GITHUB_REF must be used only for "real" branches, not for tags.
         // Bug fix for https://github.com/GitTools/GitVersion/issues/2838
-        
+
         // pull_request or pull_request_target
         if (eventName.StartsWith("pull_request", StringComparison.OrdinalIgnoreCase))
         {
@@ -69,7 +69,7 @@ internal class GitHubActions : BuildAgentBase
         {
             return null;
         }
-        
+
         return Environment.GetEnvironmentVariable("GITHUB_REF");
     }
 
