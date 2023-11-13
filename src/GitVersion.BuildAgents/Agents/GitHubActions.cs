@@ -53,24 +53,12 @@ internal class GitHubActions : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var refType = Environment.GetEnvironmentVariable("GITHUB_REF_TYPE") ?? "";
-        var eventName = Environment.GetEnvironmentVariable("GITHUB_EVENT_NAME") ?? "";
         // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
         // GITHUB_REF must be used only for "real" branches, not for tags.
         // Bug fix for https://github.com/GitTools/GitVersion/issues/2838
 
-        // pull_request or pull_request_target
-        if (eventName.StartsWith("pull_request", StringComparison.OrdinalIgnoreCase))
-        {
-            return Environment.GetEnvironmentVariable("GITHUB_HEAD_REF");
-        }
-
-        if (refType.Equals("tag", StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        return Environment.GetEnvironmentVariable("GITHUB_REF");
+        var refType = Environment.GetEnvironmentVariable("GITHUB_REF_TYPE") ?? "";
+        return refType.Equals("tag", StringComparison.OrdinalIgnoreCase) ? null : Environment.GetEnvironmentVariable("GITHUB_REF");
     }
 
     public override bool PreventFetch() => true;

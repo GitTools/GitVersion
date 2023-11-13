@@ -90,16 +90,13 @@ public class GitHubActionsTests : TestBase
     public void GetCurrentBranchShouldHandlePullRequests()
     {
         // Arrange
-        this.environment.SetEnvironmentVariable("GITHUB_EVENT_NAME", "pull_request");
-        this.environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "some-branch");
-        this.environment.SetEnvironmentVariable("GITHUB_BASE_REF", MainBranch);
         this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/pull/1/merge");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("some-branch");
+        result.ShouldBe("refs/pull/1/merge");
     }
 
     [Test]
