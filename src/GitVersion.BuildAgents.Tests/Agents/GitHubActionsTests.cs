@@ -18,6 +18,7 @@ public class GitHubActionsTests : TestBase
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.buildServer = sp.GetRequiredService<GitHubActions>();
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+        this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "branch");
 
         this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
@@ -75,26 +76,30 @@ public class GitHubActionsTests : TestBase
     public void GetCurrentBranchShouldHandleTags()
     {
         // Arrange
+        this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "tag");
         this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.0.0");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/tags/1.0.0");
+        result.ShouldBeNull();
     }
 
     [Test]
     public void GetCurrentBranchShouldHandlePullRequests()
     {
         // Arrange
+        this.environment.SetEnvironmentVariable("GITHUB_EVENT_NAME", "pull_request");
+        this.environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "some-branch");
+        this.environment.SetEnvironmentVariable("GITHUB_BASE_REF", MainBranch);
         this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/pull/1/merge");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/pull/1/merge");
+        result.ShouldBe("some-branch");
     }
 
     [Test]
