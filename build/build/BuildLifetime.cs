@@ -41,5 +41,8 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
         msBuildSettings.WithProperty("NoPackageAnalysis", "true");
         msBuildSettings.WithProperty("UseSharedCompilation", "false");
+
+        // https://github.com/dotnet/docs/issues/37674
+        msBuildSettings.WithProperty("IncludeSourceRevisionInInformationalVersion", "false");
     }
 }
