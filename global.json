@@ -1,5 +1,10 @@
 {
+  "projects": [
+    "build",
+    "src"
+  ],
   "sdk": {
-    "version": "7.0.400"
+    "version": "8.0.100",
+    "rollForward": "latestMajor"
   }
 }

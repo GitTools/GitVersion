@@ -23,8 +23,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
 
         context.Information("\nTesting msbuild task with dotnet build\n");
-        var frameworks = new[] { Constants.NetVersion60, Constants.NetVersion70 };
-        foreach (var framework in frameworks)
+        foreach (var framework in Constants.Frameworks)
         {
             var dotnetMsBuildSettings = new DotNetMSBuildSettings();
             dotnetMsBuildSettings.SetTargetFramework(framework);
