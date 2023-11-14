@@ -40,7 +40,7 @@ updates:
       patterns:
       - "Microsoft.Extensions.*"
       - "System.*"
-  directory: "/"
+  directory: "/src"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
