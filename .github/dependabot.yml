@@ -8,7 +8,7 @@ updates:
   groups:
     microsoft:
       patterns:
-      - "Microsoft.Extensions.*"
+      - "Microsoft.*"
       - "System.*"
   directory: "/build"
   schedule:
@@ -23,7 +23,7 @@ updates:
   groups:
     microsoft:
       patterns:
-      - "Microsoft.Extensions.*"
+      - "Microsoft.*"
       - "System.*"    
     serilog:
       patterns:
@@ -41,7 +41,7 @@ updates:
   groups:
     microsoft:
       patterns:
-      - "Microsoft.Extensions.*"
+      - "Microsoft.*"
       - "System.*"
   directory: "/src"
   schedule:
