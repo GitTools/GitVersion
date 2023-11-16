@@ -21,7 +21,7 @@
     <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
     <PackageVersion Include="Buildalyzer" Version="5.0.1" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
-    <PackageVersion Include="MSBuild.ProjectCreation" Version="10.0.0" />
+    <PackageVersion Include="MSBuild.ProjectCreation" Version="11.0.0" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NUnit" Version="3.14.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.9.0" />
