@@ -64,22 +64,22 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("major-version-bump-message")]
     [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a major version increment. Default set to '\+semver:\s?(breaking|major)'")]
-    [JsonPropertyPattern(@"'\+semver:\s?(breaking|major)'")]
+    [JsonPropertyDefault(@"'\+semver:\s?(breaking|major)'")]
     public string? MajorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("minor-version-bump-message")]
     [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a minor version increment. Default set to '\+semver:\s?(feature|minor)'")]
-    [JsonPropertyPattern(@"'\+semver:\s?(feature|minor)'")]
+    [JsonPropertyDefault(@"'\+semver:\s?(feature|minor)'")]
     public string? MinorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("patch-version-bump-message")]
     [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a patch version increment. Default set to '\+semver:\s?(fix|patch)'")]
-    [JsonPropertyPattern(@"'\+semver:\s?(fix|patch)'")]
+    [JsonPropertyDefault(@"'\+semver:\s?(fix|patch)'")]
     public string? PatchVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("no-bump-message")]
     [JsonPropertyDescription(@"Used to tell GitVersion not to increment when in Mainline development mode. . Default set to '\+semver:\s?(none|skip)'")]
-    [JsonPropertyPattern(@"'\+semver:\s?(none|skip)'")]
+    [JsonPropertyDefault(@"'\+semver:\s?(none|skip)'")]
     public string? NoBumpMessage { get; internal set; }
 
     [JsonPropertyName("tag-pre-release-weight")]
@@ -88,7 +88,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("commit-date-format")]
     [JsonPropertyDescription("The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'.")]
-    [JsonPropertyPattern("'yyyy-MM-dd'", PatternFormat.DateTime)]
+    [JsonPropertyDefault("'yyyy-MM-dd'", PatternFormat.DateTime)]
     public string? CommitDateFormat { get; internal set; }
 
     [JsonPropertyName("merge-message-formats")]

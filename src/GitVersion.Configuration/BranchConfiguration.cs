@@ -24,7 +24,7 @@ internal record BranchConfiguration : IBranchConfiguration
 
     [JsonPropertyName("label-number-pattern")]
     [JsonPropertyDescription(@"The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\d+)[-/]'.")]
-    [JsonPropertyPattern(@"[/-](?<number>\d+)[-/]")]
+    [JsonPropertyDefault(@"[/-](?<number>\d+)[-/]")]
     public string? LabelNumberPattern { get; internal set; }
 
     [JsonPropertyName("track-merge-target")]
