@@ -18,6 +18,7 @@ public class GitHubActionsTests : TestBase
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.buildServer = sp.GetRequiredService<GitHubActions>();
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+        this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "branch");
 
         this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
@@ -75,13 +76,14 @@ public class GitHubActionsTests : TestBase
     public void GetCurrentBranchShouldHandleTags()
     {
         // Arrange
+        this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "tag");
         this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.0.0");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/tags/1.0.0");
+        result.ShouldBeNull();
     }
 
     [Test]

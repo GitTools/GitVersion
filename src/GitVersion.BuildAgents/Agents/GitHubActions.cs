@@ -50,7 +50,16 @@ internal class GitHubActions : BuildAgentBase
         }
     }
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("GITHUB_REF");
+
+    public override string? GetCurrentBranch(bool usingDynamicRepos)
+    {
+        // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+        // GITHUB_REF must be used only for "real" branches, not for tags.
+        // Bug fix for https://github.com/GitTools/GitVersion/issues/2838
+
+        var refType = Environment.GetEnvironmentVariable("GITHUB_REF_TYPE") ?? "";
+        return refType.Equals("tag", StringComparison.OrdinalIgnoreCase) ? null : Environment.GetEnvironmentVariable("GITHUB_REF");
+    }
 
     public override bool PreventFetch() => true;
 }
