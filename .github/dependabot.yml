@@ -5,31 +5,52 @@ updates:
     - "dependencies"
   commit-message:
     prefix: "(ci deps)"
+  groups:
+    microsoft:
+      patterns:
+      - "Microsoft.*"
+      - "System.*"
   directory: "/build"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+
 - package-ecosystem: nuget
   labels:
     - "dependencies"
   commit-message:
     prefix: "(new-cli deps)"
+  groups:
+    microsoft:
+      patterns:
+      - "Microsoft.*"
+      - "System.*"    
+    serilog:
+      patterns:
+      - "Serilog.*"
   directory: "/new-cli"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10  
+  open-pull-requests-limit: 10
+  
 - package-ecosystem: nuget
   labels:
     - "dependencies"
   commit-message:
     prefix: "(deps)"
-  directory: "/"
+  groups:
+    microsoft:
+      patterns:
+      - "Microsoft.*"
+      - "System.*"
+  directory: "/src"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   ignore:
     - dependency-name: "Microsoft.Build"
       versions: ["16.9.0", "16.11.0"]
+
 - package-ecosystem: github-actions
   labels:
     - "dependencies"
@@ -38,6 +59,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+    
 - package-ecosystem: npm
   labels:
     - "dependencies"

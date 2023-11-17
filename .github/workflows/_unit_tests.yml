@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net7.0, net6.0]
+        targetFramework: [ 'net8.0', 'net7.0', 'net6.0' ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -34,6 +34,6 @@ jobs:
     -
       name: Test Summary
       uses: test-summary/action@v2
-      if: matrix.targetFramework == 'net7.0'
+      if: matrix.targetFramework == 'net8.0'
       with:
         paths: artifacts/test-results/*.results.xml
