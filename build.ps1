@@ -43,13 +43,30 @@ $Arguments = @{
     exclusive=$Exclusive;
     nuget_useinprocessclient=$true;
 }.GetEnumerator() | ForEach-Object {
-    if ($_.value -ne "") { "--{0}=`"{1}`"" -f $_.key, $_.value }
+    if ($($_.Key -ceq "dryrun") -or ($_.Key -ceq "exclusive")) {
+        if ($_.Value -eq $true) {
+            # switches must not be assigned true or false, but must be passed to indicate true.
+            "--{0}" -f $_.Key
+        }
+    }
+    else {
+        if ($_.Value -cne "") {
+            if ($_.Value -as [string] -contains " ") {
+                $_.Value = "$($_.Value)" # if it contains spaces, enclose it.
+            }
+            "--{0}={1}" -f $_.Key, $_.Value
+        }
+    }
 };
+
+$Arguments | Join-String -Separator " " | Write-Verbose
 
 # Start Cake
 Write-Host "Running build stage $Stage..."
 
-& dotnet run --project build/$Stage/$Stage.csproj -- $Arguments $ScriptArgs
+$cmdline = "& dotnet run --project build/$Stage/$Stage.csproj -- $Arguments $ScriptArgs"
+Write-Verbose $cmdline
+Invoke-Command -ScriptBlock ([scriptblock]::Create($cmdline))
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)
