@@ -1,5 +1,4 @@
 using GitVersion.Common;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
@@ -13,7 +12,6 @@ public class GitVersionCoreModule : IGitVersionModule
     public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<IGitVersionCache, GitVersionCache>();
-        services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
 
         services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
 
@@ -29,7 +27,6 @@ public class GitVersionCoreModule : IGitVersionModule
         });
 
         services.AddModule(new GitVersionCommonModule());
-        services.AddModule(new ConfigurationModule());
         services.AddModule(new VersionCalculationModule());
     }
 }

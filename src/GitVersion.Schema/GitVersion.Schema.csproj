@@ -9,5 +9,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
     </ItemGroup>
 </Project>

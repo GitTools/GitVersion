@@ -78,6 +78,4 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
             this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension, targetNamespace));
         }
     }
-
-    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo) => GenerateGitVersionInformation(variables, fileWriteInfo, null);
 }

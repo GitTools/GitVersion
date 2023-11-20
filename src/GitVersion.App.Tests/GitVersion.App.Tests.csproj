@@ -4,6 +4,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.App\GitVersion.App.csproj" />
     </ItemGroup>

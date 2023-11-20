@@ -1,4 +1,5 @@
 using GitVersion.Agents;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Output;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,7 @@ internal class Program
                 services.AddModule(new GitVersionCoreModule());
                 services.AddModule(new GitVersionLibGit2SharpModule());
                 services.AddModule(new GitVersionBuildAgentsModule());
+                services.AddModule(new GitVersionConfigurationModule());
                 services.AddModule(new GitVersionOutputModule());
                 services.AddModule(new GitVersionAppModule());
 

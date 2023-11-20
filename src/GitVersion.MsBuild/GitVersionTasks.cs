@@ -1,4 +1,5 @@
 using GitVersion.Agents;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
@@ -68,6 +69,7 @@ internal static class GitVersionTasks
         };
 
         services.AddSingleton(Options.Create(gitVersionOptions));
+        services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionCoreModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionOutputModule());

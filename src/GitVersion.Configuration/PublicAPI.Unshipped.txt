@@ -1,0 +1,12 @@
+﻿#nullable enable
+GitVersion.Configuration.ConfigurationException
+GitVersion.Configuration.ConfigurationException.ConfigurationException() -> void
+GitVersion.Configuration.ConfigurationException.ConfigurationException(string! message, System.Exception! innerException) -> void
+GitVersion.Configuration.ConfigurationException.ConfigurationException(string! messageFormat, params object![]! args) -> void
+GitVersion.Configuration.ConfigurationException.ConfigurationException(string! msg) -> void
+GitVersion.Configuration.GitVersionConfigurationModule
+GitVersion.Configuration.GitVersionConfigurationModule.GitVersionConfigurationModule() -> void
+GitVersion.Configuration.GitVersionConfigurationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
+GitVersion.Configuration.Init.GitVersionInitModule
+GitVersion.Configuration.Init.GitVersionInitModule.GitVersionInitModule() -> void
+GitVersion.Configuration.Init.GitVersionInitModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

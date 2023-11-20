@@ -4,6 +4,8 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.App", "GitVersion.App\GitVersion.App.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration", "GitVersion.Configuration\GitVersion.Configuration.csproj", "{B93C3F0C-6CBF-49E6-A476-A0103319640B}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core.Tests", "GitVersion.Core.Tests\GitVersion.Core.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core", "GitVersion.Core\GitVersion.Core.csproj", "{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}"
@@ -51,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE0
 		..\README.md = ..\README.md
 		..\SECURITY.md = ..\SECURITY.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration.Tests", "GitVersion.Configuration.Tests\GitVersion.Configuration.Tests.csproj", "{E3722E82-D283-4BA7-B44F-C43072B829FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +114,14 @@ Global
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +133,8 @@ Global
 		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{13C60949-7225-4B08-BE63-CAAC5E25FD16} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{1F4BE015-699F-464A-8FF0-D8762102421A} = {542E443E-14C3-45A7-A2E9-ACF27286A3B2}
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{E3722E82-D283-4BA7-B44F-C43072B829FA} = {69C36B9D-E496-42A2-B091-C055E999686C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}
