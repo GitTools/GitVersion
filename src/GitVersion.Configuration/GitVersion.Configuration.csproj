@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="YamlDotNet" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Include="SupportedWorkflows\GitFlow\v1.yml" />
+      <EmbeddedResource Include="SupportedWorkflows\GitHubFlow\v1.yml" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="schema" />
+        <InternalsVisibleTo Include="gitversion" />
+        <InternalsVisibleTo Include="GitVersion.App" />
+        <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild" />
+        
+        <InternalsVisibleTo Include="GitVersion.Output" />
+        <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests"/>
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
+        <InternalsVisibleTo Include="GitVersion.App.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+    </ItemGroup>
+</Project>

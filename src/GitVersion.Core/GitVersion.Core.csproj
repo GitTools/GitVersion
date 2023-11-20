@@ -12,11 +12,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitFlow\v1.yml" />
-      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitHubFlow\v1.yml" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Polly" />
         <PackageReference Include="System.Net.Requests" />
 
@@ -30,6 +25,7 @@
         <InternalsVisibleTo Include="schema" />
         <InternalsVisibleTo Include="gitversion" />
         <InternalsVisibleTo Include="GitVersion.App" />
+        <InternalsVisibleTo Include="GitVersion.Configuration" />
         <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
         <InternalsVisibleTo Include="GitVersion.MsBuild" />
         <InternalsVisibleTo Include="GitVersion.Output" />

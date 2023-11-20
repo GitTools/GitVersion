@@ -1,4 +1,5 @@
 using GitVersion.Agents;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Output;
@@ -13,6 +14,7 @@ public class GitVersionCoreTestModule : IGitVersionModule
         services.AddModule(new GitVersionLibGit2SharpModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionOutputModule());
+        services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionCoreModule());
 
         services.AddSingleton<IFileSystem, TestFileSystem>();

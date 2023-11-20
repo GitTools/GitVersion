@@ -88,15 +88,7 @@ GitVersion.Common.IRepositoryStore.GetTaggedSemanticVersionsOnBranch(GitVersion.
 GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.IBranch!
 GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
-GitVersion.Configuration.ConfigurationException
-GitVersion.Configuration.ConfigurationException.ConfigurationException() -> void
-GitVersion.Configuration.ConfigurationException.ConfigurationException(string! message, System.Exception! innerException) -> void
-GitVersion.Configuration.ConfigurationException.ConfigurationException(string! messageFormat, params object![]! args) -> void
-GitVersion.Configuration.ConfigurationException.ConfigurationException(string! msg) -> void
 GitVersion.Configuration.ConfigurationExtensions
-GitVersion.Configuration.ConfigurationModule
-GitVersion.Configuration.ConfigurationModule.ConfigurationModule() -> void
-GitVersion.Configuration.ConfigurationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.Configuration.EffectiveBranchConfiguration
 GitVersion.Configuration.EffectiveBranchConfiguration.Branch.get -> GitVersion.IBranch!
 GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.Configuration.EffectiveConfiguration! Value, GitVersion.IBranch! Branch) -> void
@@ -137,6 +129,7 @@ GitVersion.Configuration.EffectiveConfiguration.VersionInBranchRegex.get -> Syst
 GitVersion.Configuration.EffectiveConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.Configuration.IBranchConfiguration
 GitVersion.Configuration.IBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
+GitVersion.Configuration.IBranchConfiguration.Empty() -> GitVersion.Configuration.IBranchConfiguration!
 GitVersion.Configuration.IBranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.IBranchConfiguration.Inherit(GitVersion.Configuration.IBranchConfiguration! configuration) -> GitVersion.Configuration.IBranchConfiguration!
 GitVersion.Configuration.IBranchConfiguration.IsMainline.get -> bool?
@@ -188,9 +181,6 @@ GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IIgnoreConfiguration.IsEmpty.get -> bool
 GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-GitVersion.Configuration.Init.GitVersionInitModule
-GitVersion.Configuration.Init.GitVersionInitModule.GitVersionInitModule() -> void
-GitVersion.Configuration.Init.GitVersionInitModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.ConfigurationInfo
 GitVersion.ConfigurationInfo.ConfigurationFile -> string?
 GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
@@ -813,6 +803,7 @@ static GitVersion.Configuration.ConfigurationExtensions.GetFallbackBranchConfigu
 static GitVersion.Configuration.ConfigurationExtensions.GetReleaseBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.IBranchConfiguration!>>!
 static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> bool
 static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> bool
+static GitVersion.Configuration.ConfigurationExtensions.ToFilters(this GitVersion.Configuration.IIgnoreConfiguration! source) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyFileVersion(this GitVersion.SemanticVersion! sv, GitVersion.Extensions.AssemblyFileVersioningScheme scheme) -> string?
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyVersion(this GitVersion.SemanticVersion! sv, GitVersion.Extensions.AssemblyVersioningScheme scheme) -> string?
 static GitVersion.Extensions.CommonExtensions.NotNull<T>(this T? value, string! name = "") -> T!

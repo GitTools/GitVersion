@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
@@ -20,13 +21,16 @@ public static class ConfigurationExtensions
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= new BranchConfiguration
-        {
-            RegularExpression = string.Empty,
-            Label = ConfigurationConstants.BranchNamePlaceholder,
-            Increment = IncrementStrategy.Inherit
-        };
+        branchConfiguration ??= configuration.Empty();
         return branchConfiguration;
+    }
+
+    public static IEnumerable<IVersionFilter> ToFilters(this IIgnoreConfiguration source)
+    {
+        source.NotNull();
+
+        if (source.Shas.Any()) yield return new ShaVersionFilter(source.Shas);
+        if (source.Before.HasValue) yield return new MinDateVersionFilter(source.Before.Value);
     }
 
     private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)

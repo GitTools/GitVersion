@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" PrivateAssets="All" />
     </ItemGroup>
