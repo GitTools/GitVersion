@@ -43,8 +43,7 @@ internal class NextVersionCalculator : INextVersionCalculator
         var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
         var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.VersioningMode, nextVersion);
 
-        var effectiveBranchConfiguration = nextVersion.BranchConfiguration;
-        return effectiveBranchConfiguration.CreateNextVersion(nextVersion.BaseVersion, incrementedVersion);
+        return CreateNextVersion(nextVersion.BaseVersion, incrementedVersion, nextVersion.BranchConfiguration);
     }
 
     private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion)
@@ -114,8 +113,15 @@ internal class NextVersionCalculator : INextVersionCalculator
 
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
-        var effectiveBranchConfiguration = maxVersion.BranchConfiguration;
-        return effectiveBranchConfiguration.CreateNextVersion(calculatedBase, maxVersion.IncrementedVersion);
+        return CreateNextVersion(calculatedBase, maxVersion.IncrementedVersion, maxVersion.BranchConfiguration);
+    }
+
+    private static NextVersion CreateNextVersion(BaseVersion baseVersion, SemanticVersion incrementedVersion, EffectiveBranchConfiguration effectiveBranchConfiguration)
+    {
+        incrementedVersion.NotNull();
+        baseVersion.NotNull();
+
+        return new(incrementedVersion, baseVersion, effectiveBranchConfiguration);
     }
 
     private static NextVersion CompareVersions(NextVersion versions1, NextVersion version2)
@@ -179,7 +185,7 @@ internal class NextVersionCalculator : INextVersionCalculator
     }
 
     private bool TryGetNextVersion([NotNullWhen(true)] out NextVersion? result,
-        EffectiveBranchConfiguration effectiveConfiguration, BaseVersion baseVersion)
+                                   EffectiveBranchConfiguration effectiveConfiguration, BaseVersion baseVersion)
     {
         result = null;
 
@@ -194,8 +200,9 @@ internal class NextVersionCalculator : INextVersionCalculator
         var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
         if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
         {
-            result = effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
+            result = CreateNextVersion(baseVersion, incrementedVersion, effectiveConfiguration);
         }
+
         return result is not null;
     }
 
@@ -219,9 +226,11 @@ internal class NextVersionCalculator : INextVersionCalculator
                 {
                     log.Info(reason);
                 }
+
                 return false;
             }
         }
+
         return true;
     }
 }

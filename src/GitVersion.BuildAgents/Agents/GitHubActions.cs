@@ -50,7 +50,6 @@ internal class GitHubActions : BuildAgentBase
         }
     }
 
-
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
         // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
