@@ -1,7 +1,6 @@
 using System.Text.Encodings.Web;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.OutputVariables;
 
@@ -12,6 +11,22 @@ public static class VersionVariablesHelper
         var serializeOptions = JsonSerializerOptions();
         var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
         return FromDictionary(variablePairs);
+    }
+
+    public static string ToJsonString(this GitVersionVariables gitVersionVariables)
+    {
+        var variablesType = typeof(VersionVariablesJsonModel);
+        var variables = new VersionVariablesJsonModel();
+
+        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
+        {
+            var propertyInfo = variablesType.GetProperty(key);
+            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
+        }
+
+        var serializeOptions = JsonSerializerOptions();
+
+        return JsonSerializer.Serialize(variables, serializeOptions);
     }
 
     public static GitVersionVariables FromFile(string filePath, IFileSystem fileSystem)
@@ -33,20 +48,23 @@ public static class VersionVariablesHelper
         }
     }
 
-    public static string ToJsonString(this GitVersionVariables gitVersionVariables)
+    public static void ToFile(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
     {
-        var variablesType = typeof(VersionVariablesJsonModel);
-        var variables = new VersionVariablesJsonModel();
-
-        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
+        try
         {
-            var propertyInfo = variablesType.GetProperty(key);
-            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
+            var retryAction = new RetryAction<IOException>();
+            retryAction.Execute(() => ToFileInternal(gitVersionVariables, filePath, fileSystem));
         }
+        catch (AggregateException ex)
+        {
+            var lastException = ex.InnerExceptions.LastOrDefault() ?? ex.InnerException;
+            if (lastException != null)
+            {
+                throw lastException;
+            }
 
-        var serializeOptions = JsonSerializerOptions();
-
-        return JsonSerializer.Serialize(variables, serializeOptions);
+            throw;
+        }
     }
 
     private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
@@ -65,11 +83,15 @@ public static class VersionVariablesHelper
 
     private static GitVersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
     {
-        using var stream = fileSystem.OpenRead(filePath);
-        using var reader = new StreamReader(stream);
-        var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-        var versionVariables = FromDictionary(dictionary);
-        return versionVariables;
+        var json = fileSystem.ReadAllText(filePath);
+        var variables = FromJson(json);
+        return variables;
+    }
+
+    private static void ToFileInternal(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
+    {
+        var json = gitVersionVariables.ToJsonString();
+        fileSystem.WriteAllText(filePath, json);
     }
 
     private static JsonSerializerOptions JsonSerializerOptions()

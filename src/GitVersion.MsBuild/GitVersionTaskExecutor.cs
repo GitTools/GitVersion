@@ -25,7 +25,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void GetVersion(GetVersion task)
     {
-        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = GitVersionVariables(task);
         var outputType = typeof(GetVersion);
         foreach (var (key, value) in versionVariables)
         {
@@ -35,7 +35,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
-        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = GitVersionVariables(task);
         FileHelper.DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
@@ -59,7 +59,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
     {
-        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = GitVersionVariables(task);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
@@ -72,13 +72,14 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-        var targetNamespace = getTargetNamespace(task);
+        var targetNamespace = GetTargetNamespace(task);
         gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo, targetNamespace);
+        return;
 
-        static string? getTargetNamespace(GenerateGitVersionInformation task)
+        static string? GetTargetNamespace(GenerateGitVersionInformation task)
         {
             string? targetNamespace = null;
-            if (string.Equals(task.UseProjectNamespaceForGitVersionInformation, "true", StringComparison.OrdinalIgnoreCase))
+            if (bool.TryParse(task.UseProjectNamespaceForGitVersionInformation, out var useTargetPathAsRootNamespace) && useTargetPathAsRootNamespace)
             {
                 targetNamespace = task.RootNamespace;
                 if (string.IsNullOrWhiteSpace(targetNamespace))
@@ -93,11 +94,17 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
-        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = GitVersionVariables(task);
 
         var gitVersionOptions = this.options.Value;
         var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
+    }
+
+    private GitVersionVariables GitVersionVariables(GitVersionTaskBase task)
+    {
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, this.fileSystem);
+        return versionVariables;
     }
 }

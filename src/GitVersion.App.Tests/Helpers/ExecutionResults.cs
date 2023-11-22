@@ -19,8 +19,8 @@ public class ExecutionResults
     {
         get
         {
-            var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
-            var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
+            var jsonStartIndex = Output.IndexOf('{');
+            var jsonEndIndex = Output.IndexOf('}');
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
             return VersionVariablesHelper.FromJson(json);

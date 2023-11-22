@@ -688,18 +688,14 @@ GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.init -> void
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.BaseVersion.Source.init -> void
 GitVersion.VersionCalculation.Caching.GitVersionCache
-GitVersion.VersionCalculation.Caching.GitVersionCache.GetCacheDirectory() -> string!
-GitVersion.VersionCalculation.Caching.GitVersionCache.GetCacheFileName(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey) -> string!
 GitVersion.VersionCalculation.Caching.GitVersionCache.GitVersionCache(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.VersionCalculation.Caching.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! key) -> GitVersion.OutputVariables.GitVersionVariables?
+GitVersion.VersionCalculation.Caching.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey) -> GitVersion.OutputVariables.GitVersionVariables?
 GitVersion.VersionCalculation.Caching.GitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.GitVersionVariables! variablesFromCache) -> void
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GitVersionCacheKey(string! value) -> void
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Value.get -> string!
 GitVersion.VersionCalculation.Caching.IGitVersionCache
-GitVersion.VersionCalculation.Caching.IGitVersionCache.GetCacheDirectory() -> string!
-GitVersion.VersionCalculation.Caching.IGitVersionCache.GetCacheFileName(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey) -> string!
-GitVersion.VersionCalculation.Caching.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! key) -> GitVersion.OutputVariables.GitVersionVariables?
+GitVersion.VersionCalculation.Caching.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey) -> GitVersion.OutputVariables.GitVersionVariables?
 GitVersion.VersionCalculation.Caching.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.GitVersionVariables! variablesFromCache) -> void
 GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
@@ -869,6 +865,7 @@ static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! lo
 static GitVersion.Logging.LogExtensions.Write(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void
 static GitVersion.OutputVariables.VersionVariablesHelper.FromFile(string! filePath, GitVersion.IFileSystem! fileSystem) -> GitVersion.OutputVariables.GitVersionVariables!
 static GitVersion.OutputVariables.VersionVariablesHelper.FromJson(string! json) -> GitVersion.OutputVariables.GitVersionVariables!
+static GitVersion.OutputVariables.VersionVariablesHelper.ToFile(GitVersion.OutputVariables.GitVersionVariables! gitVersionVariables, string! filePath, GitVersion.IFileSystem! fileSystem) -> void
 static GitVersion.OutputVariables.VersionVariablesHelper.ToJsonString(this GitVersion.OutputVariables.GitVersionVariables! gitVersionVariables) -> string!
 static GitVersion.ReferenceName.FromBranchName(string! branchName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.Parse(string! canonicalName) -> GitVersion.ReferenceName!
