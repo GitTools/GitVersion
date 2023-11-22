@@ -21,7 +21,7 @@ on:
       - '!docs/**'
 
   repository_dispatch:
-    types: [ release ]
+    types: [ ci-release ]
 
 env:
   DOTNET_ROLL_FORWARD: "Major"
@@ -133,3 +133,12 @@ jobs:
       name: '[Release]'
       shell: pwsh
       run: dotnet run/release.dll --target=PublishRelease
+    -
+      name: '[Publish Release]'
+      if: ${{ github.event_name == 'repository_dispatch' }}
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        repository: ${{ github.repository }}
+        event-type: publish-release
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ github.event.client_payload.tag }}"}' 

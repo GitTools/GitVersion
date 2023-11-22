@@ -3,7 +3,7 @@ name: Verify & Publish Docs
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [release]
+    types: [ publish-release ]
   push:
     branches:
     - main
@@ -90,7 +90,7 @@ jobs:
 
   validate:
     name: Validates Html
-    needs: [prepare]
+    needs: [ prepare ]
     runs-on: ubuntu-latest
     steps:
     -
@@ -126,7 +126,7 @@ jobs:
 
   publish:
     name: Publish docs
-    needs: [validate]
+    needs: [ validate ]
     runs-on: windows-latest
     env:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
@@ -147,7 +147,7 @@ jobs:
         dotnet run/docs.dll --target=GenerateSchemas
     -
       name: '[Publish Documentation]'
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name == 'repository_dispatch' }}
       shell: pwsh
       run: dotnet run/docs.dll --target=PublishDocs
     -

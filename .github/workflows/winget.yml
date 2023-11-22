@@ -1,0 +1,40 @@
+name: Publish to Winget
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        description: 'The git tag name to bump the formula to'
+        required: true
+  repository_dispatch:
+    types: [ publish-release ]
+
+permissions:
+  contents: read
+
+jobs:
+  homebrew:
+    permissions:
+      contents: none
+    name: Bump winget manifest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get version
+      id: get-version
+      shell: pwsh
+      run: |
+        $version = "${{ github.event.client_payload.tag }}"
+        if ($version -eq "") {
+          $version = "${{ github.event.inputs.tag-name }}"
+        }
+        
+        $url = "https://github.com/GitTools/GitVersion/releases/download/{0}/gitversion-win-{1}-{0}.zip"
+        $urls = @(($url -f $version, "x64"), ($url -f $version, "arm64")) -Join ","
+        
+        $run_args = "update --id GitTools.GitVersion --version $version --urls $urls --token ${{ secrets.RELEASE_GITHUB_TOKEN }} --submit"
+        "version=$version" >> $env:GITHUB_OUTPUT
+        "run_args=$run_args" >> $env:GITHUB_OUTPUT
+    
+    - uses: michidk/run-komac@v1
+      with:
+        args: '${{ steps.get-version.outputs.run_args }}'
