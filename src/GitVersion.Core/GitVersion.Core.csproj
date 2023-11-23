@@ -13,7 +13,6 @@
 
     <ItemGroup>
         <PackageReference Include="Polly" />
-        <PackageReference Include="System.Net.Requests" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="YamlDotNet" />
