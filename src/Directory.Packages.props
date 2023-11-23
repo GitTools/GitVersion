@@ -30,7 +30,6 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.6.2" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="Polly" Version="8.2.0" />
-    <PackageVersion Include="System.Net.Requests" Version="4.3.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.0" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="8.0.0" />
     <PackageVersion Include="YamlDotNet" Version="13.7.1" />
