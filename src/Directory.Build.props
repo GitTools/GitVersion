@@ -62,7 +62,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 
-        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All"/>
         <PackageReference Include="NSubstitute"/>
 
         <PackageReference Include="NUnit"/>
