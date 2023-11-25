@@ -31,7 +31,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         this.tagsShaCache = new Lazy<IReadOnlySet<string?>>(ReadRepositoryTagsSha);
     }
 
-    public VersionField DetermineIncrementedField(ICommit? currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
+    public VersionField DetermineIncrementedField(ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
     {
         baseVersion.NotNull();
         configuration.NotNull();
@@ -174,5 +174,45 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         };
 
         return repo.Commits.QueryBy(filter);
+    }
+
+    public IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index)
+    {
+        mergeCommit.NotNull();
+
+        if (!mergeCommit.IsMergeCommit)
+        {
+            throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
+        }
+
+        ICommit baseCommit = mergeCommit.Parents.First();
+        ICommit mergedCommit = GetMergedHead(mergeCommit);
+        if (index == 0) (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
+
+        ICommit findMergeBase = this.repository.FindMergeBase(baseCommit, mergedCommit)
+            ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
+
+        return GetIntermediateCommits(findMergeBase, mergedCommit);
+    }
+
+    private static ICommit GetMergedHead(ICommit mergeCommit)
+    {
+        var parents = mergeCommit.Parents.Skip(1).ToList();
+        if (parents.Count > 1)
+            throw new NotSupportedException("Mainline development does not support more than one merge source in a single commit yet");
+        return parents.Single();
+    }
+
+    public VersionField GetIncrementForcedByCommit(ICommit commit, EffectiveConfiguration configuration)
+    {
+        commit.NotNull();
+        configuration.NotNull();
+
+        var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+        var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+        var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+        var none = TryGetRegexOrDefault(configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
+
+        return GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, none) ?? VersionField.None;
     }
 }

@@ -23,6 +23,8 @@ internal class GitVersionContextFactory : IGitVersionContextFactory
         var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch) ?? throw new InvalidOperationException("Need a branch to operate on");
         var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
+        if (currentCommit is null) throw new GitVersionException("No commits found on the current branch.");
+
         var overrideConfiguration = this.options.Value.ConfigurationInfo.OverrideConfiguration;
         var configuration = this.configurationProvider.Provide(overrideConfiguration);
         if (currentBranch.IsDetachedHead)

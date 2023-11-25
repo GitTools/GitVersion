@@ -25,15 +25,14 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
     {
         var baseVersion = nextVersion.BaseVersion;
 
-        if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
-        //if (!nextVersion.Configuration.Label.IsNullOrEmpty())
+        if (baseVersion.GetSemanticVersion().PreReleaseTag.HasTag())
         {
             throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
         }
 
         using (this.log.IndentLog("Using mainline development mode to calculate current version"))
         {
-            SemanticVersion mainlineVersion = new(baseVersion.SemanticVersion)
+            SemanticVersion mainlineVersion = new(baseVersion.GetSemanticVersion())
             {
                 PreReleaseTag = SemanticVersionPreReleaseTag.Empty
             };
@@ -175,7 +174,7 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
         this.log.Info("Found possible mainline branches: " + string.Join(", ", mainlineBranchNames));
 
         // Find closest mainline branch
-        var firstMatchingCommit = Context.CurrentBranch.Commits?.FirstOrDefault(c => mainlineBranches.ContainsKey(c.Sha));
+        var firstMatchingCommit = Context.CurrentBranch.Commits.FirstOrDefault(c => mainlineBranches.ContainsKey(c.Sha));
         if (firstMatchingCommit is null)
         {
             var mainlineBranchList = mainlineBranches.Values.SelectMany(x => x).ToList();

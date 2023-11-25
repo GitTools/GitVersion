@@ -14,9 +14,9 @@ internal class BranchesContainingCommitFinder
         this.log = log.NotNull();
     }
 
-    public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
+    public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
-        commit = commit.NotNull();
+        commit.NotNull();
         branches ??= this.repository.Branches.ToList();
 
         // TODO Should we cache this?

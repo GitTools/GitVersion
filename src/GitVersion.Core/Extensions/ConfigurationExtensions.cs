@@ -18,6 +18,9 @@ public static class ConfigurationExtensions
         return new(configuration, branchConfiguration);
     }
 
+    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
+        => GetBranchConfiguration(configuration, branch.NotNull().Name);
+
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();

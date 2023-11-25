@@ -177,7 +177,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         else
         {
             baseVersion.ShouldNotBeNull();
-            baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
+            baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedVersion);
         }
     }
 

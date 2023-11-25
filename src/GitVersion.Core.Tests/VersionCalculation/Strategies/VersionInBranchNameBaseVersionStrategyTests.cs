@@ -28,7 +28,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedBaseVersion);
     }
 
     [TestCase("origin/hotfix-2.0.0")]
@@ -90,7 +90,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedBaseVersion);
     }
 
     [TestCase("origin", "release-2.0.0", "2.0.0")]
@@ -114,7 +114,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(effectiveBranchConfiguration).Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedBaseVersion);
     }
 
     private static IVersionStrategy GetVersionStrategy(IGitRepository repository,
