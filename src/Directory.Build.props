@@ -42,7 +42,6 @@
 
     <ItemGroup>
         <PackageReference Include="System.Text.Json"/>
-        <PackageReference Include="System.Text.Encodings.Web"/>
         <PackageReference Include="Roslynator.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

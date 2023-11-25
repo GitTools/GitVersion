@@ -26,8 +26,8 @@
         <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
         <InternalsVisibleTo Include="GitVersion.MsBuild" />
         <InternalsVisibleTo Include="GitVersion.Output" />
-        
-        <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests"/>
+
+        <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
         <InternalsVisibleTo Include="GitVersion.Configuration.Tests" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />

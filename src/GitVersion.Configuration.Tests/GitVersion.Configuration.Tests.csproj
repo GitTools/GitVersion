@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <ItemGroup>
-      <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
-      <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
     </ItemGroup>
-
 </Project>
