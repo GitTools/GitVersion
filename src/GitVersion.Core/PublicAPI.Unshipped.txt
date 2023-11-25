@@ -19,6 +19,14 @@ GitVersion.AssemblySettingsInfo.EnsureAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.Files -> System.Collections.Generic.ISet<string!>!
 GitVersion.AssemblySettingsInfo.UpdateAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.UpdateProjectFiles -> bool
+GitVersion.Attributes.JsonPropertyDefaultAttribute
+GitVersion.Attributes.JsonPropertyDefaultAttribute.Value.get -> string!
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(bool value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(string? value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.Extensions.AssemblyFileVersioningScheme value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.Extensions.AssemblyVersioningScheme value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.SemanticVersionFormat value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(object! boxedValue) -> void
 GitVersion.Attributes.JsonPropertyDescriptionAttribute
 GitVersion.Attributes.JsonPropertyDescriptionAttribute.Description.get -> string!
 GitVersion.Attributes.JsonPropertyDescriptionAttribute.JsonPropertyDescriptionAttribute(string! description) -> void
