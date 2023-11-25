@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -92,5 +93,21 @@ public class MergeMessage
             mergedBranch = $"{ReferenceName.RemoteTrackingBranchPrefix}{mergedBranch}";
         }
         return ReferenceName.FromBranchName(mergedBranch);
+    }
+
+    public static bool TryParse(
+        [NotNullWhen(true)] out MergeMessage? mergeMessage, ICommit mergeCommit, IGitVersionConfiguration configuration)
+    {
+        mergeCommit.NotNull();
+        configuration.NotNull();
+
+        mergeMessage = null;
+
+        if (mergeCommit.IsMergeCommit)
+        {
+            mergeMessage = new MergeMessage(mergeCommit.Message, configuration);
+        }
+
+        return mergeMessage != null;
     }
 }

@@ -17,17 +17,17 @@ public class GitVersionContext
 
     public IBranch CurrentBranch { get; }
 
-    public ICommit? CurrentCommit { get; }
+    public ICommit CurrentCommit { get; }
 
     public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
     public int NumberOfUncommittedChanges { get; }
 
-    public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
+    public GitVersionContext(IBranch currentBranch, ICommit currentCommit,
         IGitVersionConfiguration configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
         CurrentBranch = currentBranch.NotNull();
-        CurrentCommit = currentCommit;
+        CurrentCommit = currentCommit.NotNull();
         Configuration = configuration.NotNull();
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;

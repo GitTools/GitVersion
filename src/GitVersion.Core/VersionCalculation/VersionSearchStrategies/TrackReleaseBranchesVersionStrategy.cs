@@ -33,8 +33,12 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
     }
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
-        configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : Array.Empty<BaseVersion>();
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+    {
+        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return Enumerable.Empty<BaseVersion>();
+
+        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : Array.Empty<BaseVersion>();
+    }
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
@@ -53,7 +57,7 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
                 var source1 = "Release branch exists -> " + baseVersion.Source;
                 return new BaseVersion(source1,
                     baseVersion.ShouldIncrement,
-                    baseVersion.SemanticVersion,
+                    baseVersion.GetSemanticVersion(),
                     baseVersion.BaseVersionSource,
                     null);
             })
@@ -67,6 +71,6 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         var effectiveBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
         return this.releaseVersionStrategy
             .GetBaseVersions(effectiveBranchConfiguration)
-            .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
+            .Select(b => new BaseVersion(b.Source, true, b.GetSemanticVersion(), baseSource, b.BranchNameOverride));
     }
 }

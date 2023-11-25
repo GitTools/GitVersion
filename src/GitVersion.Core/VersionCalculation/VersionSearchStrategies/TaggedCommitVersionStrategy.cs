@@ -17,67 +17,25 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
         : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
-        => GetSemanticVersions(configuration).Select(CreateBaseVersion);
+        => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? Enumerable.Empty<BaseVersion>()
+        : GetSemanticVersions(configuration.Value).Select(CreateBaseVersion);
 
-    private IEnumerable<SemanticVersionWithTag> GetSemanticVersions(EffectiveBranchConfiguration configuration)
+    private IEnumerable<SemanticVersionWithTag> GetSemanticVersions(EffectiveConfiguration configuration)
     {
-        var alreadyReturnedValues = new HashSet<SemanticVersionWithTag>();
+        var label = configuration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
 
-        var olderThan = Context.CurrentCommit?.When;
+        var semanticVersions = this.repositoryStore.GetSemanticVersions(
+            configuration: Context.Configuration,
+            currentBranch: Context.CurrentBranch,
+            currentCommit: Context.CurrentCommit,
+            trackMergeTarget: configuration.TrackMergeTarget,
+            tracksReleaseBranches: configuration.TracksReleaseBranches
+        ).ToArray();
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-
-        var semanticVersions = this.repositoryStore.GetTaggedSemanticVersions(
-            Context.Configuration.TagPrefix, Context.Configuration.SemanticVersionFormat
-        ).ToList();
-        ILookup<string, SemanticVersionWithTag> semanticVersionsByCommit = semanticVersions.ToLookup(element => element.Tag.Commit.Id.Sha);
-
-        var commitsOnCurrentBranch = Context.CurrentBranch.Commits?.ToArray() ?? Array.Empty<ICommit>();
-        if (commitsOnCurrentBranch.Any())
+        foreach (var semanticVersion in semanticVersions)
         {
-            foreach (var commit in commitsOnCurrentBranch)
-            {
-                foreach (var semanticVersion in semanticVersionsByCommit[commit.Id.Sha])
-                {
-                    if (commit.When <= olderThan && semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                    {
-                        if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
-                    }
-                }
-            }
-
-            if (configuration.Value.TrackMergeTarget)
-            {
-                var commitsOnCurrentBranchByCommit = commitsOnCurrentBranch.ToLookup(commit => commit.Id.Sha);
-                foreach (var semanticVersion in semanticVersions)
-                {
-                    if (semanticVersion.Tag.Commit.When > olderThan) continue;
-
-                    var parentCommits = semanticVersion.Tag.Commit.Parents ?? Array.Empty<ICommit>();
-                    if (parentCommits.Any(element => commitsOnCurrentBranchByCommit.Contains(element.Id.Sha))
-                        && semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                    {
-                        if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
-                    }
-                }
-            }
-        }
-
-        if (configuration.Value.TracksReleaseBranches)
-        {
-            foreach (var mainBranch in this.repositoryStore.FindMainlineBranches(Context.Configuration))
-            {
-                foreach (var commit in mainBranch.Commits?.ToArray() ?? Array.Empty<ICommit>())
-                {
-                    foreach (var semanticVersion in semanticVersionsByCommit[commit.Id.Sha])
-                    {
-                        if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                        {
-                            if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
-                        }
-                    }
-                }
-            }
+            if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                yield return semanticVersion;
         }
     }
 

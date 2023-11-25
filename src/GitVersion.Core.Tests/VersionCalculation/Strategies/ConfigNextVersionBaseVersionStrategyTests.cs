@@ -33,7 +33,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
 
         baseVersion.ShouldNotBeNull();
         baseVersion.ShouldIncrement.ShouldBe(false);
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
+        baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedVersion);
     }
 
     [TestCase("0.1", SemanticVersionFormat.Strict)]

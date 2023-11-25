@@ -24,6 +24,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     public long Patch { get; init; }
 
+    public bool IsPreRelease => PreReleaseTag.HasTag();
+
     public SemanticVersionPreReleaseTag PreReleaseTag { get; init; }
 
     public SemanticVersionBuildMetaData BuildMetaData { get; init; }
@@ -220,9 +222,24 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return true;
     }
 
-    public int CompareTo(SemanticVersion? value) => CompareTo(value, true);
+    public bool IsGreaterThan(SemanticVersion? value, bool includePreRelease = true)
+        => CompareTo(value, includePreRelease) > 0;
 
-    public int CompareTo(SemanticVersion? value, bool includePrerelease)
+    public bool IsGreaterThanOrEqualTo(SemanticVersion? value, bool includePreRelease = true)
+        => CompareTo(value, includePreRelease) >= 0;
+
+    public bool IsLessThan(SemanticVersion? value, bool includePreRelease = true)
+        => CompareTo(value, includePreRelease) < 0;
+
+    public bool IsLessThanOrEqualTo(SemanticVersion? value, bool includePreRelease = true)
+        => CompareTo(value, includePreRelease) <= 0;
+
+    public bool IsEqualTo(SemanticVersion? value, bool includePreRelease = true)
+        => CompareTo(value, includePreRelease) == 0;
+
+    public int CompareTo(SemanticVersion? value) => CompareTo(value, includePreRelease: true);
+
+    public int CompareTo(SemanticVersion? value, bool includePreRelease)
     {
         if (value == null)
         {
@@ -252,7 +269,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             }
             return -1;
         }
-        if (includePrerelease && this.PreReleaseTag != value.PreReleaseTag)
+        if (includePreRelease && this.PreReleaseTag != value.PreReleaseTag)
         {
             if (this.PreReleaseTag > value.PreReleaseTag)
             {
@@ -313,9 +330,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersion IncrementVersion(VersionField incrementStrategy)
         => IncrementVersion(incrementStrategy, null, isMainRelease: true);
 
-    public SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label)
-        => IncrementVersion(incrementStrategy, label, isMainRelease: false);
-
     private SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label, bool isMainRelease)
     {
         var major = Major;
@@ -369,5 +383,107 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             Patch = patch,
             PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseTagNumber, true)
         };
+    }
+
+    public SemanticVersion Increment(VersionField incrementStrategy, string? label)
+        => Increment(incrementStrategy, label, mode: IncrementMode.Standard);
+
+    public SemanticVersion Increment(VersionField incrementStrategy, string? label, bool forceIncrement)
+        => Increment(incrementStrategy, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard);
+
+    public SemanticVersion Increment(VersionField increment, string? label, IncrementMode mode)
+    {
+        long major = Major;
+        long minor = Minor;
+        long patch = Patch;
+        long? preReleaseNumber = PreReleaseTag.Number;
+
+        bool hasPreReleaseTag = PreReleaseTag.HasTag();
+
+        switch (increment)
+        {
+            case VersionField.None:
+                preReleaseNumber++;
+                break;
+
+            case VersionField.Patch:
+                if (hasPreReleaseTag && (mode == IncrementMode.Standard
+                    || mode == IncrementMode.EnsureIntegrity && patch != 0))
+                {
+                    preReleaseNumber++;
+                }
+                else
+                {
+                    patch++;
+                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                }
+                break;
+
+            case VersionField.Minor:
+                if (hasPreReleaseTag && (mode == IncrementMode.Standard
+                    || mode == IncrementMode.EnsureIntegrity && minor != 0 && patch == 0))
+                {
+                    preReleaseNumber++;
+                }
+                else
+                {
+                    minor++;
+                    patch = 0;
+                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                }
+                break;
+
+            case VersionField.Major:
+                if (hasPreReleaseTag && (mode == IncrementMode.Standard
+                    || mode == IncrementMode.EnsureIntegrity && major != 0 && minor == 0 && patch == 0))
+                {
+                    preReleaseNumber++;
+                }
+                else
+                {
+                    major++;
+                    minor = 0;
+                    patch = 0;
+                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                }
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(increment));
+        }
+
+        string preReleaseTagName;
+        if (hasPreReleaseTag)
+        {
+            preReleaseTagName = PreReleaseTag.Name;
+        }
+        else
+        {
+            preReleaseNumber = 1;
+            preReleaseTagName = string.Empty;
+        }
+
+        if (label is not null && preReleaseTagName != label)
+        {
+            preReleaseNumber = 1;
+            preReleaseTagName = label;
+        }
+
+        return new SemanticVersion(this)
+        {
+            Major = major,
+            Minor = minor,
+            Patch = patch,
+            PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseNumber, true)
+        };
+    }
+
+    public enum IncrementMode
+    {
+        Standard,
+
+        Force,
+
+        EnsureIntegrity
     }
 }
