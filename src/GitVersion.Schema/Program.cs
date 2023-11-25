@@ -16,7 +16,9 @@ var configuration = new SchemaGeneratorConfiguration
     PropertyOrder = PropertyOrder.ByName,
 };
 
+AttributeHandler.AddHandler<DefaultAttributeHandler>();
 AttributeHandler.AddHandler<DescriptionAttributeHandler>();
+AttributeHandler.AddHandler<FormatAttributeHandler>();
 AttributeHandler.AddHandler<PatternAttributeHandler>();
 
 var builder = new JsonSchemaBuilder();
