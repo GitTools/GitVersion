@@ -147,6 +147,8 @@ internal class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
+        commit.NotNull();
+
         var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
