@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation.TrunkBased.Trunk;
+namespace GitVersion.VersionCalculation.TrunkBased.Trunk;
 
 internal sealed class CommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreReleaseTagBase
 {
