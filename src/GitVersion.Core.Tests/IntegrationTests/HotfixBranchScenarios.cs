@@ -53,13 +53,15 @@ public class HotfixBranchScenarios : TestBase
             r.MakeATaggedCommit("2.0.0");
         });
         // Merge hotfix branch to support
-        Commands.Checkout(fixture.Repository, MainBranch);
-        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("support-1.1", (LibGit2Sharp.Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target));
+        var branch = fixture.Repository.CreateBranch(
+            "support-1.1", (LibGit2Sharp.Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target
+        );
+        Commands.Checkout(fixture.Repository, branch);
         fixture.AssertFullSemver("1.1.0");
 
         // create hotfix branch
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfixes/1.1.1"));
-        fixture.AssertFullSemver("1.1.1+0");
+        fixture.AssertFullSemver("1.1.1-beta.1+0");
         fixture.Repository.MakeACommit();
 
         fixture.AssertFullSemver("1.1.1-beta.1+1");
@@ -85,7 +87,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create hotfix branch
         fixture.BranchTo("hotfix-1.1.1");
-        fixture.AssertFullSemver("1.1.1+0");
+        fixture.AssertFullSemver("1.1.1-beta.1+0");
         fixture.MakeACommit();
 
         fixture.AssertFullSemver("1.1.1-beta.1+1");
