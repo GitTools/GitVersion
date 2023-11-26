@@ -103,10 +103,10 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             {
                 commit.AddSemanticVersions(values);
 
-                var labelBS = targetLabel ?? configuration.GetBranchSpecificLabel(branchName, null);
+                var label = targetLabel ?? configuration.GetBranchSpecificLabel(branchName, null);
                 foreach (var semanticVersion in values)
                 {
-                    if (semanticVersion.IsMatchForBranchSpecificLabel(labelBS)) return true;
+                    if (semanticVersion.IsMatchForBranchSpecificLabel(label)) return true;
                 }
             }
 
@@ -222,18 +222,18 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
     }
 
     private static BaseVersionV2 DetermineBaseVersion(
-        TrunkBasedIteration iteration, string? targetLabelBS,
+        TrunkBasedIteration iteration, string? targetLabel,
         IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions
-    ) => DetermineBaseVersionRecursive(iteration, targetLabelBS, taggedSemanticVersions);
+    ) => DetermineBaseVersionRecursive(iteration, targetLabel, taggedSemanticVersions);
 
     internal static BaseVersionV2 DetermineBaseVersionRecursive(
-        TrunkBasedIteration iteration, string? targetLabelBS,
+        TrunkBasedIteration iteration, string? targetLabel,
         IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
     {
         iteration.NotNull();
         taggedSemanticVersions.NotNull();
 
-        var incrementSteps = GetIncrementSteps(iteration, targetLabelBS, taggedSemanticVersions).ToArray();
+        var incrementSteps = GetIncrementSteps(iteration, targetLabel, taggedSemanticVersions).ToArray();
 
         var semanticVersion = SemanticVersion.Empty;
 
@@ -277,11 +277,11 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
     }
 
     private static IEnumerable<BaseVersionV2> GetIncrementSteps(TrunkBasedIteration iteration,
-        string? targetLabelBS, IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
+        string? targetLabel, IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
     {
         TrunkBasedContext context = new(taggedSemanticVersions)
         {
-            TargetLabel = targetLabelBS,
+            TargetLabel = targetLabel,
         };
 
         foreach (var commit in iteration.Commits)
