@@ -9,7 +9,7 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
     {
         var baseVersion = TrunkBasedVersionStrategy.DetermineBaseVersionRecursive(
            iteration: commit.ChildIteration!,
-           targetLabelBS: context.TargetLabel,
+           targetLabel: context.TargetLabel,
            taggedSemanticVersions: context.TaggedSemanticVersions
        );
 

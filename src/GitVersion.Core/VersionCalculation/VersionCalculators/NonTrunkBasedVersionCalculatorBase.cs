@@ -1,5 +1,4 @@
 using GitVersion.Common;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
@@ -22,15 +21,12 @@ internal abstract class NonTrunkBasedVersionCalculatorBase
 
     protected bool ShouldTakeIncrementedVersion(NextVersion nextVersion)
     {
-        var label = nextVersion.Configuration.GetBranchSpecificLabel(
-            Context.CurrentBranch.Name, nextVersion.BaseVersion.BranchNameOverride
-        );
+        nextVersion.NotNull();
 
-        ////
         // TODO: We need to decide whether or not to calculate the upcoming semantic version or the previous one because of tagging. Actually this should be part of the branch configuration system.
-        return Context.CurrentCommit?.Sha != nextVersion.BaseVersion.BaseVersionSource?.Sha
-            || Context.CurrentCommitTaggedVersion == null
-            || !Context.CurrentCommitTaggedVersion.IsMatchForBranchSpecificLabel(label);
+        return Context.CurrentCommit.Sha != nextVersion.BaseVersion.BaseVersionSource?.Sha
+            || Context.CurrentCommitTaggedVersion is null
+            || nextVersion.BaseVersion.SemanticVersion != Context.CurrentCommitTaggedVersion;
         //
     }
 

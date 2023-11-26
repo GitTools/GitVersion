@@ -33,7 +33,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
 
     public bool IsMatchForBranchSpecificLabel(string? value)
-        => PreReleaseTag.Name.Length == 0 || value is null || IsLabeledWith(value);
+        => (PreReleaseTag.Name == string.Empty && PreReleaseTag.Number is null) || value is null || IsLabeledWith(value);
 
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
