@@ -53,7 +53,7 @@ public class UnitTest : FrostingTask<BuildContext>
         var data = new AzurePipelinesPublishTestResultsData
         {
             TestResultsFiles = testResultsFiles.ToArray(),
-            Platform = context.Environment.Platform.Family.ToString(),
+            Platform = context.Platform.ToString(),
             TestRunner = AzurePipelinesTestRunnerType.JUnit
         };
         context.BuildSystem().AzurePipelines.Commands.PublishTestResults(data);

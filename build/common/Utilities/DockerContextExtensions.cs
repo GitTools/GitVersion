@@ -153,7 +153,7 @@ public static class DockerContextExtensions
     {
         var settings = GetDockerRunSettings(context, arch);
         context.Information($"Testing image: {image}");
-        var output = context.DockerRunImage(settings, image, command, args);
+        var output = context.DockerRun(settings, image, command, args);
         context.Information("Output : " + output);
 
         Assert.NotNull(context.Version?.GitVersion);
@@ -235,7 +235,7 @@ public static class DockerContextExtensions
 
         return settings;
     }
-    private static string DockerRunImage(this ICakeContext context, DockerContainerRunSettings settings, string image, string command, params string[] args)
+    /*private static string DockerRunImage(this ICakeContext context, DockerContainerRunSettings settings, string image, string command, params string[] args)
     {
         if (string.IsNullOrEmpty(image))
         {
@@ -257,5 +257,5 @@ public static class DockerContextExtensions
 
         var result = runner.RunWithResult("run", settings, r => r.ToArray(), arguments.ToArray());
         return string.Join("\n", result);
-    }
+    }*/
 }

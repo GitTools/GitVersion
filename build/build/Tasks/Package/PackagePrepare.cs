@@ -25,7 +25,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
     private static void PackPrepareNative(BuildContext context)
     {
         // publish single file for all native runtimes (self contained)
-        var platform = context.Environment.Platform.Family;
+        var platform = context.Platform;
         var runtimes = context.NativeRuntimes[platform];
 
         foreach (var runtime in runtimes)
@@ -34,7 +34,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
             // testing windows and macos artifacts, the linux is tested with docker
             if (platform == PlatformFamily.Linux) continue;
-            if (runtime.EndsWith("arm64")) continue;
+            if (runtime.EndsWith("arm64")) continue; // TODO: enable when we have arm64 macos agent
 
             context.Information("Validating native lib:");
             var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
@@ -44,7 +44,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
     private static DirectoryPath PackPrepareNative(BuildContext context, string runtime)
     {
-        var platform = context.Environment.Platform.Family;
+        var platform = context.Platform;
         var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
         var settings = new DotNetPublishSettings
