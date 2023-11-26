@@ -1,4 +1,4 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
 internal static class VersionFieldExtensions
 {
