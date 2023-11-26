@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation.TrunkBased;
+namespace GitVersion.VersionCalculation.TrunkBased;
 
 internal sealed class RemoveSemanticVersion : ITrunkBasedContextPostEnricher
 {

@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation.TrunkBased.NonTrunk;
+namespace GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 
 internal sealed class CommitOnNonTrunkBranchedToTrunk : CommitOnNonTrunkBranchedBase
 {

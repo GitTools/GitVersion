@@ -1,4 +1,4 @@
-﻿using GitVersion.Configuration;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.TrunkBased;
