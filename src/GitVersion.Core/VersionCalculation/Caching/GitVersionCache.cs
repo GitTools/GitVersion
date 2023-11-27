@@ -19,14 +19,14 @@ public class GitVersionCache : IGitVersionCache
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables variablesFromCache)
+    public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables versionVariables)
     {
         var cacheFileName = GetCacheFileName(cacheKey);
 
         Dictionary<string, string?> dictionary;
         using (this.log.IndentLog("Creating dictionary"))
         {
-            dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
+            dictionary = versionVariables.ToDictionary(x => x.Key, x => x.Value);
         }
 
         void WriteCacheOperation()
@@ -44,26 +44,11 @@ public class GitVersionCache : IGitVersionCache
         retryOperation.Execute(WriteCacheOperation);
     }
 
-    public string GetCacheFileName(GitVersionCacheKey cacheKey)
-    {
-        var cacheDir = PrepareCacheDirectory();
-        var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
-        return cacheFileName;
-    }
-
-    public string GetCacheDirectory()
-    {
-        var gitDir = this.repositoryInfo.DotGitDirectory;
-        return PathHelper.Combine(gitDir, "gitversion_cache");
-    }
-
-    public GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
+    public GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey cacheKey)
     {
         using (this.log.IndentLog("Loading version variables from disk cache"))
         {
-            var cacheDir = PrepareCacheDirectory();
-
-            var cacheFileName = GetCacheFileName(key, cacheDir);
+            var cacheFileName = GetCacheFileName(cacheKey);
             if (!this.fileSystem.Exists(cacheFileName))
             {
                 this.log.Info("Cache file " + cacheFileName + " not found.");
@@ -94,6 +79,18 @@ public class GitVersionCache : IGitVersionCache
                 }
             }
         }
+    }
+
+    internal string GetCacheFileName(GitVersionCacheKey cacheKey)
+    {
+        var cacheDir = PrepareCacheDirectory();
+        return GetCacheFileName(cacheKey, cacheDir);
+    }
+
+    internal string GetCacheDirectory()
+    {
+        var gitDir = this.repositoryInfo.DotGitDirectory;
+        return PathHelper.Combine(gitDir, "gitversion_cache");
     }
 
     private string PrepareCacheDirectory()

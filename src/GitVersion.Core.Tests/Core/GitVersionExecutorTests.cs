@@ -16,7 +16,7 @@ public class GitVersionExecutorTests : TestBase
 {
     private IFileSystem fileSystem;
     private ILog log;
-    private IGitVersionCache gitVersionCache;
+    private GitVersionCache gitVersionCache;
     private IServiceProvider sp;
 
     [Test]
@@ -571,7 +571,7 @@ public class GitVersionExecutorTests : TestBase
 
         this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.log = this.sp.GetRequiredService<ILog>();
-        this.gitVersionCache = this.sp.GetRequiredService<IGitVersionCache>();
+        this.gitVersionCache = (GitVersionCache)this.sp.GetRequiredService<IGitVersionCache>();
 
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
