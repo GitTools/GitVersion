@@ -81,13 +81,13 @@ public static class DockerContextExtensions
         {
             var manifestCreateSettings = new DockerManifestCreateSettings { Amend = true };
             var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
+            var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
             if (skipArm64Image)
             {
                 context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag);
             }
             else
             {
-                var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
                 context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag, arm64Tag);
             }
         }
@@ -98,7 +98,7 @@ public static class DockerContextExtensions
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
         {
-            context.DockerManifestPush(new DockerManifestPushSettings { Purge = true }, tag);
+            context.DockerManifestPush(new() { Purge = true }, tag);
         }
     }
 
@@ -106,7 +106,7 @@ public static class DockerContextExtensions
     {
         var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
         var platform = $"linux/{dockerImage.Architecture.ToString().ToLower()}";
-        context.DockerPull(new DockerImagePullSettings { Platform = platform }, tag);
+        context.DockerPull(new() { Platform = platform }, tag);
     }
 
     public static void DockerTestImage(this BuildContextBase context, DockerImage dockerImage)
@@ -124,10 +124,7 @@ public static class DockerContextExtensions
         context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
     }
 
-    private static void DockerBuild(
-        this ICakeContext context,
-        DockerImageBuildSettings settings,
-        string path, params string[] args)
+    private static void DockerBuild(this ICakeContext context, DockerImageBuildSettings settings, string path, params string[] args)
     {
         GenericDockerRunner<DockerImageBuildSettings> genericDockerRunner =
             new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
@@ -235,27 +232,4 @@ public static class DockerContextExtensions
 
         return settings;
     }
-    /*private static string DockerRunImage(this ICakeContext context, DockerContainerRunSettings settings, string image, string command, params string[] args)
-    {
-        if (string.IsNullOrEmpty(image))
-        {
-            throw new ArgumentNullException(nameof(image));
-        }
-        var runner = new GenericDockerRunner<DockerContainerRunSettings>(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
-        List<string> arguments = new()
-        {
-            image
-        };
-        if (!string.IsNullOrEmpty(command))
-        {
-            arguments.Add(command);
-            if (args.Length > 0)
-            {
-                arguments.AddRange(args);
-            }
-        }
-
-        var result = runner.RunWithResult("run", settings, r => r.ToArray(), arguments.ToArray());
-        return string.Join("\n", result);
-    }*/
 }
