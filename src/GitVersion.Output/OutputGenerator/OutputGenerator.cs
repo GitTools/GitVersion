@@ -35,17 +35,19 @@ internal sealed class OutputGenerator : IOutputGenerator
         {
             this.buildAgent.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
         }
+
+        var json = variables.ToJson();
         if (gitVersionOptions.Output.Contains(OutputType.File))
         {
             var retryOperation = new RetryAction<IOException>();
-            retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, variables.ToJson()));
+            retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, json));
         }
 
         if (!gitVersionOptions.Output.Contains(OutputType.Json)) return;
 
         if (gitVersionOptions.ShowVariable is null && gitVersionOptions.Format is null)
         {
-            this.console.WriteLine(variables.ToJson());
+            this.console.WriteLine(json);
             return;
         }
 

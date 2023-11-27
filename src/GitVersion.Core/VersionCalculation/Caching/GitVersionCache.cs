@@ -2,7 +2,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.VersionCalculation.Caching;
 
@@ -22,61 +21,48 @@ public class GitVersionCache : IGitVersionCache
     public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables versionVariables)
     {
         var cacheFileName = GetCacheFileName(cacheKey);
-
-        Dictionary<string, string?> dictionary;
-        using (this.log.IndentLog("Creating dictionary"))
+        using (this.log.IndentLog($"Write version variables to cache file {cacheFileName}"))
         {
-            dictionary = versionVariables.ToDictionary(x => x.Key, x => x.Value);
-        }
-
-        void WriteCacheOperation()
-        {
-            using var stream = this.fileSystem.OpenWrite(cacheFileName);
-            using var sw = new StreamWriter(stream);
-            using (this.log.IndentLog("Storing version variables to cache file " + cacheFileName))
+            try
             {
-                var serializer = new Serializer();
-                serializer.Serialize(sw, dictionary);
+                VersionVariablesHelper.ToFile(versionVariables, cacheFileName, this.fileSystem);
+            }
+            catch (Exception ex)
+            {
+                this.log.Error($"Unable to write cache file {cacheFileName}. Got {ex.GetType().FullName} exception.");
             }
         }
-
-        var retryOperation = new RetryAction<IOException>(6);
-        retryOperation.Execute(WriteCacheOperation);
     }
 
     public GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey cacheKey)
     {
-        using (this.log.IndentLog("Loading version variables from disk cache"))
+        var cacheFileName = GetCacheFileName(cacheKey);
+        using (this.log.IndentLog($"Loading version variables from disk cache file {cacheFileName}"))
         {
-            var cacheFileName = GetCacheFileName(cacheKey);
             if (!this.fileSystem.Exists(cacheFileName))
             {
-                this.log.Info("Cache file " + cacheFileName + " not found.");
+                this.log.Info($"Cache file {cacheFileName} not found.");
                 return null;
             }
-
-            using (this.log.IndentLog("Deserializing version variables from cache file " + cacheFileName))
+            try
             {
+                var loadedVariables = VersionVariablesHelper.FromFile(cacheFileName, this.fileSystem);
+                return loadedVariables;
+            }
+            catch (Exception ex)
+            {
+                this.log.Warning($"Unable to read cache file {cacheFileName}, deleting it.");
+                this.log.Info(ex.ToString());
                 try
                 {
-                    var loadedVariables = VersionVariablesHelper.FromFile(cacheFileName, this.fileSystem);
-                    return loadedVariables;
+                    this.fileSystem.Delete(cacheFileName);
                 }
-                catch (Exception ex)
+                catch (Exception deleteEx)
                 {
-                    this.log.Warning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                    this.log.Info(ex.ToString());
-                    try
-                    {
-                        this.fileSystem.Delete(cacheFileName);
-                    }
-                    catch (Exception deleteEx)
-                    {
-                        this.log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
-                    }
-
-                    return null;
+                    this.log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
                 }
+
+                return null;
             }
         }
     }
@@ -103,5 +89,5 @@ public class GitVersionCache : IGitVersionCache
         return cacheDir;
     }
 
-    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, string.Concat(key.Value, ".yml"));
+    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, string.Concat(key.Value, ".json"));
 }
