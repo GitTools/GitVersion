@@ -51,7 +51,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("unstable"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -77,7 +77,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("unstable"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -101,7 +101,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -127,7 +127,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -153,7 +153,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, SemanticVersion.Empty);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -228,7 +228,7 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -254,7 +254,7 @@ public class VariableProviderTests : TestBase
             .Build().GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -281,6 +281,6 @@ public class VariableProviderTests : TestBase
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        variables.ToJsonString().ShouldMatchApproved(_ => _.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(_ => _.SubFolder("Approved"));
     }
 }

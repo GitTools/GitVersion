@@ -108,7 +108,7 @@ public static class GitToolsTestingExtensions
 
         using var stream = File.Open(versionFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
         using var writer = new StreamWriter(stream);
-        writer.Write(versionVariables.ToJsonString());
+        writer.Write(versionVariables.ToJson());
     }
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,

@@ -14,6 +14,22 @@ public static class VersionVariablesHelper
         return FromDictionary(variablePairs);
     }
 
+    public static string ToJson(this GitVersionVariables gitVersionVariables)
+    {
+        var variablesType = typeof(VersionVariablesJsonModel);
+        var variables = new VersionVariablesJsonModel();
+
+        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
+        {
+            var propertyInfo = variablesType.GetProperty(key);
+            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
+        }
+
+        var serializeOptions = JsonSerializerOptions();
+
+        return JsonSerializer.Serialize(variables, serializeOptions);
+    }
+
     public static GitVersionVariables FromFile(string filePath, IFileSystem fileSystem)
     {
         try
@@ -31,22 +47,6 @@ public static class VersionVariablesHelper
 
             throw;
         }
-    }
-
-    public static string ToJsonString(this GitVersionVariables gitVersionVariables)
-    {
-        var variablesType = typeof(VersionVariablesJsonModel);
-        var variables = new VersionVariablesJsonModel();
-
-        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
-        {
-            var propertyInfo = variablesType.GetProperty(key);
-            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
-        }
-
-        var serializeOptions = JsonSerializerOptions();
-
-        return JsonSerializer.Serialize(variables, serializeOptions);
     }
 
     private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
@@ -72,11 +72,7 @@ public static class VersionVariablesHelper
         return versionVariables;
     }
 
-    private static JsonSerializerOptions JsonSerializerOptions()
-    {
-        var serializeOptions = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
-        return serializeOptions;
-    }
+    private static JsonSerializerOptions JsonSerializerOptions() => new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
 
     private static object? ChangeType(object? value, Type type)
     {
