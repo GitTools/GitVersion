@@ -1,3 +1,4 @@
+using GitVersion.Core.Tests;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.App.Tests;
@@ -23,7 +24,7 @@ public class ExecutionResults
             var jsonEndIndex = Output.IndexOf('}');
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return VersionVariablesHelper.FromJson(json);
+            return json.ToGitVersionVariables();
         }
     }
 }

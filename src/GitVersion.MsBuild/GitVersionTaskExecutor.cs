@@ -11,14 +11,17 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
+    private readonly IVersionVariableSerializer serializer;
     private readonly IConfigurationProvider configurationProvider;
     private readonly IOptions<GitVersionOptions> options;
 
     public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool,
-                                  IConfigurationProvider configurationProvider, IOptions<GitVersionOptions> options)
+                                  IVersionVariableSerializer serializer, IConfigurationProvider configurationProvider,
+                                  IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
+        this.serializer = serializer.NotNull();
         this.configurationProvider = configurationProvider.NotNull();
         this.options = options.NotNull();
     }
@@ -104,7 +107,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     private GitVersionVariables GitVersionVariables(GitVersionTaskBase task)
     {
-        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, this.fileSystem);
+        var versionVariables = serializer.FromFile(task.VersionFile);
         return versionVariables;
     }
 }

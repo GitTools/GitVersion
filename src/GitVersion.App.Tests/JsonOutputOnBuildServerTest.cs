@@ -1,6 +1,6 @@
 using GitVersion.Agents;
+using GitVersion.Core.Tests;
 using GitVersion.Helpers;
-using GitVersion.OutputVariables;
 
 namespace GitVersion.App.Tests;
 
@@ -61,7 +61,7 @@ public class JsonOutputOnBuildServerTest
         var filePath = PathHelper.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
         var json = File.ReadAllText(filePath);
 
-        var outputVariables = VersionVariablesHelper.FromJson(json);
+        var outputVariables = json.ToGitVersionVariables();
         outputVariables.ShouldNotBeNull();
         outputVariables.FullSemVer.ShouldBeEquivalentTo(expectedVersion);
     }

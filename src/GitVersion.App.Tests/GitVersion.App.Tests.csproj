@@ -25,6 +25,7 @@
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Extensions\GitVersionVariablesExtensions.cs" Link="Extensions\GitVersionVariablesExtensions.cs" />
     </ItemGroup>
 
 </Project>

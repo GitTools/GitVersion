@@ -17,7 +17,7 @@ public class VersionVariablesJsonModel
     public int? BuildMetaData { get; set; }
 
     [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
-    public string? CommitDate { set; get; }
+    public string? CommitDate { get; set; }
 
     [JsonPropertyDescription("The number of commits since the version source.")]
     public int? CommitsSinceVersionSource { get; set; }
@@ -62,7 +62,7 @@ public class VersionVariablesJsonModel
     public string? PreReleaseTagWithDash { get; set; }
 
     [JsonPropertyDescription("The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.")]
-    public string? SemVer { set; get; }
+    public string? SemVer { get; set; }
 
     [JsonPropertyDescription("The SHA of the Git commit.")]
     public string? Sha { get; set; }

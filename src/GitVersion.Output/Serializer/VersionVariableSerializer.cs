@@ -4,16 +4,20 @@ using GitVersion.Helpers;
 
 namespace GitVersion.OutputVariables;
 
-public static class VersionVariablesHelper
+public class VersionVariableSerializer : IVersionVariableSerializer
 {
-    public static GitVersionVariables FromJson(string json)
+    private readonly IFileSystem fileSystem;
+
+    public VersionVariableSerializer(IFileSystem fileSystem) => this.fileSystem = fileSystem;
+
+    public GitVersionVariables FromJson(string json)
     {
         var serializeOptions = JsonSerializerOptions();
         var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
         return FromDictionary(variablePairs);
     }
 
-    public static string ToJson(this GitVersionVariables gitVersionVariables)
+    public string ToJson(GitVersionVariables gitVersionVariables)
     {
         var variablesType = typeof(VersionVariablesJsonModel);
         var variables = new VersionVariablesJsonModel();
@@ -29,12 +33,12 @@ public static class VersionVariablesHelper
         return JsonSerializer.Serialize(variables, serializeOptions);
     }
 
-    public static GitVersionVariables FromFile(string filePath, IFileSystem fileSystem)
+    public GitVersionVariables FromFile(string filePath)
     {
         try
         {
             var retryAction = new RetryAction<IOException, GitVersionVariables>();
-            return retryAction.Execute(() => FromFileInternal(filePath, fileSystem));
+            return retryAction.Execute(() => FromFileInternal(filePath));
         }
         catch (AggregateException ex)
         {
@@ -48,12 +52,12 @@ public static class VersionVariablesHelper
         }
     }
 
-    public static void ToFile(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
+    public void ToFile(GitVersionVariables gitVersionVariables, string filePath)
     {
         try
         {
             var retryAction = new RetryAction<IOException>();
-            retryAction.Execute(() => ToFileInternal(gitVersionVariables, filePath, fileSystem));
+            retryAction.Execute(() => ToFileInternal(gitVersionVariables, filePath));
         }
         catch (AggregateException ex)
         {
@@ -81,15 +85,15 @@ public static class VersionVariablesHelper
         return (GitVersionVariables)instance;
     }
 
-    private static GitVersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
+    private GitVersionVariables FromFileInternal(string filePath)
     {
         var json = fileSystem.ReadAllText(filePath);
         return FromJson(json);
     }
 
-    private static void ToFileInternal(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
+    private void ToFileInternal(GitVersionVariables gitVersionVariables, string filePath)
     {
-        var json = gitVersionVariables.ToJson();
+        var json = ToJson(gitVersionVariables);
         fileSystem.WriteAllText(filePath, json);
     }
 

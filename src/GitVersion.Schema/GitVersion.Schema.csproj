@@ -10,5 +10,6 @@
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
 </Project>

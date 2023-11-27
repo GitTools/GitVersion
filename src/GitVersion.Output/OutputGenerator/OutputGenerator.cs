@@ -15,14 +15,17 @@ internal sealed class OutputGenerator : IOutputGenerator
 {
     private readonly IConsole console;
     private readonly IFileSystem fileSystem;
+    private readonly IVersionVariableSerializer serializer;
     private readonly IEnvironment environment;
     private readonly IOptions<GitVersionOptions> options;
     private readonly ICurrentBuildAgent buildAgent;
 
-    public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IEnvironment environment, IOptions<GitVersionOptions> options)
+    public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem,
+                           IVersionVariableSerializer serializer, IEnvironment environment, IOptions<GitVersionOptions> options)
     {
         this.console = console.NotNull();
         this.fileSystem = fileSystem.NotNull();
+        this.serializer = serializer.NotNull();
         this.environment = environment;
         this.options = options.NotNull();
         this.buildAgent = buildAgent.NotNull();
@@ -36,7 +39,7 @@ internal sealed class OutputGenerator : IOutputGenerator
             this.buildAgent.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
         }
 
-        var json = variables.ToJson();
+        var json = this.serializer.ToJson(variables);
         if (gitVersionOptions.Output.Contains(OutputType.File))
         {
             var retryOperation = new RetryAction<IOException>();
@@ -55,6 +58,7 @@ internal sealed class OutputGenerator : IOutputGenerator
         {
             throw new WarningException("Cannot specify both /showvariable and /format");
         }
+
         if (gitVersionOptions.ShowVariable is not null)
         {
             if (!variables.TryGetValue(gitVersionOptions.ShowVariable, out var part))
@@ -65,6 +69,7 @@ internal sealed class OutputGenerator : IOutputGenerator
             this.console.WriteLine(part);
             return;
         }
+
         if (gitVersionOptions.Format is not null)
         {
             var format = gitVersionOptions.Format;
