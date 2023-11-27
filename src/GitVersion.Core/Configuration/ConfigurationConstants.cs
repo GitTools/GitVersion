@@ -19,6 +19,7 @@ internal static class ConfigurationConstants
     internal const string StringDefaultUpdateBuildNumber = "true";
     public const SemanticVersionFormat DefaultSemanticVersionFormat = SemanticVersionFormat.Strict;
     internal const string StringDefaultSemanticVersionFormat = nameof(SemanticVersionFormat.Strict);
+    public const string DefaultLabelNumberPattern = @"[/-](?<number>\d+)";
 
     public const string MainBranchKey = "main";
     public const string MasterBranchKey = "master";
