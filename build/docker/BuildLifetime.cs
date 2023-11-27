@@ -14,7 +14,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
-        var architectures = context.Arguments<Architecture>(Arguments.Architecture) ?? Constants.ArchToBuild;
+        var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
         var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.DockerHub);
         var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
         var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();

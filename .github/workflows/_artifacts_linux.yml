@@ -47,10 +47,10 @@ jobs:
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native
-    -
-      name: Setup QEMU
-      if: inputs.arch == 'arm64'
-      uses: docker/setup-qemu-action@v3
+#    -
+#      name: Setup QEMU
+#      if: inputs.arch == 'arm64'
+#      uses: docker/setup-qemu-action@v3
     -
       name: Echo
       shell: pwsh
