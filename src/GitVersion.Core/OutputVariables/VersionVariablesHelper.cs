@@ -1,7 +1,6 @@
 using System.Text.Encodings.Web;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.OutputVariables;
 
@@ -49,6 +48,25 @@ public static class VersionVariablesHelper
         }
     }
 
+    public static void ToFile(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
+    {
+        try
+        {
+            var retryAction = new RetryAction<IOException>();
+            retryAction.Execute(() => ToFileInternal(gitVersionVariables, filePath, fileSystem));
+        }
+        catch (AggregateException ex)
+        {
+            var lastException = ex.InnerExceptions.LastOrDefault() ?? ex.InnerException;
+            if (lastException != null)
+            {
+                throw lastException;
+            }
+
+            throw;
+        }
+    }
+
     private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
     {
         var type = typeof(GitVersionVariables);
@@ -65,11 +83,14 @@ public static class VersionVariablesHelper
 
     private static GitVersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
     {
-        using var stream = fileSystem.OpenRead(filePath);
-        using var reader = new StreamReader(stream);
-        var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-        var versionVariables = FromDictionary(dictionary);
-        return versionVariables;
+        var json = fileSystem.ReadAllText(filePath);
+        return FromJson(json);
+    }
+
+    private static void ToFileInternal(GitVersionVariables gitVersionVariables, string filePath, IFileSystem fileSystem)
+    {
+        var json = gitVersionVariables.ToJson();
+        fileSystem.WriteAllText(filePath, json);
     }
 
     private static JsonSerializerOptions JsonSerializerOptions() => new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
