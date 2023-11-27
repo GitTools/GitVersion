@@ -51,6 +51,7 @@ internal class UpdateWixVersionFileTests
 
         var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
         var vars = gitVersionExecutionResults.OutputVariables;
+        vars.ShouldNotBeNull();
 
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 

@@ -178,6 +178,7 @@ public class PullRequestInBuildAgentTest
         var result = await programFixture.Run();
 
         result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest5.3");
 

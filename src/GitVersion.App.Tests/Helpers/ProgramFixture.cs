@@ -1,8 +1,6 @@
-using GitVersion.Core.Tests;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.OutputVariables;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.App.Tests;
@@ -49,13 +47,13 @@ public sealed class ProgramFixture
 
     public void WithOverrides(Action<IServiceCollection> action) => Overrides.Add(action);
 
-    public Task<ProgramFixtureResult> Run(string arg)
+    public Task<ExecutionResults> Run(string arg)
     {
         var args = arg.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
         return Run(args);
     }
 
-    public async Task<ProgramFixtureResult> Run(params string[] args)
+    public async Task<ExecutionResults> Run(params string[] args)
     {
         // Create the application and override registrations.
         var program = new Program(builder => Overrides.ForEach(action => action(builder)));
@@ -66,32 +64,6 @@ public sealed class ProgramFixture
         }
         await program.RunAsync(args);
 
-        return new ProgramFixtureResult
-        {
-            ExitCode = SysEnv.ExitCode,
-            Output = this.output.Value,
-            Log = this.logger.Value
-        };
-    }
-}
-
-public class ProgramFixtureResult
-{
-    public int ExitCode { get; set; }
-    public string? Output { get; set; }
-    public string Log { get; set; }
-
-    public GitVersionVariables? OutputVariables
-    {
-        get
-        {
-            if (Output.IsNullOrWhiteSpace()) return null;
-
-            var jsonStartIndex = Output.IndexOf('{');
-            var jsonEndIndex = Output.IndexOf('}');
-            var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
-
-            return json.ToGitVersionVariables();
-        }
+        return new(SysEnv.ExitCode, this.output.Value, this.logger.Value);
     }
 }

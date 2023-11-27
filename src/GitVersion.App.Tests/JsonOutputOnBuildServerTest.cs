@@ -35,6 +35,7 @@ public class JsonOutputOnBuildServerTest
 
         result.ExitCode.ShouldBe(0);
         const string expectedVersion = "0.0.1-5";
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain($"##teamcity[buildNumber '{expectedVersion}']");
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(expectedVersion);
@@ -54,6 +55,7 @@ public class JsonOutputOnBuildServerTest
 
         result.ExitCode.ShouldBe(0);
         const string expectedVersion = "0.0.1-5";
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain($"##teamcity[buildNumber '{expectedVersion}']");
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(expectedVersion);

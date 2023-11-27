@@ -14,6 +14,7 @@ public class ExecCmdLineArgumentTest
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
 
         result.ExitCode.ShouldNotBe(0);
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain("Could not parse command line parameter '/invalid-argument'");
     }
 
@@ -27,6 +28,7 @@ public class ExecCmdLineArgumentTest
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, @" /l ""/tmp/path""", false);
 
         result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain(@"""MajorMinorPatch"": ""1.2.4""");
     }
 
@@ -43,6 +45,7 @@ public class ExecCmdLineArgumentTest
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, $@" {verbosityArg} -output buildserver /l ""/tmp/path""", false);
 
         result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain(expectedOutput);
     }
 
@@ -52,6 +55,7 @@ public class ExecCmdLineArgumentTest
         var result = GitVersionHelper.ExecuteIn(SysEnv.SystemDirectory, null, false);
 
         result.ExitCode.ShouldNotBe(0);
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain("Cannot find the .git directory");
     }
 
@@ -63,6 +67,7 @@ public class ExecCmdLineArgumentTest
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, null, false);
 
         result.ExitCode.ShouldNotBe(0);
+        result.Output.ShouldNotBeNull();
         result.Output.ShouldContain("No commits found on the current branch.");
     }
 

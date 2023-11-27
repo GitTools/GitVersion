@@ -91,7 +91,7 @@ public static class GitVersionHelper
 
         if (arguments.LogFile.IsNullOrWhiteSpace() || !File.Exists(arguments.LogFile))
         {
-            return new ExecutionResults(exitCode, output.ToString(), null);
+            return new(exitCode, output.ToString());
         }
 
         var logContents = File.ReadAllText(arguments.LogFile);
@@ -102,6 +102,6 @@ public static class GitVersionHelper
         Console.WriteLine();
         Console.WriteLine("-------------------------------------------------------");
 
-        return new ExecutionResults(exitCode, output.ToString(), logContents);
+        return new(exitCode, output.ToString(), logContents);
     }
 }
