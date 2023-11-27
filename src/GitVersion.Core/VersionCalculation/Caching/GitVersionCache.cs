@@ -8,12 +8,14 @@ namespace GitVersion.VersionCalculation.Caching;
 public class GitVersionCache : IGitVersionCache
 {
     private readonly IFileSystem fileSystem;
+    private readonly IVersionVariableSerializer serializer;
     private readonly ILog log;
     private readonly IGitRepositoryInfo repositoryInfo;
 
-    public GitVersionCache(IFileSystem fileSystem, ILog log, IGitRepositoryInfo repositoryInfo)
+    public GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();
+        this.serializer = serializer.NotNull();
         this.log = log.NotNull();
         this.repositoryInfo = repositoryInfo.NotNull();
     }
@@ -25,7 +27,7 @@ public class GitVersionCache : IGitVersionCache
         {
             try
             {
-                VersionVariablesHelper.ToFile(versionVariables, cacheFileName, this.fileSystem);
+                serializer.ToFile(versionVariables, cacheFileName);
             }
             catch (Exception ex)
             {
@@ -46,7 +48,7 @@ public class GitVersionCache : IGitVersionCache
             }
             try
             {
-                var loadedVariables = VersionVariablesHelper.FromFile(cacheFileName, this.fileSystem);
+                var loadedVariables = serializer.FromFile(cacheFileName);
                 return loadedVariables;
             }
             catch (Exception ex)

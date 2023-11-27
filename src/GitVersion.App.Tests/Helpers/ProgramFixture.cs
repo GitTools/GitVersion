@@ -1,3 +1,4 @@
+using GitVersion.Core.Tests;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -86,11 +87,11 @@ public class ProgramFixtureResult
         {
             if (Output.IsNullOrWhiteSpace()) return null;
 
-            var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
-            var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
+            var jsonStartIndex = Output.IndexOf('{');
+            var jsonEndIndex = Output.IndexOf('}');
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return VersionVariablesHelper.FromJson(json);
+            return json.ToGitVersionVariables();
         }
     }
 }
