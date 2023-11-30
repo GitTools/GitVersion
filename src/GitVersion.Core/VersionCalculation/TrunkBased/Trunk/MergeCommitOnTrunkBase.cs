@@ -11,8 +11,7 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
     {
         var baseVersion = TrunkBasedVersionStrategy.DetermineBaseVersionRecursive(
            iteration: commit.ChildIteration!,
-           targetLabel: context.TargetLabel,
-           taggedSemanticVersions: context.TaggedSemanticVersions
+           targetLabel: context.TargetLabel
        );
 
         context.Label ??= baseVersion.Label;

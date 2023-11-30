@@ -1,5 +1,5 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -11,31 +11,27 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
 {
-    private readonly IRepositoryStore repositoryStore;
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
 
-    public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
+    public TaggedCommitVersionStrategy(ITaggedSemanticVersionRepository taggedSemanticVersionRepository, Lazy<GitVersionContext> versionContext)
+        : base(versionContext) => this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? Enumerable.Empty<BaseVersion>()
-        : GetSemanticVersions(configuration.Value).Select(CreateBaseVersion);
+        : GetTaggedSemanticVersions(configuration).Select(CreateBaseVersion);
 
-    private IEnumerable<SemanticVersionWithTag> GetSemanticVersions(EffectiveConfiguration configuration)
+    private IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersions(EffectiveBranchConfiguration configuration)
     {
-        var label = configuration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        configuration.NotNull();
 
-        var semanticVersions = this.repositoryStore.GetSemanticVersions(
-            configuration: Context.Configuration,
-            currentBranch: Context.CurrentBranch,
-            currentCommit: Context.CurrentCommit,
-            trackMergeTarget: configuration.TrackMergeTarget,
-            tracksReleaseBranches: configuration.TracksReleaseBranches
-        ).ToArray();
-
-        foreach (var semanticVersion in semanticVersions)
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        foreach (var semanticVersion in taggedSemanticVersionRepository
+            .GetTaggedSemanticVersions(Context.CurrentBranch, configuration.Value).SelectMany(element => element))
         {
             if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+            {
                 yield return semanticVersion;
+            }
         }
     }
 

@@ -2,7 +2,7 @@ namespace GitVersion;
 
 public interface ITag : IEquatable<ITag?>, IComparable<ITag>, INamedReference
 {
-    string? TargetSha { get; }
+    string TargetSha { get; }
 
     ICommit Commit { get; }
 }

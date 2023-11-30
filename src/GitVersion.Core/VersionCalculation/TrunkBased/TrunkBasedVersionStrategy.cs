@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 using GitVersion.VersionCalculation.TrunkBased.Trunk;
@@ -10,16 +11,19 @@ namespace GitVersion.VersionCalculation.TrunkBased;
 internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
 {
     private volatile int IterationCounter;
-    private IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions;
+
+    private ITaggedSemanticVersionRepository TaggedSemanticVersionRepository { get; }
 
     private IRepositoryStore RepositoryStore { get; }
 
     private IIncrementStrategyFinder IncrementStrategyFinder { get; }
 
     public TrunkBasedVersionStrategy(Lazy<GitVersionContext> context, IRepositoryStore repositoryStore,
-        IIncrementStrategyFinder incrementStrategyFinder) : base(context)
+        ITaggedSemanticVersionRepository taggedSemanticVersionRepository, IIncrementStrategyFinder incrementStrategyFinder
+    ) : base(context)
     {
         RepositoryStore = repositoryStore.NotNull();
+        TaggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
         IncrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
@@ -27,38 +31,21 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
     {
         if (Context.Configuration.VersioningMode != VersioningMode.TrunkBased) yield break;
 
-        InitializeTaggedSemanticVersions(configuration);
-
         var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
+
+        var taggedSemanticVersions = TaggedSemanticVersionRepository.GetTaggedSemanticVersions(
+            Context.CurrentBranch, configuration.Value
+        );
 
         var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         IterateOverCommitsRecursive(
             commitsInReverseOrder: Context.CurrentBranch.Commits,
             iteration: iteration,
-            targetLabel: targetLabel
+            targetLabel: targetLabel,
+            taggedSemanticVersions: taggedSemanticVersions
         );
 
-        yield return DetermineBaseVersion(iteration, targetLabel, taggedSemanticVersions);
-    }
-
-    private void InitializeTaggedSemanticVersions(EffectiveBranchConfiguration configuration)
-    {
-        Dictionary<string, HashSet<SemanticVersion>> dictionary = new();
-
-        var semanticVersions = RepositoryStore.GetSemanticVersions(
-            configuration: Context.Configuration,
-            currentBranch: Context.CurrentBranch,
-            currentCommit: Context.CurrentCommit,
-            trackMergeTarget: configuration.Value.TrackMergeTarget,
-            tracksReleaseBranches: configuration.Value.TracksReleaseBranches
-        ).ToArray();
-
-        foreach (var semanticVersionsGrouping in semanticVersions.GroupBy(element => element.Tag.Commit.Sha))
-        {
-            HashSet<SemanticVersion> value = new(semanticVersionsGrouping.Select(element => element.Value));
-            dictionary.Add(semanticVersionsGrouping.Key, value);
-        }
-        taggedSemanticVersions = dictionary;
+        yield return DetermineBaseVersion(iteration, targetLabel);
     }
 
     private TrunkBasedIteration CreateIteration(
@@ -73,8 +60,9 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
         );
     }
 
-    private bool IterateOverCommitsRecursive(IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration,
-        string? targetLabel, HashSet<ICommit>? traversedCommits = null)
+    private bool IterateOverCommitsRecursive(
+        IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration, string? targetLabel,
+        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
     {
         traversedCommits ??= new HashSet<ICommit>();
 
@@ -94,20 +82,21 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             {
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
+                taggedSemanticVersions = TaggedSemanticVersionRepository.GetTaggedSemanticVersions(
+                    effectiveConfigurationWasBranchedFrom.Branch, effectiveConfigurationWasBranchedFrom.Value
+                );
             }
 
             var incrementForcedByCommit = GetIncrementForcedByCommit(item, configuration);
             var commit = iteration.CreateCommit(item, branchName, configuration, incrementForcedByCommit);
 
-            if (taggedSemanticVersions.TryGetValue(item.Sha, out var values))
-            {
-                commit.AddSemanticVersions(values);
+            var semanticVersions = taggedSemanticVersions[item].ToArray();
+            commit.AddSemanticVersions(semanticVersions.Select(element => element.Value));
 
-                var label = targetLabel ?? configuration.GetBranchSpecificLabel(branchName, null);
-                foreach (var semanticVersion in values)
-                {
-                    if (semanticVersion.IsMatchForBranchSpecificLabel(label)) return true;
-                }
+            var label = targetLabel ?? configuration.GetBranchSpecificLabel(branchName, null);
+            foreach (var semanticVersion in semanticVersions)
+            {
+                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label)) return true;
             }
 
             if (item.IsMergeCommit)
@@ -151,7 +140,8 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                             commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
                             iteration: childIteration,
                             targetLabel: targetLabel,
-                            traversedCommits: traversedCommits
+                            traversedCommits: traversedCommits,
+                            taggedSemanticVersions: taggedSemanticVersions
                         );
 
                         commit.AddChildIteration(childIteration);
@@ -221,19 +211,14 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
         return result;
     }
 
-    private static BaseVersionV2 DetermineBaseVersion(
-        TrunkBasedIteration iteration, string? targetLabel,
-        IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions
-    ) => DetermineBaseVersionRecursive(iteration, targetLabel, taggedSemanticVersions);
+    private static BaseVersionV2 DetermineBaseVersion(TrunkBasedIteration iteration, string? targetLabel)
+        => DetermineBaseVersionRecursive(iteration, targetLabel);
 
-    internal static BaseVersionV2 DetermineBaseVersionRecursive(
-        TrunkBasedIteration iteration, string? targetLabel,
-        IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
+    internal static BaseVersionV2 DetermineBaseVersionRecursive(TrunkBasedIteration iteration, string? targetLabel)
     {
         iteration.NotNull();
-        taggedSemanticVersions.NotNull();
 
-        var incrementSteps = GetIncrementSteps(iteration, targetLabel, taggedSemanticVersions).ToArray();
+        var incrementSteps = GetIncrementSteps(iteration, targetLabel).ToArray();
 
         var semanticVersion = SemanticVersion.Empty;
 
@@ -276,10 +261,9 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
         throw new InvalidOperationException();
     }
 
-    private static IEnumerable<BaseVersionV2> GetIncrementSteps(TrunkBasedIteration iteration,
-        string? targetLabel, IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
+    private static IEnumerable<BaseVersionV2> GetIncrementSteps(TrunkBasedIteration iteration, string? targetLabel)
     {
-        TrunkBasedContext context = new(taggedSemanticVersions)
+        TrunkBasedContext context = new()
         {
             TargetLabel = targetLabel,
         };
