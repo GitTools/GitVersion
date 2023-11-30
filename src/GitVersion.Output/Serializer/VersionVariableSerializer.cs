@@ -87,19 +87,14 @@ public class VersionVariableSerializer : IVersionVariableSerializer
 
     private GitVersionVariables FromFileInternal(string filePath)
     {
-        using var stream = fileSystem.OpenRead(filePath);
-        using var reader = new StreamReader(stream);
-        var dictionary = new YamlDotNet.Serialization.Deserializer().Deserialize<Dictionary<string, string>>(reader);
-        return FromDictionary(dictionary);
+        var json = fileSystem.ReadAllText(filePath);
+        return FromJson(json);
     }
 
     private void ToFileInternal(GitVersionVariables gitVersionVariables, string filePath)
     {
-        var dictionary = gitVersionVariables.ToDictionary(x => x.Key, x => x.Value);
-        using var stream = fileSystem.OpenWrite(filePath);
-        using var sw = new StreamWriter(stream);
-        var serializer = new YamlDotNet.Serialization.Serializer();
-        serializer.Serialize(sw, dictionary);
+        var json = ToJson(gitVersionVariables);
+        fileSystem.WriteAllText(filePath, json);
     }
 
     private static JsonSerializerOptions JsonSerializerOptions() => new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
