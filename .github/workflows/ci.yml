@@ -62,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ amd64 ]
+        arch: [ amd64, amd64 ]
 
     uses: ./.github/workflows/_artifacts_linux.yml
     with:
@@ -76,7 +76,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ amd64 ]
+        arch: [ amd64, amd64 ]
 
     uses: ./.github/workflows/_docker.yml
     with:

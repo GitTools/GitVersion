@@ -92,33 +92,31 @@ public class GitVersionExecutorTests : TestBase
     public void CacheFileExistsOnDisk()
     {
         const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
+        Major: 4
+        Minor: 10
+        Patch: 3
+        PreReleaseTag: test.19
+        PreReleaseTagWithDash: -test.19
+        PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
+        PreReleaseNumber: 19
+        WeightedPreReleaseNumber: 19
+        BuildMetaData:
+        FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        MajorMinorPatch: 4.10.3
+        SemVer: 4.10.3-test.19
+        AssemblySemVer: 4.10.3.0
+        AssemblySemFileVer: 4.10.3.0
+        FullSemVer: 4.10.3-test.19
+        InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        BranchName: feature/test
+        EscapedBranchName: feature-test
+        Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        ShortSha: dd2a29af
+        VersionSourceSha: 4.10.2
+        CommitsSinceVersionSource: 19
+        CommitDate: 2015-11-10
+        UncommittedChanges: 0
         """;
 
         var stringBuilder = new StringBuilder();
@@ -154,31 +152,29 @@ public class GitVersionExecutorTests : TestBase
     public void CacheFileExistsOnDiskWhenOverrideConfigIsSpecifiedVersionShouldBeDynamicallyCalculatedWithoutSavingInCache()
     {
         const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
+        Major: 4
+        Minor: 10
+        Patch: 3
+        PreReleaseTag: test.19
+        PreReleaseTagWithDash: -test.19
+        PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
+        PreReleaseNumber: 19
+        BuildMetaData:
+        FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        MajorMinorPatch: 4.10.3
+        SemVer: 4.10.3-test.19
+        AssemblySemVer: 4.10.3.0
+        AssemblySemFileVer: 4.10.3.0
+        FullSemVer: 4.10.3-test.19
+        InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        BranchName: feature/test
+        EscapedBranchName: feature-test
+        Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        ShortSha: dd2a29af
+        CommitsSinceVersionSource: 19
+        CommitDate: 2015-11-10
+        UncommittedChanges: 0
         """;
 
         using var fixture = new EmptyRepositoryFixture();
@@ -232,7 +228,7 @@ public class GitVersionExecutorTests : TestBase
         gitVersionCalculator.CalculateVersionVariables();
 
         var logsMessages = stringBuilder.ToString();
-        logsMessages.ShouldContain(".json not found", Case.Insensitive, logsMessages);
+        logsMessages.ShouldContain(".yml not found", Case.Insensitive, logsMessages);
     }
 
     [TestCase(ConfigurationFileLocator.DefaultFileName)]
@@ -240,33 +236,31 @@ public class GitVersionExecutorTests : TestBase
     public void ConfigChangeInvalidatesCache(string configFileName)
     {
         const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
+        Major: 4
+        Minor: 10
+        Patch: 3
+        PreReleaseTag: test.19
+        PreReleaseTagWithDash: -test.19
+        PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
+        PreReleaseNumber: 19
+        WeightedPreReleaseNumber: 19
+        BuildMetaData:
+        FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        MajorMinorPatch: 4.10.3
+        SemVer: 4.10.3-test.19
+        AssemblySemVer: 4.10.3.0
+        AssemblySemFileVer: 4.10.3.0
+        FullSemVer: 4.10.3-test.19
+        InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        BranchName: feature/test
+        EscapedBranchName: feature-test
+        Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        ShortSha: dd2a29af
+        VersionSourceSha: 4.10.2
+        CommitsSinceVersionSource: 19
+        CommitDate: 2015-11-10
+        UncommittedChanges: 0
         """;
 
         using var fixture = new EmptyRepositoryFixture();
@@ -302,33 +296,31 @@ public class GitVersionExecutorTests : TestBase
     public void NoCacheBypassesCache()
     {
         const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
+        Major: 4
+        Minor: 10
+        Patch: 3
+        PreReleaseTag: test.19
+        PreReleaseTagWithDash: -test.19
+        PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
+        PreReleaseNumber: 19
+        WeightedPreReleaseNumber: 19
+        BuildMetaData:
+        FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        MajorMinorPatch: 4.10.3
+        SemVer: 4.10.3-test.19
+        AssemblySemVer: 4.10.3.0
+        AssemblySemFileVer: 4.10.3.0
+        FullSemVer: 4.10.3-test.19
+        InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        BranchName: feature/test
+        EscapedBranchName: feature-test
+        Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+        ShortSha: dd2a29af
+        VersionSourceSha: 4.10.2
+        CommitsSinceVersionSource: 19
+        CommitDate: 2015-11-10
+        UncommittedChanges: 0
         """;
 
         using var fixture = new EmptyRepositoryFixture();

@@ -91,5 +91,5 @@ public class GitVersionCache : IGitVersionCache
         return cacheDir;
     }
 
-    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, string.Concat(key.Value, ".json"));
+    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, string.Concat(key.Value, ".yml"));
 }
