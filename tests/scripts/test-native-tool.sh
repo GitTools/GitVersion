@@ -21,7 +21,7 @@ result=$(tar -xvpf /native/gitversion-$runtime-$version.tar.gz -C /native) # >/d
 status=$?
 if test $status -eq 0
 then
-    /native/gitversion $repoPath /showvariable FullSemver;
+    /native/gitversion $repoPath /showvariable FullSemver /nocache
 else
     echo $result
 fi

@@ -21,7 +21,7 @@ result=$(dotnet tool install GitVersion.Tool --version $version --tool-path /too
 status=$?
 if test $status -eq 0
 then
-    /tools/dotnet-gitversion $repoPath /showvariable FullSemver
+    /tools/dotnet-gitversion $repoPath /showvariable FullSemver /nocache
 else
     echo $result
 fi

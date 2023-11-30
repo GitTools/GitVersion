@@ -8,11 +8,7 @@
         <EmbeddedResource Include="*\AddFormats\**\*.*" />
         <EmbeddedResource Include="*\Templates\**\*.*" />
     </ItemGroup>
-    
-    <ItemGroup>
-        <PackageReference Include="YamlDotNet" />
-    </ItemGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
