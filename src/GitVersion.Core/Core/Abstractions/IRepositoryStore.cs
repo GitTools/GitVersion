@@ -42,8 +42,6 @@ public interface IRepositoryStore
 
     SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat format, bool handleDetachedBranch);
 
-    IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format);
-
     IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format);
 
     IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersionsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format);
@@ -51,9 +49,4 @@ public interface IRepositoryStore
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
 
     int GetNumberOfUncommittedChanges();
-
-    IEnumerable<SemanticVersionWithTag> GetSemanticVersions(
-        IGitVersionConfiguration configuration, IBranch currentBranch, ICommit currentCommit,
-        bool trackMergeTarget, bool tracksReleaseBranches
-    );
 }

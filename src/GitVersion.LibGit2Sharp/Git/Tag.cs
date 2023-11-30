@@ -21,7 +21,7 @@ internal sealed class Tag : ITag
     public ReferenceName Name { get; }
     public int CompareTo(ITag? other) => comparerHelper.Compare(this, other);
     public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
-    public string? TargetSha => this.innerTag.Target.Sha;
+    public string TargetSha => this.innerTag.Target.Sha;
     public ICommit Commit => _commitLazy.Value.NotNull();
 
     private ICommit? PeeledTargetCommit()

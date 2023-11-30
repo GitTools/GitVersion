@@ -1,12 +1,8 @@
-using GitVersion.Extensions;
-
 namespace GitVersion.VersionCalculation.TrunkBased;
 
 internal record class TrunkBasedContext
 {
     public string? TargetLabel { get; init; }
-
-    public IReadOnlyDictionary<string, HashSet<SemanticVersion>> TaggedSemanticVersions { get; }
 
     public SemanticVersion? SemanticVersion { get; set; }
 
@@ -19,7 +15,4 @@ internal record class TrunkBasedContext
     public HashSet<SemanticVersion> AlternativeSemanticVersions { get; } = new();
 
     public bool ForceIncrement { get; set; }
-
-    public TrunkBasedContext(IReadOnlyDictionary<string, HashSet<SemanticVersion>> taggedSemanticVersions)
-        => TaggedSemanticVersions = taggedSemanticVersions.NotNull();
 }

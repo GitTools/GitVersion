@@ -24,6 +24,8 @@ public class PerformanceScenarios : TestBase
         var sw = Stopwatch.StartNew();
 
         fixture.AssertFullSemver($"1.0.{maxCommits}-feature.1+1", configuration);
+        sw.Stop();
+
         sw.ElapsedMilliseconds.ShouldBeLessThan(5000);
     }
 }

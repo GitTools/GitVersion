@@ -257,29 +257,6 @@ internal class RepositoryStore : IRepositoryStore
             .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, format, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format)
-    {
-        branch = branch.NotNull();
-
-        if (this.taggedSemanticVersionsOnBranchCache.TryGetValue(branch, out var onBranch))
-        {
-            this.log.Debug($"Cache hit for version tags on branch '{branch.Name.Canonical}");
-            return onBranch.Select(element => element.Value);
-        }
-
-        using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
-        {
-            var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
-            var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
-
-            var versionTags = (branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
-                ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
-
-            this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);
-            return versionTags.Select(element => element.Value);
-        }
-    }
-
     public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {
         if (this.taggedSemanticVersionsCache != null)
@@ -358,94 +335,5 @@ internal class RepositoryStore : IRepositoryStore
         return Equals(tag.Commit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
-    }
-
-    public IEnumerable<SemanticVersionWithTag> GetSemanticVersions(IGitVersionConfiguration configuration,
-        IBranch currentBranch, ICommit currentCommit, bool trackMergeTarget, bool tracksReleaseBranches)
-    {
-        var olderThan = currentCommit?.When;
-
-        IEnumerable<SemanticVersionWithTag> GetSemanticVersions()
-        {
-            var semanticVersions = GetTaggedSemanticVersions(
-                configuration.TagPrefix, configuration.SemanticVersionFormat
-            ).ToList();
-            var semanticVersionsByCommitLazy = new Lazy<ILookup<string, SemanticVersionWithTag>>(
-                () => semanticVersions.ToLookup(element => element.Tag.Commit.Id.Sha)
-            );
-
-            foreach (var semanticVersion in GetSemanticVersionsCommon(currentBranch, semanticVersionsByCommitLazy))
-            {
-                if (semanticVersion.Tag.Commit.When <= olderThan) yield return semanticVersion;
-            }
-
-            if (trackMergeTarget)
-            {
-                foreach (var semanticVersion in GetSemanticVersionsTrackMergeTarget(currentBranch, semanticVersionsByCommitLazy))
-                {
-                    if (semanticVersion.Tag.Commit.When <= olderThan) yield return semanticVersion;
-                }
-            }
-
-            if (tracksReleaseBranches)
-            {
-                foreach (var semanticVersion in GetSemanticVersionsTracksReleaseBranches(configuration, semanticVersionsByCommitLazy))
-                {
-                    yield return semanticVersion;
-                }
-            }
-        }
-
-        var alreadyReturnedValues = new HashSet<SemanticVersionWithTag>();
-
-        foreach (var semanticVersion in GetSemanticVersions())
-        {
-            if (alreadyReturnedValues.Add(semanticVersion))
-                yield return semanticVersion;
-        }
-    }
-
-    private static IEnumerable<SemanticVersionWithTag> GetSemanticVersionsCommon(
-        IBranch currentBranch, Lazy<ILookup<string, SemanticVersionWithTag>> semanticVersionsByCommitLazy)
-    {
-        foreach (var commit in currentBranch.Commits)
-        {
-            foreach (var semanticVersion in semanticVersionsByCommitLazy.Value[commit.Id.Sha])
-            {
-                yield return semanticVersion;
-            }
-        }
-    }
-
-    private static IEnumerable<SemanticVersionWithTag> GetSemanticVersionsTrackMergeTarget(
-        IBranch currentBranch, Lazy<ILookup<string, SemanticVersionWithTag>> semanticVersionsByCommitLazy)
-    {
-        var commitsOnCurrentBranch = currentBranch.Commits.ToArray();
-        if (!commitsOnCurrentBranch.Any()) yield break;
-
-        var shaHashSet = new HashSet<string>(commitsOnCurrentBranch.Select(element => element.Id.Sha));
-        foreach (var semanticVersion in semanticVersionsByCommitLazy.Value.SelectMany(element => element))
-        {
-            var parentCommits = semanticVersion.Tag.Commit.Parents ?? Array.Empty<ICommit>();
-            if (parentCommits.Any(element => shaHashSet.Contains(element.Id.Sha)))
-            {
-                yield return semanticVersion;
-            }
-        }
-    }
-
-    private IEnumerable<SemanticVersionWithTag> GetSemanticVersionsTracksReleaseBranches(
-        IGitVersionConfiguration configuration, Lazy<ILookup<string, SemanticVersionWithTag>> semanticVersionsByCommitLazy)
-    {
-        foreach (var mainBranch in FindMainlineBranches(configuration))
-        {
-            foreach (var commit in mainBranch.Commits?.ToArray() ?? Array.Empty<ICommit>())
-            {
-                foreach (var semanticVersion in semanticVersionsByCommitLazy.Value[commit.Id.Sha])
-                {
-                    yield return semanticVersion;
-                }
-            }
-        }
     }
 }

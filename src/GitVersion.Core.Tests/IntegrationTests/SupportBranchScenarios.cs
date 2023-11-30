@@ -79,7 +79,7 @@ public class SupportBranchScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
-        fixture.AssertFullSemver("0.0.1-1");
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.ApplyTag("1.4.0-rc");
         fixture.MakeACommit();

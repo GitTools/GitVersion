@@ -106,13 +106,11 @@ GitVersion.Common.IRepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? base
 GitVersion.Common.IRepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetNumberOfUncommittedChanges() -> int
 GitVersion.Common.IRepositoryStore.GetReleaseBranches(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.IBranchConfiguration!>>! releaseBranchConfig) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetSemanticVersions(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! currentBranch, GitVersion.ICommit! currentCommit, bool trackMergeTarget, bool tracksReleaseBranches) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersionWithTag!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetTaggedSemanticVersions(string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IReadOnlyList<GitVersion.SemanticVersionWithTag!>!
 GitVersion.Common.IRepositoryStore.GetTaggedSemanticVersionsOnBranch(GitVersion.IBranch! branch, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IReadOnlyList<GitVersion.SemanticVersionWithTag!>!
 GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.IBranch!
-GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
 GitVersion.Configuration.ConfigurationExtensions
 GitVersion.Configuration.EffectiveBranchConfiguration
@@ -406,7 +404,7 @@ GitVersion.IRemoteCollection.Update(string! remoteName, string! refSpec) -> void
 GitVersion.IRemoteCollection.this[string! name].get -> GitVersion.IRemote?
 GitVersion.ITag
 GitVersion.ITag.Commit.get -> GitVersion.ICommit!
-GitVersion.ITag.TargetSha.get -> string?
+GitVersion.ITag.TargetSha.get -> string!
 GitVersion.ITagCollection
 GitVersion.IVersionConverter<T>
 GitVersion.IVersionConverter<T>.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, T context) -> void
