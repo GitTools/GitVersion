@@ -5,7 +5,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.TrunkBased;
 
-internal class TrunkBasedScenariosWithAGitFlow
+internal partial class TrunkBasedScenariosWithAGitFlow
 {
     [Parallelizable(ParallelScope.All)]
     public class GivenADevelopBranchWithOneCommitMergedToMainWithTrackMergeTargetWhenMergedCommitTaggedAsStable
