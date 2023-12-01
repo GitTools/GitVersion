@@ -189,4 +189,10 @@ dotnet_diagnostic.CA1816.severity = warning
 # IDE0005: Using directive is unnecessary.
 dotnet_diagnostic.IDE0005.severity = warning
 
+# RCS1037: Remove trailing white-space.
+dotnet_diagnostic.RCS1037.severity = error
+
+# RCS1036: Remove redundant empty line.
+dotnet_diagnostic.RCS1036.severity = error
+
 [resharper_]xml_space_before_self_closing = true

@@ -68,7 +68,6 @@ jobs:
     with:
       runner: ubuntu-latest
       arch: ${{ matrix.arch }}
-      test_arm64_artifacts: false
 
   docker_linux_images:
     needs: [ build ]
