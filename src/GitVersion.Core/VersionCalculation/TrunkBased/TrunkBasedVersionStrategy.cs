@@ -127,7 +127,6 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                                 () => IncrementStrategyFinder.GetMergedCommits(item, 0).Reverse().ToList()
                             );
                             childConfiguration = configuration;
-
                         }
 
                         var childIteration = CreateIteration(
