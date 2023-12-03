@@ -141,7 +141,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+2")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+2")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+2")]
-        public string GetVersionWithLabelNullOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
+        public string GetVersionWithNoLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
