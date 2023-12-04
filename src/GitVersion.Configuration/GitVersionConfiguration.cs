@@ -2,25 +2,30 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using GitVersion.Attributes;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
+using static GitVersion.Configuration.ConfigurationConstants;
 
 namespace GitVersion.Configuration;
 
 internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionConfiguration
 {
     [JsonPropertyName("workflow")]
-    [JsonPropertyDescription("The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1")]
+    [JsonPropertyDescription("The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'")]
     public string? Workflow { get; internal set; }
 
     [JsonPropertyName("assembly-versioning-scheme")]
-    [JsonPropertyDescription("The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'.")]
+    [JsonPropertyDescription($"The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to '{NameOfDefaultAssemblyVersioningScheme}'.")]
+    [JsonPropertyDefault(DefaultAssemblyVersioningScheme)]
     public AssemblyVersioningScheme? AssemblyVersioningScheme { get; internal set; }
 
     [JsonPropertyName("assembly-file-versioning-scheme")]
-    [JsonPropertyDescription("The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'.")]
+    [JsonPropertyDescription($"The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to '{NameOfDefaultAssemblyFileVersioningScheme}'.")]
+    [JsonPropertyDefault(DefaultAssemblyFileVersioningScheme)]
     public AssemblyFileVersioningScheme? AssemblyFileVersioningScheme { get; internal set; }
 
     [JsonPropertyName("assembly-informational-format")]
-    [JsonPropertyDescription("Specifies the format of AssemblyInformationalVersion. The default value is {InformationalVersion}.")]
+    [JsonPropertyDescription($"Specifies the format of AssemblyInformationalVersion. Defaults to '{DefaultAssemblyInformationalFormat}'.")]
+    [JsonPropertyDefault(DefaultAssemblyInformationalFormat)]
     public string? AssemblyInformationalFormat { get; internal set; }
 
     [JsonPropertyName("assembly-versioning-format")]
@@ -32,11 +37,13 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? AssemblyFileVersioningFormat { get; internal set; }
 
     [JsonPropertyName("tag-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to {ConfigurationConstants.DefaultTagPrefix}")]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{DefaultTagPrefix}'")]
+    [JsonPropertyDefault(DefaultTagPrefix)]
     public string? TagPrefix { get; internal set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
-    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). The default value is '{ConfigurationConstants.DefaultVersionInBranchPattern}'.")]
+    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{DefaultVersionInBranchPattern}'.")]
+    [JsonPropertyDefault(DefaultVersionInBranchPattern)]
     public string? VersionInBranchPattern { get; internal set; }
 
     [JsonIgnore]
@@ -63,32 +70,32 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string? nextVersion;
 
     [JsonPropertyName("major-version-bump-message")]
-    [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a major version increment. Default set to '\+semver:\s?(breaking|major)'")]
-    [JsonPropertyDefault(@"'\+semver:\s?(breaking|major)'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{IncrementStrategyFinder.DefaultMajorPattern}'")]
+    [JsonPropertyDefault(IncrementStrategyFinder.DefaultMajorPattern)]
     public string? MajorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("minor-version-bump-message")]
-    [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a minor version increment. Default set to '\+semver:\s?(feature|minor)'")]
-    [JsonPropertyDefault(@"'\+semver:\s?(feature|minor)'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{IncrementStrategyFinder.DefaultMinorPattern}'")]
+    [JsonPropertyDefault(IncrementStrategyFinder.DefaultMinorPattern)]
     public string? MinorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("patch-version-bump-message")]
-    [JsonPropertyDescription(@"The regular expression to match commit messages with to perform a patch version increment. Default set to '\+semver:\s?(fix|patch)'")]
-    [JsonPropertyDefault(@"'\+semver:\s?(fix|patch)'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{IncrementStrategyFinder.DefaultPatchPattern}'")]
+    [JsonPropertyDefault(IncrementStrategyFinder.DefaultPatchPattern)]
     public string? PatchVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("no-bump-message")]
-    [JsonPropertyDescription(@"Used to tell GitVersion not to increment when in Mainline development mode. . Default set to '\+semver:\s?(none|skip)'")]
-    [JsonPropertyDefault(@"'\+semver:\s?(none|skip)'")]
+    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{IncrementStrategyFinder.DefaultNoBumpPattern}'")]
+    [JsonPropertyDefault(IncrementStrategyFinder.DefaultNoBumpPattern)]
     public string? NoBumpMessage { get; internal set; }
 
     [JsonPropertyName("tag-pre-release-weight")]
-    [JsonPropertyDescription("The pre-release weight in case of tagged commits. Defaults to 60000.")]
+    [JsonPropertyDescription($"The pre-release weight in case of tagged commits. Defaults to {StringDefaultTagPreReleaseWeight}.")]
     public int? TagPreReleaseWeight { get; internal set; }
 
     [JsonPropertyName("commit-date-format")]
-    [JsonPropertyDescription("The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).")]
-    [JsonPropertyDefault("'yyyy-MM-dd'")]
+    [JsonPropertyDescription($"The format to use when calculating the commit date. Defaults to '{DefaultCommitDateFormat}'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).")]
+    [JsonPropertyDefault(DefaultCommitDateFormat)]
 #if NET7_0_OR_GREATER
     [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")] // See https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute, https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute.datetimeformat?view=net-7.0#system-diagnostics-codeanalysis-stringsyntaxattribute-datetimeformat
 #endif
@@ -102,11 +109,13 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     IReadOnlyDictionary<string, string> IGitVersionConfiguration.MergeMessageFormats => MergeMessageFormats;
 
     [JsonPropertyName("update-build-number")]
-    [JsonPropertyDescription("Whether to update the build number in the project file. Defaults to true.")]
+    [JsonPropertyDescription($"Whether to update the build number in the project file. Defaults to {StringDefaultUpdateBuildNumber}.")]
+    [JsonPropertyDefault(DefaultUpdateBuildNumber)]
     public bool UpdateBuildNumber { get; internal set; } = true;
 
     [JsonPropertyName("semantic-version-format")]
-    [JsonPropertyDescription("Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'.")]
+    [JsonPropertyDescription($"Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'. Defaults to '{StringDefaultSemanticVersionFormat}'.")]
+    [JsonPropertyDefault(DefaultSemanticVersionFormat)]
     public SemanticVersionFormat SemanticVersionFormat { get; internal set; }
 
     [JsonIgnore]
