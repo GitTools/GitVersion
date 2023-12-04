@@ -53,7 +53,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string GetVersionInBranchPattern()
     {
         var versionInBranchPattern = VersionInBranchPattern;
-        if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern;
+        if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = DefaultVersionInBranchPattern;
         return $"^{versionInBranchPattern.TrimStart('^')}";
     }
 
@@ -111,7 +111,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("update-build-number")]
     [JsonPropertyDescription($"Whether to update the build number in the project file. Defaults to {StringDefaultUpdateBuildNumber}.")]
     [JsonPropertyDefault(DefaultUpdateBuildNumber)]
-    public bool UpdateBuildNumber { get; internal set; } = true;
+    public bool UpdateBuildNumber { get; internal set; } = DefaultUpdateBuildNumber;
 
     [JsonPropertyName("semantic-version-format")]
     [JsonPropertyDescription($"Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'. Defaults to '{StringDefaultSemanticVersionFormat}'.")]
