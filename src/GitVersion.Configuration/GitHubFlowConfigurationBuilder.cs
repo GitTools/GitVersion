@@ -1,4 +1,3 @@
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -11,18 +10,18 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
     {
         WithConfiguration(new GitVersionConfiguration
         {
-            AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-            CommitDateFormat = "yyyy-MM-dd",
+            AssemblyFileVersioningScheme = ConfigurationConstants.DefaultAssemblyFileVersioningScheme,
+            AssemblyVersioningScheme = ConfigurationConstants.DefaultAssemblyVersioningScheme,
+            CommitDateFormat = ConfigurationConstants.DefaultCommitDateFormat,
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
             MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
             NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
-            SemanticVersionFormat = SemanticVersionFormat.Strict,
+            SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             TagPrefix = ConfigurationConstants.DefaultTagPrefix,
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
-            TagPreReleaseWeight = 60000,
-            UpdateBuildNumber = true,
+            TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
+            UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
             VersioningMode = VersioningMode.ContinuousDeployment,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
@@ -95,7 +94,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
                 FeatureBranch.Name
             },
             Label = "PullRequest",
-            LabelNumberPattern = @"[/-](?<number>\d+)",
+            LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
             PreReleaseWeight = 30000
         });
 
