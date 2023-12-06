@@ -10,7 +10,7 @@
       "type": "string"
     },
     "assembly-file-versioning-scheme": {
-      "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027. Defaults to \u0027MajorMinorPatch\u0027.",
+      "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
       "default": "MajorMinorPatch",
       "enum": [
         "MajorMinorPatchTag",
@@ -21,8 +21,8 @@
       ]
     },
     "assembly-informational-format": {
-      "description": "Specifies the format of AssemblyInformationalVersion. Defaults to \u0027{InformationalVersion}\u0027.",
-      "default": "{InformationalVersion}",
+      "description": "Specifies the format of AssemblyInformationalVersion. Defaults to '{InformationalVersion}'.",
+      "default": "'{InformationalVersion}'",
       "type": "string"
     },
     "assembly-versioning-format": {
@@ -30,7 +30,7 @@
       "type": "string"
     },
     "assembly-versioning-scheme": {
-      "description": "The scheme to use when setting AssemblyVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027. Defaults to \u0027MajorMinorPatch\u0027.",
+      "description": "The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
       "default": "MajorMinorPatch",
       "enum": [
         "MajorMinorPatchTag",
@@ -48,7 +48,7 @@
       }
     },
     "commit-date-format": {
-      "description": "The format to use when calculating the commit date. Defaults to \u0027yyyy-MM-dd\u0027. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).",
+      "description": "The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).",
       "default": "yyyy-MM-dd",
       "type": "string"
     },
@@ -86,8 +86,9 @@
       "$ref": "#/$defs/string1"
     },
     "major-version-bump-message": {
-      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to \u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
-      "default": "\\\u002Bsemver:\\s?(breaking|major)",
+      "format": "regex",
+      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '\\+semver:\\s?(breaking|major)'",
+      "default": "\\+semver:\\s?(breaking|major)",
       "type": "string"
     },
     "merge-message-formats": {
@@ -98,8 +99,9 @@
       }
     },
     "minor-version-bump-message": {
-      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to \u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
-      "default": "\\\u002Bsemver:\\s?(feature|minor)",
+      "format": "regex",
+      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '\\+semver:\\s?(feature|minor)'",
+      "default": "\\+semver:\\s?(feature|minor)",
       "type": "string"
     },
     "next-version": {
@@ -107,13 +109,15 @@
       "type": "string"
     },
     "no-bump-message": {
-      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to \u0027\\\u002Bsemver:\\s?(none|skip)\u0027",
-      "default": "\\\u002Bsemver:\\s?(none|skip)",
+      "format": "regex",
+      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '\\+semver:\\s?(none|skip)'",
+      "default": "\\+semver:\\s?(none|skip)",
       "type": "string"
     },
     "patch-version-bump-message": {
-      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to \u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
-      "default": "\\\u002Bsemver:\\s?(fix|patch)",
+      "format": "regex",
+      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",
+      "default": "\\+semver:\\s?(fix|patch)",
       "type": "string"
     },
     "pre-release-weight": {
@@ -126,7 +130,7 @@
       "$ref": "#/$defs/string2"
     },
     "semantic-version-format": {
-      "description": "Specifies the semantic version format that is used when parsing the string. Can be \u0027Strict\u0027 or \u0027Loose\u0027. Defaults to \u0027Strict\u0027.",
+      "description": "Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'. Defaults to 'Strict'.",
       "default": "Strict",
       "enum": [
         "Strict",
@@ -137,7 +141,8 @@
       "$ref": "#/$defs/hashSetOfString1"
     },
     "tag-prefix": {
-      "description": "A regular expression which is used to trim Git tags before processing. Defaults to \u0027[vV]?\u0027",
+      "format": "regex",
+      "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
       "default": "[vV]?",
       "type": "string"
     },
@@ -163,15 +168,16 @@
       "type": "boolean"
     },
     "version-in-branch-pattern": {
-      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to \u0027(?\u003Cversion\u003E[vV]?\\d\u002B(\\.\\d\u002B)?(\\.\\d\u002B)?).*\u0027.",
-      "default": "(?\u003Cversion\u003E[vV]?\\d\u002B(\\.\\d\u002B)?(\\.\\d\u002B)?).*",
+      "format": "regex",
+      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
+      "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": "string"
     },
     "mode": {
       "$ref": "#/$defs/nullableOfVersioningMode"
     },
     "workflow": {
-      "description": "The base template of the configuration to use. Possible values are: \u0027GitFlow/v1\u0027 or \u0027GitHubFlow/v1\u0027",
+      "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
       "type": "string"
     }
   },
@@ -227,7 +233,7 @@
       }
     },
     "nullableOfCommitMessageIncrementMode": {
-      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be \u0027Disabled\u0027, \u0027Enabled\u0027 or \u0027MergeMessageOnly\u0027.",
+      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be 'Disabled', 'Enabled' or 'MergeMessageOnly'.",
       "enum": [
         "Enabled",
         "Disabled",
@@ -235,7 +241,7 @@
       ]
     },
     "incrementStrategy": {
-      "description": "The increment strategy for this branch. Can be \u0027Inherit\u0027, \u0027Patch\u0027, \u0027Minor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
       "enum": [
         "None",
         "Major",
@@ -271,8 +277,9 @@
       "type": "string"
     },
     "string1": {
-      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)\u0027.",
-      "default": "[/-](?\u003Cnumber\u003E\\d\u002B)",
+      "format": "regex",
+      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\\d+)'.",
+      "default": "[/-](?<number>\\d+)",
       "type": "string"
     },
     "nullableOfInt32": {
@@ -290,6 +297,7 @@
       ]
     },
     "string2": {
+      "format": "regex",
       "description": "The regular expression pattern to use to match this branch.",
       "type": "string"
     },
@@ -323,7 +331,7 @@
       ]
     },
     "nullableOfVersioningMode": {
-      "description": "The versioning mode for this branch. Can be \u0027ContinuousDelivery\u0027, \u0027ContinuousDeployment\u0027, \u0027Mainline\u0027.",
+      "description": "The versioning mode for this branch. Can be 'ContinuousDelivery', 'ContinuousDeployment', 'Mainline'.",
       "enum": [
         "ContinuousDelivery",
         "ContinuousDeployment",

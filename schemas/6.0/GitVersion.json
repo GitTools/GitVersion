@@ -59,7 +59,7 @@
       ]
     },
     "MajorMinorPatch": {
-      "description": "Major, Minor and Patch joined together, separated by \u0027.\u0027.",
+      "description": "Major, Minor and Patch joined together, separated by '.'.",
       "type": "string"
     },
     "Minor": {

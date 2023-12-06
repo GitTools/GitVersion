@@ -19,7 +19,6 @@ var configuration = new SchemaGeneratorConfiguration
 AttributeHandler.AddHandler<DefaultAttributeHandler>();
 AttributeHandler.AddHandler<DescriptionAttributeHandler>();
 AttributeHandler.AddHandler<FormatAttributeHandler>();
-AttributeHandler.AddHandler<PatternAttributeHandler>();
 
 var builder = new JsonSchemaBuilder();
 builder.Schema("http://json-schema.org/draft-07/schema#");

@@ -24,7 +24,7 @@ public sealed class JsonPropertyDefaultAttribute : JsonAttribute
 
     /// <inheritdoc cref="JsonPropertyDefaultAttribute(string)"/>
     /// <remarks>Depending on the Type of the boxed value, the resulting string will be automatically enclosed with single-quotes. If the boxed value is NOT a string and is converted to a string from a numeric , object, array, boolean, or null-only type, then it will NOT be enclosed with single-quotes.</remarks>
-    public JsonPropertyDefaultAttribute(object boxedValue)
+    public JsonPropertyDefaultAttribute(object? boxedValue)
     {
         if (boxedValue is not null)
         {

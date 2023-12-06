@@ -25,7 +25,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("assembly-informational-format")]
     [JsonPropertyDescription($"Specifies the format of AssemblyInformationalVersion. Defaults to '{DefaultAssemblyInformationalFormat}'.")]
-    [JsonPropertyDefault(DefaultAssemblyInformationalFormat)]
+    [JsonPropertyDefault($"'{DefaultAssemblyInformationalFormat}'")]
     public string? AssemblyInformationalFormat { get; internal set; }
 
     [JsonPropertyName("assembly-versioning-format")]
@@ -39,11 +39,13 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("tag-prefix")]
     [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{DefaultTagPrefix}'")]
     [JsonPropertyDefault(DefaultTagPrefix)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? TagPrefix { get; internal set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
     [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{DefaultVersionInBranchPattern}'.")]
     [JsonPropertyDefault(DefaultVersionInBranchPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? VersionInBranchPattern { get; internal set; }
 
     [JsonIgnore]
@@ -72,21 +74,25 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("major-version-bump-message")]
     [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{IncrementStrategyFinder.DefaultMajorPattern}'")]
     [JsonPropertyDefault(IncrementStrategyFinder.DefaultMajorPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? MajorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("minor-version-bump-message")]
     [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{IncrementStrategyFinder.DefaultMinorPattern}'")]
     [JsonPropertyDefault(IncrementStrategyFinder.DefaultMinorPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? MinorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("patch-version-bump-message")]
     [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{IncrementStrategyFinder.DefaultPatchPattern}'")]
     [JsonPropertyDefault(IncrementStrategyFinder.DefaultPatchPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? PatchVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("no-bump-message")]
     [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{IncrementStrategyFinder.DefaultNoBumpPattern}'")]
     [JsonPropertyDefault(IncrementStrategyFinder.DefaultNoBumpPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? NoBumpMessage { get; internal set; }
 
     [JsonPropertyName("tag-pre-release-weight")]

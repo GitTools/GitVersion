@@ -316,7 +316,7 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
             minorVersionBumpMessage: Context.Configuration.MinorVersionBumpMessage,
             patchVersionBumpMessage: Context.Configuration.PatchVersionBumpMessage,
             noBumpMessage: Context.Configuration.NoBumpMessage,
-            commits: commits
+            commits: commits.ToArray()
         );
         return messageIncrement ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
