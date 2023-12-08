@@ -43,6 +43,15 @@ updates:
       patterns:
       - "Microsoft.*"
       - "System.*"
+    analyzers:
+      patterns:
+      - "*Analyzers"
+    serilog:
+        patterns:
+        - "Serilog.*"
+    nunit:
+      patterns:
+      - "NUnit.*"
   directory: "/src"
   schedule:
     interval: daily

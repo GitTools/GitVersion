@@ -41,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\_unit_tests.yml = ..\.github\workflows\_unit_tests.yml
 		..\.github\workflows\stale.yml = ..\.github\workflows\stale.yml
 		..\.github\workflows\winget.yml = ..\.github\workflows\winget.yml
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9B92261-AB9C-47D6-A8A7-616A5A62B063}"
