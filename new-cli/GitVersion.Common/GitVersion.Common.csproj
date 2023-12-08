@@ -64,23 +64,23 @@
     <Compile Include="..\..\src\GitVersion.Core\Git\RefSpecDirection.cs">
       <Link>Git\RefSpecDirection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersion.cs">
-        <Link>Git\SemanticVersion.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersion.cs">
+        <Link>SemVer\SemanticVersion.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionBuildMetaData.cs">
-        <Link>Git\SemanticVersionBuildMetaData.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionBuildMetaData.cs">
+        <Link>SemVer\SemanticVersionBuildMetaData.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionFormat.cs">
-        <Link>Git\SemanticVersionFormat.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionFormat.cs">
+        <Link>SemVer\SemanticVersionFormat.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionPreReleaseTag.cs">
-        <Link>Git\SemanticVersionPreReleaseTag.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionPreReleaseTag.cs">
+        <Link>SemVer\SemanticVersionPreReleaseTag.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\VersionField.cs">
-        <Link>Git\VersionField.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\VersionField.cs">
+        <Link>SemVer\VersionField.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\WarningException.cs">
-        <Link>Git\WarningException.cs</Link>
+    <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs">
+        <Link>Exceptions\WarningException.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
