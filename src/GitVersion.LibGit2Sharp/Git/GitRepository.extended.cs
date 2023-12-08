@@ -116,7 +116,7 @@ internal partial class GitRepository : IMutatingGitRepository
     private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
         new() { CredentialsProvider = GetCredentialsProvider(auth) };
     private static CloneOptions GetCloneOptions(AuthenticationInfo auth) =>
-        new() { Checkout = false, CredentialsProvider = GetCredentialsProvider(auth) };
+        new() { Checkout = false, FetchOptions = { CredentialsProvider = GetCredentialsProvider(auth) } };
     private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
     {
         if (!auth.Username.IsNullOrWhiteSpace())

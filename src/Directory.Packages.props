@@ -6,7 +6,7 @@
     <PackageVersion Include="Buildalyzer" Version="5.0.1" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="3.5.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="3.0.134" />
-    <PackageVersion Include="LibGit2Sharp" Version="0.28.0" />
+    <PackageVersion Include="LibGit2Sharp" Version="0.29.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Build" Version="17.8.3" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.8.3" />
