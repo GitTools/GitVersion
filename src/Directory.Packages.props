@@ -25,7 +25,7 @@
     <PackageVersion Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="3.0.134" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.6.4" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.7.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.6.4" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="Polly" Version="8.2.0" />
