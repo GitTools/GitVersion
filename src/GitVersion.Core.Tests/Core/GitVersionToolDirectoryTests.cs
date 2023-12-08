@@ -26,7 +26,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     [Test]
     public void FindsGitDirectory()
     {
-        try
+        var exception = Assert.Catch(() =>
         {
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = workDirectory, Settings = { NoFetch = true } });
 
@@ -35,13 +35,8 @@ public class GitVersionTaskDirectoryTests : TestBase
             var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
-        }
-        catch (Exception ex)
-        {
-            // `RepositoryNotFoundException` means that it couldn't find the .git directory,
-            // any other exception means that the .git was found but there was some other issue that this test doesn't care about.
-            Assert.IsNotAssignableFrom<RepositoryNotFoundException>(ex);
-        }
+        });
+        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
     }
 
     [Test]
@@ -50,7 +45,7 @@ public class GitVersionTaskDirectoryTests : TestBase
         var childDir = PathHelper.Combine(this.workDirectory, "child");
         Directory.CreateDirectory(childDir);
 
-        try
+        var exception = Assert.Catch(() =>
         {
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = childDir, Settings = { NoFetch = true } });
 
@@ -59,13 +54,7 @@ public class GitVersionTaskDirectoryTests : TestBase
             var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
-        }
-        catch (Exception ex)
-        {
-            // TODO I think this test is wrong.. It throws a different exception
-            // `RepositoryNotFoundException` means that it couldn't find the .git directory,
-            // any other exception means that the .git was found but there was some other issue that this test doesn't care about.
-            Assert.IsNotAssignableFrom<RepositoryNotFoundException>(ex);
-        }
+        });
+        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
     }
 }
