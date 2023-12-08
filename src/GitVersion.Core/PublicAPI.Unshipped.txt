@@ -19,16 +19,40 @@ GitVersion.AssemblySettingsInfo.EnsureAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.Files -> System.Collections.Generic.ISet<string!>!
 GitVersion.AssemblySettingsInfo.UpdateAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.UpdateProjectFiles -> bool
+GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Date = 0 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.DateTime = 1 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Duration = 2 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Email = 3 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Hostname = 4 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.IdnEmail = 5 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.IdnHostname = 6 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Ipv4 = 7 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Ipv6 = 8 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Iri = 9 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.IriReference = 10 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.JsonPointer = 11 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Regex = 12 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.RelativeJsonPointer = 13 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Time = 14 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Uri = 15 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.UriReference = 16 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.UriTemplate = 17 -> GitVersion.Attributes.Format
+GitVersion.Attributes.Format.Uuid = 18 -> GitVersion.Attributes.Format
+GitVersion.Attributes.JsonPropertyDefaultAttribute
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(object? boxedValue) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.Value.get -> string!
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(bool value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(string? value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.Extensions.AssemblyFileVersioningScheme value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.Extensions.AssemblyVersioningScheme value) -> void
+GitVersion.Attributes.JsonPropertyDefaultAttribute.JsonPropertyDefaultAttribute(GitVersion.SemanticVersionFormat value) -> void
 GitVersion.Attributes.JsonPropertyDescriptionAttribute
 GitVersion.Attributes.JsonPropertyDescriptionAttribute.Description.get -> string!
 GitVersion.Attributes.JsonPropertyDescriptionAttribute.JsonPropertyDescriptionAttribute(string! description) -> void
-GitVersion.Attributes.JsonPropertyPatternAttribute
-GitVersion.Attributes.JsonPropertyPatternAttribute.Format.get -> GitVersion.Attributes.PatternFormat
-GitVersion.Attributes.JsonPropertyPatternAttribute.JsonPropertyPatternAttribute(string! pattern, GitVersion.Attributes.PatternFormat format = GitVersion.Attributes.PatternFormat.Regex) -> void
-GitVersion.Attributes.JsonPropertyPatternAttribute.Pattern.get -> string!
-GitVersion.Attributes.PatternFormat
-GitVersion.Attributes.PatternFormat.DateTime = 1 -> GitVersion.Attributes.PatternFormat
-GitVersion.Attributes.PatternFormat.Regex = 0 -> GitVersion.Attributes.PatternFormat
+GitVersion.Attributes.JsonPropertyFormatAttribute
+GitVersion.Attributes.JsonPropertyFormatAttribute.Format.get -> GitVersion.Attributes.Format
+GitVersion.Attributes.JsonPropertyFormatAttribute.JsonPropertyFormatAttribute(GitVersion.Attributes.Format format) -> void
 GitVersion.AuthenticationInfo
 GitVersion.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.AuthenticationInfo.Password.get -> string?
@@ -655,7 +679,7 @@ GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
 GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
-GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
+GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.ICommit![]! commits) -> GitVersion.VersionField?
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
 GitVersion.VersionCalculation.IVariableProvider

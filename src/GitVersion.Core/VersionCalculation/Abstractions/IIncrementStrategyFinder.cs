@@ -8,6 +8,6 @@ public interface IIncrementStrategyFinder
 
     VersionField? GetIncrementForCommits(
         string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage,
-        IEnumerable<ICommit> commits
+        ICommit[] commits
     );
 }

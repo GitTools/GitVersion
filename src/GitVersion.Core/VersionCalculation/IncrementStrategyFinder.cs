@@ -57,7 +57,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     }
 
     public VersionField? GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage,
-        string? patchVersionBumpMessage, string? noBumpMessage, IEnumerable<ICommit> commits)
+                                                string? patchVersionBumpMessage, string? noBumpMessage, ICommit[] commits)
     {
         commits.NotNull();
 
@@ -71,7 +71,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             .Where(v => v != null)
             .ToList();
 
-        return increments.Any()
+        return increments.Count != 0
             ? increments.Max()
             : null;
     }
@@ -100,7 +100,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             minorVersionBumpMessage: configuration.MinorVersionBumpMessage,
             patchVersionBumpMessage: configuration.PatchVersionBumpMessage,
             noBumpMessage: configuration.NoBumpMessage,
-            commits: commits
+            commits: commits.ToArray()
         );
     }
 

@@ -4,10 +4,17 @@ namespace GitVersion.Configuration;
 
 internal record IgnoreConfiguration : IIgnoreConfiguration
 {
+    [JsonIgnore]
+    public DateTimeOffset? Before { get; init; }
+
     [JsonPropertyName("commits-before")]
     [JsonPropertyDescription("Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.")]
-    [JsonPropertyPattern("'yyyy-MM-ddTHH:mm:ss'", PatternFormat.DateTime)]
-    public DateTimeOffset? Before { get; init; }
+    [JsonPropertyFormat(Format.DateTime)]
+    public string? BeforeString
+    {
+        get => Before?.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        init => Before = value is null ? null : DateTimeOffset.Parse(value);
+    }
 
     [JsonIgnore]
     IReadOnlyCollection<string> IIgnoreConfiguration.Shas => Shas;

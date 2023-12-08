@@ -23,8 +23,9 @@ internal record BranchConfiguration : IBranchConfiguration
     public bool? PreventIncrementOfMergedBranchVersion { get; internal set; }
 
     [JsonPropertyName("label-number-pattern")]
-    [JsonPropertyDescription(@"The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\d+)[-/]'.")]
-    [JsonPropertyPattern(@"[/-](?<number>\d+)[-/]")]
+    [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{ConfigurationConstants.DefaultLabelNumberPattern}'.")]
+    [JsonPropertyDefault(ConfigurationConstants.DefaultLabelNumberPattern)]
+    [JsonPropertyFormat(Format.Regex)]
     public string? LabelNumberPattern { get; internal set; }
 
     [JsonPropertyName("track-merge-target")]
@@ -41,6 +42,7 @@ internal record BranchConfiguration : IBranchConfiguration
 
     [JsonPropertyName("regex")]
     [JsonPropertyDescription("The regular expression pattern to use to match this branch.")]
+    [JsonPropertyFormat(Format.Regex)]
     public string? RegularExpression { get; internal set; }
 
     [JsonIgnore]

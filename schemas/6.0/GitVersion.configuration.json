@@ -10,7 +10,8 @@
       "type": "string"
     },
     "assembly-file-versioning-scheme": {
-      "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
+      "default": "MajorMinorPatch",
       "enum": [
         "MajorMinorPatchTag",
         "MajorMinorPatch",
@@ -20,7 +21,8 @@
       ]
     },
     "assembly-informational-format": {
-      "description": "Specifies the format of AssemblyInformationalVersion. The default value is {InformationalVersion}.",
+      "description": "Specifies the format of AssemblyInformationalVersion. Defaults to '{InformationalVersion}'.",
+      "default": "'{InformationalVersion}'",
       "type": "string"
     },
     "assembly-versioning-format": {
@@ -28,7 +30,8 @@
       "type": "string"
     },
     "assembly-versioning-scheme": {
-      "description": "The scheme to use when setting AssemblyVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "description": "The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
+      "default": "MajorMinorPatch",
       "enum": [
         "MajorMinorPatchTag",
         "MajorMinorPatch",
@@ -45,9 +48,8 @@
       }
     },
     "commit-date-format": {
-      "format": "date-time",
-      "pattern": "\u0027yyyy-MM-dd\u0027",
-      "description": "The format to use when calculating the commit date. Defaults to \u0027yyyy-MM-dd\u0027.",
+      "description": "The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).",
+      "default": "yyyy-MM-dd",
       "type": "string"
     },
     "commit-message-incrementing": {
@@ -58,7 +60,7 @@
       "type": "object",
       "properties": {
         "commits-before": {
-          "$ref": "#/$defs/nullableOfDateTimeOffset"
+          "$ref": "#/$defs/string3"
         },
         "sha": {
           "$ref": "#/$defs/hashSetOfString2"
@@ -85,8 +87,8 @@
     },
     "major-version-bump-message": {
       "format": "regex",
-      "pattern": "\u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
-      "description": "The regular expression to match commit messages with to perform a major version increment. Default set to \u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
+      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '\\+semver:\\s?(breaking|major)'",
+      "default": "\\+semver:\\s?(breaking|major)",
       "type": "string"
     },
     "merge-message-formats": {
@@ -98,8 +100,8 @@
     },
     "minor-version-bump-message": {
       "format": "regex",
-      "pattern": "\u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
-      "description": "The regular expression to match commit messages with to perform a minor version increment. Default set to \u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
+      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '\\+semver:\\s?(feature|minor)'",
+      "default": "\\+semver:\\s?(feature|minor)",
       "type": "string"
     },
     "next-version": {
@@ -108,14 +110,14 @@
     },
     "no-bump-message": {
       "format": "regex",
-      "pattern": "\u0027\\\u002Bsemver:\\s?(none|skip)\u0027",
-      "description": "Used to tell GitVersion not to increment when in Mainline development mode. . Default set to \u0027\\\u002Bsemver:\\s?(none|skip)\u0027",
+      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '\\+semver:\\s?(none|skip)'",
+      "default": "\\+semver:\\s?(none|skip)",
       "type": "string"
     },
     "patch-version-bump-message": {
       "format": "regex",
-      "pattern": "\u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
-      "description": "The regular expression to match commit messages with to perform a patch version increment. Default set to \u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
+      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",
+      "default": "\\+semver:\\s?(fix|patch)",
       "type": "string"
     },
     "pre-release-weight": {
@@ -128,7 +130,8 @@
       "$ref": "#/$defs/string2"
     },
     "semantic-version-format": {
-      "description": "Specifies the semantic version format that is used when parsing the string. Can be \u0027Strict\u0027 or \u0027Loose\u0027.",
+      "description": "Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'. Defaults to 'Strict'.",
+      "default": "Strict",
       "enum": [
         "Strict",
         "Loose"
@@ -138,7 +141,9 @@
       "$ref": "#/$defs/hashSetOfString1"
     },
     "tag-prefix": {
-      "description": "A regular expression which is used to trim Git tags before processing. Defaults to [vV]?",
+      "format": "regex",
+      "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
+      "default": "[vV]?",
       "type": "string"
     },
     "tag-pre-release-weight": {
@@ -159,17 +164,20 @@
     },
     "update-build-number": {
       "description": "Whether to update the build number in the project file. Defaults to true.",
+      "default": "true",
       "type": "boolean"
     },
     "version-in-branch-pattern": {
-      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). The default value is \u0027(?\u003Cversion\u003E[vV]?\\d\u002B(\\.\\d\u002B)?(\\.\\d\u002B)?).*\u0027.",
+      "format": "regex",
+      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
+      "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": "string"
     },
     "mode": {
       "$ref": "#/$defs/nullableOfVersioningMode"
     },
     "workflow": {
-      "description": "The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1",
+      "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
       "type": "string"
     }
   },
@@ -225,7 +233,7 @@
       }
     },
     "nullableOfCommitMessageIncrementMode": {
-      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be \u0027Disabled\u0027, \u0027Enabled\u0027 or \u0027MergeMessageOnly\u0027.",
+      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be 'Disabled', 'Enabled' or 'MergeMessageOnly'.",
       "enum": [
         "Enabled",
         "Disabled",
@@ -233,7 +241,7 @@
       ]
     },
     "incrementStrategy": {
-      "description": "The increment strategy for this branch. Can be \u0027Inherit\u0027, \u0027Patch\u0027, \u0027Minor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
       "enum": [
         "None",
         "Major",
@@ -270,8 +278,8 @@
     },
     "string1": {
       "format": "regex",
-      "pattern": "[/-](?\u003Cnumber\u003E\\d\u002B)[-/]",
-      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
+      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\\d+)'.",
+      "default": "[/-](?<number>\\d+)",
       "type": "string"
     },
     "nullableOfInt32": {
@@ -289,6 +297,7 @@
       ]
     },
     "string2": {
+      "format": "regex",
       "description": "The regular expression pattern to use to match this branch.",
       "type": "string"
     },
@@ -322,231 +331,17 @@
       ]
     },
     "nullableOfVersioningMode": {
-      "description": "The versioning mode for this branch. Can be \u0027ContinuousDelivery\u0027, \u0027ContinuousDeployment\u0027, \u0027Mainline\u0027.",
+      "description": "The versioning mode for this branch. Can be 'ContinuousDelivery', 'ContinuousDeployment', 'Mainline'.",
       "enum": [
         "ContinuousDelivery",
         "ContinuousDeployment",
         "Mainline"
       ]
     },
-    "nullableOfDateTimeOffset": {
+    "string3": {
       "format": "date-time",
-      "pattern": "\u0027yyyy-MM-ddTHH:mm:ss\u0027",
       "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "date": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "day": {
-          "$ref": "#/$defs/integer"
-        },
-        "day-of-week": {
-          "enum": [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-          ],
-          "readOnly": true
-        },
-        "day-of-year": {
-          "$ref": "#/$defs/integer"
-        },
-        "hour": {
-          "$ref": "#/$defs/integer"
-        },
-        "local-date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "microsecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "millisecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "minute": {
-          "$ref": "#/$defs/integer"
-        },
-        "month": {
-          "$ref": "#/$defs/integer"
-        },
-        "nanosecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "offset": {
-          "$ref": "#/$defs/timeSpan"
-        },
-        "second": {
-          "$ref": "#/$defs/integer"
-        },
-        "ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "time-of-day": {
-          "$ref": "#/$defs/timeSpan"
-        },
-        "utc-date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "utc-ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "year": {
-          "$ref": "#/$defs/integer"
-        }
-      }
-    },
-    "dateTimeOffset": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "date": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "day": {
-          "$ref": "#/$defs/integer"
-        },
-        "day-of-week": {
-          "enum": [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-          ],
-          "readOnly": true
-        },
-        "day-of-year": {
-          "$ref": "#/$defs/integer"
-        },
-        "hour": {
-          "$ref": "#/$defs/integer"
-        },
-        "local-date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "microsecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "millisecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "minute": {
-          "$ref": "#/$defs/integer"
-        },
-        "month": {
-          "$ref": "#/$defs/integer"
-        },
-        "nanosecond": {
-          "$ref": "#/$defs/integer"
-        },
-        "offset": {
-          "$ref": "#/$defs/timeSpan"
-        },
-        "second": {
-          "$ref": "#/$defs/integer"
-        },
-        "ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "time-of-day": {
-          "$ref": "#/$defs/timeSpan"
-        },
-        "utc-date-time": {
-          "$ref": "#/$defs/dateTime"
-        },
-        "utc-ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "year": {
-          "$ref": "#/$defs/integer"
-        }
-      }
-    },
-    "dateTime": {
-      "type": "string",
-      "format": "date-time",
-      "readOnly": true
-    },
-    "integer": {
-      "type": "integer",
-      "readOnly": true
-    },
-    "timeSpan": {
-      "type": "object",
-      "properties": {
-        "days": {
-          "$ref": "#/$defs/integer"
-        },
-        "hours": {
-          "$ref": "#/$defs/integer"
-        },
-        "microseconds": {
-          "$ref": "#/$defs/integer"
-        },
-        "milliseconds": {
-          "$ref": "#/$defs/integer"
-        },
-        "minutes": {
-          "$ref": "#/$defs/integer"
-        },
-        "nanoseconds": {
-          "$ref": "#/$defs/integer"
-        },
-        "seconds": {
-          "$ref": "#/$defs/integer"
-        },
-        "ticks": {
-          "$ref": "#/$defs/integer1"
-        },
-        "total-days": {
-          "$ref": "#/$defs/number"
-        },
-        "total-hours": {
-          "$ref": "#/$defs/number"
-        },
-        "total-microseconds": {
-          "$ref": "#/$defs/number"
-        },
-        "total-milliseconds": {
-          "$ref": "#/$defs/number"
-        },
-        "total-minutes": {
-          "$ref": "#/$defs/number"
-        },
-        "total-nanoseconds": {
-          "$ref": "#/$defs/number"
-        },
-        "total-seconds": {
-          "$ref": "#/$defs/number"
-        }
-      },
-      "readOnly": true
-    },
-    "integer1": {
-      "type": "integer",
-      "readOnly": true
-    },
-    "number": {
-      "type": "number",
-      "readOnly": true
+      "type": "string"
     },
     "hashSetOfString2": {
       "description": "A sequence of SHAs to be excluded from the version calculations.",

@@ -43,7 +43,7 @@ internal sealed class JsonPropertyNameInspector : TypeInspectorSkeleton
             {
                 var descriptor = new PropertyDescriptor(p);
                 var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
-                if (member is { Name: { } })
+                if (member is { Name: not null })
                 {
                     descriptor.Name = member.Name;
                 }
