@@ -13,6 +13,6 @@
     <PackageVersion Include="Cake.Docker" Version="1.2.3" />
     <PackageVersion Include="Cake.Git" Version="3.0.0" />
     <PackageVersion Include="Cake.Json" Version="7.0.1" />
-    <PackageVersion Include="xunit.assert" Version="2.6.2" />
+    <PackageVersion Include="xunit.assert" Version="2.6.3" />
   </ItemGroup>
 </Project>
