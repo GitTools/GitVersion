@@ -15,17 +15,28 @@ public record DockerHubCredentials(string Username, string Password);
 
 public record ChocolateyCredentials(string ApiKey);
 
-public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, bool IsPreRelease)
+public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion, bool IsPreRelease)
 {
     public static BuildVersion Calculate(GitVersion gitVersion)
     {
         var version = gitVersion.MajorMinorPatch;
         var semVersion = gitVersion.SemVer;
         var nugetVersion = gitVersion.SemVer;
+        var chocolateyVersion = gitVersion.MajorMinorPatch;
+
+        if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag))
+        {
+            // Chocolatey does not support pre-release tags with dots, so we replace them with dashes
+            // if the pre-release tag is a number, we add a "a" prefix to the pre-release tag
+            // the trick should be removed when Chocolatey supports semver 2.0
+            var prefix = int.TryParse(gitVersion.PreReleaseLabel, out _) ? "a" : string.Empty;
+            chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseTag?.Replace(".", "-")}";
+        }
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData))
         {
             semVersion += $"-{gitVersion.BuildMetaData}";
+            chocolateyVersion += $"-{gitVersion.BuildMetaData}";
             nugetVersion += $".{gitVersion.BuildMetaData}";
         }
 
@@ -35,6 +46,7 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
             Milestone: semVersion,
             SemVersion: semVersion,
             NugetVersion: nugetVersion?.ToLowerInvariant(),
+            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant(),
             IsPreRelease: !gitVersion.PreReleaseLabel.IsNullOrEmpty()
         );
     }
