@@ -1,16 +1,31 @@
 issue-labels-include:
-- Breaking change
-- Feature
-- Bug
-- Improvement
-- Documentation
-- Dependencies
+- breaking change
+- bug
+- dependencies
+- documentation
+- feature
+- improvement
 issue-labels-exclude:
-- Build
+- build
 issue-labels-alias:
-- name:    Documentation
+- name:    breaking change
+  header:  Breaking change
+  plural:  Breaking changes
+- name:    bug
+  header:  Bug
+  plural:  Bugs
+- name:    dependencies
+  header:  Dependencies
+  plural:  Dependencies
+- name:    documentation
   header:  Documentation
   plural:  Documentation
+- name:    feature
+  header:  Features
+  plural:  Features
+- name:    improvement
+  header:  Improvements
+  plural:  Improvements
 create:
   include-sha-section: true
   sha-section-heading: "SHA256 Hashes of the release artifacts"
