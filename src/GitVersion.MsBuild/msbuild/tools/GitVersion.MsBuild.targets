@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
-
     <PropertyGroup>
         <GenerateGitVersionFiles>false</GenerateGitVersionFiles>
         <GenerateGitVersionFiles Condition=" '$(Language)' == 'C#' Or '$(Language)' == 'F#' Or '$(Language)' == 'VB' ">true</GenerateGitVersionFiles>
 
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == 'true' And '$(GenerateGitVersionFiles)' == 'true' ">true</UpdateAssemblyInfo>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
+
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)$(TargetFramework)/gitversion.dll&quot;</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)$(TargetFramework)/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
+    
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
 
     <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
         <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />

@@ -19,11 +19,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)$(TargetFramework)/gitversion.dll&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)$(TargetFramework)/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <!-- The GitVersion task is explicitly disabled when running on the .NET Framework because it's no longer supported. 
         If a project that uses GitVersion.MsBuild is opened in Visual Studio, 
         the task will be turned off because Visual Studio operates on the .NET Framework's version of MSBuild. 
