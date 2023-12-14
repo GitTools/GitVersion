@@ -6,7 +6,7 @@
         <OutputPath>..\..\run\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
+        <LangVersion>12</LangVersion>
         <NoWarn>NU1604</NoWarn>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
