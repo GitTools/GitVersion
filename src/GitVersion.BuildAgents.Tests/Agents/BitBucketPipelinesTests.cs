@@ -118,19 +118,21 @@ public class BitBucketPipelinesTests : TestBase
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
-        var f = PathHelper.Combine(assemblyLocation, "gitversion.properties");
+        var propertyFile = PathHelper.Combine(assemblyLocation, "gitversion.properties");
+        var ps1File = PathHelper.Combine(assemblyLocation, "gitversion.ps1");
 
         try
         {
-            AssertVariablesAreWrittenToFile(f);
+            AssertVariablesAreWrittenToFile(propertyFile, ps1File);
         }
         finally
         {
-            File.Delete(f);
+            File.Delete(propertyFile);
+            File.Delete(ps1File);
         }
     }
 
-    private void AssertVariablesAreWrittenToFile(string file)
+    private void AssertVariablesAreWrittenToFile(string propertyFile, string ps1File)
     {
         var writes = new List<string?>();
         var semanticVersion = new SemanticVersion
@@ -147,19 +149,29 @@ public class BitBucketPipelinesTests : TestBase
 
         var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
-        this.buildServer.WithPropertyFile(file);
+        this.buildServer.WithPropertyFile(propertyFile);
+        this.buildServer.WithPowershellFile(ps1File);
 
         this.buildServer.WriteIntegration(writes.Add, variables);
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        File.Exists(file).ShouldBe(true);
+        File.Exists(propertyFile).ShouldBe(true);
 
-        var props = File.ReadAllText(file);
+        var props = File.ReadAllText(propertyFile);
 
         props.ShouldContain("export GITVERSION_MAJOR=1");
         props.ShouldContain("export GITVERSION_MINOR=2");
         props.ShouldContain("export GITVERSION_SHA=f28807e615e9f06aec8a33c87780374e0c1f6fb8");
         props.ShouldContain("export GITVERSION_COMMITDATE=2022-04-06");
+
+        File.Exists(ps1File).ShouldBe(true);
+
+        var psProps = File.ReadAllText(ps1File);
+
+        psProps.ShouldContain("$GITVERSION_MAJOR = \"1\"");
+        psProps.ShouldContain("$GITVERSION_MINOR = \"2\"");
+        psProps.ShouldContain("$GITVERSION_SHA = \"f28807e615e9f06aec8a33c87780374e0c1f6fb8\"");
+        psProps.ShouldContain("$GITVERSION_COMMITDATE = \"2022-04-06\"");
     }
 }
