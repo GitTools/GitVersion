@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 
 internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
