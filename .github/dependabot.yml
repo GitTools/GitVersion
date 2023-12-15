@@ -65,6 +65,10 @@ updates:
     - "dependencies"
   commit-message:
     prefix: "(build deps)"
+  groups:
+    actions:
+      patterns:
+      - "actions/*"    
   directory: "/"
   schedule:
     interval: daily
