@@ -106,7 +106,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                 );
 
                 if (configuration.TrackMergeMessage
-                    && MergeMessage.TryParse(out var mergeMessage, item, Context.Configuration))
+                    && MergeMessage.TryParse(item, Context.Configuration, out var mergeMessage))
                 {
                     if (mergeMessage.Version is not null)
                     {

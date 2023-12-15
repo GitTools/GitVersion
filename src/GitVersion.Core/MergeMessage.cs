@@ -96,7 +96,7 @@ public class MergeMessage
     }
 
     public static bool TryParse(
-        [NotNullWhen(true)] out MergeMessage? mergeMessage, ICommit mergeCommit, IGitVersionConfiguration configuration)
+        ICommit mergeCommit, IGitVersionConfiguration configuration, [NotNullWhen(true)] out MergeMessage? mergeMessage)
     {
         mergeCommit.NotNull();
         configuration.NotNull();
