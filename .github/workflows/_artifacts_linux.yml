@@ -32,13 +32,13 @@ jobs:
       name: Restore State
       uses: ./.github/actions/artifacts-restore
     -
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       name: Download native packages
       with:
         name: native-${{ runner.os }}
