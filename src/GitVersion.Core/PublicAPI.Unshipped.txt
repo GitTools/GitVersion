@@ -855,7 +855,7 @@ static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! lo
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.Write(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void
-static GitVersion.MergeMessage.TryParse(out GitVersion.MergeMessage? mergeMessage, GitVersion.ICommit! mergeCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
+static GitVersion.MergeMessage.TryParse(GitVersion.ICommit! mergeCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration, out GitVersion.MergeMessage? mergeMessage) -> bool
 static GitVersion.ReferenceName.FromBranchName(string! branchName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.Parse(string! canonicalName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.TryParse(out GitVersion.ReferenceName? value, string! canonicalName) -> bool
