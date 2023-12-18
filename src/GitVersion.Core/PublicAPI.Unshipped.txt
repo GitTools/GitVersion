@@ -694,8 +694,10 @@ GitVersion.VersionCalculation.CommitMessageIncrementMode.MergeMessageOnly = 2 ->
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
-GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
+GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit! currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
+GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForcedByCommit(GitVersion.ICommit! commit, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.ICommit![]! commits) -> GitVersion.VersionField?
+GitVersion.VersionCalculation.IIncrementStrategyFinder.GetMergedCommits(GitVersion.ICommit! mergeCommit, int index) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
 GitVersion.VersionCalculation.IVariableProvider
