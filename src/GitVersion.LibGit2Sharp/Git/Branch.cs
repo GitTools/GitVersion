@@ -19,12 +19,12 @@ internal sealed class Branch : IBranch
         Tip = commit is null ? null : new Commit(commit);
 
         var commits = this.innerBranch.Commits;
-        Commits = commits is null ? null : new CommitCollection(commits);
+        Commits = new CommitCollection(commits);
     }
 
     public ReferenceName Name { get; }
     public ICommit? Tip { get; }
-    public ICommitCollection? Commits { get; }
+    public ICommitCollection Commits { get; }
     public int CompareTo(IBranch? other) => comparerHelper.Compare(this, other);
     public bool Equals(IBranch? other) => equalityHelper.Equals(this, other);
     public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);

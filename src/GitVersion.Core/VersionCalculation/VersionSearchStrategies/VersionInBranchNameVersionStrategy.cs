@@ -19,6 +19,8 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
+        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) yield break;
+
         if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
         {
             yield return baseVersion;

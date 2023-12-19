@@ -49,7 +49,7 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
         }
 
         var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
-        return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
+        return new SemanticVersion(nextVersion.BaseVersion.GetSemanticVersion())
         {
             BuildMetaData = baseVersionBuildMetaData
         };

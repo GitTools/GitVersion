@@ -118,6 +118,17 @@ public abstract class RepositoryFixtureBase : IDisposable
         Repository.MergeNoFF(mergeSource, Generate.SignatureNow());
     }
 
+    public void MergeTo(string branchName, bool removeBranchAfterMerging = false)
+    {
+        string mergeSource = Repository.Head.FriendlyName;
+        Checkout(branchName);
+        MergeNoFF(mergeSource);
+        if (removeBranchAfterMerging)
+        {
+            Remove(mergeSource);
+        }
+    }
+
     /// <summary>
     ///     Clones the repository managed by this fixture into another LocalRepositoryFixture
     /// </summary>

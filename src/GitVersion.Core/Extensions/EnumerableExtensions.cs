@@ -28,4 +28,14 @@ public static class EnumerableExtensions
 
         return source.OfType<T>().Single();
     }
+
+    public static void AddRange<T>(this ICollection<T> source, IEnumerable<T> items)
+    {
+        source.NotNull();
+
+        foreach (var item in items.NotNull())
+        {
+            source.Add(item);
+        }
+    }
 }

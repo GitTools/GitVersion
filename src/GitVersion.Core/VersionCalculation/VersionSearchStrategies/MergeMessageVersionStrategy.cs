@@ -24,7 +24,7 @@ internal class MergeMessageVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null || !configuration.Value.TrackMergeMessage)
+        if (!configuration.Value.TrackMergeMessage || Context.Configuration.VersioningMode == VersioningMode.TrunkBased)
             return Enumerable.Empty<BaseVersion>();
 
         var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);

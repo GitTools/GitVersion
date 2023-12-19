@@ -104,7 +104,9 @@ internal class RepositoryStore : IRepositoryStore
         return desiredBranch;
     }
 
-    public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
+    public IBranch? FindBranch(ReferenceName branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.Equals(branchName));
+
+    public IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
     public IBranch? FindMainBranch(IGitVersionConfiguration configuration)
     {
@@ -143,8 +145,10 @@ internal class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
-    public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
+    public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
+        commit.NotNull();
+
         var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
@@ -253,29 +257,6 @@ internal class RepositoryStore : IRepositoryStore
             .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, format, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format)
-    {
-        branch = branch.NotNull();
-
-        if (this.taggedSemanticVersionsOnBranchCache.TryGetValue(branch, out var onBranch))
-        {
-            this.log.Debug($"Cache hit for version tags on branch '{branch.Name.Canonical}");
-            return onBranch.Select(element => element.Value);
-        }
-
-        using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
-        {
-            var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
-            var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
-
-            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
-                ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
-
-            this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);
-            return versionTags.Select(element => element.Value);
-        }
-    }
-
     public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {
         if (this.taggedSemanticVersionsCache != null)
@@ -316,7 +297,7 @@ internal class RepositoryStore : IRepositoryStore
             var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
-            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
+            var versionTags = (branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
                 ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
 
             this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);

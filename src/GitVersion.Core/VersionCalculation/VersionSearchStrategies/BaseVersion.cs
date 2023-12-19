@@ -4,6 +4,12 @@ namespace GitVersion.VersionCalculation;
 
 public class BaseVersion
 {
+    public BaseVersion(string source, bool shouldIncrement)
+    {
+        Source = source.NotNullOrEmpty();
+        ShouldIncrement = shouldIncrement;
+    }
+
     public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, ICommit? baseVersionSource, string? branchNameOverride)
     {
         Source = source;
@@ -28,7 +34,9 @@ public class BaseVersion
 
     public bool ShouldIncrement { get; init; }
 
-    public SemanticVersion SemanticVersion { get; init; }
+    public SemanticVersion? SemanticVersion { get; init; }
+
+    public SemanticVersion GetSemanticVersion() => SemanticVersion ?? SemanticVersion.Empty;
 
     public ICommit? BaseVersionSource { get; init; }
 
@@ -37,6 +45,6 @@ public class BaseVersion
     public override string ToString()
     {
         var externalSource = BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha;
-        return $"{Source}: {SemanticVersion:f} with commit source '{externalSource}'";
+        return $"{Source}: {GetSemanticVersion():f} with commit source '{externalSource}'";
     }
 }

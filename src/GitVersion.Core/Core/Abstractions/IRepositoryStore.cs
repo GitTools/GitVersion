@@ -16,12 +16,13 @@ public interface IRepositoryStore
     IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit);
 
     IBranch GetTargetBranch(string? targetBranchName);
-    IBranch? FindBranch(string? branchName);
+    IBranch? FindBranch(ReferenceName branchName);
+    IBranch? FindBranch(string branchName);
     IBranch? FindMainBranch(IGitVersionConfiguration configuration);
     IEnumerable<IBranch> FindMainlineBranches(IGitVersionConfiguration configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
-    IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
+    IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
 
     IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IGitVersionConfiguration configuration);
 
@@ -40,8 +41,6 @@ public interface IRepositoryStore
     IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
 
     SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat format, bool handleDetachedBranch);
-
-    IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format);
 
     IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format);
 

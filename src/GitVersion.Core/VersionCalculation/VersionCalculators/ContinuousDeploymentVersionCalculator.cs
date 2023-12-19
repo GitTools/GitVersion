@@ -52,7 +52,7 @@ internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersi
 
         Contract.Assume(baseVersionBuildMetaData.CommitsSinceTag.HasValue);
 
-        return new SemanticVersion(nextVersion.BaseVersion.SemanticVersion)
+        return new SemanticVersion(nextVersion.BaseVersion.GetSemanticVersion())
         {
             PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
             BuildMetaData = new SemanticVersionBuildMetaData(baseVersionBuildMetaData)

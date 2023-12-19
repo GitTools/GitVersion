@@ -1,4 +1,5 @@
 using GitVersion.Common;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
@@ -17,6 +18,8 @@ public class GitVersionCoreModule : IGitVersionModule
 
         services.AddSingleton<IGitPreparer, GitPreparer>();
         services.AddSingleton<IRepositoryStore, RepositoryStore>();
+        services.AddSingleton<ITaggedSemanticVersionRepository, TaggedSemanticVersionRepository>();
+        services.AddSingleton<IBranchRepository, BranchRepository>();
 
         services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
         services.AddSingleton(sp =>

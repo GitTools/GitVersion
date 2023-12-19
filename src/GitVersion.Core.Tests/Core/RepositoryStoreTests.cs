@@ -209,7 +209,7 @@ public class RepositoryStoreTests : TestBase
         var fixtureRepository = fixture.Repository.ToGitRepository();
         var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
-        Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null));
+        Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null!));
     }
 
     [Test]
