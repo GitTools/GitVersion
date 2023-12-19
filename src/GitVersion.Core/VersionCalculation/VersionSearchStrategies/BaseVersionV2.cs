@@ -1,5 +1,6 @@
 namespace GitVersion.VersionCalculation;
 
+// TODO: The fact that BaseVersionV2 is extending BaseVersion is a temporary construct because we want to have a clear focus on the new functionality of the TrunkBased strategy. In long term we need to consolidate this two types in one type.
 internal class BaseVersionV2 : BaseVersion
 {
     internal static BaseVersionV2 ShouldIncrementFalse(string source, ICommit? baseVersionSource, string? label, SemanticVersion? alternativeSemanticVersion = null) => new(source, false)
