@@ -115,7 +115,6 @@ GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVers
 GitVersion.Configuration.ConfigurationExtensions
 GitVersion.Configuration.EffectiveBranchConfiguration
 GitVersion.Configuration.EffectiveBranchConfiguration.Branch.get -> GitVersion.IBranch!
-GitVersion.Configuration.EffectiveBranchConfiguration.CreateNextVersion(GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.SemanticVersion! incrementedVersion) -> GitVersion.VersionCalculation.NextVersion!
 GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.Configuration.EffectiveConfiguration! Value, GitVersion.IBranch! Branch) -> void
 GitVersion.Configuration.EffectiveBranchConfiguration.Value.get -> GitVersion.Configuration.EffectiveConfiguration!
 GitVersion.Configuration.EffectiveConfiguration

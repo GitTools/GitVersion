@@ -201,21 +201,11 @@ internal class NextVersionCalculator : INextVersionCalculator
         var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
         if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
         {
-            result = effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
+            result = new NextVersion(incrementedVersion, baseVersion, effectiveConfiguration);
         }
 
         return result is not null;
     }
-
-    //private SemanticVersion GetIncrementedVersion(EffectiveBranchConfiguration configuration, BaseVersion baseVersion, string? label)
-    //{
-    //    var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
-    //        currentCommit: Context.CurrentCommit,
-    //        baseVersion: baseVersion,
-    //        configuration: configuration.Value
-    //    );
-    //    return baseVersion.GetSemanticVersion().IncrementVersion(incrementStrategy, label);
-    //}
 
     private SemanticVersion GetIncrementedVersion(EffectiveBranchConfiguration configuration, BaseVersion baseVersion, string? label)
     {

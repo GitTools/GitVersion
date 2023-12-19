@@ -5,73 +5,6 @@ using GitVersion.Logging;
 
 namespace GitVersion.Core;
 
-internal interface IBranchRepository
-{
-    IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches);
-
-    IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches);
-}
-
-internal sealed class BranchRepository : IBranchRepository
-{
-    private GitVersionContext VersionContext => this.versionContextLazy.Value;
-    private readonly Lazy<GitVersionContext> versionContextLazy;
-
-    private readonly IGitRepository gitRepository;
-
-    public BranchRepository(Lazy<GitVersionContext> versionContext, IGitRepository gitRepository)
-    {
-        this.versionContextLazy = versionContext.NotNull();
-        this.gitRepository = gitRepository.NotNull();
-    }
-
-    public IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches)
-        => GetBranchesWhere(new HashSet<IBranch>(excludeBranches), configuration => configuration.IsMainline == true);
-
-    public IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches)
-        => GetBranchesWhere(new HashSet<IBranch>(excludeBranches), configuration => configuration.IsReleaseBranch == true);
-
-    private IEnumerable<IBranch> GetBranchesWhere(HashSet<IBranch> excludeBranches, Func<IBranchConfiguration, bool> predicate)
-    {
-        predicate.NotNull();
-
-        foreach (var branch in this.gitRepository.Branches)
-        {
-            if (!excludeBranches.Contains(branch))
-            {
-                var branchConfiguration = VersionContext.Configuration.GetBranchConfiguration(branch.Name);
-                if (predicate(branchConfiguration))
-                {
-                    yield return branch;
-                }
-            }
-        }
-    }
-}
-
-internal interface ITaggedSemanticVersionRepository
-{
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration);
-
-    ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format);
-
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
-        IBranch branch, string? tagPrefix, SemanticVersionFormat format
-    );
-
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
-        IBranch branch, string? tagPrefix, SemanticVersionFormat format
-    );
-
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainlineBranches(
-        string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches
-    );
-
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
-        string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches
-    );
-}
-
 internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
 {
     private readonly ILog log;
@@ -173,7 +106,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
     }
 
     private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        getAllTaggedSemanticVersionsCache = new();
+        allTaggedSemanticVersionsCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {
@@ -193,7 +126,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         }
 
         bool isCached = true;
-        var result = getAllTaggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
+        var result = allTaggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
         {
             isCached = false;
             return GetElements().ToLookup(element => element.Tag.Commit, element => element);
@@ -208,7 +141,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
     }
 
     private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        getTaggedSemanticVersionsOfBranchCache = new();
+        taggedSemanticVersionsOfBranchCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
@@ -234,7 +167,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         }
 
         bool isCached = true;
-        var result = getTaggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
             var semanticVersions = GetElements();
@@ -253,7 +186,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
     }
 
     private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        getTaggedSemanticVersionsOfMergeTargetCache = new();
+        taggedSemanticVersionsOfMergeTargetCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
@@ -279,7 +212,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         }
 
         bool isCached = true;
-        var result = getTaggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
             return GetElements().ToLookup(element => element.Item1, element => element.Item2);
