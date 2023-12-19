@@ -43,7 +43,7 @@ internal class NextVersionCalculator : INextVersionCalculator
         var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
         var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.VersioningMode, nextVersion);
 
-        return CreateNextVersion(nextVersion.BaseVersion, incrementedVersion, nextVersion.BranchConfiguration);
+        return new NextVersion(incrementedVersion, nextVersion.BaseVersion, nextVersion.BranchConfiguration);
     }
 
     private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion)
@@ -114,15 +114,8 @@ internal class NextVersionCalculator : INextVersionCalculator
 
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
-        return CreateNextVersion(calculatedBase, maxVersion.IncrementedVersion, maxVersion.BranchConfiguration);
-    }
 
-    private static NextVersion CreateNextVersion(BaseVersion baseVersion, SemanticVersion incrementedVersion, EffectiveBranchConfiguration effectiveBranchConfiguration)
-    {
-        incrementedVersion.NotNull();
-        baseVersion.NotNull();
-
-        return new(incrementedVersion, baseVersion, effectiveBranchConfiguration);
+        return new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
 
     private static NextVersion CompareVersions(NextVersion versions1, NextVersion version2)
