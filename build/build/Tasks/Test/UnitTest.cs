@@ -24,7 +24,7 @@ public class UnitTest : FrostingTask<BuildContext>
             {
                 throw new Exception($"Dotnet Target {dotnetTarget} is not supported at the moment");
             }
-            frameworks = new[] { dotnetTarget };
+            frameworks = [dotnetTarget];
         }
 
         foreach (var framework in frameworks)
@@ -81,7 +81,7 @@ public class UnitTest : FrostingTask<BuildContext>
             CoverletOutputFormat = CoverletOutputFormat.cobertura,
             CoverletOutputDirectory = testResultsPath,
             CoverletOutputName = $"{projectName}.coverage.xml",
-            Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitTools.Testing]*" }
+            Exclude = ["[GitVersion*.Tests]*", "[GitTools.Testing]*"]
         };
 
         context.DotNetTest(project.FullPath, settings, coverletSettings);

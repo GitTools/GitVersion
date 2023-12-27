@@ -15,8 +15,8 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
         var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
-        var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
-        var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
+        var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : [dotnetVersion];
+        var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : [dockerDistro];
 
         var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
 
