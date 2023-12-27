@@ -38,6 +38,16 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
+      name: Setup QEMU
+      if: inputs.arch == 'arm64'
+      uses: docker/setup-qemu-action@v3
+    -
+      name: Setup Docker Buildx
+      if: inputs.arch == 'arm64'
+      uses: docker/setup-buildx-action@v3
+      with:
+        install: true      
+    -
       name: Docker Test
       if: success() && github.event_name == 'pull_request' || github.repository_owner != 'GitTools'
       uses: ./.github/actions/docker-test

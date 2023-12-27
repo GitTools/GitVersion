@@ -10,26 +10,19 @@ public enum Architecture
 
 public static class DockerContextExtensions
 {
-    public static bool SkipImageForArtifacts(this ICakeContext context, DockerImage dockerImage)
+    public static bool SkipImageTesting(this ICakeContext context, DockerImage dockerImage)
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        if (architecture == Architecture.Amd64) return false;
-        if (!Constants.DistrosToSkipForArtifacts.Contains(distro)) return false;
-
-        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
-        return true;
-    }
-
-    public static bool SkipImageForDocker(this ICakeContext context, DockerImage dockerImage)
-    {
-        var (distro, targetFramework, architecture, _, _) = dockerImage;
-
-        if (architecture == Architecture.Amd64) return false;
-        if (!Constants.DistrosToSkipForDocker.Contains(distro)) return false;
-
-        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
-        return true;
+        switch (architecture)
+        {
+            case Architecture.Amd64:
+            case Architecture.Arm64 when context.IsRunningOnArm64():
+                return false;
+            default:
+                context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
+                return true;
+        }
     }
 
     public static void DockerBuildImage(this BuildContextBase context, DockerImage dockerImage)

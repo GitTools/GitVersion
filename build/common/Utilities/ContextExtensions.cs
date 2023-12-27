@@ -1,5 +1,7 @@
+using System.Runtime.InteropServices;
 using Cake.Common.Build.AzurePipelines;
 using Xunit;
+using ProcessArchitecture = System.Runtime.InteropServices.Architecture;
 
 namespace Common.Utilities;
 
@@ -12,6 +14,7 @@ public static class ContextExtensions
         {
             processSettings.WorkingDirectory = workDir;
         }
+
         context.StartProcess(exe, processSettings, out var redirectedOutput);
         return redirectedOutput.ToList();
     }
@@ -79,6 +82,12 @@ public static class ContextExtensions
         return string.Empty;
     }
 
+    public static bool IsRunningOnAmd64(this ICakeContext _)
+        => RuntimeInformation.ProcessArchitecture == ProcessArchitecture.X64;
+
+    public static bool IsRunningOnArm64(this ICakeContext _) =>
+        RuntimeInformation.ProcessArchitecture == ProcessArchitecture.Arm64;
+
     public static string GetBuildAgent(this ICakeContext context)
     {
         var buildSystem = context.BuildSystem();
@@ -142,6 +151,7 @@ public static class ContextExtensions
         {
             repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
         }
+
         return repositoryBranch;
     }
 
@@ -161,6 +171,7 @@ public static class ContextExtensions
         {
             repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
         }
+
         return repositoryName;
     }
 
@@ -172,6 +183,7 @@ public static class ContextExtensions
         context.GetFiles($"src/GitVersion.App/bin/{Constants.DefaultConfiguration}/{Constants.NetVersionLatest}/gitversion.dll").SingleOrDefault();
     public static FilePath? GetGitVersionDotnetToolLocation(this ICakeContext context) =>
         context.MakeAbsolute(Paths.Tools.Combine("gitversion").CombineWithFilePath("gitversion.dll"));
+
     public static FilePath? GetSchemaDotnetToolLocation(this ICakeContext context) =>
         context.MakeAbsolute(Paths.Tools.Combine("schema").CombineWithFilePath("schema.dll"));
 }

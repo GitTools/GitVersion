@@ -22,9 +22,6 @@ public class Constants
     public static readonly string[] VersionsToBuild = [Version60, Version70, Version80];
     public static readonly string[] Frameworks = [NetVersion60, NetVersion70, NetVersion80];
 
-    public static readonly string[] DistrosToSkipForArtifacts = [];
-    public static readonly string[] DistrosToSkipForDocker = [];
-
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
 
