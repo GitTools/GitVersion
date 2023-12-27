@@ -50,14 +50,14 @@ public static class DockerContextExtensions
             Rm = true,
             Tag = tags.ToArray(),
             File = workDir.CombineWithFilePath("Dockerfile").FullPath,
-            BuildArg = new[]
-            {
+            BuildArg =
+            [
                 "contentFolder=/content",
                 $"REGISTRY={registry}",
                 $"DOTNET_VERSION={targetFramework}",
                 $"DISTRO={distro}",
                 $"VERSION={context.Version.NugetVersion}"
-            },
+            ],
             Pull = true,
             Platform = string.Join(",", platforms),
         };
@@ -203,31 +203,31 @@ public static class DockerContextExtensions
         var settings = new DockerContainerRunSettings
         {
             Rm = true,
-            Volume = new[]
-            {
+            Volume =
+            [
                 $"{currentDir}:{root}/repo",
                 $"{currentDir}/tests/scripts:{root}/scripts",
                 $"{currentDir}/artifacts/packages/nuget:{root}/nuget",
-                $"{currentDir}/artifacts/packages/native:{root}/native",
-            },
+                $"{currentDir}/artifacts/packages/native:{root}/native"
+            ],
             Platform = $"linux/{arch.ToString().ToLower()}"
         };
 
         if (context.IsAzurePipelineBuild)
         {
-            settings.Env = new[]
-            {
+            settings.Env =
+            [
                 "TF_BUILD=true",
                 $"BUILD_SOURCEBRANCH={context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
-            };
+            ];
         }
         if (context.IsGitHubActionsBuild)
         {
-            settings.Env = new[]
-            {
+            settings.Env =
+            [
                 "GITHUB_ACTIONS=true",
                 $"GITHUB_REF={context.EnvironmentVariable("GITHUB_REF")}"
-            };
+            ];
         }
 
         return settings;

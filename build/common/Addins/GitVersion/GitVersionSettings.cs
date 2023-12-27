@@ -13,7 +13,7 @@ public sealed class GitVersionSettings : ToolSettings
     /// <summary>
     /// Gets or sets the output type.
     /// </summary>
-    public HashSet<GitVersionOutput> OutputTypes { get; set; } = new() { GitVersionOutput.Json };
+    public HashSet<GitVersionOutput> OutputTypes { get; set; } = [GitVersionOutput.Json];
 
     /// <summary>
     /// Gets or sets a value indicating whether to update all the AssemblyInfo files.

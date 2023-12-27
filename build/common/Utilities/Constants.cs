@@ -18,12 +18,12 @@ public class Constants
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
 
-    public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
-    public static readonly string[] VersionsToBuild = { Version60, Version70, Version80 };
-    public static readonly string[] Frameworks = { NetVersion60, NetVersion70, NetVersion80 };
+    public static readonly Architecture[] ArchToBuild = [Architecture.Amd64, Architecture.Arm64];
+    public static readonly string[] VersionsToBuild = [Version60, Version70, Version80];
+    public static readonly string[] Frameworks = [NetVersion60, NetVersion70, NetVersion80];
 
-    public static readonly string[] DistrosToSkipForArtifacts = Array.Empty<string>();
-    public static readonly string[] DistrosToSkipForDocker = Array.Empty<string>();
+    public static readonly string[] DistrosToSkipForArtifacts = [];
+    public static readonly string[] DistrosToSkipForDocker = [];
 
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
@@ -49,7 +49,7 @@ public class Constants
     public const string AlpineLatest = Alpine318;
 
     public static readonly string[] DockerDistrosToBuild =
-    {
+    [
         Alpine317,
         Alpine318,
         CentosStream8,
@@ -57,7 +57,7 @@ public class Constants
         Fedora37,
         Ubuntu2004,
         Ubuntu2204
-    };
+    ];
     public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
     public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
     public const string ChocolateyUrl = "https://push.chocolatey.org/";

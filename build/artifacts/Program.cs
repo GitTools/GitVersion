@@ -7,5 +7,4 @@ return new CakeHost()
     .UseLifetime<BuildLifetime>()
     .UseTaskLifetime<BuildTaskLifetime>()
     .UseRootDirectory()
-    .InstallToolsFromRootManifest()
     .Run(args);
