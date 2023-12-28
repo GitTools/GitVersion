@@ -7,6 +7,7 @@ public enum Architecture
     Arm64,
     Amd64
 }
+
 public static class DockerContextExtensions
 {
     public static bool SkipImageForArtifacts(this ICakeContext context, DockerImage dockerImage)
@@ -43,9 +44,8 @@ public static class DockerContextExtensions
         var tags = context.GetDockerTags(dockerImage, arch);
 
         var suffix = arch.ToSuffix();
-        var platforms = new List<string> { $"linux/{suffix}" };
 
-        var buildSettings = new DockerImageBuildSettings
+        var buildSettings = new DockerBuildXBuildSettings
         {
             Rm = true,
             Tag = tags.ToArray(),
@@ -59,10 +59,10 @@ public static class DockerContextExtensions
                 $"VERSION={context.Version.NugetVersion}"
             ],
             Pull = true,
-            Platform = string.Join(",", platforms),
+            Platform = [$"linux/{suffix}"]
         };
 
-        context.DockerBuild(buildSettings, workDir.ToString(), "--output type=docker");
+        context.DockerBuildXBuild(buildSettings, workDir.ToString(), "--output type=docker");
     }
 
     public static void DockerPushImage(this BuildContextBase context, DockerImage dockerImage)
@@ -74,7 +74,8 @@ public static class DockerContextExtensions
         }
     }
 
-    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image = false)
+    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage,
+                                            bool skipArm64Image = false)
     {
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
@@ -124,29 +125,18 @@ public static class DockerContextExtensions
         context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
     }
 
-    private static void DockerBuild(this ICakeContext context, DockerImageBuildSettings settings, string path, params string[] args)
+    private static void DockerBuildXBuild(this ICakeContext context, DockerBuildXBuildSettings settings, string path,
+                                          params string[] args)
     {
-        GenericDockerRunner<DockerImageBuildSettings> genericDockerRunner =
-            new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+        var runner = new GenericDockerRunner<DockerBuildXBuildSettings>(context.FileSystem, context.Environment,
+            context.ProcessRunner, context.Tools);
 
-        string str;
-        switch (string.IsNullOrEmpty(path))
-        {
-            case false:
-                {
-                    string str2 = path.Trim();
-                    str = str2.Length <= 1 || !str2.StartsWith("\"") || !str2.EndsWith("\"") ? "\"" + path + "\"" : path;
-                    break;
-                }
-            default:
-                str = path;
-                break;
-        }
-        var additional = args.Concat(new[] { str }).ToArray();
-        genericDockerRunner.Run("buildx build", settings, additional);
+        path = $"\"{path.Trim().Trim('\"')}\"";
+        runner.Run("buildx build", settings, [.. args, path]);
     }
 
-    private static void DockerTestRun(this BuildContextBase context, string image, Architecture arch, string command, params string[] args)
+    private static void DockerTestRun(this BuildContextBase context, string image, Architecture arch, string command,
+                                      params string[] args)
     {
         var settings = GetDockerRunSettings(context, arch);
         context.Information($"Testing image: {image}");
@@ -156,7 +146,9 @@ public static class DockerContextExtensions
         Assert.NotNull(context.Version?.GitVersion);
         Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
     }
-    private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
+
+    private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage,
+                                                     Architecture? arch = null)
     {
         var name = dockerImage.DockerImageName();
         var distro = dockerImage.Distro;
@@ -171,21 +163,17 @@ public static class DockerContextExtensions
 
         if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
         {
-            tags.AddRange(new[]
-            {
-                $"{name}:{context.Version.Version}",
-                $"{name}:{context.Version.SemVersion}",
-            });
+            tags.AddRange(new[] { $"{name}:{context.Version.Version}", $"{name}:{context.Version.SemVersion}", });
 
             if (context.IsStableRelease)
             {
-                tags.AddRange(new[]
-                {
+                tags.AddRange(
+                [
                     $"{name}:latest",
                     $"{name}:latest-{targetFramework}",
                     $"{name}:latest-{distro}",
                     $"{name}:latest-{distro}-{targetFramework}",
-                });
+                ]);
             }
         }
 
@@ -193,9 +181,11 @@ public static class DockerContextExtensions
 
         var suffix = arch.Value.ToSuffix();
         return tags.Select(x => $"{x}-{suffix}").Distinct();
-
     }
-    private static string DockerImageName(this DockerImage image) => $"{image.Registry}/{(image.UseBaseImage ? Constants.DockerBaseImageName : Constants.DockerImageName)}";
+
+    private static string DockerImageName(this DockerImage image) =>
+        $"{image.Registry}/{(image.UseBaseImage ? Constants.DockerBaseImageName : Constants.DockerImageName)}";
+
     private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context, Architecture arch)
     {
         var currentDir = context.MakeAbsolute(context.Directory("."));
@@ -221,6 +211,7 @@ public static class DockerContextExtensions
                 $"BUILD_SOURCEBRANCH={context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
             ];
         }
+
         if (context.IsGitHubActionsBuild)
         {
             settings.Env =

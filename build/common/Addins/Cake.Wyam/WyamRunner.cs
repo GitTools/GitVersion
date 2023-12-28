@@ -304,7 +304,7 @@ public sealed class WyamRunner : Tool<WyamSettings>
                 {
                     if (valueBuilder.Length != 0)
                     {
-                        valueBuilder.Append(",");
+                        valueBuilder.Append(',');
                     }
                     valueBuilder.Append($"{EscapeMetadata(value.ToString()).Replace(",", "\\,")}");
                 }
@@ -318,5 +318,5 @@ public sealed class WyamRunner : Tool<WyamSettings>
     }
 
     private static string EscapeMetadata(string s) =>
-        s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("=", "\\=");
+        s.Replace("\\", @"\\").Replace("\"", "\\\"").Replace("=", "\\=");
 }
