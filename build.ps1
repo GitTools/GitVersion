@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh
+#!/usr/bin/env pwsh
 <#
 .PARAMETER Stage
 The build stage to execute.
