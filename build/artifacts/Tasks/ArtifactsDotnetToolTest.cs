@@ -27,7 +27,7 @@ public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageForArtifacts(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage)) continue;
 
             var cmd = $"{rootPrefix}/scripts/test-global-tool.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo";
 

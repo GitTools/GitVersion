@@ -23,7 +23,7 @@ public class DockerTest : FrostingTask<BuildContext>
     {
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageForDocker(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage)) continue;
             context.DockerTestImage(dockerImage);
         }
     }

@@ -27,7 +27,7 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageForArtifacts(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage)) continue;
 
             var runtime = "linux";
             if (dockerImage.Distro.StartsWith("alpine"))

@@ -26,7 +26,7 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageForArtifacts(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage)) continue;
 
             var framework = dockerImage.TargetFramework;
 
