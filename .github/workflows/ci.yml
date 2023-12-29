@@ -62,11 +62,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ amd64, arm64 ]
-
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-latest
     uses: ./.github/workflows/_artifacts_linux.yml
     with:
-      runner: ubuntu-latest
+      runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
 
   docker_linux_images:
@@ -75,11 +78,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ amd64, arm64 ]
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-latest
 
     uses: ./.github/workflows/_docker.yml
     with:
-      runner: ubuntu-latest
+      runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
     secrets: inherit
 
