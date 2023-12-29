@@ -68,7 +68,7 @@ jobs:
           - arch: amd64
             runner: ubuntu-latest
           - arch: arm64
-            runner: ubuntu-latest
+            runner: ubuntu-latest-arm64
     uses: ./.github/workflows/_artifacts_linux.yml
     with:
       runner: ${{ matrix.runner }}
@@ -84,7 +84,7 @@ jobs:
           - arch: amd64
             runner: ubuntu-latest
           - arch: arm64
-            runner: ubuntu-latest
+            runner: ubuntu-latest-arm64
 
     uses: ./.github/workflows/_docker.yml
     with:
