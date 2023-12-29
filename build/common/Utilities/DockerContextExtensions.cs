@@ -37,6 +37,7 @@ public static class DockerContextExtensions
         var tags = context.GetDockerTags(dockerImage, arch);
 
         var suffix = arch.ToSuffix();
+        var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{arch.ToSuffix()})";
 
         var buildSettings = new DockerBuildXBuildSettings
         {
@@ -50,6 +51,14 @@ public static class DockerContextExtensions
                 $"DOTNET_VERSION={targetFramework}",
                 $"DISTRO={distro}",
                 $"VERSION={context.Version.NugetVersion}"
+            ],
+            Label =
+            [
+                "maintainers=GitTools Maintainers",
+                $"org.opencontainers.image.description=GitVersion images {imageSuffix})",
+                "org.opencontainers.image.authors=GitTools Maintainers",
+                "org.opencontainers.image.licenses=MIT",
+                "org.opencontainers.image.source=https://github.com/GitTools/GitVersion.git"
             ],
             Pull = true,
             Platform = [$"linux/{suffix}"]
