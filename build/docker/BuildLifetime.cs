@@ -14,7 +14,6 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
-        var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
         var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.DockerHub);
         var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
         var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
@@ -22,7 +21,11 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : [dotnetVersion];
         var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : [dockerDistro];
 
+        var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
+        var platformArch = context.IsRunningOnAmd64() ? Architecture.Amd64 : Architecture.Arm64;
+
         var registry = dockerRegistry == DockerRegistry.DockerHub ? Constants.DockerHubRegistry : Constants.GitHubContainerRegistry;
+
         context.DockerRegistry = dockerRegistry;
         context.Architectures = architectures;
         context.Images = from version in versions
@@ -35,7 +38,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         LogBuildInformation(context);
 
         context.Information($"IsDockerOnLinux:      {context.IsDockerOnLinux}");
-        context.Information($"Building for Version: {dotnetVersion}, Distro: {dockerDistro}");
+        context.Information($"Building for Version: {dotnetVersion}, Distro: {dockerDistro}, Architecture: {platformArch}");
         context.EndGroup();
     }
 }
