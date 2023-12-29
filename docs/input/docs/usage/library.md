@@ -15,9 +15,9 @@ patch releases, it's a useful option to some.
 
 :::{.alert .alert-warning}
 **Warning**
-
-We are not semantically versioning this library and it should be considered
-unstable.
+The library API is not stable and does not follow the semantic versioning
+of the GitVersion tool. A patch release of the tool may break the library
+and we will refactor and change the library API without notice.
 :::
 
 <a href="/api" class="btn btn-primary">Explore the GitVersion library API</a>
