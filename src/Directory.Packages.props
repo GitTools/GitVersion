@@ -17,7 +17,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="Roslynator.Analyzers" Version="4.8.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.8.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.1" />
     <PackageVersion Include="YamlDotNet" Version="13.7.1" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
   </ItemGroup>
