@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - Why use GitVersion?</title>
+        <title>GitVersion - Docker</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -80,10 +82,8 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/learn/why.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#advantages-vs-other-approaches">Advantages vs other approaches</a></p>
-<hr class="infobar-hidden">
-</div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/usage/docker.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -93,7 +93,7 @@
                     <ul class="sidebar-menu">
                         
 
-                <li class="treeview">
+                <li class="treeview active">
                     <a href="/docs/usage">Usage</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
@@ -111,7 +111,7 @@
                 </li>
                 <li><a href="/docs/usage/msbuild">MSBuild Task</a></li>
                 <li><a href="/docs/usage/library">Library</a></li>
-                <li><a href="/docs/usage/docker">Docker</a></li>
+                <li class="selected"><a href="/docs/usage/docker">Docker</a></li>
 
                     </ul>
                 </li>
@@ -155,7 +155,7 @@
 
                     </ul>
                 </li>
-                <li class="treeview active">
+                <li class="treeview">
                     <a href="/docs/learn">Learn</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
@@ -164,7 +164,7 @@
                 <li><a href="/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
                 <li><a href="/docs/learn/git-setup">Git Setup</a></li>
                 <li><a href="/docs/learn/faq">FAQ</a></li>
-                <li class="selected"><a href="/docs/learn/why">Why use GitVersion?</a></li>
+                <li><a href="/docs/learn/why">Why use GitVersion?</a></li>
                 <li><a href="/docs/learn/who">Who is using GitVersion</a></li>
                 <li><a href="/docs/learn/credits">Credits</a></li>
                 <li class="treeview">
@@ -209,40 +209,22 @@
 
 
 		<section class="content-header">
-			<h1>Why use GitVersion?</h1>
+			<h1>Docker</h1>
 		</section>
 	<section class="content">
-		<p>GitVersion makes versioning woes a thing of the past. It looks at your git
-history to calculate what the version currently is. I have seen and used many
-different approaches in the past, all have downfalls and often are not
-transportable between projects.</p>
-<p>It solves:</p>
-<ul>
-<li>Rebuilding tags always produces the same version</li>
-<li>Not having to rebuild to increment versions</li>
-<li>Not duplicating version information in multiple places (branch release/2.0.0
-already has the version in it, why do I need to change something else)</li>
-<li>Each branch calculates its SemVer and versions flow between branches when
-they are merged</li>
-<li>Pull requests produce unique pre-release version numbers</li>
-<li>NuGet semver issues</li>
-<li>Build server integration</li>
-<li>Updating assembly info</li>
-<li>And a whole lot of edge cases you don't want to think about</li>
-</ul>
-<h2 id="advantages-vs-other-approaches">Advantages vs other approaches</h2>
-<h3 id="version.txtversion-in-build-script">Version.txt/Version in build script</h3>
-<ul>
-<li>With version.txt/build script, after the release you need to do an additional commit to bump the version</li>
-<li>After tagging a release, the next build will still be the same version</li>
-</ul>
-<h3 id="build-server-versioning">Build Server versioning</h3>
-<ul>
-<li>Cannot have different version numbers on different branches</li>
-<li>Rebuilding will result in a different build number (if using an auto incrementing number in the version)</li>
-<li>Need to login to the build server to change version number</li>
-<li>Only build administrators can change the version number</li>
-</ul>
+		<p>GitVersion can be used through one of its many published Docker
+containers. The list of available containers can be found on
+<a href="https://hub.docker.com/r/gittools/gitversion">Docker Hub</a>. Once you've found the image you want to use,
+you can run it like this:</p>
+<pre><code class="language-shell">docker run --rm --volume &quot;$(pwd):/repo&quot; gittools/gitversion:6.0.0-fedora.36-6.0 /repo
+</code></pre>
+<p>The above command will run GitVersion with the current directory
+mapped to <code>/repo</code> inside the container (the <code>--volume &quot;$(pwd):/repo&quot;</code>
+part). The <code>/repo</code> directory is then passed in as the argument
+GitVersion should use to calculate the version.</p>
+<p>The <code>--rm</code> flag will remove the container after it has finished
+running.</p>
+<p><a href="https://hub.docker.com/r/gittools/gitversion" class="btn btn-primary">Explore GitVersion on Docker Hub</a></p>
 
 	</section>
                 
@@ -267,7 +249,7 @@ they are merged</li>
         room: 'GitTools/GitVersion'
     };
 </script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -338,5 +320,5 @@ they are merged</li>
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

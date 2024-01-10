@@ -111,6 +111,7 @@
                 </li>
                 <li><a href="/docs/usage/msbuild">MSBuild Task</a></li>
                 <li class="selected"><a href="/docs/usage/library">Library</a></li>
+                <li><a href="/docs/usage/docker">Docker</a></li>
 
                     </ul>
                 </li>
@@ -214,9 +215,10 @@
 		<p>Install with NuGet and use GitVersion as a software library. Although this
 is an unsupported option and the API may break even between minor or
 patch releases, it's a useful option to some.</p>
-<div class="alert alert-warning"><p><strong>Warning</strong></p>
-<p>We are not semantically versioning this library and it should be considered
-unstable.</p>
+<div class="alert alert-warning"><p><strong>Warning</strong>
+The library API is not stable and does not follow the semantic versioning
+of the GitVersion tool. A patch release of the tool may break the library
+and we will refactor and change the library API without notice.</p>
 </div>
 <p><a href="/api" class="btn btn-primary">Explore the GitVersion library API</a></p>
 
