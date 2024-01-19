@@ -7,6 +7,12 @@ namespace GitVersion.Core;
 
 internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
 {
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsOfBranchCache = new();
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsOfMergeTargetCache = new();
+    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsCache = new();
     private readonly ILog log;
 
     private GitVersionContext VersionContext => this.versionContextLazy.Value;
@@ -105,9 +111,6 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         return GetElements().Distinct().ToLookup(element => element.Key, element => element.Value);
     }
 
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        taggedSemanticVersionsOfBranchCache = new();
-
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
     {
@@ -147,9 +150,6 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
 
         return result;
     }
-
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        taggedSemanticVersionsOfMergeTargetCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
@@ -239,9 +239,6 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
 
         return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
     }
-
-    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        taggedSemanticVersionsCache = new();
 
     private ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {

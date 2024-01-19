@@ -11,21 +11,61 @@ namespace GitVersion.VersionCalculation;
 
 internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
 {
-    private volatile int IterationCounter;
+    private static readonly IReadOnlyCollection<ITrunkBasedContextPreEnricher> TrunkContextPreEnricherCollection = new ITrunkBasedContextPreEnricher[]
+    {
+        new EnrichSemanticVersion(),
+        new EnrichIncrement()
+    };
+    private static readonly IReadOnlyCollection<ITrunkBasedContextPostEnricher> TrunkContextPostEnricherCollection = new ITrunkBasedContextPostEnricher[]
+    {
+        new RemoveSemanticVersion(),
+        new RemoveIncrement()
+    };
+    private static readonly IReadOnlyCollection<ITrunkBasedIncrementer> TrunkIncrementerCollection = new ITrunkBasedIncrementer[]
+    {
+        // Trunk
+        new CommitOnTrunk(),
 
-    private ITaggedSemanticVersionRepository TaggedSemanticVersionRepository { get; }
+        new CommitOnTrunkWithPreReleaseTag(),
+        new LastCommitOnTrunkWithPreReleaseTag(),
 
-    private IRepositoryStore RepositoryStore { get; }
+        new CommitOnTrunkWithStableTag(),
+        new LastCommitOnTrunkWithStableTag(),
 
-    private IIncrementStrategyFinder IncrementStrategyFinder { get; }
+        new MergeCommitOnTrunk(),
+        new LastMergeCommitOnTrunk(),
+
+        new CommitOnTrunkBranchedToTrunk(),
+        new CommitOnTrunkBranchedToNonTrunk(),
+
+        // NonTrunk
+        new CommitOnNonTrunk(),
+        new CommitOnNonTrunkWithPreReleaseTag(),
+        new LastCommitOnNonTrunkWithPreReleaseTag(),
+
+        new CommitOnNonTrunkWithStableTag(),
+        new LastCommitOnNonTrunkWithStableTag(),
+
+        new MergeCommitOnNonTrunk(),
+        new LastMergeCommitOnNonTrunk(),
+
+        new CommitOnNonTrunkBranchedToTrunk(),
+        new CommitOnNonTrunkBranchedToNonTrunk()
+    };
+
+    private volatile int iterationCounter;
+
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
+    private readonly IRepositoryStore repositoryStore;
+    private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
     public TrunkBasedVersionStrategy(Lazy<GitVersionContext> context, IRepositoryStore repositoryStore,
         ITaggedSemanticVersionRepository taggedSemanticVersionRepository, IIncrementStrategyFinder incrementStrategyFinder
     ) : base(context)
     {
-        RepositoryStore = repositoryStore.NotNull();
-        TaggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
-        IncrementStrategyFinder = incrementStrategyFinder.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
@@ -34,7 +74,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
 
         var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
 
-        var taggedSemanticVersions = TaggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
+        var taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
             Context.CurrentBranch, configuration.Value
         );
 
@@ -52,7 +92,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
     private TrunkBasedIteration CreateIteration(
         ReferenceName branchName, EffectiveConfiguration configuration, TrunkBasedIteration? parent = null)
     {
-        var iterationCount = Interlocked.Increment(ref IterationCounter);
+        var iterationCount = Interlocked.Increment(ref iterationCounter);
         return new TrunkBasedIteration(
             id: $"#{iterationCount}",
             branchName: branchName,
@@ -83,7 +123,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             {
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
-                taggedSemanticVersions = TaggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
+                taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
                     effectiveConfigurationWasBranchedFrom.Branch, effectiveConfigurationWasBranchedFrom.Value
                 );
             }
@@ -103,7 +143,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             if (item.IsMergeCommit)
             {
                 Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-                    () => IncrementStrategyFinder.GetMergedCommits(item, 1).Reverse().ToList()
+                    () => incrementStrategyFinder.GetMergedCommits(item, 1).Reverse().ToList()
                 );
 
                 if (configuration.TrackMergeMessage
@@ -125,7 +165,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                         {
                             if (configuration.IsMainline) throw new NotImplementedException();
                             mergedCommitsInReverseOrderLazy = new(
-                                () => IncrementStrategyFinder.GetMergedCommits(item, 0).Reverse().ToList()
+                                () => incrementStrategyFinder.GetMergedCommits(item, 0).Reverse().ToList()
                             );
                             childConfiguration = configuration;
                         }
@@ -162,10 +202,10 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
 
         return configuration.CommitMessageIncrementing switch
         {
-            CommitMessageIncrementMode.Enabled => IncrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
+            CommitMessageIncrementMode.Enabled => incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
             CommitMessageIncrementMode.Disabled => VersionField.None,
             CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
-                ? IncrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration) : VersionField.None,
+                ? incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration) : VersionField.None,
             _ => throw new InvalidEnumArgumentException(
                 nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
             )
@@ -176,10 +216,10 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
     {
         Dictionary<ICommit, EffectiveBranchConfiguration> result = new();
 
-        var branch = RepositoryStore.FindBranch(branchName);
+        var branch = repositoryStore.FindBranch(branchName);
         if (branch is null) return result;
 
-        var branchCommits = RepositoryStore.FindCommitBranchesWasBranchedFrom(
+        var branchCommits = repositoryStore.FindCommitBranchesWasBranchedFrom(
             branch, Context.Configuration
         ).ToList();
 
@@ -290,46 +330,4 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             }
         }
     }
-
-    private static readonly IReadOnlyCollection<ITrunkBasedContextPreEnricher> TrunkContextPreEnricherCollection = new ITrunkBasedContextPreEnricher[]
-    {
-        new EnrichSemanticVersion(),
-        new EnrichIncrement()
-    };
-    private static readonly IReadOnlyCollection<ITrunkBasedContextPostEnricher> TrunkContextPostEnricherCollection = new ITrunkBasedContextPostEnricher[]
-    {
-        new RemoveSemanticVersion(),
-        new RemoveIncrement()
-    };
-    private static readonly IReadOnlyCollection<ITrunkBasedIncrementer> TrunkIncrementerCollection = new ITrunkBasedIncrementer[]
-    {
-        // Trunk
-        new CommitOnTrunk(),
-
-        new CommitOnTrunkWithPreReleaseTag(),
-        new LastCommitOnTrunkWithPreReleaseTag(),
-
-        new CommitOnTrunkWithStableTag(),
-        new LastCommitOnTrunkWithStableTag(),
-
-        new MergeCommitOnTrunk(),
-        new LastMergeCommitOnTrunk(),
-
-        new CommitOnTrunkBranchedToTrunk(),
-        new CommitOnTrunkBranchedToNonTrunk(),
-
-        // NonTrunk
-        new CommitOnNonTrunk(),
-        new CommitOnNonTrunkWithPreReleaseTag(),
-        new LastCommitOnNonTrunkWithPreReleaseTag(),
-
-        new CommitOnNonTrunkWithStableTag(),
-        new LastCommitOnNonTrunkWithStableTag(),
-
-        new MergeCommitOnNonTrunk(),
-        new LastMergeCommitOnNonTrunk(),
-
-        new CommitOnNonTrunkBranchedToTrunk(),
-        new CommitOnNonTrunkBranchedToNonTrunk()
-    };
 }
