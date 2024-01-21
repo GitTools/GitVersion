@@ -7,6 +7,12 @@ namespace GitVersion.Core;
 
 internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
 {
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsOfBranchCache = new();
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsOfMergeTargetCache = new();
+    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
+        taggedSemanticVersionsCache = new();
     private readonly ILog log;
 
     private GitVersionContext VersionContext => this.versionContextLazy.Value;
@@ -24,7 +30,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         this.branchRepository = branchRepository.NotNull();
     }
 
-    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration)
+    public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration)
     {
         configuration.NotNull();
 
@@ -102,46 +108,8 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             }
         }
 
-        return GetElements().ToLookup(element => element.Key, element => element.Value);
+        return GetElements().Distinct().ToLookup(element => element.Key, element => element.Value);
     }
-
-    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        allTaggedSemanticVersionsCache = new();
-
-    public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
-    {
-        tagPrefix ??= string.Empty;
-
-        IEnumerable<SemanticVersionWithTag> GetElements()
-        {
-            this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
-
-            foreach (var tag in this.gitRepository.Tags)
-            {
-                if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
-                {
-                    yield return new SemanticVersionWithTag(semanticVersion, tag);
-                }
-            }
-        }
-
-        bool isCached = true;
-        var result = allTaggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
-        {
-            isCached = false;
-            return GetElements().ToLookup(element => element.Tag.Commit, element => element);
-        });
-
-        if (isCached)
-        {
-            this.log.Debug($"Returning cached tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
-        }
-
-        return result;
-    }
-
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        taggedSemanticVersionsOfBranchCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
@@ -154,8 +122,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             using (this.log.IndentLog($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                var semanticVersions = GetAllTaggedSemanticVersions(tagPrefix, format);
-
+                var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
                 foreach (var commit in branch.Commits)
                 {
                     foreach (var semanticVersion in semanticVersions[commit])
@@ -170,8 +137,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         var result = taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            var semanticVersions = GetElements();
-            return semanticVersions.ToLookup(element => element.Tag.Commit, element => element);
+            return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
         });
 
         if (isCached)
@@ -184,9 +150,6 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
 
         return result;
     }
-
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
-        taggedSemanticVersionsOfMergeTargetCache = new();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format)
@@ -201,7 +164,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             {
                 var shaHashSet = new HashSet<string>(branch.Commits.Select(element => element.Id.Sha));
 
-                foreach (var semanticVersion in GetAllTaggedSemanticVersions(tagPrefix, format).SelectMany(_ => _))
+                foreach (var semanticVersion in GetTaggedSemanticVersions(tagPrefix, format).SelectMany(_ => _))
                 {
                     foreach (var commit in semanticVersion.Tag.Commit.Parents.Where(element => shaHashSet.Contains(element.Id.Sha)))
                     {
@@ -215,7 +178,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         var result = taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            return GetElements().ToLookup(element => element.Item1, element => element.Item2);
+            return GetElements().Distinct().ToLookup(element => element.Item1, element => element.Item2);
         });
 
         if (isCached)
@@ -250,7 +213,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             }
         }
 
-        return GetElements().ToLookup(element => element.Tag.Commit, element => element);
+        return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
@@ -274,6 +237,38 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             }
         }
 
-        return GetElements().ToLookup(element => element.Tag.Commit, element => element);
+        return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
+    }
+
+    private ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
+    {
+        tagPrefix ??= string.Empty;
+
+        IEnumerable<SemanticVersionWithTag> GetElements()
+        {
+            this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
+
+            foreach (var tag in this.gitRepository.Tags)
+            {
+                if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
+                {
+                    yield return new SemanticVersionWithTag(semanticVersion, tag);
+                }
+            }
+        }
+
+        bool isCached = true;
+        var result = taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
+        {
+            isCached = false;
+            return GetElements().ToLookup(element => element.Tag.Commit, element => element);
+        });
+
+        if (isCached)
+        {
+            this.log.Debug($"Returning cached tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
+        }
+
+        return result;
     }
 }
