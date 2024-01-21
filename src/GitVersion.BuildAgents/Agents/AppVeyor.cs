@@ -56,10 +56,10 @@ internal class AppVeyor : BuildAgentBase
         var response = httpClient.PostAsync("api/build/variables", stringContent).GetAwaiter().GetResult();
         response.EnsureSuccessStatusCode();
 
-        return new[]
-        {
+        return
+        [
             $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
-        };
+        ];
     }
 
     private static HttpClient GetHttpClient(string apiUrl) => new()

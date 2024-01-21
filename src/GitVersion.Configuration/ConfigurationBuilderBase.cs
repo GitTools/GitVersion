@@ -394,7 +394,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             PreReleaseWeight = this.preReleaseWeight
         };
 
-        if (this.overrides.Any())
+        if (this.overrides.Count != 0)
         {
             ConfigurationHelper configurationHelper = new(configuration);
             foreach (var item in this.overrides)
@@ -442,7 +442,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
             var sourceBranches = branchConfiguration.SourceBranches ?? throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
             var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
-            if (missingSourceBranches.Any())
+            if (missingSourceBranches.Length != 0)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
             }

@@ -17,10 +17,10 @@ internal sealed class BranchRepository : IBranchRepository
     }
 
     public IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches)
-        => GetBranches(new HashSet<IBranch>(excludeBranches), configuration => configuration.IsMainline == true);
+        => GetBranches([.. excludeBranches], configuration => configuration.IsMainline == true);
 
     public IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches)
-        => GetBranches(new HashSet<IBranch>(excludeBranches), configuration => configuration.IsReleaseBranch == true);
+        => GetBranches([.. excludeBranches], configuration => configuration.IsReleaseBranch == true);
 
     private IEnumerable<IBranch> GetBranches(HashSet<IBranch> excludeBranches, Func<IBranchConfiguration, bool> predicate)
     {

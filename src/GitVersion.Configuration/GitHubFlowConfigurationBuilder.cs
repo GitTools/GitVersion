@@ -39,9 +39,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.Patch,
             RegularExpression = MainBranch.RegexPattern,
-            SourceBranches = new HashSet<string> {
-                ReleaseBranch.Name
-            },
+            SourceBranches = [this.ReleaseBranch.Name],
             Label = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
@@ -56,10 +54,11 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            SourceBranches = new HashSet<string> {
-                MainBranch.Name,
-                ReleaseBranch.Name
-            },
+            SourceBranches =
+            [
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name
+            ],
             Label = "beta",
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
@@ -74,11 +73,12 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            SourceBranches = new HashSet<string> {
-                MainBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name
-            },
+            SourceBranches =
+            [
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name
+            ],
             Label = ConfigurationConstants.BranchNamePlaceholder,
             PreReleaseWeight = 30000
         });
@@ -88,11 +88,12 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDeployment,
-            SourceBranches = new HashSet<string> {
-                MainBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name
-            },
+            SourceBranches =
+            [
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name
+            ],
             Label = "PullRequest",
             LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
             PreReleaseWeight = 30000
@@ -104,12 +105,13 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             Label = ConfigurationConstants.BranchNamePlaceholder,
             VersioningMode = VersioningMode.ContinuousDelivery,
             Increment = IncrementStrategy.Inherit,
-            SourceBranches = new HashSet<string> {
-                MainBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name,
-                PullRequestBranch.Name
-            }
+            SourceBranches =
+            [
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name,
+                this.PullRequestBranch.Name
+            ]
         });
     }
 }

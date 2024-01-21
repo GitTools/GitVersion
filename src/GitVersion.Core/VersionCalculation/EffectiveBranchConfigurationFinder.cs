@@ -53,7 +53,7 @@ internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfiguratio
             }
         }
 
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit && sourceBranches.Any())
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit && sourceBranches.Length != 0)
         {
             foreach (var sourceBranch in sourceBranches)
             {

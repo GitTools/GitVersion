@@ -15,8 +15,8 @@ internal class BranchConfigurationBuilder
     private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regularExpression;
-    private HashSet<string> sourceBranches = new();
-    private HashSet<string> isSourceBranchFor = new();
+    private HashSet<string> sourceBranches = [];
+    private HashSet<string> isSourceBranchFor = [];
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
     private bool? isMainline;
@@ -88,7 +88,7 @@ internal class BranchConfigurationBuilder
 
     public virtual BranchConfigurationBuilder WithSourceBranches(params string[] values)
     {
-        this.sourceBranches = new HashSet<string>(values);
+        this.sourceBranches = [.. values];
         return this;
     }
 
@@ -100,7 +100,7 @@ internal class BranchConfigurationBuilder
 
     public virtual BranchConfigurationBuilder WithIsSourceBranchFor(params string[] values)
     {
-        this.isSourceBranchFor = new HashSet<string>(values);
+        this.isSourceBranchFor = [.. values];
         return this;
     }
 

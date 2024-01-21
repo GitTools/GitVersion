@@ -7,7 +7,7 @@ internal abstract class CommitOnNonTrunkWithPreReleaseTagBase : ITrunkBasedIncre
 {
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => commit.ChildIteration is null && !commit.Configuration.IsMainline
-            && context.SemanticVersion is not null && context.SemanticVersion.IsPreRelease;
+            && context.SemanticVersion?.IsPreRelease == true;
 
     public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {

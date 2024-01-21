@@ -32,7 +32,7 @@ public static class ConfigurationExtensions
     {
         source.NotNull();
 
-        if (source.Shas.Any()) yield return new ShaVersionFilter(source.Shas);
+        if (source.Shas.Count != 0) yield return new ShaVersionFilter(source.Shas);
         if (source.Before.HasValue) yield return new MinDateVersionFilter(source.Before.Value);
     }
 

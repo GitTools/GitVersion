@@ -296,7 +296,7 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
                 minorVersionBumpMessage: Context.Configuration.MinorVersionBumpMessage,
                 patchVersionBumpMessage: Context.Configuration.PatchVersionBumpMessage,
                 noBumpMessage: Context.Configuration.NoBumpMessage,
-                commits: new[] { directCommit }
+                commits: [directCommit]
             ) ?? FindDefaultIncrementForBranch(Context, mainline);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");

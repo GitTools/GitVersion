@@ -20,7 +20,7 @@ public static class ObjectExtensions
     {
         var type = typeof(string);
         return obj.GetType().GetProperties()
-            .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
+            .Where(p => p.PropertyType == type && p.GetIndexParameters().Length == 0 && p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Length == 0)
             .ToDictionary(p => p.Name, p => Convert.ToString(p.GetValue(obj, null)) ?? string.Empty);
     }
 }

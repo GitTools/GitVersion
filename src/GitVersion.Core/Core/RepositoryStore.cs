@@ -333,7 +333,7 @@ internal class RepositoryStore : IRepositoryStore
         var tagName = tag.Name.Friendly;
 
         return Equals(tag.Commit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
-            ? new[] { version }
+            ? [version]
             : Array.Empty<SemanticVersion>();
     }
 }

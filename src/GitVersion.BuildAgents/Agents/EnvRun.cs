@@ -31,9 +31,9 @@ internal class EnvRun : BuildAgentBase
 
     public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => new[]
-    {
+    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    [
         $"@@envrun[set name='GitVersion_{name}' value='{value}']"
-    };
+    ];
     public override bool PreventFetch() => true;
 }

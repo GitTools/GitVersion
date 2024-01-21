@@ -72,7 +72,7 @@ internal class NextVersionCalculator : INextVersionCalculator
             .ToList();
         ICommit? latestBaseVersionSource;
 
-        if (matchingVersionsOnceIncremented.Any())
+        if (matchingVersionsOnceIncremented.Count != 0)
         {
             var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
             latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;

@@ -17,12 +17,12 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public const string OriginPrefix = "origin/";
 
     private static readonly string[] PullRequestPrefixes =
-    {
+    [
         "refs/pull/",
         "refs/pull-requests/",
         "refs/remotes/pull/",
         "refs/remotes/pull-requests/"
-    };
+    ];
 
     public ReferenceName(string canonical)
     {

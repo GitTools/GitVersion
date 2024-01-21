@@ -23,7 +23,7 @@ internal class VariableProvider : IVariableProvider
             var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment;
 
             var label = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
-            var isCommitTagged = currentCommitTaggedVersion is not null && currentCommitTaggedVersion.IsMatchForBranchSpecificLabel(label);
+            var isCommitTagged = currentCommitTaggedVersion?.IsMatchForBranchSpecificLabel(label) == true;
 
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (isContinuousDeploymentMode && !isCommitTagged && !semanticVersion.PreReleaseTag.HasTag() && preReleaseTagName.IsNullOrEmpty())

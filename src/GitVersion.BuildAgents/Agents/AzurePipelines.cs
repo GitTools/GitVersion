@@ -15,11 +15,11 @@ internal class AzurePipelines : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => new[]
-    {
+    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    [
         $"##vso[task.setvariable variable=GitVersion.{name}]{value}",
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
-    };
+    ];
 
     public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
 

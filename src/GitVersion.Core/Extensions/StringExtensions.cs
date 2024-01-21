@@ -6,8 +6,8 @@ namespace GitVersion.Extensions;
 
 public static class StringExtensions
 {
-    private static readonly string[] Trues = { "1", "true" };
-    private static readonly string[] Falses = { "0", "false" };
+    private static readonly string[] Trues = ["1", "true"];
+    private static readonly string[] Falses = ["0", "false"];
 
     public static bool IsTrue(this string? value) => Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
 

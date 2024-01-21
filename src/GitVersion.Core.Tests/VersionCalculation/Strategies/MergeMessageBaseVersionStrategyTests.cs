@@ -183,8 +183,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
     private static List<ICommit> GetParents(bool isMergeCommit) =>
         isMergeCommit
-            ? new List<ICommit> { new MockCommit(), new MockCommit() }
-            : new List<ICommit> { new MockCommit(), };
+            ? [new MockCommit(), new MockCommit()]
+            : [new MockCommit()];
 
     private class MockCommit : ICommit
     {

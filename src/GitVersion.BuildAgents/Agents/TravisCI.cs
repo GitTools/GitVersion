@@ -16,10 +16,10 @@ internal class TravisCi : BuildAgentBase
 
     public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => new[]
-    {
+    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    [
         $"GitVersion_{name}={value}"
-    };
+    ];
 
     public override bool PreventFetch() => true;
 }

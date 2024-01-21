@@ -244,5 +244,5 @@ internal static class EventArgsFormatting
     /// The kinds of newline breaks we expect.
     /// </summary>
     /// <remarks>Currently we're not supporting "\r".</remarks>
-    private static readonly string[] s_newLines = { "\r\n", "\n" };
+    private static readonly string[] s_newLines = ["\r\n", "\n"];
 }

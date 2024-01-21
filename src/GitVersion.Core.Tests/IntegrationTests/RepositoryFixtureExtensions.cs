@@ -14,10 +14,9 @@ internal static class RepositoryFixtureExtensions
         string? GetParticipant(string participant) =>
             (string?)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.Invoke(fixture.SequenceDiagram,
-                    new object[]
-                    {
-                        participant
-                    });
+                [
+                    participant
+                ]);
 
         var participant = GetParticipant(fixture.Repository.Head.FriendlyName);
         if (participant != null)

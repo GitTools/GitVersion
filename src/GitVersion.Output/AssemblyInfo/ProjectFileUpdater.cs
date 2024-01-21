@@ -126,7 +126,7 @@ internal sealed class ProjectFileUpdater : IProjectFileUpdater
         }
 
         var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
-        if (!propertyGroups.Any())
+        if (propertyGroups.Count == 0)
         {
             this.log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
             return false;

@@ -38,7 +38,7 @@ internal record class TrunkBasedIteration
         ICommit value, ReferenceName branchName, EffectiveConfiguration configuration, VersionField increment)
     {
         TrunkBasedCommit commit;
-        if (commits.Any())
+        if (commits.Count != 0)
             commit = commits.Peek().Append(value, branchName, configuration, increment);
         else
         {

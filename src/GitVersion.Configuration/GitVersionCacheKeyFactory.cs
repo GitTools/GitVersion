@@ -65,7 +65,7 @@ internal class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
 
         dirs.Push(root);
 
-        while (dirs.Any())
+        while (dirs.Count != 0)
         {
             var currentDir = dirs.Pop();
 

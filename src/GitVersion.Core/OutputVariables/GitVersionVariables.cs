@@ -26,8 +26,8 @@ public record GitVersionVariables(string Major,
                                   string? CommitsSinceVersionSource,
                                   string? UncommittedChanges) : IEnumerable<KeyValuePair<string, string?>>
 {
-    public static readonly List<string> AvailableVariables = new()
-    {
+    public static readonly List<string> AvailableVariables =
+    [
         nameof(Major),
         nameof(Minor),
         nameof(Patch),
@@ -52,8 +52,8 @@ public record GitVersionVariables(string Major,
         nameof(CommitDate),
         nameof(VersionSourceSha),
         nameof(CommitsSinceVersionSource),
-        nameof(UncommittedChanges),
-    };
+        nameof(UncommittedChanges)
+    ];
 
     private Dictionary<string, string?> Instance => new()
     {

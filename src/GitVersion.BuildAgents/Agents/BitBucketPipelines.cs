@@ -26,7 +26,7 @@ internal class BitBucketPipelines : BuildAgentBase
 
     public void WithPowershellFile(string powershellFileName) => this.ps1File = powershellFileName;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => new[] { $"GITVERSION_{name.ToUpperInvariant()}={value}" };
+    public override string[] GenerateSetParameterMessage(string name, string? value) => [$"GITVERSION_{name.ToUpperInvariant()}={value}"];
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {

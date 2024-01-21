@@ -12,11 +12,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
 {
     private const string regexPattern = @".*{0}.*=.*""{1}"".*";
     private static readonly object[] Languages =
-    {
+    [
         new object[] { "C#" },
         new object[] { "F#" },
-        new object[] { "VB" },
-    };
+        new object[] { "VB" }
+    ];
 
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFile(string language)

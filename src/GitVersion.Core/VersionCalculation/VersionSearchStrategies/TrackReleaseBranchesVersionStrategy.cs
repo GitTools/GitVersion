@@ -43,7 +43,7 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
         var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
-        if (!releaseBranchConfig.Any())
+        if (releaseBranchConfig.Count == 0)
             return Array.Empty<BaseVersion>();
 
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);

@@ -12,13 +12,13 @@ public class PullRequestInBuildAgentTest
 {
     private const string PullRequestBranchName = "PR-5";
     private static readonly string[] PrMergeRefs =
-    {
+    [
         "refs/pull-requests/5/merge",
         "refs/pull/5/merge",
         "refs/heads/pull/5/head",
         "refs/remotes/pull/5/merge",
         "refs/remotes/pull-requests/5/merge"
-    };
+    ];
 
     [TestCaseSource(nameof(PrMergeRefs))]
     public async Task VerifyAzurePipelinesPullRequest(string pullRequestRef)
@@ -187,12 +187,12 @@ public class PullRequestInBuildAgentTest
     }
 
     private static readonly object[] PrMergeRefInputs =
-    {
+    [
         new object[] { "refs/pull-requests/5/merge", "refs/pull-requests/5/merge", false, true, false },
-        new object[] { "refs/pull/5/merge", "refs/pull/5/merge", false, true, false},
+        new object[] { "refs/pull/5/merge", "refs/pull/5/merge", false, true, false },
         new object[] { "refs/heads/pull/5/head", "pull/5/head", true, false, false },
-        new object[] { "refs/remotes/pull/5/merge", "pull/5/merge", false, true, true },
-    };
+        new object[] { "refs/remotes/pull/5/merge", "pull/5/merge", false, true, true }
+    ];
 
     [TestCaseSource(nameof(PrMergeRefInputs))]
     public void VerifyPullRequestInput(string pullRequestRef, string friendly, bool isBranch, bool isPullRequest, bool isRemote)

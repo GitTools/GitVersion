@@ -39,7 +39,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Minor,
             RegularExpression = DevelopBranch.RegexPattern,
-            SourceBranches = new HashSet<string>(),
+            SourceBranches = [],
             Label = "alpha",
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = true,
@@ -53,10 +53,11 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Patch,
             RegularExpression = MainBranch.RegexPattern,
-            SourceBranches = new HashSet<string> {
-                DevelopBranch.Name,
-                ReleaseBranch.Name
-            },
+            SourceBranches =
+            [
+                this.DevelopBranch.Name,
+                this.ReleaseBranch.Name
+            ],
             Label = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
@@ -71,12 +72,13 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            SourceBranches = new HashSet<string> {
-                DevelopBranch.Name,
-                MainBranch.Name,
-                SupportBranch.Name,
-                ReleaseBranch.Name
-            },
+            SourceBranches =
+            [
+                this.DevelopBranch.Name,
+                this.MainBranch.Name,
+                this.SupportBranch.Name,
+                this.ReleaseBranch.Name
+            ],
             Label = "beta",
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
@@ -91,14 +93,15 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            SourceBranches = new HashSet<string> {
-                DevelopBranch.Name,
-                MainBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name,
-                SupportBranch.Name,
-                HotfixBranch.Name
-            },
+            SourceBranches =
+            [
+                this.DevelopBranch.Name,
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name,
+                this.SupportBranch.Name,
+                this.HotfixBranch.Name
+            ],
             Label = ConfigurationConstants.BranchNamePlaceholder,
             PreReleaseWeight = 30000
         });
@@ -108,14 +111,15 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDeployment,
-            SourceBranches = new HashSet<string> {
-                DevelopBranch.Name,
-                MainBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name,
-                SupportBranch.Name,
-                HotfixBranch.Name
-            },
+            SourceBranches =
+            [
+                this.DevelopBranch.Name,
+                this.MainBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name,
+                this.SupportBranch.Name,
+                this.HotfixBranch.Name
+            ],
             Label = "PullRequest",
             LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
             PreReleaseWeight = 30000
@@ -126,12 +130,13 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            SourceBranches = new HashSet<string> {
-                ReleaseBranch.Name,
-                MainBranch.Name,
-                SupportBranch.Name,
-                HotfixBranch.Name
-            },
+            SourceBranches =
+            [
+                this.ReleaseBranch.Name,
+                this.MainBranch.Name,
+                this.SupportBranch.Name,
+                this.HotfixBranch.Name
+            ],
             Label = "beta",
             IsReleaseBranch = true,
             PreReleaseWeight = 30000
@@ -141,7 +146,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Patch,
             RegularExpression = SupportBranch.RegexPattern,
-            SourceBranches = new HashSet<string> { MainBranch.Name },
+            SourceBranches = [this.MainBranch.Name],
             Label = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
@@ -157,15 +162,16 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Label = ConfigurationConstants.BranchNamePlaceholder,
             VersioningMode = VersioningMode.ContinuousDelivery,
             Increment = IncrementStrategy.Inherit,
-            SourceBranches = new HashSet<string> {
-                MainBranch.Name,
-                DevelopBranch.Name,
-                ReleaseBranch.Name,
-                FeatureBranch.Name,
-                PullRequestBranch.Name,
-                HotfixBranch.Name,
-                SupportBranch.Name
-            }
+            SourceBranches =
+            [
+                this.MainBranch.Name,
+                this.DevelopBranch.Name,
+                this.ReleaseBranch.Name,
+                this.FeatureBranch.Name,
+                this.PullRequestBranch.Name,
+                this.HotfixBranch.Name,
+                this.SupportBranch.Name
+            ]
         });
     }
 }

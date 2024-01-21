@@ -6,6 +6,6 @@ namespace GitVersion.Configuration
 
         IReadOnlyCollection<string> Shas { get; }
 
-        public bool IsEmpty => Before == null && !Shas.Any();
+        public bool IsEmpty => Before == null && Shas.Count == 0;
     }
 }

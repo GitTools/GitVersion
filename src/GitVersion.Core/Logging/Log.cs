@@ -30,7 +30,7 @@ internal sealed class Log : ILog
             return;
         }
 
-        var message = args.Any() ? string.Format(format, args) : format;
+        var message = args.Length != 0 ? string.Format(format, args) : format;
         var formattedString = FormatMessage(message, level.ToString().ToUpperInvariant());
         foreach (var appender in this.appenders)
         {

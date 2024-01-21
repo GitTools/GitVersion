@@ -14,7 +14,7 @@ public class GetVersionTaskTests : TestTaskBase
     {
         var taskProperties = typeof(GetVersion)
             .GetProperties()
-            .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
+            .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Length != 0)
             .Select(p => p.Name);
 
         var variablesProperties = GitVersionVariables.AvailableVariables;

@@ -10,11 +10,11 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 public class UpdateAssemblyInfoTaskTest : TestTaskBase
 {
     private static readonly object[] Languages =
-    {
+    [
         new object[] { "C#" },
         new object[] { "F#" },
-        new object[] { "VB" },
-    };
+        new object[] { "VB" }
+    ];
 
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFile(string language)

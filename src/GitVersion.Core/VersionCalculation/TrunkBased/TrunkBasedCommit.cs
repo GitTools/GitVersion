@@ -11,7 +11,7 @@ namespace GitVersion.VersionCalculation.TrunkBased;
 internal record class TrunkBasedCommit
 {
     public bool IsPredecessorTheLastCommitOnTrunk
-        => !Configuration.IsMainline && Predecessor is not null && Predecessor.Configuration.IsMainline;
+        => !Configuration.IsMainline && Predecessor?.Configuration.IsMainline == true;
 
     public TrunkBasedIteration Iteration { get; }
 
