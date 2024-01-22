@@ -33,14 +33,14 @@ public class RepositoryExtensionsTests : TestBase
 
         var branches = Substitute.For<IBranchCollection>();
         branches[branch.Name.Canonical].Returns(branch);
-        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)[branch]).GetEnumerator());
+        branches.MockCollectionReturn(branch);
 
         var reference = Substitute.For<IReference>();
         reference.Name.Returns(new ReferenceName("refs/heads/develop"));
 
         var references = Substitute.For<IReferenceCollection>();
         references["develop"].Returns(reference);
-        references.GetEnumerator().Returns(_ => ((IEnumerable<IReference>)[reference]).GetEnumerator());
+        references.MockCollectionReturn(reference);
 
         repository.Refs.Returns(references);
         repository.Head.Returns(branch);

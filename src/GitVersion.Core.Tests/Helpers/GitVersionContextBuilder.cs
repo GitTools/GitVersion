@@ -47,7 +47,7 @@ public class GitVersionContextBuilder
 
         var branches = this.repository.Branches.ToList();
         branches.Add(mockBranch);
-        this.repository.Branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)branches).GetEnumerator());
+        this.repository.Branches.MockCollectionReturn([.. branches]);
         this.repository.Head.Returns(mockBranch);
         return this;
     }
@@ -75,7 +75,7 @@ public class GitVersionContextBuilder
         var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
-        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)[mockBranch]).GetEnumerator());
+        branches.MockCollectionReturn(mockBranch);
 
         var mockRepository = Substitute.For<IGitRepository>();
         mockRepository.Branches.Returns(branches);

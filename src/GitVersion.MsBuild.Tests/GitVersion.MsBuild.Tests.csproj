@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
         <PackageReference Include="MSBuild.ProjectCreation" />
@@ -28,5 +28,6 @@
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\GitVersionVariablesExtensions.cs" Link="Extensions\GitVersionVariablesExtensions.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Extensions\MockCollectionExtensions.cs" Link="Extensions\MockCollectionExtensions.cs" />
     </ItemGroup>
 </Project>

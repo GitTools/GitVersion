@@ -39,7 +39,7 @@ public static class GitToolsTestingExtensions
         branch.Tip.Returns(commits.FirstOrDefault());
 
         var commitsCollection = Substitute.For<ICommitCollection>();
-        commitsCollection.GetEnumerator().Returns(_ => ((IEnumerable<ICommit>)commits).GetEnumerator());
+        commitsCollection.MockCollectionReturn(commits);
         commitsCollection.GetCommitsPriorTo(Arg.Any<DateTimeOffset>()).Returns(commits);
         branch.Commits.Returns(commitsCollection);
         return branch;
