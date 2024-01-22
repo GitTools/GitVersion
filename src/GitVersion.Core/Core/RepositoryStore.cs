@@ -59,7 +59,7 @@ internal class RepositoryStore : IRepositoryStore
     {
         if (mainlineTip is null)
         {
-            return Enumerable.Empty<ICommit>();
+            return [];
         }
 
         var filter = new CommitFilter { IncludeReachableFrom = mainlineTip, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Reverse, FirstParentOnly = true };
@@ -297,8 +297,7 @@ internal class RepositoryStore : IRepositoryStore
             var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
-            var versionTags = (branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
-                ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
+            var versionTags = (branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t))).ToList();
 
             this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);
             return versionTags;
@@ -326,7 +325,7 @@ internal class RepositoryStore : IRepositoryStore
     private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
     {
         if (commit == null)
-            return Array.Empty<SemanticVersion>();
+            return [];
 
         var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, tag.Commit) : commit;
 
@@ -334,6 +333,6 @@ internal class RepositoryStore : IRepositoryStore
 
         return Equals(tag.Commit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
             ? [version]
-            : Array.Empty<SemanticVersion>();
+            : [];
     }
 }

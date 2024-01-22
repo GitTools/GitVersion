@@ -127,7 +127,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFiles = Array.Empty<string>();
+        string[] assemblyInfoFiles = [];
         var variables = this.variableProvider.GetVariablesFor(
             SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new TestEffectiveConfiguration(), null
         );

@@ -23,7 +23,7 @@ internal static class QuotedStringHelpers
     public static string[] SplitUnquoted(string? input, char splitChar)
     {
         if (input == null)
-            return Array.Empty<string>();
+            return [];
 
         var split = new List<string>();
         bool isPreviousCharBackslash = false;

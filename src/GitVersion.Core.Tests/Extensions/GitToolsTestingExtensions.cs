@@ -25,7 +25,7 @@ public static class GitToolsTestingExtensions
         commit.Id.Returns(objectId);
         commit.Sha.Returns(sha);
         commit.Message.Returns("Commit " + commitCount++);
-        commit.Parents.Returns(Enumerable.Empty<ICommit>());
+        commit.Parents.Returns([]);
         commit.When.Returns(when.AddSeconds(1));
         return commit;
     }

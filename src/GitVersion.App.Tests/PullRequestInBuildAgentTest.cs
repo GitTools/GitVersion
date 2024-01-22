@@ -163,7 +163,7 @@ public class PullRequestInBuildAgentTest
             remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
             // Checkout PR commit
-            Commands.Fetch(fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
+            Commands.Fetch(fixture.Repository, "origin", [], new FetchOptions(), null);
             Commands.Checkout(fixture.Repository, mergeCommitSha);
         }
 

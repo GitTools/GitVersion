@@ -149,5 +149,5 @@ public abstract class RepositoryFixtureBase : IDisposable
     }
 
     public void Fetch(string remote, FetchOptions? options = null)
-        => Commands.Fetch(Repository, remote, Array.Empty<string>(), options, null);
+        => Commands.Fetch(Repository, remote, [], options, null);
 }

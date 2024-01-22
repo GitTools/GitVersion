@@ -17,7 +17,7 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
         : base(versionContext) => this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
-        => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? Enumerable.Empty<BaseVersion>()
+        => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? []
         : GetTaggedSemanticVersions(configuration).Select(CreateBaseVersion);
 
     private IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersions(EffectiveBranchConfiguration configuration)

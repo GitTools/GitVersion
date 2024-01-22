@@ -289,7 +289,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         {
             var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
             this.log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
-            this.retryAction.Execute(() => this.repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null));
+            this.retryAction.Execute(() => this.repository.Fetch(remote.Name, [], authentication, null));
         }
     }
 

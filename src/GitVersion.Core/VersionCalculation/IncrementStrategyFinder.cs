@@ -122,7 +122,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         var commitAfterBaseIndex = 0;
         if (baseCommit != null)
         {
-            if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return Enumerable.Empty<ICommit>();
+            if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return [];
             commitAfterBaseIndex = baseIndex + 1;
         }
 

@@ -35,16 +35,16 @@ internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return Enumerable.Empty<BaseVersion>();
+        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return [];
 
-        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : Array.Empty<BaseVersion>();
+        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : [];
     }
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
         var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
         if (releaseBranchConfig.Count == 0)
-            return Array.Empty<BaseVersion>();
+            return [];
 
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
 

@@ -61,6 +61,6 @@ public class BuildServerBaseTests : TestBase
 
         public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string? value) => Array.Empty<string>();
+        public override string[] GenerateSetParameterMessage(string name, string? value) => [];
     }
 }

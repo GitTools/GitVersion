@@ -50,7 +50,7 @@ public record TestEffectiveConfiguration : EffectiveConfiguration
             patchMessage,
             noBumpMessage,
             commitMessageMode,
-            versionFilters ?? Enumerable.Empty<IVersionFilter>(),
+            versionFilters ?? [],
             tracksReleaseBranches,
             isRelease,
             isMainline,

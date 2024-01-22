@@ -35,7 +35,7 @@ internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfiguratio
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
         }
 
-        var sourceBranches = Array.Empty<IBranch>();
+        IBranch[] sourceBranches = [];
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if source branches are available.

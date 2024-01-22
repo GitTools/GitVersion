@@ -84,7 +84,7 @@ public class TestFileSystem : IFileSystem
     public void CreateDirectory(string path)
     {
         var fullPath = Path.GetFullPath(path);
-        this.fileSystem[fullPath] = Array.Empty<byte>();
+        this.fileSystem[fullPath] = [];
     }
 
     public bool DirectoryExists(string path)
