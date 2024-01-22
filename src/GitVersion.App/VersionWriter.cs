@@ -3,11 +3,10 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class VersionWriter : IVersionWriter
+internal class VersionWriter(IConsole console) : IVersionWriter
 {
-    private readonly IConsole console;
+    private readonly IConsole console = console.NotNull();
 
-    public VersionWriter(IConsole console) => this.console = console.NotNull();
     public void Write(Assembly assembly) => WriteTo(assembly, this.console.WriteLine);
 
     public void WriteTo(Assembly assembly, Action<string?> writeAction)

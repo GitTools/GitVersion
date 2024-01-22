@@ -2,14 +2,9 @@ using LibGit2Sharp;
 
 namespace GitVersion.Testing;
 
-public class EmptyRepositoryFixture : RepositoryFixtureBase
+public class EmptyRepositoryFixture(string branchName) : RepositoryFixtureBase(path => CreateNewRepository(path, branchName))
 {
     public EmptyRepositoryFixture() : this("main")
-    {
-    }
-
-    public EmptyRepositoryFixture(string branchName)
-        : base(path => CreateNewRepository(path, branchName))
     {
     }
 

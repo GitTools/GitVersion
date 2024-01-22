@@ -5,16 +5,10 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationFinder
+internal class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
 {
-    private readonly ILog log;
-    private readonly IRepositoryStore repositoryStore;
-
-    public EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore repositoryStore)
-    {
-        this.log = log.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, IGitVersionConfiguration configuration)
     {
@@ -35,7 +29,7 @@ internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfiguratio
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
         }
 
-        var sourceBranches = Array.Empty<IBranch>();
+        IBranch[] sourceBranches = [];
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if source branches are available.

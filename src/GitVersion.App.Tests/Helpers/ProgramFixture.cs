@@ -22,19 +22,19 @@ public sealed class ProgramFixture
         ILog log = new Log(logAppender);
 
         var consoleBuilder = new StringBuilder();
-        IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
+        var consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
         this.environment = new TestEnvironment();
 
         WithOverrides(services =>
         {
             services.AddSingleton(log);
-            services.AddSingleton(consoleAdapter);
+            services.AddSingleton<IConsole>(consoleAdapter);
             services.AddSingleton(this.environment);
         });
 
-        this.logger = new Lazy<string>(() => logBuilder.ToString());
-        this.output = new Lazy<string?>(() => consoleAdapter.ToString());
+        this.logger = new(() => logBuilder.ToString());
+        this.output = new(() => consoleAdapter.ToString());
     }
 
     public void WithEnv(params KeyValuePair<string, string>[] envs)
@@ -60,7 +60,7 @@ public sealed class ProgramFixture
 
         if (!this.workingDirectory.IsNullOrWhiteSpace())
         {
-            args = new[] { "-targetpath", this.workingDirectory }.Concat(args).ToArray();
+            args = ["-targetpath", this.workingDirectory, .. args];
         }
         await program.RunAsync(args);
 

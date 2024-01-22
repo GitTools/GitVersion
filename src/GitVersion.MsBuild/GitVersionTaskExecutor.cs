@@ -7,24 +7,19 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 
-internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
+internal class GitVersionTaskExecutor(
+    IFileSystem fileSystem,
+    IGitVersionOutputTool gitVersionOutputTool,
+    IVersionVariableSerializer serializer,
+    IConfigurationProvider configurationProvider,
+    IOptions<GitVersionOptions> options)
+    : IGitVersionTaskExecutor
 {
-    private readonly IFileSystem fileSystem;
-    private readonly IGitVersionOutputTool gitVersionOutputTool;
-    private readonly IVersionVariableSerializer serializer;
-    private readonly IConfigurationProvider configurationProvider;
-    private readonly IOptions<GitVersionOptions> options;
-
-    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool,
-                                  IVersionVariableSerializer serializer, IConfigurationProvider configurationProvider,
-                                  IOptions<GitVersionOptions> options)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
-        this.serializer = serializer.NotNull();
-        this.configurationProvider = configurationProvider.NotNull();
-        this.options = options.NotNull();
-    }
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly IGitVersionOutputTool gitVersionOutputTool = gitVersionOutputTool.NotNull();
+    private readonly IVersionVariableSerializer serializer = serializer.NotNull();
+    private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
     public void GetVersion(GetVersion task)
     {

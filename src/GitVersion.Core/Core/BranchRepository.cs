@@ -3,18 +3,13 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Core;
 
-internal sealed class BranchRepository : IBranchRepository
+internal sealed class BranchRepository(Lazy<GitVersionContext> versionContext, IGitRepository gitRepository)
+    : IBranchRepository
 {
     private GitVersionContext VersionContext => this.versionContextLazy.Value;
-    private readonly Lazy<GitVersionContext> versionContextLazy;
+    private readonly Lazy<GitVersionContext> versionContextLazy = versionContext.NotNull();
 
-    private readonly IGitRepository gitRepository;
-
-    public BranchRepository(Lazy<GitVersionContext> versionContext, IGitRepository gitRepository)
-    {
-        this.versionContextLazy = versionContext.NotNull();
-        this.gitRepository = gitRepository.NotNull();
-    }
+    private readonly IGitRepository gitRepository = gitRepository.NotNull();
 
     public IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches)
         => GetBranches([.. excludeBranches], configuration => configuration.IsMainline == true);

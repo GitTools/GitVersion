@@ -3,25 +3,18 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Logging;
 
-internal sealed class Log : ILog
+internal sealed class Log(params ILogAppender[] appenders) : ILog
 {
-    private IEnumerable<ILogAppender> appenders;
+    private IEnumerable<ILogAppender> appenders = appenders;
     private readonly Regex obscurePasswordRegex = new("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
-    private readonly StringBuilder sb;
+    private readonly StringBuilder sb = new();
     private string indent = string.Empty;
 
-    public Log() : this(Array.Empty<ILogAppender>())
+    public Log() : this([])
     {
     }
 
-    public Log(params ILogAppender[] appenders)
-    {
-        this.appenders = appenders;
-        this.sb = new StringBuilder();
-        Verbosity = Verbosity.Normal;
-    }
-
-    public Verbosity Verbosity { get; set; }
+    public Verbosity Verbosity { get; set; } = Verbosity.Normal;
 
     public void Write(Verbosity verbosity, LogLevel level, string format, params object[] args)
     {

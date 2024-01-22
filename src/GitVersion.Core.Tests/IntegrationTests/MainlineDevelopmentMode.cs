@@ -2,7 +2,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -68,7 +67,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: minor'", MainBranch);
         var commit = fixture.Repository.Head.Tip;
         // Put semver increment in merge message
-        fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new CommitOptions { AmendPreviousCommit = true });
+        fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new() { AmendPreviousCommit = true });
         fixture.AssertFullSemver("1.2.0", configuration);
 
         fixture.BranchTo("feature/foo4", "foo4");
@@ -479,7 +478,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: patch'", MainBranch);
         var commit = fixture.Repository.Head.Tip;
         // Put semver increment in merge message
-        fixture.Repository.Commit(commit.Message + " +semver: patch", commit.Author, commit.Committer, new CommitOptions { AmendPreviousCommit = true });
+        fixture.Repository.Commit(commit.Message + " +semver: patch", commit.Author, commit.Committer, new() { AmendPreviousCommit = true });
         fixture.AssertFullSemver("1.1.2", minorIncrementConfig);
 
         var configuration = GetConfigurationBuilder().Build();

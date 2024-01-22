@@ -1,15 +1,9 @@
 namespace GitVersion.Output.OutputGenerator;
 
-internal readonly struct OutputContext : IConverterContext
+internal readonly struct OutputContext(string workingDirectory, string? outputFile, bool? updateBuildNumber)
+    : IConverterContext
 {
-    public OutputContext(string workingDirectory, string? outputFile, bool? updateBuildNumber)
-    {
-        WorkingDirectory = workingDirectory;
-        OutputFile = outputFile;
-        UpdateBuildNumber = updateBuildNumber;
-    }
-
-    public string WorkingDirectory { get; }
-    public string? OutputFile { get; }
-    public bool? UpdateBuildNumber { get; }
+    public string WorkingDirectory { get; } = workingDirectory;
+    public string? OutputFile { get; } = outputFile;
+    public bool? UpdateBuildNumber { get; } = updateBuildNumber;
 }

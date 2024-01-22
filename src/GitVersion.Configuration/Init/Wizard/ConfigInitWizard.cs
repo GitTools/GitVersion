@@ -3,16 +3,10 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-internal class ConfigInitWizard : IConfigInitWizard
+internal class ConfigInitWizard(IConsole console, IConfigInitStepFactory stepFactory) : IConfigInitWizard
 {
-    private readonly IConsole console;
-    private readonly IConfigInitStepFactory stepFactory;
-
-    public ConfigInitWizard(IConsole console, IConfigInitStepFactory stepFactory)
-    {
-        this.console = console.NotNull();
-        this.stepFactory = stepFactory.NotNull();
-    }
+    private readonly IConsole console = console.NotNull();
+    private readonly IConfigInitStepFactory stepFactory = stepFactory.NotNull();
 
     public IGitVersionConfiguration? Run(IGitVersionConfiguration configuration, string workingDirectory)
     {

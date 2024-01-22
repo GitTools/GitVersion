@@ -8,16 +8,14 @@ public static class Disposable
 
     public static readonly IDisposable Empty = Create(() => { });
 
-    private sealed class AnonymousDisposable : IDisposable
+    private sealed class AnonymousDisposable(Action disposer) : IDisposable
     {
-        public AnonymousDisposable(Action disposer) => this.disposer = disposer.NotNull();
-
         public void Dispose()
         {
             this.disposer?.Invoke();
             this.disposer = null;
         }
 
-        private Action? disposer;
+        private Action? disposer = disposer.NotNull();
     }
 }

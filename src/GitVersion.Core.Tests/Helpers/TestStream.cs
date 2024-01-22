@@ -1,16 +1,8 @@
 namespace GitVersion.Core.Tests.Helpers;
 
-public class TestStream : Stream
+public class TestStream(string path, IFileSystem testFileSystem) : Stream
 {
-    private readonly string path;
-    private readonly TestFileSystem testFileSystem;
     private readonly MemoryStream underlying = new();
-
-    public TestStream(string path, TestFileSystem testFileSystem)
-    {
-        this.path = path;
-        this.testFileSystem = testFileSystem;
-    }
 
     protected override void Dispose(bool disposing)
     {
@@ -22,7 +14,7 @@ public class TestStream : Stream
     {
         this.underlying.Position = 0;
         var readToEnd = new StreamReader(this.underlying).ReadToEnd();
-        this.testFileSystem.WriteAllText(this.path, readToEnd);
+        testFileSystem.WriteAllText(path, readToEnd);
     }
 
     public override long Seek(long offset, SeekOrigin origin) => this.underlying.Seek(offset, origin);

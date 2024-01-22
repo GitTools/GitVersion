@@ -53,7 +53,7 @@ public class TestTaskBase : TestBase
         {
             environmentVariables.Add(new("BUILD_BUILDNUMBER", buildNumber));
         }
-        msbuildFixture.WithEnv(environmentVariables.ToArray());
+        msbuildFixture.WithEnv([.. environmentVariables]);
         if (configurationText != null)
         {
             CreateConfiguration(task.SolutionDirectory, configurationText);
@@ -88,7 +88,7 @@ public class TestTaskBase : TestBase
         var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
-        msbuildFixture.WithEnv(env.ToArray());
+        msbuildFixture.WithEnv([.. env]);
 
         var result = msbuildFixture.Execute();
         if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
@@ -118,7 +118,7 @@ public class TestTaskBase : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch("develop");
 
-        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();

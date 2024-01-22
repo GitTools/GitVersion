@@ -20,31 +20,25 @@ namespace GitVersion.VersionCalculation;
 /// Increments if the tag is not the current commit (same as base strategy).
 /// </para>
 /// </summary>
-internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
+internal class TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    : VersionStrategyBase(versionContext)
 {
-    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
+    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(repositoryStore, versionContext);
 
-    private readonly IRepositoryStore repositoryStore;
-
-    public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(versionContext)
-    {
-        this.repositoryStore = repositoryStore.NotNull();
-        this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
-    }
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return Enumerable.Empty<BaseVersion>();
+        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return [];
 
-        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : Array.Empty<BaseVersion>();
+        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : [];
     }
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
         var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
         if (releaseBranchConfig.Count == 0)
-            return Array.Empty<BaseVersion>();
+            return [];
 
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
 

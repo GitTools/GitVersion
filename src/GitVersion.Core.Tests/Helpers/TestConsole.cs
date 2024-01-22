@@ -3,16 +3,10 @@ using GitVersion.Logging;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-public class TestConsole : IConsole
+public class TestConsole(params string[] responses) : IConsole
 {
-    private readonly Queue<string> responses;
-    private readonly ILog log;
-
-    public TestConsole(params string[] responses)
-    {
-        this.log = new NullLog();
-        this.responses = new Queue<string>(responses);
-    }
+    private readonly Queue<string> responses = new(responses);
+    private readonly ILog log = new NullLog();
 
     public void WriteLine(string? msg) => this.log.Info(msg + PathHelper.NewLine);
 

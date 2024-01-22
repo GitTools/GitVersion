@@ -28,7 +28,7 @@ internal class GitPreparer : IGitPreparer
         this.options = options.NotNull();
         this.repositoryInfo = repositoryInfo.NotNull();
         this.buildAgent = buildAgent.NotNull();
-        this.retryAction = new RetryAction<LockedFileException>();
+        this.retryAction = new();
         this.versionContext = versionContext.NotNull();
     }
 
@@ -42,7 +42,7 @@ internal class GitPreparer : IGitPreparer
         this.log.Info($"DotGit directory is: {dotGitDirectory}");
         if (dotGitDirectory.IsNullOrEmpty() || projectRoot.IsNullOrEmpty())
         {
-            throw new Exception($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
+            throw new($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
         }
 
         PrepareInternal(gitVersionOptions);
@@ -106,7 +106,7 @@ internal class GitPreparer : IGitPreparer
     {
         if (targetBranch.IsNullOrWhiteSpace())
         {
-            throw new Exception("Dynamic Git repositories must have a target branch (/b)");
+            throw new("Dynamic Git repositories must have a target branch (/b)");
         }
 
         var gitDirectory = this.repositoryInfo.DynamicGitRepositoryPath;
@@ -289,7 +289,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         {
             var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
             this.log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
-            this.retryAction.Execute(() => this.repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null));
+            this.retryAction.Execute(() => this.repository.Fetch(remote.Name, [], authentication, null));
         }
     }
 

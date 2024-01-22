@@ -9,15 +9,13 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the tag's commit.
 /// Increments if the tag is not the current commit.
 /// </summary>
-internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
+internal sealed class TaggedCommitVersionStrategy(ITaggedSemanticVersionRepository taggedSemanticVersionRepository, Lazy<GitVersionContext> versionContext)
+    : VersionStrategyBase(versionContext)
 {
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
-
-    public TaggedCommitVersionStrategy(ITaggedSemanticVersionRepository taggedSemanticVersionRepository, Lazy<GitVersionContext> versionContext)
-        : base(versionContext) => this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
-        => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? Enumerable.Empty<BaseVersion>()
+        => Context.Configuration.VersioningMode == VersioningMode.TrunkBased ? []
         : GetTaggedSemanticVersions(configuration).Select(CreateBaseVersion);
 
     private IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersions(EffectiveBranchConfiguration configuration)
@@ -41,7 +39,7 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
     private static BaseVersion CreateBaseVersion(SemanticVersionWithTag semanticVersion)
     {
         var tagCommit = semanticVersion.Tag.Commit;
-        return new BaseVersion(
+        return new(
              $"Git tag '{semanticVersion.Tag.Name.Friendly}'", true, semanticVersion.Value, tagCommit, null
          );
     }

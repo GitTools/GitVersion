@@ -4,14 +4,11 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-internal class SetBranchIncrementMode : ConfigInitWizardStep
+internal class SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
     private string name;
     private BranchConfigurationBuilder branchConfigurationBuilder;
-
-    public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
 
     public SetBranchIncrementMode WithData(string configName, BranchConfigurationBuilder configurationBuilder)
     {

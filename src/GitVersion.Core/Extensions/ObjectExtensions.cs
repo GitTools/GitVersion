@@ -3,9 +3,7 @@ namespace GitVersion.Extensions;
 public static class ObjectExtensions
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
-    internal sealed class ReflectionIgnoreAttribute : Attribute
-    {
-    }
+    internal sealed class ReflectionIgnoreAttribute : Attribute;
 
     public static void Deconstruct<TKey, TValue>(
         this KeyValuePair<TKey, TValue> kvp,

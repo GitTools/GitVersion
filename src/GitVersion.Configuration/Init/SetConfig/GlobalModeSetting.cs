@@ -4,14 +4,11 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-internal class GlobalModeSetting : ConfigInitWizardStep
+internal class GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
     private ConfigInitWizardStep returnToStep;
     private bool isPartOfWizard;
-
-    public GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
 
     public GlobalModeSetting WithData(ConfigInitWizardStep returnStep, bool isPartOfTheWizard)
     {

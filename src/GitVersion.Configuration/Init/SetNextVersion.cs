@@ -4,12 +4,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init;
 
-internal class SetNextVersion : ConfigInitWizardStep
+internal class SetNextVersion(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
-    public SetNextVersion(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
-
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();

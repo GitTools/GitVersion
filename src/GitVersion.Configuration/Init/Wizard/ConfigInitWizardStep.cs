@@ -3,20 +3,12 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-internal abstract class ConfigInitWizardStep
+internal abstract class ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
 {
-    protected readonly IConsole Console;
-    protected readonly IFileSystem FileSystem;
-    protected readonly ILog Log;
-    protected readonly IConfigInitStepFactory StepFactory;
-
-    protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
-    {
-        this.Console = console.NotNull();
-        this.FileSystem = fileSystem.NotNull();
-        this.Log = log.NotNull();
-        this.StepFactory = stepFactory.NotNull();
-    }
+    protected readonly IConsole Console = console.NotNull();
+    protected readonly IFileSystem FileSystem = fileSystem.NotNull();
+    protected readonly ILog Log = log.NotNull();
+    protected readonly IConfigInitStepFactory StepFactory = stepFactory.NotNull();
 
     public bool Apply(Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {

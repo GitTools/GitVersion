@@ -12,7 +12,7 @@ internal record class TrunkBasedContext
 
     public ICommit? BaseVersionSource { get; set; }
 
-    public HashSet<SemanticVersion> AlternativeSemanticVersions { get; } = new();
+    public HashSet<SemanticVersion> AlternativeSemanticVersions { get; } = [];
 
     public bool ForceIncrement { get; set; }
 }

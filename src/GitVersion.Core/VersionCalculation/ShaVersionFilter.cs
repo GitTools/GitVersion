@@ -3,11 +3,9 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-internal class ShaVersionFilter : IVersionFilter
+internal class ShaVersionFilter(IEnumerable<string> shaList) : IVersionFilter
 {
-    private readonly IEnumerable<string> shaList;
-
-    public ShaVersionFilter(IEnumerable<string> shaList) => this.shaList = shaList.NotNull();
+    private readonly IEnumerable<string> shaList = shaList.NotNull();
 
     public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
     {

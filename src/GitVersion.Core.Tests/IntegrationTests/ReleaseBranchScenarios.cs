@@ -438,7 +438,7 @@ public class ReleaseBranchScenarios : TestBase
 
         // Merge release to develop - emulate commit between other person release commit push and this commit merge to develop
         Commands.Checkout(fixture.Repository, "develop");
-        fixture.Repository.Merge(commit1, Generate.SignatureNow(), new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
+        fixture.Repository.Merge(commit1, Generate.SignatureNow(), new() { FastForwardStrategy = FastForwardStrategy.NoFastForward });
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
         // Check version on release after merge to develop

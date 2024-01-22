@@ -1,15 +1,8 @@
 namespace GitVersion;
 
-public sealed class FileWriteInfo
+public sealed class FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
 {
-    public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
-    {
-        WorkingDirectory = workingDirectory;
-        FileName = fileName;
-        FileExtension = fileExtension;
-    }
-
-    public string WorkingDirectory { get; }
-    public string FileName { get; }
-    public string FileExtension { get; }
+    public string WorkingDirectory { get; } = workingDirectory;
+    public string FileName { get; } = fileName;
+    public string FileExtension { get; } = fileExtension;
 }

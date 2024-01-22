@@ -2,12 +2,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-internal class PickBranchingStrategy1Step : ConfigInitWizardStep
+internal class PickBranchingStrategy1Step(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
-    public PickBranchingStrategy1Step(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
-
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         switch (result?.ToLower())

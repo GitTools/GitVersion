@@ -6,7 +6,7 @@ internal class ConsoleAppender : ILogAppender
     private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes;
     public ConsoleAppender()
     {
-        this.locker = new object();
+        this.locker = new();
         this.palettes = CreatePalette();
     }
     public void WriteTo(LogLevel level, string message)

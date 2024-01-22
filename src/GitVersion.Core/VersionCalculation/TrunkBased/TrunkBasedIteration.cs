@@ -23,7 +23,7 @@ internal record class TrunkBasedIteration
     public IReadOnlyCollection<TrunkBasedCommit> Commits => commits;
     private readonly Stack<TrunkBasedCommit> commits = new();
 
-    private readonly Dictionary<ICommit, TrunkBasedCommit> commitLookup = new();
+    private readonly Dictionary<ICommit, TrunkBasedCommit> commitLookup = [];
 
     public TrunkBasedIteration(string id, ReferenceName branchName, EffectiveConfiguration configuration, TrunkBasedIteration? parent)
     {
@@ -42,7 +42,7 @@ internal record class TrunkBasedIteration
             commit = commits.Peek().Append(value, branchName, configuration, increment);
         else
         {
-            commit = new TrunkBasedCommit(this, value, branchName, configuration, increment);
+            commit = new(this, value, branchName, configuration, increment);
         }
         commits.Push(commit);
         commitLookup.Add(value, commit);

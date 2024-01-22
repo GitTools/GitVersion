@@ -11,21 +11,16 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the message was found.
 /// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
-internal class MergeMessageVersionStrategy : VersionStrategyBase
+internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore)
+    : VersionStrategyBase(versionContext)
 {
-    private readonly ILog log;
-    private readonly IRepositoryStore repositoryStore;
-
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore) : base(versionContext)
-    {
-        this.log = log.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (!configuration.Value.TrackMergeMessage || Context.Configuration.VersioningMode == VersioningMode.TrunkBased)
-            return Enumerable.Empty<BaseVersion>();
+            return [];
 
         var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
         var baseVersions = commitsPriorToThan
@@ -59,7 +54,7 @@ internal class MergeMessageVersionStrategy : VersionStrategyBase
                     );
                     return new[] { baseVersion };
                 }
-                return Enumerable.Empty<BaseVersion>();
+                return [];
             })
             .Take(5)
             .ToList();

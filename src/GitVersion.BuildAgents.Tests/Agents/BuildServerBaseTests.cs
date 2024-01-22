@@ -49,18 +49,14 @@ public class BuildServerBaseTests : TestBase
         writes.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
     }
 
-    private class BuildAgent : BuildAgentBase
+    private class BuildAgent(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
     {
         protected override string EnvironmentVariable => throw new NotImplementedException();
-
-        public BuildAgent(IEnvironment environment, ILog log) : base(environment, log)
-        {
-        }
 
         public override bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
         public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string? value) => Array.Empty<string>();
+        public override string[] GenerateSetParameterMessage(string name, string? value) => [];
     }
 }

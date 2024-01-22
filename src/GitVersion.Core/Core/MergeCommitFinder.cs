@@ -54,7 +54,7 @@ internal class MergeCommitFinder
 
             var findMergeBase = this.repositoryStore.FindMergeBase(branch, sourceBranch);
             if (findMergeBase != null)
-                yield return new BranchCommit(findMergeBase, sourceBranch);
+                yield return new(findMergeBase, sourceBranch);
         }
     }
 }

@@ -178,7 +178,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             return false;
         }
 
-        semanticVersion = new SemanticVersion
+        semanticVersion = new()
         {
             Major = long.Parse(parsed.Groups["major"].Value),
             Minor = parsed.Groups["minor"].Success ? long.Parse(parsed.Groups["minor"].Value) : 0,
@@ -210,7 +210,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             };
         }
 
-        semanticVersion = new SemanticVersion
+        semanticVersion = new()
         {
             Major = long.Parse(parsed.Groups["Major"].Value),
             Minor = parsed.Groups["Minor"].Success ? long.Parse(parsed.Groups["Minor"].Value) : 0,
@@ -376,12 +376,12 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             }
         }
 
-        return new SemanticVersion(this)
+        return new(this)
         {
             Major = major,
             Minor = minor,
             Patch = patch,
-            PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseTagNumber, true)
+            PreReleaseTag = new(preReleaseTagName, preReleaseTagNumber, true)
         };
     }
 
@@ -469,12 +469,12 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             preReleaseTagName = label;
         }
 
-        return new SemanticVersion(this)
+        return new(this)
         {
             Major = major,
             Minor = minor,
             Patch = patch,
-            PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseNumber, true)
+            PreReleaseTag = new(preReleaseTagName, preReleaseNumber, true)
         };
     }
 

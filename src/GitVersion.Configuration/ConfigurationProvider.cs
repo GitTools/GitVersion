@@ -8,23 +8,19 @@ using YamlDotNet.Core;
 
 namespace GitVersion.Configuration;
 
-internal class ConfigurationProvider : IConfigurationProvider
+internal class ConfigurationProvider(
+    IFileSystem fileSystem,
+    ILog log,
+    IConfigurationFileLocator configFileLocator,
+    IOptions<GitVersionOptions> options,
+    IConfigInitWizard configInitWizard)
+    : IConfigurationProvider
 {
-    private readonly IFileSystem fileSystem;
-    private readonly ILog log;
-    private readonly IConfigurationFileLocator configFileLocator;
-    private readonly IOptions<GitVersionOptions> options;
-    private readonly IConfigInitWizard configInitWizard;
-
-    public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigurationFileLocator configFileLocator,
-                                 IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.log = log.NotNull();
-        this.configFileLocator = configFileLocator.NotNull();
-        this.options = options.NotNull();
-        this.configInitWizard = configInitWizard.NotNull();
-    }
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly ILog log = log.NotNull();
+    private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly IConfigInitWizard configInitWizard = configInitWizard.NotNull();
 
     public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {

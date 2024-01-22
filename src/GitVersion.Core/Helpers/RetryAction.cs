@@ -3,14 +3,9 @@ using Polly.Retry;
 
 namespace GitVersion.Helpers;
 
-public class RetryAction<T>
-    : RetryAction<T, bool> where T : Exception
+public class RetryAction<T>(int maxRetries = 5) : RetryAction<T, bool>(maxRetries)
+    where T : Exception
 {
-    public RetryAction(int maxRetries = 5)
-        : base(maxRetries)
-    {
-    }
-
     public void Execute(Action operation) => base.Execute(() =>
     {
         operation();

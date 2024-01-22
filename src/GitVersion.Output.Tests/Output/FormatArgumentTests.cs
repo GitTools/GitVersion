@@ -40,7 +40,7 @@ public class FormatArgumentTests : TestBase
         var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
         var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
 
-        outputGenerator.Execute(versionVariables, new OutputContext());
+        outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString().Replace("\n", "").Replace("\r", "");
         output.ShouldBeEquivalentTo(expectedValue);
     }
@@ -75,7 +75,7 @@ public class FormatArgumentTests : TestBase
         var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
         var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
 
-        outputGenerator.Execute(versionVariables, new OutputContext());
+        outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString().Replace("\n", "").Replace("\r", "");
         output.ShouldBeEquivalentTo(expectedValue);
     }

@@ -5,20 +5,13 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation.Caching;
 
-public class GitVersionCache : IGitVersionCache
+public class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
+    : IGitVersionCache
 {
-    private readonly IFileSystem fileSystem;
-    private readonly IVersionVariableSerializer serializer;
-    private readonly ILog log;
-    private readonly IGitRepositoryInfo repositoryInfo;
-
-    public GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.serializer = serializer.NotNull();
-        this.log = log.NotNull();
-        this.repositoryInfo = repositoryInfo.NotNull();
-    }
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly IVersionVariableSerializer serializer = serializer.NotNull();
+    private readonly ILog log = log.NotNull();
+    private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables versionVariables)
     {

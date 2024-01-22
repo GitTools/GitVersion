@@ -137,13 +137,13 @@ public class SemanticVersionTests : TestBase
         SemanticVersionPreReleaseTag? preReleaseTag = null;
         if (preReleaseName != null)
         {
-            preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseName, preReleaseVersion, true);
+            preReleaseTag = new(preReleaseName, preReleaseVersion, true);
         }
 
         SemanticVersionBuildMetaData? buildMetaDate = null;
         if (buildCount.HasValue)
         {
-            buildMetaDate = new SemanticVersionBuildMetaData
+            buildMetaDate = new()
             {
                 CommitsSinceTag = buildCount.Value,
                 Sha = sha,
@@ -152,7 +152,7 @@ public class SemanticVersionTests : TestBase
             };
         }
 
-        return new SemanticVersion(major, minor, patch)
+        return new(major, minor, patch)
         {
             PreReleaseTag = preReleaseTag ?? SemanticVersionPreReleaseTag.Empty,
             BuildMetaData = buildMetaDate ?? SemanticVersionBuildMetaData.Empty

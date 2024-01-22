@@ -4,18 +4,11 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.App.Tests;
 
-public class ExecutionResults
+public class ExecutionResults(int exitCode, string? output, string? logContents = null)
 {
-    public ExecutionResults(int exitCode, string? output, string? logContents = null)
-    {
-        ExitCode = exitCode;
-        Output = output;
-        Log = logContents;
-    }
-
-    public int ExitCode { get; init; }
-    public string? Output { get; init; }
-    public string? Log { get; init; }
+    public int ExitCode { get; init; } = exitCode;
+    public string? Output { get; init; } = output;
+    public string? Log { get; init; } = logContents;
 
     public GitVersionVariables? OutputVariables
     {

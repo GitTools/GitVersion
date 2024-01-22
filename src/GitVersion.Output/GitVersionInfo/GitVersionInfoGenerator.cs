@@ -4,21 +4,13 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.GitVersionInfo;
 
-internal interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
-{
-}
+internal interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>;
 
-internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
+internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVersionInfoGenerator
 {
     private const string targetNamespaceSentinelValue = "<unset>";
-    private readonly IFileSystem fileSystem;
-    private readonly TemplateManager templateManager;
-
-    public GitVersionInfoGenerator(IFileSystem fileSystem)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
-    }
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly TemplateManager templateManager = new(TemplateType.GitVersionInfo);
 
     public void Execute(GitVersionVariables variables, GitVersionInfoContext context)
     {

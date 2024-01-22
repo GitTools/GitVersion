@@ -4,13 +4,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersionCalculatorBase, IVersionModeCalculator
+internal sealed class ContinuousDeliveryVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    : NonTrunkBasedVersionCalculatorBase(log, repositoryStore, versionContext), IVersionModeCalculator
 {
-    public ContinuousDeliveryVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(log, repositoryStore, versionContext)
-    {
-    }
-
     public SemanticVersion Calculate(NextVersion nextVersion)
     {
         using (this.log.IndentLog("Using continuous delivery workflow to calculate the incremented version."))
@@ -34,13 +30,13 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
             Contract.Assume(semanticVersion.PreReleaseTag.Number.HasValue);
             Contract.Assume(semanticVersion.BuildMetaData.CommitsSinceTag.HasValue);
 
-            return new SemanticVersion(semanticVersion)
+            return new(semanticVersion)
             {
-                PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag)
+                PreReleaseTag = new(semanticVersion.PreReleaseTag)
                 {
                     Number = semanticVersion.PreReleaseTag.Number.Value + semanticVersion.BuildMetaData.CommitsSinceTag - 1
                 },
-                BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
+                BuildMetaData = new(semanticVersion.BuildMetaData)
                 {
                     CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value,
                     CommitsSinceTag = null
@@ -49,7 +45,7 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
         }
 
         var baseVersionBuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
-        return new SemanticVersion(nextVersion.BaseVersion.GetSemanticVersion())
+        return new(nextVersion.BaseVersion.GetSemanticVersion())
         {
             BuildMetaData = baseVersionBuildMetaData
         };

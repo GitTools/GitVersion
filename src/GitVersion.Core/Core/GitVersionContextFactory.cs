@@ -36,6 +36,6 @@ internal class GitVersionContextFactory : IGitVersionContextFactory
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.TagPrefix, configuration.SemanticVersionFormat, handleDetachedBranch: currentBranch.IsDetachedHead);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-        return new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+        return new(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
     }
 }

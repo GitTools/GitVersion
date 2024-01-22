@@ -3,13 +3,8 @@ namespace GitVersion.Helpers;
 // From the LibGit2Sharp project (libgit2sharp.com)
 // MIT License - Copyright (c) 2011-2014 LibGit2Sharp contributors
 // see https://github.com/libgit2/libgit2sharp/blob/7af5c60f22f9bd6064204f84467cfa62bedd1147/LibGit2Sharp/Core/LambdaEqualityHelper.cs
-public class LambdaEqualityHelper<T>
+public class LambdaEqualityHelper<T>(params Func<T, object?>[] equalityContributorAccessors)
 {
-    private readonly Func<T, object?>[] equalityContributorAccessors;
-
-    public LambdaEqualityHelper(params Func<T, object?>[] equalityContributorAccessors) =>
-        this.equalityContributorAccessors = equalityContributorAccessors;
-
     public bool Equals(T? instance, T? other)
     {
         if (instance is null || other is null)
@@ -27,7 +22,7 @@ public class LambdaEqualityHelper<T>
             return false;
         }
 
-        foreach (var accessor in this.equalityContributorAccessors)
+        foreach (var accessor in equalityContributorAccessors)
         {
             if (!Equals(accessor(instance), accessor(other)))
             {
@@ -44,7 +39,7 @@ public class LambdaEqualityHelper<T>
 
         unchecked
         {
-            foreach (var accessor in this.equalityContributorAccessors)
+            foreach (var accessor in equalityContributorAccessors)
             {
                 var item = accessor(instance);
                 hashCode = (hashCode * 397) ^ ((item?.GetHashCode()) ?? 0);

@@ -8,16 +8,16 @@ namespace GitVersion.VersionCalculation.TrunkBased;
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record class TrunkBasedCommit
+internal record class TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, EffectiveConfiguration Configuration, VersionField Increment)
 {
     public bool IsPredecessorTheLastCommitOnTrunk
         => !Configuration.IsMainline && Predecessor?.Configuration.IsMainline == true;
 
-    public TrunkBasedIteration Iteration { get; }
+    public TrunkBasedIteration Iteration { get; } = Iteration.NotNull();
 
-    public ReferenceName BranchName { get; }
+    public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    public EffectiveConfiguration Configuration { get; }
+    public EffectiveConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasSuccessor => Successor is not null;
 
@@ -27,9 +27,7 @@ internal record class TrunkBasedCommit
 
     public TrunkBasedCommit? Predecessor { get; private set; }
 
-    public VersionField Increment { get; }
-
-    public ICommit Value { get; }
+    public ICommit Value { get; } = Value.NotNull();
 
     public string Message => Value.Message;
 
@@ -39,7 +37,7 @@ internal record class TrunkBasedCommit
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
 
-    private readonly HashSet<SemanticVersion> semanticVersions = new();
+    private readonly HashSet<SemanticVersion> semanticVersions = [];
 
     public VersionField GetIncrementForcedByBranch()
     {
@@ -65,15 +63,6 @@ internal record class TrunkBasedCommit
         }
 
         return VersionField.None;
-    }
-
-    public TrunkBasedCommit(TrunkBasedIteration iteration, ICommit value, ReferenceName branchName, EffectiveConfiguration configuration, VersionField increment)
-    {
-        Iteration = iteration.NotNull();
-        BranchName = branchName.NotNull();
-        Configuration = configuration.NotNull();
-        Value = value.NotNull();
-        Increment = increment;
     }
 
     public void AddSemanticVersions(params SemanticVersion[] values)

@@ -28,7 +28,7 @@ public class GitVersionInfoGeneratorTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5,
+            BuildMetaData = new("versionSourceSha", 5,
                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
@@ -40,7 +40,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), null);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 
-        generator.Execute(variables, new GitVersionInfoContext(directory, fileName, fileExtension));
+        generator.Execute(variables, new(directory, fileName, fileExtension));
 
         fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
     }

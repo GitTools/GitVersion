@@ -4,12 +4,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class Drone : BuildAgentBase
+internal class Drone(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public Drone(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "DRONE";
     protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);

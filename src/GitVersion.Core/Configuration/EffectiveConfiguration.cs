@@ -19,19 +19,19 @@ public record EffectiveConfiguration
         branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
         if (!branchConfiguration.VersioningMode.HasValue)
-            throw new Exception("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
-            throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyFileVersioningScheme.HasValue)
-            throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
 
         if (!branchConfiguration.CommitMessageIncrementing.HasValue)
-            throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.TagPreReleaseWeight.HasValue)
-            throw new Exception("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
         AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
         AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;

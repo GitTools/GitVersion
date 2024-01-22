@@ -3,23 +3,17 @@ using GitVersion.Logging;
 
 namespace GitVersion.Agents;
 
-internal class BuildAgentResolver : IBuildAgentResolver
+internal class BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log) : IBuildAgentResolver
 {
-    private readonly IEnumerable<IBuildAgent> buildAgents;
-    private readonly ILog log;
-    public BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log)
-    {
-        this.log = log.NotNull();
-        this.buildAgents = buildAgents;
-    }
+    private readonly ILog log = log.NotNull();
 
     public ICurrentBuildAgent Resolve() => new Lazy<ICurrentBuildAgent>(ResolveInternal).Value;
 
     private ICurrentBuildAgent ResolveInternal()
     {
-        ICurrentBuildAgent instance = (ICurrentBuildAgent)this.buildAgents.Single(x => x.IsDefault);
+        ICurrentBuildAgent instance = (ICurrentBuildAgent)buildAgents.Single(x => x.IsDefault);
 
-        foreach (var buildAgent in this.buildAgents.Where(x => !x.IsDefault))
+        foreach (var buildAgent in buildAgents.Where(x => !x.IsDefault))
         {
             try
             {

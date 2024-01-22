@@ -11,7 +11,7 @@ public class UpdateAssemblyInfo : GitVersionTaskBase
     public string IntermediateOutputPath { get; set; }
 
     [Required]
-    public ITaskItem[] CompileFiles { get; set; } = Array.Empty<ITaskItem>();
+    public ITaskItem[] CompileFiles { get; set; } = [];
 
     [Required]
     public string Language { get; set; } = "C#";

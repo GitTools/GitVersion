@@ -3,12 +3,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class ContinuaCi : BuildAgentBase
+internal class ContinuaCi(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public ContinuaCi(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "ContinuaCI.Version";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;

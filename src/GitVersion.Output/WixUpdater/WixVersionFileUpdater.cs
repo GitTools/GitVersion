@@ -5,21 +5,13 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.WixUpdater;
 
-internal interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
+internal interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>;
+internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : IWixVersionFileUpdater
 {
-}
-internal sealed class WixVersionFileUpdater : IWixVersionFileUpdater
-{
-    private readonly IFileSystem fileSystem;
-    private readonly ILog log;
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly ILog log = log.NotNull();
     private string? wixVersionFile;
     public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
-
-    public WixVersionFileUpdater(ILog log, IFileSystem fileSystem)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.log = log.NotNull();
-    }
 
     public void Execute(GitVersionVariables variables, WixVersionContext context)
     {

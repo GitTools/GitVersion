@@ -9,7 +9,7 @@ public abstract class GitVersionTaskBase : ITask
     public IBuildEngine BuildEngine { get; set; }
     public ITaskHost HostObject { get; set; }
 
-    protected GitVersionTaskBase() => Log = new TaskLoggingHelper(this);
+    protected GitVersionTaskBase() => Log = new(this);
 
     [Required]
     public string SolutionDirectory { get; set; }

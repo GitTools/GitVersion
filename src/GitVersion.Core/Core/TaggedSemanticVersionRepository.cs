@@ -5,7 +5,12 @@ using GitVersion.Logging;
 
 namespace GitVersion.Core;
 
-internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
+internal sealed class TaggedSemanticVersionRepository(
+    ILog log,
+    Lazy<GitVersionContext> versionContext,
+    IGitRepository gitRepository,
+    IBranchRepository branchRepository)
+    : ITaggedSemanticVersionRepository
 {
     private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
         taggedSemanticVersionsOfBranchCache = new();
@@ -13,22 +18,13 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
         taggedSemanticVersionsOfMergeTargetCache = new();
     private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
         taggedSemanticVersionsCache = new();
-    private readonly ILog log;
+    private readonly ILog log = log.NotNull();
 
     private GitVersionContext VersionContext => this.versionContextLazy.Value;
-    private readonly Lazy<GitVersionContext> versionContextLazy;
+    private readonly Lazy<GitVersionContext> versionContextLazy = versionContext.NotNull();
 
-    private readonly IGitRepository gitRepository;
-    private readonly IBranchRepository branchRepository;
-
-    public TaggedSemanticVersionRepository(ILog log, Lazy<GitVersionContext> versionContext, IGitRepository gitRepository,
-        IBranchRepository branchRepository)
-    {
-        this.log = log.NotNull();
-        this.versionContextLazy = versionContext.NotNull();
-        this.gitRepository = gitRepository.NotNull();
-        this.branchRepository = branchRepository.NotNull();
-    }
+    private readonly IGitRepository gitRepository = gitRepository.NotNull();
+    private readonly IBranchRepository branchRepository = branchRepository.NotNull();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration)
     {
@@ -252,7 +248,7 @@ internal sealed class TaggedSemanticVersionRepository : ITaggedSemanticVersionRe
             {
                 if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {
-                    yield return new SemanticVersionWithTag(semanticVersion, tag);
+                    yield return new(semanticVersion, tag);
                 }
             }
         }

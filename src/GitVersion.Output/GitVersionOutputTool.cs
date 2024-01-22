@@ -8,29 +8,21 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-internal class GitVersionOutputTool : IGitVersionOutputTool
+internal class GitVersionOutputTool(
+    IOptions<GitVersionOptions> options,
+    IOutputGenerator outputGenerator,
+    IWixVersionFileUpdater wixVersionFileUpdater,
+    IGitVersionInfoGenerator gitVersionInfoGenerator,
+    IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
+    IProjectFileUpdater projectFileUpdater)
+    : IGitVersionOutputTool
 {
-    private readonly GitVersionOptions gitVersionOptions;
-    private readonly IOutputGenerator outputGenerator;
-    private readonly IWixVersionFileUpdater wixVersionFileUpdater;
-    private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
-    private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
-    private readonly IProjectFileUpdater projectFileUpdater;
-
-    public GitVersionOutputTool(IOptions<GitVersionOptions> options,
-        IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater,
-        IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
-        IProjectFileUpdater projectFileUpdater)
-    {
-        this.gitVersionOptions = options.Value.NotNull();
-
-        this.outputGenerator = outputGenerator.NotNull();
-
-        this.wixVersionFileUpdater = wixVersionFileUpdater.NotNull();
-        this.gitVersionInfoGenerator = gitVersionInfoGenerator.NotNull();
-        this.assemblyInfoFileUpdater = assemblyInfoFileUpdater.NotNull();
-        this.projectFileUpdater = projectFileUpdater.NotNull();
-    }
+    private readonly GitVersionOptions gitVersionOptions = options.Value.NotNull();
+    private readonly IOutputGenerator outputGenerator = outputGenerator.NotNull();
+    private readonly IWixVersionFileUpdater wixVersionFileUpdater = wixVersionFileUpdater.NotNull();
+    private readonly IGitVersionInfoGenerator gitVersionInfoGenerator = gitVersionInfoGenerator.NotNull();
+    private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater = assemblyInfoFileUpdater.NotNull();
+    private readonly IProjectFileUpdater projectFileUpdater = projectFileUpdater.NotNull();
 
     public void OutputVariables(GitVersionVariables variables, bool updateBuildNumber)
     {
@@ -42,7 +34,7 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
 
     public void UpdateAssemblyInfo(GitVersionVariables variables)
     {
-        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblySettingsInfo.Files.ToArray());
+        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, [.. gitVersionOptions.AssemblySettingsInfo.Files]);
 
         if (gitVersionOptions.AssemblySettingsInfo.UpdateProjectFiles)
         {

@@ -6,14 +6,12 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.AssemblyInfo;
 
-internal interface IAssemblyInfoFileUpdater : IVersionConverter<AssemblyInfoContext>
-{
-}
+internal interface IAssemblyInfoFileUpdater : IVersionConverter<AssemblyInfoContext>;
 
-internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
+internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) : IAssemblyInfoFileUpdater
 {
-    private readonly List<Action> restoreBackupTasks = new();
-    private readonly List<Action> cleanupBackupTasks = new();
+    private readonly List<Action> restoreBackupTasks = [];
+    private readonly List<Action> cleanupBackupTasks = [];
 
     private readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
     {
@@ -28,22 +26,13 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
 
     private const string NewLine = "\r\n";
 
-    private readonly IFileSystem fileSystem;
-    private readonly ILog log;
-    private readonly TemplateManager templateManager;
-
-    public AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem)
-    {
-        this.fileSystem = fileSystem;
-        this.log = log;
-        this.templateManager = new TemplateManager(TemplateType.AssemblyInfo);
-    }
+    private readonly TemplateManager templateManager = new(TemplateType.AssemblyInfo);
 
     public void Execute(GitVersionVariables variables, AssemblyInfoContext context)
     {
         var assemblyInfoFiles = GetAssemblyInfoFiles(context).ToList();
-        this.log.Info("Updating assembly info files");
-        this.log.Info($"Found {assemblyInfoFiles.Count} files");
+        log.Info("Updating assembly info files");
+        log.Info($"Found {assemblyInfoFiles.Count} files");
 
         var assemblyVersion = variables.AssemblySemVer;
         var assemblyVersionString = !assemblyVersion.IsNullOrWhiteSpace() ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
@@ -58,21 +47,21 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
         {
             var localAssemblyInfo = assemblyInfoFile.FullName;
             var backupAssemblyInfo = localAssemblyInfo + ".bak";
-            this.fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
+            fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
 
             this.restoreBackupTasks.Add(() =>
             {
-                if (this.fileSystem.Exists(localAssemblyInfo))
+                if (fileSystem.Exists(localAssemblyInfo))
                 {
-                    this.fileSystem.Delete(localAssemblyInfo);
+                    fileSystem.Delete(localAssemblyInfo);
                 }
 
-                this.fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
+                fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
             });
 
-            this.cleanupBackupTasks.Add(() => this.fileSystem.Delete(backupAssemblyInfo));
+            this.cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-            var originalFileContents = this.fileSystem.ReadAllText(localAssemblyInfo);
+            var originalFileContents = fileSystem.ReadAllText(localAssemblyInfo);
             var fileContents = originalFileContents;
             var appendedAttributes = false;
 
@@ -99,7 +88,7 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
 
             if (originalFileContents != fileContents)
             {
-                this.fileSystem.WriteAllText(localAssemblyInfo, fileContents);
+                fileSystem.WriteAllText(localAssemblyInfo, fileContents);
             }
         }
         CommitChanges();
@@ -177,7 +166,7 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
         }
         else
         {
-            foreach (var item in this.fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
+            foreach (var item in fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
             {
                 var assemblyInfoFile = new FileInfo(item);
 
@@ -192,7 +181,7 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     private bool EnsureVersionAssemblyInfoFile(string fullPath, bool ensureAssemblyInfo)
     {
         fullPath = fullPath.NotNull();
-        if (this.fileSystem.Exists(fullPath))
+        if (fileSystem.Exists(fullPath))
         {
             return true;
         }
@@ -208,16 +197,16 @@ internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
         {
             var fileInfo = new FileInfo(fullPath);
 
-            if (fileInfo.Directory != null && !this.fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+            if (fileInfo.Directory != null && !fileSystem.DirectoryExists(fileInfo.Directory.FullName))
             {
-                this.fileSystem.CreateDirectory(fileInfo.Directory.FullName);
+                fileSystem.CreateDirectory(fileInfo.Directory.FullName);
             }
 
-            this.fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+            fileSystem.WriteAllText(fullPath, assemblyInfoSource);
             return true;
         }
 
-        this.log.Warning($"No version assembly info template available to create source file '{fullPath}'");
+        log.Warning($"No version assembly info template available to create source file '{fullPath}'");
         return false;
     }
 }

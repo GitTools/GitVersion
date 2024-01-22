@@ -4,13 +4,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersionCalculatorBase, IVersionModeCalculator
+internal sealed class ContinuousDeploymentVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    : NonTrunkBasedVersionCalculatorBase(log, repositoryStore, versionContext), IVersionModeCalculator
 {
-    public ContinuousDeploymentVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(log, repositoryStore, versionContext)
-    {
-    }
-
     public SemanticVersion Calculate(NextVersion nextVersion)
     {
         using (this.log.IndentLog("Using continuous deployment workflow to calculate the incremented version."))
@@ -37,10 +33,10 @@ internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersi
             Contract.Assume(semanticVersion.PreReleaseTag.Number.HasValue);
             Contract.Assume(semanticVersion.BuildMetaData.CommitsSinceTag.HasValue);
 
-            return new SemanticVersion(semanticVersion)
+            return new(semanticVersion)
             {
                 PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
-                BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
+                BuildMetaData = new(semanticVersion.BuildMetaData)
                 {
                     CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value,
                     CommitsSinceTag = null
@@ -52,10 +48,10 @@ internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersi
 
         Contract.Assume(baseVersionBuildMetaData.CommitsSinceTag.HasValue);
 
-        return new SemanticVersion(nextVersion.BaseVersion.GetSemanticVersion())
+        return new(nextVersion.BaseVersion.GetSemanticVersion())
         {
             PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
-            BuildMetaData = new SemanticVersionBuildMetaData(baseVersionBuildMetaData)
+            BuildMetaData = new(baseVersionBuildMetaData)
             {
                 CommitsSinceVersionSource = baseVersionBuildMetaData.CommitsSinceTag.Value,
                 CommitsSinceTag = null
