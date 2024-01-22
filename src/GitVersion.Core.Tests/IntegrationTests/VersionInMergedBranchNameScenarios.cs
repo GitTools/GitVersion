@@ -60,7 +60,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
 
         fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 

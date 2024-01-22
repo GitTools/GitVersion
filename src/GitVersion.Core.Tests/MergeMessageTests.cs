@@ -362,7 +362,7 @@ Approved-by: John Doe", "release/2.301.0", null, new SemanticVersion(2, 301), 17
         sut.MergedBranch.Friendly.ShouldBe(source);
         sut.IsMergedPullRequest.ShouldBeTrue();
         sut.PullRequestNumber.ShouldBe(pr);
-        sut.Version.ShouldBe(new SemanticVersion(2));
+        sut.Version.ShouldBe(new(2));
     }
 
     [Test]

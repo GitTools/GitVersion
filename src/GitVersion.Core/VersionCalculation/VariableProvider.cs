@@ -5,11 +5,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
 
-internal class VariableProvider : IVariableProvider
+internal class VariableProvider(IEnvironment environment) : IVariableProvider
 {
-    private readonly IEnvironment environment;
-
-    public VariableProvider(IEnvironment environment) => this.environment = environment.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     public GitVersionVariables GetVariablesFor(
         SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion)
@@ -68,7 +66,7 @@ internal class VariableProvider : IVariableProvider
 
         var assemblySemVer = CheckAndFormatString(configuration.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
-        return new GitVersionVariables(
+        return new(
             semverFormatValues.Major,
             semverFormatValues.Minor,
             semverFormatValues.Patch,
@@ -124,7 +122,7 @@ internal class VariableProvider : IVariableProvider
             buildMetaDataCommitsSinceTag = null; // why is this set to null ?
         }
 
-        return new SemanticVersion(semanticVersion)
+        return new(semanticVersion)
         {
             PreReleaseTag = new(semanticVersion.PreReleaseTag)
             {

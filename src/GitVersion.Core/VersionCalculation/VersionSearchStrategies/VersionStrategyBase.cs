@@ -3,13 +3,11 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public abstract class VersionStrategyBase : IVersionStrategy
+public abstract class VersionStrategyBase(Lazy<GitVersionContext> versionContext) : IVersionStrategy
 {
-    private readonly Lazy<GitVersionContext> versionContext;
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
 
     protected GitVersionContext Context => this.versionContext.Value;
-
-    protected VersionStrategyBase(Lazy<GitVersionContext> versionContext) => this.versionContext = versionContext.NotNull();
 
     public abstract IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration);
 }

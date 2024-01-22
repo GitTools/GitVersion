@@ -3,12 +3,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-public class LocalBuild : BuildAgentBase
+public class LocalBuild(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public LocalBuild(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public override bool IsDefault => true;
 
     protected override string EnvironmentVariable => string.Empty;

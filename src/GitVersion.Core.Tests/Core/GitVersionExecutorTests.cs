@@ -202,7 +202,7 @@ public class GitVersionExecutorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix("prefix").Build();
         var overrideConfiguration = new ConfigurationHelper(configuration).Dictionary;
 
-        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = overrideConfiguration } };
+        gitVersionOptions = new() { WorkingDirectory = fixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = overrideConfiguration } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -480,7 +480,7 @@ public class GitVersionExecutorTests : TestBase
         fixture.Repository.MakeATaggedCommit("v2.0.0");
 
         fixture.Repository.Worktrees.Add(branchV1.CanonicalName, "1.0", worktreePath, false);
-        using var worktreeFixture = new LocalRepositoryFixture(new Repository(worktreePath));
+        using var worktreeFixture = new LocalRepositoryFixture(new(worktreePath));
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
@@ -507,7 +507,7 @@ public class GitVersionExecutorTests : TestBase
         fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
         fixture.LocalRepositoryFixture.Checkout(commit.Sha);
 
-        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        using var worktreeFixture = new LocalRepositoryFixture(new(fixture.LocalRepositoryFixture.RepositoryPath));
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
         var environment = new TestEnvironment();
@@ -534,7 +534,7 @@ public class GitVersionExecutorTests : TestBase
         fixture.LocalRepositoryFixture.ApplyTag("1.0.1");
         fixture.LocalRepositoryFixture.Checkout(commit.Sha);
 
-        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        using var worktreeFixture = new LocalRepositoryFixture(new(fixture.LocalRepositoryFixture.RepositoryPath));
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
         var environment = new TestEnvironment();
@@ -559,7 +559,7 @@ public class GitVersionExecutorTests : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.LocalRepositoryFixture.MakeShallow();
 
-        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        using var worktreeFixture = new LocalRepositoryFixture(new(fixture.LocalRepositoryFixture.RepositoryPath));
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
         var environment = new TestEnvironment();

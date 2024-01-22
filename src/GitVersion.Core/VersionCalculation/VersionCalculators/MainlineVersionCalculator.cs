@@ -5,21 +5,14 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal class MainlineVersionCalculator : IVersionModeCalculator
+internal class MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IIncrementStrategyFinder incrementStrategyFinder)
+    : IVersionModeCalculator
 {
-    private readonly ILog log;
-    private readonly IRepositoryStore repositoryStore;
-    private readonly Lazy<GitVersionContext> versionContext;
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
+    private readonly ILog log = log.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private GitVersionContext Context => this.versionContext.Value;
-
-    public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IIncrementStrategyFinder incrementStrategyFinder)
-    {
-        this.log = log.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-        this.versionContext = versionContext.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    }
 
     public SemanticVersion Calculate(NextVersion nextVersion)
     {
@@ -88,10 +81,10 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
             var preReleaseTagName = nextVersion.IncrementedVersion.PreReleaseTag.Name;
             if (!string.IsNullOrEmpty(preReleaseTagName))
             {
-                preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, 1, true);
+                preReleaseTag = new(preReleaseTagName, 1, true);
             }
 
-            return new SemanticVersion(mainlineVersion)
+            return new(mainlineVersion)
             {
                 PreReleaseTag = preReleaseTag,
                 BuildMetaData = baseVersionBuildMetaData
@@ -119,7 +112,7 @@ internal class MainlineVersionCalculator : IVersionModeCalculator
         }
 
         var shortSha = Context.CurrentCommit?.Id.ToString(7);
-        return new SemanticVersionBuildMetaData(
+        return new(
             baseVersionSource?.Sha,
             commitsSinceTag,
             Context.CurrentBranch.Name.Friendly,

@@ -22,7 +22,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
         fixture.Repository.CreateBranch("develop");
 
-        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();
@@ -88,7 +88,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
         fixture.Repository.CreateBranch("feature/someFeature");
 
-        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();

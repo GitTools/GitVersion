@@ -3,16 +3,10 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class BranchesContainingCommitFinder
+internal class BranchesContainingCommitFinder(IGitRepository repository, ILog log)
 {
-    private readonly ILog log;
-    private readonly IGitRepository repository;
-
-    public BranchesContainingCommitFinder(IGitRepository repository, ILog log)
-    {
-        this.repository = repository.NotNull();
-        this.log = log.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IGitRepository repository = repository.NotNull();
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {

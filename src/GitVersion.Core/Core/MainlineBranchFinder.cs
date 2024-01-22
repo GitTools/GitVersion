@@ -87,7 +87,7 @@ internal class MainlineBranchFinder
             var branchOrigin = FindBranchOrigin(branch);
             return branchOrigin == null
                 ? BranchCommit.Empty
-                : new BranchCommit(branchOrigin, branch);
+                : new(branchOrigin, branch);
         }
 
         private ICommit? FindBranchOrigin(IBranch branch)

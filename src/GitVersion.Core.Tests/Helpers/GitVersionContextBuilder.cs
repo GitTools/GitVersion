@@ -75,7 +75,7 @@ public class GitVersionContextBuilder
         var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
-        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
+        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)[mockBranch]).GetEnumerator());
 
         var mockRepository = Substitute.For<IGitRepository>();
         mockRepository.Branches.Returns(branches);

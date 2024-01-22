@@ -162,7 +162,7 @@ public class EffectiveBranchConfigurationFinderTests
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
-            SourceBranches = new HashSet<string>()
+            SourceBranches = new()
         };
 
         var configuration = GitFlowConfigurationBuilder.New

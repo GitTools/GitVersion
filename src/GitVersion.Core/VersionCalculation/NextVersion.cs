@@ -3,22 +3,16 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class NextVersion : IComparable<NextVersion>, IEquatable<NextVersion>
+public class NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, EffectiveBranchConfiguration configuration)
+    : IComparable<NextVersion>, IEquatable<NextVersion>
 {
-    public BaseVersion BaseVersion { get; }
+    public BaseVersion BaseVersion { get; } = baseVersion.NotNull();
 
-    public SemanticVersion IncrementedVersion { get; }
+    public SemanticVersion IncrementedVersion { get; } = incrementedVersion.NotNull();
 
-    public EffectiveBranchConfiguration BranchConfiguration { get; }
+    public EffectiveBranchConfiguration BranchConfiguration { get; } = configuration;
 
     public EffectiveConfiguration Configuration => BranchConfiguration.Value;
-
-    public NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, EffectiveBranchConfiguration configuration)
-    {
-        IncrementedVersion = incrementedVersion.NotNull();
-        BaseVersion = baseVersion.NotNull();
-        BranchConfiguration = configuration;
-    }
 
     public int CompareTo(NextVersion? other) => IncrementedVersion.CompareTo(other?.IncrementedVersion);
 

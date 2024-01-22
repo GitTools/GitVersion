@@ -21,7 +21,7 @@ internal class RepositoryStore : IRepositoryStore
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
-        this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
+        this.mergeBaseFinder = new(this, repository, log);
     }
 
     /// <summary>
@@ -275,7 +275,7 @@ internal class RepositoryStore : IRepositoryStore
             {
                 if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {
-                    yield return new SemanticVersionWithTag(semanticVersion, tag);
+                    yield return new(semanticVersion, tag);
                 }
             }
         }

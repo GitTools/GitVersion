@@ -52,7 +52,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
             || IsPrefixedBy(canonicalName, TagPrefix)
             || IsPrefixedBy(canonicalName, PullRequestPrefixes))
         {
-            value = new ReferenceName(canonicalName);
+            value = new(canonicalName);
         }
 
         return value != null;
@@ -85,7 +85,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     {
         result = default;
 
-        Contract.Assume(versionPatternRegex.ToString().StartsWith("^"));
+        Contract.Assume(versionPatternRegex.ToString().StartsWith('^'));
 
         int length = 0;
         foreach (var branchPart in WithoutOrigin.Split(GetBranchSeparator()))

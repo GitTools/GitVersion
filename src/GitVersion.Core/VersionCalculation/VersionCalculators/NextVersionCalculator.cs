@@ -6,31 +6,22 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal class NextVersionCalculator : INextVersionCalculator
+internal class NextVersionCalculator(
+    ILog log,
+    Lazy<GitVersionContext> versionContext,
+    IEnumerable<IVersionModeCalculator> versionModeCalculators,
+    IEnumerable<IVersionStrategy> versionStrategies,
+    IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
+    IIncrementStrategyFinder incrementStrategyFinder)
+    : INextVersionCalculator
 {
-    private readonly ILog log;
-    private readonly Lazy<GitVersionContext> versionContext;
-    private readonly IEnumerable<IVersionModeCalculator> versionModeCalculators;
-    private readonly IVersionStrategy[] versionStrategies;
-    private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder;
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
+    private readonly ILog log = log.NotNull();
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
+    private readonly IVersionStrategy[] versionStrategies = versionStrategies.NotNull().ToArray();
+    private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
     private GitVersionContext Context => this.versionContext.Value;
-
-    public NextVersionCalculator(ILog log,
-                                 Lazy<GitVersionContext> versionContext,
-                                 IEnumerable<IVersionModeCalculator> versionModeCalculators,
-                                 IEnumerable<IVersionStrategy> versionStrategies,
-                                 IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
-                                 IIncrementStrategyFinder incrementStrategyFinder)
-    {
-        this.log = log.NotNull();
-        this.versionContext = versionContext.NotNull();
-        this.versionModeCalculators = versionModeCalculators;
-        this.versionStrategies = versionStrategies.NotNull().ToArray();
-        this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    }
 
     public virtual NextVersion FindVersion()
     {
@@ -43,19 +34,19 @@ internal class NextVersionCalculator : INextVersionCalculator
         var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
         var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.VersioningMode, nextVersion);
 
-        return new NextVersion(incrementedVersion, nextVersion.BaseVersion, nextVersion.BranchConfiguration);
+        return new(incrementedVersion, nextVersion.BaseVersion, nextVersion.BranchConfiguration);
     }
 
     private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion)
     {
         IVersionModeCalculator calculator = versioningMode switch
         {
-            VersioningMode.ManualDeployment => this.versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
-            VersioningMode.ContinuousDelivery => this.versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
+            VersioningMode.ManualDeployment => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
+            VersioningMode.ContinuousDelivery => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
             VersioningMode.ContinuousDeployment => nextVersion.Configuration is { IsMainline: true, Label: null }
-                ? this.versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>()
-                : this.versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
-            VersioningMode.Mainline => this.versionModeCalculators.SingleOfType<MainlineVersionCalculator>(),
+                ? versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>()
+                : versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
+            VersioningMode.Mainline => versionModeCalculators.SingleOfType<MainlineVersionCalculator>(),
             _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
         };
         return calculator.Calculate(nextVersion);
@@ -115,7 +106,7 @@ internal class NextVersionCalculator : INextVersionCalculator
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
 
-        return new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
+        return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
 
     private static NextVersion CompareVersions(NextVersion versions1, NextVersion version2)
@@ -194,7 +185,7 @@ internal class NextVersionCalculator : INextVersionCalculator
         var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
         if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
         {
-            result = new NextVersion(incrementedVersion, baseVersion, effectiveConfiguration);
+            result = new(incrementedVersion, baseVersion, effectiveConfiguration);
         }
 
         return result is not null;
@@ -212,7 +203,7 @@ internal class NextVersionCalculator : INextVersionCalculator
 
                 if (result.IsLessThan(baseVersionV2.AlternativeSemanticVersion, includePreRelease: false))
                 {
-                    result = new SemanticVersion(result)
+                    result = new(result)
                     {
                         Major = baseVersionV2.AlternativeSemanticVersion!.Major,
                         Minor = baseVersionV2.AlternativeSemanticVersion.Minor,

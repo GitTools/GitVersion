@@ -4,20 +4,13 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal abstract class NonTrunkBasedVersionCalculatorBase
+internal abstract class NonTrunkBasedVersionCalculatorBase(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
 {
-    protected readonly ILog log;
-    protected readonly IRepositoryStore repositoryStore;
-    private readonly Lazy<GitVersionContext> versionContext;
+    protected readonly ILog log = log.NotNull();
+    protected readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
 
     protected GitVersionContext Context => this.versionContext.Value;
-
-    public NonTrunkBasedVersionCalculatorBase(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    {
-        this.log = log.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-        this.versionContext = versionContext.NotNull();
-    }
 
     protected bool ShouldTakeIncrementedVersion(NextVersion nextVersion)
     {
@@ -41,14 +34,14 @@ internal abstract class NonTrunkBasedVersionCalculatorBase
 
         if (semanticVersionWithTag?.Value.CompareTo(nextVersion.IncrementedVersion, false) > 0)
         {
-            return new SemanticVersion(semanticVersionWithTag.Value)
+            return new(semanticVersionWithTag.Value)
             {
-                PreReleaseTag = new SemanticVersionPreReleaseTag(nextVersion.IncrementedVersion.PreReleaseTag),
+                PreReleaseTag = new(nextVersion.IncrementedVersion.PreReleaseTag),
                 BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
             };
         }
 
-        return new SemanticVersion(nextVersion.IncrementedVersion)
+        return new(nextVersion.IncrementedVersion)
         {
             BuildMetaData = CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource)
         };
@@ -74,7 +67,7 @@ internal abstract class NonTrunkBasedVersionCalculatorBase
         }
 
         var shortSha = Context.CurrentCommit?.Id.ToString(7);
-        return new SemanticVersionBuildMetaData(
+        return new(
             versionSourceSha: baseVersionSource?.Sha,
             commitsSinceTag: commitsSinceTag,
             branch: Context.CurrentBranch.Name.Friendly,

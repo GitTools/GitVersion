@@ -9,7 +9,12 @@ using GitVersion.VersionCalculation.TrunkBased.Trunk;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
+internal sealed class TrunkBasedVersionStrategy(
+    Lazy<GitVersionContext> context,
+    IRepositoryStore repositoryStore,
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    IIncrementStrategyFinder incrementStrategyFinder)
+    : VersionStrategyBase(context)
 {
     private static readonly IReadOnlyCollection<ITrunkBasedContextPreEnricher> TrunkContextPreEnricherCollection = new ITrunkBasedContextPreEnricher[]
     {
@@ -55,18 +60,9 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
 
     private volatile int iterationCounter;
 
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
-    private readonly IRepositoryStore repositoryStore;
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
-
-    public TrunkBasedVersionStrategy(Lazy<GitVersionContext> context, IRepositoryStore repositoryStore,
-        ITaggedSemanticVersionRepository taggedSemanticVersionRepository, IIncrementStrategyFinder incrementStrategyFinder
-    ) : base(context)
-    {
-        this.repositoryStore = repositoryStore.NotNull();
-        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    }
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
@@ -93,7 +89,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
         ReferenceName branchName, EffectiveConfiguration configuration, TrunkBasedIteration? parent = null)
     {
         var iterationCount = Interlocked.Increment(ref iterationCounter);
-        return new TrunkBasedIteration(
+        return new(
             id: $"#{iterationCount}",
             branchName: branchName,
             configuration: configuration,
@@ -105,7 +101,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
         IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration, string? targetLabel,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
     {
-        traversedCommits ??= new HashSet<ICommit>();
+        traversedCommits ??= new();
 
         Lazy<IReadOnlyDictionary<ICommit, EffectiveBranchConfiguration>> commitsWasBranchedFromLazy = new(
             () => GetCommitsWasBranchedFrom(branchName: iteration.BranchName)
@@ -237,14 +233,14 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                     && !result[branchCommitDictionary[item]].Value.IsMainline)
                 {
                     result[branchCommitDictionary[item]]
-                        = new(new EffectiveConfiguration(Context.Configuration, branchConfiguration), item);
+                        = new(new(Context.Configuration, branchConfiguration), item);
                 }
             }
             else
             {
                 result.Add(
                     key: branchCommitDictionary[item],
-                    value: new(new EffectiveConfiguration(Context.Configuration, branchConfiguration), item)
+                    value: new(new(Context.Configuration, branchConfiguration), item)
                 );
             }
         }
@@ -277,7 +273,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
                     );
                     if (semanticVersion.IsLessThan(incrementStep.AlternativeSemanticVersion, includePreRelease: false))
                     {
-                        semanticVersion = new SemanticVersion(semanticVersion)
+                        semanticVersion = new(semanticVersion)
                         {
                             Major = incrementStep.AlternativeSemanticVersion!.Major,
                             Minor = incrementStep.AlternativeSemanticVersion.Minor,
@@ -288,7 +284,7 @@ internal sealed class TrunkBasedVersionStrategy : VersionStrategyBase
             }
             else
             {
-                return new BaseVersionV2(nameof(TrunkBasedVersionStrategy), incrementStep.ShouldIncrement, semanticVersion, incrementStep.BaseVersionSource, null)
+                return new(nameof(TrunkBasedVersionStrategy), incrementStep.ShouldIncrement, semanticVersion, incrementStep.BaseVersionSource, null)
                 {
                     Increment = incrementStep.Increment,
                     Label = incrementStep.Label,

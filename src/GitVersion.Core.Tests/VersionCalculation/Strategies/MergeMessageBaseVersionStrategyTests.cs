@@ -20,10 +20,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
-        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[]
-        {
-            mockBranch
-        }).GetEnumerator());
+        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)[mockBranch]).GetEnumerator());
 
         var mockRepository = Substitute.For<IGitRepository>();
         mockRepository.Head.Returns(mockBranch);

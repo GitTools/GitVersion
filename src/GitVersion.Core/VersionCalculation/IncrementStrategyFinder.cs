@@ -13,9 +13,9 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
     private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new();
-    private readonly Dictionary<string, VersionField?> commitIncrementCache = new();
-    private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = new();
-    private readonly Dictionary<string, ICommit[]> headCommitsCache = new();
+    private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
+    private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
+    private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
     private readonly Lazy<IReadOnlySet<string>> tagsShaCache;
 
     private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -28,7 +28,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     public IncrementStrategyFinder(IGitRepository repository)
     {
         this.repository = repository.NotNull();
-        this.tagsShaCache = new Lazy<IReadOnlySet<string>>(ReadRepositoryTagsSha);
+        this.tagsShaCache = new(ReadRepositoryTagsSha);
     }
 
     public VersionField DetermineIncrementedField(ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
@@ -109,7 +109,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
         messageRegex == null
             ? defaultRegex
-            : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+            : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
     /// <summary>
     /// Get the sequence of commits in a repository between a <paramref name="baseCommit"/> (exclusive)

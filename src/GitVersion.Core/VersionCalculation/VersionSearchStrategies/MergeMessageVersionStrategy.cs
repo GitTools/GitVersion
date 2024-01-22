@@ -11,16 +11,11 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the message was found.
 /// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
-internal class MergeMessageVersionStrategy : VersionStrategyBase
+internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore)
+    : VersionStrategyBase(versionContext)
 {
-    private readonly ILog log;
-    private readonly IRepositoryStore repositoryStore;
-
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore) : base(versionContext)
-    {
-        this.log = log.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {

@@ -11,14 +11,14 @@ public class MainScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var configuaration = GitFlowConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithBranch(MainBranch, builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1-1+2", configuaration);
+        fixture.AssertFullSemver("1.0.1-1+2", configuration);
     }
 
     [Test]

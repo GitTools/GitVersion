@@ -6,18 +6,12 @@ namespace GitVersion;
 /// A commit, together with the branch to which the commit belongs.
 /// </summary>
 [DebuggerDisplay("{Branch} {Commit}")]
-public readonly struct BranchCommit : IEquatable<BranchCommit?>
+public readonly struct BranchCommit(ICommit commit, IBranch branch) : IEquatable<BranchCommit?>
 {
     public static readonly BranchCommit Empty = new();
 
-    public BranchCommit(ICommit commit, IBranch branch) : this()
-    {
-        Branch = branch.NotNull();
-        Commit = commit.NotNull();
-    }
-
-    public IBranch Branch { get; }
-    public ICommit Commit { get; }
+    public IBranch Branch { get; } = branch.NotNull();
+    public ICommit Commit { get; } = commit.NotNull();
 
     public bool Equals(BranchCommit? other)
     {

@@ -73,17 +73,11 @@ public class MergeMessage
         return null;
     }
 
-    private class MergeMessageFormat
+    private class MergeMessageFormat(string name, string pattern)
     {
-        public MergeMessageFormat(string name, string pattern)
-        {
-            Name = name;
-            Pattern = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        }
+        public string Name { get; } = name;
 
-        public string Name { get; }
-
-        public Regex Pattern { get; }
+        public Regex Pattern { get; } = new(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 
     private ReferenceName GetMergedBranchName(string mergedBranch)
@@ -105,7 +99,7 @@ public class MergeMessage
 
         if (mergeCommit.IsMergeCommit)
         {
-            mergeMessage = new MergeMessage(mergeCommit.Message, configuration);
+            mergeMessage = new(mergeCommit.Message, configuration);
         }
 
         return mergeMessage != null;
