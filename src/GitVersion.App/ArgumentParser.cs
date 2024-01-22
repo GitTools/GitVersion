@@ -6,22 +6,16 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion;
 
-internal class ArgumentParser : IArgumentParser
+internal class ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
+    : IArgumentParser
 {
-    private readonly IEnvironment environment;
-    private readonly ICurrentBuildAgent buildAgent;
-    private readonly IConsole console;
-    private readonly IGlobbingResolver globbingResolver;
+    private readonly IEnvironment environment = environment.NotNull();
+    private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
+    private readonly IConsole console = console.NotNull();
+    private readonly IGlobbingResolver globbingResolver = globbingResolver.NotNull();
+
     private const string defaultOutputFileName = "GitVersion.json";
     private static readonly IEnumerable<string> availableVariables = GitVersionVariables.AvailableVariables;
-
-    public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
-    {
-        this.environment = environment.NotNull();
-        this.console = console.NotNull();
-        this.globbingResolver = globbingResolver.NotNull();
-        this.buildAgent = buildAgent.NotNull();
-    }
 
     public Arguments ParseArguments(string commandLineArguments)
     {

@@ -5,35 +5,27 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class GitVersionExecutor : IGitVersionExecutor
+internal class GitVersionExecutor(
+    ILog log,
+    IConsole console,
+    IConfigurationFileLocator configurationFileLocator,
+    IConfigurationProvider configurationProvider,
+    IGitVersionCalculateTool gitVersionCalculateTool,
+    IGitVersionOutputTool gitVersionOutputTool,
+    IVersionWriter versionWriter,
+    IHelpWriter helpWriter,
+    IGitRepositoryInfo repositoryInfo)
+    : IGitVersionExecutor
 {
-    private readonly ILog log;
-    private readonly IConsole console;
-    private readonly IConfigurationFileLocator configurationFileLocator;
-    private readonly IConfigurationProvider configurationProvider;
-    private readonly IGitVersionCalculateTool gitVersionCalculateTool;
-    private readonly IGitVersionOutputTool gitVersionOutputTool;
-    private readonly IVersionWriter versionWriter;
-    private readonly IHelpWriter helpWriter;
-    private readonly IGitRepositoryInfo repositoryInfo;
-
-    public GitVersionExecutor(ILog log, IConsole console,
-        IConfigurationFileLocator configurationFileLocator, IConfigurationProvider configurationProvider,
-        IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
-        IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
-    {
-        this.log = log.NotNull();
-        this.console = console.NotNull();
-        this.configurationFileLocator = configurationFileLocator.NotNull();
-        this.configurationProvider = configurationProvider.NotNull();
-
-        this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
-        this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
-
-        this.versionWriter = versionWriter.NotNull();
-        this.helpWriter = helpWriter.NotNull();
-        this.repositoryInfo = repositoryInfo.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IConsole console = console.NotNull();
+    private readonly IConfigurationFileLocator configurationFileLocator = configurationFileLocator.NotNull();
+    private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly IGitVersionCalculateTool gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
+    private readonly IGitVersionOutputTool gitVersionOutputTool = gitVersionOutputTool.NotNull();
+    private readonly IVersionWriter versionWriter = versionWriter.NotNull();
+    private readonly IHelpWriter helpWriter = helpWriter.NotNull();
+    private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public int Execute(GitVersionOptions gitVersionOptions)
     {
