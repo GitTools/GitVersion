@@ -9,16 +9,30 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class MainScenarios : TestBase
 {
     [Test]
-    public void CanHandleContinuousDelivery()
+    public void CanHandleManualDeployment()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch(MainBranch, builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch(MainBranch, builder => builder.WithVersioningMode(VersioningMode.ManualDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
         fixture.AssertFullSemver("1.0.1-1+2", configuration);
+    }
+
+    [Test]
+    public void CanHandleContinuousDelivery()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithLabel("ci").WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.0.0");
+        fixture.Repository.MakeCommits(2);
+        fixture.AssertFullSemver("1.0.1-ci.2", configuration);
     }
 
     [Test]
@@ -32,7 +46,7 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1-ci.2", configuration);
+        fixture.AssertFullSemver("1.0.1", configuration);
     }
 
     [Test]

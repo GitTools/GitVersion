@@ -720,9 +720,8 @@ GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.E
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void
 GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery = 1 -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersioningMode.ContinuousDeployment = 2 -> GitVersion.VersionCalculation.VersioningMode
-GitVersion.VersionCalculation.VersioningMode.Mainline = 3 -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersioningMode.ManualDeployment = 0 -> GitVersion.VersionCalculation.VersioningMode
-GitVersion.VersionCalculation.VersioningMode.TrunkBased = 4 -> GitVersion.VersionCalculation.VersioningMode
+GitVersion.VersionCalculation.VersioningMode.TrunkBased = 3 -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersionStrategyBase
 GitVersion.VersionCalculation.VersionStrategyBase.Context.get -> GitVersion.GitVersionContext!
 GitVersion.VersionCalculation.VersionStrategyBase.VersionStrategyBase(System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void

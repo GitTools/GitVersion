@@ -22,7 +22,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
-            VersioningMode = VersioningMode.ContinuousDeployment,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -70,8 +70,8 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
+            VersioningMode = VersioningMode.ManualDeployment,
             RegularExpression = ReleaseBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -92,7 +92,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -110,7 +110,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDeployment,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -129,7 +129,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             SourceBranches =
             [
                 this.ReleaseBranch.Name,
@@ -160,7 +160,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             RegularExpression = UnknownBranch.RegexPattern,
             Label = ConfigurationConstants.BranchNamePlaceholder,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             Increment = IncrementStrategy.Inherit,
             SourceBranches =
             [

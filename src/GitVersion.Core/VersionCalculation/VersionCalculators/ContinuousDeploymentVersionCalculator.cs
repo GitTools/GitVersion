@@ -11,15 +11,6 @@ internal sealed class ContinuousDeploymentVersionCalculator(ILog log, IRepositor
     {
         using (this.log.IndentLog("Using continuous deployment workflow to calculate the incremented version."))
         {
-            if (nextVersion.Configuration.Label is not null)
-            {
-                throw new WarningException("Continuous deployment requires no pre-release tag.");
-            }
-            if (!nextVersion.Configuration.IsMainline)
-            {
-                throw new WarningException("Continuous deployment is only supported for mainline branches.");
-            }
-
             return CalculateInternal(nextVersion);
         }
     }

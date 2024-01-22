@@ -156,7 +156,7 @@ public class EffectiveBranchConfigurationFinderTests
         var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
         var branchConfiguration = new BranchConfiguration
         {
-            VersioningMode = VersioningMode.Mainline,
+            VersioningMode = VersioningMode.TrunkBased,
             Increment = IncrementStrategy.None,
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = false,

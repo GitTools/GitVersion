@@ -12,35 +12,35 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 internal class ComparingTheBehaviorOfDifferentVersioningModes
 {
     private static readonly GitHubFlowConfigurationBuilder configurationBuilder = GitHubFlowConfigurationBuilder.New
-        .WithLabel(null).WithIsMainline(null)
+        .WithLabel(null)
         .WithBranch("main", _ => _
-            .WithIncrement(IncrementStrategy.Patch).WithVersioningMode(null).WithLabel(null)
+            .WithIncrement(IncrementStrategy.Patch).WithLabel(null)
         ).WithBranch("feature", _ => _
-            .WithIncrement(IncrementStrategy.Inherit).WithVersioningMode(null).WithLabel("{BranchName}")
+            .WithIncrement(IncrementStrategy.Inherit).WithLabel("{BranchName}")
         );
 
     private static readonly IGitVersionConfiguration trunkBased = configurationBuilder
-        .WithVersioningMode(VersioningMode.Mainline).WithIsMainline(true)
-        .WithBranch("main", _ => _.WithIsMainline(true))
-        .WithBranch("feature", _ => _.WithIsMainline(true))
+        .WithVersioningMode(VersioningMode.TrunkBased)
+        .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
+        .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
         .Build();
 
     private static readonly IGitVersionConfiguration continuousDeployment = configurationBuilder
-            .WithVersioningMode(VersioningMode.ContinuousDeployment).WithIsMainline(true)
-            .WithBranch("main", _ => _.WithIsMainline(true))
-            .WithBranch("feature", _ => _.WithIsMainline(true))
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
 
     private static readonly IGitVersionConfiguration continuousDelivery = configurationBuilder
-            .WithVersioningMode(VersioningMode.ContinuousDeployment).WithIsMainline(false)
-            .WithBranch("main", _ => _.WithIsMainline(false))
-            .WithBranch("feature", _ => _.WithIsMainline(false))
+            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
             .Build();
 
     private static readonly IGitVersionConfiguration manualDeployment = configurationBuilder
-            .WithVersioningMode(VersioningMode.ContinuousDelivery).WithIsMainline(false)
-            .WithBranch("main", _ => _.WithIsMainline(false))
-            .WithBranch("feature", _ => _.WithIsMainline(false))
+            .WithVersioningMode(VersioningMode.ManualDeployment)
+            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ManualDeployment))
+            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ManualDeployment))
             .Build();
 
     [Test]
@@ -285,7 +285,7 @@ internal class ComparingTheBehaviorOfDifferentVersioningModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.2.0-test.2", trunkBased);
+        fixture.AssertFullSemver("0.1.0-test.2", trunkBased);
         //fixture.AssertFullSemver("?", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-test.2", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-test.1+2", manualDeployment);
@@ -319,7 +319,7 @@ internal class ComparingTheBehaviorOfDifferentVersioningModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.1.0-test.2", trunkBased);
+        fixture.AssertFullSemver("1.0.0-test.2", trunkBased);
         //fixture.AssertFullSemver("?", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-test.2", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-test.1+2", manualDeployment);

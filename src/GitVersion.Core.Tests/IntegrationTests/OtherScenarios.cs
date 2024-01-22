@@ -195,7 +195,7 @@ public class OtherScenarios : TestBase
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -260,7 +260,7 @@ public class OtherScenarios : TestBase
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -327,7 +327,7 @@ public class OtherScenarios : TestBase
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -394,7 +394,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -458,7 +458,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -524,7 +524,7 @@ public class OtherScenarios : TestBase
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -591,7 +591,7 @@ public class OtherScenarios : TestBase
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -658,7 +658,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -722,7 +722,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -787,7 +787,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -851,7 +851,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithVersioningMode(VersioningMode.ManualDeployment)
                 .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -916,7 +916,7 @@ public class OtherScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New.WithLabel(null)
             .WithBranch("main", _ => _
                 .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel(label)
                 .WithIsMainline(false)
@@ -957,7 +957,7 @@ public class OtherScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", _ => _
                 .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("pre")
                 .WithIsMainline(false)
@@ -1000,7 +1000,7 @@ public class OtherScenarios : TestBase
             .WithBranch("main", _ => _
                 .WithLabel("beta")
                 .WithIncrement(IncrementStrategy.Patch)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithIsMainline(false)
             ).Build();
 
@@ -1040,7 +1040,7 @@ public class OtherScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", _ => _
                 .WithLabel(string.Empty).WithIsMainline(false)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
