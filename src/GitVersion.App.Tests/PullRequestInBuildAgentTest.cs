@@ -173,7 +173,7 @@ public class PullRequestInBuildAgentTest
             services.AddModule(new GitVersionBuildAgentsModule());
             services.AddModule(new GitVersionOutputModule());
         });
-        programFixture.WithEnv(env.ToArray());
+        programFixture.WithEnv([.. env]);
 
         var result = await programFixture.Run();
 

@@ -7,7 +7,7 @@ namespace GitVersion.Testing;
 /// </summary>
 public class SequenceDiagram
 {
-    private readonly Dictionary<string, string> participants = new();
+    private readonly Dictionary<string, string> participants = [];
     private readonly StringBuilder diagramBuilder;
 
     /// <summary>
@@ -105,7 +105,7 @@ end note",
     /// </summary>
     public void Merge(string from, string to) => this.diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
 
-    private string GetParticipant(string branch) => participants.TryGetValue(branch, out var value) ? value : branch;
+    private string GetParticipant(string branch) => this.participants.GetValueOrDefault(branch, branch);
 
     /// <summary>
     /// Ends the sequence diagram

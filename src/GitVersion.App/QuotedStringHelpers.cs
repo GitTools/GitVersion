@@ -50,7 +50,7 @@ internal static class QuotedStringHelpers
             isPreviousCharBackslash = current == '\\';
         }
 
-        split.Add(input.Substring(startIndex, input.Length - startIndex));
+        split.Add(input[startIndex..]);
 
         return split.Where(argument => !argument.IsNullOrEmpty()).ToArray();
     }

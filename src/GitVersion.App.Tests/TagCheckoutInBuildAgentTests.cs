@@ -57,7 +57,7 @@ public class TagCheckoutInBuildAgentTests
         }
 
         var programFixture = new ProgramFixture(fixture.RepositoryPath);
-        programFixture.WithEnv(env.ToArray());
+        programFixture.WithEnv([.. env]);
 
         var result = await programFixture.Run();
 

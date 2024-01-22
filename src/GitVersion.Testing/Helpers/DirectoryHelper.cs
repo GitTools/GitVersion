@@ -23,7 +23,7 @@ internal static class DirectoryHelper
         }
     }
 
-    private static string Rename(string name) => ToRename.TryGetValue(name, out var value) ? value : name;
+    private static string Rename(string name) => ToRename.GetValueOrDefault(name, name);
 
     public static void DeleteSubDirectories(string parentPath)
     {
@@ -71,7 +71,7 @@ internal static class DirectoryHelper
                                           "{0}Known and common causes include:" +
                                           "{0}- Windows Search Indexer (go to the Indexing Options, in the Windows Control Panel, and exclude the bin folder of LibGit2Sharp.Tests)" +
                                           "{0}- Antivirus (exclude the bin folder of LibGit2Sharp.Tests from the paths scanned by your real-time antivirus){0}",
-                Environment.NewLine, Path.GetFullPath(directoryPath)));
+                SysEnv.NewLine, Path.GetFullPath(directoryPath)));
         }
     }
 }

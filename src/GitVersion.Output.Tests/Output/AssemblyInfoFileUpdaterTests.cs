@@ -78,7 +78,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new TestEffectiveConfiguration(), null);
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
-        assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFiles.ToArray()));
+        assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, [.. assemblyInfoFiles]));
 
         foreach (var item in assemblyInfoFiles)
         {
@@ -133,7 +133,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
-        assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFiles.ToArray()));
+        assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, [.. assemblyInfoFiles]));
 
         this.fileSystem.Received().DirectoryEnumerateFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
     }

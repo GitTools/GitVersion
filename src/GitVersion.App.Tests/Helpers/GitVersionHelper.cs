@@ -71,7 +71,7 @@ public static class GitVersionHelper
                 executable,
                 args,
                 arguments.WorkingDirectory,
-                environmentalVariables.ToArray());
+                [.. environmentalVariables]);
         }
         catch (Exception exception)
         {

@@ -53,7 +53,7 @@ public class TestTaskBase : TestBase
         {
             environmentVariables.Add(new("BUILD_BUILDNUMBER", buildNumber));
         }
-        msbuildFixture.WithEnv(environmentVariables.ToArray());
+        msbuildFixture.WithEnv([.. environmentVariables]);
         if (configurationText != null)
         {
             CreateConfiguration(task.SolutionDirectory, configurationText);
@@ -88,7 +88,7 @@ public class TestTaskBase : TestBase
         var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
-        msbuildFixture.WithEnv(env.ToArray());
+        msbuildFixture.WithEnv([.. env]);
 
         var result = msbuildFixture.Execute();
         if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
