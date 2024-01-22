@@ -23,7 +23,7 @@ internal class WixFileTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            BuildMetaData = new("5.Branch.develop")
             {
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
@@ -48,7 +48,7 @@ internal class WixFileTests : TestBase
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
-        wixVersionFileUpdater.Execute(versionVariables, new WixVersionContext(workingDir));
+        wixVersionFileUpdater.Execute(versionVariables, new(workingDir));
 
         var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
         fileSystem
@@ -65,7 +65,7 @@ internal class WixFileTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            BuildMetaData = new("5.Branch.develop")
             {
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
@@ -92,9 +92,9 @@ internal class WixFileTests : TestBase
 
         // fake an already existing file
         var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
-        fileSystem.WriteAllText(file, new string('x', 1024 * 1024));
+        fileSystem.WriteAllText(file, new('x', 1024 * 1024));
 
-        wixVersionFileUpdater.Execute(versionVariables, new WixVersionContext(workingDir));
+        wixVersionFileUpdater.Execute(versionVariables, new(workingDir));
 
         fileSystem
             .ReadAllText(file)

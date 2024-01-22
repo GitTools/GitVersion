@@ -1,9 +1,6 @@
 namespace GitVersion.Output.WixUpdater;
 
-internal readonly struct WixVersionContext : IConverterContext
+internal readonly struct WixVersionContext(string workingDirectory) : IConverterContext
 {
-    public WixVersionContext(string workingDirectory) =>
-        WorkingDirectory = workingDirectory;
-
-    public string WorkingDirectory { get; }
+    public string WorkingDirectory { get; } = workingDirectory;
 }

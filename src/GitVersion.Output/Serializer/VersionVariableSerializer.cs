@@ -4,12 +4,8 @@ using GitVersion.Helpers;
 
 namespace GitVersion.OutputVariables;
 
-public class VersionVariableSerializer : IVersionVariableSerializer
+public class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVariableSerializer
 {
-    private readonly IFileSystem fileSystem;
-
-    public VersionVariableSerializer(IFileSystem fileSystem) => this.fileSystem = fileSystem;
-
     public GitVersionVariables FromJson(string json)
     {
         var serializeOptions = JsonSerializerOptions();

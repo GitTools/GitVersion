@@ -7,29 +7,22 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Output.OutputGenerator;
 
-internal interface IOutputGenerator : IVersionConverter<OutputContext>
-{
-}
+internal interface IOutputGenerator : IVersionConverter<OutputContext>;
 
-internal sealed class OutputGenerator : IOutputGenerator
+internal sealed class OutputGenerator(
+    ICurrentBuildAgent buildAgent,
+    IConsole console,
+    IFileSystem fileSystem,
+    IVersionVariableSerializer serializer,
+    IEnvironment environment,
+    IOptions<GitVersionOptions> options)
+    : IOutputGenerator
 {
-    private readonly IConsole console;
-    private readonly IFileSystem fileSystem;
-    private readonly IVersionVariableSerializer serializer;
-    private readonly IEnvironment environment;
-    private readonly IOptions<GitVersionOptions> options;
-    private readonly ICurrentBuildAgent buildAgent;
-
-    public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem,
-                           IVersionVariableSerializer serializer, IEnvironment environment, IOptions<GitVersionOptions> options)
-    {
-        this.console = console.NotNull();
-        this.fileSystem = fileSystem.NotNull();
-        this.serializer = serializer.NotNull();
-        this.environment = environment;
-        this.options = options.NotNull();
-        this.buildAgent = buildAgent.NotNull();
-    }
+    private readonly IConsole console = console.NotNull();
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly IVersionVariableSerializer serializer = serializer.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
 
     public void Execute(GitVersionVariables variables, OutputContext context)
     {

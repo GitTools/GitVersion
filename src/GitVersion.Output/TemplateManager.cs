@@ -8,16 +8,10 @@ internal enum TemplateType
     GitVersionInfo
 }
 
-internal class TemplateManager
+internal class TemplateManager(TemplateType templateType)
 {
-    private readonly Dictionary<string, string> templates;
-    private readonly Dictionary<string, string> addFormats;
-
-    public TemplateManager(TemplateType templateType)
-    {
-        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
-        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
-    }
+    private readonly Dictionary<string, string> templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
 
     public string? GetTemplateFor(string fileExtension)
     {
