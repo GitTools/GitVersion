@@ -33,7 +33,7 @@ internal record class TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Va
 
     public TrunkBasedIteration? ChildIteration { get; private set; }
 
-    public bool HasChildIteration => ChildIteration?.Commits.Any() == true;
+    public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
 
