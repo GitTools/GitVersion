@@ -5,26 +5,35 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
-public class MainlineDevelopmentMode : TestBase
+public class TrunkBasedDevelopmentScenarios : TestBase
 {
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
         .WithVersioningMode(VersioningMode.TrunkBased)
         .WithBranch("main", builder => builder
+            .WithIsMainline(true).WithIncrement(IncrementStrategy.Patch)
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithSourceBranches()
         )
         .WithBranch("develop", builder => builder
+            .WithIsMainline(false).WithIncrement(IncrementStrategy.Minor)
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
-        .WithBranch("feature", builder => builder.WithIsMainline(false)
-            .WithIncrement(IncrementStrategy.Inherit).WithVersioningMode(VersioningMode.ContinuousDelivery)
+        .WithBranch("feature", builder => builder
+            .WithIsMainline(false).WithIncrement(IncrementStrategy.Minor)
+            .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
-        .WithBranch("support", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+        .WithBranch("hotfix", builder => builder
+            .WithIsMainline(false).WithIncrement(IncrementStrategy.Patch)
+            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithRegularExpression("^hotfix[/-](?<BranchName>.+)").WithLabel("{BranchName}")
+            .WithSourceBranches("main")
+        )
         .WithBranch("pull-request", builder => builder
-            .WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDelivery)
-            .WithSourceBranches("main").WithIncrement(IncrementStrategy.None)
+            .WithIsMainline(false).WithIncrement(IncrementStrategy.Inherit)
+            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithSourceBranches("main")
         );
 
     [Test]
@@ -51,7 +60,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void MergedFeatureBranchesToMainImpliesRelease()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("1");
@@ -117,21 +129,50 @@ public class MainlineDevelopmentMode : TestBase
     }
 
     [Test]
-    public void VerifyPullRequestsActLikeContinuousDelivery()
+    public void VerifyPullRequestsActLikeContinuousDeliveryOnFeatureBranch()
     {
         var configuration = GetConfigurationBuilder().Build();
 
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit("1");
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeACommit("1");
+
+        fixture.AssertFullSemver("0.0.1", configuration);
+
         fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeACommit();
+        fixture.MakeACommit("2");
+
         fixture.AssertFullSemver("1.0.1", configuration);
 
         fixture.BranchTo("feature/foo", "foo");
-        fixture.AssertFullSemver("1.0.2-foo.0", configuration);
-        fixture.MakeACommit();
-        fixture.MakeACommit();
+        fixture.AssertFullSemver("1.1.0-foo.0", configuration);
+        fixture.MakeACommit("3");
+        fixture.MakeACommit("4");
         fixture.Repository.CreatePullRequestRef("feature/foo", MainBranch, prNumber: 8, normalise: true);
+        fixture.AssertFullSemver("1.1.0-PullRequest8.3", configuration);
+    }
+
+    [Test]
+    public void VerifyPullRequestsActLikeContinuousDeliveryOnHotfixBranch()
+    {
+        var configuration = GetConfigurationBuilder().Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeACommit("1");
+
+        fixture.AssertFullSemver("0.0.1", configuration);
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit("2");
+
+        fixture.AssertFullSemver("1.0.1", configuration);
+
+        fixture.BranchTo("hotfix/foo", "foo");
+        fixture.AssertFullSemver("1.0.2-foo.0", configuration);
+        fixture.MakeACommit("3");
+        fixture.MakeACommit("4");
+        fixture.Repository.CreatePullRequestRef("hotfix/foo", MainBranch, prNumber: 8, normalise: true);
         fixture.AssertFullSemver("1.0.2-PullRequest8.3", configuration);
     }
 
@@ -173,7 +214,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyForwardMerge()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("1");
@@ -321,7 +365,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyMergingMainToFeatureDoesNotCauseBranchCommitsToIncrementVersion()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit($"first in {MainBranch}");
@@ -346,7 +393,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyMergingMainToFeatureDoesNotStopMainCommitsIncrementingVersion()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit($"first in {MainBranch}");
@@ -370,7 +420,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyIssue1154CanForwardMergeMainToFeatureBranch()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -396,7 +449,10 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyMergingMainIntoAFeatureBranchWorksWithMultipleBranches()
     {
-        var configuration = GetConfigurationBuilder().Build();
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit($"first in {MainBranch}");
