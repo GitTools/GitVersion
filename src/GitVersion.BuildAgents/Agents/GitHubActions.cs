@@ -4,13 +4,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class GitHubActions : BuildAgentBase
+internal class GitHubActions(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
     // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
-
-    public GitHubActions(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
 
     public const string EnvironmentVariableName = "GITHUB_ACTIONS";
     public const string GitHubSetEnvTempFileEnvironmentVariableName = "GITHUB_ENV";

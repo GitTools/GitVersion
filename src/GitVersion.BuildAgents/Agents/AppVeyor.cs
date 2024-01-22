@@ -4,12 +4,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class AppVeyor : BuildAgentBase
+internal class AppVeyor(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public AppVeyor(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "APPVEYOR";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;

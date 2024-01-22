@@ -3,12 +3,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer;
 
-internal class AppveyorPublicPrivate : ConfigInitWizardStep
+internal class AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
-    public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
-
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         switch (result)

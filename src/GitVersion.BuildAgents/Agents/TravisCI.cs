@@ -3,12 +3,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class TravisCi : BuildAgentBase
+internal class TravisCi(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public TravisCi(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "TRAVIS";
     protected override string EnvironmentVariable => EnvironmentVariableName;
 

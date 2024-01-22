@@ -3,14 +3,11 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-internal class ConfigureBranch : ConfigInitWizardStep
+internal class ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
     private string name;
     private BranchConfigurationBuilder branchConfigurationBuilder;
-
-    public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
 
     public ConfigureBranch WithData(string configName, BranchConfigurationBuilder configurationBuilder)
     {

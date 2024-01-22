@@ -14,8 +14,8 @@ internal sealed class Tag : ITag
     internal Tag(LibGit2Sharp.Tag tag)
     {
         this.innerTag = tag.NotNull();
-        Name = new ReferenceName(this.innerTag.CanonicalName);
-        _commitLazy = new Lazy<ICommit?>(PeeledTargetCommit);
+        Name = new(this.innerTag.CanonicalName);
+        _commitLazy = new(PeeledTargetCommit);
     }
 
     public ReferenceName Name { get; }

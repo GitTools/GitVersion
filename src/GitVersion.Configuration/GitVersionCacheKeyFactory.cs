@@ -7,26 +7,21 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Caching;
 
-internal class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
+internal class GitVersionCacheKeyFactory(
+    IFileSystem fileSystem,
+    ILog log,
+    IOptions<GitVersionOptions> options,
+    IConfigurationFileLocator configFileLocator,
+    IGitRepository gitRepository,
+    IGitRepositoryInfo repositoryInfo)
+    : IGitVersionCacheKeyFactory
 {
-    private readonly IFileSystem fileSystem;
-    private readonly ILog log;
-    private readonly IOptions<GitVersionOptions> options;
-    private readonly IConfigurationFileLocator configFileLocator;
-    private readonly IGitRepository gitRepository;
-    private readonly IGitRepositoryInfo repositoryInfo;
-
-    public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log,
-                                     IOptions<GitVersionOptions> options, IConfigurationFileLocator configFileLocator,
-                                     IGitRepository gitRepository, IGitRepositoryInfo repositoryInfo)
-    {
-        this.fileSystem = fileSystem.NotNull();
-        this.log = log.NotNull();
-        this.options = options.NotNull();
-        this.configFileLocator = configFileLocator.NotNull();
-        this.gitRepository = gitRepository.NotNull();
-        this.repositoryInfo = repositoryInfo.NotNull();
-    }
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly ILog log = log.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
+    private readonly IGitRepository gitRepository = gitRepository.NotNull();
+    private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public GitVersionCacheKey Create(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {

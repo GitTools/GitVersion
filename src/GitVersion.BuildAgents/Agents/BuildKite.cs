@@ -3,12 +3,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class BuildKite : BuildAgentBase
+internal class BuildKite(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public BuildKite(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "BUILDKITE";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;

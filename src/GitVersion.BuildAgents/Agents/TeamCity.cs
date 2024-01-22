@@ -5,12 +5,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class TeamCity : BuildAgentBase
+internal class TeamCity(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public TeamCity(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;

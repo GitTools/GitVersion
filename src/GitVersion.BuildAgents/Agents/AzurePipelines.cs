@@ -5,12 +5,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class AzurePipelines : BuildAgentBase
+internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public AzurePipelines(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "TF_BUILD";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;

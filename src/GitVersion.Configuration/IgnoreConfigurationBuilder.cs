@@ -6,7 +6,7 @@ internal sealed class IgnoreConfigurationBuilder
 
     private DateTimeOffset? before;
 
-    private HashSet<string> shas = new();
+    private HashSet<string> shas = [];
 
     public IgnoreConfigurationBuilder WithBefore(DateTimeOffset? value)
     {

@@ -4,13 +4,10 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer;
 
-internal class AppVeyorSetup : ConfigInitWizardStep
+internal class AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
     private ProjectVisibility projectVisibility;
-
-    public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
 
     public AppVeyorSetup WithData(ProjectVisibility visibility)
     {

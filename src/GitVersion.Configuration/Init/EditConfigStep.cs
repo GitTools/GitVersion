@@ -6,12 +6,9 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init;
 
-internal class EditConfigStep : ConfigInitWizardStep
+internal class EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
+    : ConfigInitWizardStep(console, fileSystem, log, stepFactory)
 {
-    public EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-    {
-    }
-
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         switch (result)

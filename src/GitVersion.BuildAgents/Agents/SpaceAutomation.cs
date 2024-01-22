@@ -3,12 +3,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class SpaceAutomation : BuildAgentBase
+internal class SpaceAutomation(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
 {
-    public SpaceAutomation(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
-
     public const string EnvironmentVariableName = "JB_SPACE_PROJECT_KEY";
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
