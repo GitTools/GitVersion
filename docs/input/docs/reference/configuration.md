@@ -65,7 +65,7 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 0
   main:
     label: ''
@@ -79,7 +79,7 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   release:
     label: beta
@@ -95,7 +95,7 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
@@ -150,7 +150,7 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   unknown:
     mode: ContinuousDelivery
@@ -180,7 +180,7 @@ source-branches: []
 is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
-is-mainline: false
+is-main-branch: false
 ```
 
 The details of the available options are as follows:
@@ -413,7 +413,7 @@ branches:
     source-branches: [ 'develop', 'release' ]
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   develop:
     regex: ^dev(elop)?(ment)?$
@@ -425,7 +425,7 @@ branches:
     source-branches: []
     tracks-release-branches: true
     is-release-branch: false
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 0
   release:
     regex: ^releases?[/-]
@@ -437,7 +437,7 @@ branches:
     source-branches: [ 'develop', 'main', 'support', 'release' ]
     tracks-release-branches: false
     is-release-branch: true
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 30000
   feature:
     regex: ^features?[/-]
@@ -471,7 +471,7 @@ branches:
     source-branches: [ 'main' ]
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
 ```
 
@@ -644,10 +644,9 @@ Indicates this branch config represents develop in GitFlow.
 
 Indicates this branch config represents a release branch in GitFlow.
 
-### is-mainline
+### is-main-branch
 
-When using Mainline mode, this indicates that this branch is a mainline. By
-default `main` and `support/*` are mainlines.
+This indicates that this branch is a main branch. By default `main` and `support/*` are main branches.
 
 ### pre-release-weight
 
