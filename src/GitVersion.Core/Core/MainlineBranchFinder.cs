@@ -30,14 +30,14 @@ internal class MainlineBranchFinder
     {
         var branchOriginFinder = new BranchOriginFinder(commit, this.repositoryStore, this.configuration, this.log);
         return this.repository.Branches
-            .Where(BranchIsMainBranch)
+            .Where(IsMainBranch)
             .Select(branchOriginFinder.BranchOrigin)
             .Where(bc => bc != BranchCommit.Empty)
             .GroupBy(bc => bc.Commit.Sha, bc => bc.Branch)
             .ToDictionary(group => group.Key, x => x.ToList());
     }
 
-    private bool BranchIsMainBranch(INamedReference branch)
+    private bool IsMainBranch(INamedReference branch)
     {
         var matcher = new MainlineConfigBranchMatcher(branch, this.log);
         return this.mainlineBranchConfigurations.Any(matcher.IsMainBranch);

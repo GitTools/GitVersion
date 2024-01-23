@@ -32,6 +32,7 @@
 *   The `BranchPrefixToTrim` configuration property has been removed. `RegularExpression` is now used to capture named groups instead.
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
     *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.*)` to support using `{BranchName}` out-of-the-box
+*   The branch related property `IsMainline` in the configuration system has been renamed to `IsMainBranch`
 
 ## v5.0.0
 
