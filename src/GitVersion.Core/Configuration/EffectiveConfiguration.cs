@@ -57,7 +57,7 @@ public record EffectiveConfiguration
         VersionFilters = configuration.Ignore.ToFilters();
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
         IsReleaseBranch = branchConfiguration.IsReleaseBranch ?? false;
-        IsMainline = branchConfiguration.IsMainline ?? false;
+        IsMainBranch = branchConfiguration.IsMainBranch ?? false;
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
@@ -87,7 +87,7 @@ public record EffectiveConfiguration
         IEnumerable<IVersionFilter> versionFilters,
         bool tracksReleaseBranches,
         bool isReleaseBranch,
-        bool isMainline,
+        bool isMainBranch,
         string? commitDateFormat,
         bool updateBuildNumber,
         SemanticVersionFormat semanticVersionFormat,
@@ -116,7 +116,7 @@ public record EffectiveConfiguration
         VersionFilters = versionFilters;
         TracksReleaseBranches = tracksReleaseBranches;
         IsReleaseBranch = isReleaseBranch;
-        IsMainline = isMainline;
+        IsMainBranch = isMainBranch;
         CommitDateFormat = commitDateFormat;
         UpdateBuildNumber = updateBuildNumber;
         SemanticVersionFormat = semanticVersionFormat;
@@ -126,7 +126,7 @@ public record EffectiveConfiguration
 
     public bool TracksReleaseBranches { get; }
     public bool IsReleaseBranch { get; }
-    public bool IsMainline { get; }
+    public bool IsMainBranch { get; }
     public VersioningMode VersioningMode { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
     public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }

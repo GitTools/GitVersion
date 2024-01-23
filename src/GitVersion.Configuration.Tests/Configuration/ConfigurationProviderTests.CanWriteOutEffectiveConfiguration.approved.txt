@@ -22,7 +22,7 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 0
   main:
     label: ''
@@ -36,10 +36,10 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   release:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -53,10 +53,10 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 30000
   feature:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
     regex: ^features?[/-](?<BranchName>.+)
@@ -70,7 +70,7 @@ branches:
     is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
-    mode: ContinuousDeployment
+    mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
     label-number-pattern: '[/-](?<number>\d+)'
@@ -85,7 +85,7 @@ branches:
     is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
     increment: Inherit
     regex: ^hotfix(es)?[/-]
@@ -108,10 +108,10 @@ branches:
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   unknown:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
     regex: (?<BranchName>.+)
@@ -126,7 +126,7 @@ branches:
     is-source-branch-for: []
 ignore:
   sha: []
-mode: ContinuousDeployment
+mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
@@ -138,4 +138,4 @@ source-branches: []
 is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
-is-mainline: false
+is-main-branch: false

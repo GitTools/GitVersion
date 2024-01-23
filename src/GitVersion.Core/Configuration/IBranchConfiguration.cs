@@ -30,7 +30,7 @@ public interface IBranchConfiguration
 
     bool? IsReleaseBranch { get; }
 
-    bool? IsMainline { get; }
+    bool? IsMainBranch { get; }
 
     int? PreReleaseWeight { get; }
 

@@ -21,7 +21,7 @@ branches:
     - release
     tracks-release-branches: false
     is-release-branch: false
-    is-mainline: true
+    is-main-branch: true
     pre-release-weight: 55000
   release:
     label: beta
@@ -34,7 +34,7 @@ branches:
     - release
     tracks-release-branches: false
     is-release-branch: true
-    is-mainline: false
+    is-main-branch: false
     pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
@@ -79,4 +79,4 @@ commit-message-incrementing: Enabled
 regex: ''
 tracks-release-branches: false
 is-release-branch: false
-is-mainline: false
+is-main-branch: false

@@ -66,12 +66,12 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
 
     private static void VerifyReadConfig(IGitVersionConfiguration configuration)
     {
-        // Verify no branches are set to mainline mode
-        if (configuration.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+        // Verify no branches are set to TrunkBased mode
+        if (configuration.Branches.Any(b => b.Value.VersioningMode == VersioningMode.TrunkBased))
         {
-            throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+            throw new ConfigurationException(@"TrunkBased mode only works at the repository level, a single branch cannot be put into TrunkBased mode
 
-This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+This is because TrunkBased mode treats your entire git repository as an event source with each merge into the 'TrunkBased' incrementing the version.
 
 If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
         }

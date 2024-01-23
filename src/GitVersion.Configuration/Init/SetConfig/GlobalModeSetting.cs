@@ -17,7 +17,8 @@ internal class GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog 
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
+    protected override StepResult HandleResult(
+        string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         switch (result)
         {
@@ -30,7 +31,7 @@ internal class GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog 
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "3":
-                configurationBuilder.WithVersioningMode(VersioningMode.Mainline);
+                configurationBuilder.WithVersioningMode(VersioningMode.TrunkBased);
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "0":

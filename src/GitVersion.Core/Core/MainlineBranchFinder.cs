@@ -22,7 +22,7 @@ internal class MainlineBranchFinder
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
+        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainBranch == true).ToList();
         this.log = log.NotNull();
     }
 
@@ -30,17 +30,17 @@ internal class MainlineBranchFinder
     {
         var branchOriginFinder = new BranchOriginFinder(commit, this.repositoryStore, this.configuration, this.log);
         return this.repository.Branches
-            .Where(BranchIsMainline)
+            .Where(IsMainBranch)
             .Select(branchOriginFinder.BranchOrigin)
             .Where(bc => bc != BranchCommit.Empty)
             .GroupBy(bc => bc.Commit.Sha, bc => bc.Branch)
             .ToDictionary(group => group.Key, x => x.ToList());
     }
 
-    private bool BranchIsMainline(INamedReference branch)
+    private bool IsMainBranch(INamedReference branch)
     {
         var matcher = new MainlineConfigBranchMatcher(branch, this.log);
-        return this.mainlineBranchConfigurations.Any(matcher.IsMainline);
+        return this.mainlineBranchConfigurations.Any(matcher.IsMainBranch);
     }
 
     private class MainlineConfigBranchMatcher
@@ -54,7 +54,7 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(IBranchConfiguration value)
+        public bool IsMainBranch(IBranchConfiguration value)
         {
             if (value.RegularExpression == null)
                 return false;

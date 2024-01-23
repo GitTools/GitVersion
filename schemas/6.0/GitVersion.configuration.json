@@ -70,7 +70,7 @@
     "increment": {
       "$ref": "#/$defs/incrementStrategy"
     },
-    "is-mainline": {
+    "is-main-branch": {
       "$ref": "#/$defs/nullableOfBoolean"
     },
     "is-release-branch": {
@@ -191,7 +191,7 @@
         "increment": {
           "$ref": "#/$defs/incrementStrategy"
         },
-        "is-mainline": {
+        "is-main-branch": {
           "$ref": "#/$defs/nullableOfBoolean"
         },
         "is-release-branch": {

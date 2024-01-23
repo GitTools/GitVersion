@@ -38,7 +38,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? regularExpression;
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
-    private bool? isMainline;
+    private bool? isMainBranch;
     private int? preReleaseWeight;
 
     protected readonly BranchMetaData MainBranch = new()
@@ -290,9 +290,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIsMainline(bool? value)
+    public virtual TConfigurationBuilder WithIsMainBranch(bool? value)
     {
-        this.isMainline = value;
+        this.isMainBranch = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -337,7 +337,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithRegularExpression(value.RegularExpression);
         WithTracksReleaseBranches(value.TracksReleaseBranches);
         WithIsReleaseBranch(value.IsReleaseBranch);
-        WithIsMainline(value.IsMainline);
+        WithIsMainBranch(value.IsMainBranch);
         WithPreReleaseWeight(value.PreReleaseWeight);
         return (TConfigurationBuilder)this;
     }
@@ -387,7 +387,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             TrackMergeTarget = this.trackMergeTarget,
             TrackMergeMessage = this.trackMergeMessage,
             CommitMessageIncrementing = this.commitMessageIncrementing,
-            IsMainline = this.isMainline,
+            IsMainBranch = this.isMainBranch,
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,

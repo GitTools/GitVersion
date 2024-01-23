@@ -85,7 +85,7 @@ internal sealed class TaggedSemanticVersionRepository(
                 }
             }
 
-            if (!configuration.IsMainline && !configuration.IsReleaseBranch)
+            if (!configuration.IsMainBranch && !configuration.IsReleaseBranch)
             {
                 var semanticVersionsOfMainlineBranches = GetTaggedSemanticVersionsOfMainlineBranches(
                     tagPrefix: configuration.TagPrefix,

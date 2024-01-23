@@ -11,7 +11,7 @@ namespace GitVersion.VersionCalculation.TrunkBased;
 internal record class TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, EffectiveConfiguration Configuration, VersionField Increment)
 {
     public bool IsPredecessorTheLastCommitOnTrunk
-        => !Configuration.IsMainline && Predecessor?.Configuration.IsMainline == true;
+        => !Configuration.IsMainBranch && Predecessor?.Configuration.IsMainBranch == true;
 
     public TrunkBasedIteration Iteration { get; } = Iteration.NotNull();
 
@@ -33,7 +33,7 @@ internal record class TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Va
 
     public TrunkBasedIteration? ChildIteration { get; private set; }
 
-    public bool HasChildIteration => ChildIteration is not null;
+    public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
 

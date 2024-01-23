@@ -42,11 +42,8 @@ internal class NextVersionCalculator(
         IVersionModeCalculator calculator = versioningMode switch
         {
             VersioningMode.ManualDeployment => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
-            VersioningMode.ContinuousDelivery => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
-            VersioningMode.ContinuousDeployment => nextVersion.Configuration is { IsMainline: true, Label: null }
-                ? versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>()
-                : versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
-            VersioningMode.Mainline => versionModeCalculators.SingleOfType<MainlineVersionCalculator>(),
+            VersioningMode.ContinuousDelivery => versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
+            VersioningMode.ContinuousDeployment => versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>(),
             _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
         };
         return calculator.Calculate(nextVersion);

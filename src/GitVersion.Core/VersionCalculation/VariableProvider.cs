@@ -15,37 +15,6 @@ internal class VariableProvider(IEnvironment environment) : IVariableProvider
         semanticVersion.NotNull();
         configuration.NotNull();
 
-        if (configuration.VersioningMode == VersioningMode.Mainline)
-        {
-            var preReleaseTagName = semanticVersion.PreReleaseTag.Name;
-            var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment;
-
-            var label = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
-            var isCommitTagged = currentCommitTaggedVersion?.IsMatchForBranchSpecificLabel(label) == true;
-
-            // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-            if (isContinuousDeploymentMode && !isCommitTagged && !semanticVersion.PreReleaseTag.HasTag() && preReleaseTagName.IsNullOrEmpty())
-            {
-                preReleaseTagName = label ?? string.Empty;
-            }
-
-            var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag.HasTag();
-            if ((!isCommitTagged && isContinuousDeploymentMode) || appendTagNumberPattern || configuration.VersioningMode == VersioningMode.Mainline || isContinuousDeploymentMode && configuration.IsMainline)
-            {
-                semanticVersion = PromoteNumberOfCommitsToTagNumber(semanticVersion, preReleaseTagName);
-            }
-            else
-            {
-                semanticVersion = new(semanticVersion)
-                {
-                    PreReleaseTag = new(semanticVersion.PreReleaseTag)
-                    {
-                        Name = preReleaseTagName
-                    }
-                };
-            }
-        }
-
         if (semanticVersion.CompareTo(currentCommitTaggedVersion) == 0)
         {
             // Will always be 0, don't bother with the +0 on tags
@@ -60,11 +29,26 @@ internal class VariableProvider(IEnvironment environment) : IVariableProvider
 
         var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration);
 
-        var informationalVersion = CheckAndFormatString(configuration.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
+        var informationalVersion = CheckAndFormatString(
+            configuration.AssemblyInformationalFormat,
+            semverFormatValues,
+            semverFormatValues.InformationalVersion,
+            "AssemblyInformationalVersion"
+        );
 
-        var assemblyFileSemVer = CheckAndFormatString(configuration.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+        var assemblyFileSemVer = CheckAndFormatString(
+            configuration.AssemblyFileVersioningFormat,
+            semverFormatValues,
+            semverFormatValues.AssemblyFileSemVer,
+            "AssemblyFileVersioningFormat"
+        );
 
-        var assemblySemVer = CheckAndFormatString(configuration.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+        var assemblySemVer = CheckAndFormatString(
+            configuration.AssemblyVersioningFormat,
+            semverFormatValues,
+            semverFormatValues.AssemblySemVer,
+            "AssemblyVersioningFormat"
+        );
 
         return new(
             semverFormatValues.Major,

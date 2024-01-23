@@ -22,7 +22,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
-            VersioningMode = VersioningMode.ContinuousDeployment,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -32,7 +32,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
-            IsMainline = false
+            IsMainBranch = false
         });
 
         WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
@@ -44,7 +44,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = true,
             TracksReleaseBranches = true,
-            IsMainline = false,
+            IsMainBranch = false,
             IsReleaseBranch = false,
             PreReleaseWeight = 0
         });
@@ -62,7 +62,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = true,
+            IsMainBranch = true,
             IsReleaseBranch = false,
             PreReleaseWeight = 55000
         });
@@ -70,8 +70,8 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
+            VersioningMode = VersioningMode.ManualDeployment,
             RegularExpression = ReleaseBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -83,7 +83,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = false,
+            IsMainBranch = false,
             IsReleaseBranch = true,
             PreReleaseWeight = 30000
         });
@@ -92,7 +92,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -110,7 +110,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDeployment,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.DevelopBranch.Name,
@@ -129,7 +129,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             SourceBranches =
             [
                 this.ReleaseBranch.Name,
@@ -151,7 +151,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = true,
+            IsMainBranch = true,
             IsReleaseBranch = false,
             PreReleaseWeight = 55000
         });
@@ -160,7 +160,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             RegularExpression = UnknownBranch.RegexPattern,
             Label = ConfigurationConstants.BranchNamePlaceholder,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ManualDeployment,
             Increment = IncrementStrategy.Inherit,
             SourceBranches =
             [

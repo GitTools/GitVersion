@@ -19,7 +19,7 @@ internal class BranchConfigurationBuilder
     private HashSet<string> isSourceBranchFor = [];
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
-    private bool? isMainline;
+    private bool? isMainBranch;
     private int? preReleaseWeight;
 
     private BranchConfigurationBuilder()
@@ -116,9 +116,9 @@ internal class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithIsMainline(bool? value)
+    public virtual BranchConfigurationBuilder WithIsMainBranch(bool? value)
     {
-        this.isMainline = value;
+        this.isMainBranch = value;
         return this;
     }
 
@@ -141,7 +141,7 @@ internal class BranchConfigurationBuilder
         WithRegularExpression(value.RegularExpression);
         WithTracksReleaseBranches(value.TracksReleaseBranches);
         WithIsReleaseBranch(value.IsReleaseBranch);
-        WithIsMainline(value.IsMainline);
+        WithIsMainBranch(value.IsMainBranch);
         WithPreReleaseWeight(value.PreReleaseWeight);
         WithSourceBranches(value.SourceBranches);
         WithIsSourceBranchFor(value.IsSourceBranchFor);
@@ -158,7 +158,7 @@ internal class BranchConfigurationBuilder
         TrackMergeTarget = trackMergeTarget,
         TrackMergeMessage = trackMergeMessage,
         CommitMessageIncrementing = commitMessageIncrementing,
-        IsMainline = isMainline,
+        IsMainBranch = isMainBranch,
         IsReleaseBranch = isReleaseBranch,
         LabelNumberPattern = labelNumberPattern,
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
