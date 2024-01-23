@@ -115,7 +115,7 @@ internal sealed class TrunkBasedVersionStrategy(
             if (!traversedCommits.Add(item)) continue;
 
             if (commitsWasBranchedFromLazy.Value.TryGetValue(item, out var effectiveConfigurationWasBranchedFrom)
-                && (!configuration.IsMainline || effectiveConfigurationWasBranchedFrom.Value.IsMainline))
+                && (!configuration.IsMainBranch || effectiveConfigurationWasBranchedFrom.Value.IsMainBranch))
             {
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
@@ -157,9 +157,9 @@ internal sealed class TrunkBasedVersionStrategy(
                             mergeMessage.MergedBranch
                         );
 
-                        if (childConfiguration.IsMainline)
+                        if (childConfiguration.IsMainBranch)
                         {
-                            if (configuration.IsMainline) throw new NotImplementedException();
+                            if (configuration.IsMainBranch) throw new NotImplementedException();
                             mergedCommitsInReverseOrderLazy = new(
                                 () => incrementStrategyFinder.GetMergedCommits(item, 0).Reverse().ToList()
                             );
@@ -229,8 +229,8 @@ internal sealed class TrunkBasedVersionStrategy(
 
             if (result.ContainsKey(branchCommitDictionary[item]))
             {
-                if ((branchConfiguration.IsMainline ?? Context.Configuration.IsMainline) == true
-                    && !result[branchCommitDictionary[item]].Value.IsMainline)
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true
+                    && !result[branchCommitDictionary[item]].Value.IsMainBranch)
                 {
                     result[branchCommitDictionary[item]]
                         = new(new(Context.Configuration, branchConfiguration), item);

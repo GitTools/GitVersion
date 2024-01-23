@@ -10,28 +10,28 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
         .WithVersioningMode(VersioningMode.TrunkBased)
         .WithBranch("main", builder => builder
-            .WithIsMainline(true).WithIncrement(IncrementStrategy.Patch)
+            .WithIsMainBranch(true).WithIncrement(IncrementStrategy.Patch)
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithSourceBranches()
         )
         .WithBranch("develop", builder => builder
-            .WithIsMainline(false).WithIncrement(IncrementStrategy.Minor)
+            .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Minor)
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
         .WithBranch("feature", builder => builder
-            .WithIsMainline(false).WithIncrement(IncrementStrategy.Minor)
+            .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Minor)
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
         .WithBranch("hotfix", builder => builder
-            .WithIsMainline(false).WithIncrement(IncrementStrategy.Patch)
+            .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Patch)
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithRegularExpression("^hotfix[/-](?<BranchName>.+)").WithLabel("{BranchName}")
             .WithSourceBranches("main")
         )
         .WithBranch("pull-request", builder => builder
-            .WithIsMainline(false).WithIncrement(IncrementStrategy.Inherit)
+            .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Inherit)
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
             .WithSourceBranches("main")
         );

@@ -15,8 +15,8 @@ internal sealed class EnrichIncrement : ITrunkBasedContextPreEnricher
             context.Label = null;
         context.Label ??= commit.Configuration.GetBranchSpecificLabel(commit.BranchName, null);
 
-        if (commit.Configuration.IsMainline)
+        if (commit.Configuration.IsMainBranch)
             context.BaseVersionSource = commit.Predecessor?.Value;
-        context.ForceIncrement |= commit.Configuration.IsMainline || commit.IsPredecessorTheLastCommitOnTrunk;
+        context.ForceIncrement |= commit.Configuration.IsMainBranch || commit.IsPredecessorTheLastCommitOnTrunk;
     }
 }

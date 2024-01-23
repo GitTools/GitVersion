@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation.TrunkBased.Trunk;
 internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
 {
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
-        => commit.HasChildIteration && commit.Configuration.IsMainline && context.SemanticVersion is null;
+        => commit.HasChildIteration && commit.Configuration.IsMainBranch && context.SemanticVersion is null;
 
     public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {

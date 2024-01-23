@@ -12,7 +12,7 @@ internal sealed class BranchRepository(Lazy<GitVersionContext> versionContext, I
     private readonly IGitRepository gitRepository = gitRepository.NotNull();
 
     public IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches)
-        => GetBranches([.. excludeBranches], configuration => configuration.IsMainline == true);
+        => GetBranches([.. excludeBranches], configuration => configuration.IsMainBranch == true);
 
     public IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches)
         => GetBranches([.. excludeBranches], configuration => configuration.IsReleaseBranch == true);

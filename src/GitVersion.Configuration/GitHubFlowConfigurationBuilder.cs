@@ -32,7 +32,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
-            IsMainline = false
+            IsMainBranch = false
         });
 
         WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration
@@ -44,7 +44,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = true,
+            IsMainBranch = true,
             IsReleaseBranch = false,
             PreReleaseWeight = 55000
         });
@@ -63,7 +63,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = false,
+            IsMainBranch = false,
             IsReleaseBranch = true,
             PreReleaseWeight = 30000
         });

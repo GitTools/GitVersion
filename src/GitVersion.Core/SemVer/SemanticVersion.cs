@@ -328,15 +328,15 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     }
 
     public SemanticVersion IncrementVersion(VersionField incrementStrategy)
-        => IncrementVersion(incrementStrategy, null, isMainRelease: true);
+        => IncrementVersion(incrementStrategy, null, isMainBranchRelease: true);
 
-    private SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label, bool isMainRelease)
+    private SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label, bool isMainBranchRelease)
     {
         var major = Major;
         var minor = Minor;
         var patch = Patch;
 
-        if (isMainRelease || !PreReleaseTag.HasTag())
+        if (isMainBranchRelease || !PreReleaseTag.HasTag())
         {
             switch (incrementStrategy)
             {
@@ -362,7 +362,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         string preReleaseTagName = string.Empty;
         long? preReleaseTagNumber = null;
 
-        if (!isMainRelease)
+        if (!isMainBranchRelease)
         {
             if (PreReleaseTag.HasTag())
             {

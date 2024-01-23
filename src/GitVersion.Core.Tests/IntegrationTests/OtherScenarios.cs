@@ -144,7 +144,7 @@ public class OtherScenarios : TestBase
         // * c7f68af 58 minutes ago  (tag: 1.0.0)
 
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithIsMainline(false))
+            .WithBranch("main", builder => builder.WithIsMainBranch(false))
             .WithBranch("develop", builder => builder
                 .WithTrackMergeTarget(trackMergeTarget).WithTracksReleaseBranches(false)
             ).Build();
@@ -919,7 +919,7 @@ public class OtherScenarios : TestBase
                 .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel(label)
-                .WithIsMainline(false)
+                .WithIsMainBranch(false)
             )
             .Build();
 
@@ -960,7 +960,7 @@ public class OtherScenarios : TestBase
                 .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("pre")
-                .WithIsMainline(false)
+                .WithIsMainBranch(false)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -1001,7 +1001,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("beta")
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithVersioningMode(VersioningMode.ContinuousDelivery)
-                .WithIsMainline(false)
+                .WithIsMainBranch(false)
             ).Build();
 
         using EmptyRepositoryFixture fixture = new("main");
@@ -1039,7 +1039,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", _ => _
-                .WithLabel(string.Empty).WithIsMainline(false)
+                .WithLabel(string.Empty).WithIsMainBranch(false)
                 .WithVersioningMode(VersioningMode.ContinuousDelivery)
             ).Build();
 

@@ -21,26 +21,26 @@ internal class ComparingTheBehaviorOfDifferentVersioningModes
 
     private static readonly IGitVersionConfiguration trunkBased = configurationBuilder
         .WithVersioningMode(VersioningMode.TrunkBased)
-        .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
-        .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
+        .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
+        .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
         .Build();
 
     private static readonly IGitVersionConfiguration continuousDeployment = configurationBuilder
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
 
     private static readonly IGitVersionConfiguration continuousDelivery = configurationBuilder
             .WithVersioningMode(VersioningMode.ContinuousDelivery)
-            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
             .Build();
 
     private static readonly IGitVersionConfiguration manualDeployment = configurationBuilder
             .WithVersioningMode(VersioningMode.ManualDeployment)
-            .WithBranch("main", _ => _.WithIsMainline(true).WithVersioningMode(VersioningMode.ManualDeployment))
-            .WithBranch("feature", _ => _.WithIsMainline(false).WithVersioningMode(VersioningMode.ManualDeployment))
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ManualDeployment))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ManualDeployment))
             .Build();
 
     [Test]

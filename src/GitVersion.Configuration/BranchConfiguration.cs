@@ -70,9 +70,9 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyDescription("Indicates this branch configuration represents a release branch in GitFlow.")]
     public bool? IsReleaseBranch { get; internal set; }
 
-    [JsonPropertyName("is-mainline")]
+    [JsonPropertyName("is-main-branch")]
     [JsonPropertyDescription("When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.")]
-    public bool? IsMainline { get; internal set; }
+    public bool? IsMainBranch { get; internal set; }
 
     [JsonPropertyName("pre-release-weight")]
     [JsonPropertyDescription("Provides a way to translate the PreReleaseLabel to a number.")]
@@ -96,7 +96,7 @@ internal record BranchConfiguration : IBranchConfiguration
             RegularExpression = RegularExpression ?? configuration.RegularExpression,
             TracksReleaseBranches = TracksReleaseBranches ?? configuration.TracksReleaseBranches,
             IsReleaseBranch = IsReleaseBranch ?? configuration.IsReleaseBranch,
-            IsMainline = IsMainline ?? configuration.IsMainline,
+            IsMainBranch = IsMainBranch ?? configuration.IsMainBranch,
             PreReleaseWeight = PreReleaseWeight ?? configuration.PreReleaseWeight
         };
     }

@@ -32,7 +32,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
-            IsMainline = false
+            IsMainBranch = false
         });
 
         WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
@@ -44,7 +44,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = true,
             TracksReleaseBranches = true,
-            IsMainline = false,
+            IsMainBranch = false,
             IsReleaseBranch = false,
             PreReleaseWeight = 0
         });
@@ -62,7 +62,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = true,
+            IsMainBranch = true,
             IsReleaseBranch = false,
             PreReleaseWeight = 55000
         });
@@ -83,7 +83,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = false,
+            IsMainBranch = false,
             IsReleaseBranch = true,
             PreReleaseWeight = 30000
         });
@@ -151,7 +151,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
-            IsMainline = true,
+            IsMainBranch = true,
             IsReleaseBranch = false,
             PreReleaseWeight = 55000
         });
