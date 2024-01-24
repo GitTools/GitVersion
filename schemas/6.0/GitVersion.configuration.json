@@ -55,6 +55,9 @@
     "commit-message-incrementing": {
       "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
     },
+    "mode": {
+      "$ref": "#/$defs/nullableOfDeploymentMode"
+    },
     "ignore": {
       "description": "The header property for the ignore configuration.",
       "type": "object",
@@ -173,9 +176,6 @@
       "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": "string"
     },
-    "mode": {
-      "$ref": "#/$defs/nullableOfDeploymentMode"
-    },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
       "type": "string"
@@ -187,6 +187,9 @@
       "properties": {
         "commit-message-incrementing": {
           "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
+        },
+        "mode": {
+          "$ref": "#/$defs/nullableOfDeploymentMode"
         },
         "increment": {
           "$ref": "#/$defs/incrementStrategy"
@@ -226,9 +229,6 @@
         },
         "tracks-release-branches": {
           "$ref": "#/$defs/nullableOfBoolean5"
-        },
-        "mode": {
-          "$ref": "#/$defs/nullableOfDeploymentMode"
         }
       }
     },
@@ -238,6 +238,15 @@
         "Enabled",
         "Disabled",
         "MergeMessageOnly"
+      ]
+    },
+    "nullableOfDeploymentMode": {
+      "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+      "enum": [
+        "ManualDeployment",
+        "ContinuousDelivery",
+        "ContinuousDeployment",
+        "TrunkBased"
       ]
     },
     "incrementStrategy": {
@@ -329,14 +338,6 @@
         "boolean",
         "null"
       ]
-    },
-    "nullableOfDeploymentMode": {
-        "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
-        "enum": [
-            "ManualDeployment",
-            "ContinuousDelivery",
-            "ContinuousDeployment"
-        ]
     },
     "string3": {
       "format": "date-time",

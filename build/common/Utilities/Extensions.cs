@@ -38,7 +38,7 @@ public static class Extensions
         }
 
         var attributes = task.GetCustomAttributes<TaskArgumentAttribute>().ToArray();
-        if (attributes.Any())
+        if (attributes.Length != 0)
         {
             var arguments = attributes.Select(attribute => $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]");
             return string.Join(" ", arguments);

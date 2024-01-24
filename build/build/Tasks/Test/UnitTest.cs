@@ -48,7 +48,7 @@ public class UnitTest : FrostingTask<BuildContext>
     public override void Finally(BuildContext context)
     {
         var testResultsFiles = context.GetFiles($"{Paths.TestOutput}/*.results.xml");
-        if (!context.IsAzurePipelineBuild || !testResultsFiles.Any()) return;
+        if (!context.IsAzurePipelineBuild || testResultsFiles.Count == 0) return;
 
         var data = new AzurePipelinesPublishTestResultsData
         {
