@@ -444,7 +444,7 @@ public class ArgumentParserTests : TestBase
             "mode=ContinuousDelivery",
             new GitVersionConfiguration
             {
-                VersioningMode = VersioningMode.ContinuousDelivery
+                DeploymentMode = DeploymentMode.ContinuousDelivery
             }
         );
         yield return new TestCaseData(
@@ -567,7 +567,7 @@ public class ArgumentParserTests : TestBase
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
                 UpdateBuildNumber = true,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-                VersioningMode = VersioningMode.ContinuousDelivery,
+                DeploymentMode = DeploymentMode.ContinuousDelivery,
                 TagPreReleaseWeight = 4
             }
         );

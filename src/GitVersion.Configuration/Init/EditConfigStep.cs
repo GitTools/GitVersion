@@ -55,7 +55,7 @@ internal class EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode ?? VersioningMode.ContinuousDeployment})
+5) Branch Increment mode (per commit/after tag) (Current: {configuration.DeploymentMode ?? DeploymentMode.ContinuousDeployment})
 6) Assembly versioning scheme (Current: {configuration.AssemblyVersioningScheme})
 7) Setup build scripts";
     }

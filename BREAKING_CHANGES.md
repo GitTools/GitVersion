@@ -33,7 +33,11 @@
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
     *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.*)` to support using `{BranchName}` out-of-the-box
 *   The branch related property `is-mainline` in the configuration system has been renamed to `is-main-branch`
-
+*   The versioning mode has been renamed to deployment mode and consists of following values:
+    *   ManualDeployment (previously ContinuousDelivery)
+    *   ContinuousDelivery (previously ContinuousDeployment)
+    *   ContinuousDeployment (new)
+	
 ## v5.0.0
 
 *   Version numbers in branches other than `release` branches are no longer

@@ -52,7 +52,7 @@ We can then customize the configuration by chaining methods of the builder. At t
 For example:
 ```csharp
 var configuration = configurationBuilder
-    .WithVersioningMode(VersioningMode.ContinuousDeployment)
+    .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
     .WithNextVersion("1.0.0")
     .Build();
 ```

@@ -29,7 +29,7 @@ internal class TrackReleaseBranchesVersionStrategy(IRepositoryStore repositorySt
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.Configuration.VersioningMode == VersioningMode.TrunkBased) return [];
+        if (Context.Configuration.DeploymentMode == DeploymentMode.TrunkBased) return [];
 
         return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : [];
     }

@@ -12,7 +12,7 @@ public class MainScenarios : TestBase
     public void CanHandleManualDeployment()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch(MainBranch, builder => builder.WithVersioningMode(VersioningMode.ManualDeployment))
+            .WithBranch(MainBranch, builder => builder.WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -26,7 +26,7 @@ public class MainScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder
-                .WithLabel("ci").WithVersioningMode(VersioningMode.ContinuousDelivery))
+                .WithLabel("ci").WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -40,7 +40,7 @@ public class MainScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder
-                .WithLabel("ci").WithVersioningMode(VersioningMode.ContinuousDeployment))
+                .WithLabel("ci").WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();

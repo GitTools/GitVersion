@@ -18,7 +18,7 @@ public record EffectiveConfiguration
         var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
         branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
-        if (!branchConfiguration.VersioningMode.HasValue)
+        if (!branchConfiguration.DeploymentMode.HasValue)
             throw new("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
@@ -38,7 +38,7 @@ public record EffectiveConfiguration
         AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
-        VersioningMode = branchConfiguration.VersioningMode.Value;
+        DeploymentMode = branchConfiguration.DeploymentMode.Value;
         TagPrefix = configuration.TagPrefix;
         VersionInBranchRegex = configuration.VersionInBranchRegex;
         Label = branchConfiguration.Label;
@@ -70,7 +70,7 @@ public record EffectiveConfiguration
         string? assemblyInformationalFormat,
         string? assemblyVersioningFormat,
         string? assemblyFileVersioningFormat,
-        VersioningMode versioningMode,
+        DeploymentMode versioningMode,
         string? tagPrefix,
         string label,
         string? nextVersion,
@@ -99,7 +99,7 @@ public record EffectiveConfiguration
         AssemblyInformationalFormat = assemblyInformationalFormat;
         AssemblyVersioningFormat = assemblyVersioningFormat;
         AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
-        VersioningMode = versioningMode;
+        DeploymentMode = versioningMode;
         TagPrefix = tagPrefix;
         Label = label;
         NextVersion = nextVersion;
@@ -127,7 +127,7 @@ public record EffectiveConfiguration
     public bool TracksReleaseBranches { get; }
     public bool IsReleaseBranch { get; }
     public bool IsMainBranch { get; }
-    public VersioningMode VersioningMode { get; }
+    public DeploymentMode DeploymentMode { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
     public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }
     public string? AssemblyInformationalFormat { get; }

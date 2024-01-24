@@ -158,8 +158,8 @@ public class FeatureBranchScenarios : TestBase
         fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
-            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
+            .WithBranch("feature", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
         fixture.AssertFullSemver("1.2.0-longrunning.2", configuration);
     }
@@ -422,7 +422,7 @@ public class FeatureBranchScenarios : TestBase
     public void PickUpVersionFromMainMarkedWithIsTracksReleaseBranches()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ManualDeployment)
+            .WithDeploymentMode(DeploymentMode.ManualDeployment)
             .WithBranch("unknown", builder => builder.WithIncrement(IncrementStrategy.Patch).WithTracksReleaseBranches(true))
             .WithBranch(MainBranch, builder => builder.WithLabel("pre").WithTracksReleaseBranches(true))
             .WithBranch("release", builder => builder.WithLabel("rc").WithTracksReleaseBranches(true))
@@ -453,11 +453,11 @@ public class FeatureBranchScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithAssemblyVersioningScheme(AssemblyVersioningScheme.Major)
             .WithAssemblyFileVersioningFormat("{MajorMinorPatch}.{env:WeightedPreReleaseNumber ?? 0}")
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranchVersion(true))
             .WithBranch("feature", builder => builder
                 .WithLabel($"feat-{ConfigurationConstants.BranchNamePlaceholder}")
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             )
             .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
             .Build();

@@ -7,8 +7,8 @@ namespace GitVersion.Configuration;
 internal record BranchConfiguration : IBranchConfiguration
 {
     [JsonPropertyName("mode")]
-    [JsonPropertyDescription("The versioning mode for this branch. Can be 'ContinuousDelivery', 'ContinuousDeployment', 'Mainline'.")]
-    public VersioningMode? VersioningMode { get; internal set; }
+    [JsonPropertyDescription("The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.")]
+    public DeploymentMode? DeploymentMode { get; internal set; }
 
     [JsonPropertyName("label")]
     [JsonPropertyDescription("The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).")]
@@ -85,7 +85,7 @@ internal record BranchConfiguration : IBranchConfiguration
         return new BranchConfiguration(this)
         {
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
-            VersioningMode = VersioningMode ?? configuration.VersioningMode,
+            DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
             PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion
                 ?? configuration.PreventIncrementOfMergedBranchVersion,

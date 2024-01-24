@@ -106,7 +106,7 @@ public class DevelopScenarios : TestBase
     public void CanHandleContinuousDelivery()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("develop", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -213,9 +213,9 @@ public class DevelopScenarios : TestBase
     public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("develop", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("release", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -255,9 +255,9 @@ public class DevelopScenarios : TestBase
     public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("develop", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("release", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -304,12 +304,12 @@ public class DevelopScenarios : TestBase
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .WithBranch("develop", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithPreventIncrementOfMergedBranchVersion(false)
             )
-            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("release", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -349,7 +349,7 @@ public class DevelopScenarios : TestBase
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranchVersion(true))
             .Build();
 

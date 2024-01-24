@@ -67,7 +67,7 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
     private static void VerifyReadConfig(IGitVersionConfiguration configuration)
     {
         // Verify no branches are set to TrunkBased mode
-        if (configuration.Branches.Any(b => b.Value.VersioningMode == VersioningMode.TrunkBased))
+        if (configuration.Branches.Any(b => b.Value.DeploymentMode == DeploymentMode.TrunkBased))
         {
             throw new ConfigurationException(@"TrunkBased mode only works at the repository level, a single branch cannot be put into TrunkBased mode
 

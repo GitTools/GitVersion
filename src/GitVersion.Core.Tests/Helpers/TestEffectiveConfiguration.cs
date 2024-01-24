@@ -12,7 +12,7 @@ public record TestEffectiveConfiguration : EffectiveConfiguration
         string? assemblyVersioningFormat = null,
         string? assemblyFileVersioningFormat = null,
         string? assemblyInformationalFormat = null,
-        VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
+        DeploymentMode versioningMode = DeploymentMode.ContinuousDelivery,
         string tagPrefix = ConfigurationConstants.DefaultTagPrefix,
         string label = "ci",
         string? nextVersion = null,

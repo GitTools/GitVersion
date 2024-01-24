@@ -32,19 +32,19 @@ internal class NextVersionCalculator(
         }
 
         var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
-        var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.VersioningMode, nextVersion);
+        var incrementedVersion = CalculateIncrementedVersion(nextVersion.Configuration.DeploymentMode, nextVersion);
 
         return new(incrementedVersion, nextVersion.BaseVersion, nextVersion.BranchConfiguration);
     }
 
-    private SemanticVersion CalculateIncrementedVersion(VersioningMode versioningMode, NextVersion nextVersion)
+    private SemanticVersion CalculateIncrementedVersion(DeploymentMode versioningMode, NextVersion nextVersion)
     {
         IVersionModeCalculator calculator = versioningMode switch
         {
-            VersioningMode.ManualDeployment => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
-            VersioningMode.ContinuousDelivery => versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
-            VersioningMode.ContinuousDeployment => versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>(),
-            _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(VersioningMode)),
+            DeploymentMode.ManualDeployment => versionModeCalculators.SingleOfType<ManualDeploymentVersionCalculator>(),
+            DeploymentMode.ContinuousDelivery => versionModeCalculators.SingleOfType<ContinuousDeliveryVersionCalculator>(),
+            DeploymentMode.ContinuousDeployment => versionModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>(),
+            _ => throw new InvalidEnumArgumentException(nameof(versioningMode), (int)versioningMode, typeof(DeploymentMode)),
         };
         return calculator.Calculate(nextVersion);
     }

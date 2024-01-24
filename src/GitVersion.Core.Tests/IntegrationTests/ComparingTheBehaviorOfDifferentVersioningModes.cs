@@ -9,7 +9,7 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 /// - Continuous deployment with is mainline false requires always a pre-release tag unless the commit is tagged
 /// </summary>
 [TestFixture]
-internal class ComparingTheBehaviorOfDifferentVersioningModes
+internal class ComparingTheBehaviorOfDifferentDeploymentModes
 {
     private static readonly GitHubFlowConfigurationBuilder configurationBuilder = GitHubFlowConfigurationBuilder.New
         .WithLabel(null)
@@ -20,27 +20,27 @@ internal class ComparingTheBehaviorOfDifferentVersioningModes
         );
 
     private static readonly IGitVersionConfiguration trunkBased = configurationBuilder
-        .WithVersioningMode(VersioningMode.TrunkBased)
-        .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
-        .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
+        .WithDeploymentMode(DeploymentMode.TrunkBased)
+        .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
+        .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
         .Build();
 
     private static readonly IGitVersionConfiguration continuousDeployment = configurationBuilder
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();
 
     private static readonly IGitVersionConfiguration continuousDelivery = configurationBuilder
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ContinuousDelivery))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
     private static readonly IGitVersionConfiguration manualDeployment = configurationBuilder
-            .WithVersioningMode(VersioningMode.ManualDeployment)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithVersioningMode(VersioningMode.ManualDeployment))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithVersioningMode(VersioningMode.ManualDeployment))
+            .WithDeploymentMode(DeploymentMode.ManualDeployment)
+            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 
     [Test]

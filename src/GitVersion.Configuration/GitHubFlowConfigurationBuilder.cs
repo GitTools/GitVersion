@@ -22,7 +22,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -53,7 +53,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
-            VersioningMode = VersioningMode.ManualDeployment,
+            DeploymentMode = DeploymentMode.ManualDeployment,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -72,7 +72,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = FeatureBranch.RegexPattern,
-            VersioningMode = VersioningMode.ManualDeployment,
+            DeploymentMode = DeploymentMode.ManualDeployment,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -87,7 +87,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -103,7 +103,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             RegularExpression = UnknownBranch.RegexPattern,
             Label = ConfigurationConstants.BranchNamePlaceholder,
-            VersioningMode = VersioningMode.ManualDeployment,
+            DeploymentMode = DeploymentMode.ManualDeployment,
             Increment = IncrementStrategy.Inherit,
             SourceBranches =
             [

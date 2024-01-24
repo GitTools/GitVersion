@@ -10,13 +10,13 @@ public class EffectiveBranchConfigurationFinderTests
 {
     [Theory]
     public void When_getting_configurations_of_a_branch_without_versioning_mode_Given_fallback_configuaration_with_versioning_mode_Then_result_should_have_versioning_mode(
-        VersioningMode versioningMode)
+        DeploymentMode versioningMode)
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(versioningMode)
-            .WithBranch("main", builder => builder.WithVersioningMode(null))
+            .WithDeploymentMode(versioningMode)
+            .WithBranch("main", builder => builder.WithDeploymentMode(null))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
@@ -29,20 +29,20 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(branchMock);
-        actual[0].Value.VersioningMode.ShouldBe(versioningMode);
+        actual[0].Value.DeploymentMode.ShouldBe(versioningMode);
     }
 
     [Theory]
     public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_fallback_configuaration_without_versioning_mode_Then_result_should_have_versioning_mode(
-        VersioningMode versioningMode)
+        DeploymentMode versioningMode)
     {
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(null)
-            .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
-            .WithBranch("develop", builder => builder.WithVersioningMode(null).WithIncrement(IncrementStrategy.Inherit))
+            .WithDeploymentMode(null)
+            .WithBranch("main", builder => builder.WithDeploymentMode(versioningMode))
+            .WithBranch("develop", builder => builder.WithDeploymentMode(null).WithIncrement(IncrementStrategy.Inherit))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
@@ -55,21 +55,21 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(mainBranchMock);
-        actual[0].Value.VersioningMode.ShouldBe(versioningMode);
+        actual[0].Value.DeploymentMode.ShouldBe(versioningMode);
     }
 
     [Theory]
     public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_parent_configuaration_with_versioning_mode_Then_result_should_not_have_versioning_mode_of_parent(
-        VersioningMode versioningMode)
+        DeploymentMode versioningMode)
     {
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(null)
-            .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
+            .WithDeploymentMode(null)
+            .WithBranch("main", builder => builder.WithDeploymentMode(versioningMode))
             .WithBranch("develop", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery).WithIncrement(IncrementStrategy.Inherit)
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery).WithIncrement(IncrementStrategy.Inherit)
             )
             .Build();
 
@@ -84,13 +84,13 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(mainBranchMock);
-        if (versioningMode == VersioningMode.ContinuousDelivery)
+        if (versioningMode == DeploymentMode.ContinuousDelivery)
         {
-            actual[0].Value.VersioningMode.ShouldBe(versioningMode);
+            actual[0].Value.DeploymentMode.ShouldBe(versioningMode);
         }
         else
         {
-            actual[0].Value.VersioningMode.ShouldNotBe(versioningMode);
+            actual[0].Value.DeploymentMode.ShouldNotBe(versioningMode);
         }
     }
 
@@ -156,7 +156,7 @@ public class EffectiveBranchConfigurationFinderTests
         var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
         var branchConfiguration = new BranchConfiguration
         {
-            VersioningMode = VersioningMode.TrunkBased,
+            DeploymentMode = DeploymentMode.TrunkBased,
             Increment = IncrementStrategy.None,
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = false,
@@ -169,14 +169,14 @@ public class EffectiveBranchConfigurationFinderTests
             .WithoutBranches()
             .WithBranch("release/latest", builder => builder
                 .WithConfiguration(branchConfiguration)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("latest")
                 .WithRegularExpression("release/latest")
             )
             .WithBranch("release", builder => builder
                 .WithConfiguration(branchConfiguration)
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithLabel("not-latest")
                 .WithRegularExpression("releases?[/-]")
