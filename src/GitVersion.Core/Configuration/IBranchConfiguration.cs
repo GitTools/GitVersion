@@ -5,7 +5,7 @@ namespace GitVersion.Configuration;
 
 public interface IBranchConfiguration
 {
-    VersioningMode? VersioningMode { get; }
+    DeploymentMode? DeploymentMode { get; }
 
     string? Label { get; }
 

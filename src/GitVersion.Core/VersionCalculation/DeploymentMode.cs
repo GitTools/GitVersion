@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation;
 
-public enum VersioningMode
+public enum DeploymentMode
 {
     ManualDeployment,
     ContinuousDelivery,

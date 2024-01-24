@@ -51,8 +51,8 @@ branches:
         var developConfiguration = configuration.Branches["develop"];
         developConfiguration.Increment.ShouldBe(IncrementStrategy.Major);
         developConfiguration.Increment.ShouldNotBe(defaultConfiguration.Branches["develop"].Increment);
-        developConfiguration.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-        developConfiguration.VersioningMode.ShouldNotBe(defaultConfiguration.Branches["develop"].VersioningMode);
+        developConfiguration.DeploymentMode.ShouldBe(DeploymentMode.ContinuousDelivery);
+        developConfiguration.DeploymentMode.ShouldNotBe(defaultConfiguration.Branches["develop"].DeploymentMode);
         developConfiguration.Label.ShouldBe("dev");
     }
 

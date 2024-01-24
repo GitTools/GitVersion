@@ -26,11 +26,11 @@ internal class SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, 
                 steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "1":
-                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDelivery);
+                this.branchConfigurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDelivery);
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "2":
-                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDeployment);
+                this.branchConfigurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDeployment);
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
         }

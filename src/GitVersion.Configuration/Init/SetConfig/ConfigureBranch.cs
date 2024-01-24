@@ -41,7 +41,7 @@ internal class ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog lo
 
 0) Go Back
 1) Branch Pr-release tag (Current: {branchConfiguration.Label})
-2) Branch Increment mode (per commit/after tag) (Current: {branchConfiguration.VersioningMode})";
+2) Branch Increment mode (per commit/after tag) (Current: {branchConfiguration.DeploymentMode})";
     }
 
     protected override string DefaultResult => "0";

@@ -91,8 +91,8 @@
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
 //            .WithNextVersion("1.0.0")
-//            .WithBranch("unknown", builder => builder.WithVersioningMode(VersioningMode.Mainline))
-//            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("unknown", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
+//            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 
 //        using var fixture = new EmptyRepositoryFixture();
@@ -108,7 +108,7 @@
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
 //            .WithNextVersion("1.0.0")
-//            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 
 //        using var fixture = new EmptyRepositoryFixture();
@@ -125,8 +125,8 @@
 //    public void MergeFeatureIntoMainline()
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
-//            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
-//            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
+//            .WithBranch("feature", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 
 //        using var fixture = new EmptyRepositoryFixture();
@@ -148,9 +148,9 @@
 //    public void MergeFeatureIntoMainlineWithMinorIncrement()
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
-//            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .WithBranch("feature", builder => builder
-//                .WithVersioningMode(VersioningMode.Mainline)
+//                .WithDeploymentMode(DeploymentMode.Mainline)
 //                .WithIncrement(IncrementStrategy.Minor)
 //            )
 //            .Build();
@@ -174,11 +174,11 @@
 //    public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
-//            .WithVersioningMode(VersioningMode.Mainline)
+//            .WithDeploymentMode(DeploymentMode.Mainline)
 //            .WithBranch("feature", builder => builder
 //                .WithIncrement(IncrementStrategy.Minor)
-//                .WithVersioningMode(VersioningMode.Mainline))
-//            .WithBranch("hotfix", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//                .WithDeploymentMode(DeploymentMode.Mainline))
+//            .WithBranch("hotfix", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 
 //        using var fixture = new EmptyRepositoryFixture();
@@ -234,7 +234,7 @@
 //        var configuration = GitFlowConfigurationBuilder.New
 //            .WithBranch("main", builder => builder.WithLabel("beta"))
 //            .WithBranch("feature", builder => builder
-//                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+//                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
 //            )
 //            .Build();
 
@@ -258,7 +258,7 @@
 //    {
 //        var configuration = GitFlowConfigurationBuilder.New
 //            .WithNextVersion("1.0.0")
-//            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("feature", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 
 //        using var fixture = new EmptyRepositoryFixture();
@@ -470,7 +470,7 @@
 //        // Arrange
 //        var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
 //        var configuration = GitFlowConfigurationBuilder.New
-//            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+//            .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.Mainline))
 //            .Build();
 //        var context = new GitVersionContext(branchMock, null, configuration, null, 0);
 //        var repositoryStoreMock = Substitute.For<IRepositoryStore>();

@@ -8,31 +8,31 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class TrunkBasedDevelopmentScenarios : TestBase
 {
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
-        .WithVersioningMode(VersioningMode.TrunkBased)
+        .WithDeploymentMode(DeploymentMode.TrunkBased)
         .WithBranch("main", builder => builder
             .WithIsMainBranch(true).WithIncrement(IncrementStrategy.Patch)
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
             .WithSourceBranches()
         )
         .WithBranch("develop", builder => builder
             .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Minor)
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
         .WithBranch("feature", builder => builder
             .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Minor)
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithSourceBranches("main")
         )
         .WithBranch("hotfix", builder => builder
             .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Patch)
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithRegularExpression("^hotfix[/-](?<BranchName>.+)").WithLabel("{BranchName}")
             .WithSourceBranches("main")
         )
         .WithBranch("pull-request", builder => builder
             .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Inherit)
-            .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithSourceBranches("main")
         );
 
@@ -487,7 +487,7 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     {
         var configuration = GetConfigurationBuilder()
             .WithBranch("feature", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.Minor)
             )
             .Build();
@@ -511,13 +511,13 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     public void VerifyIncrementConfigIsHonoured()
     {
         var minorIncrementConfig = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.TrunkBased)
+            .WithDeploymentMode(DeploymentMode.TrunkBased)
             .WithBranch("main", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
             )
             .WithBranch("feature", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
             )
             .Build();
@@ -590,7 +590,7 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     public void BranchWithoutMergeBaseMainlineBranchIsFound()
     {
         var configuration = GetConfigurationBuilder()
-            .WithBranch("unknown", builder => builder.WithVersioningMode(VersioningMode.ContinuousDelivery))
+            .WithBranch("unknown", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme.MajorMinorPatchTag)
             .Build();
 

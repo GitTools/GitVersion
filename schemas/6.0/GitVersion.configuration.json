@@ -174,7 +174,7 @@
       "type": "string"
     },
     "mode": {
-      "$ref": "#/$defs/nullableOfVersioningMode"
+      "$ref": "#/$defs/nullableOfDeploymentMode"
     },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
@@ -228,7 +228,7 @@
           "$ref": "#/$defs/nullableOfBoolean5"
         },
         "mode": {
-          "$ref": "#/$defs/nullableOfVersioningMode"
+          "$ref": "#/$defs/nullableOfDeploymentMode"
         }
       }
     },
@@ -330,13 +330,13 @@
         "null"
       ]
     },
-    "nullableOfVersioningMode": {
-      "description": "The versioning mode for this branch. Can be 'ContinuousDelivery', 'ContinuousDeployment', 'Mainline'.",
-      "enum": [
-        "ContinuousDelivery",
-        "ContinuousDeployment",
-        "Mainline"
-      ]
+    "nullableOfDeploymentMode": {
+        "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+        "enum": [
+            "ManualDeployment",
+            "ContinuousDelivery",
+            "ContinuousDeployment"
+        ]
     },
     "string3": {
       "format": "date-time",
