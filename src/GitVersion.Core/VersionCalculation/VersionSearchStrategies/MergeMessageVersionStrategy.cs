@@ -19,7 +19,7 @@ internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> ver
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (!configuration.Value.TrackMergeMessage || Context.Configuration.DeploymentMode == DeploymentMode.TrunkBased)
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.MergeMessage) || !configuration.Value.TrackMergeMessage)
             return [];
 
         var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);

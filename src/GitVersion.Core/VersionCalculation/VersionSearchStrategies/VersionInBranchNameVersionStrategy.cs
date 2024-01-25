@@ -17,7 +17,8 @@ internal class VersionInBranchNameVersionStrategy(IRepositoryStore repositorySto
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.Configuration.DeploymentMode == DeploymentMode.TrunkBased) yield break;
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.VersionInBranchName))
+            yield break;
 
         if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
         {

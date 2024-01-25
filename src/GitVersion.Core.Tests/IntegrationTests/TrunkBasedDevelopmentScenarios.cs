@@ -8,7 +8,7 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class TrunkBasedDevelopmentScenarios : TestBase
 {
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
-        .WithDeploymentMode(DeploymentMode.TrunkBased)
+        .WithVersionStrategy(VersionStrategies.TrunkBased)
         .WithBranch("main", builder => builder
             .WithIsMainBranch(true).WithIncrement(IncrementStrategy.Patch)
             .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
@@ -511,7 +511,7 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     public void VerifyIncrementConfigIsHonoured()
     {
         var minorIncrementConfig = GitFlowConfigurationBuilder.New
-            .WithDeploymentMode(DeploymentMode.TrunkBased)
+            .WithVersionStrategy(VersionStrategies.TrunkBased)
             .WithBranch("main", builder => builder
                 .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)

@@ -1,6 +1,5 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
@@ -29,11 +28,7 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
         if (configFilePath == null || !fileSystem.Exists(configFilePath)) return new GitVersionConfiguration();
 
         var readAllText = fileSystem.ReadAllText(configFilePath);
-        var readConfig = ConfigurationSerializer.Read(new StringReader(readAllText));
-
-        VerifyReadConfig(readConfig);
-
-        return readConfig;
+        return ConfigurationSerializer.Read(new StringReader(readAllText));
     }
 
     public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath)
@@ -62,19 +57,6 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
             ? HasConfigurationFileAt(this.configurationFile, out path)
             : HasConfigurationFileAt(DefaultFileName, out path)
               || HasConfigurationFileAt(DefaultAlternativeFileName, out path);
-    }
-
-    private static void VerifyReadConfig(IGitVersionConfiguration configuration)
-    {
-        // Verify no branches are set to TrunkBased mode
-        if (configuration.Branches.Any(b => b.Value.DeploymentMode == DeploymentMode.TrunkBased))
-        {
-            throw new ConfigurationException(@"TrunkBased mode only works at the repository level, a single branch cannot be put into TrunkBased mode
-
-This is because TrunkBased mode treats your entire git repository as an event source with each merge into the 'TrunkBased' incrementing the version.
-
-If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
-        }
     }
 
     private void WarnAboutAmbiguousConfigFileSelection(string? workingDirectory, string? projectRootDirectory)

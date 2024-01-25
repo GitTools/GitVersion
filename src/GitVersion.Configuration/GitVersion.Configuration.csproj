@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
+      <None Remove="SupportedWorkflows\TrunkBased\v1.yml" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 
@@ -10,6 +13,7 @@
     <ItemGroup>
         <EmbeddedResource Include="SupportedWorkflows\GitFlow\v1.yml" />
         <EmbeddedResource Include="SupportedWorkflows\GitHubFlow\v1.yml" />
+        <EmbeddedResource Include="SupportedWorkflows\TrunkBased\v1.yml" />
     </ItemGroup>
 
     <ItemGroup>

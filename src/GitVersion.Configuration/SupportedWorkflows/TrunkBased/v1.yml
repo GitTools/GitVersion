@@ -10,20 +10,8 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-versioning-strategy: 'ConfigNext,MergeMessage,TaggedCommit,TrackReleaseBranches,VersionInBranchName'
+versioning-strategy: TrunkBased
 branches:
-  develop:
-    mode: ContinuousDeployment
-    label: alpha
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    regex: ^dev(elop)?(ment)?$
-    source-branches: []
-    tracks-release-branches: true
-    is-release-branch: false
-    is-main-branch: false
-    pre-release-weight: 0
   main:
     label: ''
     increment: Patch
@@ -31,7 +19,6 @@ branches:
     track-merge-target: false
     regex: ^master$|^main$
     source-branches:
-    - develop
     - release
     tracks-release-branches: false
     is-release-branch: false
@@ -44,9 +31,7 @@ branches:
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
-    - develop
     - main
-    - support
     - release
     tracks-release-branches: false
     is-release-branch: true
@@ -58,12 +43,9 @@ branches:
     increment: Inherit
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
-    - develop
     - main
     - release
     - feature
-    - support
-    - hotfix
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
@@ -72,36 +54,10 @@ branches:
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
-    - develop
     - main
     - release
     - feature
-    - support
-    - hotfix
     pre-release-weight: 30000
-  hotfix:
-    mode: ContinuousDelivery
-    label: beta
-    increment: Inherit
-    regex: ^hotfix(es)?[/-]
-    source-branches:
-    - release
-    - main
-    - support
-    - hotfix
-    pre-release-weight: 30000
-  support:
-    label: ''
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    regex: ^support[/-]
-    source-branches:
-    - main
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
   unknown:
     mode: ContinuousDelivery
     label: '{BranchName}'
@@ -109,12 +65,9 @@ branches:
     regex: (?<BranchName>.*)
     source-branches:
     - main
-    - develop
     - release
     - feature
     - pull-request
-    - hotfix
-    - support
 ignore:
   sha: []
 mode: ContinuousDelivery

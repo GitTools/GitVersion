@@ -53,6 +53,7 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
+version-strategy: NonTrunkBased
 branches:
   develop:
     mode: ContinuousDeployment
@@ -684,3 +685,14 @@ Example of invalid `Strict`, but valid `Loose`
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources
+
+### version-strategy
+
+Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
+*   ConfigNext
+*   MergeMessage
+*   TaggedCommit
+*   TrackReleaseBranches
+*   VersionInBranchName
+*   NonTrunkBased = ConfigNext,MergeMessage,TaggedCommit,TrackReleaseBranches,VersionInBranchName
+*   TrunkBased

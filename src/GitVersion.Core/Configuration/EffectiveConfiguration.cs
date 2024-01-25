@@ -61,6 +61,7 @@ public record EffectiveConfiguration
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
+        VersionStrategy = configuration.VersionStrategy;
         PreReleaseWeight = branchConfiguration.PreReleaseWeight ?? 0;
         TagPreReleaseWeight = configuration.TagPreReleaseWeight.Value;
     }
@@ -176,7 +177,9 @@ public record EffectiveConfiguration
 
     public bool UpdateBuildNumber { get; }
 
-    public SemanticVersionFormat SemanticVersionFormat { get; set; }
+    public SemanticVersionFormat SemanticVersionFormat { get; }
+
+    public VersionStrategies VersionStrategy { get; }
 
     public int PreReleaseWeight { get; }
 

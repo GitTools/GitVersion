@@ -11,7 +11,7 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 internal class ComparingTheBehaviorOfDifferentDeploymentModes
 {
-    private static readonly GitHubFlowConfigurationBuilder configurationBuilder = GitHubFlowConfigurationBuilder.New
+    private static GitHubFlowConfigurationBuilder GetConfigurationBuilder() => GitHubFlowConfigurationBuilder.New
         .WithLabel(null)
         .WithBranch("main", _ => _
             .WithIncrement(IncrementStrategy.Patch).WithLabel(null)
@@ -19,25 +19,25 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
             .WithIncrement(IncrementStrategy.Inherit).WithLabel("{BranchName}")
         );
 
-    private static readonly IGitVersionConfiguration trunkBased = configurationBuilder
-        .WithDeploymentMode(DeploymentMode.TrunkBased)
+    private static readonly IGitVersionConfiguration trunkBased = GetConfigurationBuilder()
+        .WithVersionStrategy(VersionStrategies.TrunkBased)
         .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
         .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
         .Build();
 
-    private static readonly IGitVersionConfiguration continuousDeployment = configurationBuilder
+    private static readonly IGitVersionConfiguration continuousDeployment = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
             .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();
 
-    private static readonly IGitVersionConfiguration continuousDelivery = configurationBuilder
+    private static readonly IGitVersionConfiguration continuousDelivery = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
-    private static readonly IGitVersionConfiguration manualDeployment = configurationBuilder
+    private static readonly IGitVersionConfiguration manualDeployment = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ManualDeployment)
             .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ManualDeployment))

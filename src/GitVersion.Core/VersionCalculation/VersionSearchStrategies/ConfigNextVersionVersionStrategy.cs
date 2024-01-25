@@ -12,6 +12,9 @@ internal class ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionC
 {
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfigNext))
+            yield break;
+
         var contextConfiguration = Context.Configuration;
         var nextVersion = contextConfiguration.NextVersion;
         if (!nextVersion.IsNullOrEmpty() && !Context.IsCurrentCommitTagged)

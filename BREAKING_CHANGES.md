@@ -32,12 +32,21 @@
 *   The `BranchPrefixToTrim` configuration property has been removed. `RegularExpression` is now used to capture named groups instead.
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
     *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.*)` to support using `{BranchName}` out-of-the-box
+*   The `Mainline` mode and the related implementation has been removed completely. The new `TrunkBased` version strategy should be used instead.
 *   The branch related property `is-mainline` in the configuration system has been renamed to `is-main-branch`
 *   The versioning mode has been renamed to deployment mode and consists of following values:
     *   ManualDeployment (previously ContinuousDelivery)
     *   ContinuousDelivery (previously ContinuousDeployment)
     *   ContinuousDeployment (new)
-	
+*   On the configuration root level a new property with name `version-strategy` has been introduced with following values:
+    *   ConfigNext
+    *   MergeMessage
+    *   TaggedCommit
+    *   TrackReleaseBranches
+    *   VersionInBranchName
+    *   NonTrunkBased = ConfigNext | MergeMessage | TaggedCommit | TrackReleaseBranches | VersionInBranchName,
+    *   TrunkBased
+
 ## v5.0.0
 
 *   Version numbers in branches other than `release` branches are no longer

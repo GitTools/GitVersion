@@ -24,6 +24,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
+    private VersionStrategies versionStrategy;
     private Dictionary<string, string> mergeMessageFormats = new();
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
@@ -199,6 +200,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
+    public virtual TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
+    {
+        this.versionStrategy = value;
+        return (TConfigurationBuilder)this;
+    }
+
     public virtual TConfigurationBuilder WithMergeMessageFormats(IReadOnlyDictionary<string, string> value)
     {
         this.mergeMessageFormats = new(value);
@@ -321,6 +328,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
+        WithVersionStrategy(value.VersionStrategy);
         WithMergeMessageFormats(value.MergeMessageFormats);
         foreach (var (name, branchConfiguration) in value.Branches)
         {
@@ -377,6 +385,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
+            VersionStrategy = this.versionStrategy,
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,

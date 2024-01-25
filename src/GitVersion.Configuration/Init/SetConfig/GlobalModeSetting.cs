@@ -23,15 +23,15 @@ internal class GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog 
         switch (result)
         {
             case "1":
-                configurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDelivery);
+                configurationBuilder.WithDeploymentMode(DeploymentMode.ManualDeployment);
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "2":
-                configurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDeployment);
+                configurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDelivery);
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "3":
-                configurationBuilder.WithDeploymentMode(DeploymentMode.TrunkBased);
+                configurationBuilder.WithDeploymentMode(DeploymentMode.ContinuousDeployment);
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "0":

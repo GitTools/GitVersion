@@ -57,6 +57,19 @@ branches:
     }
 
     [Test]
+    public void CombineVersionStrategyConfigNextAndTaggedCommit()
+    {
+        // Arrange
+        SetupConfigFileContent("version-strategy: ConfigNext,TaggedCommit");
+
+        // Act
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        // Assert
+        configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfigNext | VersionStrategies.TaggedCommit);
+    }
+
+    [Test]
     public void CanRemoveLabel()
     {
         const string text = @"
