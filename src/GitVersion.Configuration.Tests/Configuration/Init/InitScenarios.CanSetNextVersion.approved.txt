@@ -2,7 +2,8 @@ next-version: 2.0.0
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-version-strategy: None
+strategies:
+- None
 branches: {}
 ignore:
   sha: []

@@ -9,6 +9,5 @@ public enum VersionStrategies
     TaggedCommit = 4,
     TrackReleaseBranches = 8,
     VersionInBranchName = 16,
-    NonTrunkBased = ConfigNext | MergeMessage | TaggedCommit | TrackReleaseBranches | VersionInBranchName,
     TrunkBased = 32,
 }

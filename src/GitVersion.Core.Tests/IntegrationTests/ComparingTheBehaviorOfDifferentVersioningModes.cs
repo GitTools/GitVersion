@@ -20,7 +20,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         );
 
     private static readonly IGitVersionConfiguration trunkBased = GetConfigurationBuilder()
-        .WithVersionStrategy(VersionStrategies.TrunkBased)
+        .WithVersionStrategies(VersionStrategies.TrunkBased)
         .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
         .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
         .Build();

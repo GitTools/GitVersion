@@ -10,7 +10,7 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-versioning-strategy: TrunkBased
+strategies: [TrunkBased]
 branches:
   main:
     label: ''

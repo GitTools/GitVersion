@@ -38,13 +38,12 @@
     *   ManualDeployment (previously ContinuousDelivery)
     *   ContinuousDelivery (previously ContinuousDeployment)
     *   ContinuousDeployment (new)
-*   On the configuration root level a new property with name `version-strategy` has been introduced with following values:
+*   At the configuration root level, a new array called `strategies` has been introduced, which can consist of on or more following values:
     *   ConfigNext
     *   MergeMessage
     *   TaggedCommit
     *   TrackReleaseBranches
     *   VersionInBranchName
-    *   NonTrunkBased = ConfigNext | MergeMessage | TaggedCommit | TrackReleaseBranches | VersionInBranchName,
     *   TrunkBased
 
 ## v5.0.0

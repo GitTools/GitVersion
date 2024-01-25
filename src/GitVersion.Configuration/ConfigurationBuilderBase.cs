@@ -24,7 +24,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
-    private VersionStrategies versionStrategy;
+    private VersionStrategies[] versionStrategies;
     private Dictionary<string, string> mergeMessageFormats = new();
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
@@ -200,9 +200,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
+    public virtual TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
     {
-        this.versionStrategy = value;
+        this.versionStrategies = values;
         return (TConfigurationBuilder)this;
     }
 
@@ -328,7 +328,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
-        WithVersionStrategy(value.VersionStrategy);
+        WithVersionStrategies(value.VersionStrategy);
         WithMergeMessageFormats(value.MergeMessageFormats);
         foreach (var (name, branchConfiguration) in value.Branches)
         {
@@ -385,7 +385,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
-            VersionStrategy = this.versionStrategy,
+            VersionStrategies = this.versionStrategies,
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,

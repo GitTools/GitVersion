@@ -727,7 +727,6 @@ GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.ConfigNext = 1 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.MergeMessage = 2 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.None = 0 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.NonTrunkBased = GitVersion.VersionCalculation.VersionStrategies.ConfigNext | GitVersion.VersionCalculation.VersionStrategies.MergeMessage | GitVersion.VersionCalculation.VersionStrategies.TaggedCommit | GitVersion.VersionCalculation.VersionStrategies.TrackReleaseBranches | GitVersion.VersionCalculation.VersionStrategies.VersionInBranchName -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.TaggedCommit = 4 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.TrackReleaseBranches = 8 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.TrunkBased = 32 -> GitVersion.VersionCalculation.VersionStrategies

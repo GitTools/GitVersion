@@ -18,7 +18,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
-            VersionStrategy = ConfigurationConstants.DefaultVersionStrategy,
+            VersionStrategies = ConfigurationConstants.DefaultVersionStrategies,
             TagPrefix = ConfigurationConstants.DefaultTagPrefix,
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,

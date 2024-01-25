@@ -14,7 +14,13 @@ internal static class ConfigurationConstants
     public const AssemblyVersioningScheme DefaultAssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
     public const AssemblyFileVersioningScheme DefaultAssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch;
     public const SemanticVersionFormat DefaultSemanticVersionFormat = SemanticVersionFormat.Strict;
-    public const VersionStrategies DefaultVersionStrategy = VersionStrategies.NonTrunkBased;
+    public static readonly VersionStrategies[] DefaultVersionStrategies = [
+        VersionStrategies.ConfigNext,
+        VersionStrategies.MergeMessage,
+        VersionStrategies.TaggedCommit,
+        VersionStrategies.TrackReleaseBranches,
+        VersionStrategies.VersionInBranchName
+    ];
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
     public const string DefaultTagPrefix = "[vV]?";
     public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
