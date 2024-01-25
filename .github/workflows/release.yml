@@ -16,7 +16,7 @@ jobs:
           # Finding the version from release tag
           $VERSION="${{ github.ref }}".Replace("refs/tags/", "")
           "version=$VERSION" >> $env:GITHUB_OUTPUT        
-      - uses: peter-evans/repository-dispatch@v2
+      - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           repository: ${{ github.repository }}
