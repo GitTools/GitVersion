@@ -4,7 +4,7 @@ namespace GitVersion.VersionCalculation;
 public enum VersionStrategies
 {
     None = 0,
-    ConfigNext = 1,
+    ConfigNextVersion = 1,
     MergeMessage = 2,
     TaggedCommit = 4,
     TrackReleaseBranches = 8,

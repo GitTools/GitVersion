@@ -124,14 +124,13 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyDefault(DefaultSemanticVersionFormat)]
     public SemanticVersionFormat SemanticVersionFormat { get; internal set; }
 
-    [JsonPropertyName("strategies")]
-    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfigNext', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.")]
-    public VersionStrategies[] VersionStrategies { get; internal set; } = [];
-
     [JsonIgnore]
-
     VersionStrategies IGitVersionConfiguration.VersionStrategy => VersionStrategies.Length == 0
         ? VersionCalculation.VersionStrategies.None : VersionStrategies.Aggregate((one, another) => one | another);
+
+    [JsonPropertyName("strategies")]
+    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfigNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.")]
+    public VersionStrategies[] VersionStrategies { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyDictionary<string, IBranchConfiguration> IGitVersionConfiguration.Branches

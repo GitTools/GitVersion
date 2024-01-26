@@ -60,13 +60,13 @@ branches:
     public void CombineVersionStrategyConfigNextAndTaggedCommit()
     {
         // Arrange
-        SetupConfigFileContent("strategies: [ConfigNext, TaggedCommit]");
+        SetupConfigFileContent("strategies: [ConfigNextVersion, TaggedCommit]");
 
         // Act
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         // Assert
-        configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfigNext | VersionStrategies.TaggedCommit);
+        configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfigNextVersion | VersionStrategies.TaggedCommit);
     }
 
     [Test]

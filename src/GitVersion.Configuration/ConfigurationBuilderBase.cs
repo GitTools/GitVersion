@@ -201,8 +201,19 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     }
 
     public virtual TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
+        => WithVersionStrategies((IEnumerable<VersionStrategies>)values);
+
+    public virtual TConfigurationBuilder WithVersionStrategies(IEnumerable<VersionStrategies> values)
     {
-        this.versionStrategies = values;
+        HashSet<VersionStrategies> versionStrategies = new();
+        foreach (var versionStrategy in values)
+        {
+            versionStrategies.AddRange(
+                Enum.GetValues<VersionStrategies>().Where(
+                    element => element != VersionStrategies.None && versionStrategy.HasFlag(element))
+            );
+        }
+        this.versionStrategies = versionStrategies.ToArray();
         return (TConfigurationBuilder)this;
     }
 

@@ -724,7 +724,7 @@ GitVersion.VersionCalculation.VersionCalculationModule
 GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void
 GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.ConfigNext = 1 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.ConfigNextVersion = 1 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.MergeMessage = 2 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.None = 0 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.TaggedCommit = 4 -> GitVersion.VersionCalculation.VersionStrategies

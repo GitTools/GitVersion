@@ -54,10 +54,14 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
-- ConfigNext, MergeMessage, TaggedCommit, TrackReleaseBranches, VersionInBranchName
+- ConfigNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
 branches:
   develop:
-    mode: ContinuousDeployment
+    mode: ContinuousDelivery
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -70,6 +74,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 0
   main:
+    mode: ContinuousDeployment
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -100,10 +105,10 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    regex: ^features?[/-]
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -129,7 +134,7 @@ branches:
     is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
     increment: Inherit
     regex: ^hotfix(es)?[/-]
@@ -155,10 +160,10 @@ branches:
     is-main-branch: true
     pre-release-weight: 55000
   unknown:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    regex: .*
+    regex: (?<BranchName>.+)
     source-branches:
     - main
     - develop
@@ -170,7 +175,7 @@ branches:
     is-source-branch-for: []
 ignore:
   sha: []
-mode: ContinuousDelivery
+mode: ManualDeployment
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
@@ -183,6 +188,7 @@ is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
+
 ```
 
 The details of the available options are as follows:
@@ -690,7 +696,7 @@ Example of invalid `Strict`, but valid `Loose`
 ### strategies
 
 Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
-*   ConfigNext
+*   ConfigNextVersion
 *   MergeMessage
 *   TaggedCommit
 *   TrackReleaseBranches
