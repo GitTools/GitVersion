@@ -129,7 +129,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
         ? VersionCalculation.VersionStrategies.None : VersionStrategies.Aggregate((one, another) => one | another);
 
     [JsonPropertyName("strategies")]
-    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfigNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.")]
+    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.")]
     public VersionStrategies[] VersionStrategies { get; internal set; } = [];
 
     [JsonIgnore]

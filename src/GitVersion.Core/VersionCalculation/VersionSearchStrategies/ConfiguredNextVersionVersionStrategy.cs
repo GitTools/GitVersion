@@ -8,11 +8,11 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-internal class ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : VersionStrategyBase(versionContext)
+internal class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : VersionStrategyBase(versionContext)
 {
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfigNextVersion))
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
             yield break;
 
         var contextConfiguration = Context.Configuration;

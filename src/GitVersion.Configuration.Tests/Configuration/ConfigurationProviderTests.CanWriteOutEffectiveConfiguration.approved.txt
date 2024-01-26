@@ -12,7 +12,7 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
-- ConfigNextVersion
+- ConfiguredNextVersion
 - MergeMessage
 - TaggedCommit
 - TrackReleaseBranches

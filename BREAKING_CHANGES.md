@@ -39,7 +39,7 @@
     *   ContinuousDelivery (previously ContinuousDeployment)
     *   ContinuousDeployment (new)
 *   At the configuration root level, a new array called `strategies` has been introduced, which can consist of on or more following values:
-    *   ConfigNextVersion
+    *   ConfiguredNextVersion
     *   MergeMessage
     *   TaggedCommit
     *   TrackReleaseBranches
