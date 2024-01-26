@@ -10,57 +10,43 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-strategies: [TrunkBased]
+strategies: [TrunkBased, ConfigNextVersion]
 branches:
   main:
+    mode: ContinuousDeployment
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: ^master$|^main$
-    source-branches:
-    - release
+    source-branches: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
-  release:
-    label: beta
-    increment: None
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    regex: ^releases?[/-]
-    source-branches:
-    - main
-    - release
-    tracks-release-branches: false
-    is-release-branch: true
-    is-main-branch: false
-    pre-release-weight: 30000
   feature:
-    mode: ContinuousDelivery
-    label: '{BranchName}'
-    increment: Inherit
+    increment: Minor
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
-    - release
-    - feature
+    pre-release-weight: 30000
+  hotfix:
+    increment: Patch
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    source-branches:
+    - main
     pre-release-weight: 30000
   pull-request:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: PullRequest
     increment: Inherit
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - main
-    - release
-    - feature
     pre-release-weight: 30000
   unknown:
-    mode: ContinuousDelivery
-    label: '{BranchName}'
+    mode: ManualDeployment
     increment: Inherit
     regex: (?<BranchName>.*)
     source-branches:
@@ -70,7 +56,7 @@ branches:
     - pull-request
 ignore:
   sha: []
-mode: ContinuousDelivery
+mode: ManualDeployment
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false

@@ -19,7 +19,6 @@ strategies:
 - VersionInBranchName
 branches:
   develop:
-    mode: ContinuousDelivery
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -32,7 +31,6 @@ branches:
     is-main-branch: false
     pre-release-weight: 0
   main:
-    mode: ContinuousDelivery
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -47,6 +45,7 @@ branches:
     is-main-branch: true
     pre-release-weight: 55000
   release:
+    mode: ManualDeployment
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -105,7 +104,6 @@ branches:
     is-release-branch: true
     pre-release-weight: 30000
   support:
-    mode: ContinuousDelivery
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -134,7 +132,7 @@ branches:
     is-source-branch-for: []
 ignore:
   sha: []
-mode: ManualDeployment
+mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false

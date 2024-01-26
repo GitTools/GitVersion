@@ -61,7 +61,10 @@ strategies:
 - VersionInBranchName
 branches:
   develop:
-    mode: ContinuousDelivery
+    tracks-release-branches: true
+    is-release-branch: false
+    is-main-branch: false
+    pre-release-weight: 0
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -69,12 +72,11 @@ branches:
     regex: ^dev(elop)?(ment)?$
     source-branches: []
     is-source-branch-for: []
-    tracks-release-branches: true
-    is-release-branch: false
-    is-main-branch: false
-    pre-release-weight: 0
   main:
-    mode: ContinuousDeployment
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -84,11 +86,12 @@ branches:
     - develop
     - release
     is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
   release:
+    tracks-release-branches: false
+    is-release-branch: true
+    is-main-branch: false
+    pre-release-weight: 30000
+    mode: ManualDeployment
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -100,11 +103,8 @@ branches:
     - support
     - release
     is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: true
-    is-main-branch: false
-    pre-release-weight: 30000
   feature:
+    pre-release-weight: 30000
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
@@ -117,8 +117,8 @@ branches:
     - support
     - hotfix
     is-source-branch-for: []
-    pre-release-weight: 30000
   pull-request:
+    pre-release-weight: 30000
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
@@ -132,8 +132,9 @@ branches:
     - support
     - hotfix
     is-source-branch-for: []
-    pre-release-weight: 30000
   hotfix:
+    is-release-branch: true
+    pre-release-weight: 30000
     mode: ManualDeployment
     label: beta
     increment: Inherit
@@ -144,9 +145,11 @@ branches:
     - support
     - hotfix
     is-source-branch-for: []
-    is-release-branch: true
-    pre-release-weight: 30000
   support:
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -155,10 +158,6 @@ branches:
     source-branches:
     - main
     is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
   unknown:
     mode: ManualDeployment
     label: '{BranchName}'
@@ -175,7 +174,7 @@ branches:
     is-source-branch-for: []
 ignore:
   sha: []
-mode: ManualDeployment
+mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
@@ -188,7 +187,6 @@ is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
-
 ```
 
 The details of the available options are as follows:

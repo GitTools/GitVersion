@@ -24,7 +24,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
-    private VersionStrategies[] versionStrategies;
+    private VersionStrategies versionStrategy;
     private Dictionary<string, string> mergeMessageFormats = new();
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
@@ -200,20 +200,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
-        => WithVersionStrategies((IEnumerable<VersionStrategies>)values);
-
-    public virtual TConfigurationBuilder WithVersionStrategies(IEnumerable<VersionStrategies> values)
+    public virtual TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
     {
-        HashSet<VersionStrategies> versionStrategies = new();
-        foreach (var versionStrategy in values)
-        {
-            versionStrategies.AddRange(
-                Enum.GetValues<VersionStrategies>().Where(
-                    element => element != VersionStrategies.None && versionStrategy.HasFlag(element))
-            );
-        }
-        this.versionStrategies = versionStrategies.ToArray();
+        this.versionStrategy = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -339,7 +328,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
-        WithVersionStrategies(value.VersionStrategy);
+        WithVersionStrategy(value.VersionStrategy);
         WithMergeMessageFormats(value.MergeMessageFormats);
         foreach (var (name, branchConfiguration) in value.Branches)
         {
@@ -377,6 +366,10 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             branches.Add(name, (BranchConfiguration)branchConfigurationBuilder.Build());
         }
 
+        var versionStrategies = Enum.GetValues<VersionStrategies>()
+            .Where(element => element != VersionStrategies.None && this.versionStrategy.HasFlag(element))
+            .ToArray();
+
         IGitVersionConfiguration configuration = new GitVersionConfiguration
         {
             AssemblyVersioningScheme = this.assemblyVersioningScheme,
@@ -396,7 +389,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
-            VersionStrategies = this.versionStrategies,
+            VersionStrategies = versionStrategies,
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,
