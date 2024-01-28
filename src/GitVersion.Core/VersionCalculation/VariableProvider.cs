@@ -79,48 +79,6 @@ internal class VariableProvider(IEnvironment environment) : IVariableProvider
         );
     }
 
-    private static SemanticVersion PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion, string preReleaseTagName)
-    {
-        var preReleaseTagNumber = semanticVersion.PreReleaseTag.Number;
-        long buildMetaDataCommitsSinceVersionSource;
-        var buildMetaDataCommitsSinceTag = semanticVersion.BuildMetaData.CommitsSinceTag;
-
-        // For continuous deployment the commits since tag gets promoted to the pre-release number
-        if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
-        {
-            preReleaseTagNumber = null;
-            buildMetaDataCommitsSinceVersionSource = 0;
-        }
-        else
-        {
-            // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-            if (preReleaseTagNumber.HasValue)
-            {
-                preReleaseTagNumber += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
-            }
-            else
-            {
-                preReleaseTagNumber = semanticVersion.BuildMetaData.CommitsSinceTag;
-            }
-            buildMetaDataCommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
-            buildMetaDataCommitsSinceTag = null; // why is this set to null ?
-        }
-
-        return new(semanticVersion)
-        {
-            PreReleaseTag = new(semanticVersion.PreReleaseTag)
-            {
-                Name = preReleaseTagName,
-                Number = preReleaseTagNumber
-            },
-            BuildMetaData = new(semanticVersion.BuildMetaData)
-            {
-                CommitsSinceVersionSource = buildMetaDataCommitsSinceVersionSource,
-                CommitsSinceTag = buildMetaDataCommitsSinceTag
-            }
-        };
-    }
-
     private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
     {
         string? formattedString;

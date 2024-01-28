@@ -55,29 +55,6 @@ internal class RepositoryStore : IRepositoryStore
         return currentBranch.Tip;
     }
 
-    public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
-    {
-        if (mainlineTip is null)
-        {
-            return [];
-        }
-
-        var filter = new CommitFilter { IncludeReachableFrom = mainlineTip, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Reverse, FirstParentOnly = true };
-
-        return this.repository.Commits.QueryBy(filter);
-    }
-
-    public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase)
-    {
-        var filter = new CommitFilter { IncludeReachableFrom = mergedHead, ExcludeReachableFrom = findMergeBase };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-
-        var commits = mergeCommit != null
-            ? new[] { mergeCommit }.Union(commitCollection)
-            : commitCollection;
-        return commits;
-    }
-
     public IBranch GetTargetBranch(string? targetBranchName)
     {
         // By default, we assume HEAD is pointing to the desired branch
@@ -108,35 +85,6 @@ internal class RepositoryStore : IRepositoryStore
 
     public IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    public IBranch? FindMainBranch(IGitVersionConfiguration configuration)
-    {
-        var branches = configuration.Branches;
-        var mainBranchRegex = branches[ConfigurationConstants.MainBranchKey].RegularExpression
-            ?? branches[ConfigurationConstants.MasterBranchKey].RegularExpression;
-
-        if (mainBranchRegex == null)
-        {
-            return FindBranch(ConfigurationConstants.MainBranchKey) ?? FindBranch(ConfigurationConstants.MasterBranchKey);
-        }
-
-        return this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.WithoutOrigin, mainBranchRegex, RegexOptions.IgnoreCase));
-    }
-
-    public IEnumerable<IBranch> FindMainlineBranches(IGitVersionConfiguration configuration)
-    {
-        configuration.NotNull();
-
-        foreach (var branch in this.repository.Branches)
-        {
-            var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
-            if (branchConfiguration.IsMainBranch == true)
-            {
-                yield return branch;
-            }
-        }
-    }
-
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
@@ -151,12 +99,6 @@ internal class RepositoryStore : IRepositoryStore
 
         var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
-    }
-
-    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IGitVersionConfiguration configuration)
-    {
-        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, this.log);
-        return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
     public IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration,

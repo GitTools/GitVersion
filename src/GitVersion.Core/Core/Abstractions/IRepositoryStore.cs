@@ -11,20 +11,14 @@ public interface IRepositoryStore
 
     ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
     ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
-    IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip);
-    IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase);
     IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit);
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(ReferenceName branchName);
     IBranch? FindBranch(string branchName);
-    IBranch? FindMainBranch(IGitVersionConfiguration configuration);
-    IEnumerable<IBranch> FindMainlineBranches(IGitVersionConfiguration configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
-
-    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IGitVersionConfiguration configuration);
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.

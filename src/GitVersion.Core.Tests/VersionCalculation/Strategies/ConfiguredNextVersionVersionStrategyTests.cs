@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace GitVersion.Core.Tests.VersionCalculation.Strategies;
 
 [TestFixture]
-public class ConfiguredNextVersionBaseVersionStrategyTests : TestBase
+public class ConfiguredNextVersionVersionStrategyTests : TestBase
 {
     [Test]
     public void ReturnsNullWhenNoNextVersionIsInConfig()
