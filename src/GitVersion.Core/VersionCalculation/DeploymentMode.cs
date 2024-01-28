@@ -4,6 +4,5 @@ public enum DeploymentMode
 {
     ManualDeployment,
     ContinuousDelivery,
-    ContinuousDeployment,
-    TrunkBased
+    ContinuousDeployment
 }

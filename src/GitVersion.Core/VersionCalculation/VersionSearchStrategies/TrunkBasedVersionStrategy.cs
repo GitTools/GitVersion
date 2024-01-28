@@ -66,7 +66,8 @@ internal sealed class TrunkBasedVersionStrategy(
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (Context.Configuration.DeploymentMode != DeploymentMode.TrunkBased) yield break;
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrunkBased))
+            yield break;
 
         var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
 

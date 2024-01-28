@@ -43,7 +43,6 @@ The global configuration looks like this:
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
-version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -53,6 +52,7 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
+strategies: [ConfigNext, MergeMessage, TaggedCommit, TrackReleaseBranches, VersionInBranchName]
 branches:
   develop:
     mode: ContinuousDeployment
@@ -62,7 +62,6 @@ branches:
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
-    is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
     is-main-branch: false
@@ -76,7 +75,6 @@ branches:
     source-branches:
     - develop
     - release
-    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
@@ -92,7 +90,6 @@ branches:
     - main
     - support
     - release
-    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
     is-main-branch: false
@@ -101,7 +98,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: ^features?[/-]
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -109,7 +106,6 @@ branches:
     - feature
     - support
     - hotfix
-    is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
@@ -124,7 +120,6 @@ branches:
     - feature
     - support
     - hotfix
-    is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
     mode: ContinuousDelivery
@@ -136,8 +131,6 @@ branches:
     - main
     - support
     - hotfix
-    is-source-branch-for: []
-    is-release-branch: true
     pre-release-weight: 30000
   support:
     label: ''
@@ -147,7 +140,6 @@ branches:
     regex: ^support[/-]
     source-branches:
     - main
-    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
@@ -156,7 +148,7 @@ branches:
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
-    regex: .*
+    regex: (?<BranchName>.*)
     source-branches:
     - main
     - develop
@@ -165,7 +157,6 @@ branches:
     - pull-request
     - hotfix
     - support
-    is-source-branch-for: []
 ignore:
   sha: []
 mode: ContinuousDelivery
@@ -176,8 +167,6 @@ track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
-source-branches: []
-is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
@@ -684,3 +673,13 @@ Example of invalid `Strict`, but valid `Loose`
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources
+
+### strategies
+
+Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
+*   ConfiguredNextVersion
+*   MergeMessage
+*   TaggedCommit
+*   TrackReleaseBranches
+*   VersionInBranchName
+*   TrunkBased

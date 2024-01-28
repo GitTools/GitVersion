@@ -199,7 +199,7 @@ internal sealed class TaggedSemanticVersionRepository(
             using (this.log.IndentLog($"Getting tagged semantic versions of mainline branches. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                foreach (var mainlinemBranch in branchRepository.GetMainlineBranches(excludeBranches))
+                foreach (var mainlinemBranch in branchRepository.GetMainBranches(excludeBranches))
                 {
                     foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(mainlinemBranch, tagPrefix, format).SelectMany(_ => _))
                     {

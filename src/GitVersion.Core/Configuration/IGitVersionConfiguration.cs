@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
@@ -42,6 +43,8 @@ public interface IGitVersionConfiguration : IBranchConfiguration
     bool UpdateBuildNumber { get; }
 
     SemanticVersionFormat SemanticVersionFormat { get; }
+
+    VersionStrategies VersionStrategy { get; }
 
     IReadOnlyDictionary<string, IBranchConfiguration> Branches { get; }
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace GitVersion.Core.Tests.VersionCalculation.Strategies;
 
 [TestFixture]
-public class ConfigNextVersionBaseVersionStrategyTests : TestBase
+public class ConfiguredNextVersionVersionStrategyTests : TestBase
 {
     [Test]
     public void ReturnsNullWhenNoNextVersionIsInConfig()
@@ -22,7 +22,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Strict)]
     [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Loose)]
     [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
-    public void ConfigNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
+    public void ConfiguredNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
     {
         var overrideConfiguration = new Dictionary<object, object?>
         {
@@ -37,7 +37,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     }
 
     [TestCase("0.1", SemanticVersionFormat.Strict)]
-    public void ConfigNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
+    public void ConfiguredNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
     {
         var overrideConfiguration = new Dictionary<object, object?>
         {
@@ -54,7 +54,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         var contextBuilder = new GitVersionContextBuilder().WithOverrideConfiguration(overrideConfiguration);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
-        var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfigNextVersionVersionStrategy>();
+        var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfiguredNextVersionVersionStrategy>();
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
 

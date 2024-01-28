@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
@@ -13,6 +14,13 @@ internal static class ConfigurationConstants
     public const AssemblyVersioningScheme DefaultAssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
     public const AssemblyFileVersioningScheme DefaultAssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch;
     public const SemanticVersionFormat DefaultSemanticVersionFormat = SemanticVersionFormat.Strict;
+    public static readonly VersionStrategies[] DefaultVersionStrategies = [
+        VersionStrategies.ConfiguredNextVersion,
+        VersionStrategies.MergeMessage,
+        VersionStrategies.TaggedCommit,
+        VersionStrategies.TrackReleaseBranches,
+        VersionStrategies.VersionInBranchName
+    ];
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
     public const string DefaultTagPrefix = "[vV]?";
     public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";

@@ -11,7 +11,7 @@ internal sealed class BranchRepository(Lazy<GitVersionContext> versionContext, I
 
     private readonly IGitRepository gitRepository = gitRepository.NotNull();
 
-    public IEnumerable<IBranch> GetMainlineBranches(params IBranch[] excludeBranches)
+    public IEnumerable<IBranch> GetMainBranches(params IBranch[] excludeBranches)
         => GetBranches([.. excludeBranches], configuration => configuration.IsMainBranch == true);
 
     public IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches)
