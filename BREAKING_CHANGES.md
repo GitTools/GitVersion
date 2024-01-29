@@ -31,7 +31,7 @@
 *   The `useBranchName` magic string has been removed. Instead use `{BranchName}` for `label`.
 *   The `BranchPrefixToTrim` configuration property has been removed. `RegularExpression` is now used to capture named groups instead.
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
-    *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.*)` to support using `{BranchName}` out-of-the-box
+    *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
 *   The `Mainline` mode and the related implementation has been removed completely. The new `TrunkBased` version strategy should be used instead.
 *   The branch related property `is-mainline` in the configuration system has been renamed to `is-main-branch`
 *   The versioning mode has been renamed to deployment mode and consists of following values:

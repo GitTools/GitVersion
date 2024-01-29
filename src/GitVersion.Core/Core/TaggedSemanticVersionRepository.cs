@@ -87,7 +87,7 @@ internal sealed class TaggedSemanticVersionRepository(
 
             if (!configuration.IsMainBranch && !configuration.IsReleaseBranch)
             {
-                var semanticVersionsOfMainlineBranches = GetTaggedSemanticVersionsOfMainlineBranches(
+                var semanticVersionsOfMainlineBranches = GetTaggedSemanticVersionsOfMainBranches(
                     tagPrefix: configuration.TagPrefix,
                     format: configuration.SemanticVersionFormat,
                     excludeBranches: branch
@@ -188,7 +188,7 @@ internal sealed class TaggedSemanticVersionRepository(
         return result;
     }
 
-    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainlineBranches(
+    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
         string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches)
     {
         tagPrefix ??= string.Empty;
@@ -236,7 +236,7 @@ internal sealed class TaggedSemanticVersionRepository(
         return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
     }
 
-    private ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
+    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {
         tagPrefix ??= string.Empty;
 

@@ -1,6 +1,7 @@
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -10,7 +11,9 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-strategies: [TrunkBased, ConfiguredNextVersion]
+strategies:
+- TrunkBased
+- ConfiguredNextVersion
 branches:
   main:
     mode: ContinuousDeployment
@@ -48,7 +51,7 @@ branches:
   unknown:
     mode: ManualDeployment
     increment: Inherit
-    regex: (?<BranchName>.*)
+    regex: (?<BranchName>.+)
     source-branches:
     - main
     - release

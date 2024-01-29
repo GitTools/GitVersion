@@ -1,6 +1,7 @@
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -10,10 +11,14 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-strategies: [ConfigNext, MergeMessage, TaggedCommit, TrackReleaseBranches, VersionInBranchName]
+strategies:
+- ConfiguredNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
 branches:
   develop:
-    mode: ContinuousDeployment
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -38,6 +43,7 @@ branches:
     is-main-branch: true
     pre-release-weight: 55000
   release:
+    mode: ManualDeployment
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -53,7 +59,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
     regex: ^features?[/-](?<BranchName>.+)
@@ -80,7 +86,7 @@ branches:
     - hotfix
     pre-release-weight: 30000
   hotfix:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
     increment: Inherit
     regex: ^hotfix(es)?[/-]
@@ -89,6 +95,7 @@ branches:
     - main
     - support
     - hotfix
+    is-release-branch: true
     pre-release-weight: 30000
   support:
     label: ''
@@ -103,10 +110,10 @@ branches:
     is-main-branch: true
     pre-release-weight: 55000
   unknown:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    regex: (?<BranchName>.*)
+    regex: (?<BranchName>.+)
     source-branches:
     - main
     - develop
