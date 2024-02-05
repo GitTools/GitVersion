@@ -34,11 +34,13 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
             // testing windows and macos artifacts, the linux is tested with docker
             if (platform == PlatformFamily.Linux) continue;
-            if (runtime.EndsWith("arm64")) continue; // TODO: enable when we have arm64 macos agent
 
-            context.Information("Validating native lib:");
-            var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
-            context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
+            if (context.IsRunningOnAmd64() && runtime.EndsWith("x64") || context.IsRunningOnArm64() && runtime.EndsWith("arm64"))
+            {
+                context.Information("Validating native lib:");
+                var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
+                context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
+            }
         }
     }
 
