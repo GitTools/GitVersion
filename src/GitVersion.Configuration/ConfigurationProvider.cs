@@ -1,7 +1,5 @@
-using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Configuration.SupportedWorkflows;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;
@@ -12,15 +10,13 @@ internal class ConfigurationProvider(
     IFileSystem fileSystem,
     ILog log,
     IConfigurationFileLocator configFileLocator,
-    IOptions<GitVersionOptions> options,
-    IConfigInitWizard configInitWizard)
+    IOptions<GitVersionOptions> options)
     : IConfigurationProvider
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ILog log = log.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
-    private readonly IConfigInitWizard configInitWizard = configInitWizard.NotNull();
 
     public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
@@ -31,23 +27,6 @@ internal class ConfigurationProvider(
         return this.configFileLocator.TryGetConfigurationFile(workingDirectory, projectRootDirectory, out var configFilePath)
             ? ProvideConfiguration(configFilePath, overrideConfiguration)
             : ProvideForDirectory(null, overrideConfiguration);
-    }
-
-    public void Init(string workingDirectory)
-    {
-        var gitVersionOptions = this.options.Value;
-        var fileName = gitVersionOptions.ConfigurationInfo.ConfigurationFile ?? ConfigurationFileLocator.DefaultFileName;
-        var configFilePath = PathHelper.Combine(workingDirectory, fileName);
-        var currentConfiguration = this.configFileLocator.ReadConfiguration(configFilePath);
-
-        var configuration = this.configInitWizard.Run(currentConfiguration, workingDirectory);
-        if (configuration == null) return;
-
-        using var stream = this.fileSystem.OpenWrite(configFilePath);
-        using var writer = new StreamWriter(stream);
-        this.log.Info("Saving configuration file");
-        ConfigurationSerializer.Write(configuration, writer);
-        stream.Flush();
     }
 
     internal IGitVersionConfiguration ProvideForDirectory(string? workingDirectory,

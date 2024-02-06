@@ -44,15 +44,6 @@ internal class ArgumentParser(IEnvironment environment, ICurrentBuildAgent build
 
         var firstArgument = commandLineArguments[0];
 
-        if (firstArgument.IsInit())
-        {
-            return new Arguments
-            {
-                TargetPath = SysEnv.CurrentDirectory,
-                Init = true
-            };
-        }
-
         if (firstArgument.IsHelp())
         {
             return new Arguments
