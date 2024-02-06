@@ -219,7 +219,8 @@ internal class NextVersionCalculator(
             var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
                 currentCommit: Context.CurrentCommit,
                 baseVersion: baseVersion,
-                configuration: configuration.Value
+                configuration: configuration.Value,
+                label: label
             );
             return baseVersion.GetSemanticVersion().Increment(incrementStrategy, label);
         }

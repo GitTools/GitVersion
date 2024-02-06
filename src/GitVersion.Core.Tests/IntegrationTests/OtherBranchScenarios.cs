@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -7,6 +8,73 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class OtherBranchScenarios : TestBase
 {
+    [TestCase("", "NotAVersion", "2.0.0-1", "1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("", "1.5.0", "1.5.0", "1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("prefix", "1.5.0", "2.0.0-1", "1.9.0", "2.0.0-1", "2.0.0-2")]
+    [TestCase("prefix", "1.5.0", "2.0.0-1", "prefix1.9.0", "1.9.0", "1.9.1-1")]
+    [TestCase("prefix", "prefix1.5.0", "1.5.0", "1.9.0", "1.5.0", "1.5.1-1")]
+    public void CanUseCommitMessagesToBumpVersion_TagsTakePriorityOnlyIfVersions(
+        string tagPrefix,
+        string firstTag,
+        string expectedAfterFirstTag,
+        string secondTag,
+        string expectedAfterSecondTag,
+        string expectedVersionAfterNewCommit)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithTagPrefix(tagPrefix)
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        var repo = fixture.Repository;
+
+        repo.MakeATaggedCommit($"{tagPrefix}1.0.0");
+        repo.MakeACommit("+semver:major");
+        fixture.AssertFullSemver("2.0.0-1", configuration);
+
+        repo.ApplyTag(firstTag);
+        fixture.AssertFullSemver(expectedAfterFirstTag, configuration);
+
+        repo.ApplyTag(secondTag);
+        fixture.AssertFullSemver(expectedAfterSecondTag, configuration);
+
+        repo.MakeACommit();
+        fixture.AssertFullSemver(expectedVersionAfterNewCommit, configuration);
+    }
+
+    [TestCase("", null, "1.9.0-1", "2.0.0-1+1", ExpectedResult = "1.9.0-1")]
+    [TestCase("", "", "1.9.0-1", "2.0.0-1+1", ExpectedResult = "1.9.0-1")]
+    [TestCase("", "foo", "1.9.0-1", "2.0.0-foo.1+1", ExpectedResult = "2.0.0-foo.1+1")]
+    [TestCase("", "bar", "1.9.0-1", "2.0.0-bar.1+1", ExpectedResult = "2.0.0-bar.1+1")]
+    [TestCase("prefix", null, "1.9.0-1", "2.0.0-1+1", ExpectedResult = "2.0.0-1+1")]
+    [TestCase("prefix", "", "1.9.0-1", "2.0.0-1+1", ExpectedResult = "2.0.0-1+1")]
+    [TestCase("prefix", "foo", "1.9.0-1", "2.0.0-foo.1+1", ExpectedResult = "2.0.0-foo.1+1")]
+    [TestCase("prefix", "bar", "1.9.0-1", "2.0.0-bar.1+1", ExpectedResult = "2.0.0-bar.1+1")]
+
+    [TestCase("", null, "2.1.0-1", "2.0.0-1+1", ExpectedResult = "2.1.0-1")]
+    [TestCase("", "", "2.1.0-1", "2.0.0-1+1", ExpectedResult = "2.1.0-1")]
+    [TestCase("", "foo", "2.1.0-1", "2.0.0-foo.1+1", ExpectedResult = "2.1.0-foo.1+1")]
+    [TestCase("", "bar", "2.1.0-1", "2.0.0-bar.1+1", ExpectedResult = "2.1.0-bar.1+1")]
+    [TestCase("prefix", null, "2.1.0-1", "2.0.0-1+1", ExpectedResult = "2.0.0-1+1")]
+    [TestCase("prefix", "", "2.1.0-1", "2.0.0-1+1", ExpectedResult = "2.0.0-1+1")]
+    [TestCase("prefix", "foo", "2.1.0-1", "2.0.0-foo.1+1", ExpectedResult = "2.0.0-foo.1+1")]
+    [TestCase("prefix", "bar", "2.1.0-1", "2.0.0-bar.1+1", ExpectedResult = "2.0.0-bar.1+1")]
+    public string WhenTaggingACommitAsPreRelease(string tagPrefix, string? label, string tag, string expectedVersion)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel(null).WithTagPrefix(tagPrefix)
+            .WithBranch("main", _ => _.WithLabel(label).WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeATaggedCommit($"{tagPrefix}1.0.0");
+        fixture.MakeACommit("+semver:major");
+        fixture.AssertFullSemver(expectedVersion, configuration);
+        fixture.ApplyTag(tag);
+
+        return fixture!.GetVersion(configuration).FullSemVer;
+    }
+
     /// <summary>
     /// https://github.com/GitTools/GitVersion/issues/2340
     /// </summary>
@@ -34,7 +102,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromReleaseBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("release", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.*)"))
+            .WithBranch("release", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -52,7 +120,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromHotfixBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.*)"))
+            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -112,7 +180,7 @@ public class OtherBranchScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("other", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
-                .WithRegularExpression("(?<BranchName>.*)")
+                .WithRegularExpression("(?<BranchName>.+)")
                 .WithSourceBranches()
                 .WithLabel(label))
             .Build();

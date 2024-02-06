@@ -16,7 +16,7 @@ internal interface ITaggedSemanticVersionRepository
         string? tagPrefix,
         SemanticVersionFormat format);
 
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainlineBranches(
+    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
         string? tagPrefix,
         SemanticVersionFormat format,
         params IBranch[] excludeBranches);
@@ -25,4 +25,6 @@ internal interface ITaggedSemanticVersionRepository
         string? tagPrefix,
         SemanticVersionFormat format,
         params IBranch[] excludeBranches);
+
+    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format);
 }

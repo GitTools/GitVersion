@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -16,7 +17,6 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
-    private readonly Lazy<IReadOnlySet<string>> tagsShaCache;
 
     private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -24,19 +24,23 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private static readonly Regex DefaultNoBumpPatternRegex = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly IGitRepository repository;
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
 
-    public IncrementStrategyFinder(IGitRepository repository)
+    public IncrementStrategyFinder(IGitRepository repository, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     {
         this.repository = repository.NotNull();
-        this.tagsShaCache = new(ReadRepositoryTagsSha);
+        this.repository = repository.NotNull();
+        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository;
     }
 
-    public VersionField DetermineIncrementedField(ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
+    public VersionField DetermineIncrementedField(
+        ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration, string? label)
     {
         baseVersion.NotNull();
         configuration.NotNull();
 
-        var commitMessageIncrement = FindCommitMessageIncrement(configuration, baseVersion.BaseVersionSource, currentCommit);
+        var commitMessageIncrement = FindCommitMessageIncrement(
+            configuration, baseVersion.BaseVersionSource, currentCommit, label);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
@@ -76,18 +80,25 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             : null;
     }
 
-    private VersionField? FindCommitMessageIncrement(EffectiveConfiguration configuration, ICommit? baseCommit, ICommit? currentCommit)
+    private VersionField? FindCommitMessageIncrement(
+        EffectiveConfiguration configuration, ICommit? baseCommit, ICommit? currentCommit, string? label)
     {
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
         {
             return null;
         }
 
+        //get tags with valid version - depends on configuration (see #3757)
+        var targetShas = new Lazy<IReadOnlySet<string>>(() =>
+            this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
+            .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
+        );
+
         var commits = GetIntermediateCommits(baseCommit, currentCommit);
         // consider commit messages since latest tag only (see #3071)
         commits = commits
             .Reverse()
-            .TakeWhile(x => !this.tagsShaCache.Value.Contains(x.Sha))
+            .TakeWhile(x => !targetShas.Value.Contains(x.Sha))
             .Reverse();
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
@@ -103,8 +114,6 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             commits: commits.ToArray()
         );
     }
-
-    private IReadOnlySet<string> ReadRepositoryTagsSha() => repository.Tags.Select(t => t.TargetSha).ToHashSet();
 
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
         messageRegex == null
