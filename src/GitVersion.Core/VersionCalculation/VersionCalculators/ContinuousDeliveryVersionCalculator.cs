@@ -5,7 +5,7 @@ using GitVersion.Logging;
 namespace GitVersion.VersionCalculation;
 
 internal sealed class ContinuousDeliveryVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    : NonTrunkBasedVersionCalculatorBase(log, repositoryStore, versionContext), IVersionModeCalculator
+    : VersionCalculatorBase(log, repositoryStore, versionContext), IVersionModeCalculator
 {
     public SemanticVersion Calculate(NextVersion nextVersion)
     {

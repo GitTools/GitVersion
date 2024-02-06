@@ -7,6 +7,8 @@ public interface IBranchConfiguration
 {
     DeploymentMode? DeploymentMode { get; }
 
+    TakeIncrementedVersion? TakeIncrementedVersion { get; }
+
     string? Label { get; }
 
     IncrementStrategy Increment { get; }

@@ -139,6 +139,7 @@ GitVersion.Configuration.EffectiveConfiguration.PatchVersionBumpMessage.get -> s
 GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
+GitVersion.Configuration.EffectiveConfiguration.TakeIncrementedVersion.get -> GitVersion.VersionCalculation.TakeIncrementedVersion
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
@@ -162,6 +163,7 @@ GitVersion.Configuration.IBranchConfiguration.PreReleaseWeight.get -> int?
 GitVersion.Configuration.IBranchConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.IBranchConfiguration.SourceBranches.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.IBranchConfiguration.TakeIncrementedVersion.get -> GitVersion.VersionCalculation.TakeIncrementedVersion?
 GitVersion.Configuration.IBranchConfiguration.TrackMergeMessage.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TracksReleaseBranches.get -> bool?
@@ -713,6 +715,10 @@ GitVersion.VersionCalculation.NextVersion.Configuration.get -> GitVersion.Config
 GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion? other) -> bool
 GitVersion.VersionCalculation.NextVersion.IncrementedVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void
+GitVersion.VersionCalculation.TakeIncrementedVersion
+GitVersion.VersionCalculation.TakeIncrementedVersion.TakeAlwaysBaseVersion = 0 -> GitVersion.VersionCalculation.TakeIncrementedVersion
+GitVersion.VersionCalculation.TakeIncrementedVersion.TakeAlwaysIncrementedVersion = 2 -> GitVersion.VersionCalculation.TakeIncrementedVersion
+GitVersion.VersionCalculation.TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion = 1 -> GitVersion.VersionCalculation.TakeIncrementedVersion
 GitVersion.VersionCalculation.VersionCalculationModule
 GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void

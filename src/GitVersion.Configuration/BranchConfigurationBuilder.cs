@@ -7,6 +7,7 @@ internal class BranchConfigurationBuilder
     public static BranchConfigurationBuilder New => new();
 
     private DeploymentMode? deploymentMode;
+    private TakeIncrementedVersion? takeIncrementedVersion;
     private string? label;
     private IncrementStrategy increment;
     private bool? preventIncrementOfMergedBranchVersion;
@@ -29,6 +30,12 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithDeploymentMode(DeploymentMode? value)
     {
         this.deploymentMode = value;
+        return this;
+    }
+
+    public virtual BranchConfigurationBuilder WithTakeIncrementedVersion(TakeIncrementedVersion? value)
+    {
+        this.takeIncrementedVersion = value;
         return this;
     }
 
@@ -131,6 +138,7 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithConfiguration(IBranchConfiguration value)
     {
         WithDeploymentMode(value.DeploymentMode);
+        WithTakeIncrementedVersion(value.TakeIncrementedVersion);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
@@ -151,6 +159,7 @@ internal class BranchConfigurationBuilder
     public IBranchConfiguration Build() => new BranchConfiguration
     {
         DeploymentMode = deploymentMode,
+        TakeIncrementedVersion = takeIncrementedVersion,
         Label = label,
         Increment = increment,
         RegularExpression = regularExpression,

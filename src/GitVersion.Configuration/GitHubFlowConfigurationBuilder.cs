@@ -27,6 +27,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
+            TakeIncrementedVersion = TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = false,
@@ -53,6 +54,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
+            TakeIncrementedVersion = TakeIncrementedVersion.TakeAlwaysIncrementedVersion,
             RegularExpression = ReleaseBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
             SourceBranches =

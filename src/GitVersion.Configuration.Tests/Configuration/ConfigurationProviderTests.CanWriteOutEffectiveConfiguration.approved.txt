@@ -19,6 +19,7 @@ strategies:
 - VersionInBranchName
 branches:
   develop:
+    take-incremented-version: TakeAlwaysIncrementedVersion
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -46,6 +47,7 @@ branches:
     pre-release-weight: 55000
   release:
     mode: ManualDeployment
+    take-incremented-version: TakeAlwaysIncrementedVersion
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -133,6 +135,7 @@ branches:
 ignore:
   sha: []
 mode: ContinuousDelivery
+take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false

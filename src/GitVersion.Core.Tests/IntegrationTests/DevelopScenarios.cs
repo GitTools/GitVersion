@@ -46,7 +46,7 @@ public class DevelopScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo("develop");
-        fixture.AssertFullSemver("1.0.0");
+        fixture.AssertFullSemver("1.1.0-alpha.0");
     }
 
     [Test]
@@ -515,7 +515,7 @@ public class DevelopScenarios : TestBase
         fixture.ApplyTag("1.0.0-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.1", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-beta.2+0", configurationBuilder.Build());
 
         // continue with more work on develop that may or may not end up in the 1.0.0 release
         fixture.Checkout("develop");

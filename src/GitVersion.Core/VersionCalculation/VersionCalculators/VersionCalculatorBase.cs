@@ -4,7 +4,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal abstract class NonTrunkBasedVersionCalculatorBase(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+internal abstract class VersionCalculatorBase(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
 {
     protected readonly ILog log = log.NotNull();
     protected readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -16,11 +16,12 @@ internal abstract class NonTrunkBasedVersionCalculatorBase(ILog log, IRepository
     {
         nextVersion.NotNull();
 
-        // TODO: We need to decide whether or not to calculate the upcoming semantic version or the previous one because of tagging. Actually this should be part of the branch configuration system.
-        return Context.CurrentCommit.Sha != nextVersion.BaseVersion.BaseVersionSource?.Sha
+        bool shouldTakeIncrementedVersion = Context.CurrentCommit.Sha != nextVersion.BaseVersion.BaseVersionSource?.Sha
             || Context.CurrentCommitTaggedVersion is null
             || nextVersion.BaseVersion.SemanticVersion != Context.CurrentCommitTaggedVersion;
-        //
+
+        return nextVersion.Configuration.TakeIncrementedVersion == TakeIncrementedVersion.TakeAlwaysIncrementedVersion
+            || nextVersion.Configuration.TakeIncrementedVersion == TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion && shouldTakeIncrementedVersion;
     }
 
     protected SemanticVersion CalculateIncrementedVersion(NextVersion nextVersion)

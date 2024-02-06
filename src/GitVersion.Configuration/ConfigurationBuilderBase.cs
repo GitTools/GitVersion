@@ -29,6 +29,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
     private DeploymentMode? versioningMode;
+    private TakeIncrementedVersion? takeIncrementedVersion;
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
     private bool? preventIncrementOfMergedBranchVersion;
@@ -237,6 +238,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
+    public virtual TConfigurationBuilder WithTakeIncrementedVersion(TakeIncrementedVersion? value)
+    {
+        this.takeIncrementedVersion = value;
+        return (TConfigurationBuilder)this;
+    }
+
     public virtual TConfigurationBuilder WithLabel(string? value)
     {
         this.label = value;
@@ -335,6 +342,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             WithBranch(name).WithConfiguration(branchConfiguration);
         }
         WithDeploymentMode(value.DeploymentMode);
+        WithTakeIncrementedVersion(value.TakeIncrementedVersion);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
@@ -393,6 +401,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,
+            TakeIncrementedVersion = this.takeIncrementedVersion,
             Label = this.label,
             Increment = this.increment,
             RegularExpression = this.regularExpression,

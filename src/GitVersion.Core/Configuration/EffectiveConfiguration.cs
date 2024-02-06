@@ -19,7 +19,10 @@ public record EffectiveConfiguration
         branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
         if (!branchConfiguration.DeploymentMode.HasValue)
-            throw new("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
+            throw new("Configuration value for 'Deployment mode' has no value. (this should not happen, please report an issue)");
+
+        if (!branchConfiguration.TakeIncrementedVersion.HasValue)
+            throw new("Configuration value for 'Tak incremented version' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
             throw new("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
@@ -39,6 +42,7 @@ public record EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         DeploymentMode = branchConfiguration.DeploymentMode.Value;
+        TakeIncrementedVersion = branchConfiguration.TakeIncrementedVersion.Value;
         TagPrefix = configuration.TagPrefix;
         VersionInBranchRegex = configuration.VersionInBranchRegex;
         Label = branchConfiguration.Label;
@@ -129,6 +133,7 @@ public record EffectiveConfiguration
     public bool IsReleaseBranch { get; }
     public bool IsMainBranch { get; }
     public DeploymentMode DeploymentMode { get; }
+    public TakeIncrementedVersion TakeIncrementedVersion { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
     public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }
     public string? AssemblyInformationalFormat { get; }

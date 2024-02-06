@@ -24,6 +24,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
+            TakeIncrementedVersion = TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -39,6 +40,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Minor,
+            TakeIncrementedVersion = TakeIncrementedVersion.TakeAlwaysIncrementedVersion,
             RegularExpression = DevelopBranch.RegexPattern,
             SourceBranches = [],
             Label = "alpha",
@@ -71,6 +73,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
+            TakeIncrementedVersion = TakeIncrementedVersion.TakeAlwaysIncrementedVersion,
             DeploymentMode = DeploymentMode.ManualDeployment,
             RegularExpression = ReleaseBranch.RegexPattern,
             SourceBranches =

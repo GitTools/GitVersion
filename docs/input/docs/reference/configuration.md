@@ -43,6 +43,7 @@ The global configuration looks like this:
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -52,16 +53,22 @@ commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
-strategies: [ConfigNext, MergeMessage, TaggedCommit, TrackReleaseBranches, VersionInBranchName]
+strategies:
+- ConfiguredNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
 branches:
   develop:
-    mode: ContinuousDeployment
+    take-incremented-version: TakeAlwaysIncrementedVersion
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
+    is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
     is-main-branch: false
@@ -75,11 +82,14 @@ branches:
     source-branches:
     - develop
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
   release:
+    mode: ManualDeployment
+    take-incremented-version: TakeAlwaysIncrementedVersion
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -90,12 +100,13 @@ branches:
     - main
     - support
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
     regex: ^features?[/-](?<BranchName>.+)
@@ -106,6 +117,7 @@ branches:
     - feature
     - support
     - hotfix
+    is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
@@ -120,9 +132,10 @@ branches:
     - feature
     - support
     - hotfix
+    is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
     increment: Inherit
     regex: ^hotfix(es)?[/-]
@@ -131,6 +144,8 @@ branches:
     - main
     - support
     - hotfix
+    is-source-branch-for: []
+    is-release-branch: true
     pre-release-weight: 30000
   support:
     label: ''
@@ -140,15 +155,16 @@ branches:
     regex: ^support[/-]
     source-branches:
     - main
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
   unknown:
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    regex: (?<BranchName>.*)
+    regex: (?<BranchName>.+)
     source-branches:
     - main
     - develop
@@ -157,9 +173,11 @@ branches:
     - pull-request
     - hotfix
     - support
+    is-source-branch-for: []
 ignore:
   sha: []
 mode: ContinuousDelivery
+take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
@@ -167,6 +185,8 @@ track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
+source-branches: []
+is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
@@ -244,7 +264,11 @@ The default value is `{InformationalVersion}`.
 ### mode
 
 Sets the `mode` of how GitVersion should create a new version. Read more at
-[versioning modes][modes].
+[deployment modes][modes].
+
+### take-incremented-version
+
+This branch related property can be used to control the behavior weither to take the incremented or the tagged version.
 
 ### increment
 

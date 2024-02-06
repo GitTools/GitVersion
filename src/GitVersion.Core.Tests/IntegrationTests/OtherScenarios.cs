@@ -179,7 +179,7 @@ public class OtherScenarios : TestBase
         fixture.ApplyTag("2.0.0-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("2.0.0-beta.1", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.2+0", configuration);
 
         fixture.MakeACommit();
 

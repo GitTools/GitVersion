@@ -26,12 +26,14 @@ branches:
     regex: ^master$|^main$
     source-branches:
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
   release:
     mode: ManualDeployment
+    take-incremented-version: TakeAlwaysIncrementedVersion
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -40,6 +42,7 @@ branches:
     source-branches:
     - main
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
     is-main-branch: false
@@ -53,6 +56,7 @@ branches:
     - main
     - release
     - feature
+    is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
@@ -64,6 +68,7 @@ branches:
     - main
     - release
     - feature
+    is-source-branch-for: []
     pre-release-weight: 30000
   unknown:
     mode: ManualDeployment
@@ -75,9 +80,11 @@ branches:
     - release
     - feature
     - pull-request
+    is-source-branch-for: []
 ignore:
   sha: []
 mode: ContinuousDelivery
+take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
@@ -85,6 +92,8 @@ track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
+source-branches: []
+is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
