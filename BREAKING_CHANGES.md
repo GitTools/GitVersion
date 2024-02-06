@@ -45,6 +45,7 @@
     *   TrackReleaseBranches
     *   VersionInBranchName
     *   TrunkBased
+*   The initialization wizard has been removed.
 
 ## v5.0.0
 
