@@ -17,7 +17,8 @@ internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBa
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
     ];
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("GIT_BRANCH")
+        ?? Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
 
     public override bool PreventFetch() => true;
 
