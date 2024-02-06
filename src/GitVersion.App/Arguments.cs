@@ -19,7 +19,6 @@ internal class Arguments
     public string? CommitId;
     public string? ClonePath;
 
-    public bool Init;
     public bool Diag;
     public bool IsVersion;
     public bool IsHelp;
@@ -86,7 +85,6 @@ internal class Arguments
                 UpdateWixVersionFile = UpdateWixVersionFile
             },
 
-            Init = Init,
             Diag = Diag,
             IsVersion = IsVersion,
             IsHelp = IsHelp,

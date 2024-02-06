@@ -136,13 +136,6 @@ internal class GitVersionExecutor(
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        if (gitVersionOptions.Init)
-        {
-            this.configurationProvider.Init(workingDirectory);
-            exitCode = 0;
-            return true;
-        }
-
         if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
         {
             if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
@@ -161,7 +154,7 @@ internal class GitVersionExecutor(
 
     private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log)
     {
-        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console" || gitVersionOptions.Init)
+        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console")
         {
             log.AddLogAppender(new ConsoleAppender());
         }

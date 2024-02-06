@@ -171,7 +171,6 @@ GitVersion.Configuration.IConfigurationFileLocator.ReadOverrideConfiguration(str
 GitVersion.Configuration.IConfigurationFileLocator.TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath) -> bool
 GitVersion.Configuration.IConfigurationFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
 GitVersion.Configuration.IConfigurationProvider
-GitVersion.Configuration.IConfigurationProvider.Init(string! workingDirectory) -> void
 GitVersion.Configuration.IConfigurationProvider.Provide(System.Collections.Generic.IReadOnlyDictionary<object!, object?>? overrideConfiguration = null) -> GitVersion.Configuration.IGitVersionConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration
 GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningFormat.get -> string?
@@ -263,7 +262,6 @@ GitVersion.GitVersionOptions.ConfigurationInfo.get -> GitVersion.ConfigurationIn
 GitVersion.GitVersionOptions.Diag -> bool
 GitVersion.GitVersionOptions.Format -> string?
 GitVersion.GitVersionOptions.GitVersionOptions() -> void
-GitVersion.GitVersionOptions.Init -> bool
 GitVersion.GitVersionOptions.IsHelp -> bool
 GitVersion.GitVersionOptions.IsVersion -> bool
 GitVersion.GitVersionOptions.LogFilePath -> string?
@@ -815,7 +813,6 @@ static GitVersion.Extensions.StringExtensions.IsEmpty(this string? value) -> boo
 static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! self, string? other) -> bool
 static GitVersion.Extensions.StringExtensions.IsFalse(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsHelp(this string! singleArgument) -> bool
-static GitVersion.Extensions.StringExtensions.IsInit(this string! singleArgument) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsSwitch(this string? value, string! switchName) -> bool

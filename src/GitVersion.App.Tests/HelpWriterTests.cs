@@ -20,7 +20,6 @@ public class HelpWriterTests : TestBase
         var lookup = new Dictionary<string, string>
         {
             { nameof(Arguments.TargetUrl), "/url" },
-            { nameof(Arguments.Init), "init" },
             { nameof(Arguments.TargetBranch), "/b" },
             { nameof(Arguments.LogFilePath) , "/l" },
             { nameof(Arguments.OutputFile) , "/outputfile" },

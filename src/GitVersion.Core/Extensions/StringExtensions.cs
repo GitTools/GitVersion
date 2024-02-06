@@ -61,8 +61,6 @@ public static class StringExtensions
         return string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase);
     }
 
-    public static bool IsInit(this string singleArgument) => singleArgument.Equals("init", StringComparison.OrdinalIgnoreCase);
-
     public static bool IsHelp(this string singleArgument) => (singleArgument == "?") || singleArgument.IsSwitch("h") || singleArgument.IsSwitch("help") || singleArgument.IsSwitch("?");
 
     public static bool ArgumentRequiresValue(this string argument, int argumentIndex)
