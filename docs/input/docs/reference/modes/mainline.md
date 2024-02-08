@@ -1,4 +1,3 @@
-This Deprecated in 6.x.x : see this PR https://github.com/GitTools/GitVersion/pull/3844
 ---
 Order: 40
 Title: Mainline Development
@@ -8,6 +7,7 @@ Description: |
     to `main`.
 RedirectFrom: docs/reference/versioning-modes/mainline-development
 ---
+_This was deprecated in 6.x.x : see this PR https://github.com/GitTools/GitVersion/pull/3844 _
 
 Mainline Development is enabled when using [GitHubFlow][githubflow] or any other
 strategy where you develop on `main`. The main rule of mainline development is
