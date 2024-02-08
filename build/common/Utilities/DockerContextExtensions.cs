@@ -1,4 +1,6 @@
 using Xunit;
+using DockerBuildXBuildSettings = Common.Addins.Cake.Docker.DockerBuildXBuildSettings;
+using DockerBuildXImageToolsCreateSettings = Common.Addins.Cake.Docker.DockerBuildXImageToolsCreateSettings;
 
 namespace Common.Utilities;
 
@@ -10,6 +12,15 @@ public enum Architecture
 
 public static class DockerContextExtensions
 {
+    private static readonly string[] Annotations =
+    [
+        "org.opencontainers.image.authors=GitTools Maintainers",
+        "org.opencontainers.image.vendor=GitTools",
+        "org.opencontainers.image.licenses=MIT",
+        "org.opencontainers.image.source=https://github.com/GitTools/GitVersion.git",
+        $"org.opencontainers.image.created={DateTime.UtcNow:O}",
+    ];
+
     public static bool SkipImageTesting(this ICakeContext context, DockerImage dockerImage)
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
@@ -38,11 +49,16 @@ public static class DockerContextExtensions
 
         var suffix = arch.ToSuffix();
         var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{arch.ToSuffix()})";
+        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix})";
 
         var buildSettings = new DockerBuildXBuildSettings
         {
             Rm = true,
+            Pull = true,
+            // NoCache = true,
             Tag = tags.ToArray(),
+            Platform = [$"linux/{suffix}"],
+            Output = ["type=docker,oci-mediatypes=true"],
             File = workDir.CombineWithFilePath("Dockerfile").FullPath,
             BuildArg =
             [
@@ -55,17 +71,52 @@ public static class DockerContextExtensions
             Label =
             [
                 "maintainers=GitTools Maintainers",
-                $"org.opencontainers.image.description=GitVersion images {imageSuffix})",
-                "org.opencontainers.image.authors=GitTools Maintainers",
-                "org.opencontainers.image.licenses=MIT",
-                "org.opencontainers.image.source=https://github.com/GitTools/GitVersion.git"
+                .. Annotations,
+                description
             ],
-            Pull = true,
-            Platform = [$"linux/{suffix}"]
+            Annotation =
+            [
+                .. Annotations,
+                description
+            ]
         };
 
-        context.DockerBuildXBuild(buildSettings, workDir.ToString(), "--output type=docker");
+        context.DockerBuildXBuild(buildSettings, workDir.ToString());
     }
+
+    public static void DockerBuildXBuild(this ICakeContext context, DockerBuildXBuildSettings settings,
+                                         DirectoryPath target)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var runner = context.CreateRunner<DockerBuildXBuildSettings>();
+        runner.Run("buildx build", settings, [target.ToString().EscapeProcessArgument()]);
+    }
+
+    public static void DockerManifest(this BuildContextBase context, DockerImage dockerImage)
+    {
+        var manifestTags = context.GetDockerTags(dockerImage);
+        foreach (var tag in manifestTags)
+        {
+            var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
+            var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
+
+            var settings = GetManifestSettings(dockerImage, context.Version!.NugetVersion!, tag);
+            context.DockerBuildXImageToolsCreate(settings, [amd64Tag, arm64Tag]);
+        }
+    }
+
+    public static void DockerBuildXImageToolsCreate(this ICakeContext context,
+                                                    DockerBuildXImageToolsCreateSettings settings,
+                                                    IEnumerable<string>? target = null)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var runner = context.CreateRunner<DockerBuildXImageToolsCreateSettings>();
+        runner.Run("buildx imagetools create", settings, target?.ToArray() ?? []);
+    }
+
+    private static GenericDockerRunner<TSettings> CreateRunner<TSettings>(this ICakeContext context)
+        where TSettings : AutoToolSettings, new() =>
+        new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
 
     public static void DockerPushImage(this BuildContextBase context, DockerImage dockerImage)
     {
@@ -76,33 +127,20 @@ public static class DockerContextExtensions
         }
     }
 
-    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage,
-                                            bool skipArm64Image = false)
+    public static DockerBuildXImageToolsCreateSettings GetManifestSettings(DockerImage dockerImage, string version, string tag)
     {
-        var manifestTags = context.GetDockerTags(dockerImage);
-        foreach (var tag in manifestTags)
+        var imageSuffix = $"({dockerImage.Distro}-{version}-{dockerImage.TargetFramework})";
+        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix})";
+        var settings = new DockerBuildXImageToolsCreateSettings
         {
-            var manifestCreateSettings = new DockerManifestCreateSettings { Amend = true };
-            var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
-            var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
-            if (skipArm64Image)
-            {
-                context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag);
-            }
-            else
-            {
-                context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag, arm64Tag);
-            }
-        }
-    }
-
-    public static void DockerPushManifest(this BuildContextBase context, DockerImage dockerImage)
-    {
-        var manifestTags = context.GetDockerTags(dockerImage);
-        foreach (var tag in manifestTags)
-        {
-            context.DockerManifestPush(new() { Purge = true }, tag);
-        }
+            Tag = [tag],
+            Annotation =
+            [
+                .. Annotations.Select(a => "index:" + a).ToArray(),
+                $"index:{description}",
+            ]
+        };
+        return settings;
     }
 
     public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage)
@@ -125,16 +163,6 @@ public static class DockerContextExtensions
     {
         var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
         context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
-    }
-
-    private static void DockerBuildXBuild(this ICakeContext context, DockerBuildXBuildSettings settings, string path,
-                                          params string[] args)
-    {
-        var runner = new GenericDockerRunner<DockerBuildXBuildSettings>(context.FileSystem, context.Environment,
-            context.ProcessRunner, context.Tools);
-
-        path = $"\"{path.Trim().Trim('\"')}\"";
-        runner.Run("buildx build", settings, [.. args, path]);
     }
 
     private static void DockerTestRun(this BuildContextBase context, string image, Architecture arch, string command,
