@@ -25,7 +25,7 @@ runs:
   steps:
   -
     name: Login to DockerHub
-    uses: docker/login-action@v2
+    uses: docker/login-action@v3
     with:
       username: ${{ inputs.docker_registry_username }}
       password: ${{ inputs.docker_registry_password }}
@@ -35,7 +35,7 @@ runs:
     run: dotnet run/docker.dll --target=DockerManifest --arch=amd64 --arch=arm64 --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry dockerhub
   -
     name: Login to GitHub
-    uses: docker/login-action@v2
+    uses: docker/login-action@v3
     with:
       registry: ghcr.io
       username: ${{ inputs.github_registry_username }}
