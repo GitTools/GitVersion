@@ -8,6 +8,10 @@ Description: |
 RedirectFrom: docs/reference/versioning-modes/mainline-development
 ---
 
+:::{.alert .alert-danger}
+ **`Mainline` mode was deprecated in version 6 of GitVersion.** See [the following pull request](https://github.com/GitTools/GitVersion/pull/3844) for details.
+:::
+
 Mainline Development is enabled when using [GitHubFlow][githubflow] or any other
 strategy where you develop on `main`. The main rule of mainline development is
 that **main is always in a state that it could be deployed to production**. This
