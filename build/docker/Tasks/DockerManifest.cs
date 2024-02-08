@@ -44,9 +44,8 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
     {
         foreach (var group in context.Images.GroupBy(x => new { x.Distro, x.TargetFramework }))
         {
-            var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
-            context.DockerCreateManifest(amd64DockerImage);
-            context.DockerPushManifest(amd64DockerImage);
+            var dockerImage = group.First();
+            context.DockerManifest(dockerImage);
         }
     }
 }
