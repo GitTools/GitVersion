@@ -1,4 +1,4 @@
-@Deprecated in 6.x.x : see this PR https://github.com/GitTools/GitVersion/pull/3844
+This Deprecated in 6.x.x : see this PR https://github.com/GitTools/GitVersion/pull/3844
 ---
 Order: 40
 Title: Mainline Development
