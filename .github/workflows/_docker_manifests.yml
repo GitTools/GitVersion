@@ -25,6 +25,21 @@ jobs:
       name: Restore State
       uses: ./.github/actions/artifacts-restore
     -
+      name: Set up Docker
+      uses: crazy-max/ghaction-setup-docker@v3
+      with:
+        daemon-config: '{ "features": { "containerd-snapshotter": true } }'
+    -
+      name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+    -
+      name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        version: 'latest'
+        driver-opts: 'image=moby/buildkit:buildx-stable-1'
+        install: true      
+    -
       name: Docker Manifests
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
       uses: ./.github/actions/docker-manifests

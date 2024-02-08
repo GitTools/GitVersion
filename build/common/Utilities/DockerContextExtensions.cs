@@ -49,7 +49,7 @@ public static class DockerContextExtensions
 
         var suffix = arch.ToSuffix();
         var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{arch.ToSuffix()})";
-        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix})";
+        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
 
         var buildSettings = new DockerBuildXBuildSettings
         {
@@ -130,7 +130,7 @@ public static class DockerContextExtensions
     public static DockerBuildXImageToolsCreateSettings GetManifestSettings(DockerImage dockerImage, string version, string tag)
     {
         var imageSuffix = $"({dockerImage.Distro}-{version}-{dockerImage.TargetFramework})";
-        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix})";
+        var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
         var settings = new DockerBuildXImageToolsCreateSettings
         {
             Tag = [tag],
