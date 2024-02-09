@@ -18,6 +18,7 @@ public static class DockerContextExtensions
         "org.opencontainers.image.vendor=GitTools",
         "org.opencontainers.image.licenses=MIT",
         "org.opencontainers.image.source=https://github.com/GitTools/GitVersion.git",
+        "org.opencontainers.image.documentation=https://gitversion.net/docs/usage/docker",
         $"org.opencontainers.image.created={DateTime.UtcNow:O}",
     ];
 
@@ -49,7 +50,12 @@ public static class DockerContextExtensions
 
         var suffix = arch.ToSuffix();
         var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{arch.ToSuffix()})";
+        var baseNameSuffix = $"{registry}/{Constants.DockerBaseImageName}:{distro}-runtime-{targetFramework}-{arch.ToSuffix()}";
         var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
+        var baseName = $"org.opencontainers.image.base.name={baseNameSuffix}";
+        var version = $"org.opencontainers.image.version={context.Version.NugetVersion}";
+        var revision = $"org.opencontainers.image.revision={context.Version.GitVersion.Sha}";
+        var source = $"org.opencontainers.image.source=https://github.com/GitTools/GitVersion/blob/{context.Version.GitVersion.Sha}/build/docker/Dockerfile";
 
         var buildSettings = new DockerBuildXBuildSettings
         {
@@ -72,11 +78,19 @@ public static class DockerContextExtensions
             [
                 "maintainers=GitTools Maintainers",
                 .. Annotations,
+                baseName,
+                version,
+                source,
+                revision,
                 description
             ],
             Annotation =
             [
                 .. Annotations,
+                baseName,
+                version,
+                source,
+                revision,
                 description
             ]
         };
@@ -100,7 +114,7 @@ public static class DockerContextExtensions
             var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
             var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
 
-            var settings = GetManifestSettings(dockerImage, context.Version!.NugetVersion!, tag);
+            var settings = GetManifestSettings(dockerImage, context.Version!, tag);
             context.DockerBuildXImageToolsCreate(settings, [amd64Tag, arm64Tag]);
         }
     }
@@ -127,10 +141,12 @@ public static class DockerContextExtensions
         }
     }
 
-    public static DockerBuildXImageToolsCreateSettings GetManifestSettings(DockerImage dockerImage, string version, string tag)
+    public static DockerBuildXImageToolsCreateSettings GetManifestSettings(DockerImage dockerImage, BuildVersion buildVersion, string tag)
     {
-        var imageSuffix = $"({dockerImage.Distro}-{version}-{dockerImage.TargetFramework})";
+        var imageSuffix = $"({dockerImage.Distro}-{buildVersion.NugetVersion}-{dockerImage.TargetFramework})";
         var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
+        var version = $"org.opencontainers.image.version={buildVersion.NugetVersion}";
+        var revision = $"org.opencontainers.image.revision={buildVersion.GitVersion.Sha}";
         var settings = new DockerBuildXImageToolsCreateSettings
         {
             Tag = [tag],
@@ -138,6 +154,8 @@ public static class DockerContextExtensions
             [
                 .. Annotations.Select(a => "index:" + a).ToArray(),
                 $"index:{description}",
+                $"index:{version}",
+                $"index:{revision}"
             ]
         };
         return settings;
