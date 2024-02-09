@@ -327,64 +327,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
-    public SemanticVersion IncrementVersion(VersionField incrementStrategy)
-        => IncrementVersion(incrementStrategy, null, isMainBranchRelease: true);
-
-    private SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label, bool isMainBranchRelease)
-    {
-        var major = Major;
-        var minor = Minor;
-        var patch = Patch;
-
-        if (isMainBranchRelease || !PreReleaseTag.HasTag())
-        {
-            switch (incrementStrategy)
-            {
-                case VersionField.None:
-                    break;
-                case VersionField.Major:
-                    major++;
-                    minor = 0;
-                    patch = 0;
-                    break;
-                case VersionField.Minor:
-                    minor++;
-                    patch = 0;
-                    break;
-                case VersionField.Patch:
-                    patch++;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
-            }
-        }
-
-        string preReleaseTagName = string.Empty;
-        long? preReleaseTagNumber = null;
-
-        if (!isMainBranchRelease)
-        {
-            if (PreReleaseTag.HasTag())
-            {
-                preReleaseTagNumber = PreReleaseTag.Number + 1;
-                preReleaseTagName = PreReleaseTag.Name;
-            }
-            else
-            {
-                preReleaseTagNumber = 1;
-                preReleaseTagName = label ?? string.Empty;
-            }
-        }
-
-        return new(this)
-        {
-            Major = major,
-            Minor = minor,
-            Patch = patch,
-            PreReleaseTag = new(preReleaseTagName, preReleaseTagNumber, true)
-        };
-    }
-
     public SemanticVersion Increment(VersionField incrementStrategy, string? label)
         => Increment(incrementStrategy, label, mode: IncrementMode.Standard);
 

@@ -553,7 +553,6 @@ GitVersion.SemanticVersion.IncrementMode
 GitVersion.SemanticVersion.IncrementMode.EnsureIntegrity = 2 -> GitVersion.SemanticVersion.IncrementMode
 GitVersion.SemanticVersion.IncrementMode.Force = 1 -> GitVersion.SemanticVersion.IncrementMode
 GitVersion.SemanticVersion.IncrementMode.Standard = 0 -> GitVersion.SemanticVersion.IncrementMode
-GitVersion.SemanticVersion.IncrementVersion(GitVersion.VersionField incrementStrategy) -> GitVersion.SemanticVersion!
 GitVersion.SemanticVersion.IsEmpty() -> bool
 GitVersion.SemanticVersion.IsEqualTo(GitVersion.SemanticVersion? value, bool includePreRelease = true) -> bool
 GitVersion.SemanticVersion.IsGreaterThan(GitVersion.SemanticVersion? value, bool includePreRelease = true) -> bool
