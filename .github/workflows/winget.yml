@@ -35,6 +35,6 @@ jobs:
         "version=$version" >> $env:GITHUB_OUTPUT
         "run_args=$run_args" >> $env:GITHUB_OUTPUT
     
-    - uses: michidk/run-komac@v1
+    - uses: michidk/run-komac@v2
       with:
         args: '${{ steps.get-version.outputs.run_args }}'
