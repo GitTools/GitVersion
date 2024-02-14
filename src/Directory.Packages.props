@@ -28,7 +28,7 @@
     <PackageVersion Include="Roslynator.Analyzers" Version="4.10.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.10.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.2" />
     <PackageVersion Include="YamlDotNet" Version="15.1.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
   </ItemGroup>
