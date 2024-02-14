@@ -49,8 +49,8 @@ public static class DockerContextExtensions
         var tags = context.GetDockerTags(dockerImage, arch);
 
         var suffix = arch.ToSuffix();
-        var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{arch.ToSuffix()})";
-        var baseNameSuffix = $"{registry}/{Constants.DockerBaseImageName}:{distro}-runtime-{targetFramework}-{arch.ToSuffix()}";
+        var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{suffix})";
+        var baseNameSuffix = $"{registry}/{Constants.DockerBaseImageName}:{distro}-runtime-{targetFramework}-{suffix}";
         var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
         var baseName = $"org.opencontainers.image.base.name={baseNameSuffix}";
         var version = $"org.opencontainers.image.version={context.Version.NugetVersion}";
@@ -68,7 +68,7 @@ public static class DockerContextExtensions
             File = workDir.CombineWithFilePath("Dockerfile").FullPath,
             BuildArg =
             [
-                "contentFolder=/content",
+                "nugetFolder=/nuget",
                 $"REGISTRY={registry}",
                 $"DOTNET_VERSION={targetFramework}",
                 $"DISTRO={distro}",
