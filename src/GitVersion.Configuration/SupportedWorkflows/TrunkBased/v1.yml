@@ -28,16 +28,16 @@ branches:
     is-main-branch: true
     pre-release-weight: 55000
   feature:
-    take-incremented-version: TakeAlwaysIncrementedVersion
     increment: Minor
     regex: ^features?[/-](?<BranchName>.+)
+    prevent-increment-when-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
   hotfix:
-    take-incremented-version: TakeAlwaysIncrementedVersion
     increment: Patch
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    prevent-increment-when-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
@@ -62,10 +62,10 @@ branches:
 ignore:
   sha: []
 mode: ManualDeployment
-take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
+prevent-increment-when-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled

@@ -21,28 +21,18 @@ public record EffectiveConfiguration
         if (!branchConfiguration.DeploymentMode.HasValue)
             throw new("Configuration value for 'Deployment mode' has no value. (this should not happen, please report an issue)");
 
-        if (!branchConfiguration.TakeIncrementedVersion.HasValue)
-            throw new("Configuration value for 'Tak incremented version' has no value. (this should not happen, please report an issue)");
-
-        if (!configuration.AssemblyVersioningScheme.HasValue)
-            throw new("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
-
-        if (!configuration.AssemblyFileVersioningScheme.HasValue)
-            throw new("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
-
         if (!branchConfiguration.CommitMessageIncrementing.HasValue)
             throw new("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.TagPreReleaseWeight.HasValue)
             throw new("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
-        AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
-        AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
+        AssemblyVersioningScheme = configuration.AssemblyVersioningScheme;
+        AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme;
         AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         DeploymentMode = branchConfiguration.DeploymentMode.Value;
-        TakeIncrementedVersion = branchConfiguration.TakeIncrementedVersion.Value;
         TagPrefix = configuration.TagPrefix;
         VersionInBranchRegex = configuration.VersionInBranchRegex;
         Label = branchConfiguration.Label;
@@ -50,6 +40,7 @@ public record EffectiveConfiguration
         Increment = branchConfiguration.Increment;
         RegularExpression = branchConfiguration.RegularExpression;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
+        PreventIncrementWhenTagged = branchConfiguration.PreventIncrementWhenTagged ?? true;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;
         TrackMergeMessage = branchConfiguration.TrackMergeMessage ?? true;
@@ -93,7 +84,7 @@ public record EffectiveConfiguration
         bool tracksReleaseBranches,
         bool isReleaseBranch,
         bool isMainBranch,
-        string? commitDateFormat,
+        string commitDateFormat,
         bool updateBuildNumber,
         SemanticVersionFormat semanticVersionFormat,
         int preReleaseWeight,
@@ -133,7 +124,6 @@ public record EffectiveConfiguration
     public bool IsReleaseBranch { get; }
     public bool IsMainBranch { get; }
     public DeploymentMode DeploymentMode { get; }
-    public TakeIncrementedVersion TakeIncrementedVersion { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
     public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }
     public string? AssemblyInformationalFormat { get; }
@@ -159,6 +149,8 @@ public record EffectiveConfiguration
     public string? RegularExpression { get; }
 
     public bool PreventIncrementOfMergedBranchVersion { get; }
+
+    public bool PreventIncrementWhenTagged { get; }
 
     public string? LabelNumberPattern { get; }
 

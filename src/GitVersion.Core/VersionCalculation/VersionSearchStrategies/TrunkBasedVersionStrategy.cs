@@ -72,7 +72,7 @@ internal sealed class TrunkBasedVersionStrategy(
         var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
 
         var taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-            Context.CurrentBranch, configuration.Value
+            Context.Configuration, configuration.Value, Context.CurrentBranch, null, Context.CurrentCommit.When
         );
 
         var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
@@ -121,7 +121,7 @@ internal sealed class TrunkBasedVersionStrategy(
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
                 taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-                    effectiveConfigurationWasBranchedFrom.Branch, effectiveConfigurationWasBranchedFrom.Value
+                    Context.Configuration, effectiveConfigurationWasBranchedFrom.Value, effectiveConfigurationWasBranchedFrom.Branch, null, Context.CurrentCommit.When
                 );
             }
 

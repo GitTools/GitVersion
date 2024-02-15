@@ -4,7 +4,7 @@ namespace GitVersion.Configuration
     {
         DateTimeOffset? Before { get; }
 
-        IReadOnlyCollection<string> Shas { get; }
+        ISet<string> Shas { get; }
 
         public bool IsEmpty => Before == null && Shas.Count == 0;
     }

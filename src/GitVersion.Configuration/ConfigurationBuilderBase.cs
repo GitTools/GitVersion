@@ -7,8 +7,8 @@ namespace GitVersion.Configuration;
 internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfigurationBuilder
     where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
 {
-    private AssemblyVersioningScheme? assemblyVersioningScheme;
-    private AssemblyFileVersioningScheme? assemblyFileVersioningScheme;
+    private AssemblyVersioningScheme assemblyVersioningScheme;
+    private AssemblyFileVersioningScheme assemblyFileVersioningScheme;
     private string? assemblyInformationalFormat;
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
@@ -21,7 +21,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? noBumpMessage;
     private int? tagPreReleaseWeight;
     private IgnoreConfiguration ignore;
-    private string? commitDateFormat;
+    private string commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
     private VersionStrategies versionStrategy;
@@ -29,10 +29,10 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
     private DeploymentMode? versioningMode;
-    private TakeIncrementedVersion? takeIncrementedVersion;
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
     private bool? preventIncrementOfMergedBranchVersion;
+    private bool? preventIncrementWhenTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
@@ -99,13 +99,13 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme? value)
+    public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme value)
     {
         this.assemblyVersioningScheme = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme? value)
+    public virtual TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme value)
     {
         this.assemblyFileVersioningScheme = value;
         return (TConfigurationBuilder)this;
@@ -183,7 +183,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithCommitDateFormat(string? value)
+    public virtual TConfigurationBuilder WithCommitDateFormat(string value)
     {
         this.commitDateFormat = value;
         return (TConfigurationBuilder)this;
@@ -238,12 +238,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTakeIncrementedVersion(TakeIncrementedVersion? value)
-    {
-        this.takeIncrementedVersion = value;
-        return (TConfigurationBuilder)this;
-    }
-
     public virtual TConfigurationBuilder WithLabel(string? value)
     {
         this.label = value;
@@ -259,6 +253,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public virtual TConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
     {
         this.preventIncrementOfMergedBranchVersion = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithPreventIncrementWhenTagged(bool? value)
+    {
+        this.preventIncrementWhenTagged = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -342,10 +342,10 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             WithBranch(name).WithConfiguration(branchConfiguration);
         }
         WithDeploymentMode(value.DeploymentMode);
-        WithTakeIncrementedVersion(value.TakeIncrementedVersion);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
+        WithPreventIncrementWhenTagged(value.PreventIncrementWhenTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -401,7 +401,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,
-            TakeIncrementedVersion = this.takeIncrementedVersion,
             Label = this.label,
             Increment = this.increment,
             RegularExpression = this.regularExpression,
@@ -413,6 +412,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
+            PreventIncrementWhenTagged = this.preventIncrementWhenTagged,
             PreReleaseWeight = this.preReleaseWeight
         };
 

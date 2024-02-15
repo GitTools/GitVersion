@@ -24,15 +24,13 @@ internal sealed class TaggedCommitVersionStrategy(ITaggedSemanticVersionReposito
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         var taggedSemanticVersions = taggedSemanticVersionRepository
-            .GetAllTaggedSemanticVersions(Context.CurrentBranch, configuration.Value).SelectMany(element => element)
+            .GetAllTaggedSemanticVersions(Context.Configuration, configuration.Value, Context.CurrentBranch, label, Context.CurrentCommit.When)
+            .SelectMany(element => element)
             .Distinct().ToArray();
 
         foreach (var semanticVersion in taggedSemanticVersions)
         {
-            if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-            {
-                yield return semanticVersion;
-            }
+            yield return semanticVersion;
         }
     }
 

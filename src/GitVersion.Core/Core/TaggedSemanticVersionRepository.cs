@@ -7,7 +7,6 @@ namespace GitVersion.Core;
 
 internal sealed class TaggedSemanticVersionRepository(
     ILog log,
-    Lazy<GitVersionContext> versionContext,
     IGitRepository gitRepository,
     IBranchRepository branchRepository)
     : ITaggedSemanticVersionRepository
@@ -20,85 +19,98 @@ internal sealed class TaggedSemanticVersionRepository(
         taggedSemanticVersionsCache = new();
     private readonly ILog log = log.NotNull();
 
-    private GitVersionContext VersionContext => this.versionContextLazy.Value;
-    private readonly Lazy<GitVersionContext> versionContextLazy = versionContext.NotNull();
-
     private readonly IGitRepository gitRepository = gitRepository.NotNull();
     private readonly IBranchRepository branchRepository = branchRepository.NotNull();
 
-    public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration)
+    public ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(
+        IGitVersionConfiguration configuration, EffectiveConfiguration effectiveConfiguration,
+        IBranch branch, string? label, DateTimeOffset? notOlderThan)
     {
         configuration.NotNull();
+        effectiveConfiguration.NotNull();
+        branch.NotNull();
 
         IEnumerable<(ICommit Key, SemanticVersionWithTag Value)> GetElements()
         {
-            var olderThan = VersionContext.CurrentCommit.When;
-
             var semanticVersionsOfBranch = GetTaggedSemanticVersionsOfBranch(
                 branch: branch,
-                tagPrefix: configuration.TagPrefix,
-                format: configuration.SemanticVersionFormat
+                tagPrefix: effectiveConfiguration.TagPrefix,
+                format: effectiveConfiguration.SemanticVersionFormat
             );
             foreach (var grouping in semanticVersionsOfBranch)
             {
-                if (grouping.Key.When > olderThan) continue;
+                if (grouping.Key.When > notOlderThan) continue;
 
                 foreach (var semanticVersion in grouping)
                 {
-                    yield return new(grouping.Key, semanticVersion);
-                }
-            }
-
-            if (configuration.TrackMergeTarget)
-            {
-                var semanticVersionsOfMergeTarget = GetTaggedSemanticVersionsOfMergeTarget(
-                    branch: branch,
-                    tagPrefix: configuration.TagPrefix,
-                    format: configuration.SemanticVersionFormat
-                );
-                foreach (var grouping in semanticVersionsOfMergeTarget)
-                {
-                    if (grouping.Key.When > olderThan) continue;
-
-                    foreach (var semanticVersion in grouping)
+                    if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
                     {
                         yield return new(grouping.Key, semanticVersion);
                     }
                 }
             }
 
-            if (configuration.TracksReleaseBranches)
+            if (effectiveConfiguration.TrackMergeTarget)
+            {
+                var semanticVersionsOfMergeTarget = GetTaggedSemanticVersionsOfMergeTarget(
+                    branch: branch,
+                    tagPrefix: effectiveConfiguration.TagPrefix,
+                    format: effectiveConfiguration.SemanticVersionFormat
+                );
+                foreach (var grouping in semanticVersionsOfMergeTarget)
+                {
+                    if (grouping.Key.When > notOlderThan) continue;
+
+                    foreach (var semanticVersion in grouping)
+                    {
+                        if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                        {
+                            yield return new(grouping.Key, semanticVersion);
+                        }
+                    }
+                }
+            }
+
+            if (effectiveConfiguration.TracksReleaseBranches)
             {
                 var semanticVersionsOfReleaseBranches = GetTaggedSemanticVersionsOfReleaseBranches(
-                    tagPrefix: configuration.TagPrefix,
-                    format: configuration.SemanticVersionFormat,
+                    configuration: configuration,
+                    tagPrefix: effectiveConfiguration.TagPrefix,
+                    format: effectiveConfiguration.SemanticVersionFormat,
                     excludeBranches: branch
                 );
                 foreach (var grouping in semanticVersionsOfReleaseBranches)
                 {
-                    if (grouping.Key.When > olderThan) continue;
+                    if (grouping.Key.When > notOlderThan) continue;
 
                     foreach (var semanticVersion in grouping)
                     {
-                        yield return new(grouping.Key, semanticVersion);
+                        if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                        {
+                            yield return new(grouping.Key, semanticVersion);
+                        }
                     }
                 }
             }
 
-            if (!configuration.IsMainBranch && !configuration.IsReleaseBranch)
+            if (!effectiveConfiguration.IsMainBranch && !effectiveConfiguration.IsReleaseBranch)
             {
                 var semanticVersionsOfMainlineBranches = GetTaggedSemanticVersionsOfMainBranches(
-                    tagPrefix: configuration.TagPrefix,
-                    format: configuration.SemanticVersionFormat,
+                    configuration: configuration,
+                    tagPrefix: effectiveConfiguration.TagPrefix,
+                    format: effectiveConfiguration.SemanticVersionFormat,
                     excludeBranches: branch
                 );
                 foreach (var grouping in semanticVersionsOfMainlineBranches)
                 {
-                    if (grouping.Key.When > olderThan) continue;
+                    if (grouping.Key.When > notOlderThan) continue;
 
                     foreach (var semanticVersion in grouping)
                     {
-                        yield return new(grouping.Key, semanticVersion);
+                        if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                        {
+                            yield return new(grouping.Key, semanticVersion);
+                        }
                     }
                 }
             }
@@ -189,8 +201,9 @@ internal sealed class TaggedSemanticVersionRepository(
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
-        string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches)
+        IGitVersionConfiguration configuration, string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches)
     {
+        configuration.NotNull();
         tagPrefix ??= string.Empty;
         excludeBranches.NotNull();
 
@@ -199,7 +212,7 @@ internal sealed class TaggedSemanticVersionRepository(
             using (this.log.IndentLog($"Getting tagged semantic versions of mainline branches. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                foreach (var mainlinemBranch in branchRepository.GetMainBranches(excludeBranches))
+                foreach (var mainlinemBranch in branchRepository.GetMainBranches(configuration, excludeBranches))
                 {
                     foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(mainlinemBranch, tagPrefix, format).SelectMany(_ => _))
                     {
@@ -213,8 +226,9 @@ internal sealed class TaggedSemanticVersionRepository(
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
-        string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches)
+        IGitVersionConfiguration configuration, string? tagPrefix, SemanticVersionFormat format, params IBranch[] excludeBranches)
     {
+        configuration.NotNull();
         tagPrefix ??= string.Empty;
         excludeBranches.NotNull();
 
@@ -223,7 +237,7 @@ internal sealed class TaggedSemanticVersionRepository(
             using (this.log.IndentLog($"Getting tagged semantic versions of release branches. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                foreach (var releaseBranch in branchRepository.GetReleaseBranches(excludeBranches))
+                foreach (var releaseBranch in branchRepository.GetReleaseBranches(configuration, excludeBranches))
                 {
                     foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(releaseBranch, tagPrefix, format).SelectMany(_ => _))
                     {

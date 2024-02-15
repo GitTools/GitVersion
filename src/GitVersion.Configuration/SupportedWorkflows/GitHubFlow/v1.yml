@@ -33,10 +33,10 @@ branches:
     pre-release-weight: 55000
   release:
     mode: ManualDeployment
-    take-incremented-version: TakeAlwaysIncrementedVersion
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-when-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -84,10 +84,10 @@ branches:
 ignore:
   sha: []
 mode: ContinuousDelivery
-take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
+prevent-increment-when-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled

@@ -4,7 +4,12 @@ namespace GitVersion.Core;
 
 internal interface ITaggedSemanticVersionRepository
 {
-    ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(IBranch branch, EffectiveConfiguration configuration);
+    ILookup<ICommit, SemanticVersionWithTag> GetAllTaggedSemanticVersions(
+        IGitVersionConfiguration configuration,
+        EffectiveConfiguration effectiveConfiguration,
+        IBranch branch,
+        string? label,
+        DateTimeOffset? notOlderThan);
 
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
         IBranch branch,
@@ -17,11 +22,13 @@ internal interface ITaggedSemanticVersionRepository
         SemanticVersionFormat format);
 
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
+        IGitVersionConfiguration configuration,
         string? tagPrefix,
         SemanticVersionFormat format,
         params IBranch[] excludeBranches);
 
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
+        IGitVersionConfiguration configuration,
         string? tagPrefix,
         SemanticVersionFormat format,
         params IBranch[] excludeBranches);

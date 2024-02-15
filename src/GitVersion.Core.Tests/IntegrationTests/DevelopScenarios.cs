@@ -203,7 +203,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.2.1-beta.1+1");
         fixture.Repository.ApplyTag("1.2.1-beta.1");
-        fixture.AssertFullSemver("1.2.1-beta.1");
+        fixture.AssertFullSemver("1.2.1-beta.2+0");
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.3.0-alpha.2");

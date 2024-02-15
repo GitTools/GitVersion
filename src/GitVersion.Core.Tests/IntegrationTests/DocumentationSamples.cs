@@ -91,7 +91,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.2.1-beta.1");
-        fixture.AssertFullSemver("1.2.1-beta.1");
+        fixture.AssertFullSemver("1.2.1-beta.2+0");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("hotfix/1.2.1");
         fixture.SequenceDiagram.Destroy("hotfix/1.2.1");
@@ -243,7 +243,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.3.1-beta.1");
-        fixture.AssertFullSemver("1.3.1-beta.1");
+        fixture.AssertFullSemver("1.3.1-beta.2+0");
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF("hotfix/1.3.1");
         fixture.SequenceDiagram.Destroy("hotfix/1.3.1");

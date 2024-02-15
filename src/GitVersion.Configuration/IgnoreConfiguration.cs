@@ -17,7 +17,7 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     }
 
     [JsonIgnore]
-    IReadOnlyCollection<string> IIgnoreConfiguration.Shas => Shas;
+    ISet<string> IIgnoreConfiguration.Shas => Shas;
 
     [JsonPropertyName("sha")]
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]

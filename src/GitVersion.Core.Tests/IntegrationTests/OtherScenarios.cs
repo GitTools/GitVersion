@@ -1,6 +1,7 @@
 using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
@@ -1049,5 +1050,172 @@ public class OtherScenarios : TestBase
         var _ = fixture.GetVersion(configuration);
 
         fixture.AssertFullSemver("0.0.1-5", configuration);
+    }
+
+    [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.3+0")]
+    [TestCase("0.0.1", true, "0.0.1")]
+    [TestCase("0.0.1", false, "0.1.0-alpha.1+0")]
+    [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1+1")]
+    [TestCase("0.0.1-beta.2", false, "0.1.0-alpha.1+1")]
+    [TestCase("0.1.0-beta.2", true, "0.1.0-alpha.1+1")]
+    [TestCase("0.1.0-beta.2", false, "0.1.0-alpha.1+1")]
+    [TestCase("0.2.0-beta.2", true, "0.2.0-alpha.1+1")]
+    [TestCase("0.2.0-beta.2", false, "0.2.0-alpha.1+1")]
+    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeManualDeployment(
+        string tag, bool preventIncrementWhenTagged, string version)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("develop", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment)
+                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit("A");
+        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        fixture.BranchTo("develop");
+
+        fixture.AssertFullSemver(version, configuration);
+    }
+
+    [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.2")]
+    [TestCase("0.0.1", true, "0.0.1")]
+    [TestCase("0.0.1", false, "0.1.0-alpha.0")]
+    [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1")]
+    [TestCase("0.0.1-beta.2", false, "0.1.0-alpha.1")]
+    [TestCase("0.1.0-beta.2", true, "0.1.0-alpha.1")]
+    [TestCase("0.1.0-beta.2", false, "0.1.0-alpha.1")]
+    [TestCase("0.2.0-beta.2", true, "0.2.0-alpha.1")]
+    [TestCase("0.2.0-beta.2", false, "0.2.0-alpha.1")]
+    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeContinuousDelivery(
+        string tag, bool preventIncrementWhenTagged, string version)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("develop", _ => _
+                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
+                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit("A");
+        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        fixture.BranchTo("develop");
+
+        fixture.AssertFullSemver(version, configuration);
+    }
+
+    [TestCase("0.0.1-alpha.2", true, "0.0.1")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1")]
+    [TestCase("0.0.1", true, "0.0.1")]
+    [TestCase("0.0.1", false, "0.1.0")]
+    [TestCase("0.0.1-beta.2", true, "0.1.0")]
+    [TestCase("0.0.1-beta.2", false, "0.1.0")]
+    [TestCase("0.1.0-beta.2", true, "0.1.0")]
+    [TestCase("0.1.0-beta.2", false, "0.1.0")]
+    [TestCase("0.2.0-beta.2", true, "0.2.0")]
+    [TestCase("0.2.0-beta.2", false, "0.2.0")]
+    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeContinuousDeployment(
+        string tag, bool preventIncrementWhenTagged, string version)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("develop", _ => _
+                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit("A");
+        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        fixture.BranchTo("develop");
+
+        fixture.AssertFullSemver(version, configuration);
+    }
+
+    [TestCase(true, "1.0.0")]
+    [TestCase(false, "6.0.0-alpha.1+0")]
+    public void EnsurePreventIncrementWhenTaggedOnDevelopWithNextVersion(bool preventIncrementWhenTagged, string semVersion)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("6.0.0")
+            .WithBranch("develop", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment)
+                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.MakeACommit();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+
+        fixture.AssertFullSemver(semVersion, configuration);
+    }
+
+    [TestCase(null, true, "6.0.0-beta.1+0")]
+    [TestCase(null, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0" }, true, "5.0.0")]
+    [TestCase(new[] { "5.0.0" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0" }, true, "6.0.0")]
+    [TestCase(new[] { "6.0.0" }, false, "6.1.0-beta.1+0")]
+    [TestCase(new[] { "7.0.0" }, true, "7.0.0")]
+    [TestCase(new[] { "7.0.0" }, false, "7.1.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-alpha.2" }, true, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0-alpha.2" }, true, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "7.0.0-alpha.2" }, true, "7.0.0-beta.1+0")]
+    [TestCase(new[] { "7.0.0-alpha.2" }, false, "7.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-beta.2" }, true, "5.0.0-beta.2")]
+    [TestCase(new[] { "5.0.0-beta.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0-beta.2" }, true, "6.0.0-beta.2")]
+    [TestCase(new[] { "6.0.0-beta.2" }, false, "6.0.0-beta.3+0")]
+    [TestCase(new[] { "7.0.0-beta.2" }, true, "7.0.0-beta.2")]
+    [TestCase(new[] { "7.0.0-beta.2" }, false, "7.0.0-beta.3+0")]
+    [TestCase(new[] { "5.0.0", "6.0.0" }, true, "6.0.0")]
+    [TestCase(new[] { "5.0.0", "6.0.0" }, false, "6.1.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0", "5.0.0" }, true, "6.0.0")]
+    [TestCase(new[] { "6.0.0", "5.0.0" }, false, "6.1.0-beta.1+0")]
+    [TestCase(new[] { "6.0.0", "7.0.0" }, true, "7.0.0")]
+    [TestCase(new[] { "6.0.0", "7.0.0" }, false, "7.1.0-beta.1+0")]
+    [TestCase(new[] { "7.0.0", "6.0.0" }, true, "7.0.0")]
+    [TestCase(new[] { "7.0.0", "6.0.0" }, false, "7.1.0-beta.1+0")]
+    [TestCase(new[] { "4.0.0", "5.0.0-alpha.2" }, true, "4.0.0")]
+    [TestCase(new[] { "4.0.0", "5.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-alpha.2", "4.0.0" }, true, "4.0.0")]
+    [TestCase(new[] { "5.0.0-alpha.2", "4.0.0" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "4.0.0", "5.0.0-beta.2" }, true, "5.0.0-beta.2")]
+    [TestCase(new[] { "4.0.0", "5.0.0-beta.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-beta.2", "4.0.0" }, true, "5.0.0-beta.2")]
+    [TestCase(new[] { "5.0.0-beta.2", "4.0.0" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "4.0.0-alpha.2", "5.0.0-beta.2" }, true, "5.0.0-beta.2")]
+    [TestCase(new[] { "4.0.0-alpha.2", "5.0.0-beta.2" }, false, "6.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-beta.2", "4.0.0-alpha.2" }, true, "5.0.0-beta.2")]
+    [TestCase(new[] { "5.0.0-beta.2", "4.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
+    public void EnsurePreventIncrementWhenTaggedOnReleaseBranchAndIncrementMinor(
+        string[]? tags, bool preventIncrementWhenTagged, string semVersion)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("release", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment)
+                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithIncrement(IncrementStrategy.Minor)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+
+        if (tags is not null)
+        {
+            foreach (string tag in tags)
+            {
+                fixture.ApplyTag(tag);
+            }
+        }
+
+        fixture.BranchTo("release/6.0.0");
+
+        fixture.AssertFullSemver(semVersion, configuration);
     }
 }

@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -81,11 +82,9 @@ public sealed class CodeBuildTests : TestBase
             }
         };
 
-        var configuration = new TestEffectiveConfiguration();
-
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, new GitVersionConfiguration(), 0);
 
         this.buildServer.WithPropertyFile(file);
 

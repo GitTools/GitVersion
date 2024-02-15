@@ -24,12 +24,12 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
-            TakeIncrementedVersion = TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             PreventIncrementOfMergedBranchVersion = false,
+            PreventIncrementWhenTagged = true,
             TrackMergeTarget = false,
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
@@ -40,11 +40,11 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Minor,
-            TakeIncrementedVersion = TakeIncrementedVersion.TakeAlwaysIncrementedVersion,
             RegularExpression = DevelopBranch.RegexPattern,
             SourceBranches = [],
             Label = "alpha",
             PreventIncrementOfMergedBranchVersion = false,
+            PreventIncrementWhenTagged = false,
             TrackMergeTarget = true,
             TracksReleaseBranches = true,
             IsMainBranch = false,
@@ -73,7 +73,6 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.None,
-            TakeIncrementedVersion = TakeIncrementedVersion.TakeAlwaysIncrementedVersion,
             DeploymentMode = DeploymentMode.ManualDeployment,
             RegularExpression = ReleaseBranch.RegexPattern,
             SourceBranches =
@@ -85,6 +84,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             ],
             Label = "beta",
             PreventIncrementOfMergedBranchVersion = true,
+            PreventIncrementWhenTagged = false,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsMainBranch = false,
@@ -134,6 +134,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
+            PreventIncrementWhenTagged = false,
             SourceBranches =
             [
                 this.ReleaseBranch.Name,

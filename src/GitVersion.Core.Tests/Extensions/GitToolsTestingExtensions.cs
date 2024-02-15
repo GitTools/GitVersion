@@ -90,10 +90,11 @@ public static class GitToolsTestingExtensions
 
             var context = contextOptions.Value;
 
-            var nextVersion = nextVersionCalculator.FindVersion();
-            return variableProvider.GetVariablesFor(
-                nextVersion.IncrementedVersion, nextVersion.Configuration, context.CurrentCommitTaggedVersion
-            );
+            var semanticVersion = nextVersionCalculator.Calculate();
+
+            var branchConfiguration = context.Configuration.GetBranchConfiguration(context.CurrentBranch);
+            EffectiveConfiguration effectiveConfiguration = new(context.Configuration, branchConfiguration);
+            return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration.PreReleaseWeight);
         }
         catch (Exception)
         {

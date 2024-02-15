@@ -22,7 +22,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.2.1-beta.1+2");
         fixture.Repository.ApplyTag("1.2.1-beta.1");
-        fixture.AssertFullSemver("1.2.1-beta.1");
+        fixture.AssertFullSemver("1.2.1-beta.2+0");
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.2.1-beta.2+1");
 

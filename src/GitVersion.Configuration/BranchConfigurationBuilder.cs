@@ -7,10 +7,10 @@ internal class BranchConfigurationBuilder
     public static BranchConfigurationBuilder New => new();
 
     private DeploymentMode? deploymentMode;
-    private TakeIncrementedVersion? takeIncrementedVersion;
     private string? label;
     private IncrementStrategy increment;
     private bool? preventIncrementOfMergedBranchVersion;
+    private bool? preventIncrementWhenTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
@@ -33,12 +33,6 @@ internal class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithTakeIncrementedVersion(TakeIncrementedVersion? value)
-    {
-        this.takeIncrementedVersion = value;
-        return this;
-    }
-
     public virtual BranchConfigurationBuilder WithLabel(string? value)
     {
         this.label = value;
@@ -54,6 +48,12 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
     {
         this.preventIncrementOfMergedBranchVersion = value;
+        return this;
+    }
+
+    public virtual BranchConfigurationBuilder WithPreventIncrementWhenTagged(bool? value)
+    {
+        this.preventIncrementWhenTagged = value;
         return this;
     }
 
@@ -138,10 +138,10 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithConfiguration(IBranchConfiguration value)
     {
         WithDeploymentMode(value.DeploymentMode);
-        WithTakeIncrementedVersion(value.TakeIncrementedVersion);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
+        WithPreventIncrementWhenTagged(value.PreventIncrementWhenTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -159,7 +159,6 @@ internal class BranchConfigurationBuilder
     public IBranchConfiguration Build() => new BranchConfiguration
     {
         DeploymentMode = deploymentMode,
-        TakeIncrementedVersion = takeIncrementedVersion,
         Label = label,
         Increment = increment,
         RegularExpression = regularExpression,
@@ -171,6 +170,7 @@ internal class BranchConfigurationBuilder
         IsReleaseBranch = isReleaseBranch,
         LabelNumberPattern = labelNumberPattern,
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
+        PreventIncrementWhenTagged = preventIncrementWhenTagged,
         PreReleaseWeight = preReleaseWeight,
         SourceBranches = sourceBranches,
         IsSourceBranchFor = isSourceBranchFor

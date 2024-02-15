@@ -7,13 +7,13 @@ public interface IBranchConfiguration
 {
     DeploymentMode? DeploymentMode { get; }
 
-    TakeIncrementedVersion? TakeIncrementedVersion { get; }
-
     string? Label { get; }
 
     IncrementStrategy Increment { get; }
 
     bool? PreventIncrementOfMergedBranchVersion { get; }
+
+    bool? PreventIncrementWhenTagged { get; }
 
     string? LabelNumberPattern { get; }
 

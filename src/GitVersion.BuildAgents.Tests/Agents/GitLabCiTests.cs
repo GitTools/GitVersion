@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -59,13 +60,16 @@ public class GitLabCiTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "commitSha", CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z") }
+            BuildMetaData = new SemanticVersionBuildMetaData("5")
+            {
+                Sha = "commitSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
 
-        var configuration = new TestEffectiveConfiguration();
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, new GitVersionConfiguration(), 0);
 
         this.buildServer.WithPropertyFile(file);
 

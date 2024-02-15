@@ -5,29 +5,17 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
 
-internal class VariableProvider(IEnvironment environment) : IVariableProvider
+internal sealed class VariableProvider(IEnvironment environment) : IVariableProvider
 {
     private readonly IEnvironment environment = environment.NotNull();
 
     public GitVersionVariables GetVariablesFor(
-        SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion)
+        SemanticVersion semanticVersion, IGitVersionConfiguration configuration, int preReleaseWeight)
     {
         semanticVersion.NotNull();
         configuration.NotNull();
 
-        if (semanticVersion.CompareTo(currentCommitTaggedVersion) == 0)
-        {
-            // Will always be 0, don't bother with the +0 on tags
-            semanticVersion = new(semanticVersion)
-            {
-                BuildMetaData = new(semanticVersion.BuildMetaData)
-                {
-                    CommitsSinceTag = null
-                }
-            };
-        }
-
-        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration);
+        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration, preReleaseWeight);
 
         var informationalVersion = CheckAndFormatString(
             configuration.AssemblyInformationalFormat,

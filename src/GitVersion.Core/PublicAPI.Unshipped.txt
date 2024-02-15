@@ -98,13 +98,10 @@ GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.ICommit! commit, Git
 GitVersion.Common.IRepositoryStore.GetBranchesContainingCommit(GitVersion.ICommit! commit, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? currentCommit) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
-GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix, GitVersion.SemanticVersionFormat format, bool handleDetachedBranch) -> GitVersion.SemanticVersion?
 GitVersion.Common.IRepositoryStore.GetNumberOfUncommittedChanges() -> int
 GitVersion.Common.IRepositoryStore.GetReleaseBranches(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.IBranchConfiguration!>>! releaseBranchConfig) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetTaggedSemanticVersions(string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IReadOnlyList<GitVersion.SemanticVersionWithTag!>!
-GitVersion.Common.IRepositoryStore.GetTaggedSemanticVersionsOnBranch(GitVersion.IBranch! branch, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> System.Collections.Generic.IReadOnlyList<GitVersion.SemanticVersionWithTag!>!
 GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.IBranch!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
 GitVersion.Configuration.ConfigurationExtensions
@@ -119,11 +116,12 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyInformationalFormat.get 
 GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme
 GitVersion.Configuration.EffectiveConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration) -> void
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.DeploymentMode versioningMode, string? tagPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? regularExpression, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainBranch, string! commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int tagPreReleaseWeight) -> void
+GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenTagged.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration) -> void
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.DeploymentMode versioningMode, string? tagPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? regularExpression, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainBranch, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int tagPreReleaseWeight) -> void
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainBranch.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
@@ -139,7 +137,6 @@ GitVersion.Configuration.EffectiveConfiguration.PatchVersionBumpMessage.get -> s
 GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.EffectiveConfiguration.TakeIncrementedVersion.get -> GitVersion.VersionCalculation.TakeIncrementedVersion
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
@@ -161,9 +158,9 @@ GitVersion.Configuration.IBranchConfiguration.Label.get -> string?
 GitVersion.Configuration.IBranchConfiguration.LabelNumberPattern.get -> string?
 GitVersion.Configuration.IBranchConfiguration.PreReleaseWeight.get -> int?
 GitVersion.Configuration.IBranchConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.PreventIncrementWhenTagged.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.IBranchConfiguration.SourceBranches.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-GitVersion.Configuration.IBranchConfiguration.TakeIncrementedVersion.get -> GitVersion.VersionCalculation.TakeIncrementedVersion?
 GitVersion.Configuration.IBranchConfiguration.TrackMergeMessage.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TracksReleaseBranches.get -> bool?
@@ -176,12 +173,12 @@ GitVersion.Configuration.IConfigurationProvider
 GitVersion.Configuration.IConfigurationProvider.Provide(System.Collections.Generic.IReadOnlyDictionary<object!, object?>? overrideConfiguration = null) -> GitVersion.Configuration.IGitVersionConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration
 GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningFormat.get -> string?
-GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningScheme.get -> GitVersion.Extensions.AssemblyFileVersioningScheme?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningScheme.get -> GitVersion.Extensions.AssemblyFileVersioningScheme
 GitVersion.Configuration.IGitVersionConfiguration.AssemblyInformationalFormat.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningFormat.get -> string?
-GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme
 GitVersion.Configuration.IGitVersionConfiguration.Branches.get -> System.Collections.Generic.IReadOnlyDictionary<string!, GitVersion.Configuration.IBranchConfiguration!>!
-GitVersion.Configuration.IGitVersionConfiguration.CommitDateFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.CommitDateFormat.get -> string!
 GitVersion.Configuration.IGitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration.TagPreReleaseWeight.get -> int?
 GitVersion.Configuration.IGitVersionConfiguration.TagPrefix.get -> string?
@@ -201,7 +198,7 @@ GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IIgnoreConfiguration.IsEmpty.get -> bool
-GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.ISet<string!>!
 GitVersion.ConfigurationInfo
 GitVersion.ConfigurationInfo.ConfigurationFile -> string?
 GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
@@ -245,8 +242,7 @@ GitVersion.GitVersionContext
 GitVersion.GitVersionContext.Configuration.get -> GitVersion.Configuration.IGitVersionConfiguration!
 GitVersion.GitVersionContext.CurrentBranch.get -> GitVersion.IBranch!
 GitVersion.GitVersionContext.CurrentCommit.get -> GitVersion.ICommit!
-GitVersion.GitVersionContext.CurrentCommitTaggedVersion.get -> GitVersion.SemanticVersion?
-GitVersion.GitVersionContext.GitVersionContext(GitVersion.IBranch! currentBranch, GitVersion.ICommit! currentCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges) -> void
+GitVersion.GitVersionContext.GitVersionContext(GitVersion.IBranch! currentBranch, GitVersion.ICommit! currentCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration, bool isCurrentCommitTagged, int numberOfUncommittedChanges) -> void
 GitVersion.GitVersionContext.IsCurrentCommitTagged.get -> bool
 GitVersion.GitVersionContext.NumberOfUncommittedChanges.get -> int
 GitVersion.GitVersionCoreModule
@@ -622,7 +618,7 @@ GitVersion.SemanticVersionFormatValues.PreReleaseLabelWithDash.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseNumber.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseTag.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseTagWithDash.get -> string!
-GitVersion.SemanticVersionFormatValues.SemanticVersionFormatValues(GitVersion.SemanticVersion! semver, GitVersion.Configuration.EffectiveConfiguration! configuration) -> void
+GitVersion.SemanticVersionFormatValues.SemanticVersionFormatValues(GitVersion.SemanticVersion! semver, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> void
 GitVersion.SemanticVersionFormatValues.SemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.Sha.get -> string?
 GitVersion.SemanticVersionFormatValues.ShortSha.get -> string?
@@ -645,6 +641,7 @@ GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag(string! nam
 GitVersion.SemanticVersionPreReleaseTag.ToString(string! format) -> string!
 GitVersion.SemanticVersionPreReleaseTag.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 GitVersion.SemanticVersionWithTag
+GitVersion.SemanticVersionWithTag.CompareTo(GitVersion.SemanticVersionWithTag? other) -> int
 GitVersion.SemanticVersionWithTag.SemanticVersionWithTag(GitVersion.SemanticVersion! Value, GitVersion.ITag! Tag) -> void
 GitVersion.SemanticVersionWithTag.Tag.get -> GitVersion.ITag!
 GitVersion.SemanticVersionWithTag.Tag.init -> void
@@ -689,6 +686,8 @@ GitVersion.VersionCalculation.DeploymentMode
 GitVersion.VersionCalculation.DeploymentMode.ContinuousDelivery = 1 -> GitVersion.VersionCalculation.DeploymentMode
 GitVersion.VersionCalculation.DeploymentMode.ContinuousDeployment = 2 -> GitVersion.VersionCalculation.DeploymentMode
 GitVersion.VersionCalculation.DeploymentMode.ManualDeployment = 0 -> GitVersion.VersionCalculation.DeploymentMode
+GitVersion.VersionCalculation.IDeploymentModeCalculator
+GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.ICommit? baseVersionSource) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
@@ -697,13 +696,11 @@ GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForcedByCommi
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.ICommit![]! commits) -> GitVersion.VersionField?
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetMergedCommits(GitVersion.ICommit! mergeCommit, int index) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.VersionCalculation.INextVersionCalculator
-GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
+GitVersion.VersionCalculation.INextVersionCalculator.Calculate() -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVariableProvider
-GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion) -> GitVersion.OutputVariables.GitVersionVariables!
+GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.VersionCalculation.IVersionFilter
 GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
-GitVersion.VersionCalculation.IVersionModeCalculator
-GitVersion.VersionCalculation.IVersionModeCalculator.Calculate(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.NextVersion
@@ -714,10 +711,6 @@ GitVersion.VersionCalculation.NextVersion.Configuration.get -> GitVersion.Config
 GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion? other) -> bool
 GitVersion.VersionCalculation.NextVersion.IncrementedVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void
-GitVersion.VersionCalculation.TakeIncrementedVersion
-GitVersion.VersionCalculation.TakeIncrementedVersion.TakeAlwaysBaseVersion = 0 -> GitVersion.VersionCalculation.TakeIncrementedVersion
-GitVersion.VersionCalculation.TakeIncrementedVersion.TakeAlwaysIncrementedVersion = 2 -> GitVersion.VersionCalculation.TakeIncrementedVersion
-GitVersion.VersionCalculation.TakeIncrementedVersion.TakeTaggedOtherwiseIncrementedVersion = 1 -> GitVersion.VersionCalculation.TakeIncrementedVersion
 GitVersion.VersionCalculation.VersionCalculationModule
 GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void
@@ -863,19 +856,18 @@ static GitVersion.ReferenceName.FromBranchName(string! branchName) -> GitVersion
 static GitVersion.ReferenceName.Parse(string! canonicalName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.TryParse(out GitVersion.ReferenceName? value, string! canonicalName) -> bool
 static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
-static GitVersion.SemanticVersion.TryParse(string! version, string? tagPrefixRegex, out GitVersion.SemanticVersion? semanticVersion, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> bool
 static GitVersion.SemanticVersion.operator !=(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool
 static GitVersion.SemanticVersion.operator <(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
 static GitVersion.SemanticVersion.operator <=(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
 static GitVersion.SemanticVersion.operator ==(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool
 static GitVersion.SemanticVersion.operator >(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
 static GitVersion.SemanticVersion.operator >=(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
+static GitVersion.SemanticVersion.TryParse(string! version, string? tagPrefixRegex, out GitVersion.SemanticVersion? semanticVersion, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> bool
 static GitVersion.SemanticVersionBuildMetaData.Parse(string? buildMetaData) -> GitVersion.SemanticVersionBuildMetaData!
 static GitVersion.SemanticVersionBuildMetaData.implicit operator GitVersion.SemanticVersionBuildMetaData!(string! preReleaseTag) -> GitVersion.SemanticVersionBuildMetaData!
 static GitVersion.SemanticVersionBuildMetaData.implicit operator string?(GitVersion.SemanticVersionBuildMetaData? preReleaseTag) -> string?
 static GitVersion.SemanticVersionBuildMetaData.operator !=(GitVersion.SemanticVersionBuildMetaData? left, GitVersion.SemanticVersionBuildMetaData? right) -> bool
 static GitVersion.SemanticVersionBuildMetaData.operator ==(GitVersion.SemanticVersionBuildMetaData? left, GitVersion.SemanticVersionBuildMetaData? right) -> bool
-static GitVersion.SemanticVersionPreReleaseTag.Parse(string? preReleaseTag) -> GitVersion.SemanticVersionPreReleaseTag!
 static GitVersion.SemanticVersionPreReleaseTag.implicit operator GitVersion.SemanticVersionPreReleaseTag!(string? preReleaseTag) -> GitVersion.SemanticVersionPreReleaseTag!
 static GitVersion.SemanticVersionPreReleaseTag.implicit operator string?(GitVersion.SemanticVersionPreReleaseTag? preReleaseTag) -> string?
 static GitVersion.SemanticVersionPreReleaseTag.operator !=(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
@@ -884,6 +876,7 @@ static GitVersion.SemanticVersionPreReleaseTag.operator <=(GitVersion.SemanticVe
 static GitVersion.SemanticVersionPreReleaseTag.operator ==(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
 static GitVersion.SemanticVersionPreReleaseTag.operator >(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
 static GitVersion.SemanticVersionPreReleaseTag.operator >=(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
+static GitVersion.SemanticVersionPreReleaseTag.Parse(string? preReleaseTag) -> GitVersion.SemanticVersionPreReleaseTag!
 static GitVersion.VersionCalculation.NextVersion.operator !=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator <(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator <=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool

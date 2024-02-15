@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
         <PackageReference Include="MSBuild.ProjectCreation" />
@@ -21,7 +21,6 @@
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />

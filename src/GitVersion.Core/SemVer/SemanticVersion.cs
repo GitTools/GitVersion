@@ -144,7 +144,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) < 0;
     }
 
-    public static SemanticVersion Parse(string version, string? tagPrefixRegex, SemanticVersionFormat versionFormat = SemanticVersionFormat.Strict)
+    public static SemanticVersion Parse(
+        string version, string? tagPrefixRegex, SemanticVersionFormat versionFormat = SemanticVersionFormat.Strict)
     {
         if (!TryParse(version, tagPrefixRegex, out var semanticVersion, versionFormat))
             throw new WarningException($"Failed to parse {version} into a Semantic Version");
@@ -152,7 +153,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return semanticVersion;
     }
 
-    public static bool TryParse(string version, string? tagPrefixRegex, [NotNullWhen(true)] out SemanticVersion? semanticVersion, SemanticVersionFormat format = SemanticVersionFormat.Strict)
+    public static bool TryParse(string version, string? tagPrefixRegex,
+        [NotNullWhen(true)] out SemanticVersion? semanticVersion, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
         var match = Regex.Match(version, $"^({tagPrefixRegex})(?<version>.*)$");
 

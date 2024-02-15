@@ -4,7 +4,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion;
 
-public class SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfiguration configuration)
+public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConfiguration configuration, int preReleaseWeight)
 {
     public string Major => semver.Major.ToString();
 
@@ -22,7 +22,8 @@ public class SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfig
 
     public string PreReleaseNumber => semver.PreReleaseTag.Number?.ToString() ?? string.Empty;
 
-    public string WeightedPreReleaseNumber => GetWeightedPreReleaseNumber();
+    public string WeightedPreReleaseNumber => semver.PreReleaseTag.Number.HasValue
+        ? $"{semver.PreReleaseTag.Number.Value + preReleaseWeight}" : $"{configuration.TagPreReleaseWeight}";
 
     public string BuildMetaData => semver.BuildMetaData.ToString();
 
@@ -55,14 +56,4 @@ public class SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfig
     public string CommitsSinceVersionSource => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture);
 
     public string UncommittedChanges => semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
-
-    private string GetWeightedPreReleaseNumber()
-    {
-        var weightedPreReleaseNumber =
-            semver.PreReleaseTag.HasTag() ? (semver.PreReleaseTag.Number + configuration.PreReleaseWeight).ToString() : null;
-
-        return weightedPreReleaseNumber.IsNullOrEmpty()
-            ? $"{configuration.TagPreReleaseWeight}"
-            : weightedPreReleaseNumber;
-    }
 }

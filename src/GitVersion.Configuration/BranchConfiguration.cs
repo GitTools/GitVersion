@@ -10,10 +10,6 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyDescription("The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.")]
     public DeploymentMode? DeploymentMode { get; internal set; }
 
-    [JsonPropertyName("take-incremented-version")]
-    [JsonPropertyDescription("Option to control which version should be taken for this branch. Can be 'TakeAlwaysBaseVersion', 'TakeTaggedOtherwiseIncrementedVersion', 'TakeAlwaysIncrementedVersion'.")]
-    public TakeIncrementedVersion? TakeIncrementedVersion { get; internal set; }
-
     [JsonPropertyName("label")]
     [JsonPropertyDescription("The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).")]
     public string? Label { get; internal set; }
@@ -25,6 +21,10 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyName("prevent-increment-of-merged-branch-version")]
     [JsonPropertyDescription("Prevent increment of merged branch version.")]
     public bool? PreventIncrementOfMergedBranchVersion { get; internal set; }
+
+    [JsonPropertyName("prevent-increment-when-tagged")] // take-incremented-version
+    [JsonPropertyDescription("Option to control which version should be taken for this branch. Can be.")]
+    public bool? PreventIncrementWhenTagged { get; internal set; }
 
     [JsonPropertyName("label-number-pattern")]
     [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{ConfigurationConstants.DefaultLabelNumberPattern}'.")]
@@ -90,10 +90,10 @@ internal record BranchConfiguration : IBranchConfiguration
         {
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
-            TakeIncrementedVersion = TakeIncrementedVersion ?? configuration.TakeIncrementedVersion,
             Label = Label ?? configuration.Label,
             PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion
                 ?? configuration.PreventIncrementOfMergedBranchVersion,
+            PreventIncrementWhenTagged = PreventIncrementWhenTagged ?? configuration.PreventIncrementWhenTagged,
             LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,

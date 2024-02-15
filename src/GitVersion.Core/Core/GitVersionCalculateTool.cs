@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -19,7 +20,8 @@ internal class GitVersionCalculateTool : IGitVersionCalculateTool
 
     private readonly IOptions<GitVersionOptions> options;
     private readonly Lazy<GitVersionContext> versionContext;
-    private GitVersionContext context => this.versionContext.Value;
+
+    private GitVersionContext Context => this.versionContext.Value;
 
     public GitVersionCalculateTool(ILog log, INextVersionCalculator nextVersionCalculator,
         IVariableProvider variableProvider, IGitPreparer gitPreparer,
@@ -50,10 +52,12 @@ internal class GitVersionCalculateTool : IGitVersionCalculateTool
 
         if (versionVariables != null) return versionVariables;
 
-        var nextVersion = this.nextVersionCalculator.FindVersion();
+        var semanticVersion = this.nextVersionCalculator.Calculate();
+
+        var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
+        EffectiveConfiguration effectiveConfiguration = new(Context.Configuration, branchConfiguration);
         versionVariables = this.variableProvider.GetVariablesFor(
-            nextVersion.IncrementedVersion, nextVersion.Configuration, context.CurrentCommitTaggedVersion
-        );
+            semanticVersion, Context.Configuration, effectiveConfiguration.PreReleaseWeight);
 
         if (gitVersionOptions.Settings.NoCache) return versionVariables;
         try

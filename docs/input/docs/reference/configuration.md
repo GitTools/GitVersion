@@ -37,7 +37,19 @@ created. Modify this to suit your needs.
 
 ## Global configuration
 
-The global configuration looks like this:
+Following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
+- GitFlow (GitFlow/v1)
+- GitHubFlow (GitHubFlow/v1) and
+- TrunkBased (TrunkBased/v1)
+
+Example of using a TrunkBased workflow with a different tag-prefix:
+
+```yaml
+workflow: TrunkBased/v1
+tag-prefix: '[abc]'
+```
+
+The build-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
 
 ```yaml
 assembly-versioning-scheme: MajorMinorPatch
@@ -61,10 +73,10 @@ strategies:
 - VersionInBranchName
 branches:
   develop:
-    take-incremented-version: TakeAlwaysIncrementedVersion
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-when-tagged: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
@@ -89,10 +101,10 @@ branches:
     pre-release-weight: 55000
   release:
     mode: ManualDeployment
-    take-incremented-version: TakeAlwaysIncrementedVersion
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-when-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -138,6 +150,7 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: Inherit
+    prevent-increment-when-tagged: false
     regex: ^hotfix(es)?[/-]
     source-branches:
     - release
@@ -177,10 +190,10 @@ branches:
 ignore:
   sha: []
 mode: ContinuousDelivery
-take-incremented-version: TakeTaggedOtherwiseIncrementedVersion
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
+prevent-increment-when-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
@@ -192,11 +205,195 @@ is-release-branch: false
 is-main-branch: false
 ```
 
+The supported build-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
+
+```yaml
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
+tag-pre-release-weight: 60000
+commit-date-format: yyyy-MM-dd
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
+strategies:
+- ConfiguredNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
+branches:
+  main:
+    label: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^master$|^main$
+    source-branches:
+    - release
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
+  release:
+    mode: ManualDeployment
+    label: beta
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    prevent-increment-when-tagged: false
+    track-merge-target: false
+    regex: ^releases?[/-]
+    source-branches:
+    - main
+    - release
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: true
+    is-main-branch: false
+    pre-release-weight: 30000
+  feature:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    regex: ^features?[/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    is-source-branch-for: []
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDelivery
+    label: PullRequest
+    increment: Inherit
+    label-number-pattern: '[/-](?<number>\d+)'
+    regex: ^(pull|pull\-requests|pr)[/-]
+    source-branches:
+    - main
+    - release
+    - feature
+    is-source-branch-for: []
+    pre-release-weight: 30000
+  unknown:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    regex: (?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    - pull-request
+    is-source-branch-for: []
+ignore:
+  sha: []
+mode: ContinuousDelivery
+label: '{BranchName}'
+increment: Inherit
+prevent-increment-of-merged-branch-version: false
+prevent-increment-when-tagged: true
+track-merge-target: false
+track-merge-message: true
+commit-message-incrementing: Enabled
+regex: ''
+source-branches: []
+is-source-branch-for: []
+tracks-release-branches: false
+is-release-branch: false
+is-main-branch: false
+```
+
+The supported build-in configuration for the `TrunkBased` workflow (`workflow: TrunkBased/v1`) looks like:
+
+```yaml
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
+tag-pre-release-weight: 60000
+commit-date-format: yyyy-MM-dd
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
+strategies:
+- TrunkBased
+- ConfiguredNextVersion
+branches:
+  main:
+    mode: ContinuousDeployment
+    label: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^master$|^main$
+    source-branches: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
+  feature:
+    increment: Minor
+    regex: ^features?[/-](?<BranchName>.+)
+    prevent-increment-when-tagged: false
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  hotfix:
+    increment: Patch
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    prevent-increment-when-tagged: false
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  pull-request:
+    mode: ManualDeployment
+    label: PullRequest
+    increment: Inherit
+    label-number-pattern: '[/-](?<number>\d+)'
+    regex: ^(pull|pull\-requests|pr)[/-]
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  unknown:
+    mode: ManualDeployment
+    increment: Inherit
+    regex: (?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    - pull-request
+ignore:
+  sha: []
+mode: ManualDeployment
+label: '{BranchName}'
+increment: Inherit
+prevent-increment-of-merged-branch-version: false
+prevent-increment-when-tagged: true
+track-merge-target: false
+track-merge-message: true
+commit-message-incrementing: Enabled
+regex: ''
+tracks-release-branches: false
+is-release-branch: false
+is-main-branch: false
+```
+
 The details of the available options are as follows:
 
 ### workflow
 
-The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1
+The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1 or TrunkBased/v1. Defaults to GitFlow/v1 if not set.
 
 ### next-version
 
@@ -265,10 +462,6 @@ The default value is `{InformationalVersion}`.
 
 Sets the `mode` of how GitVersion should create a new version. Read more at
 [deployment modes][modes].
-
-### take-incremented-version
-
-This branch related property can be used to control the behavior weither to take the incremented or the tagged version.
 
 ### increment
 
@@ -611,6 +804,10 @@ In a GitFlow-based repository, setting this option can have implications on the
 `CommitsSinceVersionSource` output variable. It can rule out a potentially
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
+
+### prevent-increment-when-tagged
+
+This branch related property can be used to control the behavior weither to take the incremented or the current tagged version.
 
 ### label-number-pattern
 
