@@ -38,9 +38,9 @@ created. Modify this to suit your needs.
 ## Global configuration
 
 Following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
-- GitFlow (GitFlow/v1)
-- GitHubFlow (GitHubFlow/v1) and
-- TrunkBased (TrunkBased/v1)
+-   GitFlow (GitFlow/v1)
+-   GitHubFlow (GitHubFlow/v1)
+-   TrunkBased (TrunkBased/v1)
 
 Example of using a TrunkBased workflow with a different tag-prefix:
 
@@ -807,7 +807,7 @@ more details and an in-depth analysis, please see [the discussion][2506].
 
 ### prevent-increment-when-tagged
 
-This branch related property can be used to control the behavior weither to take the incremented or the current tagged version.
+This branch related property can be used to control the behavior whether to take the incremented or the current tagged version.
 
 ### label-number-pattern
 
@@ -898,9 +898,9 @@ Example of invalid `Strict`, but valid `Loose`
 ### strategies
 
 Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
-*   ConfiguredNextVersion
-*   MergeMessage
-*   TaggedCommit
-*   TrackReleaseBranches
-*   VersionInBranchName
-*   TrunkBased
+-   ConfiguredNextVersion
+-   MergeMessage
+-   TaggedCommit
+-   TrackReleaseBranches
+-   VersionInBranchName
+-   TrunkBased
