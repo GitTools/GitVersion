@@ -36,7 +36,7 @@ branches:
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
-    prevent-increment-when-tagged: false
+    prevent-increment-when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -87,7 +87,7 @@ mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
-prevent-increment-when-tagged: true
+prevent-increment-when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled

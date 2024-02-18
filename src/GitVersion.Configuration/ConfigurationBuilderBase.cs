@@ -7,8 +7,8 @@ namespace GitVersion.Configuration;
 internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfigurationBuilder
     where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
 {
-    private AssemblyVersioningScheme assemblyVersioningScheme;
-    private AssemblyFileVersioningScheme assemblyFileVersioningScheme;
+    private AssemblyVersioningScheme? assemblyVersioningScheme;
+    private AssemblyFileVersioningScheme? assemblyFileVersioningScheme;
     private string? assemblyInformationalFormat;
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
@@ -21,7 +21,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? noBumpMessage;
     private int? tagPreReleaseWeight;
     private IgnoreConfiguration ignore;
-    private string commitDateFormat;
+    private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
     private VersionStrategies versionStrategy;
@@ -32,7 +32,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
     private bool? preventIncrementOfMergedBranchVersion;
-    private bool? preventIncrementWhenTagged;
+    private bool? preventIncrementWhenCurrentCommitTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
@@ -99,13 +99,13 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme value)
+    public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme? value)
     {
         this.assemblyVersioningScheme = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme value)
+    public virtual TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme? value)
     {
         this.assemblyFileVersioningScheme = value;
         return (TConfigurationBuilder)this;
@@ -183,7 +183,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithCommitDateFormat(string value)
+    public virtual TConfigurationBuilder WithCommitDateFormat(string? value)
     {
         this.commitDateFormat = value;
         return (TConfigurationBuilder)this;
@@ -256,9 +256,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreventIncrementWhenTagged(bool? value)
+    public virtual TConfigurationBuilder WithPreventIncrementWhenCurrentCommitTagged(bool? value)
     {
-        this.preventIncrementWhenTagged = value;
+        this.preventIncrementWhenCurrentCommitTagged = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -345,7 +345,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
-        WithPreventIncrementWhenTagged(value.PreventIncrementWhenTagged);
+        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrementWhenCurrentCommitTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -412,7 +412,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
-            PreventIncrementWhenTagged = this.preventIncrementWhenTagged,
+            PreventIncrementWhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
             PreReleaseWeight = this.preReleaseWeight
         };
 

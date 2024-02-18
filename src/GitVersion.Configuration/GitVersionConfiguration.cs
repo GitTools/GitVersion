@@ -16,12 +16,12 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("assembly-versioning-scheme")]
     [JsonPropertyDescription($"The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to '{NameOfDefaultAssemblyVersioningScheme}'.")]
     [JsonPropertyDefault(DefaultAssemblyVersioningScheme)]
-    public AssemblyVersioningScheme AssemblyVersioningScheme { get; internal set; } = AssemblyVersioningScheme.MajorMinorPatch;
+    public AssemblyVersioningScheme? AssemblyVersioningScheme { get; internal set; }
 
     [JsonPropertyName("assembly-file-versioning-scheme")]
     [JsonPropertyDescription($"The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to '{NameOfDefaultAssemblyFileVersioningScheme}'.")]
     [JsonPropertyDefault(DefaultAssemblyFileVersioningScheme)]
-    public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; internal set; } = AssemblyFileVersioningScheme.MajorMinorPatch;
+    public AssemblyFileVersioningScheme? AssemblyFileVersioningScheme { get; internal set; }
 
     [JsonPropertyName("assembly-informational-format")]
     [JsonPropertyDescription($"Specifies the format of AssemblyInformationalVersion. Defaults to '{DefaultAssemblyInformationalFormat}'.")]
@@ -105,7 +105,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 #if NET7_0_OR_GREATER
     [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")] // See https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute, https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute.datetimeformat?view=net-7.0#system-diagnostics-codeanalysis-stringsyntaxattribute-datetimeformat
 #endif
-    public string CommitDateFormat { get; internal set; } = DefaultCommitDateFormat;
+    public string? CommitDateFormat { get; internal set; }
 
     [JsonPropertyName("merge-message-formats")]
     [JsonPropertyDescription("Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.")]

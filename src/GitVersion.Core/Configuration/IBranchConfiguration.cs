@@ -13,7 +13,7 @@ public interface IBranchConfiguration
 
     bool? PreventIncrementOfMergedBranchVersion { get; }
 
-    bool? PreventIncrementWhenTagged { get; }
+    bool? PreventIncrementWhenCurrentCommitTagged { get; }
 
     string? LabelNumberPattern { get; }
 

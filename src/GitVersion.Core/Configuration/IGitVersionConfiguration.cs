@@ -8,9 +8,9 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 {
     string? Workflow { get; }
 
-    AssemblyVersioningScheme AssemblyVersioningScheme { get; }
+    AssemblyVersioningScheme? AssemblyVersioningScheme { get; }
 
-    AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }
+    AssemblyFileVersioningScheme? AssemblyFileVersioningScheme { get; }
 
     string? AssemblyInformationalFormat { get; }
 
@@ -36,7 +36,7 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     int? TagPreReleaseWeight { get; }
 
-    string CommitDateFormat { get; }
+    string? CommitDateFormat { get; }
 
     IReadOnlyDictionary<string, string> MergeMessageFormats { get; }
 

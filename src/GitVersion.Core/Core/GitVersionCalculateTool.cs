@@ -52,7 +52,7 @@ internal class GitVersionCalculateTool : IGitVersionCalculateTool
 
         if (versionVariables != null) return versionVariables;
 
-        var semanticVersion = this.nextVersionCalculator.Calculate();
+        var semanticVersion = this.nextVersionCalculator.FindVersion();
 
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
         EffectiveConfiguration effectiveConfiguration = new(Context.Configuration, branchConfiguration);

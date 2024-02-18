@@ -53,6 +53,7 @@
     *   VersionInBranchName
     *   TrunkBased
 *   The initialization wizard has been removed.
+*   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment-when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
 
 ## v5.0.0
 

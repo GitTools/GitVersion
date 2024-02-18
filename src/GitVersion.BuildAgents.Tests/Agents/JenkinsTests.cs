@@ -136,7 +136,7 @@ public class JenkinsTests : TestBase
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, new GitVersionConfiguration(), 0);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
 
         this.buildServer.WithPropertyFile(file);
 

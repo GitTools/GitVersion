@@ -9,15 +9,11 @@ public class ConfigurationExtensionsTests : TestBase
     [Test]
     public void GetReleaseBranchConfigReturnsAllReleaseBranches()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                { "foo", new BranchConfiguration() },
-                { "bar", new BranchConfiguration { IsReleaseBranch = true } },
-                { "baz", new BranchConfiguration { IsReleaseBranch = true } }
-            }
-        };
+        var configuration = EmptyConfigurationBuilder.New
+            .WithBranch("foo", _ => _.WithRegularExpression("foo"))
+            .WithBranch("bar", _ => _.WithRegularExpression("bar").WithIsReleaseBranch(true))
+            .WithBranch("baz", _ => _.WithRegularExpression("baz").WithIsReleaseBranch(true))
+            .Build();
 
         var result = configuration.GetReleaseBranchConfiguration();
 

@@ -1062,13 +1062,13 @@ public class OtherScenarios : TestBase
     [TestCase("0.1.0-beta.2", false, "0.1.0-alpha.1+1")]
     [TestCase("0.2.0-beta.2", true, "0.2.0-alpha.1+1")]
     [TestCase("0.2.0-beta.2", false, "0.2.0-alpha.1+1")]
-    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeManualDeployment(
-        string tag, bool preventIncrementWhenTagged, string version)
+    public void EnsurePreventIncrementWhenCurrentCommitTaggedOnDevelopWithDeploymentModeManualDeployment(
+        string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", _ => _
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -1089,13 +1089,13 @@ public class OtherScenarios : TestBase
     [TestCase("0.1.0-beta.2", false, "0.1.0-alpha.1")]
     [TestCase("0.2.0-beta.2", true, "0.2.0-alpha.1")]
     [TestCase("0.2.0-beta.2", false, "0.2.0-alpha.1")]
-    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeContinuousDelivery(
-        string tag, bool preventIncrementWhenTagged, string version)
+    public void EnsurePreventIncrementWhenCurrentCommitTaggedOnDevelopWithDeploymentModeContinuousDelivery(
+        string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", _ => _
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
-                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -1116,13 +1116,13 @@ public class OtherScenarios : TestBase
     [TestCase("0.1.0-beta.2", false, "0.1.0")]
     [TestCase("0.2.0-beta.2", true, "0.2.0")]
     [TestCase("0.2.0-beta.2", false, "0.2.0")]
-    public void EnsurePreventIncrementWhenTaggedOnDevelopWithDeploymentModeContinuousDeployment(
-        string tag, bool preventIncrementWhenTagged, string version)
+    public void EnsurePreventIncrementWhenCurrentCommitTaggedOnDevelopWithDeploymentModeContinuousDeployment(
+        string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", _ => _
                 .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
-                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -1135,13 +1135,13 @@ public class OtherScenarios : TestBase
 
     [TestCase(true, "1.0.0")]
     [TestCase(false, "6.0.0-alpha.1+0")]
-    public void EnsurePreventIncrementWhenTaggedOnDevelopWithNextVersion(bool preventIncrementWhenTagged, string semVersion)
+    public void EnsurePreventIncrementWhenCurrentCommitTaggedOnDevelopWithNextVersion(bool preventIncrementWhenCurrentCommitTagged, string semVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("6.0.0")
             .WithBranch("develop", _ => _
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -1193,13 +1193,13 @@ public class OtherScenarios : TestBase
     [TestCase(new[] { "4.0.0-alpha.2", "5.0.0-beta.2" }, false, "6.0.0-beta.1+0")]
     [TestCase(new[] { "5.0.0-beta.2", "4.0.0-alpha.2" }, true, "5.0.0-beta.2")]
     [TestCase(new[] { "5.0.0-beta.2", "4.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
-    public void EnsurePreventIncrementWhenTaggedOnReleaseBranchAndIncrementMinor(
-        string[]? tags, bool preventIncrementWhenTagged, string semVersion)
+    public void EnsurePreventIncrementWhenCurrentCommitTaggedOnReleaseBranchAndIncrementMinor(
+        string[]? tags, bool preventIncrementWhenCurrentCommitTagged, string semVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("release", _ => _
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-                .WithPreventIncrementWhenTagged(preventIncrementWhenTagged)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 

@@ -90,7 +90,7 @@ public static class GitToolsTestingExtensions
 
             var context = contextOptions.Value;
 
-            var semanticVersion = nextVersionCalculator.Calculate();
+            var semanticVersion = nextVersionCalculator.FindVersion();
 
             var branchConfiguration = context.Configuration.GetBranchConfiguration(context.CurrentBranch);
             EffectiveConfiguration effectiveConfiguration = new(context.Configuration, branchConfiguration);

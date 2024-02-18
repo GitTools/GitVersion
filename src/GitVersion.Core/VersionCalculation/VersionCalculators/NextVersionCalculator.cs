@@ -25,7 +25,7 @@ internal class NextVersionCalculator(
 
     private GitVersionContext Context => this.versionContext.Value;
 
-    public virtual SemanticVersion Calculate()
+    public virtual SemanticVersion FindVersion()
     {
         this.log.Info($"Running against branch: {Context.CurrentBranch} ({Context.CurrentCommit.ToString() ?? "-"})");
 
@@ -34,7 +34,7 @@ internal class NextVersionCalculator(
 
         bool someBranchRelatedPropertiesMightBeNotKnown = branchConfiguration.Increment == IncrementStrategy.Inherit;
 
-        if (Context.IsCurrentCommitTagged && !someBranchRelatedPropertiesMightBeNotKnown && effectiveConfiguration.PreventIncrementWhenTagged)
+        if (Context.IsCurrentCommitTagged && !someBranchRelatedPropertiesMightBeNotKnown && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged)
         {
             var allTaggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
                 Context.Configuration, effectiveConfiguration, Context.CurrentBranch, null, Context.CurrentCommit.When
@@ -50,7 +50,7 @@ internal class NextVersionCalculator(
 
         NextVersion nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
 
-        if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown && nextVersion.Configuration.PreventIncrementWhenTagged)
+        if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
         {
             var allTaggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
                 Context.Configuration, nextVersion.Configuration, Context.CurrentBranch, null, Context.CurrentCommit.When

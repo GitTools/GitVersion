@@ -25,7 +25,7 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
 
     public IGitVersionConfiguration ReadConfiguration(string? configFilePath)
     {
-        if (configFilePath == null || !fileSystem.Exists(configFilePath)) return new GitVersionConfiguration();
+        if (configFilePath == null || !fileSystem.Exists(configFilePath)) return GitHubFlowConfigurationBuilder.New.Build();
 
         var readAllText = fileSystem.ReadAllText(configFilePath);
         return ConfigurationSerializer.Read(new StringReader(readAllText));

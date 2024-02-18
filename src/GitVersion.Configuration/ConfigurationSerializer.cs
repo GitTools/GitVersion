@@ -23,7 +23,7 @@ internal static class ConfigurationSerializer
     public static IGitVersionConfiguration Read(TextReader reader)
     {
         var configuration = Deserializer.Deserialize<GitVersionConfiguration?>(reader);
-        return configuration ?? new GitVersionConfiguration();
+        return configuration ?? GitHubFlowConfigurationBuilder.New.Build();
     }
 
     public static void Write(IGitVersionConfiguration configuration, TextWriter writer)

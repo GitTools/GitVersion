@@ -805,9 +805,9 @@ In a GitFlow-based repository, setting this option can have implications on the
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
 
-### prevent-increment-when-tagged
+### prevent-increment-when-current-commit-tagged
 
-This branch related property can be used to control the behavior whether to take the incremented or the current tagged version.
+This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.
 
 ### label-number-pattern
 

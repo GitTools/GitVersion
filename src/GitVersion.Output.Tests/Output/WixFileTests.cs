@@ -43,7 +43,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, new GitVersionConfiguration(), 0);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
@@ -83,7 +83,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, new GitVersionConfiguration(), 0);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 

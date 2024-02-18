@@ -33,9 +33,9 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string SemVer => semver.ToString();
 
-    public string? AssemblySemVer => semver.GetAssemblyVersion(configuration.AssemblyVersioningScheme);
+    public string? AssemblySemVer => semver.GetAssemblyVersion(configuration.AssemblyVersioningScheme!.Value);
 
-    public string? AssemblyFileSemVer => semver.GetAssemblyFileVersion(configuration.AssemblyFileVersioningScheme);
+    public string? AssemblyFileSemVer => semver.GetAssemblyFileVersion(configuration.AssemblyFileVersioningScheme!.Value);
 
     public string FullSemVer => semver.ToString("f");
 

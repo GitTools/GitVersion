@@ -40,7 +40,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
 
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0);
+            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0);
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(workingDir, true, assemblyInfoFile));
@@ -57,7 +57,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFile = PathHelper.Combine("src", "Project", "Properties", $"VersionAssemblyInfo.{fileExtension}");
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0
+            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -77,7 +77,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             "AssemblyInfo." + fileExtension,
             PathHelper.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
         };
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0);
+        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0);
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(workingDir, true, [.. assemblyInfoFiles]));
@@ -98,7 +98,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0
+            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -115,7 +115,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         const string assemblyInfoFile = "VersionAssemblyInfo.js";
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0
+            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -131,7 +131,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var workingDir = Path.GetTempPath();
         string[] assemblyInfoFiles = [];
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), new GitVersionConfiguration(), 0
+            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -452,10 +452,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             this.fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
         });
 
-        GitVersionConfiguration configuration = new()
-        {
-            AssemblyVersioningScheme = versioningScheme
-        };
+        var configuration = EmptyConfigurationBuilder.New.WithAssemblyVersioningScheme(versioningScheme).Build();
         var variables = this.variableProvider.GetVariablesFor(version, configuration, 0);
 
         verify?.Invoke(this.fileSystem, variables);
