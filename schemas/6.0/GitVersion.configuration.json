@@ -129,6 +129,9 @@
     "prevent-increment-of-merged-branch-version": {
       "$ref": "#/$defs/nullableOfBoolean2"
     },
+    "prevent-increment-when-current-commit-tagged": {
+      "$ref": "#/$defs/nullableOfBoolean3"
+    },
     "regex": {
       "$ref": "#/$defs/string2"
     },
@@ -157,13 +160,13 @@
       ]
     },
     "track-merge-message": {
-      "$ref": "#/$defs/nullableOfBoolean3"
-    },
-    "track-merge-target": {
       "$ref": "#/$defs/nullableOfBoolean4"
     },
-    "tracks-release-branches": {
+    "track-merge-target": {
       "$ref": "#/$defs/nullableOfBoolean5"
+    },
+    "tracks-release-branches": {
+      "$ref": "#/$defs/nullableOfBoolean6"
     },
     "update-build-number": {
       "description": "Whether to update the build number in the project file. Defaults to true.",
@@ -175,6 +178,22 @@
       "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
       "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": "string"
+    },
+    "strategies": {
+      "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.",
+      "type": "array",
+      "items": {
+        "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.",
+        "enum": [
+          "None",
+          "ConfiguredNextVersion",
+          "MergeMessage",
+          "TaggedCommit",
+          "TrackReleaseBranches",
+          "VersionInBranchName",
+          "TrunkBased"
+        ]
+      }
     },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
@@ -215,6 +234,9 @@
         "prevent-increment-of-merged-branch-version": {
           "$ref": "#/$defs/nullableOfBoolean2"
         },
+        "prevent-increment-when-current-commit-tagged": {
+          "$ref": "#/$defs/nullableOfBoolean3"
+        },
         "regex": {
           "$ref": "#/$defs/string2"
         },
@@ -222,13 +244,13 @@
           "$ref": "#/$defs/hashSetOfString1"
         },
         "track-merge-message": {
-          "$ref": "#/$defs/nullableOfBoolean3"
-        },
-        "track-merge-target": {
           "$ref": "#/$defs/nullableOfBoolean4"
         },
-        "tracks-release-branches": {
+        "track-merge-target": {
           "$ref": "#/$defs/nullableOfBoolean5"
+        },
+        "tracks-release-branches": {
+          "$ref": "#/$defs/nullableOfBoolean6"
         }
       }
     },
@@ -245,8 +267,7 @@
       "enum": [
         "ManualDeployment",
         "ContinuousDelivery",
-        "ContinuousDeployment",
-        "TrunkBased"
+        "ContinuousDeployment"
       ]
     },
     "incrementStrategy": {
@@ -305,6 +326,13 @@
         "null"
       ]
     },
+    "nullableOfBoolean3": {
+      "description": "This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
     "string2": {
       "format": "regex",
       "description": "The regular expression pattern to use to match this branch.",
@@ -318,21 +346,21 @@
         "type": "string"
       }
     },
-    "nullableOfBoolean3": {
+    "nullableOfBoolean4": {
       "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "nullableOfBoolean4": {
+    "nullableOfBoolean5": {
       "description": "Strategy which will look for tagged merge commits directly off the current branch.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "nullableOfBoolean5": {
+    "nullableOfBoolean6": {
       "description": "Indicates this branch configuration represents develop in GitFlow.",
       "type": [
         "boolean",
