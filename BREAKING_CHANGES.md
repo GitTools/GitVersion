@@ -1,4 +1,11 @@
 ## Unreleased
+### Platforms
+*   Drop support for .NET Framework 4.8, .NET Core 3.1 and .NET 5.0. Changed the project targets to .NET 6.0 or later.
+
+### Caching
+*   Refactor caching system in GitVersion to use json files instead of yaml files. This change is not backwards compatible with the old caching system. 
+
+### Configuration changes:
 *   The configuration properties `continuous-delivery-fallback-tag`, `tag-number-pattern`, and `tag` were renamed to `continuous-delivery-fallback-label`, `label-number-pattern`, and `label` respectively. `tag-pre-release-weight` and `tag-prefix` remained as they were as they are referring to a Git tag.
 *   When using a commit message that matches **both** `*-version-bump-message` and `no-bump-message`, there is no increment for that commit. In other words, `no-bump-message` now takes precedence over `*-version-bump-message`.
 *   The fallback version strategy now returns `0.0.0` and is flagged with `ShouldIncrement` equal to `true`. This yields the version `0.1.0` on the `develop` branch (`IncrementStrategy.Minor` by default) and `0.0.1` on the `main` branch (`IncremetnStrategy.Patch` by default).
