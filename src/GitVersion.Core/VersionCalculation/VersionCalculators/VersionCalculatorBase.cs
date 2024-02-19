@@ -14,7 +14,6 @@ internal abstract class VersionCalculatorBase(ILog log, IRepositoryStore reposit
 
     protected SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)
     {
-        int commitsSinceTag = 0;
         var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, Context.CurrentCommit);
 
         var ignore = Context.Configuration.Ignore;
@@ -23,7 +22,7 @@ internal abstract class VersionCalculatorBase(ILog log, IRepositoryStore reposit
             commitLogs = commitLogs
                 .Where(c => ignore.Before is null || (c.When > ignore.Before && !ignore.Shas.Contains(c.Sha)));
         }
-        commitsSinceTag = commitLogs.Count();
+        var commitsSinceTag = commitLogs.Count();
 
         this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {Context.CurrentCommit}");
 
