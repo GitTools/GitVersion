@@ -1,4 +1,3 @@
-using System.Diagnostics.Contracts;
 using GitVersion.Common;
 using GitVersion.Logging;
 
@@ -23,20 +22,17 @@ internal sealed class ContinuousDeliveryVersionCalculator(ILog log, IRepositoryS
 
     private SemanticVersion CalculateInternal(SemanticVersion semanticVersion, ICommit? baseVersionSource)
     {
-        Contract.Assume(semanticVersion.PreReleaseTag.Number.HasValue);
-
         var buildMetaData = CreateVersionBuildMetaData(baseVersionSource);
-        Contract.Assume(buildMetaData.CommitsSinceTag.HasValue);
 
         return new SemanticVersion(semanticVersion)
         {
             PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag)
             {
-                Number = semanticVersion.PreReleaseTag.Number.Value + buildMetaData.CommitsSinceTag - 1
+                Number = semanticVersion.PreReleaseTag.Number!.Value + buildMetaData.CommitsSinceTag - 1
             },
             BuildMetaData = new SemanticVersionBuildMetaData(buildMetaData)
             {
-                CommitsSinceVersionSource = buildMetaData.CommitsSinceTag.Value,
+                CommitsSinceVersionSource = buildMetaData.CommitsSinceTag!.Value,
                 CommitsSinceTag = null
             }
         };

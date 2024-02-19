@@ -1,4 +1,3 @@
-using System.Diagnostics.Contracts;
 using GitVersion.Common;
 using GitVersion.Logging;
 
@@ -18,7 +17,6 @@ internal sealed class ManualDeploymentVersionCalculator(ILog log, IRepositorySto
     private SemanticVersion CalculateInternal(SemanticVersion semanticVersion, ICommit? baseVersionSource)
     {
         var buildMetaData = CreateVersionBuildMetaData(baseVersionSource);
-        Contract.Assume(buildMetaData.CommitsSinceTag.HasValue);
 
         return new SemanticVersion(semanticVersion)
         {
