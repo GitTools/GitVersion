@@ -14,16 +14,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Utilities.Core" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Win32.Registry" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" />
+        <PackageReference Include="Microsoft.Win32.Registry" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
+        <PackageReference Update="@(PackageReference)" PrivateAssets="All"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
+        <ProjectReference Update="@(ProjectReference)" PrivateAssets="All"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -38,7 +41,6 @@
         <None Include="$(ExePublishPath)/net6.0/publish/**/*;$(BinPath)/net6.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net6.0" />
         <None Include="$(ExePublishPath)/net7.0/publish/**/*;$(BinPath)/net7.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net7.0" />
         <None Include="$(ExePublishPath)/net8.0/publish/**/*;$(BinPath)/net8.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net8.0" />
-
     </ItemGroup>
 
 </Project>
