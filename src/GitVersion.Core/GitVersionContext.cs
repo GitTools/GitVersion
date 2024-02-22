@@ -10,7 +10,7 @@ public class GitVersionContext(
     IBranch currentBranch,
     ICommit currentCommit,
     IGitVersionConfiguration configuration,
-    SemanticVersion? currentCommitTaggedVersion,
+    bool isCurrentCommitTagged,
     int numberOfUncommittedChanges)
 {
     /// <summary>
@@ -18,13 +18,11 @@ public class GitVersionContext(
     /// </summary>
     public IGitVersionConfiguration Configuration { get; } = configuration.NotNull();
 
-    public SemanticVersion? CurrentCommitTaggedVersion { get; } = currentCommitTaggedVersion;
-
     public IBranch CurrentBranch { get; } = currentBranch.NotNull();
 
     public ICommit CurrentCommit { get; } = currentCommit.NotNull();
 
-    public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
+    public bool IsCurrentCommitTagged { get; } = isCurrentCommitTagged;
 
     public int NumberOfUncommittedChanges { get; } = numberOfUncommittedChanges;
 }

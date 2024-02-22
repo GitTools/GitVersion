@@ -1,11 +1,10 @@
-namespace GitVersion.Configuration
+namespace GitVersion.Configuration;
+
+public interface IIgnoreConfiguration
 {
-    public interface IIgnoreConfiguration
-    {
-        DateTimeOffset? Before { get; }
+    DateTimeOffset? Before { get; }
 
-        IReadOnlyCollection<string> Shas { get; }
+    IReadOnlySet<string> Shas { get; }
 
-        public bool IsEmpty => Before == null && Shas.Count == 0;
-    }
+    public bool IsEmpty => Before == null && Shas.Count == 0;
 }

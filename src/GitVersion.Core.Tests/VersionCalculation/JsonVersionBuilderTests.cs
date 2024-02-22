@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +23,10 @@ public class JsonVersionBuilderTests : TestBase
             BuildMetaData = new("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
-        var configuration = new TestEffectiveConfiguration();
-
         var serviceProvider = ConfigureServices();
 
         var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

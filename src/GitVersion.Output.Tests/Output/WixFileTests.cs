@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -32,8 +33,6 @@ internal class WixFileTests : TestBase
             }
         };
 
-        var configuration = new TestEffectiveConfiguration();
-
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
 
@@ -44,7 +43,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, null);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
@@ -74,8 +73,6 @@ internal class WixFileTests : TestBase
             }
         };
 
-        var configuration = new TestEffectiveConfiguration();
-
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
 
@@ -86,7 +83,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, null);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 

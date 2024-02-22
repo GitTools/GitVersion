@@ -90,7 +90,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.ApplyTag("v2.0.0-beta.1");
 
         var variables = fixture.GetVersion();
-        Assert.That(variables.FullSemVer, Is.EqualTo("2.0.0-beta.1"));
+        Assert.That(variables.FullSemVer, Is.EqualTo("2.0.0-beta.2+0"));
     }
 
     [Test]

@@ -29,6 +29,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             PreventIncrementOfMergedBranchVersion = false,
+            PreventIncrementWhenCurrentCommitTagged = true,
             TrackMergeTarget = false,
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
@@ -43,6 +44,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             SourceBranches = [],
             Label = "alpha",
             PreventIncrementOfMergedBranchVersion = false,
+            PreventIncrementWhenCurrentCommitTagged = false,
             TrackMergeTarget = true,
             TracksReleaseBranches = true,
             IsMainBranch = false,
@@ -82,6 +84,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             ],
             Label = "beta",
             PreventIncrementOfMergedBranchVersion = true,
+            PreventIncrementWhenCurrentCommitTagged = false,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsMainBranch = false,
@@ -131,6 +134,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
+            PreventIncrementWhenCurrentCommitTagged = false,
             SourceBranches =
             [
                 this.ReleaseBranch.Name,

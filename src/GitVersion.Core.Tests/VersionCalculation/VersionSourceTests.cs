@@ -20,10 +20,10 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository.ToGitRepository());
 
-        var nextVersion = nextVersionCalculator.FindVersion();
+        var semanticVersion = nextVersionCalculator.FindVersion();
 
-        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
-        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
+        semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
     }
 
     [Test]
@@ -35,10 +35,10 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository.ToGitRepository());
 
-        var nextVersion = nextVersionCalculator.FindVersion();
+        var semanticVersion = nextVersionCalculator.FindVersion();
 
-        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
-        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     [Test]
@@ -54,10 +54,10 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository.ToGitRepository());
 
-        var nextVersion = nextVersionCalculator.FindVersion();
+        var semanticVersion = nextVersionCalculator.FindVersion();
 
-        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommitSha);
-        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        semanticVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommitSha);
+        semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(IGitRepository repository)

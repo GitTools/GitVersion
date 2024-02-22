@@ -22,6 +22,10 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyDescription("Prevent increment of merged branch version.")]
     public bool? PreventIncrementOfMergedBranchVersion { get; internal set; }
 
+    [JsonPropertyName("prevent-increment-when-current-commit-tagged")]
+    [JsonPropertyDescription("This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.")]
+    public bool? PreventIncrementWhenCurrentCommitTagged { get; internal set; }
+
     [JsonPropertyName("label-number-pattern")]
     [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{ConfigurationConstants.DefaultLabelNumberPattern}'.")]
     [JsonPropertyDefault(ConfigurationConstants.DefaultLabelNumberPattern)]
@@ -89,6 +93,8 @@ internal record BranchConfiguration : IBranchConfiguration
             Label = Label ?? configuration.Label,
             PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion
                 ?? configuration.PreventIncrementOfMergedBranchVersion,
+            PreventIncrementWhenCurrentCommitTagged = PreventIncrementWhenCurrentCommitTagged
+            ?? configuration.PreventIncrementWhenCurrentCommitTagged,
             LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,

@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -36,9 +37,7 @@ public class BuildServerBaseTests : TestBase
             }
         };
 
-        var configuration = new TestEffectiveConfiguration();
-
-        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, null);
+        var variables = this.buildServer.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         var buildAgent = this.sp.GetRequiredService<BuildAgent>();
         buildAgent.WriteIntegration(writes.Add, variables);
 

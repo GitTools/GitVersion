@@ -17,7 +17,7 @@ internal class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> vers
 
         var contextConfiguration = Context.Configuration;
         var nextVersion = contextConfiguration.NextVersion;
-        if (!nextVersion.IsNullOrEmpty() && !Context.IsCurrentCommitTagged)
+        if (!nextVersion.IsNullOrEmpty())
         {
             var semanticVersion = SemanticVersion.Parse(nextVersion, contextConfiguration.TagPrefix, contextConfiguration.SemanticVersionFormat);
             yield return new("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);

@@ -3,21 +3,18 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Core;
 
-internal sealed class BranchRepository(Lazy<GitVersionContext> versionContext, IGitRepository gitRepository)
-    : IBranchRepository
+internal sealed class BranchRepository(IGitRepository gitRepository) : IBranchRepository
 {
-    private GitVersionContext VersionContext => this.versionContextLazy.Value;
-    private readonly Lazy<GitVersionContext> versionContextLazy = versionContext.NotNull();
-
     private readonly IGitRepository gitRepository = gitRepository.NotNull();
 
-    public IEnumerable<IBranch> GetMainBranches(params IBranch[] excludeBranches)
-        => GetBranches([.. excludeBranches], configuration => configuration.IsMainBranch == true);
+    public IEnumerable<IBranch> GetMainBranches(IGitVersionConfiguration configuration, params IBranch[] excludeBranches)
+        => GetBranches(configuration, [.. excludeBranches], configuration => configuration.IsMainBranch == true);
 
-    public IEnumerable<IBranch> GetReleaseBranches(params IBranch[] excludeBranches)
-        => GetBranches([.. excludeBranches], configuration => configuration.IsReleaseBranch == true);
+    public IEnumerable<IBranch> GetReleaseBranches(IGitVersionConfiguration configuration, params IBranch[] excludeBranches)
+        => GetBranches(configuration, [.. excludeBranches], configuration => configuration.IsReleaseBranch == true);
 
-    private IEnumerable<IBranch> GetBranches(HashSet<IBranch> excludeBranches, Func<IBranchConfiguration, bool> predicate)
+    private IEnumerable<IBranch> GetBranches(
+        IGitVersionConfiguration configuration, HashSet<IBranch> excludeBranches, Func<IBranchConfiguration, bool> predicate)
     {
         predicate.NotNull();
 
@@ -25,7 +22,7 @@ internal sealed class BranchRepository(Lazy<GitVersionContext> versionContext, I
         {
             if (!excludeBranches.Contains(branch))
             {
-                var branchConfiguration = VersionContext.Configuration.GetBranchConfiguration(branch.Name);
+                var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
                 if (predicate(branchConfiguration))
                 {
                     yield return branch;

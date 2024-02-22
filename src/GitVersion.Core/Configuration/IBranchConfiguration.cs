@@ -13,6 +13,8 @@ public interface IBranchConfiguration
 
     bool? PreventIncrementOfMergedBranchVersion { get; }
 
+    bool? PreventIncrementWhenCurrentCommitTagged { get; }
+
     string? LabelNumberPattern { get; }
 
     bool? TrackMergeTarget { get; }

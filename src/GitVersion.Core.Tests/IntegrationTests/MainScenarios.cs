@@ -324,7 +324,7 @@ public class MainScenarios : TestBase
         fixture.ApplyTag("1.0.0-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.1", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-beta.2+0", configurationBuilder.Build());
 
         // continue with more work on develop that may or may not end up in the 1.0.0 release
         fixture.Checkout("develop");
@@ -355,7 +355,7 @@ public class MainScenarios : TestBase
         fixture.ApplyTag("1.0.0-beta.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-beta.3+0", configurationBuilder.Build());
 
         fixture.Checkout("develop");
 

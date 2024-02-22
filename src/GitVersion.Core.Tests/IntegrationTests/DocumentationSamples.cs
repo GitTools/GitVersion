@@ -91,7 +91,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.2.1-beta.1");
-        fixture.AssertFullSemver("1.2.1-beta.1");
+        fixture.AssertFullSemver("1.2.1-beta.2+0");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("hotfix/1.2.1");
         fixture.SequenceDiagram.Destroy("hotfix/1.2.1");
@@ -132,7 +132,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.3.0-beta.1");
-        fixture.AssertFullSemver("1.3.0-beta.1");
+        fixture.AssertFullSemver("1.3.0-beta.2+0");
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
@@ -187,7 +187,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("2.0.0-beta.1");
-        fixture.AssertFullSemver("2.0.0-beta.1");
+        fixture.AssertFullSemver("2.0.0-beta.2+0");
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
@@ -243,7 +243,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.3.1-beta.1");
-        fixture.AssertFullSemver("1.3.1-beta.1");
+        fixture.AssertFullSemver("1.3.1-beta.2+0");
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF("hotfix/1.3.1");
         fixture.SequenceDiagram.Destroy("hotfix/1.3.1");
@@ -286,7 +286,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.4.0-beta.1");
-        fixture.AssertFullSemver("1.4.0-beta.1");
+        fixture.AssertFullSemver("1.4.0-beta.2+0");
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
@@ -376,7 +376,7 @@ public class DocumentationSamples : TestBase
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("2.0.0-beta.1");
-        fixture.AssertFullSemver("2.0.0-beta.1");
+        fixture.AssertFullSemver("2.0.0-beta.2+0");
 
         // test that the CommitsSinceVersionSource should still return commit count
         var version = fixture.GetVersion();

@@ -32,6 +32,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
     private bool? preventIncrementOfMergedBranchVersion;
+    private bool? preventIncrementWhenCurrentCommitTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
@@ -255,6 +256,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
+    public virtual TConfigurationBuilder WithPreventIncrementWhenCurrentCommitTagged(bool? value)
+    {
+        this.preventIncrementWhenCurrentCommitTagged = value;
+        return (TConfigurationBuilder)this;
+    }
+
     public virtual TConfigurationBuilder WithLabelNumberPattern(string? value)
     {
         this.labelNumberPattern = value;
@@ -338,6 +345,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
+        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrementWhenCurrentCommitTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -404,6 +412,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
+            PreventIncrementWhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
             PreReleaseWeight = this.preReleaseWeight
         };
 

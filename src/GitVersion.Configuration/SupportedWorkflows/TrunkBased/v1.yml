@@ -30,12 +30,14 @@ branches:
   feature:
     increment: Minor
     regex: ^features?[/-](?<BranchName>.+)
+    prevent-increment-when-current-commit-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
   hotfix:
     increment: Patch
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    prevent-increment-when-current-commit-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
@@ -63,6 +65,7 @@ mode: ManualDeployment
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
+prevent-increment-when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled

@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -144,10 +145,9 @@ public class BitBucketPipelinesTests : TestBase
             BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "f28807e615e9f06aec8a33c87780374e0c1f6fb8", CommitDate = new DateTimeOffset(2022, 4, 6, 16, 10, 59, TimeSpan.FromHours(10)) }
         };
 
-        var configuration = new TestEffectiveConfiguration();
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
 
         this.buildServer.WithPropertyFile(propertyFile);
         this.buildServer.WithPowershellFile(ps1File);

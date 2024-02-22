@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -9,18 +10,22 @@ internal class GitVersionContextFactory : IGitVersionContextFactory
 {
     private readonly IConfigurationProvider configurationProvider;
     private readonly IRepositoryStore repositoryStore;
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionContextFactory(IConfigurationProvider configurationProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
+    public GitVersionContextFactory(IConfigurationProvider configurationProvider, IRepositoryStore repositoryStore,
+        ITaggedSemanticVersionRepository taggedSemanticVersionRepository, IOptions<GitVersionOptions> options)
     {
         this.configurationProvider = configurationProvider.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
+        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
         this.options = options.NotNull();
     }
 
     public GitVersionContext Create(GitVersionOptions gitVersionOptions)
     {
-        var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch) ?? throw new InvalidOperationException("Need a branch to operate on");
+        var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch)
+            ?? throw new InvalidOperationException("Need a branch to operate on");
         var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
         if (currentCommit is null) throw new GitVersionException("No commits found on the current branch.");
@@ -33,9 +38,11 @@ internal class GitVersionContextFactory : IGitVersionContextFactory
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.TagPrefix, configuration.SemanticVersionFormat, handleDetachedBranch: currentBranch.IsDetachedHead);
+        bool isCurrentCommitTagged = this.taggedSemanticVersionRepository
+            .GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
+            .Contains(currentCommit);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-        return new(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+        return new(currentBranch, currentCommit, configuration, isCurrentCommitTagged, numberOfUncommittedChanges);
     }
 }

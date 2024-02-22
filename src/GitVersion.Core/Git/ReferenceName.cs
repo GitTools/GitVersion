@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -84,8 +83,6 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
                                       SemanticVersionFormat format)
     {
         result = default;
-
-        Contract.Assume(versionPatternRegex.ToString().StartsWith('^'));
 
         int length = 0;
         foreach (var branchPart in WithoutOrigin.Split(GetBranchSeparator()))
