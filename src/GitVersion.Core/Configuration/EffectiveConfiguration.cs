@@ -48,8 +48,9 @@ public record EffectiveConfiguration
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
         RegularExpression = branchConfiguration.RegularExpression;
-        PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
-        PreventIncrementWhenCurrentCommitTagged = branchConfiguration.PreventIncrementWhenCurrentCommitTagged ?? true;
+        PreventIncrementOfMergedBranch = branchConfiguration.PreventIncrement.OfMergedBranch ?? false;
+        PreventIncrementWhenBranchMerged = branchConfiguration.PreventIncrement.WhenBranchMerged ?? false;
+        PreventIncrementWhenCurrentCommitTagged = branchConfiguration.PreventIncrement.WhenCurrentCommitTagged ?? true;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;
         TrackMergeMessage = branchConfiguration.TrackMergeMessage ?? true;
@@ -98,7 +99,9 @@ public record EffectiveConfiguration
 
     public string? RegularExpression { get; }
 
-    public bool PreventIncrementOfMergedBranchVersion { get; }
+    public bool PreventIncrementOfMergedBranch { get; }
+
+    public bool PreventIncrementWhenBranchMerged { get; }
 
     public bool PreventIncrementWhenCurrentCommitTagged { get; }
 

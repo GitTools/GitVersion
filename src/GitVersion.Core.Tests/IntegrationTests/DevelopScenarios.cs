@@ -307,7 +307,7 @@ public class DevelopScenarios : TestBase
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .WithBranch("develop", builder => builder
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
-                .WithPreventIncrementOfMergedBranchVersion(false)
+                .WithPreventIncrementOfMergedBranch(false)
             )
             .WithBranch("release", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
@@ -350,7 +350,7 @@ public class DevelopScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
-            .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranchVersion(true))
+            .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranch(true))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -391,10 +391,10 @@ public class DevelopScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", builder => builder
-                .WithPreventIncrementOfMergedBranchVersion(false)
+                .WithPreventIncrementOfMergedBranch(false)
             )
             .WithBranch("hotfix", builder => builder
-                .WithPreventIncrementOfMergedBranchVersion(true)
+                .WithPreventIncrementOfMergedBranch(true)
                 .WithRegularExpression("^(origin/)?hotfix[/-]")
             )
             .Build();

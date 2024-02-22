@@ -18,13 +18,12 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyDescription("The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.")]
     public IncrementStrategy Increment { get; internal set; }
 
-    [JsonPropertyName("prevent-increment-of-merged-branch-version")]
-    [JsonPropertyDescription("Prevent increment of merged branch version.")]
-    public bool? PreventIncrementOfMergedBranchVersion { get; internal set; }
+    [JsonIgnore]
+    IPreventIncrementConfiguration IBranchConfiguration.PreventIncrement => PreventIncrement;
 
-    [JsonPropertyName("prevent-increment-when-current-commit-tagged")]
-    [JsonPropertyDescription("This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.")]
-    public bool? PreventIncrementWhenCurrentCommitTagged { get; internal set; }
+    [JsonPropertyName("prevent-increment")]
+    [JsonPropertyDescription("The prevent increment configuration section.")]
+    public PreventIncrementConfiguration PreventIncrement { get; internal set; } = new();
 
     [JsonPropertyName("label-number-pattern")]
     [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{ConfigurationConstants.DefaultLabelNumberPattern}'.")]
@@ -91,10 +90,12 @@ internal record BranchConfiguration : IBranchConfiguration
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
-            PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion
-                ?? configuration.PreventIncrementOfMergedBranchVersion,
-            PreventIncrementWhenCurrentCommitTagged = PreventIncrementWhenCurrentCommitTagged
-            ?? configuration.PreventIncrementWhenCurrentCommitTagged,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrement.OfMergedBranch,
+                WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrement.WhenBranchMerged,
+                WhenCurrentCommitTagged = PreventIncrement.WhenCurrentCommitTagged ?? configuration.PreventIncrement.WhenCurrentCommitTagged
+            },
             LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,

@@ -154,28 +154,14 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
-        var branchConfiguration = new BranchConfiguration
-        {
-            Increment = IncrementStrategy.None,
-            PreventIncrementOfMergedBranchVersion = false,
-            TrackMergeTarget = false,
-            TracksReleaseBranches = false,
-            IsReleaseBranch = false,
-            SourceBranches = new()
-        };
-
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
             .WithBranch("release/latest", builder => builder
-                .WithConfiguration(branchConfiguration)
-                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("latest")
                 .WithRegularExpression("release/latest")
             )
             .WithBranch("release", builder => builder
-                .WithConfiguration(branchConfiguration)
-                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithLabel("not-latest")
                 .WithRegularExpression("releases?[/-]")

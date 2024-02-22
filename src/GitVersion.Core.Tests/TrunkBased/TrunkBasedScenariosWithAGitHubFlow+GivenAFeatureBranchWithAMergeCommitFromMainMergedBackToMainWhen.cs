@@ -226,7 +226,7 @@ internal partial class TrunkBasedScenariosWithAGitFlow
             IncrementStrategy increment, IncrementStrategy incrementOnFeature, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithBranch("main", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementOfMergedBranchVersion(false))
+                .WithBranch("main", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", _ => _.WithIncrement(incrementOnFeature))
                 .Build();
 

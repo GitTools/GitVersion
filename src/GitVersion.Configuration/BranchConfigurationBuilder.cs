@@ -9,7 +9,8 @@ internal class BranchConfigurationBuilder
     private DeploymentMode? deploymentMode;
     private string? label;
     private IncrementStrategy increment;
-    private bool? preventIncrementOfMergedBranchVersion;
+    private bool? preventIncrementOfMergedBranch;
+    private bool? preventIncrementWhenBranchMerged;
     private bool? preventIncrementWhenCurrentCommitTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
@@ -45,9 +46,15 @@ internal class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
+    public virtual BranchConfigurationBuilder WithPreventIncrementOfMergedBranch(bool? value)
     {
-        this.preventIncrementOfMergedBranchVersion = value;
+        this.preventIncrementOfMergedBranch = value;
+        return this;
+    }
+
+    public virtual BranchConfigurationBuilder WithPreventIncrementWhenBranchMerged(bool? value)
+    {
+        this.preventIncrementWhenBranchMerged = value;
         return this;
     }
 
@@ -140,8 +147,9 @@ internal class BranchConfigurationBuilder
         WithDeploymentMode(value.DeploymentMode);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
-        WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
-        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrementWhenCurrentCommitTagged);
+        WithPreventIncrementOfMergedBranch(value.PreventIncrement.OfMergedBranch);
+        WithPreventIncrementWhenBranchMerged(value.PreventIncrement.WhenBranchMerged);
+        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrement.WhenCurrentCommitTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -169,8 +177,12 @@ internal class BranchConfigurationBuilder
         IsMainBranch = isMainBranch,
         IsReleaseBranch = isReleaseBranch,
         LabelNumberPattern = labelNumberPattern,
-        PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
-        PreventIncrementWhenCurrentCommitTagged = preventIncrementWhenCurrentCommitTagged,
+        PreventIncrement = new PreventIncrementConfiguration()
+        {
+            OfMergedBranch = preventIncrementOfMergedBranch,
+            WhenBranchMerged = preventIncrementWhenBranchMerged,
+            WhenCurrentCommitTagged = preventIncrementWhenCurrentCommitTagged
+        },
         PreReleaseWeight = preReleaseWeight,
         SourceBranches = sourceBranches,
         IsSourceBranchFor = isSourceBranchFor
