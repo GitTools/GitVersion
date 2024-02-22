@@ -31,25 +31,22 @@ found that is generally what is needed when using GitFlow.
 To see the effective configuration (defaults and overrides), you can run
 `gitversion /showConfig`.
 
-To create your config file just type `gitversion init` in your repo directory,
-after [installing][installing]. A minimal `GitVersion.yml` configuration file will be
-created. Modify this to suit your needs.
 
 ## Global configuration
 
-Following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
+The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
 -   GitFlow (GitFlow/v1)
 -   GitHubFlow (GitHubFlow/v1)
 -   TrunkBased (TrunkBased/v1)
 
-Example of using a TrunkBased workflow with a different tag-prefix:
+Example of using a `TrunkBased` workflow with a different `tag-prefix`:
 
 ```yaml
 workflow: TrunkBased/v1
 tag-prefix: '[abc]'
 ```
 
-The build-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
+The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
 
 ```yaml
 assembly-versioning-scheme: MajorMinorPatch
@@ -205,7 +202,7 @@ is-release-branch: false
 is-main-branch: false
 ```
 
-The supported build-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
+The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
 
 ```yaml
 assembly-versioning-scheme: MajorMinorPatch
@@ -309,7 +306,7 @@ is-release-branch: false
 is-main-branch: false
 ```
 
-The supported build-in configuration for the `TrunkBased` workflow (`workflow: TrunkBased/v1`) looks like:
+The supported built-in configuration for the `TrunkBased` workflow (`workflow: TrunkBased/v1`) looks like:
 
 ```yaml
 assembly-versioning-scheme: MajorMinorPatch
