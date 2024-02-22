@@ -33,7 +33,7 @@ jobs:
 
     -
       name: Test Summary
-      uses: test-summary/action@v2.2
+      uses: test-summary/action@v2.3
       if: matrix.targetFramework == 'net8.0'
       with:
         paths: artifacts/test-results/*.results.xml
