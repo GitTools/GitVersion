@@ -31,7 +31,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private DeploymentMode? versioningMode;
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
-    private bool? preventIncrementOfMergedBranchVersion;
+    private bool? preventIncrementOfMergedBranch;
+    private bool? preventIncrementWhenBranchMerged;
     private bool? preventIncrementWhenCurrentCommitTagged;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
@@ -250,9 +251,15 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
+    public virtual TConfigurationBuilder WithPreventIncrementOfMergedBranch(bool? value)
     {
-        this.preventIncrementOfMergedBranchVersion = value;
+        this.preventIncrementOfMergedBranch = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithPreventIncrementWhenBranchMerged(bool? value)
+    {
+        this.preventIncrementWhenBranchMerged = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -344,8 +351,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithDeploymentMode(value.DeploymentMode);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
-        WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
-        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrementWhenCurrentCommitTagged);
+        WithPreventIncrementOfMergedBranch(value.PreventIncrement.OfMergedBranch);
+        WithPreventIncrementWhenBranchMerged(value.PreventIncrement.WhenBranchMerged);
+        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrement.WhenCurrentCommitTagged);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
@@ -411,8 +419,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsMainBranch = this.isMainBranch,
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
-            PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
-            PreventIncrementWhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = this.preventIncrementOfMergedBranch,
+                WhenBranchMerged = this.preventIncrementWhenBranchMerged,
+                WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
+            },
             PreReleaseWeight = this.preReleaseWeight
         };
 

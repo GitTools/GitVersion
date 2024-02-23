@@ -258,7 +258,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null).WithPreventIncrementOfMergedBranchVersion(false))
+                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
                 .Build();
 
@@ -486,7 +486,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty).WithPreventIncrementOfMergedBranchVersion(false))
+                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
                 .Build();
 
@@ -713,7 +713,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo").WithPreventIncrementOfMergedBranchVersion(false))
+                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo").WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
                 .Build();
 
@@ -940,7 +940,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar").WithPreventIncrementOfMergedBranchVersion(false))
+                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar").WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
                 .Build();
 

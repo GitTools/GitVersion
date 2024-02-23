@@ -72,8 +72,8 @@ branches:
   develop:
     label: alpha
     increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
@@ -85,7 +85,8 @@ branches:
   main:
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^master$|^main$
     source-branches:
@@ -100,8 +101,9 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: None
-    prevent-increment-of-merged-branch-version: true
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -118,6 +120,7 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment: {}
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
@@ -132,6 +135,7 @@ branches:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    prevent-increment: {}
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
@@ -147,7 +151,8 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: Inherit
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-]
     source-branches:
     - release
@@ -160,7 +165,8 @@ branches:
   support:
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^support[/-]
     source-branches:
@@ -174,6 +180,7 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment: {}
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -189,8 +196,10 @@ ignore:
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
-prevent-increment-of-merged-branch-version: false
-prevent-increment-when-tagged: true
+prevent-increment:
+  of-merged-branch: false
+  when-branch-merged: false
+  when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
@@ -200,6 +209,7 @@ is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
+
 ```
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -228,7 +238,8 @@ branches:
   main:
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^master$|^main$
     source-branches:
@@ -242,8 +253,9 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: None
-    prevent-increment-of-merged-branch-version: true
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -293,8 +305,10 @@ ignore:
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
-prevent-increment-of-merged-branch-version: false
-prevent-increment-when-tagged: true
+prevent-increment:
+  of-merged-branch: false
+  when-branch-merged: false
+  when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
@@ -330,7 +344,8 @@ branches:
     mode: ContinuousDeployment
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^master$|^main$
     source-branches: []
@@ -341,14 +356,16 @@ branches:
   feature:
     increment: Minor
     regex: ^features?[/-](?<BranchName>.+)
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
   hotfix:
     increment: Patch
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
-    prevent-increment-when-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     source-branches:
     - main
     pre-release-weight: 30000
@@ -375,8 +392,10 @@ ignore:
 mode: ManualDeployment
 label: '{BranchName}'
 increment: Inherit
-prevent-increment-of-merged-branch-version: false
-prevent-increment-when-tagged: true
+prevent-increment:
+  of-merged-branch: false
+  when-branch-merged: false
+  when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
@@ -467,9 +486,7 @@ increased, such as for commits after a tag: `Major`, `Minor`, `Patch`, `None`.
 
 The special value `Inherit` means that GitVersion should find the parent branch
 (i.e. the branch where the current branch was branched from), and use its values
-for [increment](#increment),
-[prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version)
-and [tracks-release-branches](#tracks-release-branches).
+for [increment](#increment) or other branch related properties.
 
 ### tag-prefix
 
@@ -791,7 +808,9 @@ Another example: branch `features/sc-12345/some-description` would become a pre-
 
 Same as for the [global configuration, explained above](#increment).
 
-### prevent-increment-of-merged-branch-version
+### prevent-increment-of-merged-branch
+
+The increment of the branch merged to will be ignored, regardless of whether the merged branch has a version number or not, when this branch related property is set to true on the target branch.
 
 When `release-2.0.0` is merged into main, we want main to build `2.0.0`. If
 `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option
@@ -801,6 +820,10 @@ In a GitFlow-based repository, setting this option can have implications on the
 `CommitsSinceVersionSource` output variable. It can rule out a potentially
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
+
+### prevent-increment-when-branch-merged
+
+The increment of the merged branch will be ignored when this branch related property is set to `true` on the source branch.
 
 ### prevent-increment-when-current-commit-tagged
 

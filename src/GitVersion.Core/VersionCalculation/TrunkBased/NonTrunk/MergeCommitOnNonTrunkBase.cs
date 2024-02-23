@@ -9,21 +9,29 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
 
     public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
+        if (commit.ChildIteration is null) throw new InvalidOperationException("The commit child iteration is null.");
+
         var baseVersion = TrunkBasedVersionStrategy.DetermineBaseVersionRecursive(
-           iteration: commit.ChildIteration!,
+           iteration: commit.ChildIteration,
            targetLabel: context.TargetLabel
        );
 
         context.Label ??= baseVersion.Label;
 
-        if (commit.Configuration.PreventIncrementOfMergedBranchVersion)
-            context.Increment = baseVersion.Increment;
-        else
+        var increment = VersionField.None;
+        if (!commit.Configuration.PreventIncrementOfMergedBranch)
         {
-            context.Increment = context.Increment.Consolidate(baseVersion.Increment);
+            increment = increment.Consolidate(context.Increment);
+        }
+        if (!commit.ChildIteration.Configuration.PreventIncrementWhenBranchMerged)
+        {
+            increment = increment.Consolidate(baseVersion.Increment);
         }
         if (commit.Configuration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
-            context.Increment = context.Increment.Consolidate(commit.Increment);
+        {
+            increment = increment.Consolidate(commit.Increment);
+        }
+        context.Increment = increment;
 
         if (baseVersion.BaseVersionSource is not null)
         {

@@ -454,7 +454,7 @@ public class FeatureBranchScenarios : TestBase
             .WithAssemblyVersioningScheme(AssemblyVersioningScheme.Major)
             .WithAssemblyFileVersioningFormat("{MajorMinorPatch}.{env:WeightedPreReleaseNumber ?? 0}")
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
-            .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranchVersion(true))
+            .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranch(true))
             .WithBranch("feature", builder => builder
                 .WithLabel($"feat-{ConfigurationConstants.BranchNamePlaceholder}")
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)

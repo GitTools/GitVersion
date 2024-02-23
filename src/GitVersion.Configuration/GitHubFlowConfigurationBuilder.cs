@@ -28,8 +28,12 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
-            PreventIncrementOfMergedBranchVersion = false,
-            PreventIncrementWhenCurrentCommitTagged = true,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = false,
+                WhenBranchMerged = false,
+                WhenCurrentCommitTagged = true
+            },
             TrackMergeTarget = false,
             TrackMergeMessage = true,
             TracksReleaseBranches = false,
@@ -43,7 +47,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             RegularExpression = MainBranch.RegexPattern,
             SourceBranches = [this.ReleaseBranch.Name],
             Label = string.Empty,
-            PreventIncrementOfMergedBranchVersion = true,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = true
+            },
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsMainBranch = true,
@@ -62,8 +69,11 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
                 this.ReleaseBranch.Name
             ],
             Label = "beta",
-            PreventIncrementOfMergedBranchVersion = true,
-            PreventIncrementWhenCurrentCommitTagged = false,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = true,
+                WhenCurrentCommitTagged = false
+            },
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsMainBranch = false,

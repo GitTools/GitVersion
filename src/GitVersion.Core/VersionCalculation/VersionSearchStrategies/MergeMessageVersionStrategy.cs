@@ -30,7 +30,7 @@ internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> ver
                     && Context.Configuration.IsReleaseBranch(mergeMessage.MergedBranch!))
                 {
                     this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
+                    var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranch;
 
                     var message = commit.Message.Trim();
 

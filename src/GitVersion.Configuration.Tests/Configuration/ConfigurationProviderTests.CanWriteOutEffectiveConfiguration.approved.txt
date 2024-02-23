@@ -21,8 +21,8 @@ branches:
   develop:
     label: alpha
     increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    prevent-increment-when-current-commit-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
@@ -34,7 +34,8 @@ branches:
   main:
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^master$|^main$
     source-branches:
@@ -49,8 +50,9 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: None
-    prevent-increment-of-merged-branch-version: true
-    prevent-increment-when-current-commit-tagged: false
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -67,6 +69,7 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment: {}
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
@@ -81,6 +84,7 @@ branches:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    prevent-increment: {}
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
@@ -96,7 +100,8 @@ branches:
     mode: ManualDeployment
     label: beta
     increment: Inherit
-    prevent-increment-when-current-commit-tagged: false
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-]
     source-branches:
     - release
@@ -109,7 +114,8 @@ branches:
   support:
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
     regex: ^support[/-]
     source-branches:
@@ -123,6 +129,7 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment: {}
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -138,8 +145,10 @@ ignore:
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
-prevent-increment-of-merged-branch-version: false
-prevent-increment-when-current-commit-tagged: true
+prevent-increment:
+  of-merged-branch: false
+  when-branch-merged: false
+  when-current-commit-tagged: true
 track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled

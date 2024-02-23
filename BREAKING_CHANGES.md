@@ -40,6 +40,7 @@
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
     *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
 *   The `Mainline` mode and the related implementation has been removed completely. The new `TrunkBased` version strategy should be used instead.
+*   The `TrunkBased` workflow doesn't support downgrading the increment for calculating the next version. This is the case if e.g. a bump messages has been defined which is lower than the branch increment.
 *   The branch related property `is-mainline` in the configuration system has been renamed to `is-main-branch`
 *   The versioning mode has been renamed to deployment mode and consists of following values:
     *   ManualDeployment (previously ContinuousDelivery)
@@ -53,7 +54,7 @@
     *   VersionInBranchName
     *   TrunkBased
 *   The initialization wizard has been removed.
-*   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment-when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
+*   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment.when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
 
 ## v5.0.0
 

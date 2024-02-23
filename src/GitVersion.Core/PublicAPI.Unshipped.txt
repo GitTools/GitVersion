@@ -117,6 +117,8 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningFormat.get -> 
 GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme
 GitVersion.Configuration.EffectiveConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode
 GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration) -> void
+GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranch.get -> bool
+GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenBranchMerged.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenCurrentCommitTagged.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
@@ -134,7 +136,6 @@ GitVersion.Configuration.EffectiveConfiguration.NextVersion.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
-GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
@@ -156,8 +157,7 @@ GitVersion.Configuration.IBranchConfiguration.IsSourceBranchFor.get -> System.Co
 GitVersion.Configuration.IBranchConfiguration.Label.get -> string?
 GitVersion.Configuration.IBranchConfiguration.LabelNumberPattern.get -> string?
 GitVersion.Configuration.IBranchConfiguration.PreReleaseWeight.get -> int?
-GitVersion.Configuration.IBranchConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool?
-GitVersion.Configuration.IBranchConfiguration.PreventIncrementWhenCurrentCommitTagged.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.PreventIncrement.get -> GitVersion.Configuration.IPreventIncrementConfiguration!
 GitVersion.Configuration.IBranchConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.IBranchConfiguration.SourceBranches.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 GitVersion.Configuration.IBranchConfiguration.TrackMergeMessage.get -> bool?
@@ -198,6 +198,10 @@ GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IIgnoreConfiguration.IsEmpty.get -> bool
 GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlySet<string!>!
+GitVersion.Configuration.IPreventIncrementConfiguration
+GitVersion.Configuration.IPreventIncrementConfiguration.OfMergedBranch.get -> bool?
+GitVersion.Configuration.IPreventIncrementConfiguration.WhenBranchMerged.get -> bool?
+GitVersion.Configuration.IPreventIncrementConfiguration.WhenCurrentCommitTagged.get -> bool?
 GitVersion.ConfigurationInfo
 GitVersion.ConfigurationInfo.ConfigurationFile -> string?
 GitVersion.ConfigurationInfo.ConfigurationInfo() -> void

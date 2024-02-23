@@ -11,9 +11,7 @@ public interface IBranchConfiguration
 
     IncrementStrategy Increment { get; }
 
-    bool? PreventIncrementOfMergedBranchVersion { get; }
-
-    bool? PreventIncrementWhenCurrentCommitTagged { get; }
+    IPreventIncrementConfiguration PreventIncrement { get; }
 
     string? LabelNumberPattern { get; }
 
