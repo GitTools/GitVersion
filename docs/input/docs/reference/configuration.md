@@ -6,7 +6,7 @@ RedirectFrom: docs/configuration
 ---
 
 GitVersion, starting from version 3.0, is mainly powered by configuration and no
-longer has branching strategies hard-coded.
+longer has branching strategies hard-coded. 
 
 ## Configuration tool
 
