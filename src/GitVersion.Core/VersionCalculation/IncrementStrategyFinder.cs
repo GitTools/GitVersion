@@ -40,7 +40,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         configuration.NotNull();
 
         var commitMessageIncrement = FindCommitMessageIncrement(
-            configuration, baseVersion.BaseVersionSource, currentCommit, label);
+            configuration, baseVersion, currentCommit, label);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
@@ -81,31 +81,38 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     }
 
     private VersionField? FindCommitMessageIncrement(
-        EffectiveConfiguration configuration, ICommit? baseCommit, ICommit? currentCommit, string? label)
+        EffectiveConfiguration configuration, BaseVersion baseVersion, ICommit? currentCommit, string? label)
     {
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
         {
             return null;
         }
 
+        var baseCommit = baseVersion.BaseVersionSource;
+
         //get tags with valid version - depends on configuration (see #3757)
         var targetShas = new Lazy<IReadOnlySet<string>>(() =>
             this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
-            .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
+                .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
         );
 
-        var commits = GetIntermediateCommits(baseCommit, currentCommit);
+        var targetTags = this.taggedSemanticVersionRepository
+            .GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
+            .SelectMany(_ => _).Where(element => element.Value.IsMatchForBranchSpecificLabel(label)
+                && element.Value.CompareTo(baseVersion.GetSemanticVersion()) == 0).Select(_ => _.Tag.TargetSha).ToHashSet();
+
+        var intermediateCommits = GetIntermediateCommits(baseCommit, currentCommit);
         // consider commit messages since latest tag only (see #3071)
-        commits = commits
+        var commits = intermediateCommits
             .Reverse()
-            .TakeWhile(x => !targetShas.Value.Contains(x.Sha))
+            .TakeWhile(x => baseCommit != x)
+            .Where(element => !targetShas.Value.Contains(element.Sha))
             .Reverse();
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
         {
             commits = commits.Where(c => c.Parents.Count() > 1);
         }
-
         return GetIncrementForCommits(
             majorVersionBumpMessage: configuration.MajorVersionBumpMessage,
             minorVersionBumpMessage: configuration.MinorVersionBumpMessage,
