@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Buildalyzer" Version="6.0.4" />
-    <PackageVersion Include="JsonSchema.Net.Generation" Version="4.1.0" />
+    <PackageVersion Include="JsonSchema.Net.Generation" Version="4.1.1" />
     <PackageVersion Include="JunitXml.TestLogger" Version="3.1.12" />
     <PackageVersion Include="LibGit2Sharp" Version="0.29.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="11.0.0" />
@@ -24,12 +24,12 @@
     <PackageVersion Include="NUnit" Version="4.0.1" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.0.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageVersion Include="Polly" Version="8.2.1" />
+    <PackageVersion Include="Polly" Version="8.3.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.11.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.11.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="System.Text.Json" Version="8.0.2" />
-    <PackageVersion Include="YamlDotNet" Version="15.1.0" />
+    <PackageVersion Include="YamlDotNet" Version="15.1.1" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.1" />
   </ItemGroup>
 </Project>
