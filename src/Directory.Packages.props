@@ -29,7 +29,7 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.11.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="System.Text.Json" Version="8.0.2" />
-    <PackageVersion Include="YamlDotNet" Version="15.1.1" />
+    <PackageVersion Include="YamlDotNet" Version="15.1.2" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.1" />
   </ItemGroup>
 </Project>
