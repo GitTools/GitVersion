@@ -147,7 +147,6 @@ GitVersion.Configuration.EffectiveConfiguration.VersionStrategy.get -> GitVersio
 GitVersion.Configuration.IBranchConfiguration
 GitVersion.Configuration.IBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
 GitVersion.Configuration.IBranchConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode?
-GitVersion.Configuration.IBranchConfiguration.Empty() -> GitVersion.Configuration.IBranchConfiguration!
 GitVersion.Configuration.IBranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.IBranchConfiguration.Inherit(GitVersion.Configuration.IBranchConfiguration! configuration) -> GitVersion.Configuration.IBranchConfiguration!
 GitVersion.Configuration.IBranchConfiguration.IsMainBranch.get -> bool?
@@ -178,6 +177,7 @@ GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningFormat.get -
 GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme?
 GitVersion.Configuration.IGitVersionConfiguration.Branches.get -> System.Collections.Generic.IReadOnlyDictionary<string!, GitVersion.Configuration.IBranchConfiguration!>!
 GitVersion.Configuration.IGitVersionConfiguration.CommitDateFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.GetEmptyBranchConfiguration() -> GitVersion.Configuration.IBranchConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration.TagPreReleaseWeight.get -> int?
 GitVersion.Configuration.IGitVersionConfiguration.TagPrefix.get -> string?
