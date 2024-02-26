@@ -1218,4 +1218,87 @@ public class OtherScenarios : TestBase
 
         fixture.AssertFullSemver(semVersion, configuration);
     }
+
+    [Test]
+    public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrect()
+    {
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit("A");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-alpha.1");
+
+        fixture.Checkout("main");
+        fixture.MakeACommit("B");
+        fixture.BranchTo("hotfix/just-a-hotfix");
+        fixture.MakeACommit("C +semver: major");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.Checkout("develop");
+        fixture.MakeACommit("D");
+        fixture.Checkout("main");
+        fixture.MakeACommit("E");
+        fixture.ApplyTag("1.0.1");
+        fixture.Checkout("develop");
+        fixture.MergeNoFF("main");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-alpha.7");
+    }
+
+    [TestCase(false, "2.0.0-alpha.3")]
+    [TestCase(true, "2.0.0-alpha.2")]
+    public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForTrunkBased(bool applyTag, string semanticVersion)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategy(VersionStrategies.TrunkBased)
+            .Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeACommit("A");
+        fixture.ApplyTag("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit("B +semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-alpha.1", configuration);
+
+        fixture.Checkout("main");
+        fixture.MakeACommit("C");
+        if (applyTag) fixture.ApplyTag("1.0.1");
+        fixture.Checkout("develop");
+        fixture.MergeNoFF("main");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver(semanticVersion, configuration);
+    }
+
+    [TestCase(false, "2.0.0-alpha.3")]
+    [TestCase(true, "2.0.0-alpha.3")]
+    public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForGitFlow(bool applyTag, string semanticVersion)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeACommit("A");
+        fixture.ApplyTag("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit("B +semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-alpha.1", configuration);
+
+        fixture.Checkout("main");
+        fixture.MakeACommit("C");
+        if (applyTag) fixture.ApplyTag("1.0.1");
+        fixture.Checkout("develop");
+        fixture.MergeNoFF("main");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver(semanticVersion, configuration);
+    }
 }
