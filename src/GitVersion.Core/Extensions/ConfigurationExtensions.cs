@@ -24,7 +24,7 @@ public static class ConfigurationExtensions
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= configuration.Empty();
+        branchConfiguration ??= configuration.GetEmptyBranchConfiguration();
         return branchConfiguration;
     }
 

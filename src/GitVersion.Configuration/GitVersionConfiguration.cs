@@ -157,4 +157,11 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
         stream.Flush();
         return stringBuilder.ToString();
     }
+
+    public IBranchConfiguration GetEmptyBranchConfiguration() => new BranchConfiguration
+    {
+        RegularExpression = string.Empty,
+        Label = ConfigurationConstants.BranchNamePlaceholder,
+        Increment = IncrementStrategy.Inherit
+    };
 }

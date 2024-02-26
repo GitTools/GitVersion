@@ -38,7 +38,5 @@ public interface IBranchConfiguration
 
     IReadOnlyCollection<string> IsSourceBranchFor { get; }
 
-    IBranchConfiguration Empty();
-
     IBranchConfiguration Inherit(IBranchConfiguration configuration);
 }

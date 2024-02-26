@@ -107,11 +107,4 @@ internal record BranchConfiguration : IBranchConfiguration
             PreReleaseWeight = PreReleaseWeight ?? configuration.PreReleaseWeight
         };
     }
-
-    public IBranchConfiguration Empty() => new BranchConfiguration
-    {
-        RegularExpression = string.Empty,
-        Label = ConfigurationConstants.BranchNamePlaceholder,
-        Increment = IncrementStrategy.Inherit
-    };
 }
