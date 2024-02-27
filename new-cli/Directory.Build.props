@@ -16,7 +16,14 @@
 
     <ItemGroup>
         <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Specialized"/>
+        <Using Include="System.Diagnostics"/>
+        <Using Include="System.Reflection"/>
         <Using Include="System.Text"/>
+        <Using Include="System.Text.Json"/>
+        <Using Include="System.Text.Json.Serialization"/>
+        <Using Include="System.Xml"/>
+        <Using Include="System.Environment" Alias="SysEnv"/>
     </ItemGroup>
 
 </Project>

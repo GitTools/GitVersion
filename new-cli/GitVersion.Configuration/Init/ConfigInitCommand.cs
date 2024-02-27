@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Commands;
@@ -5,16 +6,10 @@ namespace GitVersion.Commands;
 public record ConfigInitSettings : ConfigSettings;
 
 [Command<ConfigCommand>("init", "Inits the configuration for current repository.")]
-public class ConfigInitCommand : ICommand<ConfigInitSettings>
+public class ConfigInitCommand(ILogger logger, IService service) : ICommand<ConfigInitSettings>
 {
-    private readonly ILogger logger;
-    private readonly IService service;
-
-    public ConfigInitCommand(ILogger logger, IService service)
-    {
-        this.logger = logger;
-        this.service = service;
-    }
+    private readonly ILogger logger = logger.NotNull();
+    private readonly IService service = service.NotNull();
 
     public Task<int> InvokeAsync(ConfigInitSettings settings, CancellationToken cancellationToken = default)
     {

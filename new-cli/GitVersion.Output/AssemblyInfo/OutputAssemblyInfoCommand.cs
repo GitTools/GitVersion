@@ -1,18 +1,13 @@
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Commands;
 
 [Command<OutputCommand>("assemblyinfo", "Outputs version to assembly")]
-public class OutputAssemblyInfoCommand : ICommand<OutputAssemblyInfoSettings>
+public class OutputAssemblyInfoCommand(ILogger logger, IService service) : ICommand<OutputAssemblyInfoSettings>
 {
-    private readonly ILogger logger;
-    private readonly IService service;
-
-    public OutputAssemblyInfoCommand(ILogger logger, IService service)
-    {
-        this.logger = logger;
-        this.service = service;
-    }
+    private readonly ILogger logger = logger.NotNull();
+    private readonly IService service = service.NotNull();
 
     public Task<int> InvokeAsync(OutputAssemblyInfoSettings settings, CancellationToken cancellationToken = default)
     {

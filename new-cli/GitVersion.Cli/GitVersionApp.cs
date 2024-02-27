@@ -1,4 +1,5 @@
 using System.CommandLine;
+using GitVersion.Extensions;
 using GitVersion.Generated;
 using GitVersion.Infrastructure;
 using Serilog.Events;
@@ -7,17 +8,19 @@ namespace GitVersion;
 
 internal class GitVersionApp(RootCommandImpl rootCommand)
 {
+    private readonly RootCommandImpl rootCommand = rootCommand.NotNull();
+
     public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
     {
         var cliConfiguration = new CliConfiguration(rootCommand);
         var parseResult = cliConfiguration.Parse(args);
-        
-        var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOptionName);
+
+        var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
         var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
 
         if (logFile?.FullName != null) LoggingEnricher.Path = logFile.FullName;
         LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
-        
+
         return parseResult.InvokeAsync(cancellationToken);
     }
 

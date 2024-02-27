@@ -1,12 +1,11 @@
+using GitVersion.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Infrastructure;
 
-public sealed class Logger : ILogger
+public sealed class Logger(Microsoft.Extensions.Logging.ILogger logger) : ILogger
 {
-    private readonly Microsoft.Extensions.Logging.ILogger logger;
-
-    public Logger(Microsoft.Extensions.Logging.ILogger logger) => this.logger = logger;
+    private readonly Microsoft.Extensions.Logging.ILogger logger = logger.NotNull();
 
     public void LogTrace(string? message, params object?[] args) => logger.LogTrace(message, args);
     public void LogDebug(string? message, params object?[] args) => logger.LogDebug(message, args);

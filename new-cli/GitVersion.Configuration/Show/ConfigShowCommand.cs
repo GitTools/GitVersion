@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Commands;
@@ -5,16 +6,10 @@ namespace GitVersion.Commands;
 public record ConfigShowSettings : ConfigSettings;
 
 [Command<ConfigCommand>("show", "Shows the effective configuration.")]
-public class ConfigShowCommand : ICommand<ConfigShowSettings>
+public class ConfigShowCommand(ILogger logger, IService service) : ICommand<ConfigShowSettings>
 {
-    private readonly ILogger logger;
-    private readonly IService service;
-
-    public ConfigShowCommand(ILogger logger, IService service)
-    {
-        this.logger = logger;
-        this.service = service;
-    }
+    private readonly ILogger logger = logger.NotNull();
+    private readonly IService service = service.NotNull();
 
     public Task<int> InvokeAsync(ConfigShowSettings settings, CancellationToken cancellationToken = default)
     {

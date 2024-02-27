@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Commands;
@@ -5,16 +6,10 @@ namespace GitVersion.Commands;
 public record NormalizeSettings : GitVersionSettings;
 
 [Command("normalize", "Normalizes the git repository for GitVersion calculations.")]
-public class NormalizeCommand : ICommand<NormalizeSettings>
+public class NormalizeCommand(ILogger logger, IService service) : ICommand<NormalizeSettings>
 {
-    private readonly ILogger logger;
-    private readonly IService service;
-
-    public NormalizeCommand(ILogger logger, IService service)
-    {
-        this.logger = logger;
-        this.service = service;
-    }
+    private readonly ILogger logger = logger.NotNull();
+    private readonly IService service = service.NotNull();
 
     public Task<int> InvokeAsync(NormalizeSettings settings, CancellationToken cancellationToken = default)
     {

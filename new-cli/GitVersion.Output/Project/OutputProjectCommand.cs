@@ -1,18 +1,13 @@
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Commands;
 
 [Command<OutputCommand>("project", "Outputs version to project")]
-public class OutputProjectCommand : ICommand<OutputProjectSettings>
+public class OutputProjectCommand(ILogger logger, IService service) : ICommand<OutputProjectSettings>
 {
-    private readonly ILogger logger;
-    private readonly IService service;
-
-    public OutputProjectCommand(ILogger logger, IService service)
-    {
-        this.logger = logger;
-        this.service = service;
-    }
+    private readonly ILogger logger = logger.NotNull();
+    private readonly IService service = service.NotNull();
 
     public Task<int> InvokeAsync(OutputProjectSettings settings, CancellationToken cancellationToken = default)
     {

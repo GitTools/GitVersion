@@ -3,84 +3,10 @@
     <PackageReference Include="Polly" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\WarningException.cs"/>
     <Compile Include="..\..\src\GitVersion.Core\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
-    <Compile Include="..\..\src\GitVersion.Core\Git\AuthenticationInfo.cs">
-      <Link>Git\AuthenticationInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\CommitFilter.cs">
-      <Link>Git\CommitFilter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IBranch.cs">
-      <Link>Git\IBranch.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IBranchCollection.cs">
-      <Link>Git\IBranchCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ICommit.cs">
-      <Link>Git\ICommit.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ICommitCollection.cs">
-      <Link>Git\ICommitCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IGitObject.cs">
-      <Link>Git\IGitObject.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IGitRepository.cs">
-      <Link>Git\IGitRepository.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\INamedReference.cs">
-      <Link>Git\INamedReference.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IObjectId.cs">
-      <Link>Git\IObjectId.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IReference.cs">
-      <Link>Git\IReference.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IReferenceCollection.cs">
-      <Link>Git\IReferenceCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRefSpec.cs">
-      <Link>Git\IRefSpec.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRefSpecCollection.cs">
-      <Link>Git\IRefSpecCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRemote.cs">
-      <Link>Git\IRemote.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRemoteCollection.cs">
-      <Link>Git\IRemoteCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ITag.cs">
-      <Link>Git\ITag.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ITagCollection.cs">
-      <Link>Git\ITagCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ReferenceName.cs">
-      <Link>Git\ReferenceName.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\RefSpecDirection.cs">
-      <Link>Git\RefSpecDirection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersion.cs">
-        <Link>SemVer\SemanticVersion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionBuildMetaData.cs">
-        <Link>SemVer\SemanticVersionBuildMetaData.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionFormat.cs">
-        <Link>SemVer\SemanticVersionFormat.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\SemVer\SemanticVersionPreReleaseTag.cs">
-        <Link>SemVer\SemanticVersionPreReleaseTag.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\SemVer\VersionField.cs">
-        <Link>SemVer\VersionField.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs">
-        <Link>Exceptions\WarningException.cs</Link>
-    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Extensions\CommonExtensions.cs" Link="Extensions\CommonExtensions.cs" />
+    <Compile Include="..\..\src\GitVersion.Core\Git\*.cs" Link="Git\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\GitVersion.Core\SemVer\*.cs" Link="SemVer\%(Filename)%(Extension)"/>
   </ItemGroup>
 </Project>

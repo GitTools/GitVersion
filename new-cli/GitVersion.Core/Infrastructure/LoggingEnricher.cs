@@ -16,7 +16,7 @@ public class LoggingEnricher : ILogEventEnricher
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        // the settings might not have a path or we might not be within a command in which case
+        // the settings might not have a path, or we might not be within a command in which case
         // we won't have the setting so a default value for the log file will be required
         LogEventProperty logFilePathProperty;
 

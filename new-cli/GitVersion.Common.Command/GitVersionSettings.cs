@@ -4,10 +4,10 @@ namespace GitVersion;
 
 public record GitVersionSettings
 {
-    public const string LogFileOptionName = "--log-file";
+    public const string LogFileOption = "--log-file";
     public const string VerbosityOption = "--verbosity";
 
-    [Option(LogFileOptionName, "The log file", "-l")]
+    [Option(LogFileOption, "The log file", "-l")]
     public FileInfo? LogFile { get; init; }
 
     [Option(VerbosityOption, "The verbosity of the logging information")]

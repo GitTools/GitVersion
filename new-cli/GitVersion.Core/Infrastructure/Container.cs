@@ -1,12 +1,12 @@
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Infrastructure;
 
-public sealed class Container : IContainer
+public sealed class Container(ServiceProvider serviceProvider) : IContainer
 {
-    private readonly ServiceProvider serviceProvider;
+    private readonly ServiceProvider serviceProvider = serviceProvider.NotNull();
 
-    public Container(ServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
     public T? GetService<T>() => serviceProvider.GetService<T>();
     public T GetRequiredService<T>() where T : notnull => serviceProvider.GetRequiredService<T>();
 

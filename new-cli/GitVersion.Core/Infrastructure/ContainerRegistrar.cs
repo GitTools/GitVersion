@@ -6,7 +6,7 @@ namespace GitVersion.Infrastructure;
 
 public sealed class ContainerRegistrar : IContainerRegistrar
 {
-    private readonly ServiceCollection services = new();
+    private readonly ServiceCollection services = [];
 
     public IContainerRegistrar AddSingleton<TService, TImplementation>()
         where TService : class
