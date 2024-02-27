@@ -28,7 +28,7 @@ using {{Model.SettingsTypeNamespace}};{{ end }}
 
 namespace {{Namespace}};
 
-public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
+public class {{Model.CommandTypeName}}Impl : CliCommand, ICommandImpl
 {
     public string CommandName => nameof({{Model.CommandTypeName}}Impl);
     {{- if (Model.ParentCommand | string.empty) }}
@@ -39,41 +39,37 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
     {{- $settingsProperties = Model.SettingsProperties | array.sort "Name" }}
     // Options list
     {{~ for $prop in $settingsProperties ~}}
-    protected readonly Option<{{$prop.TypeName}}> {{$prop.Name}}Option;
+    protected readonly CliOption<{{$prop.TypeName}}> {{$prop.Name}}Option;
     {{~ end ~}}
 
     public {{Model.CommandTypeName}}Impl({{Model.CommandTypeName}} command)
         : base("{{Model.CommandName}}", "{{Model.CommandDescription}}")
     {
         {{~ for $prop in $settingsProperties ~}}
-        {{$prop.Name}}Option = new Option<{{$prop.TypeName}}>(new[] { {{$prop.Aliases}} })
+        {{$prop.Name}}Option = new CliOption<{{$prop.TypeName}}>("{{$prop.OptionName}}", [{{$prop.Aliases}}])
         {
-            IsRequired = {{$prop.IsRequired}},
+            Required = {{$prop.Required}},
             Description = "{{$prop.Description}}",
         };
         {{~ end ~}}
 
         {{- for $prop in $settingsProperties ~}}
-        AddOption({{$prop.Name}}Option);
+        Add({{$prop.Name}}Option);
         {{~ end ~}}
+        
+        this.SetAction(Run);
+        return;
 
-        this.SetHandler(settings => command.InvokeAsync(settings), new {{Model.SettingsTypeName}}Binder(this));
-    }
-
-    // Binds the command-line arguments to the command-line options.
-    private class {{Model.SettingsTypeName}}Binder : BinderBase<{{Model.SettingsTypeName}}>
-    {
-        private readonly {{Model.CommandTypeName}}Impl _handler;
-
-        public {{Model.SettingsTypeName}}Binder({{Model.CommandTypeName}}Impl handler) => _handler = handler;
-
-        protected override {{Model.SettingsTypeName}} GetBoundValue(BindingContext bindingContext) =>
-            new()
+        Task<int> Run(ParseResult parseResult, CancellationToken cancellationToken)
+        {
+            var settings = new {{Model.SettingsTypeName}}
             {
                 {{~ for $prop in $settingsProperties ~}}
-                {{$prop.Name}} = bindingContext.ParseResult.GetValueForOption(_handler.{{$prop.Name}}Option){{ if $prop.IsRequired }}!{{ end}},
+                {{$prop.Name}} = parseResult.GetValue({{$prop.Name}}Option){{ if $prop.Required }}!{{ end}},
                 {{~ end ~}}
             };
+            return command.InvokeAsync(settings, cancellationToken);
+        }
     }
 }
 """;
@@ -85,7 +81,7 @@ using System.CommandLine;
 using {{InfraNamespaceName}};
 namespace {{Namespace}};
 
-public class RootCommandImpl : RootCommand
+public class RootCommandImpl : CliRootCommand
 {
     public RootCommandImpl(IEnumerable<ICommandImpl> commands)
     {
@@ -99,12 +95,12 @@ public class RootCommandImpl : RootCommand
     {
         if (!string.IsNullOrWhiteSpace(command.ParentCommandName))
         {
-            var parent = map[command.ParentCommandName] as Command;
-            parent?.AddCommand((Command)command);
+            var parent = map[command.ParentCommandName] as CliCommand;
+            parent?.Add((CliCommand)command);
         }
         else
         {
-            AddCommand((Command)command);
+            Add((CliCommand)command);
         }
     }
 }

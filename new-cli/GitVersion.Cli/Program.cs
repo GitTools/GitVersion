@@ -9,9 +9,12 @@ var modules = new IGitVersionModule[]
     new LibGit2SharpCoreModule()
 };
 
+var cts = new CancellationTokenSource();
+Console.CancelKeyPress += (_, _) => cts.Cancel();
+
 using var serviceProvider = RegisterModules(modules);
 var app = serviceProvider.GetRequiredService<GitVersionApp>();
-var result = await app.RunAsync(args);
+var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
 
 if (!Console.IsInputRedirected) Console.ReadKey();
 

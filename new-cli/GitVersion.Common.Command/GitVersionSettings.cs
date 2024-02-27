@@ -4,18 +4,15 @@ namespace GitVersion;
 
 public record GitVersionSettings
 {
-    public const string LogFileOptionAlias1 = "--log-file";
-    private const string LogFileOptionAlias2 = "-l";
-
+    public const string LogFileOptionName = "--log-file";
     public const string VerbosityOption = "--verbosity";
-    private const string WorkDirOption = "--work-dir";
 
-    [Option([LogFileOptionAlias1, LogFileOptionAlias2], "The log file")]
+    [Option(LogFileOptionName, "The log file", "-l")]
     public FileInfo? LogFile { get; init; }
 
     [Option(VerbosityOption, "The verbosity of the logging information")]
-    public Verbosity Verbosity { get; init; } = Verbosity.Normal;
+    public Verbosity? Verbosity { get; init; } = GitVersion.Infrastructure.Verbosity.Normal;
 
-    [Option(WorkDirOption, "The working directory with the git repository")]
-    public DirectoryInfo WorkDir { get; init; } = new(Environment.CurrentDirectory);
+    [Option("--work-dir", "The working directory with the git repository")]
+    public DirectoryInfo? WorkDir { get; init; } = new(Environment.CurrentDirectory);
 }

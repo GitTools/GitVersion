@@ -127,22 +127,31 @@ public class CommandImplGenerator : IIncrementalGenerator
     {
         var ctorArguments = attribute.ConstructorArguments;
 
-        var aliases = (ctorArguments[0].Kind == TypedConstantKind.Array
-            ? ctorArguments[0].Values.Select(x => Convert.ToString(x.Value)).ToArray()
-            : [Convert.ToString(ctorArguments[0].Value)]).Select(x => $@"""{x?.Trim()}""");
-
-        var alias = string.Join(", ", aliases);
+        var name = Convert.ToString(ctorArguments[0].Value);
         var description = Convert.ToString(ctorArguments[1].Value);
+
+        ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(description);
+
+        string alias = string.Empty;
+        if (ctorArguments.Length == 3)
+        {
+            var aliasesArgs = ctorArguments[2];
+            var aliases = (aliasesArgs.Kind == TypedConstantKind.Array
+                ? aliasesArgs.Values.Select(x => Convert.ToString(x.Value)).ToArray()
+                : [Convert.ToString(aliasesArgs.Value)]).Select(x => $@"""{x?.Trim()}""");
+            alias = string.Join(", ", aliases);
+        }
 
         var isRequired = propertySymbol.Type.NullableAnnotation == NullableAnnotation.NotAnnotated;
         return new()
         {
             Name = propertySymbol.Name,
             TypeName = propertySymbol.Type.ToDisplayString(),
+            OptionName = name,
             Aliases = alias,
             Description = description,
-            IsRequired = isRequired
+            Required = isRequired
         };
     }
 }

@@ -1,19 +1,14 @@
 namespace GitVersion;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class OptionAttribute : Attribute
+public class OptionAttribute(string name, string description = "", params string[] aliases) : Attribute
 {
-    public string[] Aliases { get; }
-    public string Description { get; }
+    public string Name { get; } = name;
+    public string[] Aliases { get; } = aliases;
+    public string Description { get; } = description;
 
-    public OptionAttribute(string alias, string description = "")
-        : this([alias], description)
+    public OptionAttribute(string name, string description = "")
+        : this(name, description, [])
     {
-    }
-
-    public OptionAttribute(string[] aliases, string description = "")
-    {
-        Aliases = aliases;
-        Description = description;
     }
 }

@@ -1,7 +1,4 @@
 using System.CommandLine;
-using System.CommandLine.Builder;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using GitVersion.Generated;
 using GitVersion.Infrastructure;
 using Serilog.Events;
@@ -10,45 +7,23 @@ namespace GitVersion;
 
 internal class GitVersionApp(RootCommandImpl rootCommand)
 {
-    public Task<int> RunAsync(string[] args) =>
-        new CommandLineBuilder(rootCommand)
-            .AddMiddleware(async (context, next) =>
-            {
-                EnrichLogger(context);
-                await next(context);
-            })
-            .UseDefaults() // this will also register for dotnet-suggest
-            .Build()
-            .InvokeAsync(args);
+    public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
+    {
+        var cliConfiguration = new CliConfiguration(rootCommand);
+        var parseResult = cliConfiguration.Parse(args);
+        
+        var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOptionName);
+        var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
+
+        if (logFile?.FullName != null) LoggingEnricher.Path = logFile.FullName;
+        LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
+        
+        return parseResult.InvokeAsync(cancellationToken);
+    }
 
     // Note: there are 2 locations to watch for dotnet-suggest
     // - sentinel file: $env:TEMP\system-commandline-sentinel-files\ and
     // - registration file: $env:LOCALAPPDATA\.dotnet-suggest-registration.txt
-
-    private static void EnrichLogger(InvocationContext context)
-    {
-        Option<T>? GetOption<T>(string alias)
-        {
-            foreach (var symbolResult in context.ParseResult.CommandResult.Children)
-            {
-                if (symbolResult.Symbol is Option<T> id && id.HasAlias(alias))
-                    return id;
-            }
-            return null;
-        }
-
-        T? GetOptionValue<T>(string alias)
-        {
-            var option = GetOption<T>(alias);
-            return option != null ? context.ParseResult.GetValueForOption(option) : default;
-        }
-
-        var logFile = GetOptionValue<FileInfo>(GitVersionSettings.LogFileOptionAlias1);
-        var verbosity = GetOptionValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
-
-        LoggingEnricher.Path = logFile?.FullName ?? "log.txt";
-        LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
-    }
 
     private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
 

@@ -16,7 +16,8 @@ internal record SettingsPropertyInfo
 {
     public required string Name { get; init; }
     public required string TypeName { get; init; }
+    public required string OptionName { get; init; }
     public required string Aliases { get; init; }
     public required string Description { get; init; }
-    public required bool IsRequired { get; init; }
+    public required bool Required { get; init; }
 }
