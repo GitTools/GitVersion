@@ -11,6 +11,7 @@ public class GitVersionCommonModule : IGitVersionModule
         services.AddSingleton<ILog, Log>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, Environment>();
+
         services.AddSingleton<IConsole, ConsoleAdapter>();
 
         services.AddSingleton<IBuildAgent, LocalBuild>();
