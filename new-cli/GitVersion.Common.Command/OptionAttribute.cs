@@ -7,7 +7,7 @@ public class OptionAttribute : Attribute
     public string Description { get; }
 
     public OptionAttribute(string alias, string description = "")
-        : this(new[] { alias }, description)
+        : this([alias], description)
     {
     }
 

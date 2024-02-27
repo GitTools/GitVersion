@@ -3,24 +3,16 @@ using Microsoft.CodeAnalysis;
 
 namespace GitVersion;
 
-internal class TypeVisitor : SymbolVisitor
+internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, CancellationToken cancellation)
+    : SymbolVisitor
 {
-    private readonly CancellationToken cancellationToken;
-    private readonly HashSet<INamedTypeSymbol> exportedTypes;
-    private readonly Func<INamedTypeSymbol, bool> searchQuery;
+    private readonly HashSet<INamedTypeSymbol> _exportedTypes = new(SymbolEqualityComparer.Default);
 
-    public TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, CancellationToken cancellation)
-    {
-        cancellationToken = cancellation;
-        exportedTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-        this.searchQuery = searchQuery;
-    }
-
-    public ImmutableArray<INamedTypeSymbol> GetResults() => exportedTypes.ToImmutableArray();
+    public ImmutableArray<INamedTypeSymbol> GetResults() => this._exportedTypes.ToImmutableArray();
 
     public override void VisitAssembly(IAssemblySymbol symbol)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        cancellation.ThrowIfCancellationRequested();
         symbol.GlobalNamespace.Accept(this);
     }
 
@@ -28,18 +20,18 @@ internal class TypeVisitor : SymbolVisitor
     {
         foreach (var namespaceOrType in symbol.GetMembers())
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            cancellation.ThrowIfCancellationRequested();
             namespaceOrType.Accept(this);
         }
     }
 
     public override void VisitNamedType(INamedTypeSymbol type)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        cancellation.ThrowIfCancellationRequested();
 
         if (searchQuery(type))
         {
-            exportedTypes.Add(type);
+            this._exportedTypes.Add(type);
         }
     }
 }

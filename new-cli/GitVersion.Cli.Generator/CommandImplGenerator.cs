@@ -20,24 +20,24 @@ public class CommandImplGenerator : IIncrementalGenerator
     {
         var commandTypes = context.CompilationProvider.Select(SelectCommandTypes);
 
-        context.RegisterSourceOutput(commandTypes, GenerateSourceCode);
+        context.RegisterImplementationSourceOutput(commandTypes, GenerateSourceCode);
     }
 
     private static ImmutableArray<CommandInfo?> SelectCommandTypes(Compilation compilation, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
 
-        static bool SearchQuery(INamedTypeSymbol typeSymbol)
-        {
-            var attributeData = typeSymbol.GetAttributeData(CommandAttributeFullName) ?? typeSymbol.GetAttributeData(CommandAttributeGenericFullName);
-            return attributeData is not null;
-        }
-
         var visitor = new TypeVisitor(SearchQuery, ct);
         visitor.Visit(compilation.GlobalNamespace);
         var selectCommandTypes = visitor.GetResults();
 
         return selectCommandTypes.Select(selectCommandType => MapToCommandInfo(selectCommandType, ct)).ToImmutableArray();
+
+        static bool SearchQuery(INamedTypeSymbol typeSymbol)
+        {
+            var attributeData = typeSymbol.GetAttributeData(CommandAttributeFullName) ?? typeSymbol.GetAttributeData(CommandAttributeGenericFullName);
+            return attributeData is not null;
+        }
     }
     private static void GenerateSourceCode(SourceProductionContext context, ImmutableArray<CommandInfo?> commandInfos)
     {
@@ -129,14 +129,14 @@ public class CommandImplGenerator : IIncrementalGenerator
 
         var aliases = (ctorArguments[0].Kind == TypedConstantKind.Array
             ? ctorArguments[0].Values.Select(x => Convert.ToString(x.Value)).ToArray()
-            : new[] { Convert.ToString(ctorArguments[0].Value) }).Select(x => $@"""{x?.Trim()}""");
+            : [Convert.ToString(ctorArguments[0].Value)]).Select(x => $@"""{x?.Trim()}""");
 
         var alias = string.Join(", ", aliases);
         var description = Convert.ToString(ctorArguments[1].Value);
         ArgumentNullException.ThrowIfNull(description);
 
         var isRequired = propertySymbol.Type.NullableAnnotation == NullableAnnotation.NotAnnotated;
-        return new SettingsPropertyInfo
+        return new()
         {
             Name = propertySymbol.Name,
             TypeName = propertySymbol.Type.ToDisplayString(),

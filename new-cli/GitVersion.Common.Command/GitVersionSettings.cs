@@ -10,7 +10,7 @@ public record GitVersionSettings
     public const string VerbosityOption = "--verbosity";
     private const string WorkDirOption = "--work-dir";
 
-    [Option(new[] { LogFileOptionAlias1, LogFileOptionAlias2 }, "The log file")]
+    [Option([LogFileOptionAlias1, LogFileOptionAlias2], "The log file")]
     public FileInfo? LogFile { get; init; }
 
     [Option(VerbosityOption, "The verbosity of the logging information")]

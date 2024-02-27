@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SourceGenerator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\GitVersion.Cli\\GitVersion.Cli.csproj"
+    }
+  }
+}
