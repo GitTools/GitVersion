@@ -3,10 +3,16 @@
     <PackageReference Include="Polly" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\WarningException.cs"/>
+    <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IEnvironment.cs" Link="Infrastructure\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IFileSystem.cs" Link="Infrastructure\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\%(Filename)%(Extension)"/>
     <Compile Include="..\..\src\GitVersion.Core\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
     <Compile Include="..\..\src\GitVersion.Core\Extensions\CommonExtensions.cs" Link="Extensions\CommonExtensions.cs" />
+    <Compile Include="..\..\src\GitVersion.Core\Helpers\*.cs" Link="Helpers\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\GitVersion.Core\Git\*.cs" Link="Git\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\GitVersion.Core\SemVer\*.cs" Link="SemVer\%(Filename)%(Extension)"/>
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GitVersion.Core" />
   </ItemGroup>
 </Project>
