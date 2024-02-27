@@ -56,7 +56,10 @@ public sealed class ContainerRegistrar : IContainerRegistrar
             // serilog.sinks.map will defer the configuration of the sink to be on demand
             // allowing us to look at the properties set by the enricher to set the path appropriately
             .WriteTo.Console()
-            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, wt) => wt.File(logFilePath), 1)
+            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, wt) =>
+            {
+                if (!string.IsNullOrEmpty(logFilePath)) wt.File(logFilePath);
+            }, 1)
             .CreateLogger();
         return logger;
     }

@@ -16,7 +16,7 @@ public class ConfigCommand : ICommand<ConfigSettings>
         this.service = service;
     }
 
-    public Task<int> InvokeAsync(ConfigSettings settings)
+    public Task<int> InvokeAsync(ConfigSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'config', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

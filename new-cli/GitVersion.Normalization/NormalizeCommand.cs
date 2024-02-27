@@ -16,7 +16,7 @@ public class NormalizeCommand : ICommand<NormalizeSettings>
         this.service = service;
     }
 
-    public Task<int> InvokeAsync(NormalizeSettings settings)
+    public Task<int> InvokeAsync(NormalizeSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

@@ -18,7 +18,7 @@ public class CalculateCommand : ICommand<CalculateSettings>
         this.repository = repository;
     }
 
-    public Task<int> InvokeAsync(CalculateSettings settings)
+    public Task<int> InvokeAsync(CalculateSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         this.repository.DiscoverRepository(settings.WorkDir.FullName);

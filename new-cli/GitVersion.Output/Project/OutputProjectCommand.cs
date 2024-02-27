@@ -14,7 +14,7 @@ public class OutputProjectCommand : ICommand<OutputProjectSettings>
         this.service = service;
     }
 
-    public Task<int> InvokeAsync(OutputProjectSettings settings)
+    public Task<int> InvokeAsync(OutputProjectSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");

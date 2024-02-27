@@ -14,7 +14,7 @@ public class OutputCommand : ICommand<OutputSettings>
         this.service = service;
     }
 
-    public Task<int> InvokeAsync(OutputSettings settings)
+    public Task<int> InvokeAsync(OutputSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

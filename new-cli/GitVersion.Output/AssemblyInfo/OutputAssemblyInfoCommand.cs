@@ -14,7 +14,7 @@ public class OutputAssemblyInfoCommand : ICommand<OutputAssemblyInfoSettings>
         this.service = service;
     }
 
-    public Task<int> InvokeAsync(OutputAssemblyInfoSettings settings)
+    public Task<int> InvokeAsync(OutputAssemblyInfoSettings settings, CancellationToken cancellationToken = default)
     {
         var value = service.Call();
         var versionInfo = settings.VersionInfo.Value;
