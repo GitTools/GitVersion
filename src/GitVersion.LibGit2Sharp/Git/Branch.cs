@@ -13,7 +13,7 @@ internal sealed class Branch : IBranch
     internal Branch(LibGit2Sharp.Branch branch)
     {
         this.innerBranch = branch.NotNull();
-        Name = new ReferenceName(branch.CanonicalName);
+        Name = new(branch.CanonicalName);
 
         var commit = this.innerBranch.Tip;
         Tip = commit is null ? null : new Commit(commit);

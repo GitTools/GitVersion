@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class CommitFilter
+public record CommitFilter
 {
     public bool FirstParentOnly { get; set; }
     public object? IncludeReachableFrom { get; set; }

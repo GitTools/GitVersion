@@ -34,7 +34,7 @@ internal sealed partial class GitRepository
         {
             gitDirectory = Repository.Discover(gitDirectory);
         }
-        this.repositoryLazy = new Lazy<IRepository>(() => new Repository(gitDirectory));
+        this.repositoryLazy = new(() => new Repository(gitDirectory));
     }
 
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)

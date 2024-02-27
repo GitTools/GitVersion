@@ -54,7 +54,6 @@ GitVersion.Attributes.JsonPropertyFormatAttribute
 GitVersion.Attributes.JsonPropertyFormatAttribute.Format.get -> GitVersion.Attributes.Format
 GitVersion.Attributes.JsonPropertyFormatAttribute.JsonPropertyFormatAttribute(GitVersion.Attributes.Format format) -> void
 GitVersion.AuthenticationInfo
-GitVersion.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.AuthenticationInfo.Password.get -> string?
 GitVersion.AuthenticationInfo.Password.set -> void
 GitVersion.AuthenticationInfo.Token.get -> string?
@@ -72,7 +71,6 @@ GitVersion.BugException.BugException() -> void
 GitVersion.BugException.BugException(string! message) -> void
 GitVersion.BugException.BugException(string? message, System.Exception? innerException) -> void
 GitVersion.CommitFilter
-GitVersion.CommitFilter.CommitFilter() -> void
 GitVersion.CommitFilter.ExcludeReachableFrom.get -> object?
 GitVersion.CommitFilter.ExcludeReachableFrom.set -> void
 GitVersion.CommitFilter.FirstParentOnly.get -> bool
@@ -224,7 +222,6 @@ GitVersion.Extensions.CommonExtensions
 GitVersion.Extensions.DictionaryExtensions
 GitVersion.Extensions.EnumerableExtensions
 GitVersion.Extensions.GitExtensions
-GitVersion.Extensions.ObjectExtensions
 GitVersion.Extensions.ReadEmbeddedResourceExtensions
 GitVersion.Extensions.ServiceCollectionExtensions
 GitVersion.Extensions.StringExtensions
@@ -802,8 +799,6 @@ static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.C
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
 static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
-static GitVersion.Extensions.ObjectExtensions.Deconstruct<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value) -> void
-static GitVersion.Extensions.ObjectExtensions.GetProperties(this object! obj) -> System.Collections.Generic.Dictionary<string!, string!>!
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource(this string! resourceName, System.Reflection.Assembly! assembly) -> string!
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource<T>(this string! resourceName) -> string!
 static GitVersion.Extensions.ServiceCollectionExtensions.AddModule(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection, GitVersion.IGitVersionModule! gitVersionModule) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
