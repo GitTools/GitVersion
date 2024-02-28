@@ -112,7 +112,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     private IReadOnlyCollection<ICommit> GetCommitHistory(
         string? tagPrefix, SemanticVersionFormat semanticVersionFormat, ICommit? baseVersionSource, ICommit currentCommit, string? label)
     {
-        var targetShas = new Lazy<IReadOnlySet<string>>(() =>
+        var targetShas = new Lazy<HashSet<string>>(() =>
             this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat)
                 .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
         );
@@ -123,20 +123,21 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
 
         foreach (var intermediateCommit in intermediateCommits.Reverse())
         {
-            if (!commitLog.ContainsKey(intermediateCommit.Sha)) continue;
-
-            if (targetShas.Value.Contains(intermediateCommit.Sha))
+            if (targetShas.Value.Contains(intermediateCommit.Sha) && commitLog.Remove(intermediateCommit.Sha))
             {
-                void RemoveCommitFromHistory(ICommit commit, HashSet<ICommit> traversedCommits)
+                var parentCommits = intermediateCommit.Parents.ToList();
+                while (parentCommits.Count != 0)
                 {
-                    if (!traversedCommits.Add(commit) || !commitLog.Remove(commit.Sha)) return;
-
-                    foreach (var parentCommit in commit.Parents)
+                    List<ICommit> temporaryList = new();
+                    foreach (var parentCommit in parentCommits)
                     {
-                        RemoveCommitFromHistory(parentCommit, traversedCommits);
+                        if (commitLog.Remove(parentCommit.Sha))
+                        {
+                            temporaryList.AddRange(parentCommit.Parents);
+                        }
                     }
+                    parentCommits = temporaryList;
                 }
-                RemoveCommitFromHistory(intermediateCommit, new HashSet<ICommit>());
             }
         }
 
