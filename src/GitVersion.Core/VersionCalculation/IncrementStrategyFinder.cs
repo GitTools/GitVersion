@@ -109,7 +109,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
             ? defaultRegex
             : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
-    public IReadOnlyCollection<ICommit> GetCommitHistory(
+    private IReadOnlyCollection<ICommit> GetCommitHistory(
         string? tagPrefix, SemanticVersionFormat semanticVersionFormat, ICommit? baseVersionSource, ICommit currentCommit, string? label)
     {
         var targetShas = new Lazy<IReadOnlySet<string>>(() =>
@@ -121,23 +121,22 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
 
         var commitLog = intermediateCommits.ToDictionary(element => element.Id.Sha);
 
-        foreach (var item in intermediateCommits.Reverse())
+        foreach (var intermediateCommit in intermediateCommits.Reverse())
         {
-            if (!commitLog.ContainsKey(item.Sha)) continue;
+            if (!commitLog.ContainsKey(intermediateCommit.Sha)) continue;
 
-            if (targetShas.Value.Contains(item.Sha))
+            if (targetShas.Value.Contains(intermediateCommit.Sha))
             {
-                void RemoveCommitFromHistory(ICommit commit)
+                void RemoveCommitFromHistory(ICommit commit, HashSet<ICommit> traversedCommits)
                 {
-                    if (!commitLog.ContainsKey(commit.Sha)) return;
+                    if (!traversedCommits.Add(commit) || !commitLog.Remove(commit.Sha)) return;
 
-                    commitLog.Remove(commit.Sha);
-                    foreach (var item in commit.Parents)
+                    foreach (var parentCommit in commit.Parents)
                     {
-                        RemoveCommitFromHistory(item);
+                        RemoveCommitFromHistory(parentCommit, traversedCommits);
                     }
                 }
-                RemoveCommitFromHistory(item);
+                RemoveCommitFromHistory(intermediateCommit, new HashSet<ICommit>());
             }
         }
 
