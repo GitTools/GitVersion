@@ -65,13 +65,10 @@ GitVersion [path]
                     (.csproj/.vbproj/.fsproj) files in the git repo and update
                     them
                     Note: This is only compatible with the newer Sdk projects
-    /updateassemblyinfofilename
-                    Specify name of AssemblyInfo file. Can also
-                    /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with
-                    /updateassemblyinfo or /updateassemblyinfofilename is not
-                    found, it be created with these attributes:
+                    /updateassemblyinfo is not
+                    found, it will be created with these attributes:
                     AssemblyFileVersion, AssemblyVersion and
                     AssemblyInformationalVersion.
                     Supports writing version info for: C#, F#, VB

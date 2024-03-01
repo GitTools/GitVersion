@@ -41,7 +41,8 @@ public class HelpWriterTests : TestBase
 
         var ignored = new[]
         {
-            nameof(Arguments.Authentication)
+            nameof(Arguments.Authentication),
+            nameof(Arguments.UpdateAssemblyInfoFileName)
         };
         typeof(Arguments).GetFields()
             .Select(p => p.Name)
