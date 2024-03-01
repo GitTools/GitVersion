@@ -6,7 +6,8 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-internal class IncrementStrategyFinder : IIncrementStrategyFinder
+internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+    : IIncrementStrategyFinder
 {
     public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
     public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
@@ -23,15 +24,8 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private static readonly Regex DefaultPatchPatternRegex = new(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex DefaultNoBumpPatternRegex = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private readonly IGitRepository repository;
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
-
-    public IncrementStrategyFinder(IGitRepository repository, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
-    {
-        this.repository = repository.NotNull();
-        this.repository = repository.NotNull();
-        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository;
-    }
+    private readonly IGitRepository repository = repository.NotNull();
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public VersionField DetermineIncrementedField(
         ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration, string? label)
