@@ -31,7 +31,7 @@ public class CommandImplGenerator : IIncrementalGenerator
         visitor.Visit(compilation.GlobalNamespace);
         var selectCommandTypes = visitor.GetResults();
 
-        return selectCommandTypes.Select(selectCommandType => MapToCommandInfo(selectCommandType, ct)).ToImmutableArray();
+        return [.. selectCommandTypes.Select(selectCommandType => MapToCommandInfo(selectCommandType, ct))];
 
         static bool SearchQuery(INamedTypeSymbol typeSymbol)
         {
