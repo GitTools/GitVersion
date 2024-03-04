@@ -36,13 +36,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{542E443E-14C
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
-		..\.editorconfig = ..\.editorconfig
-		..\.gitattributes = ..\.gitattributes
-		..\.gitignore = ..\.gitignore
-		..\GitVersion.yml = ..\GitVersion.yml
-		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
-		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
-		..\global.json = ..\global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE015-699F-464A-8FF0-D8762102421A}"
@@ -55,6 +48,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE0
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration.Tests", "GitVersion.Configuration.Tests\GitVersion.Configuration.Tests.csproj", "{E3722E82-D283-4BA7-B44F-C43072B829FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7D3A83B4-95D9-42AF-AB11-6292209CF00B}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\GitVersion.yml = ..\GitVersion.yml
+		..\global.json = ..\global.json
+		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
+		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
+		..\Directory.Packages.props = ..\Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,9 +137,9 @@ Global
 		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{13C60949-7225-4B08-BE63-CAAC5E25FD16} = {69C36B9D-E496-42A2-B091-C055E999686C}
-		{1F4BE015-699F-464A-8FF0-D8762102421A} = {542E443E-14C3-45A7-A2E9-ACF27286A3B2}
 		{B93C3F0C-6CBF-49E6-A476-A0103319640B} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{E3722E82-D283-4BA7-B44F-C43072B829FA} = {69C36B9D-E496-42A2-B091-C055E999686C}
+		{1F4BE015-699F-464A-8FF0-D8762102421A} = {7D3A83B4-95D9-42AF-AB11-6292209CF00B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}

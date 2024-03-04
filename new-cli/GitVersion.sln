@@ -47,6 +47,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core.Libgit2Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Cli.Generator", "GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj", "{AF22F642-625A-4A33-92A5-161EE4E2B0CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{D27CECCB-F012-433C-B026-84979C8C731E}"
+	ProjectSection(SolutionItems) = preProject
+		..\global.json = ..\global.json
+		..\Directory.Packages.props = ..\Directory.Packages.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

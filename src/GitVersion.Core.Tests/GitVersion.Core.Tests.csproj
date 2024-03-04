@@ -14,6 +14,9 @@
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    </ItemGroup>
+    <ItemGroup>
         <Content Include="VersionCalculation\Approved\**\*.approved.txt" />
         <Content Include="VersionConverters\Approved\**\*.approved.txt" />
     </ItemGroup>
