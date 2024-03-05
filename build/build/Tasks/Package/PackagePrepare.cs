@@ -62,12 +62,6 @@ public class PackagePrepare : FrostingTask<BuildContext>
             SelfContained = true
         };
 
-        // workaround for https://github.com/dotnet/runtime/issues/49508
-        if (runtime == "osx-arm64")
-        {
-            settings.ArgumentCustomization = arg => arg.Append("/p:OsxArm64=true");
-        }
-
         context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
         return outputPath;
