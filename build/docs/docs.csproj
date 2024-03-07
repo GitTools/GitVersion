@@ -7,7 +7,7 @@
         <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cake.Git" />
+        <PackageReference Include="Cake.Frosting.Git" />
         <PackageReference Include="Cake.Wyam" />
     </ItemGroup>
 </Project>

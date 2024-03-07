@@ -26,7 +26,7 @@ internal class GitVersionApp(RootCommandImpl rootCommand)
 
     // Note: there are 2 locations to watch for dotnet-suggest
     // - sentinel file: $env:TEMP\system-commandline-sentinel-files\ and
-    // - registration file: $env:LOCALAPPDATA\.dotnet-suggest-registration.txt
+    // - registration file: $env:LOCALAPPDATA\.dotnet-suggest-registration.txt or $HOME/.dotnet-suggest-registration.txt
 
     private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
 
