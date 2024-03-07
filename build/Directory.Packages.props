@@ -11,7 +11,7 @@
     <PackageVersion Include="Cake.Incubator" Version="8.0.0" />
     <PackageVersion Include="Cake.DotNetLocalTools.Module" Version="3.0.12" />
     <PackageVersion Include="Cake.Docker" Version="1.3.0" />
-    <PackageVersion Include="Cake.Git" Version="3.0.0" />
+    <PackageVersion Include="Cake.Git" Version="4.0.0" />
     <PackageVersion Include="Cake.Json" Version="7.0.1" />
     <PackageVersion Include="Cake.Wyam" Version="2.2.14" />
     <PackageVersion Include="xunit.assert" Version="2.7.0" />
