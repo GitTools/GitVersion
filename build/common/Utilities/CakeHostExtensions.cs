@@ -12,7 +12,7 @@ public static class ServicesExtensions
 
     public static CakeHost InstallToolsFromRootManifest(this CakeHost host)
     {
-        host = host.UseModule<LocalToolsModule>().InstallToolsFromManifest(Extensions.GetRootDirectory().CombineWithFilePath("dotnet-tools.json").FullPath);
+        host = host.UseModule<LocalToolsModule>().InstallToolsFromManifest(Extensions.GetRootDirectory().CombineWithFilePath(".config/dotnet-tools.json").FullPath);
         return host;
     }
 

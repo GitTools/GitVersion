@@ -3,9 +3,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{EC2C1EC4-BE5
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 	Directory.Packages.props = Directory.Packages.props
-	..\dotnet-tools.json = ..\dotnet-tools.json
 	..\global.json = ..\global.json
 	..\.gitignore = ..\.gitignore
+	..\.config\dotnet-tools.json = ..\.config\dotnet-tools.json
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "build", "build\build.csproj", "{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}"
