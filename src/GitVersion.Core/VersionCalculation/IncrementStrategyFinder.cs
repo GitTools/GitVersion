@@ -75,25 +75,20 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     }
 
     private VersionField? FindCommitMessageIncrement(
-        EffectiveConfiguration configuration, ICommit? baseCommit, ICommit? currentCommit, string? label)
+        EffectiveConfiguration configuration, ICommit? baseVersionSource, ICommit currentCommit, string? label)
     {
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
         {
             return null;
         }
 
-        //get tags with valid version - depends on configuration (see #3757)
-        var targetShas = new Lazy<IReadOnlySet<string>>(() =>
-            this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
-            .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
+        IEnumerable<ICommit> commits = GetCommitHistory(
+            tagPrefix: configuration.TagPrefix,
+            semanticVersionFormat: configuration.SemanticVersionFormat,
+            baseVersionSource: baseVersionSource,
+            currentCommit: currentCommit,
+            label: label
         );
-
-        var commits = GetIntermediateCommits(baseCommit, currentCommit);
-        // consider commit messages since latest tag only (see #3071)
-        commits = commits
-            .Reverse()
-            .TakeWhile(x => !targetShas.Value.Contains(x.Sha))
-            .Reverse();
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
         {
@@ -113,6 +108,41 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         messageRegex == null
             ? defaultRegex
             : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+    private IReadOnlyCollection<ICommit> GetCommitHistory(
+        string? tagPrefix, SemanticVersionFormat semanticVersionFormat, ICommit? baseVersionSource, ICommit currentCommit, string? label)
+    {
+        var targetShas = new Lazy<HashSet<string>>(() =>
+            this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat)
+                .SelectMany(_ => _).Where(_ => _.Value.IsMatchForBranchSpecificLabel(label)).Select(_ => _.Tag.TargetSha).ToHashSet()
+        );
+
+        var intermediateCommits = GetIntermediateCommits(baseVersionSource, currentCommit).ToArray();
+
+        var commitLog = intermediateCommits.ToDictionary(element => element.Id.Sha);
+
+        foreach (var intermediateCommit in intermediateCommits.Reverse())
+        {
+            if (targetShas.Value.Contains(intermediateCommit.Sha) && commitLog.Remove(intermediateCommit.Sha))
+            {
+                var parentCommits = intermediateCommit.Parents.ToList();
+                while (parentCommits.Count != 0)
+                {
+                    List<ICommit> temporaryList = new();
+                    foreach (var parentCommit in parentCommits)
+                    {
+                        if (commitLog.Remove(parentCommit.Sha))
+                        {
+                            temporaryList.AddRange(parentCommit.Parents);
+                        }
+                    }
+                    parentCommits = temporaryList;
+                }
+            }
+        }
+
+        return commitLog.Values;
+    }
 
     /// <summary>
     /// Get the sequence of commits in a repository between a <paramref name="baseCommit"/> (exclusive)
@@ -149,7 +179,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     /// </summary>
     private ICommit[] GetHeadCommits(ICommit? headCommit) =>
         this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
-            GetCommitsReacheableFromHead(repository, headCommit).ToArray());
+            GetCommitsReacheableFromHead(headCommit).ToArray());
 
     private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none) =>
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
@@ -164,11 +194,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         return null;
     }
 
-    /// <summary>
-    /// Query a <paramref name="repo"/> for the sequence of commits from the beginning to a particular
-    /// <paramref name="headCommit"/> (inclusive)
-    /// </summary>
-    private static IEnumerable<ICommit> GetCommitsReacheableFromHead(IGitRepository repo, ICommit? headCommit)
+    private IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit)
     {
         var filter = new CommitFilter
         {
@@ -176,7 +202,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
         };
 
-        return repo.Commits.QueryBy(filter);
+        return repository.Commits.QueryBy(filter);
     }
 
     public IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index)
@@ -202,7 +228,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     {
         var parents = mergeCommit.Parents.Skip(1).ToList();
         if (parents.Count > 1)
-            throw new NotSupportedException("Mainline development does not support more than one merge source in a single commit yet");
+            throw new NotSupportedException("GitVersion does not support more than one merge source in a single commit yet");
         return parents.Single();
     }
 
