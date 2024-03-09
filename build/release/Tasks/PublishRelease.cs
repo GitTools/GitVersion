@@ -8,9 +8,7 @@ namespace Release.Tasks;
 [TaskDescription("Publish release")]
 [IsDependentOn(typeof(PublishReleaseInternal))]
 
-public class PublishRelease : FrostingTask<BuildContext>
-{
-}
+public class PublishRelease : FrostingTask<BuildContext>;
 
 [TaskName(nameof(PublishReleaseInternal))]
 [TaskDescription("Publish release")]

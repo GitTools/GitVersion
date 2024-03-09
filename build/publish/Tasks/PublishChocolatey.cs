@@ -7,9 +7,7 @@ namespace Publish.Tasks;
 [TaskName(nameof(PublishChocolatey))]
 [TaskDescription("Publish chocolatey packages")]
 [IsDependentOn(typeof(PublishChocolateyInternal))]
-public class PublishChocolatey : FrostingTask<BuildContext>
-{
-}
+public class PublishChocolatey : FrostingTask<BuildContext>;
 
 [TaskName(nameof(PublishChocolateyInternal))]
 [TaskDescription("Publish chocolatey packages")]

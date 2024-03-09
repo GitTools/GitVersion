@@ -7,9 +7,7 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerHubReadmePublish))]
 [IsDependentOn(typeof(DockerHubReadmePublishInternal))]
 [TaskDescription("Publish the DockerHub updated README.md")]
-public class DockerHubReadmePublish : FrostingTask<BuildContext>
-{
-}
+public class DockerHubReadmePublish : FrostingTask<BuildContext>;
 [TaskName(nameof(DockerHubReadmePublishInternal))]
 [TaskDescription("Publish the DockerHub updated README.md")]
 public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
