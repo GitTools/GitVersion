@@ -52,13 +52,10 @@ updates:
     nunit:
       patterns:
       - "NUnit.*"
-  directory: "/src"
+  directory: "/"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  ignore:
-    - dependency-name: "Microsoft.Build"
-      versions: ["16.9.0", "16.11.0"]
 
 - package-ecosystem: github-actions
   labels:
