@@ -4,13 +4,9 @@ using Docs.Utilities;
 
 namespace Docs;
 
-public class BuildContext : BuildContextBase
+public class BuildContext(ICakeContext context) : BuildContextBase(context)
 {
     public bool ForcePublish { get; set; }
     public Credentials? Credentials { get; set; }
     public WyamSettings? WyamSettings { get; set; }
-
-    public BuildContext(ICakeContext context) : base(context)
-    {
-    }
 }

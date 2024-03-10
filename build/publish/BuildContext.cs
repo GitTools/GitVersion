@@ -3,12 +3,9 @@ using Publish.Utilities;
 
 namespace Publish;
 
-public class BuildContext : BuildContextBase
+public class BuildContext(ICakeContext context) : BuildContextBase(context)
 {
     public Credentials? Credentials { get; set; }
 
-    public List<NugetPackage> Packages { get; } = new();
-    public BuildContext(ICakeContext context) : base(context)
-    {
-    }
+    public List<NugetPackage> Packages { get; } = [];
 }

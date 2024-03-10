@@ -8,6 +8,6 @@ public class Credentials
 
     public static Credentials GetCredentials(ICakeContext context) => new()
     {
-        CodeCov = new CodeCovCredentials(context.EnvironmentVariable("CODECOV_TOKEN")),
+        CodeCov = new(context.EnvironmentVariable("CODECOV_TOKEN")),
     };
 }

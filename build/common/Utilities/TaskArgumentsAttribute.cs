@@ -5,13 +5,8 @@ namespace Common.Utilities;
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-public class TaskArgumentAttribute : Attribute
+public class TaskArgumentAttribute(string name, params string[] possibleValues) : Attribute
 {
-    public string Name { get; }
-    public string[] PossibleValues { get; }
-    public TaskArgumentAttribute(string name, params string[] possibleValues)
-    {
-        Name = name;
-        PossibleValues = possibleValues;
-    }
+    public string Name { get; } = name;
+    public string[] PossibleValues { get; } = possibleValues;
 }

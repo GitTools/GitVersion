@@ -9,7 +9,7 @@ public class ValidateVersion : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        var gitversionTool = context.GetGitVersionToolLocation();
-        context.ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", context.Version!.GitVersion!.InformationalVersion!);
+        var gitVersionTool = context.GetGitVersionToolLocation();
+        context.ValidateOutput("dotnet", $"\"{gitVersionTool}\" -version", context.Version!.GitVersion!.InformationalVersion!);
     }
 }

@@ -8,7 +8,7 @@ public class Credentials
 
     public static Credentials GetCredentials(ICakeContext context) => new()
     {
-        DockerHub = new DockerHubCredentials(
+        DockerHub = new(
             context.EnvironmentVariable("DOCKER_USERNAME"),
             context.EnvironmentVariable("DOCKER_PASSWORD")),
     };

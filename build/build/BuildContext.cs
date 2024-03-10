@@ -3,7 +3,7 @@ using Common.Utilities;
 
 namespace Build;
 
-public class BuildContext : BuildContextBase
+public class BuildContext(ICakeContext context) : BuildContextBase(context)
 {
     public string MsBuildConfiguration { get; set; } = Constants.DefaultConfiguration;
 
@@ -19,8 +19,4 @@ public class BuildContext : BuildContextBase
     public Credentials? Credentials { get; set; }
 
     public DotNetMSBuildSettings MsBuildSettings { get; } = new();
-
-    public BuildContext(ICakeContext context) : base(context)
-    {
-    }
 }

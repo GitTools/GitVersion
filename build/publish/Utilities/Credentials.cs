@@ -10,8 +10,8 @@ public class Credentials
 
     public static Credentials GetCredentials(ICakeContext context) => new()
     {
-        GitHub = new GitHubCredentials(context.EnvironmentVariable("GITHUB_TOKEN")),
-        Nuget = new NugetCredentials(context.EnvironmentVariable("NUGET_API_KEY")),
-        Chocolatey = new ChocolateyCredentials(context.EnvironmentVariable("CHOCOLATEY_API_KEY")),
+        GitHub = new(context.EnvironmentVariable("GITHUB_TOKEN")),
+        Nuget = new(context.EnvironmentVariable("NUGET_API_KEY")),
+        Chocolatey = new(context.EnvironmentVariable("CHOCOLATEY_API_KEY")),
     };
 }

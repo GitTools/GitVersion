@@ -1,8 +1,3 @@
 namespace Chores;
 
-public class BuildContext : FrostingContext
-{
-    public BuildContext(ICakeContext context) : base(context)
-    {
-    }
-}
+public class BuildContext(ICakeContext context) : FrostingContext(context);
