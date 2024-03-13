@@ -10,8 +10,10 @@ public interface IRepositoryStore
     ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch);
 
     ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
-    ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
-    IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit);
+
+    ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId, IIgnoreConfiguration ignore);
+
+    IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore);
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(ReferenceName branchName);

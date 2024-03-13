@@ -22,7 +22,7 @@ internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> ver
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.MergeMessage) || !configuration.Value.TrackMergeMessage)
             return [];
 
-        var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
+        var commitsPriorToThan = configuration.Value.Ignore.Filter(Context.CurrentBranchCommits);
         var baseVersions = commitsPriorToThan
             .SelectMany(commit =>
             {

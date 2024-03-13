@@ -20,6 +20,8 @@ public class GitVersionContext(
 
     public IBranch CurrentBranch { get; } = currentBranch.NotNull();
 
+    public IEnumerable<ICommit> CurrentBranchCommits => CurrentBranch.Commits.GetCommitsPriorTo(CurrentCommit.When);
+
     public ICommit CurrentCommit { get; } = currentCommit.NotNull();
 
     public bool IsCurrentCommitTagged { get; } = isCurrentCommitTagged;

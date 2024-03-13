@@ -384,8 +384,8 @@ branches:
     regex: (?<BranchName>.+)
     source-branches:
     - main
-    - release
     - feature
+    - hotfix
     - pull-request
 ignore:
   sha: []

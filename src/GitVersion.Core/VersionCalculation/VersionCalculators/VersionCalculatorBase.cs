@@ -4,7 +4,8 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal abstract class VersionCalculatorBase(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+internal abstract class VersionCalculatorBase(
+    ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
 {
     protected readonly ILog log = log.NotNull();
     protected readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -14,16 +15,13 @@ internal abstract class VersionCalculatorBase(ILog log, IRepositoryStore reposit
 
     protected SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)
     {
-        var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, Context.CurrentCommit);
+        var commitLogs = this.repositoryStore.GetCommitLog(
+            baseVersionSource: baseVersionSource,
+            currentCommit: Context.CurrentCommit,
+            ignore: Context.Configuration.Ignore
+        );
 
-        var ignore = Context.Configuration.Ignore;
-        if (!ignore.IsEmpty)
-        {
-            commitLogs = commitLogs
-                .Where(c => ignore.Before is null || (c.When > ignore.Before && !ignore.Shas.Contains(c.Sha)));
-        }
-        var commitsSinceTag = commitLogs.Count();
-
+        int commitsSinceTag = commitLogs.Count;
         this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {Context.CurrentCommit}");
 
         var shortSha = Context.CurrentCommit.Id.ToString(7);

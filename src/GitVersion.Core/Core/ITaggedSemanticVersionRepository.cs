@@ -14,12 +14,14 @@ internal interface ITaggedSemanticVersionRepository
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
         IBranch branch,
         string? tagPrefix,
-        SemanticVersionFormat format);
+        SemanticVersionFormat format,
+        IIgnoreConfiguration ignore);
 
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
         IBranch branch,
         string? tagPrefix,
-        SemanticVersionFormat format);
+        SemanticVersionFormat format,
+        IIgnoreConfiguration ignore);
 
     ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
         IGitVersionConfiguration configuration,
@@ -33,5 +35,6 @@ internal interface ITaggedSemanticVersionRepository
         SemanticVersionFormat format,
         params IBranch[] excludeBranches);
 
-    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format);
+    ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(
+        string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore);
 }
