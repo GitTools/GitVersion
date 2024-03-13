@@ -50,7 +50,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{D27CECCB-F012-433C-B026-84979C8C731E}"
 	ProjectSection(SolutionItems) = preProject
 		..\global.json = ..\global.json
-		..\Directory.Packages.props = ..\Directory.Packages.props
 	EndProjectSection
 EndProject
 Global

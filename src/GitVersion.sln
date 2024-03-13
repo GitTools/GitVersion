@@ -58,7 +58,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7D3A83B4-9
 		..\global.json = ..\global.json
 		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
 		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
-		..\Directory.Packages.props = ..\Directory.Packages.props
 	EndProjectSection
 EndProject
 Global
