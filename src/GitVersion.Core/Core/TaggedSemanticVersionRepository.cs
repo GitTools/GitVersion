@@ -35,7 +35,8 @@ internal sealed class TaggedSemanticVersionRepository(
             var semanticVersionsOfBranch = GetTaggedSemanticVersionsOfBranch(
                 branch: branch,
                 tagPrefix: effectiveConfiguration.TagPrefix,
-                format: effectiveConfiguration.SemanticVersionFormat
+                format: effectiveConfiguration.SemanticVersionFormat,
+                ignore: configuration.Ignore
             );
             foreach (var grouping in semanticVersionsOfBranch)
             {
@@ -55,7 +56,8 @@ internal sealed class TaggedSemanticVersionRepository(
                 var semanticVersionsOfMergeTarget = GetTaggedSemanticVersionsOfMergeTarget(
                     branch: branch,
                     tagPrefix: effectiveConfiguration.TagPrefix,
-                    format: effectiveConfiguration.SemanticVersionFormat
+                    format: effectiveConfiguration.SemanticVersionFormat,
+                    ignore: configuration.Ignore
                 );
                 foreach (var grouping in semanticVersionsOfMergeTarget)
                 {
@@ -120,7 +122,7 @@ internal sealed class TaggedSemanticVersionRepository(
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
-        IBranch branch, string? tagPrefix, SemanticVersionFormat format)
+        IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
         branch.NotNull();
         tagPrefix ??= string.Empty;
@@ -130,8 +132,9 @@ internal sealed class TaggedSemanticVersionRepository(
             using (this.log.IndentLog($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
-                foreach (var commit in branch.Commits)
+                var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format, ignore);
+
+                foreach (var commit in ignore.Filter(branch.Commits))
                 {
                     foreach (var semanticVersion in semanticVersions[commit])
                     {
@@ -160,7 +163,7 @@ internal sealed class TaggedSemanticVersionRepository(
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
-        IBranch branch, string? tagPrefix, SemanticVersionFormat format)
+        IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
         branch.NotNull();
         tagPrefix ??= string.Empty;
@@ -170,9 +173,9 @@ internal sealed class TaggedSemanticVersionRepository(
             using (this.log.IndentLog($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                var shaHashSet = new HashSet<string>(branch.Commits.Select(element => element.Id.Sha));
+                var shaHashSet = new HashSet<string>(ignore.Filter(branch.Commits).Select(element => element.Id.Sha));
 
-                foreach (var semanticVersion in GetTaggedSemanticVersions(tagPrefix, format).SelectMany(_ => _))
+                foreach (var semanticVersion in GetTaggedSemanticVersions(tagPrefix, format, ignore).SelectMany(_ => _))
                 {
                     foreach (var commit in semanticVersion.Tag.Commit.Parents.Where(element => shaHashSet.Contains(element.Id.Sha)))
                     {
@@ -214,7 +217,7 @@ internal sealed class TaggedSemanticVersionRepository(
             {
                 foreach (var mainlinemBranch in branchRepository.GetMainBranches(configuration, excludeBranches))
                 {
-                    foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(mainlinemBranch, tagPrefix, format).SelectMany(_ => _))
+                    foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(mainlinemBranch, tagPrefix, format, configuration.Ignore).SelectMany(_ => _))
                     {
                         yield return semanticVersion;
                     }
@@ -239,7 +242,7 @@ internal sealed class TaggedSemanticVersionRepository(
             {
                 foreach (var releaseBranch in branchRepository.GetReleaseBranches(configuration, excludeBranches))
                 {
-                    foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(releaseBranch, tagPrefix, format).SelectMany(_ => _))
+                    foreach (var semanticVersion in GetTaggedSemanticVersionsOfBranch(releaseBranch, tagPrefix, format, configuration.Ignore).SelectMany(_ => _))
                     {
                         yield return semanticVersion;
                     }
@@ -250,7 +253,8 @@ internal sealed class TaggedSemanticVersionRepository(
         return GetElements().Distinct().ToLookup(element => element.Tag.Commit, element => element);
     }
 
-    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
+    public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(
+        string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
         tagPrefix ??= string.Empty;
 
@@ -258,7 +262,7 @@ internal sealed class TaggedSemanticVersionRepository(
         {
             this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
 
-            foreach (var tag in this.gitRepository.Tags)
+            foreach (var tag in ignore.Filter(gitRepository.Tags))
             {
                 if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {

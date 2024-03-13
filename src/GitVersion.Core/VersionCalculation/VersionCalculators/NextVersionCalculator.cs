@@ -50,7 +50,8 @@ internal class NextVersionCalculator(
 
         NextVersion nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
 
-        if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
+        if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown
+            && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
         {
             var allTaggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
                 Context.Configuration, nextVersion.Configuration, Context.CurrentBranch, null, Context.CurrentCommit.When
@@ -72,7 +73,10 @@ internal class NextVersionCalculator(
 
         var ignore = Context.Configuration.Ignore;
         var alternativeSemanticVersion = taggedSemanticVersionRepository.GetTaggedSemanticVersionsOfBranch(
-            nextVersion.BranchConfiguration.Branch, Context.Configuration.TagPrefix, Context.Configuration.SemanticVersionFormat
+            branch: nextVersion.BranchConfiguration.Branch,
+            tagPrefix: Context.Configuration.TagPrefix,
+            format: Context.Configuration.SemanticVersionFormat,
+            ignore: Context.Configuration.Ignore
         ).Where(element => element.Key.When <= Context.CurrentCommit.When
             && !(element.Key.When <= ignore.Before) && !ignore.Shas.Contains(element.Key.Sha)
         ).SelectMany(element => element).Max()?.Value;

@@ -27,8 +27,11 @@ internal class RepositoryStore : IRepositoryStore
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
         => this.mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
 
-    public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId)
+    public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId, IIgnoreConfiguration ignore)
     {
+        currentBranch.NotNull();
+        ignore.NotNull();
+
         ICommit? currentCommit = null;
         if (!commitId.IsNullOrWhiteSpace())
         {
@@ -45,11 +48,18 @@ internal class RepositoryStore : IRepositoryStore
             }
         }
 
+        IEnumerable<ICommit> commits = currentBranch.Commits;
         if (currentCommit != null)
-            return currentCommit;
+        {
+            commits = currentBranch.Commits.GetCommitsPriorTo(currentCommit.When);
+        }
+        else
+        {
+            this.log.Info("Using latest commit on specified branch");
+        }
 
-        this.log.Info("Using latest commit on specified branch");
-        return currentBranch.Tip;
+        commits = ignore.Filter(commits);
+        return commits.FirstOrDefault();
     }
 
     public IBranch GetTargetBranch(string? targetBranchName)
@@ -191,11 +201,21 @@ internal class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit)
+    public IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore)
     {
-        var filter = new CommitFilter { IncludeReachableFrom = currentCommit, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time };
+        currentCommit.NotNull();
+        ignore.NotNull();
 
-        return this.repository.Commits.QueryBy(filter);
+        var filter = new CommitFilter
+        {
+            IncludeReachableFrom = currentCommit,
+            ExcludeReachableFrom = baseVersionSource,
+            SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+        };
+
+        var commits = this.repository.Commits.QueryBy(filter).ToArray();
+
+        return ignore.Filter(commits).ToList();
     }
 
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)

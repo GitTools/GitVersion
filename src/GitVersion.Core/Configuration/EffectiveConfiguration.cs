@@ -60,6 +60,7 @@ public record EffectiveConfiguration
         NoBumpMessage = configuration.NoBumpMessage;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing.Value;
         VersionFilters = configuration.Ignore.ToFilters();
+        Ignore = configuration.Ignore;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
         IsReleaseBranch = branchConfiguration.IsReleaseBranch ?? false;
         IsMainBranch = branchConfiguration.IsMainBranch ?? false;
@@ -122,6 +123,8 @@ public record EffectiveConfiguration
     public CommitMessageIncrementMode CommitMessageIncrementing { get; }
 
     public IEnumerable<IVersionFilter> VersionFilters { get; }
+
+    public IIgnoreConfiguration Ignore { get; }
 
     public string? CommitDateFormat { get; }
 

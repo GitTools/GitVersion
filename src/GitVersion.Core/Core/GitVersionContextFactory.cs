@@ -24,23 +24,30 @@ internal class GitVersionContextFactory : IGitVersionContextFactory
 
     public GitVersionContext Create(GitVersionOptions gitVersionOptions)
     {
+        var overrideConfiguration = this.options.Value.ConfigurationInfo.OverrideConfiguration;
+        var configuration = this.configurationProvider.Provide(overrideConfiguration);
+
         var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch)
             ?? throw new InvalidOperationException("Need a branch to operate on");
-        var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
+        var currentCommit = this.repositoryStore.GetCurrentCommit(
+            currentBranch, gitVersionOptions.RepositoryInfo.CommitId, configuration.Ignore
+        );
 
         if (currentCommit is null) throw new GitVersionException("No commits found on the current branch.");
 
-        var overrideConfiguration = this.options.Value.ConfigurationInfo.OverrideConfiguration;
-        var configuration = this.configurationProvider.Provide(overrideConfiguration);
         if (currentBranch.IsDetachedHead)
         {
-            var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();
+            var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(
+                currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches
+            ).OnlyOrDefault();
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        bool isCurrentCommitTagged = this.taggedSemanticVersionRepository
-            .GetTaggedSemanticVersions(configuration.TagPrefix, configuration.SemanticVersionFormat)
-            .Contains(currentCommit);
+        bool isCurrentCommitTagged = this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(
+            tagPrefix: configuration.TagPrefix,
+            format: configuration.SemanticVersionFormat,
+            ignore: configuration.Ignore
+        ).Contains(currentCommit);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
         return new(currentBranch, currentCommit, configuration, isCurrentCommitTagged, numberOfUncommittedChanges);

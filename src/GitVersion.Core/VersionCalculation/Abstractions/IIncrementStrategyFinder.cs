@@ -12,7 +12,7 @@ public interface IIncrementStrategyFinder
         ICommit[] commits
     );
 
-    IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index);
+    IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index, IIgnoreConfiguration ignore);
 
     VersionField GetIncrementForcedByCommit(ICommit commit, EffectiveConfiguration configuration);
 }

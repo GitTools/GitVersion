@@ -55,6 +55,7 @@
     *   TrunkBased
 *   The initialization wizard has been removed.
 *   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment.when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
+*   When setting the "ignore commits before" parameter to a future value, an exception will occur if no commits are found on the current branch. This behavior mimics that of an empty repository.
 
 ## v5.0.0
 

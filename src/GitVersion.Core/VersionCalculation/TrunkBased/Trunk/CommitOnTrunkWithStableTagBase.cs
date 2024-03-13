@@ -19,7 +19,6 @@ internal abstract class CommitOnTrunkWithStableTagBase : ITrunkBasedIncrementer
             semanticVersion: context.SemanticVersion.NotNull()
         );
 
-        context.Increment = VersionField.None;
         context.Label = commit.Configuration.GetBranchSpecificLabel(commit.BranchName, null);
     }
 }

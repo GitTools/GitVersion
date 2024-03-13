@@ -278,6 +278,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             }
         }
     }
+
     private void FetchRemotesIfRequired(IRemote remote, bool noFetch, AuthenticationInfo authentication)
     {
         //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.

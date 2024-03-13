@@ -71,13 +71,15 @@ internal sealed class TrunkBasedVersionStrategy(
 
         var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
 
+        var commitsInReverseOrder = configuration.Value.Ignore.Filter(Context.CurrentBranchCommits);
+
         var taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
             Context.Configuration, configuration.Value, Context.CurrentBranch, null, Context.CurrentCommit.When
         );
 
         var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         IterateOverCommitsRecursive(
-            commitsInReverseOrder: Context.CurrentBranch.Commits,
+            commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
             targetLabel: targetLabel,
             taggedSemanticVersions: taggedSemanticVersions
@@ -140,7 +142,7 @@ internal sealed class TrunkBasedVersionStrategy(
             if (item.IsMergeCommit)
             {
                 Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-                    () => incrementStrategyFinder.GetMergedCommits(item, 1).Reverse().ToList()
+                    () => incrementStrategyFinder.GetMergedCommits(item, 1, configuration.Ignore).Reverse().ToList()
                 );
 
                 if (configuration.TrackMergeMessage
@@ -162,7 +164,7 @@ internal sealed class TrunkBasedVersionStrategy(
                         {
                             if (configuration.IsMainBranch) throw new NotImplementedException();
                             mergedCommitsInReverseOrderLazy = new(
-                                () => incrementStrategyFinder.GetMergedCommits(item, 0).Reverse().ToList()
+                                () => incrementStrategyFinder.GetMergedCommits(item, 0, configuration.Ignore).Reverse().ToList()
                             );
                             childConfiguration = configuration;
                         }
