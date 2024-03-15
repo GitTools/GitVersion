@@ -100,9 +100,5 @@ internal class GitVersionTaskExecutor(
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }
 
-    private GitVersionVariables GitVersionVariables(GitVersionTaskBase task)
-    {
-        var versionVariables = serializer.FromFile(task.VersionFile);
-        return versionVariables;
-    }
+    private GitVersionVariables GitVersionVariables(GitVersionTaskBase task) => serializer.FromFile(task.VersionFile);
 }

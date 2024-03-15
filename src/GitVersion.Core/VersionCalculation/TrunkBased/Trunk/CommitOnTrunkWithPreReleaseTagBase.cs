@@ -17,7 +17,5 @@ internal abstract class CommitOnTrunkWithPreReleaseTagBase : ITrunkBasedIncremen
             baseVersionSource: context.BaseVersionSource,
             semanticVersion: context.SemanticVersion.NotNull()
         );
-
-        context.Increment = VersionField.None;
     }
 }

@@ -63,7 +63,5 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
         );
 
         context.BaseVersionSource = commit.Value;
-        context.Increment = VersionField.None;
-        context.Label = null;
     }
 }

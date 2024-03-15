@@ -145,12 +145,11 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
 
-        [Ignore("Enable if WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion) feature has been implemented!")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "", ExpectedResult = "0.0.0-2+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "", ExpectedResult = "0.0.1-1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "", ExpectedResult = "0.1.0-1+0")]
@@ -161,18 +160,18 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "{BranchName}", ExpectedResult = "0.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "{BranchName}", ExpectedResult = "0.0.1-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.0.0-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -187,7 +186,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.2-foo.1+0")]
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -198,7 +197,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.0.2-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -213,7 +212,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "foo", ExpectedResult = "0.2.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.2.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -224,7 +223,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.2.0-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -239,7 +238,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "foo", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "foo", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "foo", ExpectedResult = "2.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -249,14 +248,14 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithNoLabelOnMainAndTakeAlwaysIncrementedVersionOnFeature(
+        public string GetVersionWithNoLabelAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
+                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
-                //.WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion)
-                ).Build();
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
@@ -374,7 +373,6 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
 
-        [Ignore("Enable if WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion) feature has been implemented!")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-2+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-1+0")]
@@ -390,11 +388,11 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "{BranchName}", ExpectedResult = "0.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "{BranchName}", ExpectedResult = "0.0.1-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "0.1.0-foo.1+0")]
@@ -416,7 +414,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.2-foo.1+0")]
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -442,7 +440,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "foo", ExpectedResult = "0.2.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.2.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -468,7 +466,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "foo", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "foo", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "foo", ExpectedResult = "2.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -478,14 +476,14 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithEmptyLabelOnMainAndTakeAlwaysIncrementedVersionOnFeature(
+        public string GetVersionWithEmptyLabelAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
+                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
-                //.WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion)
-                ).Build();
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
@@ -603,7 +601,6 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
 
-        [Ignore("Enable if WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion) feature has been implemented!")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-foo.2+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-foo.1+0")]
@@ -619,11 +616,11 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.0-foo.2+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "{BranchName}", ExpectedResult = "0.0.0-foo.2+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "{BranchName}", ExpectedResult = "0.0.1-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "0.1.0-foo.1+0")]
@@ -645,7 +642,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.2-foo.1+0")]
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -671,7 +668,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "foo", ExpectedResult = "0.2.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.2.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -697,7 +694,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "foo", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "foo", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "foo", ExpectedResult = "2.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -707,14 +704,14 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithLabelFooOnMainAndTakeAlwaysIncrementedVersionOnFeature(
+        public string GetVersionWithLabelFooAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
+                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
-                //.WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion)
-                ).Build();
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
@@ -832,12 +829,11 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
 
-        [Ignore("Enable if WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion) feature has been implemented!")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "", ExpectedResult = "0.0.0-1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "", ExpectedResult = "0.0.1-1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "", ExpectedResult = "0.1.0-1+0")]
@@ -848,18 +844,18 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
-        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, "{BranchName}", ExpectedResult = "0.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, "{BranchName}", ExpectedResult = "0.0.1-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.0.0-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -874,7 +870,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "foo", ExpectedResult = "0.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.0.2-foo.1+0")]
-        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Patch, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -885,7 +881,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Patch, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.0.2-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -900,7 +896,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "foo", ExpectedResult = "0.2.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "foo", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "foo", ExpectedResult = "0.2.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Minor, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -911,7 +907,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "1.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Minor, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "0.2.0-foo.1+0")]
 
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, null, ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, null, ExpectedResult = "1.0.0-bar+0")]
@@ -926,7 +922,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "foo", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "foo", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "foo", ExpectedResult = "2.0.0-foo.1+0")]
-        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar")]
+        [TestCase(IncrementStrategy.Major, IncrementStrategy.None, "bar", ExpectedResult = "0.0.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar+0")]
@@ -936,14 +932,14 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithLabelBarOnMainAndTakeAlwaysIncrementedVersionOnFeature(
+        public string GetVersionWithLabelBarAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
+                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
-                //.WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion)
-                ).Build();
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }

@@ -370,7 +370,7 @@ branches:
     - main
     pre-release-weight: 30000
   pull-request:
-    mode: ManualDeployment
+    mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
     label-number-pattern: '[/-](?<number>\d+)'
@@ -379,17 +379,16 @@ branches:
     - main
     pre-release-weight: 30000
   unknown:
-    mode: ManualDeployment
-    increment: Inherit
+    increment: Patch
     regex: (?<BranchName>.+)
+    prevent-increment:
+      when-current-commit-tagged: false
     source-branches:
     - main
-    - feature
-    - hotfix
-    - pull-request
+    pre-release-weight: 30000
 ignore:
   sha: []
-mode: ManualDeployment
+mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment:
@@ -403,6 +402,7 @@ regex: ''
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
+
 ```
 
 The details of the available options are as follows:
