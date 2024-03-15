@@ -452,9 +452,12 @@ public class ReleaseBranchScenarios : TestBase
     }
 
     [Test]
-    [Ignore("Needs investigation")]
     public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithSemanticVersionFormat(SemanticVersionFormat.Loose)
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0");
         fixture.Repository.MakeACommit("+semver:major");
@@ -462,7 +465,7 @@ public class ReleaseBranchScenarios : TestBase
 
         fixture.BranchTo("release/2.0");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
     }
 
     [Test]

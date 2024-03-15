@@ -30,9 +30,6 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
                 label: context.Label,
                 forceIncrement: context.ForceIncrement
             );
-
-            context.Increment = VersionField.None;
-            context.Label = null;
         }
     }
 }

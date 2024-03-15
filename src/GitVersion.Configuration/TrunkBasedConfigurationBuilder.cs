@@ -26,7 +26,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
-            DeploymentMode = DeploymentMode.ManualDeployment,
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -96,7 +96,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            DeploymentMode = DeploymentMode.ManualDeployment,
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
             SourceBranches =
             [
                 this.MainBranch.Name
@@ -108,15 +108,17 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
 
         WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
+            Increment = IncrementStrategy.Patch,
             RegularExpression = UnknownBranch.RegexPattern,
-            DeploymentMode = DeploymentMode.ManualDeployment,
-            Increment = IncrementStrategy.Inherit,
             SourceBranches =
             [
-                this.MainBranch.Name,
-                this.FeatureBranch.Name,
-                this.PullRequestBranch.Name
-            ]
+                this.MainBranch.Name
+            ],
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                WhenCurrentCommitTagged = false
+            },
+            PreReleaseWeight = 30000
         });
     }
 }

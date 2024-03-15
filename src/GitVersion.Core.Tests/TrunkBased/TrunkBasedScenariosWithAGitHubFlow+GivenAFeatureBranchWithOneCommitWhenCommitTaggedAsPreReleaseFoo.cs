@@ -58,7 +58,6 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             return fixture!.GetVersion(trunkBased).FullSemVer;
         }
 
-        [Ignore("Enable if WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion) feature has been implemented!")]
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0-foo.5+0")]
         [TestCase(IncrementStrategy.Patch, null, ExpectedResult = "0.0.0-foo.5+0")]
         [TestCase(IncrementStrategy.Minor, null, ExpectedResult = "0.0.0-foo.5+0")]
@@ -78,10 +77,10 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Patch, "bar", ExpectedResult = "0.0.1-bar.1+1")]
         [TestCase(IncrementStrategy.Minor, "bar", ExpectedResult = "0.1.0-bar.1+1")]
         [TestCase(IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar.1+1")]
-        public string GetVersionWithTakeAlwaysIncrementedVersion(IncrementStrategy increment, string? label)
+        public string GetVersionWithPreventIncrementWhenCurrentCommitTaggedFalse(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                //.WithTakeIncrementedVersion(TakeIncrementedVersion.TakeAlwaysIncrementedVersion)
+                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
                 .Build();
 

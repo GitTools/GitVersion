@@ -105,7 +105,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-]
+    regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -153,7 +153,7 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
     - release
     - main
@@ -168,7 +168,7 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
-    regex: ^support[/-]
+    regex: ^support[/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -209,7 +209,6 @@ is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
-
 ```
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -257,7 +256,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-]
+    regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release
@@ -370,7 +369,7 @@ branches:
     - main
     pre-release-weight: 30000
   pull-request:
-    mode: ManualDeployment
+    mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
     label-number-pattern: '[/-](?<number>\d+)'
@@ -379,17 +378,16 @@ branches:
     - main
     pre-release-weight: 30000
   unknown:
-    mode: ManualDeployment
-    increment: Inherit
+    increment: Patch
     regex: (?<BranchName>.+)
+    prevent-increment:
+      when-current-commit-tagged: false
     source-branches:
     - main
-    - feature
-    - hotfix
-    - pull-request
+    pre-release-weight: 30000
 ignore:
   sha: []
-mode: ManualDeployment
+mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
 prevent-increment:
@@ -403,6 +401,7 @@ regex: ''
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
+
 ```
 
 The details of the available options are as follows:
