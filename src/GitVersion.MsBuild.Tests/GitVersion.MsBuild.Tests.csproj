@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="MSBuild.ProjectCreation" />
         <PackageReference Include="Buildalyzer" />
         <PackageReference Include="LibGit2Sharp" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
         <PackageReference Include="Microsoft.Build" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="MSBuild.ProjectCreation" />
     </ItemGroup>
 
     <ItemGroup>
