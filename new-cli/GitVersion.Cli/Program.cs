@@ -6,7 +6,8 @@ using GitVersion.Infrastructure;
 var modules = new IGitVersionModule[]
 {
     new CoreModule(),
-    new LibGit2SharpCoreModule()
+    new LibGit2SharpCoreModule(),
+    new CommandsImplModule()
 };
 
 var cts = new CancellationTokenSource();
@@ -24,7 +25,6 @@ static IContainer RegisterModules(IEnumerable<IGitVersionModule> gitVersionModul
 {
     var serviceProvider = new ContainerRegistrar()
         .RegisterModules(gitVersionModules)
-        .RegisterModule(new CommandsImplModule())
         .AddSingleton<GitVersionApp>()
         .AddLogging()
         .Build();
