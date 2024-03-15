@@ -54,7 +54,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-]
+    regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -102,7 +102,7 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
     - release
     - main
@@ -117,7 +117,7 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
-    regex: ^support[/-]
+    regex: ^support[/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []

@@ -40,7 +40,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-]
+    regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release

@@ -37,27 +37,6 @@ public class TrunkBasedDevelopmentScenarios : TestBase
         );
 
     [Test]
-    [Ignore("Support of multiple tunks are not implemented at the moment.")]
-    public void VerifyNonMainMainlineVersionIdenticalAsMain()
-    {
-        var configuration = GetConfigurationBuilder().Build();
-
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit("1");
-
-        fixture.BranchTo("feature/foo", "foo");
-        fixture.MakeACommit("2 +semver: major");
-        fixture.Checkout(MainBranch);
-        fixture.MergeNoFF("feature/foo");
-
-        fixture.AssertFullSemver("1.0.0", configuration);
-
-        fixture.BranchTo("support/1.0", "support");
-
-        fixture.AssertFullSemver("1.0.0", configuration);
-    }
-
-    [Test]
     public void MergedFeatureBranchesToMainImpliesRelease()
     {
         var configuration = GetConfigurationBuilder()

@@ -80,7 +80,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
         WithBranch(HotfixBranch.Name).WithConfiguration(new BranchConfiguration()
         {
             Increment = IncrementStrategy.Patch,
-            RegularExpression = "^hotfix(es)?[/-](?<BranchName>.+)",
+            RegularExpression = HotfixBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
