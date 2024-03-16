@@ -13,21 +13,23 @@ internal sealed class CommitOnTrunk : ITrunkBasedIncrementer
     public bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => !commit.HasChildIteration && commit.Configuration.IsMainBranch && context.SemanticVersion is null;
 
-    public IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
+    public IEnumerable<IBaseVersionIncrement> GetIncrements(
+        TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
         if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
             context.Label = null;
         context.Label ??= commit.Configuration.GetBranchSpecificLabel(commit.BranchName, null);
         context.ForceIncrement = true;
 
-        yield return BaseVersionV2.ShouldIncrementTrue(
-            source: GetType().Name,
-            baseVersionSource: context.BaseVersionSource,
-            increment: context.Increment,
-            label: context.Label,
-            forceIncrement: context.ForceIncrement,
-            alternativeSemanticVersion: context.AlternativeSemanticVersions.Max()
-        );
+        yield return new BaseVersionOperator()
+        {
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            Increment = context.Increment,
+            ForceIncrement = context.ForceIncrement,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
 
         context.BaseVersionSource = commit.Value;
     }

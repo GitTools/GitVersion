@@ -18,7 +18,7 @@ public interface IRepositoryStore
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(ReferenceName branchName);
     IBranch? FindBranch(string branchName);
-    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig);
+
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
 

@@ -34,9 +34,10 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
 
         strategy.ShouldNotBeNull();
-        var baseVersion = strategy.GetBaseVersions(context.Configuration.GetEffectiveBranchConfiguration(mockBranch)).Single();
+        var configuration = context.Configuration.GetEffectiveBranchConfiguration(mockBranch);
+        var baseVersion = strategy.GetBaseVersions(configuration).Single();
 
-        baseVersion.ShouldIncrement.ShouldBe(false);
+        baseVersion.GetIncrementedVersion().ToString().ShouldBe("0.1.5-1");
     }
 
     [TestCase("Merge branch 'release-10.10.50'", true, "10.10.50")]
@@ -174,7 +175,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         else
         {
             baseVersion.ShouldNotBeNull();
-            baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedVersion);
+            baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
         }
     }
 
@@ -191,7 +192,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         public int CompareTo(IGitObject? other) => throw new NotImplementedException();
         public IObjectId Id => throw new NotImplementedException();
         public string Sha => throw new NotImplementedException();
-        public IEnumerable<ICommit> Parents => throw new NotImplementedException();
+        public IReadOnlyList<ICommit> Parents => throw new NotImplementedException();
         public DateTimeOffset When => throw new NotImplementedException();
         public string Message => throw new NotImplementedException();
     }

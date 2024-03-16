@@ -8,14 +8,16 @@ internal abstract class CommitOnTrunkWithPreReleaseTagBase : ITrunkBasedIncremen
         => commit.Configuration.IsMainBranch && !commit.HasChildIteration
             && context.SemanticVersion?.IsPreRelease == true;
 
-    public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
+    public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
+        TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
         context.BaseVersionSource = commit.Value;
 
-        yield return BaseVersionV2.ShouldIncrementFalse(
-            source: GetType().Name,
-            baseVersionSource: context.BaseVersionSource,
-            semanticVersion: context.SemanticVersion.NotNull()
-        );
+        yield return new BaseVersionOperand()
+        {
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            SemanticVersion = context.SemanticVersion.NotNull()
+        };
     }
 }

@@ -17,12 +17,15 @@ public class ConfiguredNextVersionVersionStrategyTests : TestBase
         baseVersion.ShouldBe(null);
     }
 
-    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Strict)]
-    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Loose)]
-    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Strict)]
-    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Loose)]
-    [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
-    public void ConfiguredNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Strict, "1.0.0-1")]
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Loose, "1.0.0-1")]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Strict, "2.12.654651698-1")]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Loose, "2.12.654651698-1")]
+    [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose, "0.1.0-1")]
+    [TestCase("1.0.0-alpha.1", null, SemanticVersionFormat.Strict, null)]
+    [TestCase("1.0.0-2", "1.0.0-2", SemanticVersionFormat.Strict, "1.0.0-2")]
+    public void ConfiguredNextVersionTest(
+        string nextVersion, string? semanticVersion, SemanticVersionFormat versionFormat, string? incrementedVersion)
     {
         var overrideConfiguration = new Dictionary<object, object?>
         {
@@ -31,9 +34,31 @@ public class ConfiguredNextVersionVersionStrategyTests : TestBase
         };
         var baseVersion = GetBaseVersion(overrideConfiguration);
 
+        if (semanticVersion.IsNullOrEmpty())
+        {
+            baseVersion.ShouldBeNull();
+            return;
+        }
+
         baseVersion.ShouldNotBeNull();
-        baseVersion.ShouldIncrement.ShouldBe(false);
-        baseVersion.GetSemanticVersion().ToString().ShouldBe(expectedVersion);
+        baseVersion.SemanticVersion.ToString().ShouldBe(semanticVersion);
+        baseVersion.BaseVersionSource.ShouldBeNull();
+
+        var shouldBeIncremented = semanticVersion != incrementedVersion;
+        baseVersion.ShouldBeIncremented.ShouldBe(shouldBeIncremented);
+        if (shouldBeIncremented)
+        {
+            baseVersion.Operator.ShouldNotBeNull();
+            baseVersion.Operator!.Label.ShouldBe(string.Empty);
+            baseVersion.Operator.ForceIncrement.ShouldBe(false);
+            baseVersion.Operator.Increment.ShouldBe(VersionField.None);
+            baseVersion.Operator.BaseVersionSource.ShouldBeNull();
+        }
+        else
+        {
+            baseVersion.Operator.ShouldBeNull();
+        }
+        baseVersion.GetIncrementedVersion().ToString().ShouldBe(incrementedVersion);
     }
 
     [TestCase("0.1", SemanticVersionFormat.Strict)]

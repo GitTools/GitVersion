@@ -28,25 +28,24 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public VersionField DetermineIncrementedField(
-        ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration, string? label)
+        ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement, EffectiveConfiguration configuration, string? label)
     {
-        baseVersion.NotNull();
+        currentCommit.NotNull();
         configuration.NotNull();
 
-        var commitMessageIncrement = FindCommitMessageIncrement(
-            configuration, baseVersion.BaseVersionSource, currentCommit, label);
+        var commitMessageIncrement = FindCommitMessageIncrement(configuration, baseVersionSource, currentCommit, label);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
         // use the default branch configuration increment strategy if there are no commit message overrides
         if (commitMessageIncrement == null)
         {
-            return baseVersion.ShouldIncrement ? defaultIncrement : VersionField.None;
+            return shouldIncrement ? defaultIncrement : VersionField.None;
         }
 
         // don't increment for less than the branch configuration increment, if the absence of commit messages would have
         // still resulted in an increment of configuration.Increment
-        if (baseVersion.ShouldIncrement && commitMessageIncrement < defaultIncrement)
+        if (shouldIncrement && commitMessageIncrement < defaultIncrement)
         {
             return defaultIncrement;
         }
@@ -214,7 +213,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     {
         mergeCommit.NotNull();
 
-        if (!mergeCommit.IsMergeCommit)
+        if (!mergeCommit.IsMergeCommit())
         {
             throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
         }

@@ -174,7 +174,7 @@ internal class NextVersionCalculator(
             {
                 // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
                 // base source which are not coming from pre-release tag.
-                filteredVersions = filteredVersions.Where(v => !v.BaseVersion.GetSemanticVersion().PreReleaseTag.HasTag());
+                filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.PreReleaseTag.HasTag());
             }
 
             var versions = filteredVersions as NextVersion[] ?? filteredVersions.ToArray();
@@ -190,13 +190,21 @@ internal class NextVersionCalculator(
             latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
         }
 
-        var calculatedBase = new BaseVersion(
-            maxVersion.BaseVersion.Source,
-            maxVersion.BaseVersion.ShouldIncrement,
-            maxVersion.BaseVersion.GetSemanticVersion(),
-            latestBaseVersionSource,
-            maxVersion.BaseVersion.BranchNameOverride
-        );
+        //var calculatedBase = new BaseVersionFinal(maxVersion.BaseVersion.Source)
+        //{
+        //    SemanticVersion = maxVersion.BaseVersion.SemanticVersion,
+        //    BaseVersionSource = latestBaseVersionSource
+        //};
+
+        BaseVersion calculatedBase = new()
+        {
+            Operand = new BaseVersionOperand()
+            {
+                Source = maxVersion.BaseVersion.Source,
+                BaseVersionSource = latestBaseVersionSource,
+                SemanticVersion = maxVersion.BaseVersion.SemanticVersion
+            }
+        };
 
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
@@ -244,10 +252,13 @@ internal class NextVersionCalculator(
                         foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                         {
                             log.Info(baseVersion.ToString());
-                            if (IncludeVersion(baseVersion, configuration.Ignore)
-                                && TryGetNextVersion(out var nextVersion, effectiveBranchConfiguration, baseVersion))
+                            if (IncludeVersion(baseVersion, configuration.Ignore))
                             {
-                                yield return nextVersion;
+                                yield return new NextVersion(
+                                    incrementedVersion: baseVersion.GetIncrementedVersion(),
+                                    baseVersion: baseVersion,
+                                    configuration: effectiveBranchConfiguration
+                                );
                                 atLeastOneBaseVersionReturned = true;
                             }
                         }
@@ -256,78 +267,33 @@ internal class NextVersionCalculator(
 
                 if (!atLeastOneBaseVersionReturned)
                 {
-                    var baseVersion = new BaseVersion("Fallback base version", true, SemanticVersion.Empty, null, null);
-                    if (TryGetNextVersion(out var nextVersion, effectiveBranchConfiguration, baseVersion))
-                        yield return nextVersion;
+                    var label = effectiveBranchConfiguration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+                    var increment = incrementStrategyFinder.DetermineIncrementedField(
+                        currentCommit: Context.CurrentCommit,
+                        baseVersionSource: null,
+                        shouldIncrement: true,
+                        configuration: effectiveBranchConfiguration.Value,
+                        label: label
+                    );
+
+                    BaseVersion baseVersion = new()
+                    {
+                        Operator = new BaseVersionOperator()
+                        {
+                            Source = "Fallback base version",
+                            BaseVersionSource = null,
+                            Increment = increment,
+                            ForceIncrement = false,
+                            Label = label
+                        }
+                    };
+                    yield return new NextVersion(baseVersion.GetIncrementedVersion(), baseVersion, effectiveBranchConfiguration);
                 }
             }
         }
     }
 
-    private bool TryGetNextVersion([NotNullWhen(true)] out NextVersion? result,
-                                   EffectiveBranchConfiguration effectiveConfiguration, BaseVersion baseVersion)
-    {
-        result = null;
-
-        var label = effectiveConfiguration.Value.GetBranchSpecificLabel(
-            Context.CurrentBranch.Name, baseVersion.BranchNameOverride
-        );
-        if (effectiveConfiguration.Value.Label != label)
-        {
-            log.Info("Using current branch name to calculate version tag");
-        }
-
-        var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
-        if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
-        {
-            result = new(incrementedVersion, baseVersion, effectiveConfiguration);
-        }
-
-        return result is not null;
-    }
-
-    private SemanticVersion GetIncrementedVersion(EffectiveBranchConfiguration configuration, BaseVersion baseVersion, string? label)
-    {
-        if (baseVersion is BaseVersionV2 baseVersionV2)
-        {
-            SemanticVersion result;
-            if (baseVersion.ShouldIncrement)
-            {
-                result = baseVersionV2.GetSemanticVersion().Increment(
-                   baseVersionV2.Increment, baseVersionV2.Label, baseVersionV2.ForceIncrement
-               );
-            }
-            else
-            {
-                result = baseVersion.GetSemanticVersion();
-            }
-
-            if (baseVersionV2.AlternativeSemanticVersion is not null
-                && result.IsLessThan(baseVersionV2.AlternativeSemanticVersion, includePreRelease: false))
-            {
-                return new SemanticVersion(result)
-                {
-                    Major = baseVersionV2.AlternativeSemanticVersion.Major,
-                    Minor = baseVersionV2.AlternativeSemanticVersion.Minor,
-                    Patch = baseVersionV2.AlternativeSemanticVersion.Patch
-                };
-            }
-
-            return result;
-        }
-        else
-        {
-            var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
-                currentCommit: Context.CurrentCommit,
-                baseVersion: baseVersion,
-                configuration: configuration.Value,
-                label: label
-            );
-            return baseVersion.GetSemanticVersion().Increment(incrementStrategy, label);
-        }
-    }
-
-    private bool IncludeVersion(BaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
+    private bool IncludeVersion(IBaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
     {
         foreach (var versionFilter in ignoreConfiguration.ToFilters())
         {

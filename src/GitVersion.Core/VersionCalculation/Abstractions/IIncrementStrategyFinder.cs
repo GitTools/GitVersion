@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation;
 public interface IIncrementStrategyFinder
 {
     VersionField DetermineIncrementedField(
-        ICommit currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration, string? label);
+        ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement, EffectiveConfiguration configuration, string? label);
 
     VersionField? GetIncrementForCommits(
         string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage,

@@ -10,25 +10,33 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-internal class VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    : VersionStrategyBase(versionContext)
+internal sealed class VersionInBranchNameVersionStrategy(
+    Lazy<GitVersionContext> contextLazy,
+    IRepositoryStore repositoryStore)
+    : IVersionStrategy
 {
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+    private GitVersionContext Context => contextLazy.Value;
+
+    public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.VersionInBranchName))
             yield break;
 
-        if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
+        if (TryGetBaseVersion(configuration, out var baseVersion))
         {
             yield return baseVersion;
         }
     }
 
-    private bool TryGetBaseVersion([NotNullWhen(true)] out BaseVersion? baseVersion, EffectiveBranchConfiguration configuration)
+    public bool TryGetBaseVersion(EffectiveBranchConfiguration configuration, [NotNullWhen(true)] out BaseVersion? baseVersion)
     {
         baseVersion = null;
+
+        if (!configuration.Value.IsReleaseBranch)
+            return false;
 
         Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
             () => this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration)
@@ -45,13 +53,25 @@ internal class VersionInBranchNameVersionStrategy(IRepositoryStore repositorySto
                     branchNameOverride = result.Name;
                 }
 
-                baseVersion = new(
-                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Value.Commit, branchNameOverride
-                );
-                break;
+                var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
+                //if (configuration.Value.Label != label)
+                //{
+                //    log.Info("Using current branch name to calculate version tag");
+                //}
+
+                baseVersion = new BaseVersion("Version in branch name", result.Value, commitBranchWasBranchedFrom.Value.Commit)
+                {
+                    Operator = new BaseVersionOperator()
+                    {
+                        Increment = VersionField.None,
+                        ForceIncrement = false,
+                        Label = label
+                    }
+                };
+                return true;
             }
         }
 
-        return baseVersion != null;
+        return false;
     }
 }

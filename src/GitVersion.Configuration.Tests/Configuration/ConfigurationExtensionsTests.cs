@@ -6,21 +6,6 @@ namespace GitVersion.Core.Tests.Configuration;
 [TestFixture]
 public class ConfigurationExtensionsTests : TestBase
 {
-    [Test]
-    public void GetReleaseBranchConfigReturnsAllReleaseBranches()
-    {
-        var configuration = EmptyConfigurationBuilder.New
-            .WithBranch("foo", _ => _.WithRegularExpression("foo"))
-            .WithBranch("bar", _ => _.WithRegularExpression("bar").WithIsReleaseBranch(true))
-            .WithBranch("baz", _ => _.WithRegularExpression("baz").WithIsReleaseBranch(true))
-            .Build();
-
-        var result = configuration.GetReleaseBranchConfiguration();
-
-        result.Count.ShouldBe(2);
-        result.ShouldNotContain(b => b.Key == "foo");
-    }
-
     [TestCase("release/2.0.0",
         "refs/heads/release/2.0.0", "release/2.0.0", "release/2.0.0",
         true, false, false, false, true)]

@@ -9,18 +9,27 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the tag's commit.
 /// Increments if the tag is not the current commit.
 /// </summary>
-internal sealed class TaggedCommitVersionStrategy(ITaggedSemanticVersionRepository taggedSemanticVersionRepository, Lazy<GitVersionContext> versionContext)
-    : VersionStrategyBase(versionContext)
+internal sealed class TaggedCommitVersionStrategy(
+    Lazy<GitVersionContext> contextLazy,
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    IIncrementStrategyFinder incrementStrategyFinder)
+    : IVersionStrategy
 {
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
-        => !Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TaggedCommit) ? []
-        : GetTaggedSemanticVersions(configuration).Select(CreateBaseVersion);
+    private GitVersionContext Context => contextLazy.Value;
 
-    private IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersions(EffectiveBranchConfiguration configuration)
+    public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+        => GetBaseVersionsInternal(configuration);
+
+    private IEnumerable<BaseVersion> GetBaseVersionsInternal(EffectiveBranchConfiguration configuration)
     {
         configuration.NotNull();
+
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TaggedCommit))
+            yield break;
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         var taggedSemanticVersions = taggedSemanticVersionRepository
@@ -28,17 +37,26 @@ internal sealed class TaggedCommitVersionStrategy(ITaggedSemanticVersionReposito
             .SelectMany(element => element)
             .Distinct().ToArray();
 
-        foreach (var semanticVersion in taggedSemanticVersions)
+        foreach (var semanticVersionWithTag in taggedSemanticVersions)
         {
-            yield return semanticVersion;
+            var baseVersionSource = semanticVersionWithTag.Tag.Commit;
+            var increment = incrementStrategyFinder.DetermineIncrementedField(
+                currentCommit: Context.CurrentCommit,
+                baseVersionSource: baseVersionSource,
+                shouldIncrement: true,
+                configuration: configuration.Value,
+                label: label
+            );
+            yield return new BaseVersion(
+                $"Git tag '{semanticVersionWithTag.Tag.Name.Friendly}'", semanticVersionWithTag.Value, baseVersionSource)
+            {
+                Operator = new BaseVersionOperator()
+                {
+                    Increment = increment,
+                    ForceIncrement = false,
+                    Label = label
+                }
+            };
         }
-    }
-
-    private static BaseVersion CreateBaseVersion(SemanticVersionWithTag semanticVersion)
-    {
-        var tagCommit = semanticVersion.Tag.Commit;
-        return new(
-             $"Git tag '{semanticVersion.Tag.Name.Friendly}'", true, semanticVersion.Value, tagCommit, null
-         );
     }
 }

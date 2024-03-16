@@ -7,7 +7,8 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => commit.HasChildIteration && commit.Configuration.IsMainBranch && context.SemanticVersion is null;
 
-    public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
+    public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
+        TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
         if (commit.ChildIteration is null) throw new InvalidOperationException("The commit child iteration is null.");
 
@@ -16,7 +17,7 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
            targetLabel: context.TargetLabel
        );
 
-        context.Label ??= baseVersion.Label;
+        context.Label ??= baseVersion.Operator?.Label;
 
         var increment = VersionField.None;
         if (!commit.Configuration.PreventIncrementOfMergedBranch)
@@ -25,7 +26,7 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
         }
         if (!commit.ChildIteration.Configuration.PreventIncrementWhenBranchMerged)
         {
-            increment = increment.Consolidate(baseVersion.Increment);
+            increment = increment.Consolidate(baseVersion.Operator?.Increment);
         }
         if (commit.Configuration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
         {
@@ -36,31 +37,33 @@ internal abstract class MergeCommitOnTrunkBase : ITrunkBasedIncrementer
         if (baseVersion.BaseVersionSource is not null)
         {
             context.BaseVersionSource = baseVersion.BaseVersionSource;
-            context.SemanticVersion = baseVersion.GetSemanticVersion();
-            context.ForceIncrement = baseVersion.ForceIncrement;
+            context.SemanticVersion = baseVersion.SemanticVersion;
+            context.ForceIncrement = baseVersion.Operator?.ForceIncrement ?? false;
         }
-        else if (baseVersion.AlternativeSemanticVersion is not null)
+        else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
         {
-            context.AlternativeSemanticVersions.Add(baseVersion.AlternativeSemanticVersion);
+            context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
         }
 
         if (context.SemanticVersion is not null)
         {
-            yield return BaseVersionV2.ShouldIncrementFalse(
-                source: GetType().Name,
-                baseVersionSource: context.BaseVersionSource,
-                semanticVersion: context.SemanticVersion.NotNull()
-            );
+            yield return new BaseVersionOperand()
+            {
+                Source = GetType().Name,
+                BaseVersionSource = context.BaseVersionSource,
+                SemanticVersion = context.SemanticVersion.NotNull()
+            };
         }
 
-        yield return BaseVersionV2.ShouldIncrementTrue(
-            source: GetType().Name,
-            baseVersionSource: context.BaseVersionSource,
-            increment: context.Increment,
-            label: context.Label,
-            forceIncrement: context.ForceIncrement,
-            alternativeSemanticVersion: context.AlternativeSemanticVersions.Max()
-        );
+        yield return new BaseVersionOperator()
+        {
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            Increment = context.Increment,
+            ForceIncrement = context.ForceIncrement,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
 
         context.BaseVersionSource = commit.Value;
     }

@@ -152,7 +152,4 @@ public static class ConfigurationExtensions
 
         return null;
     }
-
-    public static List<KeyValuePair<string, IBranchConfiguration>> GetReleaseBranchConfiguration(this IGitVersionConfiguration configuration) =>
-        configuration.Branches.Where(b => b.Value.IsReleaseBranch == true).ToList();
 }

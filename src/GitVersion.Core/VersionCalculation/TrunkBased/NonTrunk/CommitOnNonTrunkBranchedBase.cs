@@ -8,7 +8,8 @@ internal abstract class CommitOnNonTrunkBranchedBase : ITrunkBasedIncrementer
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => !commit.Configuration.IsMainBranch && commit.BranchName != iteration.BranchName && commit.Successor is null;
 
-    public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
+    public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
+        TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
         context.BaseVersionSource = commit.Value;
 
@@ -19,11 +20,14 @@ internal abstract class CommitOnNonTrunkBranchedBase : ITrunkBasedIncrementer
         context.Label = iteration.Configuration.GetBranchSpecificLabel(iteration.BranchName, null) ?? context.Label;
         context.ForceIncrement = true;
 
-        yield return BaseVersionV2.ShouldIncrementFalse(
-            source: GetType().Name,
-            baseVersionSource: null,
-            label: context.Label,
-            alternativeSemanticVersion: context.AlternativeSemanticVersions.Max()
-        );
+        yield return new BaseVersionOperator()
+        {
+            Source = GetType().Name,
+            BaseVersionSource = null,
+            Increment = VersionField.None,
+            ForceIncrement = false,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
     }
 }

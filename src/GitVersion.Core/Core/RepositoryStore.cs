@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -91,12 +90,6 @@ internal class RepositoryStore : IRepositoryStore
     public IBranch? FindBranch(ReferenceName branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.Equals(branchName));
 
     public IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
-
-    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
-        => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
-
-    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value.RegularExpression != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.RegularExpression));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
