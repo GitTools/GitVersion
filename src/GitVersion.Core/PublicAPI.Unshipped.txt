@@ -742,13 +742,14 @@ GitVersion.VersionCalculation.VersionCalculationModule
 GitVersion.VersionCalculation.VersionCalculationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionCalculationModule.VersionCalculationModule() -> void
 GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.ConfiguredNextVersion = 1 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.MergeMessage = 2 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.ConfiguredNextVersion = 2 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.Fallback = 1 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.MergeMessage = 4 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.None = 0 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.TaggedCommit = 4 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.TrackReleaseBranches = 8 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.TrunkBased = 32 -> GitVersion.VersionCalculation.VersionStrategies
-GitVersion.VersionCalculation.VersionStrategies.VersionInBranchName = 16 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.TaggedCommit = 8 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.TrackReleaseBranches = 16 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.TrunkBased = 64 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.VersionInBranchName = 32 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategyModule
 GitVersion.VersionCalculation.VersionStrategyModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.VersionCalculation.VersionStrategyModule.VersionStrategyModule() -> void
