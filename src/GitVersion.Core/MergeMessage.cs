@@ -96,17 +96,10 @@ public class MergeMessage
         mergeCommit.NotNull();
         configuration.NotNull();
 
-        mergeMessage = null;
+        mergeMessage = new(mergeCommit.Message, configuration);
 
-        var mergeMessageFormats = DefaultFormats.Union(
-                configuration.MergeMessageFormats
-                    .Select(n => new MergeMessageFormat(n.Key, n.Value)));
+        var isReleaseBranch = mergeMessage.MergedBranch != null && configuration.IsReleaseBranch(mergeMessage.MergedBranch);
 
-        if (mergeCommit.IsMergeCommit || mergeMessageFormats.Any(format => format.Pattern.IsMatch(mergeCommit.Message)))
-        {
-            mergeMessage = new(mergeCommit.Message, configuration);
-        }
-
-        return mergeMessage != null;
+        return mergeCommit.IsMergeCommit || isReleaseBranch;
     }
 }
