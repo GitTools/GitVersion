@@ -45,7 +45,7 @@ public class ConfiguredNextVersionVersionStrategyTests : TestBase
         baseVersion.BaseVersionSource.ShouldBeNull();
 
         var shouldBeIncremented = semanticVersion != incrementedVersion;
-        baseVersion.ShouldBeIncremented.ShouldBe(shouldBeIncremented);
+        baseVersion.ShouldIncrement.ShouldBe(shouldBeIncremented);
         if (shouldBeIncremented)
         {
             baseVersion.Operator.ShouldNotBeNull();

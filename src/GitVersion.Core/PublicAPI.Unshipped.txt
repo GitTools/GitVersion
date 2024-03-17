@@ -666,7 +666,7 @@ GitVersion.VersionCalculation.BaseVersion.Operand.init -> void
 GitVersion.VersionCalculation.BaseVersion.Operator.get -> GitVersion.VersionCalculation.BaseVersionOperator?
 GitVersion.VersionCalculation.BaseVersion.Operator.init -> void
 GitVersion.VersionCalculation.BaseVersion.SemanticVersion.get -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.BaseVersion.ShouldBeIncremented.get -> bool
+GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.get -> bool
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.BaseVersionOperand
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand() -> void

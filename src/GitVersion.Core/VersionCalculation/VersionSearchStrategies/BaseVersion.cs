@@ -23,7 +23,7 @@ public sealed record class BaseVersion : IBaseVersion
     public ICommit? BaseVersionSource => Operator?.BaseVersionSource ?? Operand.BaseVersionSource;
 
     [MemberNotNullWhen(true, nameof(Operator))]
-    public bool ShouldBeIncremented => Operator is not null;
+    public bool ShouldIncrement => Operator is not null;
 
     public BaseVersionOperand Operand { get; init; }
 
@@ -33,7 +33,7 @@ public sealed record class BaseVersion : IBaseVersion
     {
         var result = SemanticVersion;
 
-        if (ShouldBeIncremented)
+        if (ShouldIncrement)
         {
             result = result.Increment(
                 increment: Operator.Increment,
@@ -60,7 +60,7 @@ public sealed record class BaseVersion : IBaseVersion
         var commitSource = BaseVersionSource?.Id.ToString(7) ?? "External";
 
         StringBuilder stringBuilder = new();
-        if (ShouldBeIncremented)
+        if (ShouldIncrement)
         {
             stringBuilder.Append($"{Source}: ");
             if (Operator.ForceIncrement)
