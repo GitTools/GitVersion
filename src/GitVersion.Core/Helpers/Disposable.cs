@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion.Logging;
+namespace GitVersion.Helpers;
 
 public static class Disposable
 {

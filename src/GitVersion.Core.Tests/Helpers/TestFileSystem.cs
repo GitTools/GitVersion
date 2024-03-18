@@ -4,7 +4,7 @@ namespace GitVersion.Core.Tests.Helpers;
 
 public class TestFileSystem : IFileSystem
 {
-    private readonly Dictionary<string, byte[]> fileSystem = new(StringComparerUtils.OsDependentComparer);
+    private readonly Dictionary<string, byte[]> fileSystem = new(SysEnv.OSVersion.Platform == PlatformID.Unix ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
 
     public void Copy(string from, string to, bool overwrite)
     {
@@ -94,9 +94,4 @@ public class TestFileSystem : IFileSystem
     }
 
     public long GetLastDirectoryWrite(string path) => 1;
-
-    public bool PathsEqual(string? path, string? otherPath) => string.Equals(
-        Path.GetFullPath(path ?? throw new ArgumentNullException(nameof(path))).TrimEnd('\\').TrimEnd('/'),
-        Path.GetFullPath(otherPath ?? throw new ArgumentNullException(nameof(otherPath))).TrimEnd('\\').TrimEnd('/'),
-        StringComparerUtils.OsDependentComparison);
 }

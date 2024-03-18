@@ -200,7 +200,7 @@ public class OtherScenarios : TestBase
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -265,7 +265,7 @@ public class OtherScenarios : TestBase
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -332,7 +332,7 @@ public class OtherScenarios : TestBase
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -399,7 +399,7 @@ public class OtherScenarios : TestBase
                 .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -463,7 +463,7 @@ public class OtherScenarios : TestBase
                 .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -529,7 +529,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -596,7 +596,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -663,7 +663,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -727,7 +727,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -792,7 +792,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -856,7 +856,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeACommit();
@@ -924,7 +924,7 @@ public class OtherScenarios : TestBase
             )
             .Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
@@ -964,7 +964,7 @@ public class OtherScenarios : TestBase
                 .WithIsMainBranch(false)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
@@ -1044,7 +1044,7 @@ public class OtherScenarios : TestBase
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeCommits(5);
 
         var _ = fixture.GetVersion(configuration);
@@ -1071,7 +1071,7 @@ public class OtherScenarios : TestBase
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
         if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
         fixture.BranchTo("develop");
@@ -1098,7 +1098,7 @@ public class OtherScenarios : TestBase
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
         if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
         fixture.BranchTo("develop");
@@ -1125,7 +1125,7 @@ public class OtherScenarios : TestBase
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
         if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
         fixture.BranchTo("develop");

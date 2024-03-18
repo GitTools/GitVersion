@@ -22,7 +22,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.Repository.MakeACommit();
 

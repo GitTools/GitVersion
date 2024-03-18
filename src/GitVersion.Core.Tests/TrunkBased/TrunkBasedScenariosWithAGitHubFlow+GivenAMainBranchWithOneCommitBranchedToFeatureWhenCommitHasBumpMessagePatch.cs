@@ -22,7 +22,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         {
             // A  58 minutes ago  (HEAD -> feature/foo, main)
 
-            fixture = new EmptyRepositoryFixture("main");
+            fixture = new EmptyRepositoryFixture();
 
             fixture.MakeACommit("A +semver: patch");
             fixture.BranchTo("feature/foo");

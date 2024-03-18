@@ -20,7 +20,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            fixture = new EmptyRepositoryFixture("main");
+            fixture = new EmptyRepositoryFixture();
 
             // *  55 minutes ago  (HEAD -> main)
             // |\

@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Logging;
 
 internal sealed class NullLog : ILog

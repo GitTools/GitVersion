@@ -26,7 +26,7 @@ public record GitVersionVariables(string Major,
                                   string? CommitsSinceVersionSource,
                                   string? UncommittedChanges) : IEnumerable<KeyValuePair<string, string?>>
 {
-    public static readonly List<string> AvailableVariables =
+    internal static readonly List<string> AvailableVariables =
     [
         nameof(Major),
         nameof(Minor),

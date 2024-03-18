@@ -10,14 +10,10 @@ namespace GitVersion.Testing;
 public class RemoteRepositoryFixture : RepositoryFixtureBase
 {
     public RemoteRepositoryFixture(Func<string, Repository> builder)
-        : base(builder) => CreateLocalRepository();
+        : base(builder) => LocalRepositoryFixture = CloneRepository();
 
-    public RemoteRepositoryFixture() : this("main")
-    {
-    }
-
-    public RemoteRepositoryFixture(string branchName)
-        : this(path => CreateNewRepository(path, branchName))
+    public RemoteRepositoryFixture(string branchName = "main")
+        : this(path => CreateNewRepository(path, branchName, 5))
     {
     }
 
@@ -25,18 +21,6 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     ///     Fixture pointing at the local repository
     /// </summary>
     public LocalRepositoryFixture LocalRepositoryFixture { get; private set; }
-
-    private static Repository CreateNewRepository(string path, string branchName)
-    {
-        Init(path, branchName);
-        Console.WriteLine("Created git repository at '{0}'", path);
-
-        var repository = new Repository(path);
-        repository.MakeCommits(5);
-        return repository;
-    }
-
-    private void CreateLocalRepository() => LocalRepositoryFixture = CloneRepository();
 
     /// <summary>
     ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -47,7 +31,6 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
         {
             LocalRepositoryFixture.Dispose();
         }
-
         base.Dispose(disposing);
     }
 }

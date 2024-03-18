@@ -597,8 +597,8 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void DynamicRepoLocation()
     {
-        var arguments = this.argumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
-        arguments.ClonePath.ShouldBe("c:\\foo\\");
+        var arguments = this.argumentParser.ParseArguments(@"-dynamicRepoLocation /tmp/foo");
+        arguments.ClonePath.ShouldBe("/tmp/foo");
     }
 
     [Test]
@@ -748,14 +748,14 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCase("custom-config.yaml")]
-    [TestCase(@"c:\custom-config.yaml")]
+    [TestCase("/tmp/custom-config.yaml")]
     public void ThrowIfConfigurationFileDoesNotExist(string configFile) =>
         Should.Throw<WarningException>(() => _ = this.argumentParser.ParseArguments($"-config {configFile}"));
 
     [Test]
     public void EnsureConfigurationFileIsSet()
     {
-        var configFile = Path.GetTempPath() + Guid.NewGuid() + ".yaml";
+        var configFile = PathHelper.GetTempPath() + Guid.NewGuid() + ".yaml";
         File.WriteAllText(configFile, "next-version: 1.0.0");
         var arguments = this.argumentParser.ParseArguments($"-config {configFile}");
         arguments.ConfigurationFile.ShouldBe(configFile);

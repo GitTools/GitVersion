@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Logging;
 
 public static class LogExtensions

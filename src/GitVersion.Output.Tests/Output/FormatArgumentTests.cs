@@ -16,7 +16,7 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{PreReleaseTag}", "1.1.0.foo.1")]
     public void ShouldOutputFormatTests(string format, string expectedValue)
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
@@ -49,7 +49,7 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{env:CustomVar}", "1.1.0.foo")]
     public void ShouldOutputFormatWithEnvironmentVariablesTests(string format, string expectedValue)
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
         var consoleBuilder = new StringBuilder();
         IConsole console = new TestConsoleAdapter(consoleBuilder);
         IEnvironment environment = new TestEnvironment();

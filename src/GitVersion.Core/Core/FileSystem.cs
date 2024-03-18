@@ -52,10 +52,4 @@ internal class FileSystem : IFileSystem
         .DefaultIfEmpty()
         .Max()
         .Ticks;
-
-    public bool PathsEqual(string? path, string? otherPath) =>
-        string.Equals(
-            PathHelper.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
-            PathHelper.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
-            StringComparerUtils.OsDependentComparison);
 }

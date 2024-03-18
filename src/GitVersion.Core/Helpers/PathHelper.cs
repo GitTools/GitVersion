@@ -4,6 +4,12 @@ internal static class PathHelper
 {
     public static string NewLine => SysEnv.NewLine;
 
+    public static readonly StringComparison OsDependentComparison = SysEnv.OSVersion.Platform switch
+    {
+        PlatformID.Unix or PlatformID.MacOSX => StringComparison.Ordinal,
+        _ => StringComparison.OrdinalIgnoreCase,
+    };
+
     public static string GetCurrentDirectory() => AppContext.BaseDirectory ?? throw new InvalidOperationException();
 
     public static string GetTempPath()
@@ -13,8 +19,11 @@ internal static class PathHelper
         {
             tempPath = SysEnv.GetEnvironmentVariable("RUNNER_TEMP");
         }
-        return Combine(tempPath, "TestRepositories", Guid.NewGuid().ToString());
+
+        return tempPath!;
     }
+
+    public static string GetRepositoryTempPath() => Combine(GetTempPath(), "TestRepositories", Guid.NewGuid().ToString());
 
     public static string GetFullPath(string? path)
     {
@@ -53,4 +62,10 @@ internal static class PathHelper
 
         return Path.Combine(path1, path2, path3, path4);
     }
+
+    public static bool Equal(string? path, string? otherPath) =>
+        string.Equals(
+            GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
+            GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
+            OsDependentComparison);
 }

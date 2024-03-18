@@ -259,12 +259,13 @@ public class ProjectFileUpdaterTests : TestBase
 </Project>")]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
-        var fileName = PathHelper.Combine(Path.GetTempPath(), "TestProject.csproj");
+        var workingDirectory = PathHelper.GetTempPath();
+        var fileName = PathHelper.Combine(workingDirectory, "TestProject.csproj");
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
-            projFileUpdater.Execute(variables, new(Path.GetTempPath(), false, fileName));
+            projFileUpdater.Execute(variables, new(workingDirectory, false, fileName));
 
             const string expectedXml = @"
 <Project Sdk=""Microsoft.NET.Sdk"">

@@ -39,7 +39,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithCommitParameterThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -55,7 +55,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForCommitThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -73,7 +73,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForCommitBAndCommitParameterAThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -91,7 +91,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForCommitCAndCommitParameterCThenCommitBShouldBeUsed()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -108,7 +108,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForTaggedCommitThenTagShouldBeIgnored()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -127,7 +127,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationBeforeCommitWithTagThenTagShouldBeIgnored()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -148,7 +148,7 @@ public class IgnoreCommitScenarios : TestBase
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationOfCommitBThenTagShouldBeConsidered(
         bool preventIncrementWhenCurrentCommitTagged, string semanticVersion)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.ApplyTag("1.0.0");
@@ -170,7 +170,7 @@ public class IgnoreCommitScenarios : TestBase
     public void GivenTrunkBasedWorkflowWithCommitParameterBThenTagShouldBeConsidered(
         bool preventIncrementWhenCurrentCommitTagged, string semanticVersion)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         var commitA = fixture.Repository.MakeACommit("A");
         fixture.ApplyTag("1.0.0");
@@ -189,7 +189,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowBasedWorkflowWithCommitParameterThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -205,7 +205,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForCommitThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -223,7 +223,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForCommitBAndCommitParameterAThenVersionShouldBeCorrect()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         var commitB = fixture.Repository.MakeACommit("B");
@@ -241,7 +241,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForCommitCAndCommitParameterCThenCommitBShouldBeUsed()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -258,7 +258,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForTaggedCommitThenTagShouldBeIgnored()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -277,7 +277,7 @@ public class IgnoreCommitScenarios : TestBase
     [Test]
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationBeforeCommitWithTagThenTagShouldBeIgnored()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");
@@ -298,7 +298,7 @@ public class IgnoreCommitScenarios : TestBase
     public void GivenGitHubFlowWorkflowWithIgnoreConfigurationOfCommitBThenTagShouldBeConsidered(
         bool preventIncrementWhenCurrentCommitTagged, string semanticVersion)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.ApplyTag("1.0.0");
@@ -318,7 +318,7 @@ public class IgnoreCommitScenarios : TestBase
     public void GivenGitHubFlowWorkflowWithCommitParameterBThenTagShouldBeConsidered(
         bool preventIncrementWhenCurrentCommitTagged, string semanticVersion)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         var commitA = fixture.Repository.MakeACommit("A");
         fixture.ApplyTag("1.0.0");

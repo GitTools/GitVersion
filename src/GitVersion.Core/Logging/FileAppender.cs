@@ -12,7 +12,6 @@ internal class FileAppender : ILogAppender
 
         var logFile = new FileInfo(Path.GetFullPath(filePath));
 
-        // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
         logFile.Directory?.Create();
         if (logFile.Exists) return;
 

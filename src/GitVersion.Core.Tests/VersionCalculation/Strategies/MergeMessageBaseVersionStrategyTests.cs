@@ -27,7 +27,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Branches.Returns(branches);
         mockRepository.Commits.Returns(mockBranch.Commits);
 
-        var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
+        using var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
@@ -156,7 +156,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Head.Returns(mockBranch);
         mockRepository.Commits.Returns(mockBranch.Commits);
 
-        var contextBuilder = new GitVersionContextBuilder()
+        using var contextBuilder = new GitVersionContextBuilder()
             .WithOverrideConfiguration(configuration)
             .WithRepository(mockRepository);
         contextBuilder.Build();

@@ -51,7 +51,7 @@ public class ConfiguredNextVersionVersionStrategyTests : TestBase
 
     private static BaseVersion? GetBaseVersion(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var contextBuilder = new GitVersionContextBuilder().WithOverrideConfiguration(overrideConfiguration);
+        using var contextBuilder = new GitVersionContextBuilder().WithOverrideConfiguration(overrideConfiguration);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfiguredNextVersionVersionStrategy>();

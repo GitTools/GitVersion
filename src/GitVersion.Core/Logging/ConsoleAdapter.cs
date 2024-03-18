@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Logging;
 
 internal class ConsoleAdapter : IConsole

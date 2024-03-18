@@ -56,7 +56,9 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
             this.fileSystem.WriteAllText(filePath, fileContents);
         }
 
-        string getTargetNamespace(string fileExtension) => fileExtension switch
+        return;
+
+        string getTargetNamespace(string extension) => extension switch
         {
             ".vb" => context.TargetNamespace ?? "Global",
             ".cs" => context.TargetNamespace != null ? $"{PathHelper.NewLine}namespace {context.TargetNamespace};" : "",

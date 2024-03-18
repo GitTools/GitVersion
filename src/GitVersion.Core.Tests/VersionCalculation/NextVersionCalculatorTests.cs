@@ -12,7 +12,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void ShouldIncrementVersionBasedOnConfig()
     {
-        var contextBuilder = new GitVersionContextBuilder();
+        using var contextBuilder = new GitVersionContextBuilder();
 
         contextBuilder.Build();
 
@@ -28,7 +28,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void DoesNotIncrementWhenBaseVersionSaysNotTo()
     {
-        var contextBuilder = new GitVersionContextBuilder();
+        using var contextBuilder = new GitVersionContextBuilder();
 
         var overrideConfiguration = new Dictionary<object, object?>()
         {
@@ -49,7 +49,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void AppliesBranchPreReleaseTag()
     {
-        var contextBuilder = new GitVersionContextBuilder();
+        using var contextBuilder = new GitVersionContextBuilder();
 
         contextBuilder.WithDevelopBranch().Build();
 
@@ -89,7 +89,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         var configuration = TrunkBasedConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.MakeACommit();
         fixture.BranchTo("feature/foo");
@@ -125,7 +125,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         var configuration = TrunkBasedConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
         fixture.AssertFullSemver("1.0.0", configuration);
@@ -145,7 +145,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         var configuration = TrunkBasedConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
         fixture.AssertFullSemver("1.0.0", configuration);

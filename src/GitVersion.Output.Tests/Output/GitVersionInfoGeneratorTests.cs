@@ -19,7 +19,7 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("vb")]
     public void ShouldCreateFile(string fileExtension)
     {
-        var directory = Path.GetTempPath();
+        var directory = Path.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = PathHelper.Combine(directory, fileName);
 
@@ -44,5 +44,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         generator.Execute(variables, new(directory, fileName, fileExtension));
 
         fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
+
+        DirectoryHelper.DeleteDirectory(directory);
     }
 }

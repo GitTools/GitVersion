@@ -1,3 +1,4 @@
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
@@ -133,6 +134,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
+        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -154,6 +156,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.0.1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.0.1-1"));
+        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]

@@ -46,7 +46,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void ExpectedBehavior()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
 
@@ -172,7 +172,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MainRelease()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
 
@@ -186,7 +186,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMain()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.BranchTo("feature/test");
@@ -220,7 +220,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMainWithPreviousCommits()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.MakeACommit();
@@ -270,7 +270,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMainWithMinorMinorSemversionIncrement()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.BranchTo("feature/test");
@@ -304,7 +304,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMainWithMajorMinorSemversionIncrement()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.BranchTo("feature/test");
@@ -338,7 +338,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMainWithPreviousCommitsAndMinorMinorSemversionIncrement()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.MakeACommit("+semver: minor");
@@ -388,7 +388,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     [Test]
     public void MergeFeatureToMainWithPreviousCommitsAndMinorMajorSemversionIncrement()
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("0.0.2");
         fixture.MakeACommit("+semver: minor");

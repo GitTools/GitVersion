@@ -10,13 +10,13 @@ namespace GitVersion.Testing;
 public abstract class RepositoryFixtureBase : IDisposable
 {
     protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
-        : this(repositoryBuilder(PathHelper.GetTempPath()))
+        : this(repositoryBuilder(PathHelper.GetRepositoryTempPath()))
     {
     }
 
     protected RepositoryFixtureBase(Repository repository)
     {
-        this.SequenceDiagram = new SequenceDiagram();
+        SequenceDiagram = new();
         Repository = repository ?? throw new ArgumentNullException(nameof(repository));
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
@@ -45,15 +45,18 @@ public abstract class RepositoryFixtureBase : IDisposable
         }
 
         Repository.Dispose();
+        var directoryPath = Path.GetFileName(RepositoryPath);
 
         try
         {
+            Console.WriteLine("Cleaning up repository path at {0}", directoryPath);
             DirectoryHelper.DeleteDirectory(RepositoryPath);
+            Console.WriteLine("Cleaned up repository path at {0}", directoryPath);
         }
         catch (Exception e)
         {
-            Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", RepositoryPath,
-                e.Message);
+            Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", directoryPath, e.Message);
+            // throw;
         }
 
         this.SequenceDiagram.End();
@@ -66,7 +69,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void Remove(string branch) => Repository.Branches.Remove(branch);
 
-    public static void Init(string path, string branchName) => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}");
+    public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}");
 
     public string MakeATaggedCommit(string tag)
     {
@@ -134,9 +137,23 @@ public abstract class RepositoryFixtureBase : IDisposable
     /// </summary>
     public LocalRepositoryFixture CloneRepository()
     {
-        var localPath = PathHelper.GetTempPath();
+        var localPath = PathHelper.GetRepositoryTempPath();
         Repository.Clone(RepositoryPath, localPath);
+        Console.WriteLine($"Cloned repository to '{localPath}' from '{RepositoryPath}'");
         return new LocalRepositoryFixture(new Repository(localPath));
+    }
+
+    protected static Repository CreateNewRepository(string path, string branchName, int commits = 0)
+    {
+        Init(path, branchName);
+        Console.WriteLine("Created git repository at '{0}'", path);
+
+        var repository = new Repository(path);
+        if (commits > 0)
+        {
+            repository.MakeCommits(commits);
+        }
+        return repository;
     }
 
     /// <summary>

@@ -27,7 +27,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             // |/
             // A  58 minutes ago
 
-            fixture = new EmptyRepositoryFixture("main");
+            fixture = new EmptyRepositoryFixture();
 
             fixture.MakeACommit("A");
             fixture.BranchTo("feature/foo");
