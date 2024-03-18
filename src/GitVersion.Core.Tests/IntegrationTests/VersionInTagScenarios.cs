@@ -15,7 +15,7 @@ internal class VersionInTagScenarios
             .Build();
 
         // Act
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.1.0");
         var version = fixture.GetVersion(configuration);
 
@@ -33,7 +33,7 @@ internal class VersionInTagScenarios
             .Build();
 
         // Act
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.1.0");
         var version = fixture.GetVersion(configuration);
 

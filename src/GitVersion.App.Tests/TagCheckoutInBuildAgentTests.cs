@@ -34,9 +34,9 @@ public class TagCheckoutInBuildAgentTests
 
     private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
-        var remoteRepositoryPath = PathHelper.GetTempPath();
-        RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
+        using var fixture = new EmptyRepositoryFixture();
+        var remoteRepositoryPath = PathHelper.GetRepositoryTempPath();
+        RepositoryFixtureBase.Init(remoteRepositoryPath);
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");

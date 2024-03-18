@@ -13,9 +13,6 @@ public static class ConfigurationFileLocatorTests
 {
     public class DefaultConfigFileLocatorTests : TestBase
     {
-        private const string DefaultRepoPath = @"c:\MyGitRepo";
-        private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
-
         private string repoPath;
         private string workingPath;
         private IFileSystem fileSystem;
@@ -25,8 +22,8 @@ public static class ConfigurationFileLocatorTests
         [SetUp]
         public void Setup()
         {
-            this.repoPath = DefaultRepoPath;
-            this.workingPath = DefaultWorkingPath;
+            this.repoPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo");
+            this.workingPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo", "Working");
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
@@ -76,8 +73,8 @@ public static class ConfigurationFileLocatorTests
 
     public class NamedConfigurationFileLocatorTests : TestBase
     {
-        private const string DefaultRepoPath = @"c:\MyGitRepo";
-        private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
+        private static readonly string DefaultRepoPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo");
+        private static readonly string DefaultWorkingPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo", "Working");
         private const string myConfigYaml = "my-config.yaml";
 
         private string repoPath;
@@ -189,7 +186,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
+            SetupConfigFileContent(string.Empty, path: PathHelper.Combine(PathHelper.GetTempPath(), "unrelatedPath"));
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 

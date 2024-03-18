@@ -12,13 +12,20 @@ namespace GitVersion.Core.Tests;
 [Parallelizable(ParallelScope.None)]
 internal class WixFileTests : TestBase
 {
+    private string workingDir;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp() => workingDir = PathHelper.Combine(PathHelper.GetTempPath(), "WixFileTests");
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown() => DirectoryHelper.DeleteDirectory(workingDir);
+
     [SetUp]
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
     public void UpdateWixVersionFile()
     {
-        var workingDir = Path.GetTempPath();
         var semVer = new SemanticVersion
         {
             Major = 1,
@@ -58,7 +65,6 @@ internal class WixFileTests : TestBase
     [Test]
     public void UpdateWixVersionFileWhenFileAlreadyExists()
     {
-        var workingDir = Path.GetTempPath();
         var semVer = new SemanticVersion
         {
             Major = 1,

@@ -30,7 +30,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
     [TestCase("hotfix")]
     public void DoesNotTakeVersionFromBranchWithAccidentalVersion(string branch)
     {
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo($"{branch}/downgrade-some-lib-to-3.2.1");

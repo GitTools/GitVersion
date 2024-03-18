@@ -15,7 +15,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        this.workDirectory = PathHelper.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        this.workDirectory = PathHelper.Combine(PathHelper.GetTempPath(), Guid.NewGuid().ToString());
         this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
         Assert.That(this.gitDirectory, Is.Not.Null);
     }

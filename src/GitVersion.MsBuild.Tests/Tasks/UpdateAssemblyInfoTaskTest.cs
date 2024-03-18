@@ -1,3 +1,4 @@
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
@@ -111,6 +112,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
 
         var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
+        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -128,6 +130,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
 
         var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
+        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]

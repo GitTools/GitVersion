@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Build.Utilities;
 

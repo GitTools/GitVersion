@@ -19,7 +19,7 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (!Path.IsPathRooted(this.configurationFile) && !fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+        if (!Path.IsPathRooted(this.configurationFile) && !PathHelper.Equal(workingDirectory, projectRootDirectory))
             WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
 

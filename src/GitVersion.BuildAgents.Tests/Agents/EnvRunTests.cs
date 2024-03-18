@@ -20,7 +20,7 @@ public class EnvRunTests : TestBase
         this.buildServer = sp.GetRequiredService<EnvRun>();
 
         // set environment variable and create an empty envrun file to indicate that EnvRun is running...
-        this.mFilePath = PathHelper.Combine(Path.GetTempPath(), "envrun.db");
+        this.mFilePath = PathHelper.Combine(PathHelper.GetTempPath(), "envrun.db");
         this.environment.SetEnvironmentVariable(EnvVarName, this.mFilePath);
         File.OpenWrite(this.mFilePath).Dispose();
     }

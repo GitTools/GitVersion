@@ -22,7 +22,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
             // B 58 minutes ago (HEAD -> main)
             // A 59 minutes ago (tag 0.0.3-foo.4)
 
-            fixture = new EmptyRepositoryFixture("main");
+            fixture = new EmptyRepositoryFixture();
 
             fixture.MakeACommit("A");
             fixture.ApplyTag("0.0.3-foo.4");

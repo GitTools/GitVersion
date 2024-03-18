@@ -40,7 +40,7 @@ public static class StringExtensions
     }
 
     public static bool IsSwitchArgument(this string? value) => value != null
-                                                              && (value.StartsWith("-") || value.StartsWith("/"))
+                                                              && (value.StartsWith('-') || value.StartsWith('/'))
                                                               && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
 
     public static bool IsSwitch(this string? value, string switchName)
@@ -48,12 +48,12 @@ public static class StringExtensions
         if (value == null)
             return false;
 
-        if (value.StartsWith("-"))
+        if (value.StartsWith('-'))
         {
             value = value[1..];
         }
 
-        if (value.StartsWith("/"))
+        if (value.StartsWith('/'))
         {
             value = value[1..];
         }
@@ -78,7 +78,7 @@ public static class StringExtensions
         var argumentMightRequireValue = !booleanArguments.Contains(argument[1..], StringComparer.OrdinalIgnoreCase);
 
         // If this is the first argument that might be a target path, the argument starts with slash and we're on an OS that supports paths with slashes, the argument does not require a value.
-        if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith("/") && Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
+        if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith('/') && Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
             return false;
 
         return argumentMightRequireValue;

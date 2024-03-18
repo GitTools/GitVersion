@@ -275,6 +275,7 @@ GitVersion.GitVersionOptions.Verbosity -> GitVersion.Logging.Verbosity
 GitVersion.GitVersionOptions.WixInfo.get -> GitVersion.WixInfo!
 GitVersion.GitVersionOptions.WorkingDirectory.get -> string!
 GitVersion.GitVersionOptions.WorkingDirectory.set -> void
+GitVersion.Helpers.Disposable
 GitVersion.Helpers.EncodingHelper
 GitVersion.Helpers.LambdaEqualityHelper<T>
 GitVersion.Helpers.LambdaEqualityHelper<T>.Equals(T? instance, T? other) -> bool
@@ -289,7 +290,6 @@ GitVersion.Helpers.RetryAction<T>
 GitVersion.Helpers.RetryAction<T>.Execute(System.Action! operation) -> void
 GitVersion.Helpers.RetryAction<T>.RetryAction(int maxRetries = 5) -> void
 GitVersion.Helpers.ServiceMessageEscapeHelper
-GitVersion.Helpers.StringComparerUtils
 GitVersion.IBranch
 GitVersion.IBranch.Commits.get -> GitVersion.ICommitCollection!
 GitVersion.IBranch.IsDetachedHead.get -> bool
@@ -324,7 +324,6 @@ GitVersion.IFileSystem.GetLastDirectoryWrite(string! path) -> long
 GitVersion.IFileSystem.Move(string! from, string! to) -> void
 GitVersion.IFileSystem.OpenRead(string! path) -> System.IO.Stream!
 GitVersion.IFileSystem.OpenWrite(string! path) -> System.IO.Stream!
-GitVersion.IFileSystem.PathsEqual(string? path, string? otherPath) -> bool
 GitVersion.IFileSystem.ReadAllText(string! path) -> string!
 GitVersion.IFileSystem.WriteAllText(string? file, string! fileContents) -> void
 GitVersion.IFileSystem.WriteAllText(string? file, string! fileContents, System.Text.Encoding! encoding) -> void
@@ -414,7 +413,6 @@ GitVersion.LockedFileException.LockedFileException() -> void
 GitVersion.LockedFileException.LockedFileException(System.Exception! inner) -> void
 GitVersion.LockedFileException.LockedFileException(string? message) -> void
 GitVersion.LockedFileException.LockedFileException(string? message, System.Exception? innerException) -> void
-GitVersion.Logging.Disposable
 GitVersion.Logging.IConsole
 GitVersion.Logging.IConsole.ReadLine() -> string?
 GitVersion.Logging.IConsole.UseColor(System.ConsoleColor consoleColor) -> System.IDisposable!
@@ -822,11 +820,11 @@ static GitVersion.Extensions.StringExtensions.IsTrue(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsValidPath(this string? path) -> bool
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace, System.Text.RegularExpressions.RegexOptions options = System.Text.RegularExpressions.RegexOptions.None) -> string!
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! value, string! prefix) -> string!
+static GitVersion.Helpers.Disposable.Create(System.Action! disposer) -> System.IDisposable!
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(System.Collections.Generic.IList<byte>! bytes) -> System.Text.Encoding?
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(string? filename) -> System.Text.Encoding?
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
 static GitVersion.IncrementStrategyExtensions.ToVersionField(this GitVersion.IncrementStrategy strategy) -> GitVersion.VersionField
-static GitVersion.Logging.Disposable.Create(System.Action! disposer) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
@@ -887,11 +885,7 @@ static GitVersion.VersionCalculation.NextVersion.operator ==(GitVersion.VersionC
 static GitVersion.VersionCalculation.NextVersion.operator >(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator >=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static readonly GitVersion.BranchCommit.Empty -> GitVersion.BranchCommit
-static readonly GitVersion.Helpers.StringComparerUtils.IgnoreCaseComparer -> System.StringComparer!
-static readonly GitVersion.Helpers.StringComparerUtils.OsDependentComparer -> System.StringComparer!
-static readonly GitVersion.Helpers.StringComparerUtils.OsDependentComparison -> System.StringComparison
-static readonly GitVersion.Logging.Disposable.Empty -> System.IDisposable!
-static readonly GitVersion.OutputVariables.GitVersionVariables.AvailableVariables -> System.Collections.Generic.List<string!>!
+static readonly GitVersion.Helpers.Disposable.Empty -> System.IDisposable!
 static readonly GitVersion.SemanticVersion.Empty -> GitVersion.SemanticVersion!
 static readonly GitVersion.SemanticVersionBuildMetaData.Empty -> GitVersion.SemanticVersionBuildMetaData!
 static readonly GitVersion.SemanticVersionPreReleaseTag.Empty -> GitVersion.SemanticVersionPreReleaseTag!

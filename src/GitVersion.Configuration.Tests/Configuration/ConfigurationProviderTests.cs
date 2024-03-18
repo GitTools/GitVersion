@@ -13,8 +13,6 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class ConfigurationProviderTests : TestBase
 {
-    private const string DefaultRepoPath = @"c:\MyGitRepo";
-
     private string repoPath;
     private ConfigurationProvider configurationProvider;
     private IFileSystem fileSystem;
@@ -22,7 +20,7 @@ public class ConfigurationProviderTests : TestBase
     [SetUp]
     public void Setup()
     {
-        this.repoPath = DefaultRepoPath;
+        this.repoPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo");
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();

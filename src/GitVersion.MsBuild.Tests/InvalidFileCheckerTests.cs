@@ -14,7 +14,7 @@ public class InvalidFileCheckerTests : TestBase
     [SetUp]
     public void CreateTemporaryProject()
     {
-        this.projectDirectory = PathHelper.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        this.projectDirectory = PathHelper.Combine(PathHelper.GetTempPath(), Guid.NewGuid().ToString());
         this.projectFile = PathHelper.Combine(this.projectDirectory, "Fake.csproj");
 
         Directory.CreateDirectory(this.projectDirectory);

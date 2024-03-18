@@ -174,7 +174,7 @@ internal class ArgumentParser(IEnvironment environment, ICurrentBuildAgent build
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
         if (parseEnded)
         {
-            if (name?.StartsWith("/") == true)
+            if (name?.StartsWith('/') == true)
             {
                 if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
                 {

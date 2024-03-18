@@ -1,20 +1,15 @@
 using GitVersion.Configuration.SupportedWorkflows;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;
 
 namespace GitVersion.Configuration;
 
 internal class ConfigurationProvider(
-    IFileSystem fileSystem,
-    ILog log,
     IConfigurationFileLocator configFileLocator,
     IOptions<GitVersionOptions> options)
     : IConfigurationProvider
 {
-    private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 

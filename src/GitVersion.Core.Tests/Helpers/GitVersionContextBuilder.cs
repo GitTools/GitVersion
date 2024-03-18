@@ -5,12 +5,13 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Core.Tests;
 
-public class GitVersionContextBuilder
+public class GitVersionContextBuilder : IDisposable
 {
     private IGitRepository? repository;
+    private EmptyRepositoryFixture? emptyRepositoryFixture;
     private IReadOnlyDictionary<object, object?>? overrideConfiguration;
-    public IServiceProvider? ServicesProvider;
     private Action<IServiceCollection>? overrideServices;
+    public IServiceProvider? ServicesProvider;
 
     public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
     {
@@ -56,11 +57,8 @@ public class GitVersionContextBuilder
     {
         var repo = this.repository ?? CreateRepository();
 
-        var options = Options.Create(new GitVersionOptions
-        {
-            WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
-            ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration }
-        });
+        emptyRepositoryFixture = new();
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = emptyRepositoryFixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration } });
 
         this.ServicesProvider = ConfigureServices(services =>
         {
@@ -93,5 +91,22 @@ public class GitVersionContextBuilder
         overrideServices?.Invoke(services);
 
         return services.BuildServiceProvider();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!disposing)
+        {
+            return;
+        }
+
+        this.repository?.Dispose();
+        this.emptyRepositoryFixture?.Dispose();
     }
 }

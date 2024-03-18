@@ -8,6 +8,7 @@ namespace GitVersion;
 public sealed class SemanticVersionPreReleaseTag :
     IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
 {
+    private static readonly StringComparer IgnoreCaseComparer = StringComparer.InvariantCultureIgnoreCase;
     public static readonly SemanticVersionPreReleaseTag Empty = new();
 
     private static readonly Regex ParseRegex = new(
@@ -63,7 +64,7 @@ public sealed class SemanticVersionPreReleaseTag :
         left?.CompareTo(right) >= 0;
 
     public static bool operator <=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
-        StringComparerUtils.IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
+        IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
 
     public static implicit operator string?(SemanticVersionPreReleaseTag? preReleaseTag) => preReleaseTag?.ToString();
 
@@ -83,7 +84,7 @@ public sealed class SemanticVersionPreReleaseTag :
 
         var value = match.Groups["name"].Value;
         var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
-        return value.EndsWith("-")
+        return value.EndsWith('-')
             ? new(preReleaseTag, null, true)
             : new SemanticVersionPreReleaseTag(value, number, true);
     }
@@ -99,7 +100,7 @@ public sealed class SemanticVersionPreReleaseTag :
             return -1;
         }
 
-        var nameComparison = StringComparerUtils.IgnoreCaseComparer.Compare(Name, other?.Name);
+        var nameComparison = IgnoreCaseComparer.Compare(Name, other?.Name);
         return nameComparison != 0 ? nameComparison : Nullable.Compare(Number, other?.Number);
     }
 
@@ -123,7 +124,7 @@ public sealed class SemanticVersionPreReleaseTag :
 
         return format switch
         {
-            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name ?? string.Empty),
+            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }
