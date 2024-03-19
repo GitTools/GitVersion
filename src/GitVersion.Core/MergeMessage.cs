@@ -96,13 +96,10 @@ public class MergeMessage
         mergeCommit.NotNull();
         configuration.NotNull();
 
-        mergeMessage = null;
+        mergeMessage = new(mergeCommit.Message, configuration);
 
-        if (mergeCommit.IsMergeCommit)
-        {
-            mergeMessage = new(mergeCommit.Message, configuration);
-        }
+        var isReleaseBranch = mergeMessage.MergedBranch != null && configuration.IsReleaseBranch(mergeMessage.MergedBranch);
 
-        return mergeMessage != null;
+        return mergeCommit.IsMergeCommit || isReleaseBranch;
     }
 }

@@ -67,14 +67,8 @@ internal class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> ver
         return mergeMessage != null;
     }
 
-    private static MergeMessage? Inner(ICommit mergeCommit, GitVersionContext context)
-    {
-        if (mergeCommit.Parents.Count() < 2)
-        {
-            return null;
-        }
-
-        var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
-        return mergeMessage;
-    }
+    private static MergeMessage? Inner(ICommit mergeCommit, GitVersionContext context) =>
+        MergeMessage.TryParse(mergeCommit, context.Configuration, out MergeMessage? mergeMessage)
+            ? mergeMessage
+            : null;
 }

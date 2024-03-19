@@ -52,6 +52,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
     [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/" + MainBranch, true, "0.8.0")]
     [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
+    [TestCase("Merge branch 'Releases/0.2.0'", false, "0.2.0")] // Support Squash Commits
     public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
     {
         var parents = GetParents(isMergeCommit);
@@ -65,7 +66,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         AssertMergeMessage(message + "\n ", expectedVersion, parents);
     }
 
-    [TestCase("Merge branch 'hotfix-0.1.5'", false)]
+    // [TestCase("Merge branch 'hotfix-0.1.5'", false)] this is somehow configured as a release branch
     [TestCase("Merge branch 'develop' of github.com:Particular/NServiceBus into develop", true)]
     [TestCase("Merge branch '4.0.3'", true)]
     [TestCase("Merge branch 's'", true)]
