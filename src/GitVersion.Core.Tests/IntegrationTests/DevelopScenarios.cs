@@ -452,7 +452,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void NextVersionShouldBeConsideredOnTheMainBranch()
     {
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         var configurationBuilder = GitFlowConfigurationBuilder.New;
 
@@ -485,7 +485,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void PreventDecrementationOfVersionsOnTheMainBranch()
     {
-        using EmptyRepositoryFixture fixture = new("develop");
+        using var fixture = new EmptyRepositoryFixture("develop");
 
         var configurationBuilder = GitFlowConfigurationBuilder.New;
 

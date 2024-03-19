@@ -65,7 +65,7 @@ public class OtherBranchScenarios : TestBase
             .WithBranch("main", _ => _.WithLabel(label).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit($"{tagPrefix}1.0.0");
         fixture.MakeACommit("+semver:major");

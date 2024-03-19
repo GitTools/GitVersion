@@ -250,7 +250,7 @@ public class MainScenarios : TestBase
     [Test]
     public void NextVersionShouldBeConsideredOnTheDevelopmentBranch()
     {
-        using EmptyRepositoryFixture fixture = new("develop");
+        using var fixture = new EmptyRepositoryFixture("develop");
 
         var configurationBuilder = GitFlowConfigurationBuilder.New;
 
@@ -283,7 +283,7 @@ public class MainScenarios : TestBase
     [Test]
     public void PreventDecrementationOfVersionsOnTheDevelopmentBranch()
     {
-        using EmptyRepositoryFixture fixture = new("develop");
+        using var fixture = new EmptyRepositoryFixture("develop");
 
         var configurationBuilder = GitFlowConfigurationBuilder.New;
 
@@ -390,7 +390,7 @@ public class MainScenarios : TestBase
     [TestCase(false, "1.0.1-4")]
     public void TrackMergeMessageShouldBeConsideredOnTheMainBranch(bool trackMergeMessage, string expectedSemanticVersion)
     {
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", branchBuilder => branchBuilder.WithTrackMergeMessage(trackMergeMessage))

@@ -1005,7 +1005,7 @@ public class OtherScenarios : TestBase
                 .WithIsMainBranch(false)
             ).Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
@@ -1222,7 +1222,7 @@ public class OtherScenarios : TestBase
     [Test]
     public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrect()
     {
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo("develop");
@@ -1256,7 +1256,7 @@ public class OtherScenarios : TestBase
             .WithVersionStrategy(VersionStrategies.TrunkBased)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.ApplyTag("1.0.0");
@@ -1282,7 +1282,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.ApplyTag("1.0.0");

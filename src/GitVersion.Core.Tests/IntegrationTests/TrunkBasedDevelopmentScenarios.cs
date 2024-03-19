@@ -112,7 +112,7 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     {
         var configuration = GetConfigurationBuilder().Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("1");
 
@@ -136,7 +136,7 @@ public class TrunkBasedDevelopmentScenarios : TestBase
     {
         var configuration = GetConfigurationBuilder().Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("1");
 
@@ -153,41 +153,6 @@ public class TrunkBasedDevelopmentScenarios : TestBase
         fixture.MakeACommit("4");
         fixture.Repository.CreatePullRequestRef("hotfix/foo", MainBranch, prNumber: 8, normalise: true);
         fixture.AssertFullSemver("1.0.2-PullRequest8.3", configuration);
-    }
-
-    [Test, Ignore("Support of multiple tunks are not implemented at the moment.")]
-    public void SupportBranches()
-    {
-        var configuration = GetConfigurationBuilder().Build();
-
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit("1");
-        fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeACommit(); // 1.0.1
-        fixture.MakeACommit(); // 1.0.2
-        fixture.AssertFullSemver("1.0.2", configuration);
-
-        fixture.BranchTo("support/1.0", "support10");
-        fixture.AssertFullSemver("1.0.2", configuration);
-
-        // Move main on
-        fixture.Checkout(MainBranch);
-        fixture.MakeACommit("+semver: major"); // 2.0.0 (on main)
-        fixture.AssertFullSemver("2.0.0", configuration);
-
-        // Continue on support/1.0
-        fixture.Checkout("support/1.0");
-        fixture.MakeACommit(); // 1.0.3
-        fixture.MakeACommit(); // 1.0.4
-        fixture.AssertFullSemver("1.0.4", configuration);
-        fixture.BranchTo("feature/foo", "foo");
-        fixture.AssertFullSemver("1.0.5-foo.0", configuration);
-        fixture.MakeACommit();
-        fixture.AssertFullSemver("1.0.5-foo.1", configuration);
-        fixture.MakeACommit();
-        fixture.AssertFullSemver("1.0.5-foo.2", configuration);
-        fixture.Repository.CreatePullRequestRef("feature/foo", "support/1.0", prNumber: 7, normalise: true);
-        fixture.AssertFullSemver("1.0.5-PullRequest7.3", configuration);
     }
 
     [Test]
@@ -219,36 +184,6 @@ public class TrunkBasedDevelopmentScenarios : TestBase
         fixture.AssertFullSemver("1.0.2-foo.2", configuration);
         fixture.MergeNoFF(MainBranch);
         fixture.AssertFullSemver("1.0.3-foo.3", configuration);
-    }
-
-    [Test, Ignore("Support of multiple tunks are not implemented at the moment.")]
-    public void VerifySupportForwardMerge()
-    {
-        var configuration = GetConfigurationBuilder().Build();
-
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit("1");
-        fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeACommit(); // 1.0.1
-
-        fixture.BranchTo("support/1.0", "support10");
-        fixture.MakeACommit();
-        fixture.MakeACommit();
-
-        fixture.Checkout(MainBranch);
-        fixture.MakeACommit("+semver: minor");
-        fixture.AssertFullSemver("1.1.0", configuration);
-        fixture.MergeNoFF("support/1.0");
-        fixture.AssertFullSemver("1.1.1", configuration);
-        fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.2", configuration);
-        fixture.Checkout("support/1.0");
-        fixture.AssertFullSemver("1.0.3", configuration);
-
-        fixture.BranchTo("feature/foo", "foo");
-        fixture.MakeACommit();
-        fixture.MakeACommit();
-        fixture.AssertFullSemver("1.0.4-foo.2", configuration); // TODO This probably should be 1.0.5
     }
 
     [Test]
