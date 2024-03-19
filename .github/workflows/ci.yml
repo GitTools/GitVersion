@@ -19,7 +19,9 @@ on:
     paths:
       - '**'
       - '!docs/**'
-
+  merge_group:
+    types: [checks_requested]
+    
   repository_dispatch:
     types: [ ci-release ]
 
