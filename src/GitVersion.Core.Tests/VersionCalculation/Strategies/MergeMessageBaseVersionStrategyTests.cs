@@ -52,6 +52,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
     [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/" + MainBranch, true, "0.8.0")]
     [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
+    [TestCase("Merge branch 'Releases/0.2.0'", false, "0.2.0")] // Support Squash Commits
     public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
     {
         var parents = GetParents(isMergeCommit);

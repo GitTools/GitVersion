@@ -98,7 +98,11 @@ public class MergeMessage
 
         mergeMessage = null;
 
-        if (mergeCommit.IsMergeCommit)
+        var mergeMessageFormats = DefaultFormats.Union(
+                configuration.MergeMessageFormats
+                    .Select(n => new MergeMessageFormat(n.Key, n.Value)));
+
+        if (mergeCommit.IsMergeCommit || mergeMessageFormats.Any(format => format.Pattern.IsMatch(mergeCommit.Message)))
         {
             mergeMessage = new(mergeCommit.Message, configuration);
         }
