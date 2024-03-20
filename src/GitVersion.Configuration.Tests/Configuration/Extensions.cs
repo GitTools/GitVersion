@@ -5,7 +5,7 @@ namespace GitVersion.Configuration.Tests.Configuration;
 
 public static class Extensions
 {
-    public static string SetupConfigFile(this IFileSystem fileSystem, string text, string? path = null, string fileName = ConfigurationFileLocator.DefaultFileName)
+    public static IDisposable<string> SetupConfigFile(this IFileSystem fileSystem, string? path = null, string fileName = ConfigurationFileLocator.DefaultFileName, string text = "")
     {
         if (path.IsNullOrEmpty())
         {
@@ -15,6 +15,6 @@ public static class Extensions
         var fullPath = PathHelper.Combine(path, fileName);
         fileSystem.WriteAllText(fullPath, text);
 
-        return fullPath;
+        return Disposable.Create(fullPath, () => fileSystem.Delete(fullPath));
     }
 }

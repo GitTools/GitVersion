@@ -41,12 +41,12 @@ public static class ConfigurationFileLocatorTests
         [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName, ConfigurationFileLocator.DefaultAlternativeFileName)]
         public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
         {
-            var repositoryConfigFilePath = fileSystem.SetupConfigFile(string.Empty, this.repoPath, repoConfigFile);
-            var workingDirectoryConfigFilePath = fileSystem.SetupConfigFile(string.Empty, this.workingPath, workingConfigFile);
+            using var repositoryConfigFilePath = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: repoConfigFile);
+            using var workingDirectoryConfigFilePath = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: workingConfigFile);
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
-            var expectedMessage = $"Ambiguous configuration file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
+            var expectedMessage = $"Ambiguous configuration file selection from '{workingDirectoryConfigFilePath.Value}' and '{repositoryConfigFilePath.Value}'";
             exception.Message.ShouldBe(expectedMessage);
         }
 
@@ -54,7 +54,7 @@ public static class ConfigurationFileLocatorTests
         [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
         public void NoWarnOnGitVersionYmlFile(string configurationFile)
         {
-            fileSystem.SetupConfigFile(string.Empty, this.repoPath, configurationFile);
+            using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: configurationFile);
 
             Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         }
@@ -70,6 +70,7 @@ public static class ConfigurationFileLocatorTests
         private IFileSystem fileSystem;
         private IConfigurationFileLocator configFileLocator;
         private GitVersionOptions gitVersionOptions;
+        private string ConfigFile => this.gitVersionOptions.ConfigurationInfo.ConfigurationFile!;
 
         [SetUp]
         public void Setup()
@@ -88,12 +89,12 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            var repositoryConfigFilePath = SetupConfigFile(string.Empty, path: this.repoPath);
-            var workDirConfigFilePath = SetupConfigFile(string.Empty, path: this.workingPath);
+            using var repositoryConfigFilePath = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: ConfigFile);
+            using var workDirConfigFilePath = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
-            var expectedMessage = $"Ambiguous configuration file selection from '{workDirConfigFilePath}' and '{repositoryConfigFilePath}'";
+            var expectedMessage = $"Ambiguous configuration file selection from '{workDirConfigFilePath.Value}' and '{repositoryConfigFilePath.Value}'";
             exception.Message.ShouldBe(expectedMessage);
         }
 
@@ -106,7 +107,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFile(string.Empty, path: this.workingPath);
+            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -120,7 +121,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFile(string.Empty, path: this.workingPath);
+            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -135,7 +136,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFile(string.Empty, path: this.workingPath);
+            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -153,7 +154,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFile(string.Empty);
+            using var _ = this.fileSystem.SetupConfigFile(path: null, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
@@ -174,7 +175,8 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            SetupConfigFile(string.Empty, path: PathHelper.Combine(PathHelper.GetTempPath(), "unrelatedPath"));
+            string path = PathHelper.Combine(PathHelper.GetTempPath(), "unrelatedPath");
+            using var _ = this.fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
@@ -196,9 +198,6 @@ public static class ConfigurationFileLocatorTests
             var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
             exception.Message.ShouldBe(expectedMessage);
         }
-
-        private string SetupConfigFile(string text, string? path = null)
-            => this.fileSystem.SetupConfigFile(text, path, this.gitVersionOptions.ConfigurationInfo.ConfigurationFile!);
 
         private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null) =>
             ConfigureServices(services =>

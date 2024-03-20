@@ -277,6 +277,8 @@ GitVersion.GitVersionOptions.WorkingDirectory.get -> string!
 GitVersion.GitVersionOptions.WorkingDirectory.set -> void
 GitVersion.Helpers.Disposable
 GitVersion.Helpers.EncodingHelper
+GitVersion.Helpers.IDisposable<T>
+GitVersion.Helpers.IDisposable<T>.Value.get -> T
 GitVersion.Helpers.LambdaEqualityHelper<T>
 GitVersion.Helpers.LambdaEqualityHelper<T>.Equals(T? instance, T? other) -> bool
 GitVersion.Helpers.LambdaEqualityHelper<T>.GetHashCode(T instance) -> int
@@ -821,6 +823,7 @@ static GitVersion.Extensions.StringExtensions.IsValidPath(this string? path) -> 
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace, System.Text.RegularExpressions.RegexOptions options = System.Text.RegularExpressions.RegexOptions.None) -> string!
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! value, string! prefix) -> string!
 static GitVersion.Helpers.Disposable.Create(System.Action! disposer) -> System.IDisposable!
+static GitVersion.Helpers.Disposable.Create<T>(T value, System.Action! disposer) -> GitVersion.Helpers.IDisposable<T>!
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(System.Collections.Generic.IList<byte>! bytes) -> System.Text.Encoding?
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(string? filename) -> System.Text.Encoding?
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
