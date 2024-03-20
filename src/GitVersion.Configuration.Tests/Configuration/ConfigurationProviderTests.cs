@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using GitVersion.Configuration;
+using GitVersion.Configuration.Tests.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -40,7 +41,7 @@ branches:
         increment: Major
         mode: ContinuousDelivery
         label: dev";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
@@ -58,7 +59,7 @@ branches:
     public void CombineVersionStrategyConfigNextAndTaggedCommit()
     {
         // Arrange
-        SetupConfigFileContent("strategies: [ConfiguredNextVersion, TaggedCommit]");
+        fileSystem.SetupConfigFile("strategies: [ConfiguredNextVersion, TaggedCommit]", this.repoPath);
 
         // Act
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
@@ -75,7 +76,7 @@ next-version: 2.0.0
 branches:
     release:
         label: """"";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
@@ -90,7 +91,7 @@ next-version: 2.0.0
 branches:
     bug:
         label: bugfix";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{PathHelper.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
@@ -105,7 +106,7 @@ branches:
         regex: 'bug[/-]'
         label: bugfix
         source-branches: [notconfigured]";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{PathHelper.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
@@ -122,7 +123,7 @@ branches:
         regex: 'bug[/-]'
         label: bugfix
         source-branches: [{wellKnownBranchKey}]";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
@@ -138,7 +139,7 @@ branches:
         regex: 'bug[/-]'
         label: bugfix
         source-branches: []";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].RegularExpression.ShouldBe("bug[/-]");
@@ -149,7 +150,7 @@ branches:
     public void NextVersionCanBeInteger()
     {
         const string text = "next-version: 2";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0");
@@ -159,7 +160,7 @@ branches:
     public void NextVersionCanHaveEnormousMinorVersion()
     {
         const string text = "next-version: 2.118998723";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.118998723");
@@ -169,7 +170,7 @@ branches:
     public void NextVersionCanHavePatch()
     {
         const string text = "next-version: 2.12.654651698";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.12.654651698");
@@ -192,7 +193,7 @@ assembly-versioning-scheme: MajorMinor
 assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{NugetVersion}'";
 
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
@@ -208,7 +209,7 @@ assembly-versioning-scheme: MajorMinor
 assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
@@ -226,7 +227,7 @@ mode: ContinuousDelivery
 next-version: 5.3.0
 branches: {}";
 
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
@@ -238,7 +239,7 @@ branches: {}";
     public void CanReadDefaultDocument()
     {
         const string text = "";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
@@ -265,7 +266,7 @@ branches: {}";
     [Test]
     public void NoWarnOnGitVersionYmlFile()
     {
-        SetupConfigFileContent(string.Empty);
+        fileSystem.SetupConfigFile(string.Empty, this.repoPath);
 
         var stringLogger = string.Empty;
         void Action(string info) => stringLogger = info;
@@ -286,15 +287,6 @@ branches: {}";
         stringLogger.Length.ShouldBe(0);
     }
 
-    private void SetupConfigFileContent(string text, string fileName = ConfigurationFileLocator.DefaultFileName)
-        => SetupConfigFileContent(text, fileName, this.repoPath);
-
-    private void SetupConfigFileContent(string text, string fileName, string path)
-    {
-        var fullPath = PathHelper.Combine(path, fileName);
-        this.fileSystem.WriteAllText(fullPath, text);
-    }
-
     [Test]
     public void ShouldUseSpecifiedSourceBranchesForDevelop()
     {
@@ -305,7 +297,7 @@ branches:
         mode: ContinuousDeployment
         source-branches: ['develop']
         label: dev";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
@@ -320,7 +312,7 @@ branches:
     develop:
         mode: ContinuousDeployment
         label: dev";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
@@ -336,7 +328,7 @@ branches:
         mode: ContinuousDeployment
         source-branches: ['develop', 'release']
         label: dev";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
@@ -351,7 +343,7 @@ branches:
     feature:
         mode: ContinuousDeployment
         label: dev";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(
@@ -364,7 +356,7 @@ branches:
         const string text = @"
 next-version: 1.2.3
 tag-prefix: custom-tag-prefix-from-yml";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
 
         var expectedConfig = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.2.3")
@@ -402,7 +394,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldUseDefaultTagPrefixWhenNotSetInConfigFile()
     {
         const string text = "";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
@@ -412,7 +404,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldUseTagPrefixFromConfigFileWhenProvided()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
@@ -422,7 +414,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldOverrideTagPrefixWithOverrideConfigValue([Values] bool tagPrefixSetAtYmlFile)
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "tag-prefix-from-override-configuration" }
@@ -436,7 +428,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldNotOverrideDefaultTagPrefixWhenNotSetInOverrideConfig()
     {
         const string text = "";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
@@ -451,7 +443,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
@@ -465,7 +457,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     public void ShouldOverrideTagPrefixFromConfigFileWhenSetInOverrideConfig()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        SetupConfigFileContent(text);
+        fileSystem.SetupConfigFile(text, this.repoPath);
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "custom-tag-prefix-from-console" }

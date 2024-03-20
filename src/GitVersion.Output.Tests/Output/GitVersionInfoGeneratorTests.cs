@@ -19,7 +19,7 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("vb")]
     public void ShouldCreateFile(string fileExtension)
     {
-        var directory = Path.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = PathHelper.Combine(directory, fileName);
 
