@@ -1053,7 +1053,7 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
-    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.3+0")]
+    [TestCase("0.0.1-alpha.2", false, "0.1.0-alpha.1+0")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0-alpha.1+0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1+1")]
@@ -1080,7 +1080,7 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
-    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.2")]
+    [TestCase("0.0.1-alpha.2", false, "0.1.0-alpha.0")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0-alpha.0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1")]
@@ -1107,7 +1107,7 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1")]
-    [TestCase("0.0.1-alpha.2", false, "0.0.1")]
+    [TestCase("0.0.1-alpha.2", false, "0.1.0")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0")]

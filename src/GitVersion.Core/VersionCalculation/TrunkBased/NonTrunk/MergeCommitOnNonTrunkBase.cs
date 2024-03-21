@@ -7,7 +7,8 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => commit.HasChildIteration && !commit.Configuration.IsMainBranch && context.SemanticVersion is null;
 
-    public virtual IEnumerable<BaseVersionV2> GetIncrements(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
+    public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
+        TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
         if (commit.ChildIteration is null) throw new InvalidOperationException("The commit child iteration is null.");
 
@@ -16,7 +17,7 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
            targetLabel: context.TargetLabel
        );
 
-        context.Label ??= baseVersion.Label;
+        context.Label ??= baseVersion.Operator?.Label;
 
         var increment = VersionField.None;
         if (!commit.Configuration.PreventIncrementOfMergedBranch)
@@ -25,7 +26,7 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
         }
         if (!commit.ChildIteration.Configuration.PreventIncrementWhenBranchMerged)
         {
-            increment = increment.Consolidate(baseVersion.Increment);
+            increment = increment.Consolidate(baseVersion.Operator?.Increment);
         }
         if (commit.Configuration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
         {
@@ -36,11 +37,11 @@ internal abstract class MergeCommitOnNonTrunkBase : ITrunkBasedIncrementer
         if (baseVersion.BaseVersionSource is not null)
         {
             context.BaseVersionSource = baseVersion.BaseVersionSource;
-            context.SemanticVersion = baseVersion.GetSemanticVersion();
+            context.SemanticVersion = baseVersion.SemanticVersion;
         }
-        else if (baseVersion.AlternativeSemanticVersion is not null)
+        else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
         {
-            context.AlternativeSemanticVersions.Add(baseVersion.AlternativeSemanticVersion);
+            context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
         }
 
         yield break;

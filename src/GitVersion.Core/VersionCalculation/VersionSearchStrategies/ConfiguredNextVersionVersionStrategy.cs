@@ -8,19 +8,45 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-internal class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : VersionStrategyBase(versionContext)
+internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> contextLazy) : IVersionStrategy
 {
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+
+    private GitVersionContext Context => contextLazy.Value;
+
+    public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
+        configuration.NotNull();
+
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
             yield break;
 
-        var contextConfiguration = Context.Configuration;
-        var nextVersion = contextConfiguration.NextVersion;
+        var nextVersion = Context.Configuration.NextVersion;
         if (!nextVersion.IsNullOrEmpty())
         {
-            var semanticVersion = SemanticVersion.Parse(nextVersion, contextConfiguration.TagPrefix, contextConfiguration.SemanticVersionFormat);
-            yield return new("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
+            var semanticVersion = SemanticVersion.Parse(
+                nextVersion, Context.Configuration.TagPrefix, Context.Configuration.SemanticVersionFormat
+            );
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+
+            if (semanticVersion.IsMatchForBranchSpecificLabel(label))
+            {
+                BaseVersionOperator? operation = null;
+                if (!semanticVersion.IsPreRelease || label is not null && semanticVersion.PreReleaseTag.Name != label)
+                {
+                    operation = new BaseVersionOperator()
+                    {
+                        Increment = VersionField.None,
+                        ForceIncrement = false,
+                        Label = label
+                    };
+                }
+
+                yield return new BaseVersion("NextVersion in GitVersion configuration file", semanticVersion)
+                {
+                    Operator = operation
+                };
+            }
         }
     }
 }

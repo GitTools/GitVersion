@@ -10,24 +10,28 @@ using GitVersion.VersionCalculation.TrunkBased.Trunk;
 namespace GitVersion.VersionCalculation;
 
 internal sealed class TrunkBasedVersionStrategy(
-    Lazy<GitVersionContext> context,
+    Lazy<GitVersionContext> contextLazy,
     IRepositoryStore repositoryStore,
     ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
     IIncrementStrategyFinder incrementStrategyFinder)
-    : VersionStrategyBase(context)
+    : IVersionStrategy
 {
-    private static readonly IReadOnlyCollection<ITrunkBasedContextPreEnricher> TrunkContextPreEnricherCollection = new ITrunkBasedContextPreEnricher[]
-    {
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+
+    private GitVersionContext Context => contextLazy.Value;
+
+    private static readonly IReadOnlyCollection<ITrunkBasedContextPreEnricher> TrunkContextPreEnricherCollection =
+    [
         new EnrichSemanticVersion(),
         new EnrichIncrement()
-    };
-    private static readonly IReadOnlyCollection<ITrunkBasedContextPostEnricher> TrunkContextPostEnricherCollection = new ITrunkBasedContextPostEnricher[]
-    {
+    ];
+    private static readonly IReadOnlyCollection<ITrunkBasedContextPostEnricher> TrunkContextPostEnricherCollection =
+    [
         new RemoveSemanticVersion(),
         new RemoveIncrement()
-    };
-    private static readonly IReadOnlyCollection<ITrunkBasedIncrementer> TrunkIncrementerCollection = new ITrunkBasedIncrementer[]
-    {
+    ];
+    private static readonly IReadOnlyCollection<ITrunkBasedIncrementer> TrunkIncrementerCollection =
+    [
         // Trunk
         new CommitOnTrunk(),
 
@@ -56,7 +60,7 @@ internal sealed class TrunkBasedVersionStrategy(
 
         new CommitOnNonTrunkBranchedToTrunk(),
         new CommitOnNonTrunkBranchedToNonTrunk()
-    };
+    ];
 
     private volatile int iterationCounter;
 
@@ -64,8 +68,10 @@ internal sealed class TrunkBasedVersionStrategy(
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+    public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
+        configuration.NotNull();
+
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrunkBased))
             yield break;
 
@@ -139,7 +145,7 @@ internal sealed class TrunkBasedVersionStrategy(
                 if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label)) return true;
             }
 
-            if (item.IsMergeCommit)
+            if (item.IsMergeCommit())
             {
                 Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
                     () => incrementStrategyFinder.GetMergedCommits(item, 1, configuration.Ignore).Reverse().ToList()
@@ -203,7 +209,7 @@ internal sealed class TrunkBasedVersionStrategy(
         {
             CommitMessageIncrementMode.Enabled => incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
             CommitMessageIncrementMode.Disabled => VersionField.None,
-            CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
+            CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit()
                 ? incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration) : VersionField.None,
             _ => throw new InvalidEnumArgumentException(
                 nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
@@ -250,57 +256,32 @@ internal sealed class TrunkBasedVersionStrategy(
         return result;
     }
 
-    private static BaseVersionV2 DetermineBaseVersion(TrunkBasedIteration iteration, string? targetLabel)
+    private static BaseVersion DetermineBaseVersion(TrunkBasedIteration iteration, string? targetLabel)
         => DetermineBaseVersionRecursive(iteration, targetLabel);
 
-    internal static BaseVersionV2 DetermineBaseVersionRecursive(TrunkBasedIteration iteration, string? targetLabel)
+    internal static BaseVersion DetermineBaseVersionRecursive(TrunkBasedIteration iteration, string? targetLabel)
     {
         iteration.NotNull();
 
-        var incrementSteps = GetIncrementSteps(iteration, targetLabel).ToArray();
+        var incrementSteps = GetIncrements(iteration, targetLabel).ToArray();
 
-        var semanticVersion = SemanticVersion.Empty;
-
+        BaseVersion? result = null;
         for (var i = 0; i < incrementSteps.Length; i++)
         {
-            var incrementStep = incrementSteps[i];
-            if (incrementStep.SemanticVersion is not null)
-                semanticVersion = incrementStep.SemanticVersion;
-
-            if (i + 1 < incrementSteps.Length)
+            if (incrementSteps[i] is BaseVersionOperand baseVersionOperand)
             {
-                if (incrementStep.ShouldIncrement)
-                {
-                    semanticVersion = semanticVersion.Increment(
-                        incrementStep.Increment, incrementStep.Label, incrementStep.ForceIncrement
-                    );
-                    if (semanticVersion.IsLessThan(incrementStep.AlternativeSemanticVersion, includePreRelease: false))
-                    {
-                        semanticVersion = new(semanticVersion)
-                        {
-                            Major = incrementStep.AlternativeSemanticVersion!.Major,
-                            Minor = incrementStep.AlternativeSemanticVersion.Minor,
-                            Patch = incrementStep.AlternativeSemanticVersion.Patch
-                        };
-                    }
-                }
+                result = new BaseVersion(baseVersionOperand);
             }
-            else
+            else if (incrementSteps[i] is BaseVersionOperator baseVersionOperator)
             {
-                return new(nameof(TrunkBasedVersionStrategy), incrementStep.ShouldIncrement, semanticVersion, incrementStep.BaseVersionSource, null)
-                {
-                    Increment = incrementStep.Increment,
-                    Label = incrementStep.Label,
-                    ForceIncrement = incrementStep.ForceIncrement,
-                    AlternativeSemanticVersion = incrementStep.AlternativeSemanticVersion
-                };
+                result ??= new BaseVersion();
+                result = result.Apply(baseVersionOperator);
             }
         }
-
-        throw new InvalidOperationException();
+        return result ?? throw new InvalidOperationException();
     }
 
-    private static IEnumerable<BaseVersionV2> GetIncrementSteps(TrunkBasedIteration iteration, string? targetLabel)
+    private static IEnumerable<IBaseVersionIncrement> GetIncrements(TrunkBasedIteration iteration, string? targetLabel)
     {
         TrunkBasedContext context = new()
         {

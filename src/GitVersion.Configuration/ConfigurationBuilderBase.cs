@@ -24,7 +24,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
-    private VersionStrategies versionStrategy;
+    private VersionStrategies[] versionStrategies;
     private Dictionary<string, string> mergeMessageFormats = new();
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
@@ -204,7 +204,15 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public virtual TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
     {
-        this.versionStrategy = value;
+        this.versionStrategies = Enum.GetValues<VersionStrategies>()
+            .Where(element => element != VersionStrategies.None && value.HasFlag(element))
+            .ToArray();
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
+    {
+        this.versionStrategies = values;
         return (TConfigurationBuilder)this;
     }
 
@@ -381,10 +389,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         {
             branches.Add(name, (BranchConfiguration)branchConfigurationBuilder.Build());
         }
-
-        var versionStrategies = Enum.GetValues<VersionStrategies>()
-            .Where(element => element != VersionStrategies.None && this.versionStrategy.HasFlag(element))
-            .ToArray();
 
         IGitVersionConfiguration configuration = new GitVersionConfiguration
         {

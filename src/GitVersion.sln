@@ -4,7 +4,7 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.App", "GitVersion.App\GitVersion.App.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration", "GitVersion.Configuration\GitVersion.Configuration.csproj", "{B93C3F0C-6CBF-49E6-A476-A0103319640B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Configuration", "GitVersion.Configuration\GitVersion.Configuration.csproj", "{B93C3F0C-6CBF-49E6-A476-A0103319640B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core.Tests", "GitVersion.Core.Tests\GitVersion.Core.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
 EndProject
@@ -47,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{1F4BE0
 		..\SECURITY.md = ..\SECURITY.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration.Tests", "GitVersion.Configuration.Tests\GitVersion.Configuration.Tests.csproj", "{E3722E82-D283-4BA7-B44F-C43072B829FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Configuration.Tests", "GitVersion.Configuration.Tests\GitVersion.Configuration.Tests.csproj", "{E3722E82-D283-4BA7-B44F-C43072B829FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7D3A83B4-95D9-42AF-AB11-6292209CF00B}"
 	ProjectSection(SolutionItems) = preProject
@@ -56,8 +56,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7D3A83B4-9
 		..\.gitignore = ..\.gitignore
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\global.json = ..\global.json
-		..\schemas\6.0\GitVersion.json = ..\schemas\6.0\GitVersion.json
-		..\schemas\6.0\GitVersion.configuration.json = ..\schemas\6.0\GitVersion.configuration.json
 	EndProjectSection
 EndProject
 Global
@@ -70,6 +68,10 @@ Global
 		{C3578A7B-09A6-4444-9383-0DEAFA4958BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3578A7B-09A6-4444-9383-0DEAFA4958BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3578A7B-09A6-4444-9383-0DEAFA4958BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BF905F84-382C-440D-92F5-C61108626D8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF905F84-382C-440D-92F5-C61108626D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF905F84-382C-440D-92F5-C61108626D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -118,10 +120,6 @@ Global
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22026A20-261C-4EF5-836C-EA6F6D37B5E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B93C3F0C-6CBF-49E6-A476-A0103319640B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3722E82-D283-4BA7-B44F-C43072B829FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -131,14 +129,14 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{B93C3F0C-6CBF-49E6-A476-A0103319640B} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{093AFCF2-68F4-49B1-8173-7CB88467E783} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{B1C486D2-2B07-42D6-86AE-3F9AD50F27C8} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{85060C01-6DAF-48E9-9D7E-AEDA8FFEB0DD} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{843450BC-3A6D-4DA6-8520-2D9A9C8218AC} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{13C60949-7225-4B08-BE63-CAAC5E25FD16} = {69C36B9D-E496-42A2-B091-C055E999686C}
-		{B93C3F0C-6CBF-49E6-A476-A0103319640B} = {69C36B9D-E496-42A2-B091-C055E999686C}
-		{E3722E82-D283-4BA7-B44F-C43072B829FA} = {69C36B9D-E496-42A2-B091-C055E999686C}
 		{1F4BE015-699F-464A-8FF0-D8762102421A} = {7D3A83B4-95D9-42AF-AB11-6292209CF00B}
+		{E3722E82-D283-4BA7-B44F-C43072B829FA} = {69C36B9D-E496-42A2-B091-C055E999686C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}

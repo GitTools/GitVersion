@@ -98,9 +98,9 @@ public class MergeMessage
 
         mergeMessage = null;
 
-        if (mergeCommit.IsMergeCommit)
+        if (mergeCommit.IsMergeCommit())
         {
-            mergeMessage = new(mergeCommit.Message, configuration);
+            mergeMessage = new MergeMessage(mergeCommit.Message, configuration);
         }
 
         return mergeMessage != null;

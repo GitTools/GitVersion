@@ -63,6 +63,7 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
+- Fallback
 - ConfiguredNextVersion
 - MergeMessage
 - TaggedCommit
@@ -228,6 +229,7 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
+- Fallback
 - ConfiguredNextVersion
 - MergeMessage
 - TaggedCommit
@@ -917,6 +919,7 @@ Example of invalid `Strict`, but valid `Loose`
 ### strategies
 
 Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
+-   Fallback
 -   ConfiguredNextVersion
 -   MergeMessage
 -   TaggedCommit

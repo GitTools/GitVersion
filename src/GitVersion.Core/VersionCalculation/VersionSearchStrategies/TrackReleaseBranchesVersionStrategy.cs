@@ -1,71 +1,76 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-/// <summary>
-/// Active only when the branch is marked as IsDevelop.
-/// Two different algorithms (results are merged):
-/// <para>
-/// Using <see cref="VersionInBranchNameVersionStrategy"/>:
-/// Version is that of any child branches marked with IsReleaseBranch (except if they have no commits of their own).
-/// BaseVersionSource is the commit where the child branch was created.
-/// Always increments.
-/// </para>
-/// <para>
-/// Using <see cref="TaggedCommitVersionStrategy"/>:
-/// Version is extracted from all tags on the <c>main</c> branch which are valid.
-/// BaseVersionSource is the tag's commit (same as base strategy).
-/// Increments if the tag is not the current commit (same as base strategy).
-/// </para>
-/// </summary>
-internal class TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    : VersionStrategyBase(versionContext)
+internal sealed class TrackReleaseBranchesVersionStrategy(
+    Lazy<GitVersionContext> contextLazy,
+    IRepositoryStore repositoryStore,
+    IBranchRepository branchRepository,
+    IIncrementStrategyFinder incrementStrategyFinder)
+    : IVersionStrategy
 {
-    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(repositoryStore, versionContext);
-
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly IBranchRepository branchRepository = branchRepository.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy, repositoryStore);
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
+    private GitVersionContext Context => contextLazy.Value;
+
+    public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
+        configuration.NotNull();
+
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrackReleaseBranches))
-            return [];
+            yield break;
 
-        return configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : [];
-    }
-
-    private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
-    {
-        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
-        if (releaseBranchConfig.Count == 0)
-            return [];
-
-        var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
-
-        return releaseBranches
-            .SelectMany(GetReleaseVersion)
-            .Select(baseVersion =>
+        if (configuration.Value.TracksReleaseBranches)
+        {
+            foreach (var releaseBranche in branchRepository.GetReleaseBranches(Context.Configuration))
             {
-                // Need to drop branch overrides and give a bit more context about
-                // where this version came from
-                var source1 = "Release branch exists -> " + baseVersion.Source;
-                return new BaseVersion(source1,
-                    baseVersion.ShouldIncrement,
-                    baseVersion.GetSemanticVersion(),
-                    baseVersion.BaseVersionSource,
-                    null);
-            })
-            .ToList();
+                if (TryGetBaseVersion(releaseBranche, configuration, out var baseVersion))
+                {
+                    yield return baseVersion;
+                }
+            }
+        }
     }
 
-    private IEnumerable<BaseVersion> GetReleaseVersion(IBranch releaseBranch)
+    private bool TryGetBaseVersion(
+        IBranch releaseBranch, EffectiveBranchConfiguration configuration, [NotNullWhen(true)] out BaseVersion? result)
     {
-        // Find the commit where the child branch was created.
-        var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-        var effectiveBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
-        return this.releaseVersionStrategy
-            .GetBaseVersions(effectiveBranchConfiguration)
-            .Select(b => new BaseVersion(b.Source, true, b.GetSemanticVersion(), baseSource, b.BranchNameOverride));
+        result = null;
+
+        var releaseBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
+        if (this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion))
+        {
+            // Find the commit where the child branch was created.
+            var baseVersionSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+            var increment = incrementStrategyFinder.DetermineIncrementedField(
+                currentCommit: Context.CurrentCommit,
+                baseVersionSource: baseVersionSource,
+                shouldIncrement: true,
+                configuration: configuration.Value,
+                label: label
+            );
+
+            result = new BaseVersion(
+                "Release branch exists -> " + baseVersion.Source, baseVersion.SemanticVersion, baseVersionSource)
+            {
+                Operator = new BaseVersionOperator()
+                {
+                    Increment = increment,
+                    ForceIncrement = false,
+                    Label = label
+                }
+            };
+        }
+
+        return result is not null;
     }
 }

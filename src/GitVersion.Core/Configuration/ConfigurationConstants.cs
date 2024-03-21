@@ -15,6 +15,7 @@ internal static class ConfigurationConstants
     public const AssemblyFileVersioningScheme DefaultAssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch;
     public const SemanticVersionFormat DefaultSemanticVersionFormat = SemanticVersionFormat.Strict;
     public static readonly VersionStrategies[] DefaultVersionStrategies = [
+        VersionStrategies.Fallback,
         VersionStrategies.ConfiguredNextVersion,
         VersionStrategies.MergeMessage,
         VersionStrategies.TaggedCommit,

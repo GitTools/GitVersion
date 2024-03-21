@@ -1,50 +1,104 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class BaseVersion
+public sealed record class BaseVersion : IBaseVersion
 {
-    public BaseVersion(string source, bool shouldIncrement)
+    public BaseVersion() : this(new BaseVersionOperand())
     {
-        Source = source.NotNullOrEmpty();
-        ShouldIncrement = shouldIncrement;
     }
 
-    public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, ICommit? baseVersionSource, string? branchNameOverride)
+    public BaseVersion(string source, SemanticVersion semanticVersion, ICommit? baseVersionSource = null)
+        : this(new BaseVersionOperand(source, semanticVersion, baseVersionSource))
     {
-        Source = source;
-        ShouldIncrement = shouldIncrement;
-        SemanticVersion = semanticVersion;
-        BaseVersionSource = baseVersionSource;
-        BranchNameOverride = branchNameOverride;
     }
 
-    public BaseVersion(BaseVersion baseVersion)
+    public BaseVersion(BaseVersionOperand baseVersionOperand) => Operand = baseVersionOperand.NotNull();
+
+    public string Source => (Operator?.Source).IsNullOrEmpty() ? Operand.Source : Operator.Source;
+
+    public SemanticVersion SemanticVersion => Operand.SemanticVersion;
+
+    public ICommit? BaseVersionSource => Operator?.BaseVersionSource ?? Operand.BaseVersionSource;
+
+    [MemberNotNullWhen(true, nameof(Operator))]
+    public bool ShouldIncrement => Operator is not null;
+
+    public BaseVersionOperand Operand { get; init; }
+
+    public BaseVersionOperator? Operator { get; init; }
+
+    public SemanticVersion GetIncrementedVersion()
     {
-        baseVersion.NotNull();
+        var result = SemanticVersion;
 
-        Source = baseVersion.Source;
-        ShouldIncrement = baseVersion.ShouldIncrement;
-        SemanticVersion = baseVersion.SemanticVersion;
-        BaseVersionSource = baseVersion.BaseVersionSource;
-        BranchNameOverride = baseVersion.BranchNameOverride;
+        if (ShouldIncrement)
+        {
+            result = result.Increment(
+                increment: Operator.Increment,
+                label: Operator.Label,
+                forceIncrement: Operator.ForceIncrement
+            );
+
+            if (result.IsLessThan(Operator.AlternativeSemanticVersion, includePreRelease: false))
+            {
+                result = new SemanticVersion(result)
+                {
+                    Major = Operator.AlternativeSemanticVersion!.Major,
+                    Minor = Operator.AlternativeSemanticVersion.Minor,
+                    Patch = Operator.AlternativeSemanticVersion.Patch
+                };
+            }
+        }
+
+        return result;
     }
-
-    public string Source { get; init; }
-
-    public bool ShouldIncrement { get; init; }
-
-    public SemanticVersion? SemanticVersion { get; init; }
-
-    public SemanticVersion GetSemanticVersion() => SemanticVersion ?? SemanticVersion.Empty;
-
-    public ICommit? BaseVersionSource { get; init; }
-
-    public string? BranchNameOverride { get; init; }
 
     public override string ToString()
     {
-        var externalSource = BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha;
-        return $"{Source}: {GetSemanticVersion():f} with commit source '{externalSource}'";
+        var commitSource = BaseVersionSource?.Id.ToString(7) ?? "External";
+
+        StringBuilder stringBuilder = new();
+        if (ShouldIncrement)
+        {
+            stringBuilder.Append($"{Source}: ");
+            if (Operator.ForceIncrement)
+                stringBuilder.Append("Force version increment ");
+            else
+            {
+                stringBuilder.Append("Version increment ");
+            }
+
+            if (SemanticVersion is not null)
+                stringBuilder.Append($"'{SemanticVersion:f}' ");
+
+            stringBuilder.Append($"+semver '{Operator.Increment}'");
+
+            if (Operator.Label is null)
+                stringBuilder.Append(" with no label");
+            else
+            {
+                stringBuilder.Append($" with label '{Operator.Label}'");
+            }
+        }
+        else
+        {
+            stringBuilder.Append($"{Source}: Take '{SemanticVersion:f}'");
+        }
+
+        if (BaseVersionSource is not null)
+            stringBuilder.Append($" based on commit '{commitSource}'.");
+        return stringBuilder.ToString();
+    }
+
+    internal BaseVersion Apply(BaseVersionOperator baseVersionOperator)
+    {
+        baseVersionOperator.NotNull();
+
+        return new BaseVersion(Source, GetIncrementedVersion(), BaseVersionSource)
+        {
+            Operator = baseVersionOperator
+        };
     }
 }

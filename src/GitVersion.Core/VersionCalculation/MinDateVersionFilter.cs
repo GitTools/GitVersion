@@ -5,13 +5,13 @@ namespace GitVersion.VersionCalculation;
 
 internal class MinDateVersionFilter(DateTimeOffset minimum) : IVersionFilter
 {
-    public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
+    public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
     {
-        version.NotNull();
+        baseVersion.NotNull();
 
         reason = null;
 
-        if (version.BaseVersionSource == null || version.BaseVersionSource.When >= minimum)
+        if (baseVersion.BaseVersionSource == null || baseVersion.BaseVersionSource.When >= minimum)
             return false;
 
         reason = "Source was ignored due to commit date being outside of configured range";

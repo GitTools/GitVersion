@@ -329,11 +329,11 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
-    public SemanticVersion Increment(VersionField incrementStrategy, string? label)
-        => Increment(incrementStrategy, label, mode: IncrementMode.Standard);
+    public SemanticVersion Increment(VersionField increment, string? label)
+        => Increment(increment, label, mode: IncrementMode.Standard);
 
-    public SemanticVersion Increment(VersionField incrementStrategy, string? label, bool forceIncrement)
-        => Increment(incrementStrategy, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard);
+    public SemanticVersion Increment(VersionField increment, string? label, bool forceIncrement)
+        => Increment(increment, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard);
 
     public SemanticVersion Increment(VersionField increment, string? label, IncrementMode mode)
     {
@@ -413,7 +413,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             preReleaseTagName = label;
         }
 
-        return new(this)
+        return new SemanticVersion(this)
         {
             Major = major,
             Minor = minor,
