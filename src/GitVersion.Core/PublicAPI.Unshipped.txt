@@ -291,11 +291,6 @@ GitVersion.Git.ReferenceName.WithoutOrigin.get -> string!
 GitVersion.Git.RefSpecDirection
 GitVersion.Git.RefSpecDirection.Fetch = 0 -> GitVersion.Git.RefSpecDirection
 GitVersion.Git.RefSpecDirection.Push = 1 -> GitVersion.Git.RefSpecDirection
-GitVersion.GitToolsException
-GitVersion.GitToolsException.GitToolsException() -> void
-GitVersion.GitToolsException.GitToolsException(string! message, System.Exception! innerException) -> void
-GitVersion.GitToolsException.GitToolsException(string! messageFormat, params object![]! args) -> void
-GitVersion.GitToolsException.GitToolsException(string? message) -> void
 GitVersion.GitVersionCommonModule
 GitVersion.GitVersionCommonModule.GitVersionCommonModule() -> void
 GitVersion.GitVersionCommonModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

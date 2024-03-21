@@ -1,8 +1,12 @@
 namespace GitVersion;
 
 [Serializable]
-public class GitVersionException : GitToolsException
+public class GitVersionException : Exception
 {
+    public GitVersionException()
+    {
+    }
+
     public GitVersionException(string message)
         : base(message)
     {
@@ -13,11 +17,7 @@ public class GitVersionException : GitToolsException
     {
     }
 
-    public GitVersionException(string messageFormat, params object[] args) : base(messageFormat, args)
-    {
-    }
-
-    public GitVersionException()
+    public GitVersionException(string messageFormat, params object[] args) : base(string.Format(messageFormat, args))
     {
     }
 }
