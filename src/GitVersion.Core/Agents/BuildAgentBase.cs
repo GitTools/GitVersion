@@ -4,7 +4,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-public abstract class BuildAgentBase(IEnvironment environment, ILog log) : ICurrentBuildAgent
+internal abstract class BuildAgentBase(IEnvironment environment, ILog log) : ICurrentBuildAgent
 {
     protected readonly ILog Log = log;
     protected IEnvironment Environment { get; } = environment;

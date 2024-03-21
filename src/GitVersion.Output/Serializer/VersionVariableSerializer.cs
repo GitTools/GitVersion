@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.OutputVariables;
 
-public class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVariableSerializer
+internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVariableSerializer
 {
     public GitVersionVariables FromJson(string json)
     {

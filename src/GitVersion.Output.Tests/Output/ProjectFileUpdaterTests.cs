@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Output.AssemblyInfo;

@@ -1,3 +1,5 @@
+using GitVersion.Configuration;
+
 namespace GitVersion.Extensions;
 
 public static class AssemblyVersionsGeneratorExtensions

@@ -5,7 +5,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation.Caching;
 
-public class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
+internal class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
     : IGitVersionCache
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();

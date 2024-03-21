@@ -3,7 +3,7 @@ using System.Buffers.Text;
 
 namespace GitVersion.OutputVariables;
 
-public class VersionVariablesJsonStringConverter : JsonConverter<string>
+internal class VersionVariablesJsonStringConverter : JsonConverter<string>
 {
     public override bool CanConvert(Type typeToConvert)
         => typeToConvert == typeof(string);

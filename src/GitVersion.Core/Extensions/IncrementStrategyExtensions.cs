@@ -1,4 +1,4 @@
-namespace GitVersion;
+namespace GitVersion.Extensions;
 
 public static class IncrementStrategyExtensions
 {

@@ -1,5 +1,3 @@
 namespace GitVersion;
 
-public interface IRefSpecCollection : IEnumerable<IRefSpec>
-{
-}
+public interface IRefSpecCollection : IEnumerable<IRefSpec>;

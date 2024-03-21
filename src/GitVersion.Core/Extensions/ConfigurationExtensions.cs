@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public static class ConfigurationExtensions
+internal static class ConfigurationExtensions
 {
     public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
     {
