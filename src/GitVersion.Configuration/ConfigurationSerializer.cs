@@ -28,23 +28,23 @@ internal static class ConfigurationSerializer
 
     public static void Write(IGitVersionConfiguration configuration, TextWriter writer)
         => Serializer.Serialize(writer, configuration);
-}
 
-internal sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
-{
-    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
-        innerTypeDescriptor.GetProperties(type, container)
-            .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-            .Select(p =>
-            {
-                var descriptor = new PropertyDescriptor(p);
-                var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
-                if (member is { Name: not null })
+    private sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
+    {
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
+            innerTypeDescriptor.GetProperties(type, container)
+                .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                .Select(p =>
                 {
-                    descriptor.Name = member.Name;
-                }
+                    var descriptor = new PropertyDescriptor(p);
+                    var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
+                    if (member is { Name: not null })
+                    {
+                        descriptor.Name = member.Name;
+                    }
 
-                return (IPropertyDescriptor)descriptor;
-            })
-            .OrderBy(p => p.Order);
+                    return (IPropertyDescriptor)descriptor;
+                })
+                .OrderBy(p => p.Order);
+    }
 }

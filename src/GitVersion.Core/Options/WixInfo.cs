@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class WixInfo
+public record WixInfo
 {
     public bool UpdateWixVersionFile;
 }

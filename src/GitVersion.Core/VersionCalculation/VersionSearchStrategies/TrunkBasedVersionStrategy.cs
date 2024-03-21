@@ -17,7 +17,11 @@ internal sealed class TrunkBasedVersionStrategy(
     IIncrementStrategyFinder incrementStrategyFinder)
     : IVersionStrategy
 {
+    private volatile int iterationCounter;
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -63,12 +67,6 @@ internal sealed class TrunkBasedVersionStrategy(
         new CommitOnNonTrunkBranchedToNonTrunk()
     ];
 
-    private volatile int iterationCounter;
-
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
-    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
-    private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
-
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         configuration.NotNull();
@@ -111,7 +109,7 @@ internal sealed class TrunkBasedVersionStrategy(
         IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration, string? targetLabel,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
     {
-        traversedCommits ??= new();
+        traversedCommits ??= [];
 
         Lazy<IReadOnlyDictionary<ICommit, EffectiveBranchConfiguration>> commitsWasBranchedFromLazy = new(
             () => GetCommitsWasBranchedFrom(branchName: iteration.BranchName)
@@ -220,7 +218,7 @@ internal sealed class TrunkBasedVersionStrategy(
 
     private IReadOnlyDictionary<ICommit, EffectiveBranchConfiguration> GetCommitsWasBranchedFrom(ReferenceName branchName)
     {
-        Dictionary<ICommit, EffectiveBranchConfiguration> result = new();
+        Dictionary<ICommit, EffectiveBranchConfiguration> result = [];
 
         var branch = repositoryStore.FindBranch(branchName);
         if (branch is null) return result;

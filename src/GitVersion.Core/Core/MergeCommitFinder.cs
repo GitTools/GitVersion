@@ -5,21 +5,13 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class MergeCommitFinder
+internal class MergeCommitFinder(RepositoryStore repositoryStore, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
 {
-    private readonly IEnumerable<IBranch> branches;
-    private readonly ILog log;
-    private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
-    private readonly RepositoryStore repositoryStore;
-    private readonly IGitVersionConfiguration configuration;
-
-    public MergeCommitFinder(RepositoryStore repositoryStore, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
-    {
-        this.repositoryStore = repositoryStore.NotNull();
-        this.configuration = configuration.NotNull();
-        this.branches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
-        this.log = log.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IEnumerable<IBranch> branches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
+    private readonly RepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly IGitVersionConfiguration configuration = configuration.NotNull();
+    private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = [];
 
     public IEnumerable<BranchCommit> FindMergeCommitsFor(IBranch branch)
     {

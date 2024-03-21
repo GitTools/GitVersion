@@ -6,21 +6,17 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-internal class GitVersionContextFactory : IGitVersionContextFactory
+internal class GitVersionContextFactory(
+    IConfigurationProvider configurationProvider,
+    IRepositoryStore repositoryStore,
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    IOptions<GitVersionOptions> options)
+    : IGitVersionContextFactory
 {
-    private readonly IConfigurationProvider configurationProvider;
-    private readonly IRepositoryStore repositoryStore;
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository;
-    private readonly IOptions<GitVersionOptions> options;
-
-    public GitVersionContextFactory(IConfigurationProvider configurationProvider, IRepositoryStore repositoryStore,
-        ITaggedSemanticVersionRepository taggedSemanticVersionRepository, IOptions<GitVersionOptions> options)
-    {
-        this.configurationProvider = configurationProvider.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
-        this.taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
-        this.options = options.NotNull();
-    }
+    private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
     public GitVersionContext Create(GitVersionOptions gitVersionOptions)
     {

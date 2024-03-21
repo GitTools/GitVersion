@@ -32,7 +32,7 @@ internal class GitVersionCacheKeyFactory(
         var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
 
         var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, overrideConfigHash);
-        return new GitVersionCacheKey(compositeHash);
+        return new(compositeHash);
     }
 
     private string GetGitSystemHash()

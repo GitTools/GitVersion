@@ -9,37 +9,28 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-internal class GitVersionCalculateTool : IGitVersionCalculateTool
+internal class GitVersionCalculateTool(
+    ILog log,
+    INextVersionCalculator nextVersionCalculator,
+    IVariableProvider variableProvider,
+    IGitPreparer gitPreparer,
+    IGitVersionCache gitVersionCache,
+    IGitVersionCacheKeyFactory cacheKeyFactory,
+    IOptions<GitVersionOptions> options,
+    Lazy<GitVersionContext> versionContext)
+    : IGitVersionCalculateTool
 {
-    private readonly ILog log;
-    private readonly IGitVersionCache gitVersionCache;
-    private readonly INextVersionCalculator nextVersionCalculator;
-    private readonly IVariableProvider variableProvider;
-    private readonly IGitPreparer gitPreparer;
-    private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
+    private readonly ILog log = log.NotNull();
+    private readonly IGitVersionCache gitVersionCache = gitVersionCache.NotNull();
+    private readonly INextVersionCalculator nextVersionCalculator = nextVersionCalculator.NotNull();
+    private readonly IVariableProvider variableProvider = variableProvider.NotNull();
+    private readonly IGitPreparer gitPreparer = gitPreparer.NotNull();
+    private readonly IGitVersionCacheKeyFactory cacheKeyFactory = cacheKeyFactory.NotNull();
 
-    private readonly IOptions<GitVersionOptions> options;
-    private readonly Lazy<GitVersionContext> versionContext;
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
 
     private GitVersionContext Context => this.versionContext.Value;
-
-    public GitVersionCalculateTool(ILog log, INextVersionCalculator nextVersionCalculator,
-        IVariableProvider variableProvider, IGitPreparer gitPreparer,
-        IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
-        IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
-    {
-        this.log = log.NotNull();
-
-        this.nextVersionCalculator = nextVersionCalculator.NotNull();
-        this.variableProvider = variableProvider.NotNull();
-        this.gitPreparer = gitPreparer.NotNull();
-
-        this.cacheKeyFactory = cacheKeyFactory.NotNull();
-        this.gitVersionCache = gitVersionCache.NotNull();
-
-        this.options = options.NotNull();
-        this.versionContext = versionContext.NotNull();
-    }
 
     public GitVersionVariables CalculateVersionVariables()
     {

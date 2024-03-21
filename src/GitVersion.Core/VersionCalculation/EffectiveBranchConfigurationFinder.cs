@@ -16,7 +16,7 @@ internal class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore rep
         branch.NotNull();
         configuration.NotNull();
 
-        return GetEffectiveConfigurationsRecursive(branch, configuration, null, new());
+        return GetEffectiveConfigurationsRecursive(branch, configuration, null, []);
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(

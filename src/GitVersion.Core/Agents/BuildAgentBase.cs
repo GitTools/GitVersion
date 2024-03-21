@@ -6,8 +6,8 @@ namespace GitVersion.Agents;
 
 internal abstract class BuildAgentBase(IEnvironment environment, ILog log) : ICurrentBuildAgent
 {
-    protected readonly ILog Log = log;
-    protected IEnvironment Environment { get; } = environment;
+    protected readonly ILog Log = log.NotNull();
+    protected IEnvironment Environment { get; } = environment.NotNull();
 
     protected abstract string EnvironmentVariable { get; }
     public virtual bool IsDefault => false;

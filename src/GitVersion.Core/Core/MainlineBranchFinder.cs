@@ -7,25 +7,18 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class MainlineBranchFinder
+internal class MainlineBranchFinder(
+    IRepositoryStore repositoryStore,
+    IGitRepository repository,
+    IGitVersionConfiguration configuration,
+    ILog log)
 {
-    private readonly IGitVersionConfiguration configuration;
-    private readonly ILog log;
-    private readonly List<IBranchConfiguration> mainlineBranchConfigurations;
-    private readonly IGitRepository repository;
-    private readonly IRepositoryStore repositoryStore;
-
-    public MainlineBranchFinder(IRepositoryStore repositoryStore,
-                                IGitRepository repository,
-                                IGitVersionConfiguration configuration,
-                                ILog log)
-    {
-        this.repositoryStore = repositoryStore.NotNull();
-        this.repository = repository.NotNull();
-        this.configuration = configuration.NotNull();
-        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainBranch == true).ToList();
-        this.log = log.NotNull();
-    }
+    private readonly IGitVersionConfiguration configuration = configuration.NotNull();
+    private readonly ILog log = log.NotNull();
+    private readonly IGitRepository repository = repository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly List<IBranchConfiguration> mainlineBranchConfigurations =
+        configuration.Branches.Select(e => e.Value).Where(b => b.IsMainBranch == true).ToList();
 
     public IDictionary<string, List<IBranch>> FindMainlineBranches(ICommit commit)
     {
@@ -44,16 +37,10 @@ internal class MainlineBranchFinder
         return this.mainlineBranchConfigurations.Any(matcher.IsMainBranch);
     }
 
-    private class MainlineConfigBranchMatcher
+    private class MainlineConfigBranchMatcher(INamedReference branch, ILog log)
     {
-        private readonly INamedReference branch;
-        private readonly ILog log;
-
-        public MainlineConfigBranchMatcher(INamedReference branch, ILog log)
-        {
-            this.branch = branch;
-            this.log = log;
-        }
+        private readonly INamedReference branch = branch.NotNull();
+        private readonly ILog log = log.NotNull();
 
         public bool IsMainBranch(IBranchConfiguration value)
         {
@@ -68,20 +55,12 @@ internal class MainlineBranchFinder
         }
     }
 
-    private class BranchOriginFinder
+    private class BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, IGitVersionConfiguration configuration, ILog log)
     {
-        private readonly ICommit commit;
-        private readonly IGitVersionConfiguration configuration;
-        private readonly ILog log;
-        private readonly IRepositoryStore repositoryStore;
-
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, IGitVersionConfiguration configuration, ILog log)
-        {
-            this.repositoryStore = repositoryStore;
-            this.commit = commit;
-            this.configuration = configuration;
-            this.log = log;
-        }
+        private readonly ICommit commit = commit.NotNull();
+        private readonly IGitVersionConfiguration configuration = configuration.NotNull();
+        private readonly ILog log = log.NotNull();
+        private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
         public BranchCommit BranchOrigin(IBranch branch)
         {

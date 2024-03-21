@@ -109,7 +109,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("merge-message-formats")]
     [JsonPropertyDescription("Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.")]
-    public Dictionary<string, string> MergeMessageFormats { get; internal set; } = new();
+    public Dictionary<string, string> MergeMessageFormats { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyDictionary<string, string> IGitVersionConfiguration.MergeMessageFormats => MergeMessageFormats;
@@ -138,7 +138,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("branches")]
     [JsonPropertyDescription("The header for all the individual branch configuration.")]
-    public Dictionary<string, BranchConfiguration> Branches { get; internal set; } = new();
+    public Dictionary<string, BranchConfiguration> Branches { get; internal set; } = [];
 
     [JsonIgnore]
     IIgnoreConfiguration IGitVersionConfiguration.Ignore => Ignore;

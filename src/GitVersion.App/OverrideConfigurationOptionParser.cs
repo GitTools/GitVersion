@@ -4,7 +4,7 @@ namespace GitVersion;
 
 internal class OverrideConfigurationOptionParser
 {
-    private readonly Dictionary<object, object?> overrideConfiguration = new();
+    private readonly Dictionary<object, object?> overrideConfiguration = [];
 
     private static readonly Lazy<ILookup<string?, PropertyInfo>> _lazySupportedProperties =
         new(GetSupportedProperties, true);

@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class Settings
+public record Settings
 {
     public bool NoFetch;
     public bool NoCache;

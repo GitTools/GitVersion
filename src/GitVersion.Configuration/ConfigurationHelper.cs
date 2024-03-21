@@ -72,7 +72,7 @@ internal class ConfigurationHelper
             {
                 if (!dictionary.ContainsKey(item.Key))
                 {
-                    Dictionary<object, object?> anotherDictionaryValue = new();
+                    Dictionary<object, object?> anotherDictionaryValue = [];
                     Merge(anotherDictionaryValue, dictionaryValue);
                     dictionary.Add(item.Key, anotherDictionaryValue);
                 }

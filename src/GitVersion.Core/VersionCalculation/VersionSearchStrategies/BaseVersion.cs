@@ -4,7 +4,7 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-public sealed record class BaseVersion : IBaseVersion
+public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
 {
     public BaseVersion() : this(new BaseVersionOperand())
     {
@@ -15,8 +15,6 @@ public sealed record class BaseVersion : IBaseVersion
     {
     }
 
-    public BaseVersion(BaseVersionOperand baseVersionOperand) => Operand = baseVersionOperand.NotNull();
-
     public string Source => (Operator?.Source).IsNullOrEmpty() ? Operand.Source : Operator.Source;
 
     public SemanticVersion SemanticVersion => Operand.SemanticVersion;
@@ -26,7 +24,7 @@ public sealed record class BaseVersion : IBaseVersion
     [MemberNotNullWhen(true, nameof(Operator))]
     public bool ShouldIncrement => Operator is not null;
 
-    public BaseVersionOperand Operand { get; init; }
+    public BaseVersionOperand Operand { get; init; } = Operand.NotNull();
 
     public BaseVersionOperator? Operator { get; init; }
 

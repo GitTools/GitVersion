@@ -184,7 +184,6 @@ GitVersion.Configuration.IPreventIncrementConfiguration.WhenBranchMerged.get -> 
 GitVersion.Configuration.IPreventIncrementConfiguration.WhenCurrentCommitTagged.get -> bool?
 GitVersion.ConfigurationInfo
 GitVersion.ConfigurationInfo.ConfigurationFile -> string?
-GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
 GitVersion.ConfigurationInfo.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
 GitVersion.ConfigurationInfo.ShowConfiguration -> bool
 GitVersion.Extensions.AssemblyVersionsGeneratorExtensions
@@ -198,9 +197,12 @@ GitVersion.Extensions.ServiceCollectionExtensions
 GitVersion.Extensions.StringExtensions
 GitVersion.FileWriteInfo
 GitVersion.FileWriteInfo.FileExtension.get -> string!
+GitVersion.FileWriteInfo.FileExtension.init -> void
 GitVersion.FileWriteInfo.FileName.get -> string!
-GitVersion.FileWriteInfo.FileWriteInfo(string! workingDirectory, string! fileName, string! fileExtension) -> void
+GitVersion.FileWriteInfo.FileName.init -> void
+GitVersion.FileWriteInfo.FileWriteInfo(string! WorkingDirectory, string! FileName, string! FileExtension) -> void
 GitVersion.FileWriteInfo.WorkingDirectory.get -> string!
+GitVersion.FileWriteInfo.WorkingDirectory.init -> void
 GitVersion.Git.AuthenticationInfo
 GitVersion.Git.AuthenticationInfo.Password.get -> string?
 GitVersion.Git.AuthenticationInfo.Password.set -> void
@@ -531,7 +533,6 @@ GitVersion.OutputVariables.IVersionVariableSerializer.ToJson(GitVersion.OutputVa
 GitVersion.RepositoryInfo
 GitVersion.RepositoryInfo.ClonePath -> string?
 GitVersion.RepositoryInfo.CommitId -> string?
-GitVersion.RepositoryInfo.RepositoryInfo() -> void
 GitVersion.RepositoryInfo.TargetBranch -> string?
 GitVersion.RepositoryInfo.TargetUrl -> string?
 GitVersion.SemanticVersion
@@ -650,10 +651,9 @@ GitVersion.Settings.NoCache -> bool
 GitVersion.Settings.NoFetch -> bool
 GitVersion.Settings.NoNormalize -> bool
 GitVersion.Settings.OnlyTrackedBranches -> bool
-GitVersion.Settings.Settings() -> void
 GitVersion.VersionCalculation.BaseVersion
 GitVersion.VersionCalculation.BaseVersion.BaseVersion() -> void
-GitVersion.VersionCalculation.BaseVersion.BaseVersion(GitVersion.VersionCalculation.BaseVersionOperand! baseVersionOperand) -> void
+GitVersion.VersionCalculation.BaseVersion.BaseVersion(GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersion(string! source, GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersion.GetIncrementedVersion() -> GitVersion.SemanticVersion!
@@ -666,7 +666,7 @@ GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.get -> bool
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.BaseVersionOperand
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand() -> void
-GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand(string! source, GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource = null) -> void
+GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand(string! Source, GitVersion.SemanticVersion! SemanticVersion, GitVersion.Git.ICommit? BaseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.init -> void
 GitVersion.VersionCalculation.BaseVersionOperand.SemanticVersion.get -> GitVersion.SemanticVersion!
@@ -757,7 +757,6 @@ GitVersion.WarningException.WarningException(string! message) -> void
 GitVersion.WarningException.WarningException(string? message, System.Exception? innerException) -> void
 GitVersion.WixInfo
 GitVersion.WixInfo.UpdateWixVersionFile -> bool
-GitVersion.WixInfo.WixInfo() -> void
 override GitVersion.Git.BranchCommit.Equals(object? obj) -> bool
 override GitVersion.Git.BranchCommit.GetHashCode() -> int
 override GitVersion.Git.ReferenceName.Equals(object? obj) -> bool

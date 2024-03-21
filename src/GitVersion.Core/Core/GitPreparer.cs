@@ -8,30 +8,26 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-internal class GitPreparer : IGitPreparer
+internal class GitPreparer(
+    ILog log,
+    IEnvironment environment,
+    ICurrentBuildAgent buildAgent,
+    IOptions<GitVersionOptions> options,
+    IMutatingGitRepository repository,
+    IGitRepositoryInfo repositoryInfo,
+    Lazy<GitVersionContext> versionContext)
+    : IGitPreparer
 {
-    private readonly ILog log;
-    private readonly IEnvironment environment;
-    private readonly IMutatingGitRepository repository;
-    private readonly IOptions<GitVersionOptions> options;
-    private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly ICurrentBuildAgent buildAgent;
-    private readonly RetryAction<LockedFileException> retryAction;
-    private readonly Lazy<GitVersionContext> versionContext;
-    private const string DefaultRemoteName = "origin";
+    private readonly ILog log = log.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
+    private readonly IMutatingGitRepository repository = repository.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
+    private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
+    private readonly RetryAction<LockedFileException> retryAction = new();
+    private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
 
-    public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
-        IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, Lazy<GitVersionContext> versionContext)
-    {
-        this.log = log.NotNull();
-        this.environment = environment.NotNull();
-        this.repository = repository.NotNull();
-        this.options = options.NotNull();
-        this.repositoryInfo = repositoryInfo.NotNull();
-        this.buildAgent = buildAgent.NotNull();
-        this.retryAction = new();
-        this.versionContext = versionContext.NotNull();
-    }
+    private const string DefaultRemoteName = "origin";
 
     public void Prepare()
     {
