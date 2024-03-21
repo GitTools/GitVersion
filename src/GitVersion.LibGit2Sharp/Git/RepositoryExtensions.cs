@@ -1,4 +1,4 @@
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal static class RepositoryExtensions
 {

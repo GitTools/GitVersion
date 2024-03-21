@@ -1,3 +1,5 @@
+using GitVersion.Git;
+
 namespace GitVersion.VersionCalculation.TrunkBased;
 
 internal record class TrunkBasedContext

@@ -1,3 +1,5 @@
+using GitVersion.Git;
+
 namespace GitVersion.VersionCalculation;
 
 public interface IBaseVersionIncrement

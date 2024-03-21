@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;

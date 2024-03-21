@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation.Caching;

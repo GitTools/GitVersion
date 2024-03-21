@@ -4,7 +4,7 @@ using GitVersion.Logging;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal partial class GitRepository(ILog log) : IMutatingGitRepository
 {

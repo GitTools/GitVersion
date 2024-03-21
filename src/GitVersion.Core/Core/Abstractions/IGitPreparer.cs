@@ -1,3 +1,5 @@
+using GitVersion.Git;
+
 namespace GitVersion;
 
 public interface IGitPreparer

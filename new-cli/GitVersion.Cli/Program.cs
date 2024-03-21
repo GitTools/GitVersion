@@ -1,6 +1,7 @@
 using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Generated;
+using GitVersion.Git;
 using GitVersion.Infrastructure;
 
 var modules = new IGitVersionModule[]

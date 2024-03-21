@@ -2,7 +2,7 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed partial class GitRepository
 {

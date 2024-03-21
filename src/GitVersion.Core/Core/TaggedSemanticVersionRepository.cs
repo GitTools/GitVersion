@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion.Core;

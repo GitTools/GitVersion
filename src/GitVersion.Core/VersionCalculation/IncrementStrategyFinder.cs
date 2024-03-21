@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 

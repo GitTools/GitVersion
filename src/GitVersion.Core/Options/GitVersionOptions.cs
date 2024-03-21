@@ -1,3 +1,4 @@
+using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion;

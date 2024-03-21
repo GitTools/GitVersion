@@ -3,6 +3,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.VersionCalculation.TrunkBased;
 using GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 using GitVersion.VersionCalculation.TrunkBased.Trunk;

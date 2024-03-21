@@ -1,3 +1,5 @@
+using GitVersion.Git;
+
 namespace GitVersion;
 
 public sealed record SemanticVersionWithTag(SemanticVersion Value, ITag Tag) : IComparable<SemanticVersionWithTag>

@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using LibGit2Sharp;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed class CommitCollection : ICommitCollection
 {

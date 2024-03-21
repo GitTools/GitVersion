@@ -1,5 +1,6 @@
 using GitVersion;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Infrastructure;
 
 var assemblies = new IGitVersionModule[]
