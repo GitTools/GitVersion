@@ -4,7 +4,7 @@ using YamlDotNet.Serialization.TypeInspectors;
 
 namespace GitVersion.Configuration;
 
-internal static class ConfigurationSerializer
+internal class ConfigurationSerializer : IConfigurationSerializer
 {
     private static IDeserializer Deserializer => new DeserializerBuilder()
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
@@ -16,18 +16,9 @@ internal static class ConfigurationSerializer
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
 
-    public static T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
-
-    public static string Serialize(object graph) => Serializer.Serialize(graph);
-
-    public static IGitVersionConfiguration Read(TextReader reader)
-    {
-        var configuration = Deserializer.Deserialize<GitVersionConfiguration?>(reader);
-        return configuration ?? GitHubFlowConfigurationBuilder.New.Build();
-    }
-
-    public static void Write(IGitVersionConfiguration configuration, TextWriter writer)
-        => Serializer.Serialize(writer, configuration);
+    public T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
+    public string Serialize(object graph) => Serializer.Serialize(graph);
+    public IGitVersionConfiguration? ReadConfiguration(string input) => Deserialize<GitVersionConfiguration?>(input);
 
     private sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
     {

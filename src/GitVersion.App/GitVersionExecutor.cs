@@ -11,6 +11,7 @@ internal class GitVersionExecutor(
     IConsole console,
     IConfigurationFileLocator configurationFileLocator,
     IConfigurationProvider configurationProvider,
+    IConfigurationSerializer configurationSerializer,
     IGitVersionCalculateTool gitVersionCalculateTool,
     IGitVersionOutputTool gitVersionOutputTool,
     IVersionWriter versionWriter,
@@ -22,6 +23,8 @@ internal class GitVersionExecutor(
     private readonly IConsole console = console.NotNull();
     private readonly IConfigurationFileLocator configurationFileLocator = configurationFileLocator.NotNull();
     private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
+
     private readonly IGitVersionCalculateTool gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
     private readonly IGitVersionOutputTool gitVersionOutputTool = gitVersionOutputTool.NotNull();
     private readonly IVersionWriter versionWriter = versionWriter.NotNull();
@@ -144,7 +147,8 @@ internal class GitVersionExecutor(
                 this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
             }
             var configuration = this.configurationProvider.Provide();
-            this.console.WriteLine(configuration.ToJsonString());
+            var configurationString = configurationSerializer.Serialize(configuration);
+            this.console.WriteLine(configurationString);
             exitCode = 0;
             return true;
         }

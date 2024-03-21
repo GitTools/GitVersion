@@ -182,7 +182,7 @@ branches:
     {
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.ToJsonString().ShouldMatchApproved();
+        new ConfigurationSerializer().Serialize(configuration).ShouldMatchApproved();
     }
 
     [Test]

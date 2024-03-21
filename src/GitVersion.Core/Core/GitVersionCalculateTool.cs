@@ -14,18 +14,16 @@ internal class GitVersionCalculateTool(
     INextVersionCalculator nextVersionCalculator,
     IVariableProvider variableProvider,
     IGitPreparer gitPreparer,
-    IGitVersionCache gitVersionCache,
-    IGitVersionCacheKeyFactory cacheKeyFactory,
+    IGitVersionCacheProvider gitVersionCacheProvider,
     IOptions<GitVersionOptions> options,
     Lazy<GitVersionContext> versionContext)
     : IGitVersionCalculateTool
 {
     private readonly ILog log = log.NotNull();
-    private readonly IGitVersionCache gitVersionCache = gitVersionCache.NotNull();
+    private readonly IGitVersionCacheProvider gitVersionCacheProvider = gitVersionCacheProvider.NotNull();
     private readonly INextVersionCalculator nextVersionCalculator = nextVersionCalculator.NotNull();
     private readonly IVariableProvider variableProvider = variableProvider.NotNull();
     private readonly IGitPreparer gitPreparer = gitPreparer.NotNull();
-    private readonly IGitVersionCacheKeyFactory cacheKeyFactory = cacheKeyFactory.NotNull();
 
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
@@ -38,8 +36,9 @@ internal class GitVersionCalculateTool(
 
         var gitVersionOptions = this.options.Value;
 
-        var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
-        var versionVariables = gitVersionOptions.Settings.NoCache ? default : this.gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
+        var versionVariables = !gitVersionOptions.Settings.NoCache
+            ? this.gitVersionCacheProvider.LoadVersionVariablesFromDiskCache()
+            : default;
 
         if (versionVariables != null) return versionVariables;
 
@@ -53,7 +52,7 @@ internal class GitVersionCalculateTool(
         if (gitVersionOptions.Settings.NoCache) return versionVariables;
         try
         {
-            this.gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
+            this.gitVersionCacheProvider.WriteVariablesToDiskCache(versionVariables);
         }
         catch (AggregateException e)
         {

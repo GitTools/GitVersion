@@ -49,7 +49,5 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     IIgnoreConfiguration Ignore { get; }
 
-    string ToJsonString();
-
     IBranchConfiguration GetEmptyBranchConfiguration();
 }

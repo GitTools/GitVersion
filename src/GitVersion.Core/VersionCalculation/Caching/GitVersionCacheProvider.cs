@@ -3,19 +3,29 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Caching;
 
-internal class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerializer serializer, ILog log, IGitRepositoryInfo repositoryInfo)
-    : IGitVersionCache
+internal class GitVersionCacheProvider(
+    IFileSystem fileSystem,
+    ILog log,
+    IOptions<GitVersionOptions> options,
+    IVersionVariableSerializer serializer,
+    IGitVersionCacheKeyFactory cacheKeyFactory,
+    IGitRepositoryInfo repositoryInfo)
+    : IGitVersionCacheProvider
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly IVersionVariableSerializer serializer = serializer.NotNull();
     private readonly ILog log = log.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly IVersionVariableSerializer serializer = serializer.NotNull();
+    private readonly IGitVersionCacheKeyFactory cacheKeyFactory = cacheKeyFactory.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
-    public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables versionVariables)
+    public void WriteVariablesToDiskCache(GitVersionVariables versionVariables)
     {
+        var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
         using (this.log.IndentLog($"Write version variables to cache file {cacheFileName}"))
         {
@@ -30,8 +40,9 @@ internal class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerialize
         }
     }
 
-    public GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey cacheKey)
+    public GitVersionVariables? LoadVersionVariablesFromDiskCache()
     {
+        var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
         using (this.log.IndentLog($"Loading version variables from disk cache file {cacheFileName}"))
         {
@@ -40,6 +51,7 @@ internal class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerialize
                 this.log.Info($"Cache file {cacheFileName} not found.");
                 return null;
             }
+
             try
             {
                 var loadedVariables = serializer.FromFile(cacheFileName);
@@ -83,6 +95,12 @@ internal class GitVersionCache(IFileSystem fileSystem, IVersionVariableSerialize
         this.fileSystem.CreateDirectory(cacheDir);
 
         return cacheDir;
+    }
+
+    private GitVersionCacheKey GetCacheKey()
+    {
+        var cacheKey = this.cacheKeyFactory.Create(options.Value.ConfigurationInfo.OverrideConfiguration);
+        return cacheKey;
     }
 
     private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, key.Value);

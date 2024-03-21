@@ -149,19 +149,10 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     public override IBranchConfiguration Inherit(IBranchConfiguration configuration) => throw new NotSupportedException();
 
-    public string ToJsonString()
-    {
-        var stringBuilder = new StringBuilder();
-        using var stream = new StringWriter(stringBuilder);
-        ConfigurationSerializer.Write(this, stream);
-        stream.Flush();
-        return stringBuilder.ToString();
-    }
-
     public IBranchConfiguration GetEmptyBranchConfiguration() => new BranchConfiguration
     {
         RegularExpression = string.Empty,
-        Label = ConfigurationConstants.BranchNamePlaceholder,
+        Label = BranchNamePlaceholder,
         Increment = IncrementStrategy.Inherit
     };
 }

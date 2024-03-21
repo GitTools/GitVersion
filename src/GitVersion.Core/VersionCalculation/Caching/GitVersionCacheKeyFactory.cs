@@ -13,6 +13,7 @@ internal class GitVersionCacheKeyFactory(
     ILog log,
     IOptions<GitVersionOptions> options,
     IConfigurationFileLocator configFileLocator,
+    IConfigurationSerializer configurationSerializer,
     IGitRepository gitRepository,
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
@@ -21,6 +22,7 @@ internal class GitVersionCacheKeyFactory(
     private readonly ILog log = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
+    private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IGitRepository gitRepository = gitRepository.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
@@ -147,7 +149,7 @@ internal class GitVersionCacheKeyFactory(
         return GetHash(hash);
     }
 
-    private static string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)
+    private string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
         if (overrideConfiguration?.Any() != true)
         {
@@ -156,7 +158,7 @@ internal class GitVersionCacheKeyFactory(
 
         // Doesn't depend on command line representation and
         // includes possible changes in default values of Config per se.
-        var configContent = ConfigurationSerializer.Serialize(overrideConfiguration);
+        var configContent = configurationSerializer.Serialize(overrideConfiguration);
 
         return GetHash(configContent);
     }

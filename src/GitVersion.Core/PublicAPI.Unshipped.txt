@@ -168,7 +168,6 @@ GitVersion.Configuration.IGitVersionConfiguration.NextVersion.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.IGitVersionConfiguration.ToJsonString() -> string!
 GitVersion.Configuration.IGitVersionConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchPattern.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
@@ -690,9 +689,9 @@ GitVersion.VersionCalculation.Caching.GitVersionCacheKey
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GitVersionCacheKey(string! Value) -> void
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Value.get -> string!
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Value.init -> void
-GitVersion.VersionCalculation.Caching.IGitVersionCache
-GitVersion.VersionCalculation.Caching.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey) -> GitVersion.OutputVariables.GitVersionVariables?
-GitVersion.VersionCalculation.Caching.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.GitVersionVariables! versionVariables) -> void
+GitVersion.VersionCalculation.Caching.IGitVersionCacheProvider
+GitVersion.VersionCalculation.Caching.IGitVersionCacheProvider.LoadVersionVariablesFromDiskCache() -> GitVersion.OutputVariables.GitVersionVariables?
+GitVersion.VersionCalculation.Caching.IGitVersionCacheProvider.WriteVariablesToDiskCache(GitVersion.OutputVariables.GitVersionVariables! versionVariables) -> void
 GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Enabled = 0 -> GitVersion.VersionCalculation.CommitMessageIncrementMode

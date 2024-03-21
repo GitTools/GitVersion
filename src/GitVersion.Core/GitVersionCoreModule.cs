@@ -12,7 +12,7 @@ public class GitVersionCoreModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<IGitVersionCache, GitVersionCache>();
+        services.AddSingleton<IGitVersionCacheProvider, GitVersionCacheProvider>();
 
         services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
 
