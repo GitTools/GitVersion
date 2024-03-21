@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 /// <summary>
 /// A commit, together with the branch to which the commit belongs.

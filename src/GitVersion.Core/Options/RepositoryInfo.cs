@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class RepositoryInfo
+public record RepositoryInfo
 {
     public string? TargetUrl;
     public string? TargetBranch;

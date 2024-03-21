@@ -1,10 +1,11 @@
 using GitVersion.Extensions;
 
-namespace GitVersion.Configuration.SupportedWorkflows;
+namespace GitVersion.Configuration.Workflows;
 
 internal static class WorkflowManager
 {
     private static readonly string ResourceNameTemplate = DetermineResourceNameTemplate();
+    private static ConfigurationSerializer Serializer => new();
 
     private static string DetermineResourceNameTemplate()
     {
@@ -19,7 +20,7 @@ internal static class WorkflowManager
 
         var resourceName = GetResourceName(workflow);
         var embeddedResource = resourceName.ReadAsStringFromEmbeddedResource(typeof(WorkflowManager).Assembly);
-        return ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(embeddedResource);
+        return Serializer.Deserialize<Dictionary<object, object?>>(embeddedResource);
     }
 
     private static string GetResourceName(string workflow)

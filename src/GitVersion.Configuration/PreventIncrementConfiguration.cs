@@ -1,4 +1,4 @@
-using GitVersion.Attributes;
+using GitVersion.Configuration.Attributes;
 
 namespace GitVersion.Configuration;
 

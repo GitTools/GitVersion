@@ -4,7 +4,7 @@ using YamlDotNet.Serialization.TypeInspectors;
 
 namespace GitVersion.Configuration;
 
-internal static class ConfigurationSerializer
+internal class ConfigurationSerializer : IConfigurationSerializer
 {
     private static IDeserializer Deserializer => new DeserializerBuilder()
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
@@ -16,35 +16,26 @@ internal static class ConfigurationSerializer
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
 
-    public static T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
+    public T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
+    public string Serialize(object graph) => Serializer.Serialize(graph);
+    public IGitVersionConfiguration? ReadConfiguration(string input) => Deserialize<GitVersionConfiguration?>(input);
 
-    public static string Serialize(object graph) => Serializer.Serialize(graph);
-
-    public static IGitVersionConfiguration Read(TextReader reader)
+    private sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
     {
-        var configuration = Deserializer.Deserialize<GitVersionConfiguration?>(reader);
-        return configuration ?? GitHubFlowConfigurationBuilder.New.Build();
-    }
-
-    public static void Write(IGitVersionConfiguration configuration, TextWriter writer)
-        => Serializer.Serialize(writer, configuration);
-}
-
-internal sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
-{
-    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
-        innerTypeDescriptor.GetProperties(type, container)
-            .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-            .Select(p =>
-            {
-                var descriptor = new PropertyDescriptor(p);
-                var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
-                if (member is { Name: not null })
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
+            innerTypeDescriptor.GetProperties(type, container)
+                .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                .Select(p =>
                 {
-                    descriptor.Name = member.Name;
-                }
+                    var descriptor = new PropertyDescriptor(p);
+                    var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
+                    if (member is { Name: not null })
+                    {
+                        descriptor.Name = member.Name;
+                    }
 
-                return (IPropertyDescriptor)descriptor;
-            })
-            .OrderBy(p => p.Order);
+                    return (IPropertyDescriptor)descriptor;
+                })
+                .OrderBy(p => p.Order);
+    }
 }

@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed class Commit : GitObject, ICommit
 {
@@ -14,13 +14,13 @@ internal sealed class Commit : GitObject, ICommit
     internal Commit(LibGit2Sharp.Commit innerCommit) : base(innerCommit)
     {
         this.innerCommit = innerCommit.NotNull();
-        parentsLazy = new Lazy<IReadOnlyList<ICommit>>(() => innerCommit.Parents.Select(parent => new Commit(parent)).ToList());
+        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => new Commit(parent)).ToList());
         When = innerCommit.Committer.When;
     }
 
     public int CompareTo(ICommit? other) => comparerHelper.Compare(this, other);
     public bool Equals(ICommit? other) => equalityHelper.Equals(this, other);
-    public IReadOnlyList<ICommit> Parents => parentsLazy.Value;
+    public IReadOnlyList<ICommit> Parents => this.parentsLazy.Value;
     public DateTimeOffset When { get; }
     public string Message => this.innerCommit.Message;
     public override bool Equals(object? obj) => Equals(obj as ICommit);

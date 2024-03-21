@@ -14,4 +14,4 @@ public interface IBuildAgent
     void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true);
 }
 
-public interface ICurrentBuildAgent : IBuildAgent { }
+public interface ICurrentBuildAgent : IBuildAgent;

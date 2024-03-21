@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class ConfigurationInfo
+public record ConfigurationInfo
 {
     public string? ConfigurationFile;
     public bool ShowConfiguration;

@@ -1,8 +1,9 @@
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion.Configuration;
 
-public static class IgnoreConfigurationExtensions
+internal static class IgnoreConfigurationExtensions
 {
     public static IEnumerable<ITag> Filter(this IIgnoreConfiguration ignore, IEnumerable<ITag> source)
     {

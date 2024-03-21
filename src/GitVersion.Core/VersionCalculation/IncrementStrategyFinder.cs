@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
@@ -131,7 +132,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
                 var parentCommits = intermediateCommit.Parents.ToList();
                 while (parentCommits.Count != 0)
                 {
-                    List<ICommit> temporaryList = new();
+                    List<ICommit> temporaryList = [];
                     foreach (var parentCommit in parentCommits)
                     {
                         if (commitLog.Remove(parentCommit.Sha))

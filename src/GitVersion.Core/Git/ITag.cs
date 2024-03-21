@@ -1,4 +1,4 @@
-namespace GitVersion;
+namespace GitVersion.Git;
 
 public interface ITag : IEquatable<ITag?>, IComparable<ITag>, INamedReference
 {

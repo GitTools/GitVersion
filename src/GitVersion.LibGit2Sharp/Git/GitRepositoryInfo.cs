@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal class GitRepositoryInfo : IGitRepositoryInfo
 {

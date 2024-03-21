@@ -1,4 +1,4 @@
-using GitVersion.Attributes;
+using GitVersion.Configuration.Attributes;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -53,14 +53,14 @@ internal record BranchConfiguration : IBranchConfiguration
 
     [JsonPropertyName("source-branches")]
     [JsonPropertyDescription("The source branches for this branch.")]
-    public HashSet<string> SourceBranches { get; internal set; } = new();
+    public HashSet<string> SourceBranches { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyCollection<string> IBranchConfiguration.SourceBranches => SourceBranches;
 
     [JsonPropertyName("is-source-branch-for")]
     [JsonPropertyDescription("The branches that this branch is a source branch.")]
-    public HashSet<string> IsSourceBranchFor { get; internal set; } = new();
+    public HashSet<string> IsSourceBranchFor { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyCollection<string> IBranchConfiguration.IsSourceBranchFor => IsSourceBranchFor;

@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Git;
 
 namespace GitVersion.Core.Tests.Configuration;
 

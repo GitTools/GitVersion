@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -49,8 +48,6 @@ public interface IGitVersionConfiguration : IBranchConfiguration
     IReadOnlyDictionary<string, IBranchConfiguration> Branches { get; }
 
     IIgnoreConfiguration Ignore { get; }
-
-    string ToJsonString();
 
     IBranchConfiguration GetEmptyBranchConfiguration();
 }

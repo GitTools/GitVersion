@@ -1,12 +1,13 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.TrunkBased;
 
 [DebuggerDisplay(
     @"\{ Id = {" + nameof(Id) + "}, BranchName = {" + nameof(BranchName) + "}, Depth = {" + nameof(Depth) + "}, NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
-internal record class TrunkBasedIteration
+internal record TrunkBasedIteration
 {
     public EffectiveConfiguration Configuration { get; }
 

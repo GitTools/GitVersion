@@ -25,9 +25,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
     private VersionStrategies[] versionStrategies;
-    private Dictionary<string, string> mergeMessageFormats = new();
-    private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
-    private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
+    private Dictionary<string, string> mergeMessageFormats = [];
+    private readonly List<IReadOnlyDictionary<object, object?>> overrides = [];
+    private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = [];
     private DeploymentMode? versioningMode;
     private string? label;
     private IncrementStrategy increment = IncrementStrategy.Inherit;
@@ -384,7 +384,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public virtual IGitVersionConfiguration Build()
     {
-        Dictionary<string, BranchConfiguration> branches = new();
+        Dictionary<string, BranchConfiguration> branches = [];
         foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
         {
             branches.Add(name, (BranchConfiguration)branchConfigurationBuilder.Build());

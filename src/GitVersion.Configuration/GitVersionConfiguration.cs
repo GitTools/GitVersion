@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-using GitVersion.Attributes;
+using GitVersion.Configuration.Attributes;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using static GitVersion.Configuration.ConfigurationConstants;
@@ -109,7 +109,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("merge-message-formats")]
     [JsonPropertyDescription("Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.")]
-    public Dictionary<string, string> MergeMessageFormats { get; internal set; } = new();
+    public Dictionary<string, string> MergeMessageFormats { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyDictionary<string, string> IGitVersionConfiguration.MergeMessageFormats => MergeMessageFormats;
@@ -138,7 +138,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonPropertyName("branches")]
     [JsonPropertyDescription("The header for all the individual branch configuration.")]
-    public Dictionary<string, BranchConfiguration> Branches { get; internal set; } = new();
+    public Dictionary<string, BranchConfiguration> Branches { get; internal set; } = [];
 
     [JsonIgnore]
     IIgnoreConfiguration IGitVersionConfiguration.Ignore => Ignore;
@@ -149,19 +149,10 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     public override IBranchConfiguration Inherit(IBranchConfiguration configuration) => throw new NotSupportedException();
 
-    public string ToJsonString()
-    {
-        var stringBuilder = new StringBuilder();
-        using var stream = new StringWriter(stringBuilder);
-        ConfigurationSerializer.Write(this, stream);
-        stream.Flush();
-        return stringBuilder.ToString();
-    }
-
     public IBranchConfiguration GetEmptyBranchConfiguration() => new BranchConfiguration
     {
         RegularExpression = string.Empty,
-        Label = ConfigurationConstants.BranchNamePlaceholder,
+        Label = BranchNamePlaceholder,
         Increment = IncrementStrategy.Inherit
     };
 }

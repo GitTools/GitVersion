@@ -2,27 +2,27 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed class Tag : ITag
 {
     private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x.Name.Canonical);
     private static readonly LambdaKeyComparer<ITag, string> comparerHelper = new(x => x.Name.Canonical);
     private readonly LibGit2Sharp.Tag innerTag;
-    private readonly Lazy<ICommit?> _commitLazy;
+    private readonly Lazy<ICommit?> commitLazy;
 
     internal Tag(LibGit2Sharp.Tag tag)
     {
         this.innerTag = tag.NotNull();
+        this.commitLazy = new(PeeledTargetCommit);
         Name = new(this.innerTag.CanonicalName);
-        _commitLazy = new(PeeledTargetCommit);
     }
 
     public ReferenceName Name { get; }
     public int CompareTo(ITag? other) => comparerHelper.Compare(this, other);
     public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
     public string TargetSha => this.innerTag.Target.Sha;
-    public ICommit Commit => _commitLazy.Value.NotNull();
+    public ICommit Commit => this.commitLazy.Value.NotNull();
 
     private ICommit? PeeledTargetCommit()
     {

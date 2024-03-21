@@ -1,6 +1,7 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 

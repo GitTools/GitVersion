@@ -1,22 +1,16 @@
 using GitVersion.Common;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class MergeBaseFinder
+internal class MergeBaseFinder(IRepositoryStore repositoryStore, IGitRepository gitRepository, ILog log)
 {
-    private readonly ILog log;
-    private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = new();
-    private readonly IGitRepository repository;
-    private readonly IRepositoryStore repositoryStore;
-
-    public MergeBaseFinder(IRepositoryStore repositoryStore, IGitRepository gitRepository, ILog log)
-    {
-        this.repositoryStore = repositoryStore.NotNull();
-        this.repository = gitRepository.NotNull();
-        this.log = log.NotNull();
-    }
+    private readonly ILog log = log.NotNull();
+    private readonly IGitRepository repository = gitRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = [];
 
     public ICommit? FindMergeBaseOf(IBranch? first, IBranch? second)
     {

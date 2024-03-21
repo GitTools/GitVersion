@@ -43,7 +43,7 @@ public class BuildServerBaseTests : TestBase
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        writes = new List<string?>();
+        writes = [];
         buildAgent.WriteIntegration(writes.Add, variables, false);
         writes.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
     }

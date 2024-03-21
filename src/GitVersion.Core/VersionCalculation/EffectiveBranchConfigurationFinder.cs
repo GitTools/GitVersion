@@ -1,6 +1,7 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
@@ -15,7 +16,7 @@ internal class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore rep
         branch.NotNull();
         configuration.NotNull();
 
-        return GetEffectiveConfigurationsRecursive(branch, configuration, null, new());
+        return GetEffectiveConfigurationsRecursive(branch, configuration, null, []);
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(

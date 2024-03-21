@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
 {

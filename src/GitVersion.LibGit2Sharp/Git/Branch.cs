@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed class Branch : IBranch
 {

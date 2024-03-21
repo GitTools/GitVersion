@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 internal sealed class ReferenceCollection : IReferenceCollection
 {

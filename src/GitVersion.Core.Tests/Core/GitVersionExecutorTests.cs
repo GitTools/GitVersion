@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation.Caching;
@@ -16,7 +17,7 @@ public class GitVersionExecutorTests : TestBase
 {
     private IFileSystem fileSystem;
     private ILog log;
-    private GitVersionCache gitVersionCache;
+    private GitVersionCacheProvider gitVersionCacheProvider;
     private IServiceProvider sp;
 
     [Test]
@@ -79,7 +80,8 @@ public class GitVersionExecutorTests : TestBase
 
             var preparer = this.sp.GetRequiredService<IGitPreparer>();
             preparer.Prepare();
-            var cacheKey = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>().Create(null);
+            var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
+            var cacheKey = cacheKeyFactory.Create(null);
             cacheKey.Value.ShouldNotBeEmpty();
         }
         finally
@@ -139,7 +141,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey = cacheKeyFactory.Create(null);
-        var cacheFileName = this.gitVersionCache.GetCacheFileName(cacheKey);
+        var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
         this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -192,10 +194,10 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey = cacheKeyFactory.Create(null);
-        var cacheFileName = this.gitVersionCache.GetCacheFileName(cacheKey);
+        var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
         this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
 
-        var cacheDirectory = this.gitVersionCache.GetCacheDirectory();
+        var cacheDirectory = this.gitVersionCacheProvider.GetCacheDirectory();
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
@@ -282,7 +284,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey = cacheKeyFactory.Create(null);
-        var cacheFileName = this.gitVersionCache.GetCacheFileName(cacheKey);
+        var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
         this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
 
@@ -344,7 +346,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey = cacheKeyFactory.Create(null);
-        var cacheFileName = this.gitVersionCache.GetCacheFileName(cacheKey);
+        var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
         this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -579,7 +581,7 @@ public class GitVersionExecutorTests : TestBase
 
         this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.log = this.sp.GetRequiredService<ILog>();
-        this.gitVersionCache = (GitVersionCache)this.sp.GetRequiredService<IGitVersionCache>();
+        this.gitVersionCacheProvider = (GitVersionCacheProvider)this.sp.GetRequiredService<IGitVersionCacheProvider>();
 
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }

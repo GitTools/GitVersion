@@ -4,31 +4,32 @@ namespace GitVersion.Configuration;
 
 internal class ConfigurationHelper
 {
-    private string Yaml => this._yaml ??= this._dictionary == null
-        ? ConfigurationSerializer.Serialize(this.configuration!)
-        : ConfigurationSerializer.Serialize(this._dictionary);
-    private string? _yaml;
+    private static ConfigurationSerializer Serializer => new();
+    private string Yaml => this.yaml ??= this.dictionary == null
+        ? Serializer.Serialize(this.configuration!)
+        : Serializer.Serialize(this.dictionary);
+    private string? yaml;
 
     internal IReadOnlyDictionary<object, object?> Dictionary
     {
         get
         {
-            if (this._dictionary == null)
+            if (this.dictionary == null)
             {
-                this._yaml ??= ConfigurationSerializer.Serialize(this.configuration!);
-                this._dictionary = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(this._yaml);
+                this.yaml ??= Serializer.Serialize(this.configuration!);
+                this.dictionary = Serializer.Deserialize<Dictionary<object, object?>>(this.yaml);
             }
-            return this._dictionary;
+            return this.dictionary;
         }
     }
-    private IReadOnlyDictionary<object, object?>? _dictionary;
+    private IReadOnlyDictionary<object, object?>? dictionary;
 
-    public IGitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
+    public IGitVersionConfiguration Configuration => this.configuration ??= Serializer.Deserialize<GitVersionConfiguration>(Yaml);
     private IGitVersionConfiguration? configuration;
 
-    internal ConfigurationHelper(string yaml) => this._yaml = yaml.NotNull();
+    internal ConfigurationHelper(string yaml) => this.yaml = yaml.NotNull();
 
-    internal ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this._dictionary = dictionary.NotNull();
+    internal ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this.dictionary = dictionary.NotNull();
 
     public ConfigurationHelper(IGitVersionConfiguration configuration) => this.configuration = configuration.NotNull();
 
@@ -38,10 +39,10 @@ internal class ConfigurationHelper
 
         if (value.Any())
         {
-            var dictionary = Dictionary.ToDictionary(element => element.Key, element => element.Value);
-            Merge(dictionary, value);
-            this._dictionary = dictionary;
-            this._yaml = null;
+            var map = Dictionary.ToDictionary(element => element.Key, element => element.Value);
+            Merge(map, value);
+            this.dictionary = map;
+            this.yaml = null;
             this.configuration = null;
         }
     }
@@ -72,7 +73,7 @@ internal class ConfigurationHelper
             {
                 if (!dictionary.ContainsKey(item.Key))
                 {
-                    Dictionary<object, object?> anotherDictionaryValue = new();
+                    Dictionary<object, object?> anotherDictionaryValue = [];
                     Merge(anotherDictionaryValue, dictionaryValue);
                     dictionary.Add(item.Key, anotherDictionaryValue);
                 }

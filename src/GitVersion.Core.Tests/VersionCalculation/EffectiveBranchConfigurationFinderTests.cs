@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 

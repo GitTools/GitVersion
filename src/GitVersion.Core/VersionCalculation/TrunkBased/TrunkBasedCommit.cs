@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.TrunkBased;
 
@@ -8,7 +9,7 @@ namespace GitVersion.VersionCalculation.TrunkBased;
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record class TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, EffectiveConfiguration Configuration, VersionField Increment)
+internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, EffectiveConfiguration Configuration, VersionField Increment)
 {
     public bool IsPredecessorTheLastCommitOnTrunk
         => !Configuration.IsMainBranch && Predecessor?.Configuration.IsMainBranch == true;

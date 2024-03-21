@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion;
+namespace GitVersion.Git;
 
 public static class CommitExtensions
 {

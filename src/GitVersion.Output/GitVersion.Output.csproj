@@ -1,16 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <DefineConstants>GITVERSION_OUTPUT</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json"/>
+    </ItemGroup>
+    
     <ItemGroup>
         <Compile Remove="*\AddFormats\**\*.*" />
         <Compile Remove="*\Templates\**\*.*" />
+        <Compile Include="..\GitVersion.Configuration\Attributes\JsonPropertyDescriptionAttribute.cs">
+          <Link>Attributes\JsonPropertyDescriptionAttribute.cs</Link>
+        </Compile>
         <EmbeddedResource Include="*\AddFormats\**\*.*" />
         <EmbeddedResource Include="*\Templates\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
+        <InternalsVisibleTo Include="schema" />
     </ItemGroup>
 </Project>

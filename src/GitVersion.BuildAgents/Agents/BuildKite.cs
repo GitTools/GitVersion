@@ -27,7 +27,7 @@ internal class BuildKite(IEnvironment environment, ILog log) : BuildAgentBase(en
 
         // For pull requests BUILDKITE_BRANCH refers to the head, so adjust the
         // branch name for pull request versioning to function as expected
-        return string.Format("refs/pull/{0}/head", pullRequest);
+        return $"refs/pull/{pullRequest}/head";
     }
 
     public override bool PreventFetch() => true;

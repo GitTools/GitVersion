@@ -2,7 +2,6 @@ using System.Runtime.CompilerServices;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Tests.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
@@ -183,7 +182,7 @@ branches:
     {
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.ToJsonString().ShouldMatchApproved();
+        new ConfigurationSerializer().Serialize(configuration).ShouldMatchApproved();
     }
 
     [Test]

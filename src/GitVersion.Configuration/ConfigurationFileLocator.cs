@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+internal class ConfigurationFileLocator(IFileSystem fileSystem, IConfigurationSerializer configurationSerializer, IOptions<GitVersionOptions> options)
     : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
@@ -29,7 +29,9 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
         if (configFilePath == null || !fileSystem.Exists(configFilePath)) return GitHubFlowConfigurationBuilder.New.Build();
 
         var readAllText = fileSystem.ReadAllText(configFilePath);
-        return ConfigurationSerializer.Read(new StringReader(readAllText));
+        var configuration = configurationSerializer.ReadConfiguration(readAllText)
+                            ?? GitHubFlowConfigurationBuilder.New.Build();
+        return configuration;
     }
 
     public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath)
@@ -38,7 +40,7 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVers
 
         var readAllText = fileSystem.ReadAllText(configFilePath);
 
-        return ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
+        return configurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
     }
 
     private bool HasConfigurationFile(string? workingDirectory, out string? path)

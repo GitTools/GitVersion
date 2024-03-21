@@ -1,4 +1,4 @@
-namespace GitVersion.Extensions;
+namespace GitVersion.Configuration;
 
 public enum AssemblyFileVersioningScheme
 {

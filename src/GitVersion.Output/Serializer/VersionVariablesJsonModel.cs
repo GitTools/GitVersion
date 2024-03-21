@@ -1,8 +1,8 @@
-using GitVersion.Attributes;
+using GitVersion.Output.Attributes;
 
 namespace GitVersion.OutputVariables;
 
-public class VersionVariablesJsonModel
+internal class VersionVariablesJsonModel
 {
     [JsonPropertyDescription("Suitable for .NET AssemblyFileVersion. Defaults to Major.Minor.Patch.0.")]
     public string? AssemblySemFileVer { get; set; }

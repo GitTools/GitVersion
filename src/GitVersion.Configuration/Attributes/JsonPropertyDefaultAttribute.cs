@@ -1,6 +1,4 @@
-using GitVersion.Extensions;
-
-namespace GitVersion.Attributes;
+namespace GitVersion.Configuration.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public sealed class JsonPropertyDefaultAttribute : JsonAttribute

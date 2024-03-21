@@ -1,19 +1,14 @@
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 
 namespace GitVersion;
 
-internal class SourceBranchFinder
+internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVersionConfiguration configuration)
 {
-    private readonly IGitVersionConfiguration configuration;
-    private readonly IEnumerable<IBranch> excludedBranches;
-
-    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVersionConfiguration configuration)
-    {
-        this.excludedBranches = excludedBranches.NotNull();
-        this.configuration = configuration.NotNull();
-    }
+    private readonly IGitVersionConfiguration configuration = configuration.NotNull();
+    private readonly IEnumerable<IBranch> excludedBranches = excludedBranches.NotNull();
 
     public IEnumerable<IBranch> FindSourceBranchesOf(IBranch branch)
     {

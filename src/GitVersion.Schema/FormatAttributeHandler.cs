@@ -1,15 +1,15 @@
-using GitVersion.Attributes;
 using Json.Schema;
 using Json.Schema.Generation;
 using Json.Schema.Generation.Intents;
-using Format = GitVersion.Attributes.Format;
+using Format = GitVersion.Configuration.Attributes.Format;
+using FormatAttribute = GitVersion.Configuration.Attributes.JsonPropertyFormatAttribute;
 
 namespace GitVersion.Schema;
-internal class FormatAttributeHandler : IAttributeHandler<JsonPropertyFormatAttribute>
+internal class FormatAttributeHandler : IAttributeHandler<FormatAttribute>
 {
     void IAttributeHandler.AddConstraints(SchemaGenerationContextBase context, Attribute attribute)
     {
-        if (attribute is JsonPropertyFormatAttribute formatAttribute)
+        if (attribute is FormatAttribute formatAttribute)
         {
             Json.Schema.Format? format = formatAttribute.Format switch
             {
