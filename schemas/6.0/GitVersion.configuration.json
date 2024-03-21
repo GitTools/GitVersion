@@ -126,11 +126,8 @@
     "pre-release-weight": {
       "$ref": "#/$defs/nullableOfInt32"
     },
-    "prevent-increment-of-merged-branch-version": {
-      "$ref": "#/$defs/nullableOfBoolean2"
-    },
-    "prevent-increment-when-current-commit-tagged": {
-      "$ref": "#/$defs/nullableOfBoolean3"
+    "prevent-increment": {
+      "$ref": "#/$defs/preventIncrementConfiguration"
     },
     "regex": {
       "$ref": "#/$defs/string2"
@@ -186,6 +183,7 @@
         "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.",
         "enum": [
           "None",
+          "Fallback",
           "ConfiguredNextVersion",
           "MergeMessage",
           "TaggedCommit",
@@ -231,11 +229,8 @@
         "pre-release-weight": {
           "$ref": "#/$defs/nullableOfInt32"
         },
-        "prevent-increment-of-merged-branch-version": {
-          "$ref": "#/$defs/nullableOfBoolean2"
-        },
-        "prevent-increment-when-current-commit-tagged": {
-          "$ref": "#/$defs/nullableOfBoolean3"
+        "prevent-increment": {
+          "$ref": "#/$defs/preventIncrementConfiguration"
         },
         "regex": {
           "$ref": "#/$defs/string2"
@@ -319,8 +314,23 @@
         "null"
       ]
     },
+    "preventIncrementConfiguration": {
+      "description": "The prevent increment configuration section.",
+      "type": "object",
+      "properties": {
+        "of-merged-branch": {
+          "$ref": "#/$defs/nullableOfBoolean2"
+        },
+        "when-branch-merged": {
+          "$ref": "#/$defs/nullableOfBoolean2"
+        },
+        "when-current-commit-tagged": {
+          "$ref": "#/$defs/nullableOfBoolean3"
+        }
+      }
+    },
     "nullableOfBoolean2": {
-      "description": "Prevent increment of merged branch version.",
+      "description": "Prevent increment when branch merged.",
       "type": [
         "boolean",
         "null"

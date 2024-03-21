@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-using GitVersion.Attributes;
+using GitVersion.Configuration.Attributes;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using static GitVersion.Configuration.ConfigurationConstants;

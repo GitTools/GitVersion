@@ -1,4 +1,4 @@
-using GitVersion.Attributes;
+using GitVersion.Configuration.Attributes;
 using Json.Schema.Generation;
 using Json.Schema.Generation.Intents;
 

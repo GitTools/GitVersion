@@ -1,4 +1,4 @@
-using GitVersion.Configuration.SupportedWorkflows;
+using GitVersion.Configuration.Workflows;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;

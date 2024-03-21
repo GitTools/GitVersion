@@ -1,16 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <DefineConstants>GITVERSION_CONFIGURATION</DefineConstants>
+    </PropertyGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.Text.Json"/>
         <PackageReference Include="YamlDotNet" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="SupportedWorkflows\GitFlow\v1.yml" />
-        <EmbeddedResource Include="SupportedWorkflows\GitHubFlow\v1.yml" />
-        <EmbeddedResource Include="SupportedWorkflows\TrunkBased\v1.yml" />
+        <EmbeddedResource Include="Workflows\GitFlow\v1.yml" />
+        <EmbeddedResource Include="Workflows\GitHubFlow\v1.yml" />
+        <EmbeddedResource Include="Workflows\TrunkBased\v1.yml" />
     </ItemGroup>
 
     <ItemGroup>

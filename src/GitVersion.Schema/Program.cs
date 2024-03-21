@@ -17,7 +17,8 @@ var configuration = new SchemaGeneratorConfiguration
 };
 
 AttributeHandler.AddHandler<DefaultAttributeHandler>();
-AttributeHandler.AddHandler<DescriptionAttributeHandler>();
+AttributeHandler.AddHandler<DescriptionAttributeHandler1>();
+AttributeHandler.AddHandler<DescriptionAttributeHandler2>();
 AttributeHandler.AddHandler<FormatAttributeHandler>();
 
 var builder = new JsonSchemaBuilder();
@@ -33,7 +34,7 @@ schema.WriteToFile(fileName);
 
 configuration.PropertyNameResolver = PropertyNameResolvers.AsDeclared;
 
-builder = new JsonSchemaBuilder();
+builder = new();
 builder.Schema("http://json-schema.org/draft-07/schema#");
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.json");
 builder.Title("GitVersion version variables output");

@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion.Configuration.SupportedWorkflows;
+namespace GitVersion.Configuration.Workflows;
 
 internal static class WorkflowManager
 {

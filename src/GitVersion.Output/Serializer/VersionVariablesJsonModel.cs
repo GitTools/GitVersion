@@ -1,4 +1,4 @@
-using GitVersion.Attributes;
+using GitVersion.Output.Attributes;
 
 namespace GitVersion.OutputVariables;
 

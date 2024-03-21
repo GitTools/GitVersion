@@ -4,6 +4,9 @@ GitVersion.IGitVersionOutputTool.GenerateGitVersionInformation(GitVersion.Output
 GitVersion.IGitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber) -> void
 GitVersion.IGitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
 GitVersion.IGitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.Output.Attributes.JsonPropertyDescriptionAttribute
+GitVersion.Output.Attributes.JsonPropertyDescriptionAttribute.Description.get -> string!
+GitVersion.Output.Attributes.JsonPropertyDescriptionAttribute.JsonPropertyDescriptionAttribute(string! description) -> void
 GitVersion.Output.GitVersionOutputModule
 GitVersion.Output.GitVersionOutputModule.GitVersionOutputModule() -> void
 GitVersion.Output.GitVersionOutputModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
