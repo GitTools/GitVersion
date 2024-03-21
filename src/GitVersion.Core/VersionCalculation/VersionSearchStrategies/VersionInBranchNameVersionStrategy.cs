@@ -54,10 +54,6 @@ internal sealed class VersionInBranchNameVersionStrategy(
                 }
 
                 var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
-                //if (configuration.Value.Label != label)
-                //{
-                //    log.Info("Using current branch name to calculate version tag");
-                //}
 
                 baseVersion = new BaseVersion("Version in branch name", result.Value, commitBranchWasBranchedFrom.Value.Commit)
                 {
