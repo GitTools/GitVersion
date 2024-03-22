@@ -1,5 +1,5 @@
 ---
-Order: 80
+Order: 100
 Title: MyGet
 Description: Details on the MyGet support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/myget

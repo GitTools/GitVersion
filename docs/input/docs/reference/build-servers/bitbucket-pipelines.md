@@ -1,5 +1,5 @@
 ---
-Order: 35
+Order: 40
 Title: BitBucket Pipelines
 Description: Details on the Atlassian BitBucket Pipelines support in GitVersion
 ---

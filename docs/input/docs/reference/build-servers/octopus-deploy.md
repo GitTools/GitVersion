@@ -1,5 +1,5 @@
 ---
-Order: 90
+Order: 110
 Title: Octopus Deploy
 Description: Details on the Octopus Deploy support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/octopus-deploy

@@ -1,5 +1,5 @@
 ---
-Order: 50
+Order: 60
 Title: Continua CI
 Description: Details on the Continua CI support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/continua

@@ -1,5 +1,5 @@
 ---
-Order: 40
+Order: 50
 Title: Buildkite
 Description: Details on the Buildkite support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/buildkite
