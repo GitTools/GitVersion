@@ -1,5 +1,5 @@
 ---
-Order: 100
+Order: 120
 Title: TeamCity
 Description: Details on the TeamCity support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/teamcity
