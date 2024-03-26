@@ -23,7 +23,7 @@ public static class GitTestExtensions
 
     private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string? commitMessage = null)
     {
-        var randomFile = Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
+        var randomFile = PathHelper.Combine(repository.Info.WorkingDirectory, relativeFileName);
         if (File.Exists(randomFile))
         {
             File.Delete(randomFile);

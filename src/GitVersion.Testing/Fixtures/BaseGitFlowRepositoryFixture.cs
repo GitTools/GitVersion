@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using LibGit2Sharp;
 
 namespace GitVersion.Testing;
@@ -25,7 +26,7 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
 
     private void SetupRepo(Action<IRepository> initialMainAction)
     {
-        var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
+        var randomFile = PathHelper.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
         Commands.Stage(Repository, randomFile);
 

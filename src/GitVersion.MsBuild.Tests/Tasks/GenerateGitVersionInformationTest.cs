@@ -169,7 +169,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = FileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
-            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -200,7 +200,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = FileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
-            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -231,7 +231,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = FileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
-            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True").Property("RootNamespace", "Test.Root");
         }, language);
 
@@ -264,7 +264,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = FileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
-            var intermediateOutputPath = Path.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True");
         }, language);
 

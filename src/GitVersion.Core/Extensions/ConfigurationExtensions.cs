@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Git;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -117,7 +118,7 @@ internal static class ConfigurationExtensions
         string? startingDir = path;
         while (startingDir is not null)
         {
-            var dirOrFilePath = Path.Combine(startingDir, ".git");
+            var dirOrFilePath = PathHelper.Combine(startingDir, ".git");
             if (Directory.Exists(dirOrFilePath))
             {
                 return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
@@ -128,7 +129,7 @@ internal static class ConfigurationExtensions
                 string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
-                    var fullGitDirPath = Path.GetFullPath(Path.Combine(startingDir, relativeGitDirPath));
+                    var fullGitDirPath = Path.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
                     if (Directory.Exists(fullGitDirPath))
                     {
                         return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);

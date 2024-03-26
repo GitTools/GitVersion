@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Testing.Internal;
 
 internal static class DirectoryHelper
@@ -19,7 +21,7 @@ internal static class DirectoryHelper
 
         foreach (var file in source.GetFiles())
         {
-            file.CopyTo(Path.Combine(target.FullName, Rename(file.Name)));
+            file.CopyTo(PathHelper.Combine(target.FullName, Rename(file.Name)));
         }
     }
 

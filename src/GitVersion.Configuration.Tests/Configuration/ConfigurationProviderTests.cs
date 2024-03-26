@@ -20,7 +20,7 @@ public class ConfigurationProviderTests : TestBase
     [SetUp]
     public void Setup()
     {
-        this.repoPath = Path.Combine(PathHelper.GetTempPath(), "MyGitRepo");
+        this.repoPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo");
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();

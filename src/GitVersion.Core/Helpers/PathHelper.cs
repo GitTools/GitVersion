@@ -4,7 +4,7 @@ internal static class PathHelper
 {
     public static string NewLine => SysEnv.NewLine;
 
-    public static readonly StringComparison OsDependentComparison = SysEnv.OSVersion.Platform switch
+    private static readonly StringComparison OsDependentComparison = SysEnv.OSVersion.Platform switch
     {
         PlatformID.Unix or PlatformID.MacOSX => StringComparison.Ordinal,
         _ => StringComparison.OrdinalIgnoreCase,

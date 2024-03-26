@@ -108,7 +108,7 @@ internal class ArgumentParser(IEnvironment environment, ICurrentBuildAgent build
         }
         else
         {
-            var configFilePath = Path.GetFullPath(Path.Combine(arguments.TargetPath!, arguments.ConfigurationFile));
+            var configFilePath = Path.GetFullPath(PathHelper.Combine(arguments.TargetPath, arguments.ConfigurationFile));
             if (!File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
             arguments.ConfigurationFile = configFilePath;
         }
