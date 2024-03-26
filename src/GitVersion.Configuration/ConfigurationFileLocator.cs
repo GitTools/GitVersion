@@ -1,74 +1,62 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-internal class ConfigurationFileLocator(IFileSystem fileSystem, IConfigurationSerializer configurationSerializer, IOptions<GitVersionOptions> options)
+internal class ConfigurationFileLocator(
+    IFileSystem fileSystem,
+    ILog log,
+    IOptions<GitVersionOptions> options)
     : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
     public const string DefaultAlternativeFileName = "GitVersion.yaml";
 
-    private readonly string? configurationFile = options.Value.ConfigurationInfo.ConfigurationFile;
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
+    private readonly ILog log = log.NotNull();
+    private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
-    public bool TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath)
-        =>
-            HasConfigurationFile(workingDirectory, out configFilePath)
-            || HasConfigurationFile(projectRootDirectory, out configFilePath);
+    private string? ConfigurationFile => options.Value.ConfigurationInfo.ConfigurationFile;
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (Path.IsPathRooted(this.configurationFile)) return;
+        if (Path.IsPathRooted(this.ConfigurationFile)) return;
         if (PathHelper.Equal(workingDirectory, projectRootDirectory)) return;
         WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
 
-    public IGitVersionConfiguration ReadConfiguration(string? configFilePath)
+    public string? GetConfigurationFile(string? directory)
     {
-        if (configFilePath == null || !fileSystem.Exists(configFilePath)) return GitHubFlowConfigurationBuilder.New.Build();
+        if (directory is null) return null;
+        string?[] candidates = [this.ConfigurationFile, DefaultFileName, DefaultAlternativeFileName];
+        var candidatePaths =
+            from candidate in candidates
+            where !candidate.IsNullOrWhiteSpace()
+            select PathHelper.Combine(directory, candidate);
 
-        var readAllText = fileSystem.ReadAllText(configFilePath);
-        var configuration = configurationSerializer.ReadConfiguration(readAllText)
-                            ?? GitHubFlowConfigurationBuilder.New.Build();
-        return configuration;
-    }
-
-    public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath)
-    {
-        if (configFilePath == null || !fileSystem.Exists(configFilePath)) return null;
-
-        var readAllText = fileSystem.ReadAllText(configFilePath);
-
-        return configurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
-    }
-
-    private bool HasConfigurationFile(string? workingDirectory, out string? path)
-    {
-        bool HasConfigurationFileAt(string fileName, out string? configFile)
+        foreach (var candidatePath in candidatePaths)
         {
-            configFile = null;
-            if (!fileSystem.Exists(PathHelper.Combine(workingDirectory, fileName))) return false;
-
-            configFile = PathHelper.Combine(workingDirectory, fileName);
-            return true;
+            this.log.Debug($"Trying to find configuration file at '{candidatePath}'");
+            if (fileSystem.Exists(candidatePath))
+            {
+                this.log.Info($"Found configuration file at '{candidatePath}'");
+                return candidatePath;
+            }
+            this.log.Debug($"Configuration file not found at '{candidatePath}'");
         }
 
-        path = null;
-        if (workingDirectory is null) return false;
-        return !this.configurationFile.IsNullOrWhiteSpace()
-            ? HasConfigurationFileAt(this.configurationFile, out path)
-            : HasConfigurationFileAt(DefaultFileName, out path)
-              || HasConfigurationFileAt(DefaultAlternativeFileName, out path);
+        return null;
     }
 
     private void WarnAboutAmbiguousConfigFileSelection(string? workingDirectory, string? projectRootDirectory)
     {
-        TryGetConfigurationFile(workingDirectory, null, out var workingConfigFile);
-        TryGetConfigurationFile(null, projectRootDirectory, out var projectRootConfigFile);
+        var workingConfigFile = GetConfigurationFile(workingDirectory);
+        var projectRootConfigFile = GetConfigurationFile(projectRootDirectory);
 
-        var hasConfigInWorkingDirectory = workingConfigFile != null && fileSystem.Exists(workingConfigFile);
-        var hasConfigInProjectRootDirectory = projectRootConfigFile != null && fileSystem.Exists(projectRootConfigFile);
+        var hasConfigInWorkingDirectory = workingConfigFile != null;
+        var hasConfigInProjectRootDirectory = projectRootConfigFile != null;
 
         if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
         {
@@ -77,10 +65,10 @@ internal class ConfigurationFileLocator(IFileSystem fileSystem, IConfigurationSe
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
         {
-            if (this.configurationFile != DefaultFileName && this.configurationFile != DefaultAlternativeFileName)
+            if (this.ConfigurationFile is not (DefaultFileName or DefaultAlternativeFileName))
             {
-                workingConfigFile = PathHelper.Combine(workingDirectory, this.configurationFile);
-                projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.configurationFile);
+                workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
+                projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
                 throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
             }
         }

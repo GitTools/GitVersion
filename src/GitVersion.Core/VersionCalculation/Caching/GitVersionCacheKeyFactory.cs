@@ -170,8 +170,8 @@ internal class GitVersionCacheKeyFactory(
         var workingDirectory = this.options.Value.WorkingDirectory;
         var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
 
-        if (!this.configFileLocator.TryGetConfigurationFile(workingDirectory, projectRootDirectory, out var configFilePath))
-            return string.Empty;
+        var configFilePath = this.configFileLocator.GetConfigurationFile(workingDirectory)
+                             ?? this.configFileLocator.GetConfigurationFile(projectRootDirectory);
         if (configFilePath == null) return string.Empty;
         if (!this.fileSystem.Exists(configFilePath)) return string.Empty;
 

@@ -363,31 +363,31 @@ tag-prefix: custom-tag-prefix-from-yml";
             .WithNextVersion("1.2.3")
             .WithTagPrefix("custom-tag-prefix-from-yml")
             .Build();
-        var overridenConfig = this.configurationProvider.ProvideForDirectory(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
-        overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
-        overridenConfig.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
-        overridenConfig.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
-        overridenConfig.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
-        overridenConfig.TagPrefix.ShouldBe(expectedConfig.TagPrefix);
-        overridenConfig.NextVersion.ShouldBe(expectedConfig.NextVersion);
-        overridenConfig.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
-        overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
-        overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
-        overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
-        overridenConfig.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
-        overridenConfig.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
-        overridenConfig.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);
-        overridenConfig.UpdateBuildNumber.ShouldBe(expectedConfig.UpdateBuildNumber);
+        configuration.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
+        configuration.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
+        configuration.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
+        configuration.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
+        configuration.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
+        configuration.TagPrefix.ShouldBe(expectedConfig.TagPrefix);
+        configuration.NextVersion.ShouldBe(expectedConfig.NextVersion);
+        configuration.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
+        configuration.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
+        configuration.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
+        configuration.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
+        configuration.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
+        configuration.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
+        configuration.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);
+        configuration.UpdateBuildNumber.ShouldBe(expectedConfig.UpdateBuildNumber);
 
-        overridenConfig.Ignore.ShouldBeEquivalentTo(expectedConfig.Ignore);
+        configuration.Ignore.ShouldBeEquivalentTo(expectedConfig.Ignore);
 
-        overridenConfig.Branches.Keys.ShouldBe(expectedConfig.Branches.Keys);
+        configuration.Branches.Keys.ShouldBe(expectedConfig.Branches.Keys);
 
-        foreach (var branch in overridenConfig.Branches.Keys)
+        foreach (var branch in configuration.Branches.Keys)
         {
-            overridenConfig.Branches[branch].ShouldBeEquivalentTo(expectedConfig.Branches[branch]);
+            configuration.Branches[branch].ShouldBeEquivalentTo(expectedConfig.Branches[branch]);
         }
     }
 

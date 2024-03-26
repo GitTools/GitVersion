@@ -14,7 +14,7 @@ internal static class WorkflowManager
         return $"{resourceNamePrefix}.{{0}}.yml";
     }
 
-    public static Dictionary<object, object?>? GetOverrideConfiguration(string? workflow)
+    public static IReadOnlyDictionary<object, object?>? GetOverrideConfiguration(string? workflow)
     {
         if (string.IsNullOrEmpty(workflow)) return null;
 
