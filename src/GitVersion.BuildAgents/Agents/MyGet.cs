@@ -29,7 +29,7 @@ internal class MyGet(IEnvironment environment, ILog log) : BuildAgentBase(enviro
             messages.Add($"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(value)}']");
         }
 
-        return messages.ToArray();
+        return [.. messages];
     }
 
     public override string? GenerateSetVersionMessage(GitVersionVariables variables) => null;

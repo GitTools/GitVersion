@@ -48,7 +48,7 @@ public class TestTaskBase : TestBase
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
         AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
-        var environmentVariables = new List<KeyValuePair<string, string?>>(env.ToArray());
+        var environmentVariables = env.ToList();
         if (buildNumber != null)
         {
             environmentVariables.Add(new("BUILD_BUILDNUMBER", buildNumber));
@@ -78,6 +78,7 @@ public class TestTaskBase : TestBase
         var result = msbuildFixture.Execute(task);
         if (!result.Success)
             Console.WriteLine(result.Log);
+
         return result;
     }
 

@@ -12,7 +12,7 @@ internal class BranchesContainingCommitFinder(IGitRepository repository, ILog lo
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
         commit.NotNull();
-        branches ??= this.repository.Branches.ToList();
+        branches ??= [.. this.repository.Branches];
 
         // TODO Should we cache this?
         // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
