@@ -54,6 +54,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
     [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/" + MainBranch, true, "0.8.0")]
     [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
+    [TestCase("Merge branch 'Releases/0.2.0'", false, "0.2.0")] // Support Squash Commits
     public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
     {
         var parents = GetParents(isMergeCommit);
@@ -83,15 +84,20 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Finish 0.14.1", true)] // Don't support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
     public void ShouldNotTakeVersionFromMergeOfNonReleaseBranch(string message, bool isMergeCommit)
     {
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
+        configurationBuilder.WithBranch("hotfix", builder => builder.WithIsReleaseBranch(false));
+        ConfigurationHelper configurationHelper = new(configurationBuilder.Build());
+        var configurationDictionary = configurationHelper.Dictionary;
+
         var parents = GetParents(isMergeCommit);
-        AssertMergeMessage(message, null, parents);
-        AssertMergeMessage(message + " ", null, parents);
-        AssertMergeMessage(message + "\r ", null, parents);
-        AssertMergeMessage(message + "\r", null, parents);
-        AssertMergeMessage(message + "\r\n", null, parents);
-        AssertMergeMessage(message + "\r\n ", null, parents);
-        AssertMergeMessage(message + "\n", null, parents);
-        AssertMergeMessage(message + "\n ", null, parents);
+        AssertMergeMessage(message, null, parents, configurationDictionary);
+        AssertMergeMessage(message + " ", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\r ", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\r", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\r\n", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\r\n ", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\n", null, parents, configurationDictionary);
+        AssertMergeMessage(message + "\n ", null, parents, configurationDictionary);
     }
 
     [TestCase("Merge pull request #165 from organization/Particular/release-1.0.0", true)]
