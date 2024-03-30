@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -7,17 +8,6 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 [TestFixture]
 public class WriteVersionInfoTest : TestTaskBase
 {
-    private string GitHubEnvFilePath { get; } = Path.GetTempFileName();
-
-    [OneTimeTearDown]
-    public void OneTimeTearDown()
-    {
-        if (File.Exists(GitHubEnvFilePath))
-        {
-            File.Delete(GitHubEnvFilePath);
-        }
-    }
-
     [Test]
     public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutput()
     {
@@ -72,17 +62,33 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
-    [Ignore("This test is not working on GitHub Actions")]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
     {
+        var envFilePath = SysEnv.GetEnvironmentVariable("GITHUB_ENV");
+        if (!string.IsNullOrWhiteSpace(envFilePath))
+        {
+            Assert.Pass("This test should be ignored when running on GitHub Actions.");
+            return;
+        }
+
+        envFilePath = $"{PathHelper.GetTempPath()}/github-env.txt";
+        SysEnv.SetEnvironmentVariable("GITHUB_ENV", envFilePath);
+
+        if (File.Exists(envFilePath))
+        {
+            File.Delete(envFilePath);
+        }
+
         var task = new WriteVersionInfoToBuildLog();
 
-        using var result = ExecuteMsBuildTaskInGitHubActions(task, GitHubEnvFilePath);
+        using var result = ExecuteMsBuildTaskInGitHubActions(task);
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        string content = File.ReadAllText(GitHubEnvFilePath);
+        string content = File.ReadAllText(envFilePath);
         content.ShouldContain("GitVersion_SemVer=1.0.1");
+
+        File.Delete(envFilePath);
     }
 
     [Test]

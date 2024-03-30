@@ -65,16 +65,13 @@ public class TestTaskBase : TestBase
         return result;
     }
 
-    protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInGitHubActions<T>(T task, string envFilePath) where T : GitVersionTaskBase
+    protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInGitHubActions<T>(T task) where T : GitVersionTaskBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
         AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
-        msbuildFixture.WithEnv(
-            new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"),
-            new KeyValuePair<string, string?>("GITHUB_ENV", envFilePath)
-        );
+        msbuildFixture.WithEnv([new("GITHUB_ACTIONS", "true")]);
         var result = msbuildFixture.Execute(task);
         if (!result.Success)
             Console.WriteLine(result.Log);
