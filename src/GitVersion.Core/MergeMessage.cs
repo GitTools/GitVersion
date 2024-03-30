@@ -97,14 +97,15 @@ public class MergeMessage
         mergeCommit.NotNull();
         configuration.NotNull();
 
-        mergeMessage = new(mergeCommit.Message, configuration);
+        mergeMessage = null;
 
-        var isReleaseBranch = mergeMessage.MergedBranch != null && configuration.IsReleaseBranch(mergeMessage.MergedBranch);
+        var mergedBranch = new MergeMessage(mergeCommit.Message, configuration).MergedBranch;
+        var isReleaseBranch = mergedBranch != null && configuration.IsReleaseBranch(mergedBranch);
         var isValidMergeCommit = mergeCommit.IsMergeCommit() || isReleaseBranch;
 
-        if (!isValidMergeCommit)
+        if (isValidMergeCommit)
         {
-            mergeMessage = null;
+            mergeMessage = new(mergeCommit.Message, configuration);
         }
 
         return isValidMergeCommit;
