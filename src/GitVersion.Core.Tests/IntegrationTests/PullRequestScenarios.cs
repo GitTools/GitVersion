@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 
@@ -6,6 +7,48 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class PullRequestScenarios : TestBase
 {
+    /// <summary>
+    /// GitHubFlow - Pull requests (increment major on main and minor on feature)
+    /// </summary>
+    [Test]
+    public void EnsurePullRequestWithIncrementMajorOnMainAndMinorOnFeatureBranch()
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", _ => _
+                .WithIncrement(IncrementStrategy.Major)
+            ).WithBranch("feature", _ => _
+                .WithIncrement(IncrementStrategy.Minor)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit("A");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-1", configuration);
+
+        fixture.ApplyTag("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit("B");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-foo.1+1", configuration);
+
+        fixture.Checkout("main");
+        fixture.BranchTo("pull/2/merge");
+        fixture.MergeNoFF("feature/foo");
+
+        // ❌ expected: "2.0.0-PullRequest2.2"
+        fixture.AssertFullSemver("1.1.0-PullRequest2.2", configuration);
+
+        fixture.Checkout("main");
+        fixture.Remove("pull/2/merge");
+        fixture.MergeNoFF("feature/foo");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-2", configuration);
+    }
+
     [Test]
     public void CanCalculatePullRequestChanges()
     {
