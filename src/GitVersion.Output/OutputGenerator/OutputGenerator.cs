@@ -36,7 +36,10 @@ internal sealed class OutputGenerator(
         if (gitVersionOptions.Output.Contains(OutputType.File))
         {
             var retryOperation = new RetryAction<IOException>();
-            retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, json));
+            retryOperation.Execute(() =>
+            {
+                if (context.OutputFile != null) this.fileSystem.WriteAllText(context.OutputFile, json);
+            });
         }
 
         if (!gitVersionOptions.Output.Contains(OutputType.Json)) return;

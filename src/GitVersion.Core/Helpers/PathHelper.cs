@@ -1,14 +1,15 @@
+using System.Runtime.InteropServices;
+
 namespace GitVersion.Helpers;
 
 internal static class PathHelper
 {
     public static string NewLine => SysEnv.NewLine;
 
-    private static readonly StringComparison OsDependentComparison = SysEnv.OSVersion.Platform switch
-    {
-        PlatformID.Unix or PlatformID.MacOSX => StringComparison.Ordinal,
-        _ => StringComparison.OrdinalIgnoreCase,
-    };
+    private static readonly StringComparison OsDependentComparison =
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+            ? StringComparison.Ordinal
+            : StringComparison.OrdinalIgnoreCase;
 
     public static string GetCurrentDirectory() => AppContext.BaseDirectory ?? throw new InvalidOperationException();
 
