@@ -13,13 +13,13 @@ namespace GitVersion.VersionCalculation;
 internal sealed class TrunkBasedVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
     IRepositoryStore repositoryStore,
-    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    ITaggedSemanticVersionService taggedSemanticVersionService,
     IIncrementStrategyFinder incrementStrategyFinder)
     : IVersionStrategy
 {
     private volatile int iterationCounter;
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
@@ -78,10 +78,13 @@ internal sealed class TrunkBasedVersionStrategy(
 
         var commitsInReverseOrder = configuration.Value.Ignore.Filter(Context.CurrentBranchCommits);
 
-        var taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-            Context.Configuration, configuration.Value, Context.CurrentBranch, null, Context.CurrentCommit.When
+        var taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+            branch: Context.CurrentBranch,
+            configuration: Context.Configuration,
+            label: null,
+            notOlderThan: Context.CurrentCommit.When,
+            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
         );
-
         var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         IterateOverCommitsRecursive(
             commitsInReverseOrder: commitsInReverseOrder,
@@ -127,8 +130,12 @@ internal sealed class TrunkBasedVersionStrategy(
             {
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
-                taggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-                    Context.Configuration, effectiveConfigurationWasBranchedFrom.Value, effectiveConfigurationWasBranchedFrom.Branch, null, Context.CurrentCommit.When
+                taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+                    branch: effectiveConfigurationWasBranchedFrom.Branch,
+                    configuration: Context.Configuration,
+                    label: null,
+                    notOlderThan: Context.CurrentCommit.When,
+                    taggedSemanticVersion: effectiveConfigurationWasBranchedFrom.Value.GetTaggedSemanticVersion()
                 );
             }
 

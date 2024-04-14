@@ -61,7 +61,6 @@ public static class GitToolsTestingExtensions
     {
         repository ??= fixture.Repository;
         configuration ??= GitFlowConfigurationBuilder.New.Build();
-        Console.WriteLine("---------");
 
         var overrideConfiguration = new Dictionary<object, object?>();
         var options = Options.Create(new GitVersionOptions

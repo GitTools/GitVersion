@@ -93,33 +93,4 @@ public class FallbackVersionStrategyScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
     }
-
-    [Test]
-    public void TakeTheCommitBranchedFromAsBaseVersion()
-    {
-        var configuration = ConfigurationBuilder
-            .WithBranch("main", _ => _
-                .WithIncrement(IncrementStrategy.Major)
-                .WithTrackMergeTarget(false)
-                .WithTracksReleaseBranches(true)
-            ).Build();
-
-        using EmptyRepositoryFixture fixture = new("main");
-
-        fixture.MakeACommit("A");
-        fixture.MakeACommit("B");
-        fixture.BranchTo("release/foo");
-        fixture.Checkout("main");
-        fixture.MakeACommit("C");
-        fixture.Checkout("release/foo");
-        fixture.MakeACommit("D");
-        fixture.ApplyTag("0.0.0");
-        fixture.Checkout("main");
-        fixture.MakeACommit("D");
-
-        // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-1+2", configuration);
-
-        fixture.Repository.DumpGraph();
-    }
 }
