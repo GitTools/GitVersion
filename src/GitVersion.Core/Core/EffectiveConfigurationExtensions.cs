@@ -16,7 +16,7 @@ internal static class EffectiveConfigurationExtensions
             taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
         }
 
-        if (effectiveConfiguration.TrackMergeTarget)
+        if (effectiveConfiguration.TracksReleaseBranches)
         {
             taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
         }

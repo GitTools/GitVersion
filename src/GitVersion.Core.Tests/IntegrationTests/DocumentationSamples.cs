@@ -202,7 +202,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0-4");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
 
@@ -291,7 +291,7 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
-        fixture.AssertFullSemver("1.4.0-4");
+        fixture.AssertFullSemver("1.4.0-0");
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
@@ -392,7 +392,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-4");
+        fixture.AssertFullSemver("2.0.0-0");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
         fixture.MakeACommit();
