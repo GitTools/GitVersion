@@ -38,8 +38,8 @@ public class PullRequestScenarios : TestBase
         fixture.BranchTo("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        // ❌ expected: "2.0.0-PullRequest2.2"
-        fixture.AssertFullSemver("1.1.0-PullRequest2.2", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-PullRequest2.2", configuration);
 
         fixture.Checkout("main");
         fixture.Remove("pull/2/merge");
