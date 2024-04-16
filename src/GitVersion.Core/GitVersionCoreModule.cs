@@ -19,6 +19,7 @@ public class GitVersionCoreModule : IGitVersionModule
         services.AddSingleton<IGitPreparer, GitPreparer>();
         services.AddSingleton<IRepositoryStore, RepositoryStore>();
         services.AddSingleton<ITaggedSemanticVersionRepository, TaggedSemanticVersionRepository>();
+        services.AddSingleton<ITaggedSemanticVersionService, TaggedSemanticVersionService>();
         services.AddSingleton<IBranchRepository, BranchRepository>();
 
         services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();

@@ -11,11 +11,11 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 internal sealed class TaggedCommitVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
-    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    ITaggedSemanticVersionService taggedSemanticVersionService,
     IIncrementStrategyFinder incrementStrategyFinder)
     : IVersionStrategy
 {
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
@@ -31,13 +31,24 @@ internal sealed class TaggedCommitVersionStrategy(
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TaggedCommit))
             yield break;
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-        var taggedSemanticVersions = taggedSemanticVersionRepository
-            .GetAllTaggedSemanticVersions(Context.Configuration, configuration.Value, Context.CurrentBranch, label, Context.CurrentCommit.When)
-            .SelectMany(element => element)
-            .Distinct().ToArray();
+        var taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+            branch: Context.CurrentBranch,
+            configuration: Context.Configuration,
+            label: null,
+            notOlderThan: Context.CurrentCommit.When,
+            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
+        ).SelectMany(elements => elements).Distinct().ToArray();
 
-        foreach (var semanticVersionWithTag in taggedSemanticVersions)
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var semanticVersionsWithTag = taggedSemanticVersionService.GetTaggedSemanticVersions(
+            branch: Context.CurrentBranch,
+            configuration: Context.Configuration,
+            label: label,
+            notOlderThan: Context.CurrentCommit.When,
+            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
+        ).SelectMany(elements => elements).Distinct().ToArray();
+
+        foreach (var semanticVersionWithTag in semanticVersionsWithTag)
         {
             var baseVersionSource = semanticVersionWithTag.Tag.Commit;
             var increment = incrementStrategyFinder.DetermineIncrementedField(

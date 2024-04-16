@@ -14,7 +14,7 @@ internal class NextVersionCalculator(
     IEnumerable<IDeploymentModeCalculator> deploymentModeCalculators,
     IEnumerable<IVersionStrategy> versionStrategies,
     IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
-    ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+    ITaggedSemanticVersionService taggedSemanticVersionService)
     : INextVersionCalculator
 {
     private readonly ILog log = log.NotNull();
@@ -35,8 +35,12 @@ internal class NextVersionCalculator(
 
         if (Context.IsCurrentCommitTagged && !someBranchRelatedPropertiesMightBeNotKnown && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged)
         {
-            var allTaggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-                Context.Configuration, effectiveConfiguration, Context.CurrentBranch, null, Context.CurrentCommit.When
+            var allTaggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+                branch: Context.CurrentBranch,
+                configuration: Context.Configuration,
+                label: null,
+                notOlderThan: Context.CurrentCommit.When,
+                taggedSemanticVersion: effectiveConfiguration.GetTaggedSemanticVersion()
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
@@ -52,8 +56,12 @@ internal class NextVersionCalculator(
         if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown
             && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
         {
-            var allTaggedSemanticVersions = taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-                Context.Configuration, nextVersion.Configuration, Context.CurrentBranch, null, Context.CurrentCommit.When
+            var allTaggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+                branch: Context.CurrentBranch,
+                configuration: Context.Configuration,
+                label: null,
+                notOlderThan: Context.CurrentCommit.When,
+                taggedSemanticVersion: nextVersion.Configuration.GetTaggedSemanticVersion()
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
@@ -71,11 +79,12 @@ internal class NextVersionCalculator(
         );
 
         var ignore = Context.Configuration.Ignore;
-        var alternativeSemanticVersion = taggedSemanticVersionRepository.GetTaggedSemanticVersionsOfBranch(
+        var alternativeSemanticVersion = taggedSemanticVersionService.GetTaggedSemanticVersionsOfBranch(
             branch: nextVersion.BranchConfiguration.Branch,
             tagPrefix: Context.Configuration.TagPrefix,
             format: Context.Configuration.SemanticVersionFormat,
-            ignore: Context.Configuration.Ignore
+            ignore: Context.Configuration.Ignore,
+            notOlderThan: Context.CurrentCommit.When
         ).Where(element => element.Key.When <= Context.CurrentCommit.When
             && !(element.Key.When <= ignore.Before) && !ignore.Shas.Contains(element.Key.Sha)
         ).SelectMany(element => element).Max()?.Value;

@@ -12,12 +12,12 @@ namespace GitVersion.VersionCalculation;
 internal sealed class FallbackVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
     IIncrementStrategyFinder incrementStrategyFinder,
-    ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+    ITaggedSemanticVersionService taggedSemanticVersionService)
     : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -33,8 +33,12 @@ internal sealed class FallbackVersionStrategy(
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
 
-        var baseVersionSource = this.taggedSemanticVersionRepository.GetAllTaggedSemanticVersions(
-            Context.Configuration, configuration.Value, Context.CurrentBranch, label, Context.CurrentCommit.When
+        var baseVersionSource = taggedSemanticVersionService.GetTaggedSemanticVersions(
+            branch: Context.CurrentBranch,
+            configuration: Context.Configuration,
+            label: label,
+            notOlderThan: Context.CurrentCommit.When,
+            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
         ).Select(element => element.Key).FirstOrDefault();
 
         var increment = incrementStrategyFinder.DetermineIncrementedField(
