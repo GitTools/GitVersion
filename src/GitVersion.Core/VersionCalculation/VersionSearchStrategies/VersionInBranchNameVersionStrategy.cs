@@ -40,7 +40,7 @@ internal sealed class VersionInBranchNameVersionStrategy(
             return false;
 
         Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
-            () => this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration)
+            () => this.repositoryStore.FindCommitBranchBranchedFrom(configuration.Branch, Context.Configuration)
         );
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {

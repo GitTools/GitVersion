@@ -83,7 +83,7 @@ internal class MainlineBranchFinder(
                 return mergeBase;
             }
 
-            var branchCommit = this.repositoryStore.FindCommitBranchWasBranchedFrom(branch, this.configuration);
+            var branchCommit = this.repositoryStore.FindCommitBranchBranchedFrom(branch, this.configuration);
             if (branchCommit != BranchCommit.Empty)
             {
                 this.log.Info($"Found parent commit {branchCommit.Commit.Sha} for '{branchName}'.");

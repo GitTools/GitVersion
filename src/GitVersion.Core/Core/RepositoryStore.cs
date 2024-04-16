@@ -106,14 +106,47 @@ internal class RepositoryStore : IRepositoryStore
             params IBranch[] excludedBranches)
         => GetSourceBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<IBranch> GetSourceBranches(
+        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         var returnedBranches = new HashSet<IBranch>();
 
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 
-        foreach (var branchGrouping in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches)
-            .GroupBy(element => element.Commit, element => element.Branch))
+        var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
+
+        var ignore = new HashSet<BranchCommit>();
+        foreach (var commitBranch in commitBranches)
+        {
+            foreach (var commit in branch.Commits.Where(element => element.When > commitBranch.Commit.When))
+            {
+                var parents = commit.Parents.ToArray();
+                if (parents.Length > 1 && parents.Any(element => element.Equals(commitBranch.Commit)))
+                {
+                    ignore.Add(commitBranch);
+                }
+            }
+        }
+
+        foreach (var item in commitBranches.Skip(1).Reverse())
+        {
+            if (ignore.Contains(item)) continue;
+
+            foreach (var commitBranche in commitBranches)
+            {
+                if (item.Commit.Equals(commitBranche.Commit)) break;
+
+                foreach (var commit in commitBranche.Branch.Commits.Where(element => element.When >= item.Commit.When))
+                {
+                    if (commit.Equals(item.Commit))
+                    {
+                        commitBranches.Remove(item);
+                    }
+                }
+            }
+        }
+
+        foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
         {
             bool referenceMatchFound = false;
             var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
@@ -141,7 +174,7 @@ internal class RepositoryStore : IRepositoryStore
     ///     Find the commit where the given branch was branched from another branch.
     ///     If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration,
+    public BranchCommit FindCommitBranchBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration,
         params IBranch[] excludedBranches)
     {
         branch = branch.NotNull();
@@ -170,28 +203,22 @@ internal class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
-        => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+    public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+            IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => FindCommitBranchesBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {
             if (branch.Tip == null)
             {
                 this.log.Warning($"{branch} has no tip.");
-                yield break;
+                return [];
             }
 
-            DateTimeOffset? when = null;
-            var branchCommits = new MergeCommitFinder(this, configuration, excludedBranches, this.log)
-                .FindMergeCommitsFor(branch).ToList();
-            foreach (var branchCommit in branchCommits)
-            {
-                if (when != null && branchCommit.Commit.When != when) break;
-                yield return branchCommit;
-                when = branchCommit.Commit.When;
-            }
+            return new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch).ToList();
         }
     }
 

@@ -162,7 +162,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
-        fixture.AssertFullSemver("4.5.1-beta.1+3", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+4", configuration);
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
 
-        fixture.AssertFullSemver("4.5.1-beta.1+3", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+4", configuration);
     }
 
     [Test]
