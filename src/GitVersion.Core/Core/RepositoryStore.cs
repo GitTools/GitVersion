@@ -213,7 +213,7 @@ internal class RepositoryStore : IRepositoryStore
             if (branch.Tip == null)
             {
                 this.log.Warning($"{branch} has no tip.");
-                return Enumerable.Empty<BranchCommit>();
+                return [];
             }
 
             return new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch).ToList();
