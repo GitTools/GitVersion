@@ -230,7 +230,7 @@ internal sealed class TrunkBasedVersionStrategy(
         var branch = repositoryStore.FindBranch(branchName);
         if (branch is null) return result;
 
-        var branchCommits = repositoryStore.FindCommitBranchesWasBranchedFrom(
+        var branchCommits = repositoryStore.FindCommitBranchesBranchedFrom(
             branch, Context.Configuration
         ).ToList();
 

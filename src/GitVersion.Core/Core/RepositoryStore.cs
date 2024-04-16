@@ -113,7 +113,7 @@ internal class RepositoryStore : IRepositoryStore
 
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 
-        var commitBranches = FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
+        var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
 
         var ignore = new HashSet<BranchCommit>();
         foreach (var commitBranch in commitBranches)
@@ -174,7 +174,7 @@ internal class RepositoryStore : IRepositoryStore
     ///     Find the commit where the given branch was branched from another branch.
     ///     If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration,
+    public BranchCommit FindCommitBranchBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration,
         params IBranch[] excludedBranches)
     {
         branch = branch.NotNull();
@@ -203,10 +203,12 @@ internal class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
-        => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+    public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+            IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => FindCommitBranchesBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {

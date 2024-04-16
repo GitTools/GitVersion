@@ -27,11 +27,11 @@ public interface IRepositoryStore
     /// Find the commit where the given branch was branched from another branch.
     /// If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
+    BranchCommit FindCommitBranchBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
-    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
+    IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
-    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
+    IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
 
     IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
