@@ -20,7 +20,7 @@ public class PullRequestScenarios : TestBase
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
