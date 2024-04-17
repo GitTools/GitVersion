@@ -20,6 +20,6 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageVersion Include="Serilog.Sinks.Map" Version="1.0.2" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.24201.1" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.24209.3" />
   </ItemGroup>
 </Project>
