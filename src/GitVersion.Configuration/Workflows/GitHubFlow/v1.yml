@@ -91,6 +91,8 @@ branches:
     source-branches:
     - main
     - release
+    - feature
+    - pull-request
     is-source-branch-for: []
     track-merge-message: false
     is-main-branch: false
