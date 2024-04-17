@@ -1053,7 +1053,9 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
-    [TestCase("0.0.1-alpha.2", false, "0.1.0-alpha.1+0")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.3+0")]
+    [TestCase("0.1.0-alpha.2", true, "0.1.0-alpha.2")]
+    [TestCase("0.1.0-alpha.2", false, "0.1.0-alpha.3+0")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0-alpha.1+0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1+1")]
@@ -1080,7 +1082,9 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1-alpha.2")]
-    [TestCase("0.0.1-alpha.2", false, "0.1.0-alpha.0")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1-alpha.2")]
+    [TestCase("0.1.0-alpha.2", true, "0.1.0-alpha.2")]
+    [TestCase("0.1.0-alpha.2", false, "0.1.0-alpha.2")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0-alpha.0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0-alpha.1")]
@@ -1107,7 +1111,9 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase("0.0.1-alpha.2", true, "0.0.1")]
-    [TestCase("0.0.1-alpha.2", false, "0.1.0")]
+    [TestCase("0.0.1-alpha.2", false, "0.0.1")]
+    [TestCase("0.1.0-alpha.2", true, "0.1.0")]
+    [TestCase("0.1.0-alpha.2", false, "0.1.0")]
     [TestCase("0.0.1", true, "0.0.1")]
     [TestCase("0.0.1", false, "0.1.0")]
     [TestCase("0.0.1-beta.2", true, "0.1.0")]
@@ -1153,20 +1159,20 @@ public class OtherScenarios : TestBase
         fixture.AssertFullSemver(semVersion, configuration);
     }
 
-    [TestCase(null, true, "6.0.0-beta.1+0")]
-    [TestCase(null, false, "6.0.0-beta.1+0")]
+    [TestCase(null, true, "6.0.0-beta.1+1")]
+    [TestCase(null, false, "6.0.0-beta.1+1")]
     [TestCase(new[] { "5.0.0" }, true, "5.0.0")]
     [TestCase(new[] { "5.0.0" }, false, "6.0.0-beta.1+0")]
     [TestCase(new[] { "6.0.0" }, true, "6.0.0")]
     [TestCase(new[] { "6.0.0" }, false, "6.1.0-beta.1+0")]
     [TestCase(new[] { "7.0.0" }, true, "7.0.0")]
     [TestCase(new[] { "7.0.0" }, false, "7.1.0-beta.1+0")]
-    [TestCase(new[] { "5.0.0-alpha.2" }, true, "6.0.0-beta.1+0")]
-    [TestCase(new[] { "5.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
-    [TestCase(new[] { "6.0.0-alpha.2" }, true, "6.0.0-beta.1+0")]
-    [TestCase(new[] { "6.0.0-alpha.2" }, false, "6.0.0-beta.1+0")]
-    [TestCase(new[] { "7.0.0-alpha.2" }, true, "7.0.0-beta.1+0")]
-    [TestCase(new[] { "7.0.0-alpha.2" }, false, "7.0.0-beta.1+0")]
+    [TestCase(new[] { "5.0.0-alpha.2" }, true, "6.0.0-beta.1+1")]
+    [TestCase(new[] { "5.0.0-alpha.2" }, false, "6.0.0-beta.1+1")]
+    [TestCase(new[] { "6.0.0-alpha.2" }, true, "6.0.0-beta.1+1")]
+    [TestCase(new[] { "6.0.0-alpha.2" }, false, "6.0.0-beta.1+1")]
+    [TestCase(new[] { "7.0.0-alpha.2" }, true, "7.0.0-beta.1+1")]
+    [TestCase(new[] { "7.0.0-alpha.2" }, false, "7.0.0-beta.1+1")]
     [TestCase(new[] { "5.0.0-beta.2" }, true, "5.0.0-beta.2")]
     [TestCase(new[] { "5.0.0-beta.2" }, false, "6.0.0-beta.1+0")]
     [TestCase(new[] { "6.0.0-beta.2" }, true, "6.0.0-beta.2")]
@@ -1245,10 +1251,10 @@ public class OtherScenarios : TestBase
         fixture.MergeNoFF("main");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.1.0-alpha.7");
+        fixture.AssertFullSemver("1.1.0-alpha.3");
     }
 
-    [TestCase(false, "2.0.0-alpha.3")]
+    [TestCase(false, "2.0.0-alpha.2")]
     [TestCase(true, "2.0.0-alpha.2")]
     public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForTrunkBased(bool applyTag, string semanticVersion)
     {

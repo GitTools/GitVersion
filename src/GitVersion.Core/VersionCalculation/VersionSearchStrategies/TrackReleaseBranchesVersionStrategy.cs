@@ -18,7 +18,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IBranchRepository branchRepository = branchRepository.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy, repositoryStore);
+    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy);
 
     private GitVersionContext Context => contextLazy.Value;
 

@@ -107,4 +107,31 @@ internal record BranchConfiguration : IBranchConfiguration
             PreReleaseWeight = PreReleaseWeight ?? configuration.PreReleaseWeight
         };
     }
+
+    public virtual IBranchConfiguration Inherit(EffectiveConfiguration configuration)
+    {
+        configuration.NotNull();
+
+        return new BranchConfiguration(this)
+        {
+            Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
+            DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
+            Label = Label ?? configuration.Label,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrementOfMergedBranch,
+                WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrementWhenBranchMerged,
+                WhenCurrentCommitTagged = PreventIncrement.WhenCurrentCommitTagged ?? configuration.PreventIncrementWhenCurrentCommitTagged
+            },
+            LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
+            TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
+            TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,
+            CommitMessageIncrementing = CommitMessageIncrementing ?? configuration.CommitMessageIncrementing,
+            RegularExpression = RegularExpression ?? configuration.RegularExpression,
+            TracksReleaseBranches = TracksReleaseBranches ?? configuration.TracksReleaseBranches,
+            IsReleaseBranch = IsReleaseBranch ?? configuration.IsReleaseBranch,
+            IsMainBranch = IsMainBranch ?? configuration.IsMainBranch,
+            PreReleaseWeight = PreReleaseWeight ?? configuration.PreReleaseWeight
+        };
+    }
 }

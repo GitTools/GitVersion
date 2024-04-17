@@ -37,18 +37,9 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
             result = result.Increment(
                 increment: Operator.Increment,
                 label: Operator.Label,
-                forceIncrement: Operator.ForceIncrement
+                forceIncrement: Operator.ForceIncrement,
+                Operator.AlternativeSemanticVersion
             );
-
-            if (result.IsLessThan(Operator.AlternativeSemanticVersion, includePreRelease: false))
-            {
-                result = new SemanticVersion(result)
-                {
-                    Major = Operator.AlternativeSemanticVersion!.Major,
-                    Minor = Operator.AlternativeSemanticVersion.Minor,
-                    Patch = Operator.AlternativeSemanticVersion.Patch
-                };
-            }
         }
 
         return result;

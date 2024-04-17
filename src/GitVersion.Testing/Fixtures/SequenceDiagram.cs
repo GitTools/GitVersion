@@ -25,6 +25,11 @@ public class SequenceDiagram
     public void Activate(string branch) => this.diagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
 
     /// <summary>
+    /// Deactivates a branch/participant in the sequence diagram
+    /// </summary>
+    public void Deactivate(string branch) => this.diagramBuilder.AppendLineFormat("deactivate {0}", GetParticipant(branch));
+
+    /// <summary>
     /// Destroys a branch/participant in the sequence diagram
     /// </summary>
     public void Destroy(string branch) => this.diagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));

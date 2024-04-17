@@ -16,7 +16,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (iteration.Configuration.IsMainBranch)
+        if (iteration.Configuration.IsMainBranch == true)
         {
             context.ForceIncrement = true;
 

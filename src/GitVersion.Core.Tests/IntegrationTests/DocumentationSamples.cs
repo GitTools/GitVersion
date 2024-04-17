@@ -118,7 +118,7 @@ public class DocumentationSamples : TestBase
         // Create release branch
         fixture.BranchTo("release/1.3.0", "release");
         fixture.SequenceDiagram.Activate("release/1.3.0");
-        fixture.AssertFullSemver("1.3.0-beta.1+0");
+        fixture.AssertFullSemver("1.3.0-beta.1+1");
 
         // Make another commit on develop
         fixture.Checkout("develop");
@@ -128,7 +128,7 @@ public class DocumentationSamples : TestBase
         // Make a commit to release-1.3.0
         fixture.Checkout("release/1.3.0");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.0-beta.1+1");
+        fixture.AssertFullSemver("1.3.0-beta.1+2");
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("1.3.0-beta.1");
@@ -152,7 +152,7 @@ public class DocumentationSamples : TestBase
 
         // Not 0 for commit count as we can't know the increment rules of the merged branch
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.4.0-alpha.4");
+        fixture.AssertFullSemver("1.4.0-alpha.2");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
 
@@ -173,7 +173,7 @@ public class DocumentationSamples : TestBase
         // Create release branch
         fixture.BranchTo("release/2.0.0", "release");
         fixture.SequenceDiagram.Activate("release/2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+0");
+        fixture.AssertFullSemver("2.0.0-beta.1+1");
 
         // Make another commit on develop
         fixture.Checkout("develop");
@@ -183,7 +183,7 @@ public class DocumentationSamples : TestBase
         // Make a commit to release-2.0.0
         fixture.Checkout("release/2.0.0");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+1");
+        fixture.AssertFullSemver("2.0.0-beta.1+2");
 
         // Apply beta.1 tag should be exact tag
         fixture.ApplyTag("2.0.0-beta.1");
@@ -202,13 +202,13 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-4");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
 
         // Not 0 for commit count as we can't know the increment rules of the merged branch
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("2.1.0-alpha.4");
+        fixture.AssertFullSemver("2.1.0-alpha.2");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
 
@@ -291,7 +291,7 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
-        fixture.AssertFullSemver("1.4.0-0");
+        fixture.AssertFullSemver("1.4.0-3");
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
@@ -392,7 +392,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-4");
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
         fixture.MakeACommit();

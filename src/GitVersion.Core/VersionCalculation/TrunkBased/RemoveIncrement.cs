@@ -4,7 +4,7 @@ internal sealed class RemoveIncrement : ITrunkBasedContextPostEnricher
 {
     public void Enrich(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
     {
-        if (commit.Configuration.IsMainBranch)
+        if (commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
         {
             context.Increment = VersionField.None;
             context.Label = null;

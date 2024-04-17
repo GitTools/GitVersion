@@ -10,13 +10,21 @@ namespace GitVersion.Configuration;
 /// </summary>
 public record EffectiveConfiguration
 {
-    public EffectiveConfiguration(IGitVersionConfiguration configuration, IBranchConfiguration branchConfiguration)
+    public EffectiveConfiguration(IGitVersionConfiguration configuration, IBranchConfiguration branchConfiguration,
+        EffectiveConfiguration? fallbackConfiguration = null)
     {
         configuration.NotNull();
         branchConfiguration.NotNull();
 
-        var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
-        branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
+        if (fallbackConfiguration is null)
+        {
+            var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
+            branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
+        }
+        else
+        {
+            branchConfiguration = branchConfiguration.Inherit(fallbackConfiguration);
+        }
 
         if (!branchConfiguration.DeploymentMode.HasValue)
             throw new("Configuration value for 'Deployment mode' has no value. (this should not happen, please report an issue)");

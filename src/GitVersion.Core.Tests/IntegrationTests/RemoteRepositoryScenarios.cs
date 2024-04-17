@@ -67,8 +67,8 @@ public class RemoteRepositoryScenarios : TestBase
 
         gitPreparer.Prepare();
 
-        fixture.AssertFullSemver("1.0.0-beta.1+5");
-        fixture.AssertFullSemver("1.0.0-beta.1+5", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("1.0.0-beta.1+10");
+        fixture.AssertFullSemver("1.0.0-beta.1+10", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]

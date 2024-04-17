@@ -44,11 +44,11 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.2");
+        fixture.AssertFullSemver("1.1.0-alpha.1");
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-alpha.3");
+        fixture.AssertFullSemver("1.1.0-alpha.2");
         fixture.Repository.Branches.Remove("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.3");
+        fixture.AssertFullSemver("1.1.0-alpha.2");
     }
 
     [Test]
@@ -60,9 +60,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0");
+        fixture.AssertFullSemver("2.0.0-beta.1+5");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.AssertFullSemver("2.0.0-beta.1+7");
     }
 
     [Test]
@@ -74,9 +74,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("releases/2.0.0");
         fixture.Checkout("releases/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0");
+        fixture.AssertFullSemver("2.0.0-beta.1+5");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.AssertFullSemver("2.0.0-beta.1+7");
     }
 
     [Test]
@@ -100,9 +100,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
         fixture.BranchTo("release-2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+7", configuration);
     }
 
     [Test]
@@ -118,9 +118,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
 
-        fixture.AssertFullSemver("2.0.0-rc.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-rc.1+5", configuration);
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-rc.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-rc.1+7", configuration);
     }
 
     [Test]
@@ -133,9 +133,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release-2.0.0-Final");
         fixture.Checkout("release-2.0.0-Final");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0");
+        fixture.AssertFullSemver("2.0.0-beta.1+5");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.AssertFullSemver("2.0.0-beta.1+7");
     }
 
     [Test]
@@ -152,9 +152,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-6");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0-2");
+        fixture.AssertFullSemver("2.0.0-8");
     }
 
     [Test]
@@ -169,7 +169,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-6");
     }
 
     [Test]
@@ -184,9 +184,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-6");
         fixture.Repository.Branches.Remove("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-0");
+        fixture.AssertFullSemver("2.0.0-6");
         fixture.Repository.ApplyTag("2.0.0");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.1-1");
@@ -234,7 +234,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0-5");
+        fixture.AssertFullSemver("2.0.0-11");
     }
 
     [Test]
@@ -262,7 +262,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("3.0.0-10");
+        fixture.AssertFullSemver("3.0.0-16");
     }
 
     [Test]
@@ -281,7 +281,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MakeCommits(1);
 
-        fixture.AssertFullSemver("2.0.0-beta.1+1");
+        fixture.AssertFullSemver("2.0.0-beta.1+2");
 
         //tag it to bump to beta 2
         fixture.Repository.ApplyTag("2.0.0-beta1");
@@ -317,12 +317,12 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MakeCommits(1);
 
-        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         //tag it to bump to beta 2
         fixture.Repository.MakeCommits(4);
 
-        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+6", configuration);
 
         //merge down to develop
         fixture.Repository.CreateBranch("hotfix-2.0.0");
@@ -332,7 +332,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MergeNoFF("hotfix-2.0.0", Generate.SignatureNow());
         fixture.Repository.Branches.Remove(fixture.Repository.Branches["hotfix-2.0.0"]);
-        fixture.AssertFullSemver("2.0.0-beta.1+7", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+8", configuration);
     }
 
     [Test]
@@ -354,14 +354,14 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release/2.0.0-xxx");
         fixture.Checkout("release/2.0.0-xxx");
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         fixture.Checkout("release/2.0.0");
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
 
         fixture.Repository.MergeNoFF("release/2.0.0-xxx");
-        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
     }
 
     [Test]
@@ -375,12 +375,12 @@ public class ReleaseBranchScenarios : TestBase
 
         // Create release from develop
         fixture.BranchTo("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         // Make some commits on release
         fixture.MakeACommit("release 1");
         fixture.MakeACommit("release 2");
-        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
 
         // First forward merge release to develop
         fixture.Checkout("develop");
@@ -389,24 +389,24 @@ public class ReleaseBranchScenarios : TestBase
         // Make some new commit on release
         fixture.Checkout("release-2.0.0");
         fixture.Repository.MakeACommit("release 3 - after first merge");
-        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
 
         // Make new commit on develop
         fixture.Checkout("develop");
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
         fixture.Checkout("develop");
         fixture.Repository.MakeACommit("develop after merge");
 
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
 
         // Make some new commit on release
         fixture.Repository.MakeACommit("release 4");
         fixture.Repository.MakeACommit("release 5");
-        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+6", configuration);
 
         // Second merge release to develop
         fixture.Checkout("develop");
@@ -414,7 +414,7 @@ public class ReleaseBranchScenarios : TestBase
 
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+6", configuration);
     }
 
     [Test]
@@ -428,12 +428,12 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.CreateBranch("release-2.0.0");
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         // Make some commits on release
         var commit1 = fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
 
         // Merge release to develop - emulate commit between other person release commit push and this commit merge to develop
         Commands.Checkout(fixture.Repository, "develop");
@@ -442,12 +442,12 @@ public class ReleaseBranchScenarios : TestBase
 
         // Check version on release after merge to develop
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+3", configuration);
 
         // Check version on release after making some new commits
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+4", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+5", configuration);
     }
 
     [Test]
@@ -505,11 +505,11 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.CreateBranch("release-2.0.0");
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
 
         // Make some commits on release
         fixture.Repository.MakeCommits(10);
-        fixture.AssertFullSemver("2.0.0-beta.1+10", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+11", configuration);
 
         // Create feature from release
         fixture.BranchTo("feature/xxx");
@@ -518,9 +518,9 @@ public class ReleaseBranchScenarios : TestBase
 
         // Check version on release
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+10", configuration);
-        fixture.Repository.MakeACommit("release 11");
         fixture.AssertFullSemver("2.0.0-beta.1+11", configuration);
+        fixture.Repository.MakeACommit("release 11");
+        fixture.AssertFullSemver("2.0.0-beta.1+12", configuration);
 
         // Make new commit on feature
         Commands.Checkout(fixture.Repository, "feature/xxx");
@@ -528,14 +528,14 @@ public class ReleaseBranchScenarios : TestBase
 
         // Checkout to release (no new commits)
         Commands.Checkout(fixture.Repository, "release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.1+11", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+12", configuration);
 
         // Merge feature to release
         fixture.Repository.MergeNoFF("feature/xxx", Generate.SignatureNow());
-        fixture.AssertFullSemver("2.0.0-beta.1+15", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+16", configuration);
 
         fixture.Repository.MakeACommit("release 13 - after feature merge");
-        fixture.AssertFullSemver("2.0.0-beta.1+16", configuration);
+        fixture.AssertFullSemver("2.0.0-beta.1+17", configuration);
     }
 
     [Test]
@@ -593,7 +593,7 @@ public class ReleaseBranchScenarios : TestBase
         // begin the release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+1", configuration);
 
         fixture.Repository.CreateBranch(featureBranch);
         Commands.Checkout(fixture.Repository, featureBranch);
@@ -602,7 +602,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
 
-        fixture.AssertFullSemver("4.5.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+3", configuration);
     }
 
     /// <summary>
@@ -626,7 +626,7 @@ public class ReleaseBranchScenarios : TestBase
         // begin the release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+1", configuration);
 
         fixture.Repository.CreateBranch(featureBranch);
         Commands.Checkout(fixture.Repository, featureBranch);
@@ -634,7 +634,7 @@ public class ReleaseBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, release450);
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
 
-        fixture.AssertFullSemver("4.5.0-beta.1+2", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+3", configuration);
     }
 
     [TestCase("release/1.2.0", "1.2.0-beta.1+1", SemanticVersionFormat.Loose)]

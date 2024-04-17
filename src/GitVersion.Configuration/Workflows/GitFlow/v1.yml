@@ -25,8 +25,10 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-target: true
+    track-merge-message: true
     regex: ^dev(elop)?(ment)?$
-    source-branches: []
+    source-branches:
+    - main
     is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
@@ -38,10 +40,9 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
+    track-merge-message: true
     regex: ^master$|^main$
-    source-branches:
-    - develop
-    - release
+    source-branches: []
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
@@ -50,17 +51,15 @@ branches:
   release:
     mode: ManualDeployment
     label: beta
-    increment: None
+    increment: Minor
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
-    - develop
     - main
     - support
-    - release
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -70,23 +69,28 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
     - release
-    - feature
     - support
     - hotfix
     is-source-branch-for: []
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
+    track-merge-message: true
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
@@ -105,12 +109,11 @@ branches:
       when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
-    - release
     - main
     - support
-    - hotfix
     is-source-branch-for: []
     is-release-branch: true
+    is-main-branch: false
     pre-release-weight: 30000
   support:
     label: ''
@@ -130,7 +133,8 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      when-current-commit-tagged: true
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -141,6 +145,7 @@ branches:
     - hotfix
     - support
     is-source-branch-for: []
+    is-main-branch: false
 ignore:
   sha: []
 mode: ContinuousDelivery

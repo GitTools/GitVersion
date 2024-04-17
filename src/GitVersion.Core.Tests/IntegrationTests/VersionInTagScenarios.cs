@@ -58,7 +58,7 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1+1", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+3", configuration);
 
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.1.0");
@@ -85,7 +85,7 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1+1", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+3", configuration);
 
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.1.0");

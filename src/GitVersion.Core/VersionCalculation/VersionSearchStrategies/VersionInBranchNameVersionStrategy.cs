@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
@@ -11,13 +9,9 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-internal sealed class VersionInBranchNameVersionStrategy(
-    Lazy<GitVersionContext> contextLazy,
-    IRepositoryStore repositoryStore)
-    : IVersionStrategy
+internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext> contextLazy) : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
-    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -39,9 +33,6 @@ internal sealed class VersionInBranchNameVersionStrategy(
         if (!configuration.Value.IsReleaseBranch)
             return false;
 
-        Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
-            () => this.repositoryStore.FindCommitBranchBranchedFrom(configuration.Branch, Context.Configuration)
-        );
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
             if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
@@ -56,7 +47,7 @@ internal sealed class VersionInBranchNameVersionStrategy(
 
                 var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
 
-                baseVersion = new BaseVersion("Version in branch name", result.Value, commitBranchWasBranchedFrom.Value.Commit)
+                baseVersion = new BaseVersion("Version in branch name", result.Value, null)
                 {
                     Operator = new BaseVersionOperator()
                     {

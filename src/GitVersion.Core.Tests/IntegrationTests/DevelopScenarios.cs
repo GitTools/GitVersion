@@ -161,7 +161,7 @@ public class DevelopScenarios : TestBase
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.AssertFullSemver("2.0.0-beta.1+3");
         fixture.Checkout("develop");
         fixture.AssertFullSemver("3.1.0-alpha.1");
         fixture.MakeACommit();
@@ -171,7 +171,7 @@ public class DevelopScenarios : TestBase
         fixture.Checkout("release/2.0.0");
         fixture.BranchTo("feature/MyFeature");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-MyFeature.1+3");
+        fixture.AssertFullSemver("2.0.0-MyFeature.1+4");
     }
 
     [Test]
@@ -225,7 +225,7 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit("commit in develop - 1");
         fixture.AssertFullSemver("1.2.0-alpha.1");
         fixture.BranchTo("release/1.2.0");
-        fixture.AssertFullSemver("1.2.0-beta.1+0");
+        fixture.AssertFullSemver("1.2.0-beta.1+1");
         fixture.Checkout("develop");
         fixture.MakeACommit("commit in develop - 2");
         fixture.MakeACommit("commit in develop - 3");
@@ -236,18 +236,18 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit("commit in release/1.2.0 - 1");
         fixture.MakeACommit("commit in release/1.2.0 - 2");
         fixture.MakeACommit("commit in release/1.2.0 - 3");
-        fixture.AssertFullSemver("1.2.0-beta.1+3");
+        fixture.AssertFullSemver("1.2.0-beta.1+4");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("release/1.2.0");
         fixture.ApplyTag("1.2.0");
         fixture.Checkout("develop");
         fixture.MergeNoFF("release/1.2.0");
         fixture.MakeACommit("commit in develop - 6");
-        fixture.AssertFullSemver("1.3.0-alpha.9");
+        fixture.AssertFullSemver("1.3.0-alpha.6");
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.9";
+        const string expectedFullSemVer = "1.3.0-alpha.6";
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
@@ -270,17 +270,17 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit("commit in release - 1");
         fixture.MakeACommit("commit in release - 2");
         fixture.MakeACommit("commit in release - 3");
-        fixture.AssertFullSemver("1.2.0-beta.1+3");
+        fixture.AssertFullSemver("1.2.0-beta.1+4");
         fixture.ApplyTag("1.2.0");
         fixture.Checkout("develop");
         fixture.MakeACommit("commit in develop - 2");
         fixture.AssertFullSemver("1.3.0-alpha.1");
         fixture.MergeNoFF("release/1.2.0");
-        fixture.AssertFullSemver("1.3.0-alpha.5");
+        fixture.AssertFullSemver("1.3.0-alpha.2");
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.5";
+        const string expectedFullSemVer = "1.3.0-alpha.2";
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
@@ -333,16 +333,16 @@ public class DevelopScenarios : TestBase
         fixture.MergeNoFF(ReleaseBranch);
 
         // Version numbers will still be correct when the release branch is around.
-        fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.3");
+        fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
 
         var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
         var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
         Assert.That(versionSourceAfterReleaseBranchIsRemoved, Is.EqualTo(versionSourceBeforeReleaseBranchIsRemoved));
-        fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.3");
+        fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
     }
 
     [Test]
@@ -374,15 +374,15 @@ public class DevelopScenarios : TestBase
         fixture.MergeNoFF(ReleaseBranch);
 
         // Version numbers will still be correct when the release branch is around.
-        fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.3");
+        fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
 
         var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
         var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
         Assert.That(versionSourceAfterReleaseBranchIsRemoved, Is.EqualTo(versionSourceBeforeReleaseBranchIsRemoved));
-        fixture.AssertFullSemver("1.2.0-alpha.6");
+        fixture.AssertFullSemver("1.2.0-alpha.3");
         fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
     }
 
@@ -412,7 +412,7 @@ public class DevelopScenarios : TestBase
         const string ReleaseBranch = "release/1.1.0";
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(ReleaseBranch));
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.1.0-beta.1+3", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+7", configuration);
 
         // Simulate a GitFlow release finish.
         fixture.Checkout(MainBranch);
@@ -424,7 +424,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeCommits(2);
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";
@@ -441,12 +441,12 @@ public class DevelopScenarios : TestBase
         fixture.Checkout("develop");
         // Simulate some work done on develop while the hotfix branch was open.
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.2.0-alpha.9", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
         fixture.Repository.MergeNoFF(HotfixBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.19", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.7", configuration);
 
         fixture.Repository.Branches.Remove(HotfixBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.19", configuration);
+        fixture.AssertFullSemver("1.2.0-alpha.7", configuration);
     }
 
     [Test]
@@ -497,7 +497,7 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.1+1", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-beta.1+2", configurationBuilder.Build());
 
         // now we makes changes on develop that may or may not end up in the 1.0.0 release
         fixture.Checkout("develop");
@@ -532,7 +532,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.Branches.Remove("release/1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.1.0-alpha.4", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.1.0-alpha.5", configurationBuilder.Build());
 
         fixture.Repository.Tags.Remove("1.0.0-beta.1");
 
@@ -540,12 +540,12 @@ public class DevelopScenarios : TestBase
         fixture.BranchTo("main");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-0", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-5", configurationBuilder.Build());
 
         configurationBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-0", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-5", configurationBuilder.Build());
 
         // Mark this version as RTM
         fixture.ApplyTag("1.0.0");

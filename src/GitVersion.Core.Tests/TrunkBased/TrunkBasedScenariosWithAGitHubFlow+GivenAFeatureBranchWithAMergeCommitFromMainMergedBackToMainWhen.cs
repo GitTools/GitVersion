@@ -15,7 +15,9 @@ internal partial class TrunkBasedScenariosWithAGitFlow
         private static GitHubFlowConfigurationBuilder TrunkBasedBuilder => GitHubFlowConfigurationBuilder.New.WithLabel(null)
             .WithVersionStrategy(VersionStrategies.TrunkBased)
             .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("feature", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment).WithIsMainBranch(false));
+            .WithBranch("feature", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
+            );
 
         [OneTimeSetUp]
         public void OneTimeSetUp()

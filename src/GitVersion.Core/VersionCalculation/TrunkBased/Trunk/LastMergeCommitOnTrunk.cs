@@ -1,3 +1,4 @@
+
 namespace GitVersion.VersionCalculation.TrunkBased.Trunk;
 
 internal sealed class LastMergeCommitOnTrunk : MergeCommitOnTrunkBase

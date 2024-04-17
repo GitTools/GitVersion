@@ -19,13 +19,13 @@ public class SemVerOfAFeatureBranchStartedFromAReleaseBranchGetsDecrementedScena
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.1.0-beta.1+1");
+        fixture.AssertFullSemver("1.1.0-beta.1+2");
 
         // Create a feature branch from the release/1.1.0 branch
         fixture.BranchTo("feature/test");
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.1.0-test.1+2");
+        fixture.AssertFullSemver("1.1.0-test.1+3");
     }
 }

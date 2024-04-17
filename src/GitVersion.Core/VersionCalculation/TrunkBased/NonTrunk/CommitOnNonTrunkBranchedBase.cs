@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 internal abstract class CommitOnNonTrunkBranchedBase : ITrunkBasedIncrementer
 {
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
-        => !commit.Configuration.IsMainBranch && commit.BranchName != iteration.BranchName && commit.Successor is null;
+        => !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch && commit.BranchName != iteration.BranchName && commit.Successor is null;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
@@ -14,10 +14,11 @@ internal abstract class CommitOnNonTrunkBranchedBase : ITrunkBasedIncrementer
         context.BaseVersionSource = commit.Value;
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? commit.GetIncrementForcedByBranch() : iteration.Configuration.Increment.ToVersionField();
+            ? commit.GetIncrementForcedByBranch(context.Configuration) : iteration.Configuration.Increment.ToVersionField();
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
 
-        context.Label = iteration.Configuration.GetBranchSpecificLabel(iteration.BranchName, null) ?? context.Label;
+        var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
+        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null) ?? context.Label;
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator()

@@ -179,7 +179,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.BranchTo("feature/PROJ-1");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("0.3.0-PROJ-1.1+3", configuration);
+        fixture.AssertFullSemver("0.3.0-PROJ-1.1+4", configuration);
     }
 
     [TestCase("alpha", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha")]
@@ -213,7 +213,7 @@ public class FeatureBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, "release/0.2.0");
 
         //validate release version
-        fixture.AssertFullSemver("0.2.0-beta.1+0");
+        fixture.AssertFullSemver("0.2.0-beta.1+1");
 
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release/0.2.0");
@@ -424,7 +424,7 @@ public class FeatureBranchScenarios : TestBase
             .WithDeploymentMode(DeploymentMode.ManualDeployment)
             .WithBranch("unknown", builder => builder.WithIncrement(IncrementStrategy.Patch).WithTracksReleaseBranches(true))
             .WithBranch(MainBranch, builder => builder.WithLabel("pre").WithTracksReleaseBranches(true))
-            .WithBranch("release", builder => builder.WithLabel("rc").WithTracksReleaseBranches(true))
+            .WithBranch("release", builder => builder.WithLabel("rc"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -434,7 +434,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.BranchTo("release/0.10.0");
         fixture.MakeACommit();
         fixture.MakeACommit();
-        fixture.AssertFullSemver("0.10.0-rc.1+2", configuration);
+        fixture.AssertFullSemver("0.10.0-rc.1+3", configuration);
 
         // switch to main and verify the version
         fixture.Checkout(MainBranch);

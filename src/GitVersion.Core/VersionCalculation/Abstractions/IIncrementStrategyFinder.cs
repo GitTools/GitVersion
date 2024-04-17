@@ -15,5 +15,5 @@ public interface IIncrementStrategyFinder
 
     IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index, IIgnoreConfiguration ignore);
 
-    VersionField GetIncrementForcedByCommit(ICommit commit, EffectiveConfiguration configuration);
+    VersionField GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration);
 }

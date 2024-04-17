@@ -26,6 +26,10 @@ public interface IBranchConfiguration
     public bool IsMatch(string branchName)
         => RegularExpression != null && Regex.IsMatch(branchName, RegularExpression, RegexOptions.IgnoreCase);
 
+    IReadOnlyCollection<string> SourceBranches { get; }
+
+    IReadOnlyCollection<string> IsSourceBranchFor { get; }
+
     bool? TracksReleaseBranches { get; }
 
     bool? IsReleaseBranch { get; }
@@ -34,9 +38,7 @@ public interface IBranchConfiguration
 
     int? PreReleaseWeight { get; }
 
-    IReadOnlyCollection<string> SourceBranches { get; }
-
-    IReadOnlyCollection<string> IsSourceBranchFor { get; }
-
     IBranchConfiguration Inherit(IBranchConfiguration configuration);
+
+    IBranchConfiguration Inherit(EffectiveConfiguration configuration);
 }

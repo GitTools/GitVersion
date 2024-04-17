@@ -64,7 +64,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-0");
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-7");
     }
 
     [Test]

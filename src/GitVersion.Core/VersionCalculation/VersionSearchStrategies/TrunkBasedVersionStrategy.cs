@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Core;
@@ -53,6 +52,8 @@ internal sealed class TrunkBasedVersionStrategy(
         new CommitOnTrunkBranchedToNonTrunk(),
 
         // NonTrunk
+        new FirstCommitOnRelease(),
+
         new CommitOnNonTrunk(),
         new CommitOnNonTrunkWithPreReleaseTag(),
         new LastCommitOnNonTrunkWithPreReleaseTag(),
@@ -74,16 +75,31 @@ internal sealed class TrunkBasedVersionStrategy(
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrunkBased))
             yield break;
 
-        var iteration = CreateIteration(branchName: Context.CurrentBranch.Name, configuration: configuration.Value);
+        var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
 
-        var commitsInReverseOrder = configuration.Value.Ignore.Filter(Context.CurrentBranchCommits);
+        var iteration = CreateIteration(
+            branchName: Context.CurrentBranch.Name,
+            configuration: branchConfiguration
+        );
 
+        var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits);
+
+        TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+        if (branchConfiguration.TrackMergeTarget == true) taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+        if (branchConfiguration.TracksReleaseBranches == true)
+        {
+            taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
+        }
+        if (!(branchConfiguration.IsMainBranch == true || branchConfiguration.IsReleaseBranch == true))
+        {
+            taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
+        }
         var taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,
             configuration: Context.Configuration,
             label: null,
             notOlderThan: Context.CurrentCommit.When,
-            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
+            taggedSemanticVersion: taggedSemanticVersion
         );
         var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         IterateOverCommitsRecursive(
@@ -93,18 +109,20 @@ internal sealed class TrunkBasedVersionStrategy(
             taggedSemanticVersions: taggedSemanticVersions
         );
 
-        yield return DetermineBaseVersion(iteration, targetLabel);
+        yield return DetermineBaseVersion(iteration, targetLabel, incrementStrategyFinder, Context.Configuration);
     }
 
     private TrunkBasedIteration CreateIteration(
-        ReferenceName branchName, EffectiveConfiguration configuration, TrunkBasedIteration? parent = null)
+        ReferenceName branchName, IBranchConfiguration configuration,
+        TrunkBasedIteration? parentIteration = null, TrunkBasedCommit? parentCommit = null)
     {
         var iterationCount = Interlocked.Increment(ref iterationCounter);
-        return new(
+        return new TrunkBasedIteration(
             id: $"#{iterationCount}",
             branchName: branchName,
             configuration: configuration,
-            parent: parent
+            parentIteration: parentIteration,
+            parentCommit: parentCommit
         );
     }
 
@@ -114,77 +132,118 @@ internal sealed class TrunkBasedVersionStrategy(
     {
         traversedCommits ??= [];
 
-        Lazy<IReadOnlyDictionary<ICommit, EffectiveBranchConfiguration>> commitsWasBranchedFromLazy = new(
-            () => GetCommitsWasBranchedFrom(branchName: iteration.BranchName)
-        );
+        bool exit = false;
 
         var configuration = iteration.Configuration;
         var branchName = iteration.BranchName;
+        var branch = repositoryStore.FindBranch(branchName);
+
+        Lazy<IReadOnlyDictionary<ICommit, (IBranch Branch, IBranchConfiguration Value)>> commitsWasBranchedFromLazy = new(
+            () => branch is null
+            ? new Dictionary<ICommit, (IBranch, IBranchConfiguration)>()
+            : GetCommitsWasBranchedFrom(branch)
+        );
 
         foreach (var item in commitsInReverseOrder)
         {
             if (!traversedCommits.Add(item)) continue;
 
             if (commitsWasBranchedFromLazy.Value.TryGetValue(item, out var effectiveConfigurationWasBranchedFrom)
-                && (!configuration.IsMainBranch || effectiveConfigurationWasBranchedFrom.Value.IsMainBranch))
+                && (!(configuration.IsMainBranch == true) || effectiveConfigurationWasBranchedFrom.Value.IsMainBranch == true))
             {
+                var excludeBranch = branch;
+
                 configuration = effectiveConfigurationWasBranchedFrom.Value;
                 branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
+                branch = repositoryStore.FindBranch(branchName);
+
+                commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, (IBranch Branch, IBranchConfiguration Configuration)>>
+                    (() => branch is null ? new Dictionary<ICommit, (IBranch, IBranchConfiguration)>()
+                        : GetCommitsWasBranchedFrom(branch, excludeBranch is null ? Array.Empty<IBranch>() : [excludeBranch])
+                );
+
+                TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+                if ((configuration.TrackMergeTarget ?? Context.Configuration.TrackMergeTarget) == true)
+                {
+                    taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+                }
+                if ((configuration.TracksReleaseBranches ?? Context.Configuration.TracksReleaseBranches) == true)
+                {
+                    taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
+                }
+                if (!(configuration.IsMainBranch == true || configuration.IsReleaseBranch == true))
+                {
+                    taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
+                }
                 taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
                     branch: effectiveConfigurationWasBranchedFrom.Branch,
                     configuration: Context.Configuration,
                     label: null,
                     notOlderThan: Context.CurrentCommit.When,
-                    taggedSemanticVersion: effectiveConfigurationWasBranchedFrom.Value.GetTaggedSemanticVersion()
+                    taggedSemanticVersion: taggedSemanticVersion
                 );
             }
 
-            var incrementForcedByCommit = GetIncrementForcedByCommit(item, configuration);
-            var commit = iteration.CreateCommit(item, branchName, configuration, incrementForcedByCommit);
+            var commit = iteration.CreateCommit(item, branchName, configuration);
 
             var semanticVersions = taggedSemanticVersions[item].ToArray();
             commit.AddSemanticVersions(semanticVersions.Select(element => element.Value));
 
-            var label = targetLabel ?? configuration.GetBranchSpecificLabel(branchName, null);
+            var label = targetLabel ?? new EffectiveConfiguration(
+                configuration: Context.Configuration,
+                branchConfiguration: configuration
+            ).GetBranchSpecificLabel(branchName, null);
+
             foreach (var semanticVersion in semanticVersions)
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label)) return true;
+                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                {
+                    if (configuration.Increment != IncrementStrategy.Inherit)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        exit = true;
+                    }
+                }
+            }
+
+            if (exit && configuration.Increment != IncrementStrategy.Inherit)
+            {
+                return true;
             }
 
             if (item.IsMergeCommit())
             {
                 Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-                    () => incrementStrategyFinder.GetMergedCommits(item, 1, configuration.Ignore).Reverse().ToList()
+                    () => incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse().ToList()
                 );
 
-                if (configuration.TrackMergeMessage
+                if ((configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) == true
                     && MergeMessage.TryParse(item, Context.Configuration, out var mergeMessage))
                 {
-                    if (mergeMessage.Version is not null)
-                    {
-                        commit.AddSemanticVersions(mergeMessage.Version);
-                        return true;
-                    }
-
                     if (mergeMessage.MergedBranch is not null)
                     {
-                        var childConfiguration = Context.Configuration.GetEffectiveConfiguration(
-                            mergeMessage.MergedBranch
-                        );
+                        var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
+                        var childBranchName = mergeMessage.MergedBranch;
 
-                        if (childConfiguration.IsMainBranch)
+                        if (childConfiguration.IsMainBranch == true)
                         {
-                            if (configuration.IsMainBranch) throw new NotImplementedException();
+                            if (configuration.IsMainBranch == true) throw new NotImplementedException();
+
                             mergedCommitsInReverseOrderLazy = new(
-                                () => incrementStrategyFinder.GetMergedCommits(item, 0, configuration.Ignore).Reverse().ToList()
+                                () => incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse().ToList()
                             );
                             childConfiguration = configuration;
+                            childBranchName = iteration.BranchName;
                         }
 
                         var childIteration = CreateIteration(
-                            branchName: mergeMessage.MergedBranch,
+                            branchName: childBranchName,
                             configuration: childConfiguration,
-                            parent: iteration
+                            parentIteration: iteration,
+                            parentCommit: commit
                         );
 
                         var done = IterateOverCommitsRecursive(
@@ -206,32 +265,13 @@ internal sealed class TrunkBasedVersionStrategy(
         return false;
     }
 
-    private VersionField GetIncrementForcedByCommit(ICommit commit, EffectiveConfiguration configuration)
+    private IReadOnlyDictionary<ICommit, (IBranch, IBranchConfiguration)> GetCommitsWasBranchedFrom(
+        IBranch branch, params IBranch[] excludedBranches)
     {
-        commit.NotNull();
-        configuration.NotNull();
-
-        return configuration.CommitMessageIncrementing switch
-        {
-            CommitMessageIncrementMode.Enabled => incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
-            CommitMessageIncrementMode.Disabled => VersionField.None,
-            CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit()
-                ? incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration) : VersionField.None,
-            _ => throw new InvalidEnumArgumentException(
-                nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
-            )
-        };
-    }
-
-    private IReadOnlyDictionary<ICommit, EffectiveBranchConfiguration> GetCommitsWasBranchedFrom(ReferenceName branchName)
-    {
-        Dictionary<ICommit, EffectiveBranchConfiguration> result = [];
-
-        var branch = repositoryStore.FindBranch(branchName);
-        if (branch is null) return result;
+        Dictionary<ICommit, (IBranch, IBranchConfiguration Configuration)> result = new();
 
         var branchCommits = repositoryStore.FindCommitBranchesBranchedFrom(
-            branch, Context.Configuration
+            branch, Context.Configuration, excludedBranches: excludedBranches
         ).ToList();
 
         var branchCommitDictionary = branchCommits.ToDictionary(
@@ -240,36 +280,38 @@ internal sealed class TrunkBasedVersionStrategy(
         foreach (var item in branchCommitDictionary.Keys)
         {
             var branchConfiguration = Context.Configuration.GetBranchConfiguration(item);
-            if (branchConfiguration.Increment == IncrementStrategy.Inherit) continue;
 
             if (result.ContainsKey(branchCommitDictionary[item]))
             {
-                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true
-                    && !result[branchCommitDictionary[item]].Value.IsMainBranch)
+                if (branchConfiguration.Increment == IncrementStrategy.Inherit && branchConfiguration.IsMainBranch is null)
                 {
-                    result[branchCommitDictionary[item]]
-                        = new(new(Context.Configuration, branchConfiguration), item);
+                    throw new InvalidOperationException();
+                }
+
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true
+                    && result[branchCommitDictionary[item]].Configuration.IsMainBranch == false)
+                {
+                    result[branchCommitDictionary[item]] = new(item, branchConfiguration);
                 }
             }
             else
             {
-                result.Add(
-                    key: branchCommitDictionary[item],
-                    value: new(new(Context.Configuration, branchConfiguration), item)
-                );
+                result.Add(key: branchCommitDictionary[item], value: new(item, branchConfiguration));
             }
         }
         return result;
     }
 
-    private static BaseVersion DetermineBaseVersion(TrunkBasedIteration iteration, string? targetLabel)
-        => DetermineBaseVersionRecursive(iteration, targetLabel);
+    private static BaseVersion DetermineBaseVersion(TrunkBasedIteration iteration, string? targetLabel,
+            IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
+        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration);
 
-    internal static BaseVersion DetermineBaseVersionRecursive(TrunkBasedIteration iteration, string? targetLabel)
+    internal static BaseVersion DetermineBaseVersionRecursive(TrunkBasedIteration iteration, string? targetLabel,
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
     {
         iteration.NotNull();
 
-        var incrementSteps = GetIncrements(iteration, targetLabel).ToArray();
+        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration).ToArray();
 
         BaseVersion? result = null;
         for (var i = 0; i < incrementSteps.Length; i++)
@@ -283,15 +325,20 @@ internal sealed class TrunkBasedVersionStrategy(
                 result ??= new BaseVersion();
                 result = result.Apply(baseVersionOperator);
             }
+            else if (incrementSteps[i] is BaseVersion baseVersion)
+            {
+                result = baseVersion;
+            }
         }
         return result ?? throw new InvalidOperationException();
     }
 
-    private static IEnumerable<IBaseVersionIncrement> GetIncrements(TrunkBasedIteration iteration, string? targetLabel)
+    private static IEnumerable<IBaseVersionIncrement> GetIncrements(TrunkBasedIteration iteration, string? targetLabel,
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
     {
-        TrunkBasedContext context = new()
+        TrunkBasedContext context = new(incrementStrategyFinder, configuration)
         {
-            TargetLabel = targetLabel,
+            TargetLabel = targetLabel
         };
 
         foreach (var commit in iteration.Commits)

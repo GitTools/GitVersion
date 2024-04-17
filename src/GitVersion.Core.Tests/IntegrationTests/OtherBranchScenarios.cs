@@ -95,7 +95,7 @@ public class OtherBranchScenarios : TestBase
         fixture.BranchTo("release/0.1.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.2-rc.1+0", configuration);
+        fixture.AssertFullSemver("0.1.2-rc.1+3", configuration);
     }
 
     [Test]
@@ -113,7 +113,7 @@ public class OtherBranchScenarios : TestBase
         fixture.BranchTo("release/2.0.0-LTS");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("2.0.0-LTS.1+1", configuration);
+        fixture.AssertFullSemver("2.0.0-LTS.1+6", configuration);
     }
 
     [Test]
