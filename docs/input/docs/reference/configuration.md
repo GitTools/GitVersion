@@ -37,12 +37,11 @@ To see the effective configuration (defaults and overrides), you can run
 The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
 -   GitFlow (GitFlow/v1)
 -   GitHubFlow (GitHubFlow/v1)
--   TrunkBased (TrunkBased/v1)
 
 Example of using a `TrunkBased` workflow with a different `tag-prefix`:
 
 ```yaml
-workflow: TrunkBased/v1
+workflow: GitHubFlow/v1
 tag-prefix: '[abc]'
 ```
 
@@ -76,8 +75,10 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-target: true
+    track-merge-message: true
     regex: ^dev(elop)?(ment)?$
-    source-branches: []
+    source-branches:
+    - main
     is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
@@ -89,10 +90,9 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
+    track-merge-message: true
     regex: ^master$|^main$
-    source-branches:
-    - develop
-    - release
+    source-branches: []
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
@@ -101,17 +101,15 @@ branches:
   release:
     mode: ManualDeployment
     label: beta
-    increment: None
+    increment: Minor
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
     regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
-    - develop
     - main
     - support
-    - release
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -121,23 +119,28 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
     - release
-    - feature
     - support
     - hotfix
     is-source-branch-for: []
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
+    track-merge-message: true
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
@@ -156,12 +159,11 @@ branches:
       when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
-    - release
     - main
     - support
-    - hotfix
     is-source-branch-for: []
     is-release-branch: true
+    is-main-branch: false
     pre-release-weight: 30000
   support:
     label: ''
@@ -181,7 +183,8 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    prevent-increment: {}
+    prevent-increment:
+      when-current-commit-tagged: true
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -192,6 +195,7 @@ branches:
     - hotfix
     - support
     is-source-branch-for: []
+    is-main-branch: false
 ignore:
   sha: []
 mode: ContinuousDelivery
@@ -241,10 +245,10 @@ branches:
     increment: Patch
     prevent-increment:
       of-merged-branch: true
-    track-merge-target: false
+    tracks-merge-target: false
+    tracks-merge-message: true
     regex: ^master$|^main$
-    source-branches:
-    - release
+    source-branches: []
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
@@ -253,15 +257,16 @@ branches:
   release:
     mode: ManualDeployment
     label: beta
-    increment: None
+    increment: Patch
     prevent-increment:
       of-merged-branch: true
+      when-branch-merged: false
       when-current-commit-tagged: false
     track-merge-target: false
+    track-merge-message: true
     regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - main
-    - release
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -271,17 +276,23 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release
-    - feature
     is-source-branch-for: []
+    track-merge-message: true
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
@@ -289,11 +300,14 @@ branches:
     - release
     - feature
     is-source-branch-for: []
+    track-merge-message: true
     pre-release-weight: 30000
   unknown:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -301,6 +315,8 @@ branches:
     - feature
     - pull-request
     is-source-branch-for: []
+    track-merge-message: false
+    is-main-branch: false
 ignore:
   sha: []
 mode: ContinuousDelivery
@@ -321,96 +337,11 @@ is-release-branch: false
 is-main-branch: false
 ```
 
-The supported built-in configuration for the `TrunkBased` workflow (`workflow: TrunkBased/v1`) looks like:
-
-```yaml
-assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatch
-tag-prefix: '[vV]?'
-version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
-major-version-bump-message: '\+semver:\s?(breaking|major)'
-minor-version-bump-message: '\+semver:\s?(feature|minor)'
-patch-version-bump-message: '\+semver:\s?(fix|patch)'
-no-bump-message: '\+semver:\s?(none|skip)'
-tag-pre-release-weight: 60000
-commit-date-format: yyyy-MM-dd
-merge-message-formats: {}
-update-build-number: true
-semantic-version-format: Strict
-strategies:
-- TrunkBased
-- ConfiguredNextVersion
-branches:
-  main:
-    mode: ContinuousDeployment
-    label: ''
-    increment: Patch
-    prevent-increment:
-      of-merged-branch: true
-    track-merge-target: false
-    regex: ^master$|^main$
-    source-branches: []
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
-  feature:
-    increment: Minor
-    regex: ^features?[/-](?<BranchName>.+)
-    prevent-increment:
-      when-current-commit-tagged: false
-    source-branches:
-    - main
-    pre-release-weight: 30000
-  hotfix:
-    increment: Patch
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
-    prevent-increment:
-      when-current-commit-tagged: false
-    source-branches:
-    - main
-    pre-release-weight: 30000
-  pull-request:
-    mode: ContinuousDelivery
-    label: PullRequest
-    increment: Inherit
-    label-number-pattern: '[/-](?<number>\d+)'
-    regex: ^(pull|pull\-requests|pr)[/-]
-    source-branches:
-    - main
-    pre-release-weight: 30000
-  unknown:
-    increment: Patch
-    regex: (?<BranchName>.+)
-    prevent-increment:
-      when-current-commit-tagged: false
-    source-branches:
-    - main
-    pre-release-weight: 30000
-ignore:
-  sha: []
-mode: ContinuousDelivery
-label: '{BranchName}'
-increment: Inherit
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: false
-  when-current-commit-tagged: true
-track-merge-target: false
-track-merge-message: true
-commit-message-incrementing: Enabled
-regex: ''
-tracks-release-branches: false
-is-release-branch: false
-is-main-branch: false
-
-```
-
 The details of the available options are as follows:
 
 ### workflow
 
-The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1 or TrunkBased/v1. Defaults to GitFlow/v1 if not set.
+The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1. Defaults to GitFlow/v1 if not set. To create a configuration from scratch without using a base template please specify an empty string.
 
 ### next-version
 
