@@ -8,16 +8,23 @@ namespace GitVersion.Configuration;
 
 internal static class ConfigurationExtensions
 {
-    public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
+    public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(
+        this IGitVersionConfiguration configuration, IBranch branch, EffectiveConfiguration? parentConfiguration = null)
     {
-        var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name);
-        return new(effectiveConfiguration, branch);
+        var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name, parentConfiguration);
+        return new EffectiveBranchConfiguration(effectiveConfiguration, branch);
     }
 
-    public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
+    public static EffectiveConfiguration GetEffectiveConfiguration(
+        this IGitVersionConfiguration configuration, ReferenceName branchName, EffectiveConfiguration? parentConfiguration = null)
     {
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
-        return new(configuration, branchConfiguration);
+        EffectiveConfiguration? fallbackConfiguration = null;
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+        {
+            fallbackConfiguration = parentConfiguration;
+        }
+        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
     }
 
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)

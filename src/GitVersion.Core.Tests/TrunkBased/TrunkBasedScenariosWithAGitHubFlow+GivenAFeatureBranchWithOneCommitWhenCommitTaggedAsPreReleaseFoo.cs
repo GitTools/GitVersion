@@ -14,7 +14,9 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
 
         private static GitHubFlowConfigurationBuilder TrunkBasedBuilder => GitHubFlowConfigurationBuilder.New
             .WithVersionStrategy(VersionStrategies.TrunkBased).WithLabel(null)
-            .WithBranch("feature", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment).WithIsMainBranch(false));
+            .WithBranch("feature", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
+            );
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -80,8 +82,7 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         public string GetVersionWithPreventIncrementWhenCurrentCommitTaggedFalse(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithPreventIncrementWhenCurrentCommitTagged(false)
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;

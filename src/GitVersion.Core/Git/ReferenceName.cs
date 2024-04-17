@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -76,6 +77,12 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
+
+    public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result, IGitVersionConfiguration configuration)
+        => TryGetSemanticVersion(out result, configuration.VersionInBranchRegex, configuration.TagPrefix, configuration.SemanticVersionFormat);
+
+    public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result, EffectiveConfiguration configuration)
+        => TryGetSemanticVersion(out result, configuration.VersionInBranchRegex, configuration.TagPrefix, configuration.SemanticVersionFormat);
 
     public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
                                       Regex versionPatternRegex,

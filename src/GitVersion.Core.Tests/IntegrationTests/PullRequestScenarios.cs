@@ -136,6 +136,6 @@ public class PullRequestScenarios : TestBase
 
         fixture.Repository.CreatePullRequestRef("release/2.0.0", MainBranch, normalise: true);
 
-        fixture.AssertFullSemver("2.0.0-PullRequest2.3");
+        fixture.AssertFullSemver("2.0.0-PullRequest2.4");
     }
 }

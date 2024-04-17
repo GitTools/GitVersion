@@ -40,15 +40,11 @@ internal sealed class TaggedCommitVersionStrategy(
         ).SelectMany(elements => elements).Distinct().ToArray();
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-        var semanticVersionsWithTag = taggedSemanticVersionService.GetTaggedSemanticVersions(
-            branch: Context.CurrentBranch,
-            configuration: Context.Configuration,
-            label: label,
-            notOlderThan: Context.CurrentCommit.When,
-            taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
-        ).SelectMany(elements => elements).Distinct().ToArray();
+        var maxTaggedSemanticVersion = taggedSemanticVersions
+            .Where(element => !element.Value.IsMatchForBranchSpecificLabel(label)).Max();
 
-        foreach (var semanticVersionWithTag in semanticVersionsWithTag)
+        foreach (var semanticVersionWithTag
+            in taggedSemanticVersions.Where(element => element.Value.IsMatchForBranchSpecificLabel(label)))
         {
             var baseVersionSource = semanticVersionWithTag.Tag.Commit;
             var increment = incrementStrategyFinder.DetermineIncrementedField(
@@ -65,7 +61,8 @@ internal sealed class TaggedCommitVersionStrategy(
                 {
                     Increment = increment,
                     ForceIncrement = false,
-                    Label = label
+                    Label = label,
+                    AlternativeSemanticVersion = maxTaggedSemanticVersion?.Value
                 }
             };
         }

@@ -237,7 +237,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         return parents.Single();
     }
 
-    public VersionField GetIncrementForcedByCommit(ICommit commit, EffectiveConfiguration configuration)
+    public VersionField GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration)
     {
         commit.NotNull();
         configuration.NotNull();

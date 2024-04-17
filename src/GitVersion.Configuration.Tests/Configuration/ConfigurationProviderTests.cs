@@ -316,7 +316,7 @@ branches:
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
+        configuration.Branches["develop"].SourceBranches.ShouldBe(["main"]);
     }
 
     [Test]
@@ -348,7 +348,7 @@ branches:
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(
-            new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
+            ["develop", MainBranch, "release", "support", "hotfix"]);
     }
 
     [Test]

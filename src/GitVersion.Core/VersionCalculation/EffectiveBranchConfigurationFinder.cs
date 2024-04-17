@@ -6,12 +6,12 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
+internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
 {
     private readonly ILog log = log.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
-    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, IGitVersionConfiguration configuration)
+    public IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, IGitVersionConfiguration configuration)
     {
         branch.NotNull();
         configuration.NotNull();

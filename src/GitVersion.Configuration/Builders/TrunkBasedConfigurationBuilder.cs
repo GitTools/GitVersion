@@ -46,78 +46,95 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
 
         WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration()
         {
-            Increment = IncrementStrategy.Patch,
-            RegularExpression = MainBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ContinuousDeployment,
-            SourceBranches = [],
             Label = string.Empty,
+            Increment = IncrementStrategy.Patch,
             PreventIncrement = new PreventIncrementConfiguration()
             {
                 OfMergedBranch = true
             },
             TrackMergeTarget = false,
+            TrackMergeMessage = true,
+            RegularExpression = MainBranch.RegexPattern,
+            SourceBranches = [],
             TracksReleaseBranches = false,
-            IsMainBranch = true,
             IsReleaseBranch = false,
+            IsMainBranch = true,
             PreReleaseWeight = 55000
         });
 
         WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration()
         {
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Minor,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                WhenCurrentCommitTagged = false
+            },
             RegularExpression = FeatureBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
             ],
-            PreventIncrement = new PreventIncrementConfiguration()
-            {
-                WhenCurrentCommitTagged = false
-            },
+            TrackMergeMessage = true,
+            IsMainBranch = false,
             PreReleaseWeight = 30000
         });
 
         WithBranch(HotfixBranch.Name).WithConfiguration(new BranchConfiguration()
         {
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Patch,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                WhenCurrentCommitTagged = false
+            },
             RegularExpression = HotfixBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
             ],
-            PreventIncrement = new PreventIncrementConfiguration()
-            {
-                WhenCurrentCommitTagged = false
-            },
+            IsReleaseBranch = true,
+            IsMainBranch = false,
             PreReleaseWeight = 30000
         });
 
         WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
-            Increment = IncrementStrategy.Inherit,
-            RegularExpression = PullRequestBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
+            Label = "PullRequest",
+            Increment = IncrementStrategy.Inherit,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                OfMergedBranch = true,
+                WhenCurrentCommitTagged = false
+            },
+            LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
+            RegularExpression = PullRequestBranch.RegexPattern,
             SourceBranches =
             [
-                this.MainBranch.Name
+                this.MainBranch.Name,
+                this.FeatureBranch.Name,
+                this.HotfixBranch.Name,
             ],
-            Label = "PullRequest",
-            LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
+            TrackMergeMessage = true,
             PreReleaseWeight = 30000
         });
 
         WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Patch,
+            PreventIncrement = new PreventIncrementConfiguration()
+            {
+                WhenCurrentCommitTagged = false
+            },
             RegularExpression = UnknownBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
             ],
-            PreventIncrement = new PreventIncrementConfiguration()
-            {
-                WhenCurrentCommitTagged = false
-            },
             PreReleaseWeight = 30000
         });
     }

@@ -149,6 +149,8 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     public override IBranchConfiguration Inherit(IBranchConfiguration configuration) => throw new NotSupportedException();
 
+    public override IBranchConfiguration Inherit(EffectiveConfiguration configuration) => throw new NotSupportedException();
+
     public IBranchConfiguration GetEmptyBranchConfiguration() => new BranchConfiguration
     {
         RegularExpression = string.Empty,

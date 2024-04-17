@@ -15,7 +15,9 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         private static GitHubFlowConfigurationBuilder TrunkBasedBuilder => GitHubFlowConfigurationBuilder.New
             .WithVersionStrategy(VersionStrategies.TrunkBased).WithLabel(null)
             .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("feature", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment).WithIsMainBranch(false));
+            .WithBranch("feature", _ => _
+                .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
+            );
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -248,13 +250,12 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithNoLabelAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
+        public string GetVersionWithNoLabelOnMainAndPreventIncrementWhenCurrentCommitTaggedFalseOnFeature(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
@@ -476,13 +477,12 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithEmptyLabelAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
+        public string GetVersionWithEmptyLabelOnMainAndPreventIncrementWhenCurrentCommitTaggedFalseOnFeature(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
@@ -704,13 +704,12 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithLabelFooAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
+        public string GetVersionWithLabelFooOnMainAndPreventIncrementWhenCurrentCommitTaggedFalseOnFeature(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;
@@ -932,13 +931,12 @@ internal partial class TrunkBasedScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Minor, "{BranchName}", ExpectedResult = "1.1.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+0")]
-        public string GetVersionWithLabelBarAndPreventIncrementWhenCurrentCommitTaggedFalseOnMain(
+        public string GetVersionWithLabelBarOnMainAndPreventIncrementWhenCurrentCommitTaggedFalseOnFeature(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration trunkBased = TrunkBasedBuilder
-                .WithPreventIncrementWhenCurrentCommitTagged(false)
                 .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(trunkBased).FullSemVer;

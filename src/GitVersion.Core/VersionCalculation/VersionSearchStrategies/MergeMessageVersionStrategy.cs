@@ -1,6 +1,7 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
@@ -40,28 +41,23 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
             {
                 this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
 
-                var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranch;
-                var message = commit.Message.Trim();
                 var baseVersionSource = commit;
-                if (shouldIncrement)
+                if (commit.IsMergeCommit())
                 {
-                    var parents = commit.Parents.ToArray();
-                    if (parents.Length == 2 && message.Contains("Merge branch") && message.Contains("release"))
-                    {
-                        baseVersionSource = this.repositoryStore.FindMergeBase(parents[0], parents[1]);
-                    }
+                    baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
                 }
 
                 var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-                var increment = shouldIncrement ? incrementStrategyFinder.DetermineIncrementedField(
-                    currentCommit: Context.CurrentCommit,
-                    baseVersionSource: baseVersionSource,
-                    shouldIncrement: true,
-                    configuration: configuration.Value,
-                    label: label
-                ) : VersionField.None;
+                var increment = configuration.Value.PreventIncrementOfMergedBranch
+                    ? VersionField.None : incrementStrategyFinder.DetermineIncrementedField(
+                        currentCommit: Context.CurrentCommit,
+                        baseVersionSource: baseVersionSource,
+                        shouldIncrement: true,
+                        configuration: configuration.Value,
+                        label: label
+                    );
 
-                yield return new BaseVersion($"Merge message '{message}'", mergeMessage.Version, baseVersionSource)
+                yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version, null)
                 {
                     Operator = new BaseVersionOperator()
                     {

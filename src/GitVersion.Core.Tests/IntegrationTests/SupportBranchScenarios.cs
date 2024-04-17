@@ -38,13 +38,13 @@ public class SupportBranchScenarios : TestBase
         // Create 1.2.0 release
         Commands.Checkout(fixture.Repository, "support/1.0.0");
         fixture.Repository.MergeNoFF("release/1.2.0");
-        fixture.AssertFullSemver("1.2.0-0");
+        fixture.AssertFullSemver("1.2.0-2");
         fixture.Repository.ApplyTag("1.2.0");
 
         // Create 1.2.1 hotfix
         fixture.BranchTo("hotfix/1.2.1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.2.1-beta.1+3");
+        fixture.AssertFullSemver("1.2.1-beta.1+1");
         fixture.Checkout("support/1.0.0");
         fixture.MergeNoFF("hotfix/1.2.1");
         fixture.AssertFullSemver("1.2.1-2");

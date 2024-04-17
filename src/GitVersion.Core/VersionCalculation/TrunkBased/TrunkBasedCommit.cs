@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -9,16 +10,18 @@ namespace GitVersion.VersionCalculation.TrunkBased;
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, EffectiveConfiguration Configuration, VersionField Increment)
+internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsPredecessorTheLastCommitOnTrunk
-        => !Configuration.IsMainBranch && Predecessor?.Configuration.IsMainBranch == true;
+    public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
+        => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
+
+    public VersionField Increment { get; set; }
 
     public TrunkBasedIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    public EffectiveConfiguration Configuration { get; } = Configuration.NotNull();
+    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasSuccessor => Successor is not null;
 
@@ -34,36 +37,54 @@ internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, R
 
     public TrunkBasedIteration? ChildIteration { get; private set; }
 
+    [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
+
+    public TrunkBasedIteration? ParentIteration => Iteration.ParentIteration;
+
+    public TrunkBasedCommit? ParentCommit => Iteration.ParentCommit;
+
+    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
+    public bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
 
     private readonly HashSet<SemanticVersion> semanticVersions = [];
 
-    public VersionField GetIncrementForcedByBranch()
+    private EffectiveConfiguration? effectiveConfiguration;
+
+    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
     {
-        ICommit lastCommit = null!;
+        if (effectiveConfiguration is not null) return effectiveConfiguration;
+
+        IBranchConfiguration branchConfiguration = Configuration;
+
+        IBranchConfiguration? last = Configuration;
         for (var i = this; i is not null; i = i.Predecessor)
         {
-            if (i.Configuration.Increment != IncrementStrategy.Inherit)
-                return i.Configuration.Increment.ToVersionField();
-            lastCommit = i.Value;
+            if (branchConfiguration.Increment != IncrementStrategy.Inherit) break;
+
+            if (i.Configuration != last)
+            {
+                branchConfiguration = branchConfiguration.Inherit(i.Configuration);
+            }
+
+            last = i.Configuration;
         }
 
-        if (Iteration.Parent is not null && lastCommit.Parents.FirstOrDefault() is ICommit commit)
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit && HasParentIteration)
         {
-            var trunkCommit = Iteration.Parent.FindCommit(commit);
-            if (trunkCommit is not null)
-                return trunkCommit.GetIncrementForcedByBranch();
+            var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
+            branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
         }
 
-        for (var i = Iteration; i is not null; i = i.Parent)
-        {
-            if (i.Configuration.Increment != IncrementStrategy.Inherit)
-                return i.Configuration.Increment.ToVersionField();
-        }
+        return effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+    }
 
-        return VersionField.None;
+    public VersionField GetIncrementForcedByBranch(IGitVersionConfiguration configuration)
+    {
+        var result = GetEffectiveConfiguration(configuration);
+        return result.Increment.ToVersionField();
     }
 
     public void AddSemanticVersions(params SemanticVersion[] values)
@@ -80,11 +101,11 @@ internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, R
     public void AddChildIteration(TrunkBasedIteration iteration) => ChildIteration = iteration.NotNull();
 
     public TrunkBasedCommit Append(
-        ICommit value, ReferenceName branchName, EffectiveConfiguration configuration, VersionField increment)
+        ICommit value, ReferenceName branchName, IBranchConfiguration configuration)
     {
         if (HasPredecessor) throw new InvalidOperationException();
 
-        TrunkBasedCommit commit = new(Iteration, value, branchName, configuration, increment);
+        TrunkBasedCommit commit = new(Iteration, value, branchName, configuration);
         Predecessor = commit;
         commit.Successor = this;
 

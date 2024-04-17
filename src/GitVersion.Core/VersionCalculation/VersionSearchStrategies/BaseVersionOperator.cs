@@ -15,4 +15,31 @@ public sealed record class BaseVersionOperator : IBaseVersionIncrement
     public string? Label { get; init; }
 
     public SemanticVersion? AlternativeSemanticVersion { get; init; }
+
+    public override string ToString()
+    {
+        StringBuilder stringBuilder = new();
+
+        stringBuilder.Append($"{Source}: ");
+        if (ForceIncrement)
+            stringBuilder.Append("Force version increment ");
+        else
+        {
+            stringBuilder.Append("Version increment ");
+        }
+
+        stringBuilder.Append($"+semver '{Increment}'");
+
+        if (Label is null)
+            stringBuilder.Append(" with no label");
+        else
+        {
+            stringBuilder.Append($" with label '{Label}'");
+        }
+
+        if (BaseVersionSource is not null)
+            stringBuilder.Append($" based on commit '{BaseVersionSource.Id.ToString(7)}'.");
+
+        return stringBuilder.ToString();
+    }
 }

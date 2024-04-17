@@ -238,32 +238,32 @@ public class ContinuousDeliveryTestScenarios
         fixture.BranchTo("release/1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.0", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1", configuration);
 
         fixture.BranchTo("feature/just-a-test");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-just-a-test.0", configuration);
+        fixture.AssertFullSemver("1.0.0-just-a-test.1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-just-a-test.1", configuration);
+        fixture.AssertFullSemver("1.0.0-just-a-test.2", configuration);
 
         fixture.Checkout("release/1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.0", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1", configuration);
 
         fixture.MergeNoFF("feature/just-a-test");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.3", configuration);
 
         fixture.Repository.Branches.Remove("feature/just-a-test");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.3", configuration);
 
         fixture.Repository.DumpGraph();
     }
@@ -287,10 +287,10 @@ public class ContinuousDeliveryTestScenarios
                 .WithTrackMergeTarget(false)
             )
             .WithBranch("develop", builder => builder
-                .WithDeploymentMode(DeploymentMode.ContinuousDelivery).WithTrackMergeTarget(false)
+                .WithTrackMergeTarget(false)
             )
             .WithBranch("release", builder => builder
-                .WithDeploymentMode(DeploymentMode.ContinuousDelivery).WithTrackMergeTarget(false)
+                .WithTrackMergeTarget(false)
             )
             .Build();
 
@@ -314,17 +314,17 @@ public class ContinuousDeliveryTestScenarios
         fixture.BranchTo("release/1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.0", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+2", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.1", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+3", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+4", configuration);
 
         fixture.Checkout("develop");
 
@@ -344,8 +344,8 @@ public class ContinuousDeliveryTestScenarios
         // cancel the release 1.0.0
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❔ expected: "0.1.0-alpha.6"
-        fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
         fixture.Repository.DumpGraph();
     }
@@ -373,11 +373,9 @@ public class ContinuousDeliveryTestScenarios
                 .WithTrackMergeTarget(false)
             )
             .WithBranch("develop", builder => builder
-                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithTrackMergeTarget(false)
             )
             .WithBranch("release", builder => builder
-                .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithTrackMergeTarget(false)
             )
             .Build();
@@ -402,17 +400,17 @@ public class ContinuousDeliveryTestScenarios
         fixture.BranchTo("release/1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.0", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+2", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.1", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+3", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2", configuration);
+        fixture.AssertFullSemver("1.0.0-beta.1+4", configuration);
 
         fixture.Checkout("develop");
 
@@ -427,8 +425,8 @@ public class ContinuousDeliveryTestScenarios
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.0.0");
 
-        // ❔ expected: "0.0.1-ci.5"
-        fixture.AssertFullSemver("1.0.0-ci.0", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-ci.5", configuration);
 
         fixture.ApplyTag("1.0.0");
 
@@ -442,13 +440,13 @@ public class ContinuousDeliveryTestScenarios
 
         fixture.MergeNoFF("main");
 
-        // ❔ expected: "1.1.0-alpha.2"
-        fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-alpha.2", configuration);
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❔ expected: "1.1.0-alpha.2
-        fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-alpha.2", configuration);
 
         fixture.Repository.DumpGraph();
     }

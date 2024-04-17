@@ -15,23 +15,23 @@ public class BranchWithoutCommitScenarios : TestBase
         fixture.Repository.CreateBranch("release-4.0.123");
         fixture.Checkout(commit.Sha);
 
-        fixture.AssertFullSemver("4.0.123-beta.1+0", null, fixture.Repository, commit.Sha, false, "release-4.0.123");
+        fixture.AssertFullSemver("4.0.123-beta.1+1", null, fixture.Repository, commit.Sha, false, "release-4.0.123");
     }
 
-    [Test]
-    public void BranchVersionHavePrecedenceOverTagVersionIfVersionGreaterThanTag()
+    [TestCase("0.1.0-alpha.1", "1.0.0-beta.1+2")]
+    [TestCase("1.0.0-alpha.1", "1.0.0-beta.1+2")]
+    [TestCase("1.0.1-alpha.1", "1.0.1-beta.1+2")]
+    public void BranchVersionHavePrecedenceOverTagVersionIfVersionGreaterThanTag(string tag, string expected)
     {
         using var fixture = new EmptyRepositoryFixture();
 
-        fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
 
-        fixture.Repository.CreateBranch("develop");
-        fixture.Checkout("develop");
-        fixture.MakeATaggedCommit("0.1.0-alpha.1"); // simulate merge from feature branch
+        fixture.BranchTo("develop");
+        fixture.MakeATaggedCommit(tag); // simulate merge from feature branch
 
-        fixture.Repository.CreateBranch("release/1.0.0");
-        fixture.Checkout("release/1.0.0");
+        fixture.BranchTo("release/1.0.0");
 
-        fixture.AssertFullSemver("1.0.0-beta.1+0");
+        fixture.AssertFullSemver(expected);
     }
 }

@@ -215,16 +215,16 @@ internal class NextVersionCalculator(
         return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
 
-    private static NextVersion CompareVersions(NextVersion versions1, NextVersion version2)
+    private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)
     {
-        if (versions1.BaseVersion.BaseVersionSource == null)
+        if (version1.BaseVersion.BaseVersionSource == null)
             return version2;
 
         if (version2.BaseVersion.BaseVersionSource == null)
-            return versions1;
+            return version1;
 
-        return versions1.BaseVersion.BaseVersionSource.When < version2.BaseVersion.BaseVersionSource.When
-            ? versions1
+        return version1.BaseVersion.BaseVersionSource.When >= version2.BaseVersion.BaseVersionSource.When
+            ? version1
             : version2;
     }
 
@@ -244,8 +244,20 @@ internal class NextVersionCalculator(
             foreach (var effectiveBranchConfiguration in effectiveBranchConfigurations)
             {
                 this.log.Info($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'");
-                foreach (var versionStrategy in this.versionStrategies)
+
+                var versionStrategies = this.versionStrategies.ToList();
+                var fallbackVersionStrategy = versionStrategies.FirstOrDefault(element => element is FallbackVersionStrategy);
+                if (fallbackVersionStrategy is not null)
                 {
+                    versionStrategies.Remove(fallbackVersionStrategy);
+                    versionStrategies.Add(fallbackVersionStrategy);
+                }
+
+                var atLeastOneBaseVersionReturned = false;
+                foreach (var versionStrategy in versionStrategies)
+                {
+                    if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
+
                     using (this.log.IndentLog($"[Using '{versionStrategy.GetType().Name}' strategy]"))
                     {
                         foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
@@ -253,6 +265,8 @@ internal class NextVersionCalculator(
                             log.Info(baseVersion.ToString());
                             if (IncludeVersion(baseVersion, configuration.Ignore))
                             {
+                                atLeastOneBaseVersionReturned = true;
+
                                 yield return new NextVersion(
                                     incrementedVersion: baseVersion.GetIncrementedVersion(),
                                     baseVersion: baseVersion,

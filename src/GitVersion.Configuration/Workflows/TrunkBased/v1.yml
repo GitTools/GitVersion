@@ -21,6 +21,7 @@ branches:
     increment: Patch
     prevent-increment:
       of-merged-branch: true
+      when-current-commit-tagged: trueS
     track-merge-target: false
     regex: ^master$|^main$
     source-branches: []

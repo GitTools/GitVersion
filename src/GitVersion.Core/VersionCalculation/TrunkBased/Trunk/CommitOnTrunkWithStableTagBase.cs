@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation.TrunkBased.Trunk;
 internal abstract class CommitOnTrunkWithStableTagBase : ITrunkBasedIncrementer
 {
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
-        => commit.Configuration.IsMainBranch && !commit.HasChildIteration
+        => commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch && !commit.HasChildIteration
             && context.SemanticVersion?.IsPreRelease == false;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
@@ -21,6 +21,7 @@ internal abstract class CommitOnTrunkWithStableTagBase : ITrunkBasedIncrementer
             BaseVersionSource = context.BaseVersionSource
         };
 
-        context.Label = commit.Configuration.GetBranchSpecificLabel(commit.BranchName, null);
+        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
     }
 }

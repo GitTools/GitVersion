@@ -5,13 +5,35 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.TrunkBased;
 
 [DebuggerDisplay(
-    @"\{ Id = {" + nameof(Id) + "}, BranchName = {" + nameof(BranchName) + "}, Depth = {" + nameof(Depth) + "}, NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
+    @"\{ Id = {" + nameof(Id) + "}, " +
+    "BranchName = {" + nameof(BranchName) + "}, " +
+    "Depth = {" + nameof(Depth) + "}, " +
+    "NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
 internal record TrunkBasedIteration
 {
-    public EffectiveConfiguration Configuration { get; }
+    public IBranchConfiguration Configuration { get; }
 
-    public TrunkBasedIteration? Parent { get; }
+    private EffectiveConfiguration? effectiveConfiguration;
+
+    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
+    {
+        if (effectiveConfiguration is not null) return effectiveConfiguration;
+
+        IBranchConfiguration branchConfiguration = Configuration;
+
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit && Commits.FirstOrDefault() is TrunkBasedCommit commit)
+        {
+            var parentConfiguration = commit.GetEffectiveConfiguration(configuration);
+            branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
+        }
+
+        return effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+    }
+
+    public TrunkBasedIteration? ParentIteration { get; }
+
+    public TrunkBasedCommit? ParentCommit { get; }
 
     public string Id { get; }
 
@@ -26,24 +48,26 @@ internal record TrunkBasedIteration
 
     private readonly Dictionary<ICommit, TrunkBasedCommit> commitLookup = [];
 
-    public TrunkBasedIteration(string id, ReferenceName branchName, EffectiveConfiguration configuration, TrunkBasedIteration? parent)
+    public TrunkBasedIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
+        TrunkBasedIteration? parentIteration, TrunkBasedCommit? parentCommit)
     {
         Id = id.NotNullOrEmpty();
-        Depth = parent?.Depth ?? 0 + 1;
+        Depth = parentIteration?.Depth ?? 0 + 1;
         BranchName = branchName.NotNull();
         Configuration = configuration.NotNull();
-        Parent = parent;
+        ParentIteration = parentIteration;
+        ParentCommit = parentCommit;
     }
 
     public TrunkBasedCommit CreateCommit(
-        ICommit value, ReferenceName branchName, EffectiveConfiguration configuration, VersionField increment)
+        ICommit value, ReferenceName branchName, IBranchConfiguration configuration)
     {
         TrunkBasedCommit commit;
         if (commits.Count != 0)
-            commit = commits.Peek().Append(value, branchName, configuration, increment);
+            commit = commits.Peek().Append(value, branchName, configuration); //, increment);
         else
         {
-            commit = new(this, value, branchName, configuration, increment);
+            commit = new TrunkBasedCommit(this, value, branchName, configuration); //, increment);
         }
         commits.Push(commit);
         commitLookup.Add(value, commit);

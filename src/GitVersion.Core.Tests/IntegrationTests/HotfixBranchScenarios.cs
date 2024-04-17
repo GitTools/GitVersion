@@ -39,7 +39,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.AssertFullSemver("1.3.0-alpha.1");
 
         fixture.Repository.MergeNoFF("hotfix-1.2.1", Generate.SignatureNow());
-        fixture.AssertFullSemver("1.3.0-alpha.5");
+        fixture.AssertFullSemver("1.3.0-alpha.2");
     }
 
     [Test]
@@ -141,7 +141,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create release branch
         fixture.BranchTo(release450);
-        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+1", configuration);
         fixture.MakeACommit("blabla");
         fixture.Checkout("develop");
         fixture.MergeNoFF(release450);
@@ -162,7 +162,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
-        fixture.AssertFullSemver("4.5.1-beta.1+4", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+2", configuration);
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create release branch
         fixture.BranchTo(release450);
-        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+1", configuration);
         fixture.MakeACommit("blabla");
         fixture.Checkout("develop");
         fixture.MergeNoFF(release450);
@@ -208,7 +208,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
 
-        fixture.AssertFullSemver("4.5.1-beta.1+4", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+2", configuration);
     }
 
     [Test]
@@ -222,15 +222,15 @@ public class HotfixBranchScenarios : TestBase
         fixture.AssertFullSemver("4.21.0-alpha.1", configuration);
 
         fixture.BranchTo("release/4.21.1");
-        fixture.AssertFullSemver("4.21.1-beta.1+0", configuration);
-
-        fixture.MakeACommit();
-        fixture.AssertFullSemver("4.21.1-beta.1+1", configuration);
-
-        fixture.BranchTo("hotfix/4.21.1");
         fixture.AssertFullSemver("4.21.1-beta.1+1", configuration);
 
         fixture.MakeACommit();
         fixture.AssertFullSemver("4.21.1-beta.1+2", configuration);
+
+        fixture.BranchTo("hotfix/4.21.1");
+        fixture.AssertFullSemver("4.21.1-beta.1+2", configuration);
+
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("4.21.1-beta.1+3", configuration);
     }
 }

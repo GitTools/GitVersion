@@ -24,10 +24,10 @@ branches:
     increment: Patch
     prevent-increment:
       of-merged-branch: true
-    track-merge-target: false
+    tracks-merge-target: false
+    tracks-merge-message: true
     regex: ^master$|^main$
-    source-branches:
-    - release
+    source-branches: []
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
@@ -36,15 +36,16 @@ branches:
   release:
     mode: ManualDeployment
     label: beta
-    increment: None
+    increment: Patch
     prevent-increment:
       of-merged-branch: true
+      when-branch-merged: false
       when-current-commit-tagged: false
     track-merge-target: false
+    track-merge-message: true
     regex: ^releases?[/-](?<BranchName>.+)
     source-branches:
     - main
-    - release
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -54,17 +55,23 @@ branches:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release
-    - feature
     is-source-branch-for: []
+    track-merge-message: true
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
@@ -72,18 +79,21 @@ branches:
     - release
     - feature
     is-source-branch-for: []
+    track-merge-message: true
     pre-release-weight: 30000
   unknown:
     mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
     regex: (?<BranchName>.+)
     source-branches:
     - main
     - release
-    - feature
-    - pull-request
     is-source-branch-for: []
+    track-merge-message: false
+    is-main-branch: false
 ignore:
   sha: []
 mode: ContinuousDelivery

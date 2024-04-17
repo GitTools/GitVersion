@@ -62,7 +62,11 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         {
             return false;
         }
-        return this.Major == obj.Major && this.Minor == obj.Minor && this.Patch == obj.Patch && this.PreReleaseTag == obj.PreReleaseTag && this.BuildMetaData == obj.BuildMetaData;
+        return this.Major == obj.Major
+            && this.Minor == obj.Minor
+            && this.Patch == obj.Patch
+            && this.PreReleaseTag == obj.PreReleaseTag
+            && this.BuildMetaData == obj.BuildMetaData;
     }
 
     public bool IsEmpty() => Equals(Empty);
@@ -329,13 +333,18 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
-    public SemanticVersion Increment(VersionField increment, string? label)
-        => Increment(increment, label, mode: IncrementMode.Standard);
+    public SemanticVersion WithLabel(string? label) => Increment(VersionField.None, label, mode: IncrementMode.Standard);
 
-    public SemanticVersion Increment(VersionField increment, string? label, bool forceIncrement)
-        => Increment(increment, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard);
+    public SemanticVersion Increment(
+            VersionField increment, string? label, params SemanticVersion?[] alternativeSemanticVersions)
+        => Increment(increment, label, mode: IncrementMode.Standard, alternativeSemanticVersions);
 
-    public SemanticVersion Increment(VersionField increment, string? label, IncrementMode mode)
+    public SemanticVersion Increment(
+            VersionField increment, string? label, bool forceIncrement, params SemanticVersion?[] alternativeSemanticVersions)
+        => Increment(increment, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard, alternativeSemanticVersions);
+
+    public SemanticVersion Increment(
+        VersionField increment, string? label, IncrementMode mode, params SemanticVersion?[] alternativeSemanticVersions)
     {
         long major = Major;
         long minor = Minor;
@@ -396,6 +405,27 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
                 throw new ArgumentOutOfRangeException(nameof(increment));
         }
 
+        SemanticVersion semanticVersion = new(major, minor, patch);
+
+        bool foundAlternativeSemanticVersion = false;
+        foreach (var alternativeSemanticVersion in alternativeSemanticVersions)
+        {
+            if (semanticVersion.IsLessThan(alternativeSemanticVersion, includePreRelease: false))
+            {
+                semanticVersion = alternativeSemanticVersion!;
+                foundAlternativeSemanticVersion = true;
+            }
+        }
+
+        major = semanticVersion.Major;
+        minor = semanticVersion.Minor;
+        patch = semanticVersion.Patch;
+
+        if (foundAlternativeSemanticVersion && increment == VersionField.None)
+        {
+            preReleaseNumber = 1;
+        }
+
         string preReleaseTagName;
         if (hasPreReleaseTag)
         {
@@ -418,7 +448,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             Major = major,
             Minor = minor,
             Patch = patch,
-            PreReleaseTag = new(preReleaseTagName, preReleaseNumber, true)
+            PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseNumber, true)
         };
     }
 
