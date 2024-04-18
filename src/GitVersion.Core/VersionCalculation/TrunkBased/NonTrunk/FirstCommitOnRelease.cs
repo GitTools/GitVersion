@@ -1,3 +1,5 @@
+using GitVersion.Configuration;
+
 namespace GitVersion.VersionCalculation.TrunkBased.NonTrunk;
 
 internal sealed class FirstCommitOnRelease : ITrunkBasedIncrementer
