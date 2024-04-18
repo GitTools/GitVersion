@@ -146,6 +146,7 @@ GitVersion.Configuration.IPreventIncrementConfiguration
 GitVersion.Configuration.IPreventIncrementConfiguration.OfMergedBranch.get -> bool?
 GitVersion.Configuration.IPreventIncrementConfiguration.WhenBranchMerged.get -> bool?
 GitVersion.Configuration.IPreventIncrementConfiguration.WhenCurrentCommitTagged.get -> bool?
+GitVersion.Configuration.ReferenceNameExtensions
 GitVersion.ConfigurationInfo
 GitVersion.ConfigurationInfo.ConfigurationFile -> string?
 GitVersion.ConfigurationInfo.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
@@ -285,8 +286,6 @@ GitVersion.Git.ReferenceName.IsPullRequest.get -> bool
 GitVersion.Git.ReferenceName.IsRemoteBranch.get -> bool
 GitVersion.Git.ReferenceName.IsTag.get -> bool
 GitVersion.Git.ReferenceName.ReferenceName(string! canonical) -> void
-GitVersion.Git.ReferenceName.TryGetSemanticVersion(out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.EffectiveConfiguration! configuration) -> bool
-GitVersion.Git.ReferenceName.TryGetSemanticVersion(out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
 GitVersion.Git.ReferenceName.TryGetSemanticVersion(out (GitVersion.SemanticVersion! Value, string? Name) result, System.Text.RegularExpressions.Regex! versionPatternRegex, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> bool
 GitVersion.Git.ReferenceName.WithoutOrigin.get -> string!
 GitVersion.Git.RefSpecDirection
@@ -741,6 +740,8 @@ override GitVersion.VersionCalculation.BaseVersionOperator.ToString() -> string!
 override GitVersion.VersionCalculation.NextVersion.Equals(object? other) -> bool
 override GitVersion.VersionCalculation.NextVersion.GetHashCode() -> int
 override GitVersion.VersionCalculation.NextVersion.ToString() -> string!
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.EffectiveConfiguration! configuration) -> bool
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyFileVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyVersioningScheme scheme) -> string?
 static GitVersion.Extensions.CommonExtensions.NotNull<T>(this T? value, string! name = "") -> T!
