@@ -41,10 +41,11 @@ internal sealed class TaggedCommitVersionStrategy(
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
         var maxTaggedSemanticVersion = taggedSemanticVersions
-            .Where(element => !element.Value.IsMatchForBranchSpecificLabel(label)).Max();
+            .Where(element => !element.Value.IsMatchForBranchSpecificLabel(label))
+            .Max();
 
-        foreach (var semanticVersionWithTag
-            in taggedSemanticVersions.Where(element => element.Value.IsMatchForBranchSpecificLabel(label)))
+        var semanticVersionsWithTag = taggedSemanticVersions.Where(element => element.Value.IsMatchForBranchSpecificLabel(label));
+        foreach (var semanticVersionWithTag in semanticVersionsWithTag)
         {
             var baseVersionSource = semanticVersionWithTag.Tag.Commit;
             var increment = incrementStrategyFinder.DetermineIncrementedField(

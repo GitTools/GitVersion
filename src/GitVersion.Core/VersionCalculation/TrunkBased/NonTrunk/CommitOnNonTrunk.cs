@@ -11,8 +11,9 @@ internal sealed class CommitOnNonTrunk : ITrunkBasedIncrementer
     // A  58 minutes ago
 
     public bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
-        => !commit.HasChildIteration && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-            && context.SemanticVersion is null;
+        => !commit.HasChildIteration
+           && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
+           && context.SemanticVersion is null;
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)

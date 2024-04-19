@@ -18,7 +18,10 @@ internal record TrunkBasedIteration
 
     public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
     {
-        if (effectiveConfiguration is not null) return effectiveConfiguration;
+        if (this.effectiveConfiguration is not null)
+        {
+            return this.effectiveConfiguration;
+        }
 
         IBranchConfiguration branchConfiguration = Configuration;
 
@@ -28,7 +31,7 @@ internal record TrunkBasedIteration
             branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
         }
 
-        return effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
     }
 
     public TrunkBasedIteration? ParentIteration { get; }

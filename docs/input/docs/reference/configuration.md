@@ -341,8 +341,7 @@ The details of the available options are as follows:
 
 ### workflow
 
-The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1. Defaults to GitFlow/v1 if not set. To create a configuration from scratch without using a base template please specify an empty string.
-
+The base template of the configuration to use. Possible values are `GitFlow/v1` or `GitHubFlow/v1`. Defaults to `GitFlow/v1` if not set. To create a configuration from scratch without using a base template, please specify an empty string.
 ### next-version
 
 Allows you to bump the next version explicitly. Useful for bumping `main` or a

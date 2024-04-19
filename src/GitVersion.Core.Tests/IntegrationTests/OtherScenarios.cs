@@ -1307,4 +1307,61 @@ public class OtherScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver(semanticVersion, configuration);
     }
+
+    /// <summary>
+    /// see https://github.com/GitTools/GitVersion/issues/2394
+    /// </summary>
+    [Test]
+    public void EnsureVersionSourceIsSetToTheRightTag()
+    {
+        // Arrange
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        // Act
+        using var fixture = new BaseGitFlowRepositoryFixture("0.1.0");
+
+        fixture.Checkout("main");
+        fixture.MergeNoFF("develop");
+        fixture.Checkout("develop");
+        fixture.MakeACommit("Feature commit 1");
+        fixture.BranchTo("release/0.2.0");
+        fixture.MakeACommit("Release commit 1");
+        fixture.Checkout("main");
+        fixture.MergeNoFF("release/0.2.0");
+        fixture.ApplyTag("0.2.0");
+        var tag = fixture.Repository.Head.Tip;
+        fixture.Checkout("develop");
+        fixture.MergeNoFF("main");
+        var version = fixture.GetVersion(configuration);
+
+        // Assert
+        version.VersionSourceSha.ShouldBe(tag.Sha);
+    }
+
+    /// <summary>
+    /// see https://github.com/GitTools/GitVersion/issues/3689
+    /// </summary>
+    [Test]
+    public void UnversionedHotfix()
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using var fixture = new BaseGitFlowRepositoryFixture("1.2.0");
+
+        // create hotfix
+        Commands.Checkout(fixture.Repository, "main");
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix/put-out-the-fire"));
+        fixture.Repository.MakeACommit();
+
+        fixture.AssertFullSemver("1.2.1-beta.1+1", configuration);
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("1.2.1-beta.1+2", configuration);
+
+        // Merge hotfix branch to main
+        Commands.Checkout(fixture.Repository, "main");
+
+        fixture.Repository.MergeNoFF("hotfix/put-out-the-fire", Generate.SignatureNow());
+
+        fixture.AssertFullSemver("1.2.1-3", configuration);
+    }
 }
