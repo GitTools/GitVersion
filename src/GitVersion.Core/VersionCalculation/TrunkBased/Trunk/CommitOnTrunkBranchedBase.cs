@@ -15,7 +15,7 @@ internal abstract class CommitOnTrunkBranchedBase : ITrunkBasedIncrementer
         context.BaseVersionSource = commit.Value;
 
         var effectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
-        if (iteration.Configuration.IsReleaseBranch == true
+        if (iteration.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
             && iteration.BranchName.TryGetSemanticVersion(out var element, effectiveConfiguration))
         {
             context.AlternativeSemanticVersions.Add(element.Value);

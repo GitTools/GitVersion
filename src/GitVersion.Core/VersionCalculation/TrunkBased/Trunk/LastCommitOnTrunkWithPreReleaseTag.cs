@@ -18,7 +18,7 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             yield return item;
         }
 
-        if (iteration.Configuration.IsMainBranch == true)
+        if (iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
         {
             context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
 

@@ -14,10 +14,12 @@ internal sealed class FirstCommitOnRelease : ITrunkBasedIncrementer
     // A  58 minutes ago (main)
 
     public bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
-        => !commit.HasChildIteration && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-            && commit.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
-            && context.SemanticVersion is null && (commit.Predecessor is null
-            || commit.Predecessor?.BranchName != commit.BranchName);
+        => !commit.HasChildIteration
+           && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
+           && commit.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
+           && context.SemanticVersion is null
+           && (commit.Predecessor is null
+               || commit.Predecessor?.BranchName != commit.BranchName);
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
