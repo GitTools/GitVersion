@@ -16,7 +16,8 @@ internal abstract class CommitOnNonTrunkBranchedBase : ITrunkBasedIncrementer
         context.BaseVersionSource = commit.Value;
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? commit.GetIncrementForcedByBranch(context.Configuration) : iteration.Configuration.Increment.ToVersionField();
+            ? commit.GetIncrementForcedByBranch(context.Configuration)
+            : iteration.Configuration.Increment.ToVersionField();
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
 
         var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);

@@ -7,7 +7,8 @@ internal abstract class CommitOnTrunkBranchedBase : ITrunkBasedIncrementer
 {
     public virtual bool MatchPrecondition(TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
         => commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-            && commit.BranchName != iteration.BranchName && commit.Successor is null;
+            && commit.BranchName != iteration.BranchName
+            && commit.Successor is null;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
@@ -22,7 +23,8 @@ internal abstract class CommitOnTrunkBranchedBase : ITrunkBasedIncrementer
         }
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? commit.GetIncrementForcedByBranch(context.Configuration) : iteration.Configuration.Increment.ToVersionField();
+            ? commit.GetIncrementForcedByBranch(context.Configuration)
+            : iteration.Configuration.Increment.ToVersionField();
         context.Increment = incrementForcedByBranch;
 
         var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
