@@ -769,6 +769,8 @@ static GitVersion.Git.BranchCommit.operator !=(GitVersion.Git.BranchCommit left,
 static GitVersion.Git.BranchCommit.operator ==(GitVersion.Git.BranchCommit left, GitVersion.Git.BranchCommit right) -> bool
 static GitVersion.Git.CommitExtensions.IsMergeCommit(this GitVersion.Git.ICommit! source) -> bool
 static GitVersion.Git.ReferenceName.FromBranchName(string! branchName) -> GitVersion.Git.ReferenceName!
+static GitVersion.Git.ReferenceName.operator !=(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
+static GitVersion.Git.ReferenceName.operator ==(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
 static GitVersion.Git.ReferenceName.Parse(string! canonicalName) -> GitVersion.Git.ReferenceName!
 static GitVersion.Git.ReferenceName.TryParse(out GitVersion.Git.ReferenceName? value, string! canonicalName) -> bool
 static GitVersion.Helpers.Disposable.Create(System.Action! disposer) -> System.IDisposable!

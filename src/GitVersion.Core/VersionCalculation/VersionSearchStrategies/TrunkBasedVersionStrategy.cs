@@ -105,6 +105,7 @@ internal sealed class TrunkBasedVersionStrategy(
         IterateOverCommitsRecursive(
             commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
+            targetBranch: configuration.Branch,
             targetLabel: targetLabel,
             taggedSemanticVersions: taggedSemanticVersions
         );
@@ -127,61 +128,69 @@ internal sealed class TrunkBasedVersionStrategy(
     }
 
     private bool IterateOverCommitsRecursive(
-        IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration, string? targetLabel,
+        IEnumerable<ICommit> commitsInReverseOrder, TrunkBasedIteration iteration, IBranch targetBranch, string? targetLabel,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
     {
         traversedCommits ??= [];
 
-        bool exit = false;
+        bool returnTrueWhenTheIncrementIsKnown = false;
 
         var configuration = iteration.Configuration;
         var branchName = iteration.BranchName;
         var branch = repositoryStore.FindBranch(branchName);
 
-        Lazy<IReadOnlyDictionary<ICommit, (IBranch Branch, IBranchConfiguration Value)>> commitsWasBranchedFromLazy = new(
-            () => branch is null
-            ? new Dictionary<ICommit, (IBranch, IBranchConfiguration)>()
-            : GetCommitsWasBranchedFrom(branch)
+        Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy = new(
+            () => branch is null ? new Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>() : GetCommitsWasBranchedFrom(branch)
         );
 
         foreach (var item in commitsInReverseOrder)
         {
             if (!traversedCommits.Add(item)) continue;
 
-            if (commitsWasBranchedFromLazy.Value.TryGetValue(item, out var effectiveConfigurationWasBranchedFrom)
-                && (!(configuration.IsMainBranch == true) || effectiveConfigurationWasBranchedFrom.Value.IsMainBranch == true))
+            if (commitsWasBranchedFromLazy.Value.TryGetValue(item, out var effectiveConfigurationsWasBranchedFrom))
             {
-                var excludeBranch = branch;
+                var effectiveConfigurationWasBranchedFrom = effectiveConfigurationsWasBranchedFrom.First();
 
-                configuration = effectiveConfigurationWasBranchedFrom.Value;
-                branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
-                branch = repositoryStore.FindBranch(branchName);
+                if (!(configuration.IsMainBranch == true) || effectiveConfigurationWasBranchedFrom.Value.IsMainBranch == true)
+                {
+                    var excludeBranch = branch;
+                    if (effectiveConfigurationsWasBranchedFrom.Any(element =>
+                        !element.Branch.Equals(effectiveConfigurationWasBranchedFrom.Branch)
+                            && element.Branch.Equals(targetBranch)))
+                    {
+                        iteration.CreateCommit(null, targetBranch.Name, Context.Configuration.GetBranchConfiguration(targetBranch));
+                    }
+                    configuration = effectiveConfigurationWasBranchedFrom.Value;
+                    branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
 
-                commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, (IBranch Branch, IBranchConfiguration Configuration)>>
-                    (() => branch is null ? new Dictionary<ICommit, (IBranch, IBranchConfiguration)>()
-                        : GetCommitsWasBranchedFrom(branch, excludeBranch is null ? Array.Empty<IBranch>() : [excludeBranch])
-                );
+                    branch = repositoryStore.FindBranch(branchName);
 
-                TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
-                if ((configuration.TrackMergeTarget ?? Context.Configuration.TrackMergeTarget) == true)
-                {
-                    taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+                    commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Configuration)>>>
+                        (() => branch is null ? new Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>()
+                            : GetCommitsWasBranchedFrom(branch, excludeBranch is null ? Array.Empty<IBranch>() : [excludeBranch])
+                    );
+
+                    TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+                    if ((configuration.TrackMergeTarget ?? Context.Configuration.TrackMergeTarget) == true)
+                    {
+                        taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+                    }
+                    if ((configuration.TracksReleaseBranches ?? Context.Configuration.TracksReleaseBranches) == true)
+                    {
+                        taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
+                    }
+                    if (!(configuration.IsMainBranch == true || configuration.IsReleaseBranch == true))
+                    {
+                        taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
+                    }
+                    taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+                        branch: effectiveConfigurationWasBranchedFrom.Branch,
+                        configuration: Context.Configuration,
+                        label: null,
+                        notOlderThan: Context.CurrentCommit.When,
+                        taggedSemanticVersion: taggedSemanticVersion
+                    );
                 }
-                if ((configuration.TracksReleaseBranches ?? Context.Configuration.TracksReleaseBranches) == true)
-                {
-                    taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
-                }
-                if (!(configuration.IsMainBranch == true || configuration.IsReleaseBranch == true))
-                {
-                    taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
-                }
-                taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
-                    branch: effectiveConfigurationWasBranchedFrom.Branch,
-                    configuration: Context.Configuration,
-                    label: null,
-                    notOlderThan: Context.CurrentCommit.When,
-                    taggedSemanticVersion: taggedSemanticVersion
-                );
             }
 
             var commit = iteration.CreateCommit(item, branchName, configuration);
@@ -204,12 +213,12 @@ internal sealed class TrunkBasedVersionStrategy(
                     }
                     else
                     {
-                        exit = true;
+                        returnTrueWhenTheIncrementIsKnown = true;
                     }
                 }
             }
 
-            if (exit && configuration.Increment != IncrementStrategy.Inherit)
+            if (returnTrueWhenTheIncrementIsKnown && configuration.Increment != IncrementStrategy.Inherit)
             {
                 return true;
             }
@@ -249,6 +258,7 @@ internal sealed class TrunkBasedVersionStrategy(
                         var done = IterateOverCommitsRecursive(
                             commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
                             iteration: childIteration,
+                            targetBranch: targetBranch,
                             targetLabel: targetLabel,
                             traversedCommits: traversedCommits,
                             taggedSemanticVersions: taggedSemanticVersions
@@ -265,10 +275,10 @@ internal sealed class TrunkBasedVersionStrategy(
         return false;
     }
 
-    private IReadOnlyDictionary<ICommit, (IBranch, IBranchConfiguration)> GetCommitsWasBranchedFrom(
+    private IReadOnlyDictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
         IBranch branch, params IBranch[] excludedBranches)
     {
-        Dictionary<ICommit, (IBranch, IBranchConfiguration Configuration)> result = new();
+        Dictionary<ICommit, List<(IBranch, IBranchConfiguration Configuration)>> result = new();
 
         var branchCommits = repositoryStore.FindCommitBranchesBranchedFrom(
             branch, Context.Configuration, excludedBranches: excludedBranches
@@ -281,23 +291,34 @@ internal sealed class TrunkBasedVersionStrategy(
         {
             var branchConfiguration = Context.Configuration.GetBranchConfiguration(item);
 
-            if (result.ContainsKey(branchCommitDictionary[item]))
+            var key = branchCommitDictionary[item];
+            if (result.ContainsKey(key))
             {
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit && branchConfiguration.IsMainBranch is null)
                 {
                     throw new InvalidOperationException();
                 }
 
-                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true
-                    && result[branchCommitDictionary[item]].Configuration.IsMainBranch == false)
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)
                 {
-                    result[branchCommitDictionary[item]] = new(item, branchConfiguration);
+                    foreach (var element in result[key].ToArray())
+                    {
+                        result[key].Add(new(item, branchConfiguration));
+                    }
                 }
             }
             else
             {
-                result.Add(key: branchCommitDictionary[item], value: new(item, branchConfiguration));
+                result.Add(key: key, value: [new(item, branchConfiguration)]);
             }
+        }
+
+        // If a main branch existing we need to ensure that it will be present at the first position in the list.
+        foreach (var item in result)
+        {
+            result[item.Key] = item.Value
+                .OrderByDescending(element => (element.Configuration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)
+                .ToList();
         }
         return result;
     }

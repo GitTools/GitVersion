@@ -63,17 +63,21 @@ internal record TrunkBasedIteration
     }
 
     public TrunkBasedCommit CreateCommit(
-        ICommit value, ReferenceName branchName, IBranchConfiguration configuration)
+        ICommit? value, ReferenceName branchName, IBranchConfiguration configuration)
     {
         TrunkBasedCommit commit;
         if (commits.Count != 0)
-            commit = commits.Peek().Append(value, branchName, configuration); //, increment);
+            commit = commits.Peek().Append(value, branchName, configuration);
         else
         {
-            commit = new TrunkBasedCommit(this, value, branchName, configuration); //, increment);
+            commit = new TrunkBasedCommit(this, value, branchName, configuration);
         }
         commits.Push(commit);
-        commitLookup.Add(value, commit);
+
+        if (value is not null)
+        {
+            commitLookup.Add(value, commit);
+        }
 
         return commit;
     }

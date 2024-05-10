@@ -54,7 +54,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
             value = new(canonicalName);
         }
 
-        return value != null;
+        return value is not null;
     }
 
     public static ReferenceName FromBranchName(string branchName)
@@ -76,6 +76,15 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
+
+    public static bool operator ==(ReferenceName? left, ReferenceName? right)
+    {
+        if (ReferenceEquals(left, right)) return true;
+        if (left is null || right is null) return false;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ReferenceName? left, ReferenceName? right) => !(left == right);
 
     public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
                                       Regex versionPatternRegex,

@@ -24,7 +24,7 @@ internal sealed class FirstCommitOnRelease : ITrunkBasedIncrementer
            && commit.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
            && context.SemanticVersion is null
            && (commit.Predecessor is null
-               || commit.Predecessor?.BranchName != commit.BranchName);
+               || commit.BranchName != commit.Predecessor?.BranchName);
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         TrunkBasedIteration iteration, TrunkBasedCommit commit, TrunkBasedContext context)
