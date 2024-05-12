@@ -56,7 +56,12 @@
 *   The initialization wizard has been removed.
 *   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment.when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
 *   When setting the "ignore commits before" parameter to a future value, an exception will occur if no commits are found on the current branch. This behavior mimics that of an empty repository.
-*   In the Git Flow workflows e.g. release/next yields to a patch version. If you have a tag 1.0.0 on main and branch from main to release/1.0.1 branch then the next version number will be 1.1.0. Because in the Git Flow workflow you have an addition IsRelease branch configuration with name hotfix this is expected. If you want the 1.0.1 as a next version you need to branch to hotfix/1.0.1 or hotfix/next and not release. In GitHub Flow workflow it is not a problem because there the increment is set to patch for release branch.
+*   On the `GitFlow` workflow the increment property has been changed:
+    *   in branch `release` from `None` to `Minor` and
+    *   in branch `hotfix` from `None` to `Patch`
+*   On the `GitHubFlow` workflow the increment property has been changed in branch `release` from `None` to `Patch`.
+*   When creating a branch with name `hotfix/next` (by using the `GitFlow` workflow) or `release/next` (by the `GitHubFlow` workflow) the resulting version will yield to a patched version per default.
+*   If you have a tag `1.0.0` on `main` and branch from `main` to `release/1.0.1` then the next version number will be `1.1.0` when using the `GitFlow` workflow. This behavior is expected (but different compared to the `GitHubFlow` workflow) because on the `GitFlow` workflow you have an addition branch configuration with name hotfix where `is-release-branch` is set to `true`. That means if you want `1.0.1` as a next version you need to branch to `hotfix/1.0.1` or `hotfix/next`.  On the other hand if you use the `GitHubFlow` workflow the next version number will be `1.0.1` because the increment on the `release` branch is set to `Patch`.
 
 ## v5.0.0
 
