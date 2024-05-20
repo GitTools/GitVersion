@@ -20,7 +20,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = [
                 VersionStrategies.ConfiguredNextVersion,
-                VersionStrategies.TrunkBased
+                VersionStrategies.Mainline
             ],
             TagPrefix = ConfigurationConstants.DefaultTagPrefix,
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,

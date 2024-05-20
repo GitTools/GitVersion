@@ -1256,10 +1256,10 @@ public class OtherScenarios : TestBase
 
     [TestCase(false, "2.0.0-alpha.2")]
     [TestCase(true, "2.0.0-alpha.2")]
-    public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForTrunkBased(bool applyTag, string semanticVersion)
+    public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForMainline(bool applyTag, string semanticVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersionStrategy(VersionStrategies.TrunkBased)
+            .WithVersionStrategy(VersionStrategies.Mainline)
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();

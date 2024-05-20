@@ -38,7 +38,7 @@ The following supported workflow configurations are available in GitVersion and 
 -   GitFlow (GitFlow/v1)
 -   GitHubFlow (GitHubFlow/v1)
 
-Example of using a `TrunkBased` workflow with a different `tag-prefix`:
+Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
 ```yaml
 workflow: GitHubFlow/v1

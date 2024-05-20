@@ -83,7 +83,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithNextVersion("1.2.0")
-            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.TrunkBased)
+            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
         using EmptyRepositoryFixture fixture = new("main");
@@ -224,7 +224,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithNextVersion("1.2.0")
-            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.TrunkBased)
+            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
         using EmptyRepositoryFixture fixture = new("main");
@@ -365,7 +365,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithNextVersion("1.2.0")
-            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.TrunkBased)
+            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
         using EmptyRepositoryFixture fixture = new("main");

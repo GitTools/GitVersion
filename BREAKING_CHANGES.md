@@ -39,8 +39,8 @@
 *   The `BranchPrefixToTrim` configuration property has been removed. `RegularExpression` is now used to capture named groups instead.
     *   Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
     *   Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
-*   The `Mainline` mode and the related implementation has been removed completely. The new `TrunkBased` version strategy should be used instead.
-*   The `TrunkBased` workflow doesn't support downgrading the increment for calculating the next version. This is the case if e.g. a bump messages has been defined which is lower than the branch increment.
+*   The `Mainline` mode and the related implementation has been removed completely. The new `Mainline` version strategy should be used instead.
+*   The `Mainline` version strategy doesn't support downgrading the increment for calculating the next version. This is the case if e.g. a bump messages has been defined which is lower than the branch increment.
 *   The branch related property `is-mainline` in the configuration system has been renamed to `is-main-branch`
 *   The versioning mode has been renamed to deployment mode and consists of following values:
     *   ManualDeployment (previously ContinuousDelivery)
@@ -52,7 +52,7 @@
     *   TaggedCommit
     *   TrackReleaseBranches
     *   VersionInBranchName
-    *   TrunkBased
+    *   Mainline
 *   The initialization wizard has been removed.
 *   On the `develop`, `release` and `hotfix` branch the introduced branch related property `prevent-increment.when-current-commit-tagged` has been set to `false` to get the incremented instead of the tagged semantic version.
 *   When setting the "ignore commits before" parameter to a future value, an exception will occur if no commits are found on the current branch. This behavior mimics that of an empty repository.

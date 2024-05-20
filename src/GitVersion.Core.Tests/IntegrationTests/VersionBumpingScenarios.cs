@@ -86,7 +86,7 @@ public class VersionBumpingScenarios : TestBase
             .WithMinorVersionBumpMessage("^(feat)(\\([\\w\\s-]*\\))?:")
             // For future debugging of this regex: https://regex101.com/r/oFpqxA/2
             .WithPatchVersionBumpMessage("^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:")
-            .WithVersionStrategy(VersionStrategies.TrunkBased)
+            .WithVersionStrategy(VersionStrategies.Mainline)
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();
 

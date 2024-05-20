@@ -177,10 +177,10 @@
       "type": "string"
     },
     "strategies": {
-      "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.",
+      "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
       "type": "array",
       "items": {
-        "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'TrunkBased'.",
+        "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
         "enum": [
           "None",
           "Fallback",
@@ -189,7 +189,7 @@
           "TaggedCommit",
           "TrackReleaseBranches",
           "VersionInBranchName",
-          "TrunkBased"
+          "Mainline"
         ]
       }
     },
