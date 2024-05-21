@@ -20,7 +20,6 @@ internal class ArgumentParser(IEnvironment environment, ICurrentBuildAgent build
     public Arguments ParseArguments(string commandLineArguments)
     {
         var arguments = QuotedStringHelpers.SplitUnquoted(commandLineArguments, ' ');
-
         return ParseArguments(arguments);
     }
 
