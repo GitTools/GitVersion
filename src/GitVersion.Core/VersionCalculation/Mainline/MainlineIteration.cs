@@ -25,7 +25,7 @@ internal record MainlineIteration
 
         IBranchConfiguration branchConfiguration = Configuration;
 
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit && Commits.FirstOrDefault() is MainlineCommit commit)
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit && Commits.FirstOrDefault() is { } commit)
         {
             var parentConfiguration = commit.GetEffectiveConfiguration(configuration);
             branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
@@ -65,13 +65,9 @@ internal record MainlineIteration
     public MainlineCommit CreateCommit(
         ICommit? value, ReferenceName branchName, IBranchConfiguration configuration)
     {
-        MainlineCommit commit;
-        if (commits.Count != 0)
-            commit = commits.Peek().Append(value, branchName, configuration);
-        else
-        {
-            commit = new MainlineCommit(this, value, branchName, configuration);
-        }
+        var commit = this.commits.Count != 0
+            ? this.commits.Peek().Append(value, branchName, configuration)
+            : new MainlineCommit(this, value, branchName, configuration);
         commits.Push(commit);
 
         if (value is not null)

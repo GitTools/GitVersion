@@ -13,7 +13,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -86,7 +86,7 @@ public class DocumentationSamplesForGitHubFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -154,7 +154,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -227,7 +227,7 @@ public class DocumentationSamplesForGitHubFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -295,7 +295,7 @@ public class DocumentationSamplesForGitHubFlow
     {
         var configuration = GitHubFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -368,7 +368,7 @@ public class DocumentationSamplesForGitHubFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");

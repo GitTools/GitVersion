@@ -67,7 +67,7 @@ internal sealed partial class GitRepository
     {
         // check if we have a branch tip at all to behave properly with empty repos
         // => return that we have actually un-committed changes because we are apparently
-        // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
+        // running GitVersion on something which lives inside this brand-new repo _/\Ö/\_
         if (RepositoryInstance.Head?.Tip == null || RepositoryInstance.Diff == null)
         {
             // this is a somewhat cumbersome way of figuring out the number of changes in the repo

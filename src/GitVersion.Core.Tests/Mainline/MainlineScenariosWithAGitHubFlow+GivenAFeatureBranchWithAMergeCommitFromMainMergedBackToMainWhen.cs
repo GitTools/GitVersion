@@ -14,8 +14,8 @@ internal partial class MainlineScenariosWithAGitFlow
 
         private static GitHubFlowConfigurationBuilder MainlineBuilder => GitHubFlowConfigurationBuilder.New.WithLabel(null)
             .WithVersionStrategy(VersionStrategies.Mainline)
-            .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("feature", _ => _
+            .WithBranch("main", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("feature", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
             );
 
@@ -134,8 +134,8 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersion(IncrementStrategy increment, IncrementStrategy incrementOnFeature, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(increment).WithLabel(label))
-                .WithBranch("feature", _ => _.WithIncrement(incrementOnFeature))
+                .WithBranch("main", b => b.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", b => b.WithIncrement(incrementOnFeature))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -228,8 +228,8 @@ internal partial class MainlineScenariosWithAGitFlow
             IncrementStrategy increment, IncrementStrategy incrementOnFeature, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementOfMergedBranch(false))
-                .WithBranch("feature", _ => _.WithIncrement(incrementOnFeature))
+                .WithBranch("main", b => b.WithIncrement(increment).WithLabel(label).WithPreventIncrementOfMergedBranch(false))
+                .WithBranch("feature", b => b.WithIncrement(incrementOnFeature))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;

@@ -156,7 +156,7 @@ public class IgnoreCommitScenarios : TestBase
 
         var configuration = TrunkBasedConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
-            .WithBranch("main", _ => _.WithIncrement(IncrementStrategy.Patch)
+            .WithBranch("main", b => b.WithIncrement(IncrementStrategy.Patch)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
                 .WithDeploymentMode(GitVersion.VersionCalculation.DeploymentMode.ContinuousDelivery)
             ).Build();
@@ -177,7 +177,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("B");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithBranch("main", _ => _.WithIncrement(IncrementStrategy.Patch)
+            .WithBranch("main", b => b.WithIncrement(IncrementStrategy.Patch)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
                 .WithDeploymentMode(GitVersion.VersionCalculation.DeploymentMode.ContinuousDelivery)
             ).Build();
@@ -306,7 +306,7 @@ public class IgnoreCommitScenarios : TestBase
 
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
-            .WithBranch("main", _ => _.WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged))
+            .WithBranch("main", b => b.WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged))
             .Build();
 
         // ✅ succeeds as expected
@@ -325,7 +325,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("B");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithBranch("main", _ => _.WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged))
+            .WithBranch("main", b => b.WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged))
             .Build();
 
         // ✅ succeeds as expected

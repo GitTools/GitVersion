@@ -42,7 +42,7 @@ public class MinDateVersionFilterTests : TestBase
     [Test]
     public void ExcludeShouldAcceptVersionWithNullCommit()
     {
-        BaseVersion version = new("dummy", new SemanticVersion(1), null);
+        BaseVersion version = new("dummy", new SemanticVersion(1));
         var futureDate = DateTimeOffset.UtcNow.AddYears(1);
         var sut = new MinDateVersionFilter(futureDate);
 

@@ -74,10 +74,9 @@ public class TestFileSystem : IFileSystem
     public Stream OpenRead(string path)
     {
         var fullPath = Path.GetFullPath(path);
-        if (!this.fileSystem.ContainsKey(fullPath))
+        if (!this.fileSystem.TryGetValue(fullPath, out var content))
             throw new FileNotFoundException("File not found.", fullPath);
 
-        var content = this.fileSystem[fullPath];
         return new MemoryStream(content);
     }
 

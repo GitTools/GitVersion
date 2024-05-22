@@ -13,7 +13,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -86,7 +86,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -154,7 +154,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -227,7 +227,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -295,7 +295,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -368,7 +368,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -436,7 +436,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -509,7 +509,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -577,7 +577,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -650,7 +650,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         // GitFlow setup
         fixture.SequenceDiagram.Activate("main");
@@ -718,7 +718,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.SequenceDiagram.Participant("main");
         fixture.SequenceDiagram.Participant("develop");
@@ -813,7 +813,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.TrackReleaseBranches, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.SequenceDiagram.Participant("main");
         fixture.SequenceDiagram.Participant("develop");
@@ -903,7 +903,7 @@ public class DocumentationSamplesForGitFlow
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.SequenceDiagram.Participant("main");
 
@@ -987,7 +987,7 @@ public class DocumentationSamplesForGitFlow
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.TrackReleaseBranches, VersionStrategies.Mainline)
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.SequenceDiagram.Participant("main");
 

@@ -915,7 +915,7 @@ public class OtherScenarios : TestBase
     public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithNoLabel(string? label)
     {
         var configuration = GitFlowConfigurationBuilder.New.WithLabel(null)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
@@ -956,7 +956,7 @@ public class OtherScenarios : TestBase
     public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithAlphaLabel()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithIncrement(IncrementStrategy.None)
@@ -998,7 +998,7 @@ public class OtherScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("5.0")
             .WithSemanticVersionFormat(SemanticVersionFormat.Loose)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithLabel("beta")
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
@@ -1039,7 +1039,7 @@ public class OtherScenarios : TestBase
     public void EnsureThePreReleaseTagIsCorrectlyGeneratedWhenPreReleaseLabelIsEmpty()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithLabel(string.Empty).WithIsMainBranch(false)
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
             ).Build();
@@ -1068,7 +1068,7 @@ public class OtherScenarios : TestBase
         string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("develop", _ => _
+            .WithBranch("develop", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
@@ -1097,7 +1097,7 @@ public class OtherScenarios : TestBase
         string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("develop", _ => _
+            .WithBranch("develop", b => b
                 .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
@@ -1126,7 +1126,7 @@ public class OtherScenarios : TestBase
         string tag, bool preventIncrementWhenCurrentCommitTagged, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("develop", _ => _
+            .WithBranch("develop", b => b
                 .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
@@ -1145,7 +1145,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("6.0.0")
-            .WithBranch("develop", _ => _
+            .WithBranch("develop", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
             ).Build();
@@ -1203,7 +1203,7 @@ public class OtherScenarios : TestBase
         string[]? tags, bool preventIncrementWhenCurrentCommitTagged, string semVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("release", _ => _
+            .WithBranch("release", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
                 .WithIncrement(IncrementStrategy.Minor)
@@ -1370,7 +1370,7 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeATaggedCommit("4.0.0-beta.14");
@@ -1385,10 +1385,10 @@ public class OtherScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithLabel(null)
-            .WithBranch("main", _ => _.WithLabel(labelOnMain))
+            .WithBranch("main", b => b.WithLabel(labelOnMain))
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
         fixture.MakeATaggedCommit("4.0.0-beta.14");

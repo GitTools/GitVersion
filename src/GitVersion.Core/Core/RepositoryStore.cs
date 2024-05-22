@@ -72,7 +72,7 @@ internal class RepositoryStore : IRepositoryStore
             return desiredBranch;
 
         // There are some edge cases where HEAD is not pointing to the desired branch.
-        // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
+        // Therefore, it's important to verify if 'currentBranch' is indeed the desired branch.
         var targetBranch = FindBranch(targetBranchName);
 
         // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
@@ -132,11 +132,11 @@ internal class RepositoryStore : IRepositoryStore
         {
             if (ignore.Contains(item)) continue;
 
-            foreach (var commitBranche in commitBranches)
+            foreach (var commitBranch in commitBranches)
             {
-                if (item.Commit.Equals(commitBranche.Commit)) break;
+                if (item.Commit.Equals(commitBranch.Commit)) break;
 
-                foreach (var commit in commitBranche.Branch.Commits.Where(element => element.When >= item.Commit.When))
+                foreach (var commit in commitBranch.Branch.Commits.Where(element => element.When >= item.Commit.When))
                 {
                     if (commit.Equals(item.Commit))
                     {

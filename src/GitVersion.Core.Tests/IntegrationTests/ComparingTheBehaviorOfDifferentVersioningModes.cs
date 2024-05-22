@@ -13,28 +13,28 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
 {
     private static GitHubFlowConfigurationBuilder GetConfigurationBuilder() => GitHubFlowConfigurationBuilder.New
         .WithLabel(null)
-        .WithBranch("main", _ => _
+        .WithBranch("main", b => b
             .WithIncrement(IncrementStrategy.Patch).WithLabel(null)
-        ).WithBranch("feature", _ => _
+        ).WithBranch("feature", b => b
             .WithIncrement(IncrementStrategy.Inherit).WithLabel("{BranchName}")
         );
 
     private static readonly IGitVersionConfiguration continuousDeployment = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
+            .WithBranch("main", b => b.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
+            .WithBranch("feature", b => b.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();
 
     private static readonly IGitVersionConfiguration continuousDelivery = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("main", b => b.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
+            .WithBranch("feature", b => b.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
             .Build();
 
     private static readonly IGitVersionConfiguration manualDeployment = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("main", b => b.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("feature", b => b.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 
     [Test]
@@ -238,7 +238,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     }
 
     [Test]
-    public void MergeFeatureToMainWithMinorMinorSemversionIncrement()
+    public void MergeFeatureToMainWithMinorMinorSemVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
 
@@ -269,7 +269,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     }
 
     [Test]
-    public void MergeFeatureToMainWithMajorMinorSemversionIncrement()
+    public void MergeFeatureToMainWithMajorMinorSemVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
 
@@ -300,7 +300,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     }
 
     [Test]
-    public void MergeFeatureToMainWithPreviousCommitsAndMinorMinorSemversionIncrement()
+    public void MergeFeatureToMainWithPreviousCommitsAndMinorMinorSemVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
 
@@ -345,7 +345,7 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
     }
 
     [Test]
-    public void MergeFeatureToMainWithPreviousCommitsAndMinorMajorSemversionIncrement()
+    public void MergeFeatureToMainWithPreviousCommitsAndMinorMajorSemVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
 

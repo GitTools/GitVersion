@@ -48,7 +48,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     public MainlineCommit? ParentCommit => Iteration.ParentCommit;
 
     [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
-    public bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
+    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
 
@@ -62,7 +62,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
         IBranchConfiguration branchConfiguration = Configuration;
 
-        IBranchConfiguration? last = Configuration;
+        IBranchConfiguration last = Configuration;
         for (var i = this; i is not null; i = i.Predecessor)
         {
             if (branchConfiguration.Increment != IncrementStrategy.Inherit) break;
@@ -104,11 +104,11 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
 
     public MainlineCommit Append(
-        ICommit? value, ReferenceName branchName, IBranchConfiguration configuration)
+        ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)
     {
         if (HasPredecessor) throw new InvalidOperationException();
 
-        MainlineCommit commit = new(Iteration, value, branchName, configuration);
+        MainlineCommit commit = new(Iteration, referenceValue, branchName, configuration);
         Predecessor = commit;
         commit.Successor = this;
 

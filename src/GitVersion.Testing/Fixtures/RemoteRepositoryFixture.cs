@@ -20,7 +20,7 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     /// <summary>
     ///     Fixture pointing at the local repository
     /// </summary>
-    public LocalRepositoryFixture LocalRepositoryFixture { get; private set; }
+    public LocalRepositoryFixture LocalRepositoryFixture { get; }
 
     /// <summary>
     ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

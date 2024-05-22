@@ -41,7 +41,7 @@ internal sealed class TaggedCommitVersionStrategy(
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
 
-        List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = new();
+        List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = [];
         foreach (var semanticVersionWithTag in taggedSemanticVersions)
         {
             if (!semanticVersionWithTag.Value.IsMatchForBranchSpecificLabel(label))

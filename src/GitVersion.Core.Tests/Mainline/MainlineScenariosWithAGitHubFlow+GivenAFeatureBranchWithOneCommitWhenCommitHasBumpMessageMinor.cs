@@ -14,7 +14,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
 
         private static GitHubFlowConfigurationBuilder MainlineBuilder => GitHubFlowConfigurationBuilder.New
             .WithVersionStrategy(VersionStrategies.Mainline).WithLabel(null)
-            .WithBranch("feature", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment));
+            .WithBranch("feature", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment));
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -51,7 +51,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersion(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -79,7 +79,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithDisabledMessageIncrementing(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).Build();
 
@@ -108,7 +108,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithMergeMessageOnlyIncrementing(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label)
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 ).Build();
 

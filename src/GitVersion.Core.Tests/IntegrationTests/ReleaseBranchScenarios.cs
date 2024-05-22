@@ -418,7 +418,7 @@ public class ReleaseBranchScenarios : TestBase
     }
 
     [Test]
-    public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
+    public void CommitBetweenMergeReleaseToDevelopShouldNotResetCount()
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
 

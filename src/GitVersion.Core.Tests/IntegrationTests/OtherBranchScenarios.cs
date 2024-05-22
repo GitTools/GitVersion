@@ -62,7 +62,7 @@ public class OtherBranchScenarios : TestBase
     public string WhenTaggingACommitAsPreRelease(string tagPrefix, string? label, string tag, string expectedVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New.WithLabel(null).WithTagPrefix(tagPrefix)
-            .WithBranch("main", _ => _.WithLabel(label).WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("main", b => b.WithLabel(label).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -72,7 +72,7 @@ public class OtherBranchScenarios : TestBase
         fixture.AssertFullSemver(expectedVersion, configuration);
         fixture.ApplyTag(tag);
 
-        return fixture!.GetVersion(configuration).FullSemVer;
+        return fixture.GetVersion(configuration).FullSemVer;
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromReleaseBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("release", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
+            .WithBranch("release", b => b.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -120,7 +120,7 @@ public class OtherBranchScenarios : TestBase
     public void CanTakeVersionFromHotfixBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
+            .WithBranch("hotfix", b => b.WithLabel("{BranchName}").WithRegularExpression("(?<BranchName>.+)"))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();

@@ -2,7 +2,7 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-public sealed record class BaseVersionOperator : IBaseVersionIncrement
+public sealed record BaseVersionOperator : IBaseVersionIncrement
 {
     public string Source { get; init; } = string.Empty;
 

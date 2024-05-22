@@ -14,9 +14,9 @@ public class PullRequestScenarios : TestBase
     public void EnsurePullRequestWithIncrementMajorOnMainAndMinorOnFeatureBranch()
     {
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 

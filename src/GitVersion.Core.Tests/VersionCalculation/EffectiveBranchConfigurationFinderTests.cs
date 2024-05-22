@@ -10,7 +10,7 @@ namespace GitVersion.Core.Tests.VersionCalculation;
 public class EffectiveBranchConfigurationFinderTests
 {
     [Theory]
-    public void When_getting_configurations_of_a_branch_without_versioning_mode_Given_fallback_configuaration_with_versioning_mode_Then_result_should_have_versioning_mode(
+    public void When_getting_configurations_of_a_branch_without_versioning_mode_Given_fallback_configuration_with_versioning_mode_Then_result_should_have_versioning_mode(
         DeploymentMode versioningMode)
     {
         // Arrange
@@ -34,7 +34,7 @@ public class EffectiveBranchConfigurationFinderTests
     }
 
     [Theory]
-    public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_fallback_configuaration_without_versioning_mode_Then_result_should_have_versioning_mode(
+    public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_fallback_configuration_without_versioning_mode_Then_result_should_have_versioning_mode(
         DeploymentMode versioningMode)
     {
         // Arrange
@@ -60,7 +60,7 @@ public class EffectiveBranchConfigurationFinderTests
     }
 
     [Theory]
-    public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_parent_configuaration_with_versioning_mode_Then_result_should_not_have_versioning_mode_of_parent(
+    public void When_getting_configurations_of_a_branch_with_versioning_mode_Given_parent_configuration_with_versioning_mode_Then_result_should_not_have_versioning_mode_of_parent(
         DeploymentMode versioningMode)
     {
         // Arrange
@@ -257,7 +257,7 @@ public class EffectiveBranchConfigurationFinderTests
     [TestCase(IncrementStrategy.Patch)]
     [TestCase(IncrementStrategy.Minor)]
     [TestCase(IncrementStrategy.Major)]
-    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuaration_with_increment_and_unknown_configuration_with_increment_inherit_Then_result_should_have_fallback_increment(
+    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuration_with_increment_and_unknown_configuration_with_increment_inherit_Then_result_should_have_fallback_increment(
     IncrementStrategy fallbackIncrement)
     {
         // Arrange
@@ -281,7 +281,7 @@ public class EffectiveBranchConfigurationFinderTests
     }
 
     [Theory]
-    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuaration_with_increment_and_develop_branch_with_increment_Then_result_should_have_develop_increment(
+    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuration_with_increment_and_develop_branch_with_increment_Then_result_should_have_develop_increment(
         IncrementStrategy fallbackIncrement, IncrementStrategy developIncrement)
     {
         // Arrange
@@ -309,19 +309,12 @@ public class EffectiveBranchConfigurationFinderTests
             actual.ShouldHaveSingleItem();
             actual[0].Branch.ShouldBe(developBranchMock);
 
-            if (developIncrement == IncrementStrategy.Inherit)
-            {
-                actual[0].Value.Increment.ShouldBe(fallbackIncrement);
-            }
-            else
-            {
-                actual[0].Value.Increment.ShouldBe(developIncrement);
-            }
+            actual[0].Value.Increment.ShouldBe(developIncrement == IncrementStrategy.Inherit ? fallbackIncrement : developIncrement);
         }
     }
 
     [Theory]
-    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuaration_with_increment_and_develop_branch_with_increment_inherit_Then_result_should_have_fallback_increment(
+    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuration_with_increment_and_develop_branch_with_increment_inherit_Then_result_should_have_fallback_increment(
         IncrementStrategy fallbackIncrement)
     {
         // Arrange
@@ -356,7 +349,7 @@ public class EffectiveBranchConfigurationFinderTests
     [TestCase(IncrementStrategy.Patch)]
     [TestCase(IncrementStrategy.Minor)]
     [TestCase(IncrementStrategy.Major)]
-    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_and_unknown_configuaration_with_increment_inherit_and_develop_branch_with_increment_Then_result_should_have_develop_branch_increment(
+    public void When_getting_configurations_of_an_unknown_branch_Given_fallback_and_unknown_configuration_with_increment_inherit_and_develop_branch_with_increment_Then_result_should_have_develop_branch_increment(
         IncrementStrategy developBranchIncrement)
     {
         // Arrange

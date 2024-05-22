@@ -21,7 +21,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -78,7 +78,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -146,7 +146,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -188,7 +188,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -270,7 +270,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -350,7 +350,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -430,7 +430,7 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitHubFlow
             : configurationBuilder;
         var configuration = builder.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 

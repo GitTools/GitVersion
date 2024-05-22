@@ -16,20 +16,13 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
         return this.excludedBranches.Where(predicate.IsSourceBranch);
     }
 
-    private class SourceBranchPredicate
+    private class SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
     {
-        private readonly IBranch branch;
-        private readonly IEnumerable<string> sourceBranchRegexes;
-
-        public SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
-        {
-            this.branch = branch;
-            this.sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
-        }
+        private readonly IEnumerable<string> sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
 
         public bool IsSourceBranch(INamedReference sourceBranchCandidate)
         {
-            if (Equals(sourceBranchCandidate, this.branch))
+            if (Equals(sourceBranchCandidate, branch))
                 return false;
 
             var branchName = sourceBranchCandidate.Name.WithoutOrigin;

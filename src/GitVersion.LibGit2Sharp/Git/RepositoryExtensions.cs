@@ -10,7 +10,7 @@ internal static class RepositoryExtensions
         }
         catch (LibGit2Sharp.LockedFileException ex)
         {
-            // Wrap this exception so that callers that want to catch it don't need to take a dependency on LibGit2Sharp.
+            // Wrap this exception so that callers that want to catch it doesn't need to take a dependency on LibGit2Sharp.
             throw new LockedFileException(ex);
         }
     }
@@ -23,7 +23,7 @@ internal static class RepositoryExtensions
         }
         catch (LibGit2Sharp.LockedFileException ex)
         {
-            // Wrap this exception so that callers that want to catch it don't need to take a dependency on LibGit2Sharp.
+            // Wrap this exception so that callers that want to catch it doesn't need to take a dependency on LibGit2Sharp.
             throw new LockedFileException(ex);
         }
     }

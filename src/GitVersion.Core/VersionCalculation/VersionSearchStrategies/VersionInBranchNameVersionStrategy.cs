@@ -47,7 +47,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
 
                 var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
 
-                baseVersion = new BaseVersion("Version in branch name", result.Value, null)
+                baseVersion = new BaseVersion("Version in branch name", result.Value)
                 {
                     Operator = new BaseVersionOperator()
                     {
