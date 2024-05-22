@@ -162,19 +162,22 @@ internal class NextVersionCalculator(
 
         var maxVersion = nextVersions.Max()
             ?? throw new GitVersionException("No base versions determined on the current branch.");
-        var matchingVersionsOnceIncremented = nextVersions
-            .Where(v => v.BaseVersion.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
-            .ToList();
+
         ICommit? latestBaseVersionSource;
 
-        if (matchingVersionsOnceIncremented.Count != 0)
+        var matchingVersionsOnceIncremented = nextVersions
+            .Where(
+                element => element.BaseVersion.BaseVersionSource != null
+                    && element.IncrementedVersion == maxVersion.IncrementedVersion
+            ).ToArray();
+        if (matchingVersionsOnceIncremented.Length > 1)
         {
             var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
             latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;
             maxVersion = latestVersion;
             log.Info(
                 $"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), " +
-                $"taking oldest source for commit counting ({latestVersion.BaseVersion.Source})");
+                $"taking latest source for commit counting ({latestVersion.BaseVersion.Source})");
         }
         else
         {

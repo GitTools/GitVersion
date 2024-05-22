@@ -1364,4 +1364,42 @@ public class OtherScenarios : TestBase
 
         fixture.AssertFullSemver("1.2.1-3", configuration);
     }
+
+    [Test]
+    public void AlternativeSemanticVersionsShouldBeConsidered()
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeACommit("A");
+        fixture.MakeATaggedCommit("4.0.0-beta.14");
+        fixture.MakeACommit("B");
+
+        fixture.AssertFullSemver("4.0.0-3", configuration);
+    }
+
+    [TestCase(null, "6.0.0-beta.6")]
+    [TestCase("beta", "6.0.0-beta.21")]
+    public void AlternativeSemanticVersionsShouldBeConsidered(string? labelOnMain, string version)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", _ => _.WithLabel(labelOnMain))
+            .Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeATaggedCommit("4.0.0-beta.14");
+        fixture.MakeACommit("A");
+        fixture.MakeATaggedCommit("6.0.0-alpha.1");
+        fixture.MakeATaggedCommit("6.0.0-alpha.2");
+        fixture.MakeATaggedCommit("6.0.0-alpha.3");
+        fixture.MakeACommit("B");
+        fixture.MakeATaggedCommit("6.0.0-beta.5");
+        fixture.MakeACommit("C");
+
+        fixture.AssertFullSemver(version, configuration);
+    }
 }

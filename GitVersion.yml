@@ -1,4 +1,4 @@
-assembly-versioning-scheme: MajorMinorPatch
+workflow: GitFlow/v1
 branches:
   main:
     label: beta
