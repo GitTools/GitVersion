@@ -6,6 +6,7 @@
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
         <PackageReference Include="Microsoft.Build" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="MSBuild.ProjectCreation" />
     </ItemGroup>
