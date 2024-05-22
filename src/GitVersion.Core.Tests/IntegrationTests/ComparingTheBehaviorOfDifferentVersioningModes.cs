@@ -19,12 +19,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
             .WithIncrement(IncrementStrategy.Inherit).WithLabel("{BranchName}")
         );
 
-    private static readonly IGitVersionConfiguration trunkBased = GetConfigurationBuilder()
-        .WithVersionStrategy(VersionStrategies.TrunkBased)
-        .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
-        .WithBranch("feature", _ => _.WithIsMainBranch(false).WithDeploymentMode(DeploymentMode.ContinuousDelivery))
-        .Build();
-
     private static readonly IGitVersionConfiguration continuousDeployment = GetConfigurationBuilder()
             .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
             .WithBranch("main", _ => _.WithIsMainBranch(true).WithDeploymentMode(DeploymentMode.ContinuousDeployment))
@@ -51,7 +45,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeATaggedCommit("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0", trunkBased);
         fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0", continuousDelivery);
         fixture.AssertFullSemver("1.0.0", manualDeployment);
@@ -59,7 +52,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.1", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-1", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-1+1", manualDeployment);
@@ -67,7 +59,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.2", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-2", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-1+2", manualDeployment);
@@ -75,7 +66,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.ApplyTag("1.0.1-alpha.1");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-alpha.1", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-alpha.1", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-alpha.1", manualDeployment);
@@ -83,7 +73,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-alpha.2", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-alpha.2", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-alpha.2+1", manualDeployment);
@@ -91,7 +80,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-alpha.3", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-alpha.3", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-alpha.2+2", manualDeployment);
@@ -99,7 +87,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeATaggedCommit("1.0.1-beta.1");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-beta.1", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-beta.1", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-beta.1", manualDeployment);
@@ -107,7 +94,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-beta.2", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-beta.2", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-beta.2+1", manualDeployment);
@@ -115,7 +101,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeATaggedCommit("1.0.1-beta.2");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-beta.2", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-beta.2", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-beta.2", manualDeployment);
@@ -123,7 +108,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1-beta.3", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1-beta.3", continuousDelivery);
         fixture.AssertFullSemver("1.0.1-beta.3+1", manualDeployment);
@@ -131,7 +115,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.ApplyTag("1.0.1");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.1", trunkBased);
         fixture.AssertFullSemver("1.0.1", continuousDeployment);
         fixture.AssertFullSemver("1.0.1", continuousDelivery);
         fixture.AssertFullSemver("1.0.1", manualDeployment);
@@ -139,7 +122,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.2", trunkBased);
         fixture.AssertFullSemver("1.0.2", continuousDeployment);
         fixture.AssertFullSemver("1.0.2-1", continuousDelivery);
         fixture.AssertFullSemver("1.0.2-1+1", manualDeployment);
@@ -147,7 +129,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.ApplyTag("1.0.2-1");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.2-1", trunkBased);
         fixture.AssertFullSemver("1.0.2", continuousDeployment);
         fixture.AssertFullSemver("1.0.2-1", continuousDelivery);
         fixture.AssertFullSemver("1.0.2-1", manualDeployment);
@@ -155,7 +136,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.2-2", trunkBased);
         fixture.AssertFullSemver("1.0.2", continuousDeployment);
         fixture.AssertFullSemver("1.0.2-2", continuousDelivery);
         fixture.AssertFullSemver("1.0.2-2+1", manualDeployment);
@@ -163,7 +143,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.0.2-3", trunkBased);
         fixture.AssertFullSemver("1.0.2", continuousDeployment);
         fixture.AssertFullSemver("1.0.2-3", continuousDelivery);
         fixture.AssertFullSemver("1.0.2-2+2", manualDeployment);
@@ -177,7 +156,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeATaggedCommit("0.0.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.2", trunkBased);
         fixture.AssertFullSemver("0.0.2", continuousDeployment);
         fixture.AssertFullSemver("0.0.2", continuousDelivery);
         fixture.AssertFullSemver("0.0.2", manualDeployment);
@@ -193,16 +171,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.3-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-test.1", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-test.1+1", manualDeployment);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.0.3-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-test.2", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-test.1+2", manualDeployment);
 
@@ -211,7 +187,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.3", trunkBased);
         fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-3", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-1+3", manualDeployment);
@@ -226,7 +201,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.3", trunkBased);
         fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-1", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-1+1", manualDeployment);
@@ -234,7 +208,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.4", trunkBased);
         fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-2", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-1+2", manualDeployment);
@@ -243,16 +216,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.0.5-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-test.3", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-test.1+3", manualDeployment);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.0.5-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-test.4", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-test.1+4", manualDeployment);
 
@@ -261,7 +232,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.5", trunkBased);
         fixture.AssertFullSemver("0.0.3", continuousDeployment);
         fixture.AssertFullSemver("0.0.3-5", continuousDelivery);
         fixture.AssertFullSemver("0.0.3-1+5", manualDeployment);
@@ -277,16 +247,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-test.1", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-test.1+1", manualDeployment);
 
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-test.2", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-test.1+2", manualDeployment);
 
@@ -295,7 +263,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.2.0", trunkBased);
         fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-3", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-1+3", manualDeployment);
@@ -311,16 +278,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: major");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-test.1", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-test.1+1", manualDeployment);
 
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-test.2", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-test.1+2", manualDeployment);
 
@@ -329,7 +294,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.1.0", trunkBased);
         fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-3", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-1+3", manualDeployment);
@@ -344,7 +308,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0", trunkBased);
         fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-1", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-1+1", manualDeployment);
@@ -352,7 +315,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.2.0", trunkBased);
         fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-2", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-1+2", manualDeployment);
@@ -361,16 +323,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.3.0-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-test.3", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-test.1+3", manualDeployment);
 
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.4.0-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-test.4", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-test.1+4", manualDeployment);
 
@@ -379,7 +339,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("0.4.0", trunkBased);
         fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-5", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-1+5", manualDeployment);
@@ -394,7 +353,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0", trunkBased);
         fixture.AssertFullSemver("0.1.0", continuousDeployment);
         fixture.AssertFullSemver("0.1.0-1", continuousDelivery);
         fixture.AssertFullSemver("0.1.0-1+1", manualDeployment);
@@ -402,7 +360,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: major");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.1.0", trunkBased);
         fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-2", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-1+2", manualDeployment);
@@ -410,7 +367,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("1.1.0", trunkBased);
         fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-3", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-1+3", manualDeployment);
@@ -419,16 +375,14 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.MakeACommit("+semver: major");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("2.1.0-test.1", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-test.4", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-test.1+4", manualDeployment);
 
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("2.2.0-test.2", trunkBased);
-        //fixture.AssertFullSemver("?", continuousDeployment);
+        fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-test.5", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-test.1+5", manualDeployment);
 
@@ -437,7 +391,6 @@ internal class ComparingTheBehaviorOfDifferentDeploymentModes
         fixture.Repository.Branches.Remove("feature/test");
 
         // ✅ succeeds as expected
-        //fixture.AssertFullSemver("2.2.0", trunkBased);
         fixture.AssertFullSemver("1.0.0", continuousDeployment);
         fixture.AssertFullSemver("1.0.0-6", continuousDelivery);
         fixture.AssertFullSemver("1.0.0-1+6", manualDeployment);
