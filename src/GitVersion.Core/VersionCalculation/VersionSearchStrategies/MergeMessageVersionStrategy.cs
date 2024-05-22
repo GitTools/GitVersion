@@ -57,9 +57,9 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
                         label: label
                     );
 
-                yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version, null)
+                yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version)
                 {
-                    Operator = new BaseVersionOperator()
+                    Operator = new()
                     {
                         Increment = increment,
                         ForceIncrement = false,

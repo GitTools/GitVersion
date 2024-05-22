@@ -14,7 +14,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
 
         private static GitHubFlowConfigurationBuilder MainlineBuilder => GitHubFlowConfigurationBuilder.New
             .WithVersionStrategy(VersionStrategies.Mainline).WithLabel(null)
-            .WithBranch("feature", _ => _
+            .WithBranch("feature", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
             );
 
@@ -54,7 +54,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersion(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -82,7 +82,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithPreventIncrementWhenCurrentCommitTaggedFalse(IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;

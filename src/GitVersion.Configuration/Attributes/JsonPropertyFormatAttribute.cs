@@ -1,7 +1,7 @@
 namespace GitVersion.Configuration.Attributes;
 
 /// <summary>
-/// <para>The <c>format</c> keyword allows for basic semantic identification of certain kinds of string values that are commonly used. For example, because JSON doesn't have a "DateTime" type, dates need to be encoded as strings. <c>format</c> allows the schema author to indicate that the string value should be interpreted as a date. By default, <c>format</c> is just an annotation and does not effect validation.</para>
+/// <para>The <c>format</c> keyword allows for basic semantic identification of certain kinds of string values that are commonly used. For example, because JSON doesn't have a "DateTime" type, dates need to be encoded as strings. <c>format</c> allows the schema author to indicate that the string value should be interpreted as a date. By default, <c>format</c> is just an annotation and does not affect validation.</para>
 /// <para>Optionally, validator implementations can [...] enable <c>format</c> to function as an assertion rather than just an annotation.</para>
 /// <see href="https://json-schema.org/understanding-json-schema/reference/string#format"/>
 /// </summary>

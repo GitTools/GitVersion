@@ -235,7 +235,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.BranchTo("feature/TEST-1");
         fixture.Repository.MakeACommit();
 
-        //I'm not entirely sure what the + value should be but I know the semvar major/minor/patch should be 0.3.0
+        //I'm not entirely sure what the + value should be, but I know the semver major/minor/patch should be 0.3.0
         fixture.AssertFullSemver("0.3.0-TEST-1.1+2");
     }
 

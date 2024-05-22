@@ -1,8 +1,6 @@
 #nullable enable
 const GitVersion.Git.ReferenceName.LocalBranchPrefix = "refs/heads/" -> string!
-const GitVersion.Git.ReferenceName.OriginPrefix = "origin/" -> string!
 const GitVersion.Git.ReferenceName.RemoteTrackingBranchPrefix = "refs/remotes/" -> string!
-const GitVersion.Git.ReferenceName.TagPrefix = "refs/tags/" -> string!
 GitVersion.Agents.IBuildAgent
 GitVersion.Agents.IBuildAgent.CanApplyToCurrentContext() -> bool
 GitVersion.Agents.IBuildAgent.GetCurrentBranch(bool usingDynamicRepos) -> string?
@@ -184,13 +182,13 @@ GitVersion.Git.BranchCommit.Equals(GitVersion.Git.BranchCommit? other) -> bool
 GitVersion.Git.CommitExtensions
 GitVersion.Git.CommitFilter
 GitVersion.Git.CommitFilter.ExcludeReachableFrom.get -> object?
-GitVersion.Git.CommitFilter.ExcludeReachableFrom.set -> void
+GitVersion.Git.CommitFilter.ExcludeReachableFrom.init -> void
 GitVersion.Git.CommitFilter.FirstParentOnly.get -> bool
-GitVersion.Git.CommitFilter.FirstParentOnly.set -> void
+GitVersion.Git.CommitFilter.FirstParentOnly.init -> void
 GitVersion.Git.CommitFilter.IncludeReachableFrom.get -> object?
-GitVersion.Git.CommitFilter.IncludeReachableFrom.set -> void
+GitVersion.Git.CommitFilter.IncludeReachableFrom.init -> void
 GitVersion.Git.CommitFilter.SortBy.get -> GitVersion.Git.CommitSortStrategies
-GitVersion.Git.CommitFilter.SortBy.set -> void
+GitVersion.Git.CommitFilter.SortBy.init -> void
 GitVersion.Git.CommitSortStrategies
 GitVersion.Git.CommitSortStrategies.None = 0 -> GitVersion.Git.CommitSortStrategies
 GitVersion.Git.CommitSortStrategies.Reverse = 4 -> GitVersion.Git.CommitSortStrategies
@@ -787,7 +785,6 @@ static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log,
 static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.GetVerbosityForLevel(GitVersion.Logging.LogLevel level) -> GitVersion.Logging.Verbosity
 static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
@@ -804,7 +801,6 @@ static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! lo
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Write(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void
 static GitVersion.MergeMessage.TryParse(GitVersion.Git.ICommit! mergeCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration, out GitVersion.MergeMessage? mergeMessage) -> bool
 static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
 static GitVersion.SemanticVersion.operator !=(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool

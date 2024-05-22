@@ -141,8 +141,7 @@ internal static class ProcessHelper
         };
         process.BeginErrorReadLine();
 
-        string? line;
-        while ((line = input?.ReadLine()) != null)
+        while (input?.ReadLine() is { } line)
             process.StandardInput.WriteLine(line);
 
         process.StandardInput.Close();

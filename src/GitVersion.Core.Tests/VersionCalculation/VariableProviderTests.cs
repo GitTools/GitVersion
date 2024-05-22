@@ -282,6 +282,6 @@ public class VariableProviderTests : TestBase
         int preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main")).PreReleaseWeight;
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
-        variables.ToJson().ShouldMatchApproved(_ => _.SubFolder("Approved"));
+        variables.ToJson().ShouldMatchApproved(x => x.SubFolder("Approved"));
     }
 }

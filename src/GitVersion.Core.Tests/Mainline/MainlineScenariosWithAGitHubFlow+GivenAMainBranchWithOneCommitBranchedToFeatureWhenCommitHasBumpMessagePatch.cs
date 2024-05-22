@@ -14,8 +14,8 @@ internal partial class MainlineScenariosWithAGitHubFlow
 
         private static GitHubFlowConfigurationBuilder MainlineBuilder => GitHubFlowConfigurationBuilder.New
             .WithVersionStrategy(VersionStrategies.Mainline).WithLabel(null)
-            .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("feature", _ => _
+            .WithBranch("main", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("feature", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment).WithPreventIncrementWhenCurrentCommitTagged(true)
             );
 
@@ -139,8 +139,8 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithNoLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -253,9 +253,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null)
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -368,9 +368,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null)
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -482,8 +482,8 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithEmptyLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -596,9 +596,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty)
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -711,9 +711,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty)
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -825,8 +825,8 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelFooOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo"))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -939,9 +939,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo")
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -1054,9 +1054,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("foo")
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -1168,8 +1168,8 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelBarOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar"))
-                .WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar"))
+                .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -1282,9 +1282,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar")
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -1397,9 +1397,9 @@ internal partial class MainlineScenariosWithAGitHubFlow
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel("bar")
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
-                ).WithBranch("feature", _ => _.WithIncrement(increment).WithLabel(label))
+                ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;

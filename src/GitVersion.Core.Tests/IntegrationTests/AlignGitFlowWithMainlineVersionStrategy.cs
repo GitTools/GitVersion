@@ -21,14 +21,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -85,14 +85,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -157,14 +157,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -229,14 +229,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -301,14 +301,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -365,14 +365,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -431,14 +431,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -497,14 +497,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -555,14 +555,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -613,14 +613,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -671,14 +671,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -735,14 +735,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -807,14 +807,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -871,14 +871,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -935,14 +935,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -999,14 +999,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1063,14 +1063,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1135,14 +1135,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1207,14 +1207,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1271,14 +1271,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1335,14 +1335,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1399,14 +1399,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1471,14 +1471,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1543,14 +1543,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1615,14 +1615,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1679,14 +1679,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1754,14 +1754,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1837,14 +1837,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -1920,14 +1920,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2003,14 +2003,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2078,14 +2078,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2173,14 +2173,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2268,14 +2268,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2367,14 +2367,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2450,14 +2450,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2533,14 +2533,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2608,14 +2608,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2691,14 +2691,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2766,14 +2766,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2841,14 +2841,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2916,14 +2916,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -2991,14 +2991,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3074,14 +3074,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3157,14 +3157,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3232,14 +3232,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3307,14 +3307,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3382,14 +3382,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3465,14 +3465,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3548,14 +3548,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3631,14 +3631,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3706,14 +3706,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3758,14 +3758,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3826,14 +3826,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3894,14 +3894,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -3962,14 +3962,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4014,14 +4014,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4074,14 +4074,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4134,14 +4134,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4194,14 +4194,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4254,14 +4254,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4314,14 +4314,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4366,14 +4366,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4434,14 +4434,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4486,14 +4486,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4546,14 +4546,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4606,14 +4606,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4658,14 +4658,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4726,14 +4726,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4794,14 +4794,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4846,14 +4846,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4906,14 +4906,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -4958,14 +4958,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.None)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5026,14 +5026,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5094,14 +5094,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Minor)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5162,14 +5162,14 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Major)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5222,15 +5222,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5316,15 +5316,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5406,15 +5406,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5510,15 +5510,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5612,15 +5612,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5714,15 +5714,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5804,15 +5804,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -5908,15 +5908,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6024,15 +6024,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6140,15 +6140,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6244,15 +6244,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6348,15 +6348,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6458,15 +6458,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6546,15 +6546,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6632,15 +6632,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6732,15 +6732,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6818,15 +6818,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6904,15 +6904,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -6994,15 +6994,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7082,15 +7082,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7170,15 +7170,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7270,15 +7270,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7366,15 +7366,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7456,15 +7456,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7546,15 +7546,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7640,15 +7640,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7728,15 +7728,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7830,15 +7830,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -7930,15 +7930,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8036,15 +8036,15 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8123,18 +8123,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8228,18 +8228,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8331,18 +8331,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8448,18 +8448,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8565,18 +8565,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8686,18 +8686,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Inherit)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8782,18 +8782,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8881,18 +8881,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -8992,18 +8992,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9104,18 +9104,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9206,18 +9206,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9311,18 +9311,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.None)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9415,18 +9415,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9510,18 +9510,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9603,18 +9603,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9710,18 +9710,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9804,18 +9804,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9902,18 +9902,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -9998,18 +9998,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10099,18 +10099,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10196,18 +10196,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10307,18 +10307,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10416,18 +10416,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10517,18 +10517,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Minor)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10613,18 +10613,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(incrementOnReleaseBranch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10718,18 +10718,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10821,18 +10821,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.None)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -10938,18 +10938,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -11055,18 +11055,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Minor)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 
@@ -11176,18 +11176,18 @@ public class AlignGitFlowWithMainlineVersionStrategy
             : configurationBuilder;
         var configuration = builder
             .WithIncrement(IncrementStrategy.Major)
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
                 .WithIncrement(IncrementStrategy.Major)
-            ).WithBranch("release", _ => _
+            ).WithBranch("release", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
-            ).WithBranch("feature", _ => _
+            ).WithBranch("feature", b => b
                 .WithIncrement(IncrementStrategy.Inherit)
                 .WithDeploymentMode(DeploymentMode.ManualDeployment)
             ).Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
 

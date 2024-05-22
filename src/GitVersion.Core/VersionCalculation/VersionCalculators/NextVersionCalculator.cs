@@ -44,8 +44,7 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            SemanticVersion? value;
-            if (TryGetSemanticVersion(effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out value))
+            if (TryGetSemanticVersion(effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
@@ -65,8 +64,7 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            SemanticVersion? value;
-            if (TryGetSemanticVersion(nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out value))
+            if (TryGetSemanticVersion(nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
@@ -122,7 +120,7 @@ internal class NextVersionCalculator(
                 branch: Context.CurrentBranch.Name.Friendly,
                 commitSha: Context.CurrentCommit.Sha,
                 commitShortSha: Context.CurrentCommit.Id.ToString(7),
-                commitDate: Context.CurrentCommit?.When,
+                commitDate: Context.CurrentCommit.When,
                 numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
             );
 
@@ -248,16 +246,16 @@ internal class NextVersionCalculator(
             {
                 this.log.Info($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'");
 
-                var versionStrategies = this.versionStrategies.ToList();
-                var fallbackVersionStrategy = versionStrategies.FirstOrDefault(element => element is FallbackVersionStrategy);
+                var strategies = this.versionStrategies.ToList();
+                var fallbackVersionStrategy = strategies.Find(element => element is FallbackVersionStrategy);
                 if (fallbackVersionStrategy is not null)
                 {
-                    versionStrategies.Remove(fallbackVersionStrategy);
-                    versionStrategies.Add(fallbackVersionStrategy);
+                    strategies.Remove(fallbackVersionStrategy);
+                    strategies.Add(fallbackVersionStrategy);
                 }
 
                 var atLeastOneBaseVersionReturned = false;
-                foreach (var versionStrategy in versionStrategies)
+                foreach (var versionStrategy in strategies)
                 {
                     if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
 

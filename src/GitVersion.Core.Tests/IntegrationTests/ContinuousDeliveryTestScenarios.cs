@@ -73,7 +73,7 @@ public class ContinuousDeliveryTestScenarios
     }
 
     [Test]
-    public void ShouldNotMatterWhenConfiguredNextVersionIsEqualsToTheTaggeVersion()
+    public void ShouldNotMatterWhenConfiguredNextVersionIsEqualsToTheTaggedVersion()
     {
         // * 858f71b 58 minutes ago  (HEAD -> main, tag: 1.0.0)
 

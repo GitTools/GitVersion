@@ -2,10 +2,10 @@ namespace GitVersion.Git;
 
 public record CommitFilter
 {
-    public bool FirstParentOnly { get; set; }
-    public object? IncludeReachableFrom { get; set; }
-    public object? ExcludeReachableFrom { get; set; }
-    public CommitSortStrategies SortBy { get; set; }
+    public bool FirstParentOnly { get; init; }
+    public object? IncludeReachableFrom { get; init; }
+    public object? ExcludeReachableFrom { get; init; }
+    public CommitSortStrategies SortBy { get; init; }
 }
 
 [Flags]

@@ -12,8 +12,8 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public const string LocalBranchPrefix = "refs/heads/";
     public const string RemoteTrackingBranchPrefix = "refs/remotes/";
-    public const string TagPrefix = "refs/tags/";
-    public const string OriginPrefix = "origin/";
+    private const string TagPrefix = "refs/tags/";
+    private const string OriginPrefix = "origin/";
 
     private static readonly string[] PullRequestPrefixes =
     [
@@ -86,7 +86,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public static bool operator !=(ReferenceName? left, ReferenceName? right) => !(left == right);
 
-    public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
+    public bool TryGetSemanticVersion(out (SemanticVersion Value, string? Name) result,
                                       Regex versionPatternRegex,
                                       string? tagPrefix,
                                       SemanticVersionFormat format)

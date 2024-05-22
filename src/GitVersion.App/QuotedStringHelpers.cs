@@ -71,7 +71,7 @@ internal static class QuotedStringHelpers
         if (sb[0] == '"')
             sb.Remove(0, 1);
 
-        if (sb[sb.Length - 1] == '"' && sb[sb.Length - 2] != '\\')
+        if (sb[^1] == '"' && sb[^2] != '\\')
             sb.Remove(sb.Length - 1, 1);
 
         sb.Replace("\\\"", "\""); // unescape quotes.

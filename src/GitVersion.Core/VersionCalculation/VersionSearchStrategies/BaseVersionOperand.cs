@@ -14,8 +14,6 @@ public sealed record BaseVersionOperand(string Source, SemanticVersion SemanticV
 
     public SemanticVersion SemanticVersion { get; init; } = SemanticVersion.NotNull();
 
-    public ICommit? BaseVersionSource { get; init; } = BaseVersionSource;
-
     public override string ToString()
     {
         StringBuilder stringBuilder = new();

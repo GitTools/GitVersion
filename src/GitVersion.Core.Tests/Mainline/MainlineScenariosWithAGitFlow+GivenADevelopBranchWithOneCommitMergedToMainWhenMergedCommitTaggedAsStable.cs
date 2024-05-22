@@ -14,8 +14,8 @@ internal partial class MainlineScenariosWithAGitFlow
 
         private static GitFlowConfigurationBuilder MainlineBuilder => GitFlowConfigurationBuilder.New.WithLabel(null)
             .WithVersionStrategy(VersionStrategies.Mainline)
-            .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("develop", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment));
+            .WithBranch("main", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("develop", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment));
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -61,8 +61,8 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersionWithTrackMergeTargetOnDevelop(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("develop", _ => _.WithIncrement(increment).WithTrackMergeTarget(true))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
+                .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(true))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -90,8 +90,8 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersionWithNoTrackMergeTargetOnDevelop(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("develop", _ => _.WithIncrement(increment).WithTrackMergeTarget(false))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
+                .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(false))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;

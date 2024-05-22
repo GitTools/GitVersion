@@ -70,7 +70,7 @@ internal sealed class MockEngine : IBuildEngine4
 
     /// <summary>
     /// Assert that the log file contains the given string.
-    /// Case insensitive.
+    /// Case-insensitive.
     /// </summary>
     /// <param name="contains"></param>
     internal void AssertLogContains(string contains) => Log.ShouldContain(contains);

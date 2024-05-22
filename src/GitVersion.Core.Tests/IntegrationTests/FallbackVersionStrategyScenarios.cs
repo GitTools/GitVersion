@@ -9,7 +9,7 @@ public class FallbackVersionStrategyScenarios : TestBase
 {
     private static GitHubFlowConfigurationBuilder ConfigurationBuilder => GitHubFlowConfigurationBuilder.New
         .WithVersionStrategy(VersionStrategies.Fallback)
-        .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment));
+        .WithBranch("main", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment));
 
     [TestCase(IncrementStrategy.None, "0.0.0-1+1")]
     [TestCase(IncrementStrategy.Patch, "0.0.1-1+1")]
@@ -18,10 +18,10 @@ public class FallbackVersionStrategyScenarios : TestBase
     public void EnsureVersionIncrementOnMainWillBeUsed(IncrementStrategy increment, string expected)
     {
         var configuration = ConfigurationBuilder
-            .WithBranch("main", _ => _.WithIncrement(increment))
+            .WithBranch("main", b => b.WithIncrement(increment))
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
 
@@ -36,10 +36,10 @@ public class FallbackVersionStrategyScenarios : TestBase
     public void EnsureVersionIncrementOnMessageWillBeUsed(IncrementStrategy increment, string expected)
     {
         var configuration = ConfigurationBuilder
-            .WithBranch("main", _ => _.WithIncrement(IncrementStrategy.None))
+            .WithBranch("main", b => b.WithIncrement(IncrementStrategy.None))
             .Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit($"+semver: {increment}");
 
@@ -52,13 +52,13 @@ public class FallbackVersionStrategyScenarios : TestBase
     public void TakeTheLatestCommitAsBaseVersion(bool mode)
     {
         var configuration = ConfigurationBuilder
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithTrackMergeTarget(true)
                 .WithTracksReleaseBranches(false)
             ).Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.BranchTo("release/foo");
@@ -100,13 +100,13 @@ public class FallbackVersionStrategyScenarios : TestBase
         bool tracksReleaseBranches, string version)
     {
         var configuration = ConfigurationBuilder
-            .WithBranch("main", _ => _
+            .WithBranch("main", b => b
                 .WithIncrement(IncrementStrategy.Major)
                 .WithTrackMergeTarget(false)
                 .WithTracksReleaseBranches(tracksReleaseBranches)
             ).Build();
 
-        using EmptyRepositoryFixture fixture = new("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit("A");
         fixture.MakeACommit("B");

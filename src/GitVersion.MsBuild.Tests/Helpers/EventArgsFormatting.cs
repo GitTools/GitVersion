@@ -140,7 +140,7 @@ internal static class EventArgsFormatting
     {
         var format = new StringBuilder();
 
-        // Uncomment these lines to show show the processor, if present.
+        // Uncomment these lines to show the processor, if present.
         /*
         if (threadId != 0)
         {

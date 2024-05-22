@@ -219,7 +219,7 @@ public class MainlineDevelopmentScenarios : TestBase
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.1", configuration);
 
-        // adding a commit to main doesn't change develop's version
+        // adding a commit to main doesn't change develop 's version
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.2", configuration);
     }

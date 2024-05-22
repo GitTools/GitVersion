@@ -308,7 +308,7 @@ public class MainScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+2", configurationBuilder.Build());
 
-        // now we makes changes on develop that may or may not end up in the 1.0.0 release
+        // now we make changes on develop that may or may not end up in the 1.0.0 release
         fixture.Checkout("develop");
 
         // ✅ succeeds as expected
@@ -337,8 +337,8 @@ public class MainScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.2", configurationBuilder.Build());
 
-        // now we decide that the new on develop should be part of the beta 2 release
-        // so we merge it into release/1.0.0 with --no-ff because it is a protected branch
+        // now we decide that the new on develop should be part of the beta 2 release,
+        // so we merge it into release/1.0.0 with --no-ff because it is a protected branch,
         // but we don't do the release of beta 2 just yet
         fixture.Checkout("release/1.0.0");
         fixture.MergeNoFF("develop");

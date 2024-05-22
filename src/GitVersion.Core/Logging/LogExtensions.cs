@@ -44,7 +44,7 @@ public static class LogExtensions
 
     public static void Error(this ILog log, Verbosity verbosity, LogAction logAction) => log.Write(verbosity, LogLevel.Error, logAction);
 
-    public static void Write(this ILog log, LogLevel level, string format, params object[] args)
+    private static void Write(this ILog log, LogLevel level, string format, params object[] args)
     {
         var verbosity = GetVerbosityForLevel(level);
         if (verbosity > log.Verbosity)
@@ -105,7 +105,7 @@ public static class LogExtensions
         return Disposable.Create(() => log.Verbosity = lastVerbosity);
     }
 
-    public static Verbosity GetVerbosityForLevel(LogLevel level) => VerbosityMaps[level];
+    private static Verbosity GetVerbosityForLevel(LogLevel level) => VerbosityMaps[level];
 
     private static readonly IDictionary<LogLevel, Verbosity> VerbosityMaps = new Dictionary<LogLevel, Verbosity>
     {

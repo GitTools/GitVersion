@@ -14,8 +14,8 @@ internal partial class MainlineScenariosWithAGitFlow
 
         private static GitFlowConfigurationBuilder MainlineBuilder => GitFlowConfigurationBuilder.New.WithLabel(null)
             .WithVersionStrategy(VersionStrategies.Mainline)
-            .WithBranch("main", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment))
-            .WithBranch("develop", _ => _.WithDeploymentMode(DeploymentMode.ManualDeployment));
+            .WithBranch("main", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment))
+            .WithBranch("develop", b => b.WithDeploymentMode(DeploymentMode.ManualDeployment));
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -59,8 +59,8 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersionWithNoLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(null))
-                .WithBranch("develop", _ => _.WithIncrement(increment))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
+                .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;
@@ -88,8 +88,8 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersionWithEmptyLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
             IGitVersionConfiguration mainline = MainlineBuilder
-                .WithBranch("main", _ => _.WithIncrement(incrementOnMain).WithLabel(string.Empty))
-                .WithBranch("develop", _ => _.WithIncrement(increment))
+                .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
+                .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();
 
             return fixture!.GetVersion(mainline).FullSemVer;

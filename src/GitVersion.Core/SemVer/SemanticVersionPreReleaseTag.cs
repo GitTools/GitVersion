@@ -85,7 +85,7 @@ public sealed class SemanticVersionPreReleaseTag :
         var value = match.Groups["name"].Value;
         var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
         return value.EndsWith('-')
-            ? new(preReleaseTag, null, true)
+            ? new SemanticVersionPreReleaseTag(preReleaseTag, null, true)
             : new SemanticVersionPreReleaseTag(value, number, true);
     }
 

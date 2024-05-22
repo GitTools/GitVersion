@@ -180,7 +180,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
         fixture.BranchTo("release/1.0.0");
@@ -248,7 +248,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
         fixture.BranchTo("develop");
@@ -319,7 +319,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
         fixture.BranchTo("release/1.0.0");
@@ -389,7 +389,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
         fixture.BranchTo("develop");
@@ -462,7 +462,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
         fixture.BranchTo("release/1.0.0");
@@ -532,7 +532,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        using var fixture = new EmptyRepositoryFixture("main");
+        using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
         fixture.BranchTo("develop");

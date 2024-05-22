@@ -499,7 +499,7 @@ public class DevelopScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+2", configurationBuilder.Build());
 
-        // now we makes changes on develop that may or may not end up in the 1.0.0 release
+        // now we make changes on develop that may or may not end up in the 1.0.0 release
         fixture.Checkout("develop");
 
         // ✅ succeeds as expected

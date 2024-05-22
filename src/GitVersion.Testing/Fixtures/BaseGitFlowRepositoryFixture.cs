@@ -9,7 +9,7 @@ namespace GitVersion.Testing;
 public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
 {
     /// <summary>
-    /// <para>Creates a repo with a develop branch off main which is a single commit ahead of main</para>
+    /// <para>Creates a repo with a develop branch off main which is a single commit ahead of main branch</para>
     /// <para>Main will be tagged with the initial version before branching develop</para>
     /// </summary>
     public BaseGitFlowRepositoryFixture(string initialVersion, string branchName = "main") :

@@ -16,20 +16,14 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{PreReleaseTag}", "1.1.0.foo.1")]
     public void ShouldOutputFormatTests(string format, string expectedValue)
     {
-        using var fixture = CreateTestRepository();
+        var fixture = CreateTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
         var sp = ConfigureServices(services =>
         {
-            var options = Options.Create(new GitVersionOptions
-            {
-                WorkingDirectory = fixture.RepositoryPath,
-                RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName },
-                Format = format,
-                Output = { OutputType.Json }
-            });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
             var repository = fixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
@@ -49,7 +43,7 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{env:CustomVar}", "1.1.0.foo")]
     public void ShouldOutputFormatWithEnvironmentVariablesTests(string format, string expectedValue)
     {
-        using var fixture = CreateTestRepository();
+        var fixture = CreateTestRepository();
         var consoleBuilder = new StringBuilder();
         IConsole console = new TestConsoleAdapter(consoleBuilder);
         IEnvironment environment = new TestEnvironment();
@@ -57,13 +51,7 @@ public class FormatArgumentTests : TestBase
 
         var sp = ConfigureServices(services =>
         {
-            var options = Options.Create(new GitVersionOptions
-            {
-                WorkingDirectory = fixture.RepositoryPath,
-                RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName },
-                Format = format,
-                Output = { OutputType.Json }
-            });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
             var repository = fixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
