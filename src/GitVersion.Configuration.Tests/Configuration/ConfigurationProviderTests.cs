@@ -126,7 +126,7 @@ branches:
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
+        configuration.Branches["bug"].SourceBranches.ShouldBe([wellKnownBranchKey]);
     }
 
     [Test]
@@ -301,7 +301,7 @@ branches:
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
+        configuration.Branches["develop"].SourceBranches.ShouldBe(["develop"]);
     }
 
     [Test]
@@ -332,7 +332,7 @@ branches:
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
+        configuration.Branches["feature"].SourceBranches.ShouldBe(["develop", "release"]);
     }
 
     [Test]
