@@ -1,6 +1,3 @@
 namespace GitVersion.Git;
 
-internal sealed partial class GitRepository : IGitRepository
-{
-
-}
+internal sealed partial class GitRepository : IGitRepository;
