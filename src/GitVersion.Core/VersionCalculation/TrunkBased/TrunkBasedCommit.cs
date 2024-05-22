@@ -10,7 +10,7 @@ namespace GitVersion.VersionCalculation.TrunkBased;
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, ReferenceName BranchName, IBranchConfiguration Configuration)
+internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
     public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
         => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
@@ -31,9 +31,12 @@ internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, R
 
     public TrunkBasedCommit? Predecessor { get; private set; }
 
-    public ICommit Value { get; } = Value.NotNull();
+    public ICommit Value => IsDummy ? (Successor?.Value)! : value!;
 
-    public string Message => Value.Message;
+    [MemberNotNullWhen(false, nameof(Value))]
+    public bool IsDummy => value is null;
+
+    public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
     public TrunkBasedIteration? ChildIteration { get; private set; }
 
@@ -101,7 +104,7 @@ internal record TrunkBasedCommit(TrunkBasedIteration Iteration, ICommit Value, R
     public void AddChildIteration(TrunkBasedIteration iteration) => ChildIteration = iteration.NotNull();
 
     public TrunkBasedCommit Append(
-        ICommit value, ReferenceName branchName, IBranchConfiguration configuration)
+        ICommit? value, ReferenceName branchName, IBranchConfiguration configuration)
     {
         if (HasPredecessor) throw new InvalidOperationException();
 

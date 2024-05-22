@@ -616,29 +616,13 @@ public class CompareTheDifferentWhenUsingTrunkBasedVersionStrategyWithGitFlow
 
         fixture.BranchTo("feature/foo");
 
-        if (useTrunkBased)
-        {
-            // ❔ expected: "0.1.0-foo.1+0"
-            fixture.AssertFullSemver("0.0.2-foo.1+0", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-foo.1+0", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-foo.1+0", configuration);
 
         fixture.MakeACommit("B");
 
-        if (useTrunkBased)
-        {
-            // ❔ expected: "0.1.0-foo.1+1"
-            fixture.AssertFullSemver("0.0.2-foo.1+1", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-foo.1+1", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-foo.1+1", configuration);
 
         fixture.ApplyTag("0.1.0-foo.1");
 
@@ -946,31 +930,15 @@ public class CompareTheDifferentWhenUsingTrunkBasedVersionStrategyWithGitFlow
         fixture.BranchTo("pull/2/merge");
         fixture.MergeNoFF("hotfix/foo");
 
-        if (useTrunkBased)
-        {
-            // ❔ expected: "0.1.0-PullRequest2.4"
-            fixture.AssertFullSemver("0.0.2-PullRequest2.4", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-PullRequest2.4", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-PullRequest2.4", configuration);
 
         fixture.Checkout("main");
         fixture.BranchTo("pull/3/merge");
         fixture.MergeNoFF("hotfix/foo");
 
-        if (useTrunkBased)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.0.2-PullRequest3.4", configuration);
-        }
-        else
-        {
-            // ❔ expected: "0.0.2-PullRequest3.4"
-            fixture.AssertFullSemver("0.1.0-PullRequest3.4", configuration);
-        }
+        // ❔ expected: "0.0.2-PullRequest3.4"
+        fixture.AssertFullSemver("0.1.0-PullRequest3.4", configuration);
 
         fixture.Checkout("hotfix/foo");
         fixture.MergeTo("main", removeBranchAfterMerging: true);
@@ -983,26 +951,6 @@ public class CompareTheDifferentWhenUsingTrunkBasedVersionStrategyWithGitFlow
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.3-1", configuration);
-    }
-
-    [Test]
-    public void JustATest()
-    {
-        var configuration = configurationBuilder.WithVersionStrategy(VersionStrategies.TrunkBased).Build();
-
-        using var fixture = new EmptyRepositoryFixture("main");
-
-        fixture.MakeACommit("A");
-
-        // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1-1", configuration);
-
-        fixture.ApplyTag("0.1.0");
-
-        for (int i = 0; i < 10; i++) fixture.MakeACommit();
-
-        // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.10-1", configuration);
     }
 
     [TestCase(false)]

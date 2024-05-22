@@ -100,7 +100,7 @@ public class MergeMessage
         mergeMessage = null;
 
         var mergedBranch = new MergeMessage(mergeCommit.Message, configuration).MergedBranch;
-        var isReleaseBranch = mergedBranch != null && configuration.IsReleaseBranch(mergedBranch);
+        var isReleaseBranch = mergedBranch is not null && configuration.IsReleaseBranch(mergedBranch);
         var isValidMergeCommit = mergeCommit.IsMergeCommit() || isReleaseBranch;
 
         if (isValidMergeCommit)

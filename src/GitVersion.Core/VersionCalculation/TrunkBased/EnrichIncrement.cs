@@ -11,7 +11,9 @@ internal sealed class EnrichIncrement : ITrunkBasedContextPreEnricher
     {
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
-        var incrementForcedByCommit = GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
+        var incrementForcedByCommit = commit.IsDummy
+            ? VersionField.None
+            : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
         commit.Increment = incrementForcedByCommit;
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch, incrementForcedByCommit);
 

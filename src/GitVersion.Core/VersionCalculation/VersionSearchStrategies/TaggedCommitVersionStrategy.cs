@@ -40,13 +40,16 @@ internal sealed class TaggedCommitVersionStrategy(
         ).SelectMany(elements => elements).Distinct().ToArray();
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-        var maxTaggedSemanticVersion = taggedSemanticVersions
-            .Where(element => !element.Value.IsMatchForBranchSpecificLabel(label))
-            .Max();
 
-        var semanticVersionsWithTag = taggedSemanticVersions.Where(element => element.Value.IsMatchForBranchSpecificLabel(label));
-        foreach (var semanticVersionWithTag in semanticVersionsWithTag)
+        List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = new();
+        foreach (var semanticVersionWithTag in taggedSemanticVersions)
         {
+            if (!semanticVersionWithTag.Value.IsMatchForBranchSpecificLabel(label))
+            {
+                alternativeSemanticVersionsWithTag.Add(semanticVersionWithTag);
+                continue;
+            }
+
             var baseVersionSource = semanticVersionWithTag.Tag.Commit;
             var increment = incrementStrategyFinder.DetermineIncrementedField(
                 currentCommit: Context.CurrentCommit,
@@ -55,6 +58,7 @@ internal sealed class TaggedCommitVersionStrategy(
                 configuration: configuration.Value,
                 label: label
             );
+
             yield return new BaseVersion(
                 $"Git tag '{semanticVersionWithTag.Tag.Name.Friendly}'", semanticVersionWithTag.Value, baseVersionSource)
             {
@@ -63,9 +67,10 @@ internal sealed class TaggedCommitVersionStrategy(
                     Increment = increment,
                     ForceIncrement = false,
                     Label = label,
-                    AlternativeSemanticVersion = maxTaggedSemanticVersion?.Value
+                    AlternativeSemanticVersion = alternativeSemanticVersionsWithTag.Max()?.Value
                 }
             };
+            alternativeSemanticVersionsWithTag.Clear();
         }
     }
 }
