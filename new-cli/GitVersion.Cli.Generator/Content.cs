@@ -15,7 +15,6 @@ public static class Content
 #nullable enable
 """;
 
-
     /*language=cs*/
     public const string CommandImplContent = $$$"""
 {{{GeneratedHeader}}}
