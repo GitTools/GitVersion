@@ -40,9 +40,10 @@ public class Constants
     public const string Fedora37 = "fedora.37";
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
+    public const string Ubuntu2404 = "ubuntu.24.04";
     public const string DockerDistroLatest = Debian11;
     public const string DebianLatest = Debian11;
-    public const string UbuntuLatest = Ubuntu2204;
+    public const string UbuntuLatest = Ubuntu2404;
     public const string AlpineLatest = Alpine318;
 
     public static readonly string[] DockerDistrosToBuild =
@@ -53,7 +54,8 @@ public class Constants
         Debian11,
         Fedora37,
         Ubuntu2004,
-        Ubuntu2204
+        Ubuntu2204,
+        Ubuntu2404
     ];
     public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
     public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
