@@ -127,6 +127,7 @@ from the branch name as a source. However, GitVersion can't use the [branch
 name as a version source for _other branches_][faq-branch-name-source].
 
 ### Detached HEAD
+
 If HEAD is in detached state tag will be `-no-branch-`.
 
 Example: `0.0.1--no-branch-.1+4`
@@ -141,7 +142,6 @@ Be aware that tags are local to a repository and will not be transferred when
 you perform a default `git push`. Instead, tags can be pushed separately with
 their own command. For more information, read the [git documentation on
 tagging][git-tagging].
-
 
 ### Incrementing per commit
 

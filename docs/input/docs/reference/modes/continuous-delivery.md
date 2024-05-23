@@ -19,13 +19,13 @@ you have deployed into production.
 
 In essence continuous delivery means:
 
-*   Your code is automatically built and tested
-*   If any of the automated tests fail, the team's #1 priority is to fix the
+* Your code is automatically built and tested
+* If any of the automated tests fail, the team's #1 priority is to fix the
     build
-*   If the build is green, the application can be deployed at any time
-    *   Ideally the business should make that decision
-    *   The same artifacts which were built and tested should be deployed
-    *   That means no rebuilding everything when you are deploying
+* If the build is green, the application can be deployed at any time
+  * Ideally the business should make that decision
+  * The same artifacts which were built and tested should be deployed
+  * That means no rebuilding everything when you are deploying
 
 Continuous delivery does not work well with GitFlow. The reason is that you are
 required to _merge_ to main to do a release, triggering a rebuild and a new
@@ -55,19 +55,19 @@ to deploy to production and it is a human choice to deploy. This means that
 GitVersion will build **the same semantic version** until that version is
 deployed. For instance:
 
-*   1.1.0+5
-*   1.1.0+6
-*   1.1.0+7  <-- This is the artifact we release, tag the commit which created
+* 1.1.0+5
+* 1.1.0+6
+* 1.1.0+7  <-- This is the artifact we release, tag the commit which created
     this version
-*   1.1.1+0
+* 1.1.1+0
 
 Tags are required in this mode to communicate when the release is done as it's
 an external manual process.
 
 ## Resources
 
-*   [Continuous Delivery on Wikipedia][wikipedia]
-*   [Continuous Delivery, the book][book]
+* [Continuous Delivery on Wikipedia][wikipedia]
+* [Continuous Delivery, the book][book]
 
 [book]: https://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
 [configuration]: /docs/reference/configuration

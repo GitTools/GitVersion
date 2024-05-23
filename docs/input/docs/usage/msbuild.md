@@ -94,7 +94,7 @@ are set and how you can use them in MSBuild tasks.
 ## Configuration
 
 The [configuration file](/docs/reference/configuration), if any, is read from a file
-the `GitVersion.yml` the root of the repository or the project directory. Since version 3, 
+the `GitVersion.yml` the root of the repository or the project directory. Since version 3,
 the path to the configuration file itself [cannot be configured](https://github.com/GitTools/GitVersion/issues/3009).
 
 ## How does it work?
@@ -127,10 +127,10 @@ Default sample:
 
 Now, when you build:
 
-*   `AssemblyVersion` will be set to the `AssemblySemVer` variable.
-*   `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0`
+* `AssemblyVersion` will be set to the `AssemblySemVer` variable.
+* `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0`
     appended to it.
-*   `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
+* `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
 #### Other injected Variables
 

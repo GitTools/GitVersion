@@ -31,12 +31,12 @@ found that is generally what is needed when using GitFlow.
 To see the effective configuration (defaults and overrides), you can run
 `gitversion /showConfig`.
 
-
 ## Global configuration
 
 The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
--   GitFlow (GitFlow/v1)
--   GitHubFlow (GitHubFlow/v1)
+
+- GitFlow (GitFlow/v1)
+- GitHubFlow (GitHubFlow/v1)
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
@@ -342,6 +342,7 @@ The details of the available options are as follows:
 ### workflow
 
 The base template of the configuration to use. Possible values are `GitFlow/v1` or `GitHubFlow/v1`. Defaults to `GitFlow/v1` if not set. To create a configuration from scratch without using a base template, please specify an empty string.
+
 ### next-version
 
 Allows you to bump the next version explicitly. Useful for bumping `main` or a
@@ -527,9 +528,9 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-*   `SourceBranch` - Identifies the source branch of the merge
-*   `TargetBranch` - Identifies the target branch of the merge
-*   `PullRequestNumber` - Captures the pull-request number
+- `SourceBranch` - Identifies the source branch of the merge
+- `TargetBranch` - Identifies the target branch of the merge
+- `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
 Support for [Conventional Commits][conventional-commits] can be
@@ -635,7 +636,7 @@ values, but here they are if you need to:
 ### regex
 
 This is the regex which is used to match the current branch to the correct
-branch configuration. 
+branch configuration.
 
 [Named groups](https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions) can be used to dynamically label pre-releases based on the branch name, or parts of it. See [Label](#label) for more details and examples.
 
@@ -657,16 +658,16 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-*   feature/foo branches off release/v1.0.0
-    *   Branch release/v1.0.0 from main
-    *   Branch feature/foo from release/v1.0.0
-    *   Add a commit to both release/v1.0.0 and feature/foo
-    *   release/v1.0.0 is the base for feature/foo
-*   release/v1.0.0 branches off feature/foo
-    *   Branch feature/foo from main
-    *   Branch release/v1.0.0 from feature/foo
-    *   Add a commit to both release/v1.0.0 and feature/foo
-    *   feature/foo is the base for release/v1.0.0
+- feature/foo branches off release/v1.0.0
+  - Branch release/v1.0.0 from main
+  - Branch feature/foo from release/v1.0.0
+  - Add a commit to both release/v1.0.0 and feature/foo
+  - release/v1.0.0 is the base for feature/foo
+- release/v1.0.0 branches off feature/foo
+  - Branch feature/foo from main
+  - Branch release/v1.0.0 from feature/foo
+  - Add a commit to both release/v1.0.0 and feature/foo
+  - feature/foo is the base for release/v1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
 `release/v1.0.0` or `feature/foo`.
@@ -726,7 +727,7 @@ Same as for the [global configuration, explained above](#mode).
 ### label
 
 The pre-release label to use for this branch. Use the value `{BranchName}` as a placeholder to
-insert the value of the named group `BranchName` from the [regular expression](#regex). 
+insert the value of the named group `BranchName` from the [regular expression](#regex).
 
 For example: branch `feature/foo` would become a pre-release label
 of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[/-](?<BranchName>.+)'`.
@@ -830,29 +831,29 @@ Can be `Strict` - using the [regex](https://regex101.com/r/Ly7O1x/3/)
 or `Loose` the old way of parsing. The default if not specified is `Strict`
 Example of invalid `Strict`, but valid `Loose`
 
-```
+``` log
 1.2-alpha4
 01.02.03-rc03
 1.2.3.4
 ```
+
+### strategies
+
+Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
+
+- Fallback
+- ConfiguredNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
+- TrunkBased
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
 [conventional-commits-config]: /docs/reference/version-increments#conventional-commit-messages
 [conventional-commits]: https://www.conventionalcommits.org/
-[installing]: /docs/usage/cli/installation
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources
-
-### strategies
-
-Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
--   Fallback
--   ConfiguredNextVersion
--   MergeMessage
--   TaggedCommit
--   TrackReleaseBranches
--   VersionInBranchName
--   TrunkBased

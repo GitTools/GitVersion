@@ -16,12 +16,12 @@ it _much_ more predictable and easier to diagnose when odd things are happening.
 
 GitVersion has three distinct steps for calculating versions in v3.
 
-1.  If the current commit is tagged, the tag is used and build metadata
+1. If the current commit is tagged, the tag is used and build metadata
     (excluding commit count) is added. The other two steps will not execute.
-2.  A set of strategies are evaluated to decide on the base version and some
+2. A set of strategies are evaluated to decide on the base version and some
     metadata about that version.  These strategies include HighestReachableTag,
     NextVersionInConfig, MergedBranchWithVersion, VersionInBranchName etc.
-3.  The highest base version is selected, using that base version as the new
+3. The highest base version is selected, using that base version as the new
     version is calculated.
 
 Visually it looks something like this:
@@ -39,30 +39,30 @@ simply to show what happens if the check is true.
 
 Currently we have the following strategies:
 
-*   `HighestTagBaseVersionStrategy` - Finds the highest reachable tag from the
+* `HighestTagBaseVersionStrategy` - Finds the highest reachable tag from the
     current branch
-*   `VersionInBranchBaseVersionStrategy` - Extracts version information from the
+* `VersionInBranchBaseVersionStrategy` - Extracts version information from the
     branch name (e.g., `release/3.0.0` will find `3.0.0`)
-*   `ConfigNextVersionBaseVersionStrategy` - Returns the version from the
+* `ConfigNextVersionBaseVersionStrategy` - Returns the version from the
     GitVersion.yaml file
-*   `MergeMessageBaseVersionStrategy` - Finds version numbers from merge messages
+* `MergeMessageBaseVersionStrategy` - Finds version numbers from merge messages
     (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
-*   `FallbackBaseVersionStrategy` - Always returns 0.0.0 and will be used for
-    calculating the next version which is dependent on the increment strategy of 
-	the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
+* `FallbackBaseVersionStrategy` - Always returns 0.0.0 and will be used for
+    calculating the next version which is dependent on the increment strategy of
+ the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
 
 Each strategy needs to return an instance of `BaseVersion` which has the
 following properties:
 
-*   `Source` - Description of the source (e.g., `Merge message 'Merge 'release/3.0.0' into 'main'`)
-*   `ShouldIncrement` - Some strategies should have the version incremented,
+* `Source` - Description of the source (e.g., `Merge message 'Merge 'release/3.0.0' into 'main'`)
+* `ShouldIncrement` - Some strategies should have the version incremented,
     others do not (e.g., `ConfigNextVersionBaseVersionStrategy` returns false,
     `HighestTagBaseVersionStrategy` returns true)
-*   `SemanticVersion` - SemVer of the base version strategy
-*   `BaseVersionSource` - SHA hash of the source. Commits will be counted from
+* `SemanticVersion` - SemVer of the base version strategy
+* `BaseVersionSource` - SHA hash of the source. Commits will be counted from
     this hash. Can be null (e.g., `ConfigNextVersionBaseVersionStrategy` returns
     null).
-*   `BranchNameOverride` - When `useBranchName` or `{BranchName}` is used in the
+* `BranchNameOverride` - When `useBranchName` or `{BranchName}` is used in the
     tag configuration, this allows the branch name to be changed by a base version.
     `VersionInBranchBaseVersionStrategy` uses this to strip out anything before the
     first `-` or `/.` so `foo` ends up being evaluated as `foo`. If in doubt, just

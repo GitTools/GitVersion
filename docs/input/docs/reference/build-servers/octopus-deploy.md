@@ -35,15 +35,15 @@ depending on which build server you have this approach may or may not work for
 you.  For instance in TFS Build vNext you cannot chain builds to publish
 artifacts built in one build in another.
 
-1.  Your CI build creates the stable NuGet package
+1. Your CI build creates the stable NuGet package
 
-*   Do _not_ publish this package into the Octopus nuget feed
+   * Do _not_ publish this package into the Octopus nuget feed
 
-2.  When you want to push a package into the Octopus deployment pipeline you trigger the second build
+2. When you want to push a package into the Octopus deployment pipeline you trigger the second build
 
-*   it will either take the package built from the first build in the chain (your CI build?) or rebuild
-*   It will publish that package into the Octopus deploy feed
-*   The build then is _tagged_ with the version, this will cause GitVersion to increment the version
+   * it will either take the package built from the first build in the chain (your CI build?) or rebuild
+   * It will publish that package into the Octopus deploy feed
+   * The build then is _tagged_ with the version, this will cause GitVersion to increment the version
 
 This means that CI builds are _not_ available to Octopus deploy, there will be a
 manual build in your _build server_ which pushes the package to Octopus deploy.
@@ -52,14 +52,14 @@ manual build in your _build server_ which pushes the package to Octopus deploy.
 
 Another simple option is to tag a stable version to release, the basic idea is:
 
-1.  GitVersion is set to continuous deployment mode, so main will create `-ci.x`
+1. GitVersion is set to continuous deployment mode, so main will create `-ci.x`
     pre-release builds
-2.  CI Builds only create NuGet packages for stable builds
-3.  You tag main with a stable version of the next version then push it
-4.  The CI build triggers, GitVersion will always respect tags so you will get a
+2. CI Builds only create NuGet packages for stable builds
+3. You tag main with a stable version of the next version then push it
+4. The CI build triggers, GitVersion will always respect tags so you will get a
     stable version
-5.  The stable package will be pushed to Octopus
-6.  Because of the tag, then next build will be incremented and will be producing
+5. The stable package will be pushed to Octopus
+6. Because of the tag, then next build will be incremented and will be producing
     pre-release packages of the next build
 
 #### Script to create the release

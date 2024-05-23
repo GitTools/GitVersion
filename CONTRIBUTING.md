@@ -2,10 +2,10 @@
 
 We love contributions to get started contributing you might need:
 
-*   [Get started with git](https://rogerdudler.github.io/git-guide)
-*   [How to create a pull request](https://help.github.com/articles/using-pull-requests)
-*   [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](https://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
-*   An understanding of our [architecture](https://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
+* [Get started with git](https://rogerdudler.github.io/git-guide)
+* [How to create a pull request](https://help.github.com/articles/using-pull-requests)
+* [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](https://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
+* An understanding of our [architecture](https://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
 
 Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.
@@ -14,9 +14,9 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 ## Contribution Guidelines
 
-*   Try to use feature branches rather than developing on main.
-*   Please include tests covering the change.
-*   The documentation is stored in the repository under the [`docs`](docs) folder.
+* Try to use feature branches rather than developing on main.
+* Please include tests covering the change.
+* The documentation is stored in the repository under the [`docs`](docs) folder.
     Have a look at the [documentation readme file](docs/readme.md) for guidance
     on how to improve the documentation and please include documentation updates
     with your PR.
@@ -50,6 +50,7 @@ var configurationBuilder = GitFlowConfigurationBuilder.New;
 We can then customize the configuration by chaining methods of the builder. At the end we build the configuration.
 
 For example:
+
 ```csharp
 var configuration = configurationBuilder
     .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
@@ -61,9 +62,9 @@ var configuration = configurationBuilder
 
 We have a few fixtures for different scenarios.
 
-*   `EmptyRepositoryFixture` - Gives you an empty git repo to start with
-*   `RemoteRepositoryFixture` - A local repo tracking a test remote repository. The remote repo is available through the `Repository` property, the local is accessible via `LocalRepository`
-*   `BaseGitFlowRepositoryFixture` - A repo setup for GitFlow (has a develop branch checked out ready to go)
+* `EmptyRepositoryFixture` - Gives you an empty git repo to start with
+* `RemoteRepositoryFixture` - A local repo tracking a test remote repository. The remote repo is available through the `Repository` property, the local is accessible via `LocalRepository`
+* `BaseGitFlowRepositoryFixture` - A repo setup for GitFlow (has a develop branch checked out ready to go)
 
 You can use a fixture by just `using` it. Like this
 
@@ -97,18 +98,18 @@ Even better include the fix, but a failing test is a great start
 
 We use Cake for our build and deployment process. The way the release process is setup is:
 
-1.  We build releasable artifacts with GitHub Actions
-2.  We create a milestone for the release if it's not already created. Our milestones are named using the semver.
+1. We build releasable artifacts with GitHub Actions
+2. We create a milestone for the release if it's not already created. Our milestones are named using the semver.
     For example `5.12.0` or `6.0.0-beta.2`
-3.  We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
-4.  We check that all the issues and pull requests that are going to be included in the release have a label assigned,
+3. We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
+4. We check that all the issues and pull requests that are going to be included in the release have a label assigned,
     otherwise it will fail the release.
-5.  We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
-6.  We specify if the release is a pre-release or latest release in the GitHub UI.
-7.  We publish the release.
-8.  The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
+5. We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
+6. We specify if the release is a pre-release or latest release in the GitHub UI.
+7. We publish the release.
+8. The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
     and other distribution channels.
-9.  The issues and pull requests will get updated with message specifying in which release it was included.
+9. The issues and pull requests will get updated with message specifying in which release it was included.
 
 ## Code Style
 

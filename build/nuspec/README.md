@@ -16,13 +16,13 @@ GitVersion works on Windows, Linux, and Mac.
 
 ## Quick Links
 
-*   [Documentation][docs]
-*   [Contributing][contribute]
-*   [Why GitVersion][why]
-*   [Usage][usage]
-*   [How it works][how]
-*   [FAQ][faq]
-*   [Who is using GitVersion][who]
+* [Documentation][docs]
+* [Contributing][contribute]
+* [Why GitVersion][why]
+* [Usage][usage]
+* [How it works][how]
+* [FAQ][faq]
+* [Who is using GitVersion][who]
 
 ## GitVersion in action!
 
@@ -30,8 +30,8 @@ GitVersion works on Windows, Linux, and Mac.
 
 You are seeing:
 
-*   Pull requests being built as pre-release builds
-*   A branch called `release-1.0.0` producing beta v1 packages
+* Pull requests being built as pre-release builds
+* A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
 
@@ -46,8 +46,6 @@ from The Noun Project.
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
 [gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/
-[gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
-[gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/main/CONTRIBUTING.md

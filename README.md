@@ -1,4 +1,4 @@
-![GitVersion – From git log to SemVer in no time][banner]
+# ![GitVersion – From git log to SemVer in no time][banner]
 
 Versioning when using Git, solved. GitVersion looks at your git history and
 works out the [Semantic Version][semver] of the commit being built.
@@ -27,13 +27,13 @@ GitVersion works on Windows, Linux, and Mac.
 
 ## Quick Links
 
-*   [Documentation][docs]
-*   [Contributing][contribute]
-*   [Why GitVersion][why]
-*   [Usage][usage]
-*   [How it works][how]
-*   [FAQ][faq]
-*   [Who is using GitVersion][who]
+* [Documentation][docs]
+* [Contributing][contribute]
+* [Why GitVersion][why]
+* [Usage][usage]
+* [How it works][how]
+* [FAQ][faq]
+* [Who is using GitVersion][who]
 
 ## GitVersion in action!
 
@@ -41,8 +41,8 @@ GitVersion works on Windows, Linux, and Mac.
 
 You are seeing:
 
-*   Pull requests being built as pre-release builds
-*   A branch called `release-1.0.0` producing beta v1 packages
+* Pull requests being built as pre-release builds
+* A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
 

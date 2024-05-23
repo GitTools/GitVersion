@@ -10,20 +10,20 @@ SemVer compatible versions from this structure.
 
 ## Assumptions:
 
-*   Using [GitFlow branching model](https://nvie.com/git-model/) which always has a
+* Using [GitFlow branching model](https://nvie.com/git-model/) which always has a
     main and a develop branch
-*   Following [Semantic Versioning](https://semver.org/)
-*   Planned releases (bumps in major or minor) are done on release branches
+* Following [Semantic Versioning](https://semver.org/)
+* Planned releases (bumps in major or minor) are done on release branches
     prefixed with release-. Eg: release-4.1 (or release-4.1.0)
-*   Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-*   The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
+* Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
+* The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
     specifies branches with a "-" separator while the [git flow extensions](https://github.com/CJ-Systems/gitflow-cjs)
     default to a "/" separator.  Either work with GitVersion.
-*   Tags are used on the main branch and reflects the SemVer of each stable
+* Tags are used on the main branch and reflects the SemVer of each stable
     release eg 3.3.8 , 4.0.0, etc
-*   Tags can also be used to override versions while we transition repositories
+* Tags can also be used to override versions while we transition repositories
     over to GitVersion
-*   Using a build server with multi-branch building enabled eg TeamCity 8
+* Using a build server with multi-branch building enabled eg TeamCity 8
 
 ## How Branches are handled
 
@@ -31,8 +31,8 @@ The descriptions of how commits and branches are versioned can be considered a
 type of pseudopod. With that in mind there are a few common "variables" that we
 will refer to:
 
-*   `targetBranch` => the branch we are targeting
-*   `targetCommit` => the commit we are targeting on `targetbranch`
+* `targetBranch` => the branch we are targeting
+* `targetCommit` => the commit we are targeting on `targetbranch`
 
 ### Main branch
 
@@ -44,15 +44,15 @@ If we try to build from a commit that is no merge and no tag then assume `0.1.0`
 
 `mergeVersion` => the SemVer extracted from `targetCommit.Message`
 
-*   major: `mergeVersion.Major`
-*   minor: `mergeVersion.Minor`
-*   patch: `mergeVersion.Patch`
-*   pre-release: 0 (perhaps count ahead commits later)
-*   stability: final
+* major: `mergeVersion.Major`
+* minor: `mergeVersion.Minor`
+* patch: `mergeVersion.Patch`
+* pre-release: 0 (perhaps count ahead commits later)
+* stability: final
 
 Optional Tags (only when transitioning existing repository):
 
-*   TagOnHeadCommit.Name={semver} => overrides the version to be {semver}
+* TagOnHeadCommit.Name={semver} => overrides the version to be {semver}
 
 Long version:
 
@@ -68,10 +68,10 @@ Long version:
 `main` that is older than the `targetCommitDate`
 `mainMergeVersion` => the SemVer extracted from `mainVersionCommit.Message`
 
-*   major: `mainMergeVersion.Major`
-*   minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
-*   patch: 0
-*   pre-release: `alpha.{n}` where n = how many commits `develop` is in front of
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
+* patch: 0
+* pre-release: `alpha.{n}` where n = how many commits `develop` is in front of
     `mainVersionCommit.Date` ('0' padded to 4 characters)
 
 Long version:
@@ -87,10 +87,10 @@ Named: `hotfix-{versionNumber}` eg `hotfix-1.2`
 
 `branchVersion` => the SemVer extracted from `targetBranch.Name`
 
-*   major: `mergeVersion.Major`
-*   minor: `mergeVersion.Minor`
-*   patch: `mergeVersion.Patch`
-*   pre-release: `beta{n}` where n = number of commits on branch  ('0' padded to
+* major: `mergeVersion.Major`
+* minor: `mergeVersion.Minor`
+* patch: `mergeVersion.Patch`
+* pre-release: `beta{n}` where n = number of commits on branch  ('0' padded to
     4 characters)
 
 Long version:
@@ -102,9 +102,9 @@ Long version:
 
 ### Release branches
 
-*   May branch off from: develop
-*   Must merge back into: develop and main
-*   Branch naming convention: `release-{n}` eg `release-1.2`
+* May branch off from: develop
+* Must merge back into: develop and main
+* Branch naming convention: `release-{n}` eg `release-1.2`
 
 `releaseVersion` => the SemVer extracted from `targetBranch.Name`
 `releaseTag` => the first version tag placed on the branch. Note that at least
@@ -112,10 +112,10 @@ one version tag is required on the branch. The recommended initial tag is
 `{releaseVersion}.0-alpha1`. So for a branch named `release-1.2` the recommended
 tag would be `1.2.0-alpha1`
 
-*   major: `mergeVersion.Major`
-*   minor: `mergeVersion.Minor`
-*   patch: 0
-*   pre-release: `{releaseTag.preRelease}.{n}` where n = 1 + the number of commits
+* major: `mergeVersion.Major`
+* minor: `mergeVersion.Minor`
+* patch: 0
+* pre-release: `{releaseTag.preRelease}.{n}` where n = 1 + the number of commits
     since `releaseTag`.
 
 So on a branch named `release-1.2` with a tag `1.2.0-alpha1` and 4 commits after
@@ -139,10 +139,10 @@ Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 TODO: feature branches cannot start with a SemVer. to stop people from create
 branches named like "4.0.3"
 
-*   major: `mainMergeVersion.Major`
-*   minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
-*   patch: 0
-*   pre-release: `alpha.feature-{n}` where n = First 8 characters of the commit
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
+* patch: 0
+* pre-release: `alpha.feature-{n}` where n = First 8 characters of the commit
     SHA of the first commit
 
 Long version:
@@ -159,10 +159,10 @@ Must merge back into: `develop`
 Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 `hotfix-{n}`. Canonical branch name contains `/pull/`.
 
-*   major: `mainMergeVersion.Major`
-*   minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
-*   patch: 0
-*   pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
+* patch: 0
+* pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
     4 characters)
 
 ## Nightly Builds
