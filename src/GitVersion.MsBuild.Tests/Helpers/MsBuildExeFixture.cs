@@ -46,7 +46,7 @@ public class MsBuildExeFixture
         {
             foreach (var (key, value) in this.environmentVariables)
             {
-                analyzer.SetEnvironmentVariable(key, value);
+                analyzer.SetEnvironmentVariable(key, value!);
             }
         }
 
