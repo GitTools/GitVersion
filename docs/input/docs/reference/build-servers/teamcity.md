@@ -9,10 +9,10 @@ RedirectFrom: docs/build-server-support/build-server/teamcity
 
 In [TeamCity][teamcity] you can create a build step as follows:
 
-*   **Runner type:** Command Line
-*   **Run:** Executable with parameters
-*   **Command executable:**  `GitVersion.exe`
-*   **Command parameters:** `/output buildserver /updateassemblyinfo true`
+* **Runner type:** Command Line
+* **Run:** Executable with parameters
+* **Command executable:**  `GitVersion.exe`
+* **Command parameters:** `/output buildserver /updateassemblyinfo true`
 
 Then in your build parameters simply [add a placeholder](#nuget-in-teamcity) of
 the GitVersion variables you would like to use.
@@ -61,23 +61,23 @@ See [dynamic repositories][dynamic-repo] for more info.
 
 ### Output
 
-*   We update the TC build number to the GitVersion number automatically
-*   We output the individual values of the GitVersion version variables as build
+* We update the TC build number to the GitVersion number automatically
+* We output the individual values of the GitVersion version variables as build
     parameters with format `GitVersion.*` (Eg: `GitVersion.Major`) if you need
     access to them in your build script. Being system variables they will be passed
     as msbuild/environmental variables to other build steps
 
 ### NuGet in TeamCity
 
-*   Add a dummy [parameter][parameter] to the project called `GitVersion.NuGetVersion`. If
+* Add a dummy [parameter][parameter] to the project called `GitVersion.NuGetVersion`. If
     many of your projects uses git-flow and SemVer you can add the parameter to
     the "root-project" (TeamCity 8.x+). You need a dummy param because
     GitVersion creates the variables at runtime, and you cannot reference a
     parameter which is not available statically. GitVersion will overwrite the
     dummy value.
-*   Then setup you nuget pack build set the "version" to
+* Then setup you nuget pack build set the "version" to
     `%GitVersion.NuGetVersion%`.
-*   If you do your pack in a build script then you can just use environmental
+* If you do your pack in a build script then you can just use environmental
     variables because teamcity will pass them through automatically.
 
 ### When TeamCity -> GitHub can't use https
@@ -101,7 +101,7 @@ Sorry
 
 ## Guides
 
-*   [Continuous Delivery Setup in TeamCity][cd]
+* [Continuous Delivery Setup in TeamCity][cd]
 
 [cd]: https://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
 [dynamic-repo]: /docs/learn/dynamic-repositories

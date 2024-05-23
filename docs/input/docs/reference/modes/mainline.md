@@ -34,13 +34,15 @@ and the version number which will be deployed are often different.
 This mode is great if you do not want to tag each release because you simply
 deploy every commit to main. The behaviour of this mode is as follows:
 
-1.  Calculate a base version (likely a tag in this mode)
-2.  Walk all commits from the base version commit
-3.  When a merge commit is found:
-    *   Calculate increments for each direct commit on main
-    *   Calculate the increment for the branch
-4.  Calculate increments for each remaining direct commit
-5.  For feature branches then calculate increment for the commits so far on your
+1. Calculate a base version (likely a tag in this mode)
+2. Walk all commits from the base version commit
+3. When a merge commit is found:
+
+   * Calculate increments for each direct commit on main
+   * Calculate the increment for the branch
+  
+4. Calculate increments for each remaining direct commit
+5. For feature branches then calculate increment for the commits so far on your
     feature branch.
 
 If you _do not want_ GitVersion to treat a commit or a pull request as a release

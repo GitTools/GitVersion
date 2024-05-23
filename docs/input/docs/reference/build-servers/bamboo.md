@@ -36,6 +36,6 @@ sed -i '1d;$ d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 
 **Required Properties**
 
-*   **Path to properties file**: gitversion.txt
-*   **Namespace**: GitVersion
-*   **Scope of the Variables**: Result
+* **Path to properties file**: gitversion.txt
+* **Namespace**: GitVersion
+* **Scope of the Variables**: Result

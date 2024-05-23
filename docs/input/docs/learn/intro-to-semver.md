@@ -16,12 +16,12 @@ Version Promiscuity is the opposite problem, **JsonLibrary** releases _v1.1.0_ w
 
 SemVer introduces conventions about breaking changes into our version numbers so we can safely upgrade dependencies without fear of unexpected, breaking changes while still allowing us to upgrade downstream libraries to get new features and bug fixes. The convention is quite simple:
 
-*   `{major}.{minor}.{patch}-{tag}+{buildmetadata}`
-*   `{major}` is only incremented if the release has breaking changes (includes bug fixes which have breaking behavioural changes
-*   `{minor}` is incremented if the release has new non-breaking features
-*   `{patch}` is incremented if the release only contains non-breaking bug fixes
-*   `{tag}` is optional and denotes a pre-release of the version preceding
-*   `{buildmetadata}` is optional and contains additional information about the version, but **does not affect** the semantic version preceding it.
+* `{major}.{minor}.{patch}-{tag}+{buildmetadata}`
+* `{major}` is only incremented if the release has breaking changes (includes bug fixes which have breaking behavioural changes
+* `{minor}` is incremented if the release has new non-breaking features
+* `{patch}` is incremented if the release only contains non-breaking bug fixes
+* `{tag}` is optional and denotes a pre-release of the version preceding
+* `{buildmetadata}` is optional and contains additional information about the version, but **does not affect** the semantic version preceding it.
 
 Only one number should be incremented per release, and all lower parts should be reset to 0 (if `{major}` is incremented, then `{minor}` and `{patch}` should become 0).
 

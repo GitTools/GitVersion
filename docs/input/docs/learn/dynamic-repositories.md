@@ -31,11 +31,11 @@ will assume there is already a ".git" folder present, and it will use it.
 To tell GitVersion.exe to obtain the repository on the fly, you need to call
 `GitVersion.exe` with the following arguments:
 
-*   `/url [the url of your git repo]`
-*   `/u [authentication username]`
-*   `/p [authentication password]`
-*   `/b [branch name]`
-*   `/c [commit id]`
+* `/url [the url of your git repo]`
+* `/u [authentication username]`
+* `/p [authentication password]`
+* `/b [branch name]`
+* `/c [commit id]`
 
 Please note that these arguments are described when calling `GitVersion.exe /?`.
 

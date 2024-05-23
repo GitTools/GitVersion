@@ -111,24 +111,24 @@ Double quote character inside of the double quoted `value` has to be be escaped 
 
 Following options are supported:
 
-1.  `assembly-file-versioning-format`
-2.  `assembly-file-versioning-scheme`
-3.  `assembly-informational-format`
-4.  `assembly-versioning-format`
-5.  `assembly-versioning-scheme`
-7.  `commit-date-format`
-8.  `commit-message-incrementing`
-10. `label`
-11. `increment`
-13. `major-version-bump-message`
-14. `minor-version-bump-message`
-15. `mode`
-16. `next-version`
-17. `no-bump-message`
-18. `patch-version-bump-message`
-19. `tag-prefix`
-20. `tag-pre-release-weight`
-21. `update-build-number`
+1. `assembly-file-versioning-format`
+2. `assembly-file-versioning-scheme`
+3. `assembly-informational-format`
+4. `assembly-versioning-format`
+5. `assembly-versioning-scheme`
+6. `commit-date-format`
+7. `commit-message-incrementing`
+8. `label`
+9. `increment`
+10. `major-version-bump-message`
+11. `minor-version-bump-message`
+12. `mode`
+13. `next-version`
+14. `no-bump-message`
+15. `patch-version-bump-message`
+16. `tag-prefix`
+17. `tag-pre-release-weight`
+18. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 

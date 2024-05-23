@@ -10,8 +10,9 @@ If you use [Buildkite][buildkite] then you will have to use GitVersion from the 
 ## Gotchas
 
 By default Buildkite calls `git fetch` with the flags `-v --prune` which can cause issues on new build agents since branches or tags might not be available locally on the build agent when GitVersion runs. This can be fixed by altering the [Buildkite agent configuration][configuration] either by:
-*   Setting the environment variable `BUILDKITE_GIT_FETCH_FLAGS` to `-v --tags`
-*   Setting configuration value `git-fetch-flags` to `-v --tags` in your agent configuration file
+
+* Setting the environment variable `BUILDKITE_GIT_FETCH_FLAGS` to `-v --tags`
+* Setting configuration value `git-fetch-flags` to `-v --tags` in your agent configuration file
 
 If you are running GitVersion in a docker container make sure to propagate the `BUILDKITE`, `BUILDKITE_BRANCH`, and `BUILDKITE_PULL_REQUEST` environment variables (c.f. example below).
 
