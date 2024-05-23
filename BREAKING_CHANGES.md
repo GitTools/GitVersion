@@ -1,4 +1,5 @@
-## Unreleased
+## v6.0.0
+
 ### Platforms
 *   Drop support for .NET Framework 4.8, .NET Core 3.1 and .NET 5.0. Changed the project targets to .NET 6.0 or later.
 
