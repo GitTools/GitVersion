@@ -245,8 +245,8 @@ branches:
     increment: Patch
     prevent-increment:
       of-merged-branch: true
-    tracks-merge-target: false
-    tracks-merge-message: true
+    track-merge-target: false
+    track-merge-message: true
     regex: ^master$|^main$
     source-branches: []
     is-source-branch-for: []

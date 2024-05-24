@@ -337,7 +337,7 @@
       ]
     },
     "nullableOfBoolean3": {
-      "description": "This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
+      "description": "This branch related property controls the behavior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
       "type": [
         "boolean",
         "null"
