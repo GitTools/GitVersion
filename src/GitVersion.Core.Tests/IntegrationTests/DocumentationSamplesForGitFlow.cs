@@ -150,6 +150,91 @@ public class DocumentationSamplesForGitFlow
 
     [TestCase(false)]
     [TestCase(true)]
+    public void FeatureFromDevelopBranch(bool withPullRequestIntoDevelop)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.SequenceDiagram.Participant("main");
+        fixture.SequenceDiagram.Participant("develop");
+
+        // GitFlow setup
+        fixture.SequenceDiagram.Activate("main");
+        fixture.Repository.MakeACommit();
+        fixture.ApplyTag("1.2.0");
+        fixture.AssertFullSemver("1.2.0", configuration);
+
+        // Branch from main to develop
+        fixture.BranchTo("develop", "develop");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.AssertFullSemver("1.3.0-alpha.0", configuration);
+
+        // Branch from develop to feature
+        const string branchName = "feature/foo";
+        fixture.BranchTo(branchName, "feature");
+        fixture.SequenceDiagram.Activate("feature");
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.3.0-foo.1+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("1.3.0-foo.1+1", configuration);
+
+        // Create hotfix on main branch
+        fixture.Checkout("main");
+        fixture.SequenceDiagram.Activate("main");
+        fixture.MakeACommit("+semver: minor");
+        fixture.AssertFullSemver("1.3.0-1", configuration);
+        fixture.ApplyTag("1.3.0");
+        fixture.AssertFullSemver("1.3.0", configuration);
+
+        // Merge main to develop branch
+        fixture.MergeTo("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.AssertFullSemver("1.4.0-alpha.1", configuration);
+
+        // Merge develop to feature branch
+        fixture.MergeTo(branchName);
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.4.0-foo.1+3", configuration);
+
+        // Bump to major version increment
+        fixture.MakeACommit("+semver: major");
+        fixture.AssertFullSemver("2.0.0-foo.1+4", configuration);
+
+        // Create pre-release on feature branch
+        fixture.ApplyTag("2.1.0-foo.1");
+        fixture.AssertFullSemver("2.1.0-foo.2+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-foo.2+1", configuration);
+        fixture.Checkout("develop");
+
+        if (withPullRequestIntoDevelop)
+        {
+            // Create a PullRequest into develop
+            fixture.BranchTo("pull/2/merge", "pull");
+            fixture.SequenceDiagram.Activate("pull/2/merge");
+            fixture.MergeNoFF(branchName);
+            fixture.AssertFullSemver("2.1.0-PullRequest2.6", configuration);
+            fixture.Checkout("develop");
+            fixture.Remove("pull/2/merge");
+        }
+
+        // Merge feature into develop branch
+        fixture.MergeNoFF(branchName);
+        fixture.Remove(branchName);
+        fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.AssertFullSemver("2.1.0-alpha.6", configuration);
+
+        // Commit on develop branch
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-alpha.7", configuration);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
     public void HotfixBranch(bool withPullRequestIntoMain)
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();

@@ -70,6 +70,7 @@ strategies:
 - VersionInBranchName
 branches:
   develop:
+    mode: ContinuousDelivery
     label: alpha
     increment: Minor
     prevent-increment:

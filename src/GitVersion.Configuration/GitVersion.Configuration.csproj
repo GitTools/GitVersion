@@ -9,14 +9,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="System.Text.Json" />
         <PackageReference Include="YamlDotNet" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Workflows\GitFlow\v1.yml" />
-        <EmbeddedResource Include="Workflows\GitHubFlow\v1.yml" />
-        <EmbeddedResource Include="Workflows\TrunkBased\v1.yml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,5 +27,23 @@
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Workflows\GitFlow\" />
+      <Folder Include="Workflows\GitHubFlow\" />
+      <Folder Include="Workflows\TrunkBased\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitHubFlow\v1.yml" Link="Workflows\GitHubFlow\v1.yml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\TrunkBased\v1.yml" Link="Workflows\TrunkBased\v1.yml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitFlow\v1.yml" Link="Workflows\GitFlow\v1.yml" />
     </ItemGroup>
 </Project>

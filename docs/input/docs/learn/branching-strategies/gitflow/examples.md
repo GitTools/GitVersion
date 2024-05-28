@@ -6,61 +6,79 @@ RedirectFrom:
 - docs/git-branching-strategies/gitflow-examples
 ---
 
-These examples are using the _default_ configuration with GitVersion. Which is
-[continuous deployment](/docs/reference/modes/continuous-deployment) mode for
-`develop` and [continuous delivery](/docs/reference/modes/continuous-delivery) mode
-for all other branches.
+These examples are illustrating the usage of the supported `GitFlow` workflow in GitVersion. 
+To enable this workflow, the build-in template [GitFlow/v1](/docs/workflows/GitFlow/v1.json) needs to be referenced in the configuration as following:
+```yaml
+workflow: GitFlow/v1
+mode: ContinuousDelivery
+```
 
-This default configuration allows you to publish CI builds from develop to a CI
-MyGet feed, or another CI feed. Then all other branches are manually released
-then tagged. Read more about this at [version increments](/docs/reference/version-increments).
+Where 
+the [continuous deployment](/docs/reference/modes/continuous-deployment) mode for no branches, 
+the [continuous delivery](/docs/reference/modes/continuous-delivery) mode for `main`, `support` and `develop` branches and 
+the [manual deployment](/docs/reference/modes/manual-deployment) mode for `release`, `feature`, `hotfix` and `unknown` branches 
+are specified.
+
+This configuration allows you to publish CI (Continuous Integration) builds from `main`, `support` and `develop` branches to an artifact repository. 
+All other branches are manually published. Read more about this at [version increments](/docs/reference/version-increments).
+
+__Notice:__ The _continuous delivery_ mode has been used for the `main` and the `support` branch in this examples (specified as a fallback on the root configuration layer) 
+to illustrate how the version increments are applying. In production context the _continuous deployment_ mode might be a better option when e.g. 
+the releasing process is automated or the commits are tagged by the pipeline automatically.
 
 ## Feature Branches
 
-Feature branches will take the feature branch name and use that as the
-pre-release tag.
+Feature branches can be used in the `GitFlow` workflow to implement a feature in an isolated environement. Feature branches will take the feature branch name and use that 
+as the pre-release label. Will be created from `develop`, `release`, `main`, `support` or `hotfix` branches.
 
-![GitFlow](/docs/img/05119d0cd4ecaaefff94\_feature-branch.png)
+### Create feature branch from main
 
-Notice after the feature branch is merged, the version on `develop` is
-`1.3.0-alpha.3`. This is due to `develop` running in _continuous deployment_
-mode. If you configured `develop` to use _continuous delivery_ the version would
-still be `1.3.0-alpha.1` and you would have to use release tags to increment the
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_FeatureFromMainBranch.png)
+
+__Notice:__ After the feature branch is merged, the version on `main` is
+`2.0.0-5`. This is due to `main` running in _continuous delivery_
+mode. If you configured `main` to use _continuous deployment_ the version would
+be `2.0.0`.
+
+### Create feature branch from develop
+
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_FeatureFromDevelopBranch.png)
+
+__Notice:__ After the feature branch is merged, the version on `develop` is
+`1.3.0-alpha.3`. This is due to `develop` running in _continuous delivery_
+mode. If you configure `develop` to use _manual deployment_ the version would
+still be `1.3.0-alpha.1` and you would have to use pre-release tags to increment the
 `alpha.1`.
-
-You can see the difference on the feature branch itself, notice the version is
-the same before and after the commit on the feature branch? Only the metadata
-has changed. If you released the feature branch artifacts then tagged the
-commit, the following commit would increase to `-beta.2`.
-
-## Pull Request
-
-Because feature branches are most likely pushed to a fork, we are showing the
-pull request branch name which is created when you submit a pull request
-
-![GitFlow](/docs/img/09fdf46995b771f3164a_pull-request.png)
 
 ## Hotfix Branches
 
-Hotfix branches are used when you need to do a _patch_ release in GitFlow and
-are always created off `main`
+Hotfix branches are used when you need to do a _patch_ release in the `GitFlow` workflow and are always created from `main` branch.
 
-![GitFlow](/docs/img/f26ae57adbd9b74f74c4\_hotfix.png)
+### Create hotfix branch
 
-## Minor Release Branches
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_HotfixBranch.png)
 
-Release branches are used for both major and minor releases for stabilisation
-before a release. Release branches are taken off `develop` then merged to both
-`develop` and `main`. Finally `main` is tagged with the released version.
+### Create hotfix branch with version number
 
-![GitFlow](/docs/img/6d33d35a70a777608fa1\_minor-release.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_VersionedHotfixBranch.png)
 
-## Major Release Branches
+## Release Branches
 
-Major releases are just like minor releases, the difference is you bump the
-major in the release branch name.
+Release branches are used for major and minor releases to stabilize a RC (Release Candidate) or to integrate 
+features (in parallel) targeting different iterations. Release branches are taken from `main` (or from `develop`) 
+and will be merged back afterwards. Finally the `main` branch is tagged with the released version.
 
-![GitFlow](/docs/img/39f9d8b8b007c82f1f80\_major-release.png)
+### Create release branch
+
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_ReleaseBranch.png)
+
+### Create release branch with version
+
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_VersionedReleaseBranch.png)
+
+## Develop Branch
+
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_DevelopBranch.png)
 
 ## Support Branches
 
@@ -71,17 +89,12 @@ majors, then name your branch `support/<major>.x` (i.e `support/1.x`), to
 support minors use `support/<major>.<minor>.x` or `support/<major>.<minor>.0`.
 (i.e `support/1.3.x` or `support/1.3.0`)
 
-### Hotfix
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_SupportBranch.png)
 
-Depending on what you name your support branch, you may or may not need a hotfix
+__Notice:__ Depending on what you name your support branch, you may or may not need a hotfix
 branch. Naming it `support/1.x` will automatically bump the patch, if you name
 it `support/1.3.0` then the version in branch name rule will kick in and the
 patch _will not_ automatically bump, meaning you have to use hotfix branches.
-![GitFlow](/docs/img/b035b8ca99bd34239518\_support-hotfix.png)
-
-### Minor Release
-
-![GitFlow](/docs/img/2167fb1c4a5cf84edfd8\_support-minor.png)
 
 ## To Contribute
 
@@ -89,5 +102,4 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 
 ### Source
 
-See `DocumentationSamples.GitFlowExample`. To update, modify then run test.
-Update <https://gist.github.com/JakeGinnivan/cf053d7f5d336ae9f7bb>
+See `DocumentationSamplesForGitFlow.cs`. To update, modify then run test.

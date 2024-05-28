@@ -50,7 +50,7 @@ branches:
         developConfiguration.Increment.ShouldBe(IncrementStrategy.Major);
         developConfiguration.Increment.ShouldNotBe(defaultConfiguration.Branches["develop"].Increment);
         developConfiguration.DeploymentMode.ShouldBe(DeploymentMode.ContinuousDelivery);
-        developConfiguration.DeploymentMode.ShouldNotBe(defaultConfiguration.Branches["develop"].DeploymentMode);
+        developConfiguration.DeploymentMode.ShouldNotBe(defaultConfiguration.Branches["feature"].DeploymentMode);
         developConfiguration.Label.ShouldBe("dev");
     }
 
