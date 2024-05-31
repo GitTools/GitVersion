@@ -44,6 +44,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Minor,
+            DeploymentMode = DeploymentMode.ContinuousDelivery,
             RegularExpression = DevelopBranch.RegexPattern,
             SourceBranches = [this.MainBranch.Name],
             Label = "alpha",

@@ -75,6 +75,8 @@ public class DocumentationSamplesForGitFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.0-6", configuration);
+        fixture.ApplyTag("2.0.0");
+        fixture.AssertFullSemver("2.0.0", configuration);
     }
 
     [TestCase(false)]
@@ -150,6 +152,179 @@ public class DocumentationSamplesForGitFlow
 
     [TestCase(false)]
     [TestCase(true)]
+    public void FeatureFromDevelopBranch(bool withPullRequestIntoDevelop)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.SequenceDiagram.Participant("main");
+        fixture.SequenceDiagram.Participant("develop");
+
+        // GitFlow setup
+        fixture.SequenceDiagram.Activate("main");
+        fixture.Repository.MakeACommit();
+        fixture.ApplyTag("1.2.0");
+        fixture.AssertFullSemver("1.2.0", configuration);
+
+        // Branch from main to develop
+        fixture.BranchTo("develop", "develop");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.AssertFullSemver("1.3.0-alpha.0", configuration);
+
+        // Branch from develop to feature
+        const string branchName = "feature/foo";
+        fixture.BranchTo(branchName, "feature");
+        fixture.SequenceDiagram.Activate("feature");
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.3.0-foo.1+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("1.3.0-foo.1+1", configuration);
+
+        // Create hotfix on main branch
+        fixture.Checkout("main");
+        fixture.SequenceDiagram.Activate("main");
+        fixture.MakeACommit("+semver: minor");
+        fixture.AssertFullSemver("1.3.0-1", configuration);
+        fixture.ApplyTag("1.3.0");
+        fixture.AssertFullSemver("1.3.0", configuration);
+
+        // Merge main to develop branch
+        fixture.MergeTo("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.AssertFullSemver("1.4.0-alpha.1", configuration);
+
+        // Merge develop to feature branch
+        fixture.MergeTo(branchName);
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.4.0-foo.1+3", configuration);
+
+        // Bump to major version increment
+        fixture.MakeACommit("+semver: major");
+        fixture.AssertFullSemver("2.0.0-foo.1+4", configuration);
+
+        // Create pre-release on feature branch
+        fixture.ApplyTag("2.1.0-foo.1");
+        fixture.AssertFullSemver("2.1.0-foo.2+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-foo.2+1", configuration);
+        fixture.Checkout("develop");
+
+        if (withPullRequestIntoDevelop)
+        {
+            // Create a PullRequest into develop
+            fixture.BranchTo("pull/2/merge", "pull");
+            fixture.SequenceDiagram.Activate("pull/2/merge");
+            fixture.MergeNoFF(branchName);
+            fixture.AssertFullSemver("2.1.0-PullRequest2.6", configuration);
+            fixture.Checkout("develop");
+            fixture.Remove("pull/2/merge");
+        }
+
+        // Merge feature into develop branch
+        fixture.MergeNoFF(branchName);
+        fixture.Remove(branchName);
+        fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.AssertFullSemver("2.1.0-alpha.6", configuration);
+
+        // Commit on develop branch
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-alpha.7", configuration);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void FeatureFromDevelopBranchWithMainline(bool withPullRequestIntoDevelop)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.2.0")
+            .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
+            .WithBranch("feature", _ => _.WithIncrement(IncrementStrategy.Minor))
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.SequenceDiagram.Participant("main");
+        fixture.SequenceDiagram.Participant("develop");
+
+        // GitFlow setup
+        fixture.SequenceDiagram.Activate("main");
+        fixture.Repository.MakeACommit();
+        fixture.ApplyTag("1.2.0");
+        fixture.AssertFullSemver("1.2.0", configuration);
+
+        // Branch from main to develop
+        fixture.BranchTo("develop", "develop");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.AssertFullSemver("1.3.0-alpha.0", configuration);
+
+        // Branch from develop to feature
+        const string branchName = "feature/foo";
+        fixture.BranchTo(branchName, "feature");
+        fixture.SequenceDiagram.Activate("feature");
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.3.0-foo.1+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("1.3.0-foo.1+1", configuration);
+
+        // Create hotfix on main branch
+        fixture.Checkout("main");
+        fixture.SequenceDiagram.Activate("main");
+        fixture.MakeACommit("+semver: minor");
+        fixture.AssertFullSemver("1.3.0-1", configuration);
+
+        // Merge main to develop branch
+        fixture.MergeTo("develop");
+        fixture.SequenceDiagram.Deactivate("main");
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.AssertFullSemver("1.4.0-alpha.1", configuration);
+
+        // Merge develop to feature branch
+        fixture.Checkout("main");
+        fixture.MergeTo(branchName);
+        fixture.SequenceDiagram.Deactivate("develop");
+        fixture.AssertFullSemver("1.4.0-foo.1+2", configuration);
+
+        // Bump to major version increment
+        fixture.MakeACommit("+semver: major");
+        fixture.AssertFullSemver("2.0.0-foo.1+3", configuration);
+
+        // Create pre-release on feature branch
+        fixture.ApplyTag("2.1.0-foo.1");
+        fixture.AssertFullSemver("2.1.0-foo.2+0", configuration);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-foo.2+1", configuration);
+        fixture.Checkout("develop");
+
+        if (withPullRequestIntoDevelop)
+        {
+            // Create a PullRequest into develop
+            fixture.BranchTo("pull/2/merge", "pull");
+            fixture.SequenceDiagram.Activate("pull/2/merge");
+            fixture.MergeNoFF(branchName);
+            fixture.AssertFullSemver("2.1.0-PullRequest2.6", configuration);
+            fixture.Checkout("develop");
+            fixture.Remove("pull/2/merge");
+        }
+
+        // Merge feature into develop branch
+        fixture.MergeNoFF(branchName);
+        fixture.Remove(branchName);
+        fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.AssertFullSemver("2.1.0-alpha.6", configuration);
+
+        // Commit on develop branch
+        fixture.SequenceDiagram.Activate("develop");
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.1.0-alpha.7", configuration);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
     public void HotfixBranch(bool withPullRequestIntoMain)
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
@@ -216,6 +391,8 @@ public class DocumentationSamplesForGitFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.0-6", configuration);
+        fixture.ApplyTag("2.0.0");
+        fixture.AssertFullSemver("2.0.0", configuration);
     }
 
     [TestCase(false)]
@@ -357,6 +534,8 @@ public class DocumentationSamplesForGitFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("3.0.1-6", configuration);
+        fixture.ApplyTag("3.0.1");
+        fixture.AssertFullSemver("3.0.1", configuration);
     }
 
     [TestCase(false)]
@@ -498,6 +677,8 @@ public class DocumentationSamplesForGitFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.1-6", configuration);
+        fixture.ApplyTag("2.0.1");
+        fixture.AssertFullSemver("2.0.1", configuration);
     }
 
     [TestCase(false)]
@@ -639,6 +820,8 @@ public class DocumentationSamplesForGitFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("3.0.1-6", configuration);
+        fixture.ApplyTag("3.0.1");
+        fixture.AssertFullSemver("3.0.1", configuration);
     }
 
     [TestCase(false)]
@@ -767,13 +950,15 @@ public class DocumentationSamplesForGitFlow
         // Create hotfix on main branch
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.3.1-1", configuration);
+        fixture.ApplyTag("1.3.1");
+        fixture.AssertFullSemver("1.3.1", configuration);
 
         // Merge main to release branch
         fixture.MergeTo(branchName);
         fixture.SequenceDiagram.Deactivate("main");
-        fixture.AssertFullSemver("1.4.0-alpha.3", configuration);
+        fixture.AssertFullSemver("1.4.0-alpha.2", configuration);
         fixture.MakeACommit("+semver: major");
-        fixture.AssertFullSemver("2.0.0-alpha.4", configuration);
+        fixture.AssertFullSemver("2.0.0-alpha.3", configuration);
 
         // Create pre-release on release branch
         fixture.ApplyTag("2.1.0-alpha.1");
@@ -788,7 +973,7 @@ public class DocumentationSamplesForGitFlow
             fixture.BranchTo("pull/2/merge", "pull");
             fixture.SequenceDiagram.Activate("pull/2/merge");
             fixture.MergeNoFF(branchName);
-            fixture.AssertFullSemver("2.1.0-PullRequest2.6", configuration);
+            fixture.AssertFullSemver("2.1.0-PullRequest2.5", configuration);
             fixture.Checkout("main");
             fixture.Remove("pull/2/merge");
         }
@@ -796,12 +981,14 @@ public class DocumentationSamplesForGitFlow
         // Merge develop into main branch
         fixture.MergeNoFF(branchName);
         fixture.SequenceDiagram.Deactivate(branchName);
-        fixture.AssertFullSemver("2.1.0-6", configuration);
+        fixture.AssertFullSemver("2.1.0-5", configuration);
 
         // Commit on main branch
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.1.0-7", configuration);
+        fixture.AssertFullSemver("2.1.0-6", configuration);
+        fixture.ApplyTag("2.1.0");
+        fixture.AssertFullSemver("2.1.0", configuration);
     }
 
     [TestCase(false)]
@@ -972,10 +1159,14 @@ public class DocumentationSamplesForGitFlow
         fixture.Checkout("support/1.x");
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.2.4-1", configuration);
+        fixture.ApplyTag("1.2.4");
+        fixture.AssertFullSemver("1.2.4", configuration);
 
         fixture.Checkout("main");
         fixture.MergeNoFF("support/1.x");
         fixture.AssertFullSemver("2.0.2-2", configuration);
+        fixture.ApplyTag("2.0.2");
+        fixture.AssertFullSemver("2.0.2", configuration);
     }
 
     [TestCase(false)]
