@@ -13,8 +13,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Polly" Version="8.4.0" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.3" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.3" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.4" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.4" />
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="7.0.1" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="4.3.0.2" />
