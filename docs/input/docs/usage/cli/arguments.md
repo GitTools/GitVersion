@@ -23,7 +23,6 @@ GitVersion [path]
 
     path            The directory containing .git. If not defined current
                     directory is used. (Must be first argument)
-    init            Configuration utility for gitversion
     /version        Displays the version of GitVersion
     /diag           Runs GitVersion with additional diagnostic information
                     (requires git.exe to be installed)
@@ -94,8 +93,6 @@ GitVersion [path]
                     Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause
                     GitVersion to not calculate your version as expected.
-
-gitversion init     Configuration utility for gitversion
 ```
 
 ## Override config
