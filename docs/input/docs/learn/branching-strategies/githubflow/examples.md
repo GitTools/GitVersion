@@ -54,8 +54,9 @@ configured to use _continuous deployment_ the version would be `2.0.0`.
 
 ## Release Branches
 
-Release branches are used for major and minor releases to stabilize a RC 
-(Release Candidate) or to integrate features (in parallel) targeting different
+Release branches are used for major, minor and patch releases to stabilize a RC
+(Release Candidate) or to integrate features/hotfixes (in parallel) targeting
+different
 iterations. Release branches are taken from `main` and will
 be merged back afterwards. Finally the `main` branch is tagged with the
 released version.
