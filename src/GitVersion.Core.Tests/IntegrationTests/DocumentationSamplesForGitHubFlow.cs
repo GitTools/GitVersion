@@ -75,6 +75,8 @@ public class DocumentationSamplesForGitHubFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.0-6", configuration);
+        fixture.ApplyTag("2.0.0");
+        fixture.AssertFullSemver("2.0.0", configuration);
     }
 
     [TestCase(false)]
@@ -216,6 +218,8 @@ public class DocumentationSamplesForGitHubFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.3.1-6", configuration);
+        fixture.ApplyTag("1.3.1");
+        fixture.AssertFullSemver("1.3.1", configuration);
     }
 
     [TestCase(false)]
@@ -357,6 +361,8 @@ public class DocumentationSamplesForGitHubFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.3.1-6", configuration);
+        fixture.ApplyTag("2.3.1");
+        fixture.AssertFullSemver("2.3.1", configuration);
     }
 
     [TestCase(false)]
