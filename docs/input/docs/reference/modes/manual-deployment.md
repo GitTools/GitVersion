@@ -3,8 +3,7 @@ Order: 10
 Title: Manual Deployment
 Description: |
     The Manual Deployment mode can be used to remain on the same pre-released
-	version until it has been deployed dedicatedly.
-	
+    version until it has been deployed dedicatedly.
 RedirectFrom: docs/reference/versioning-modes/manual-deployment
 ---
 
