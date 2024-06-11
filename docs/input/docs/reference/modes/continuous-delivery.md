@@ -3,8 +3,8 @@ Order: 20
 Title: Continuous Delivery
 Description: |
     Sometimes you just want the version to keep changing and deploy continuously
-	to an testing system. In this case, Continuous Delivery is a good mode to
-	operate GitVersion by.
+    to an testing system. In this case, Continuous Delivery is a good mode to
+    operate GitVersion by.
 RedirectFrom: docs/reference/versioning-modes/continuous-delivery
 ---
 
