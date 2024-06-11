@@ -25,5 +25,10 @@ to deploy on production. This means that GitVersion will build
 
 Tags are required in this mode to communicate when the deployement happens on production.
 
+## Resources
+
+* [Configuration][configuration]
+* [Semantic Versioning & auto-incremented NuGet package versions][blog]
+
 [configuration]: /docs/reference/configuration
 [blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
