@@ -29,6 +29,12 @@ Continuous delivery is good when you deploy continuously to an testing system.
 Tags are not required but optional in this mode to communicate when the release
 is done as it's an automated process.
 
+## Resources
+
+* [Configuration][configuration]
+* [Semantic Versioning & auto-incremented NuGet package versions][blog]
+* [Continuous delivery][wikipedia]
+
 [configuration]: /docs/reference/configuration
 [blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
 [wikipedia]: https://en.wikipedia.org/wiki/Continuous_delivery
