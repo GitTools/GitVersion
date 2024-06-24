@@ -37,6 +37,7 @@ The following supported workflow configurations are available in GitVersion and 
 
 - GitFlow (GitFlow/v1)
 - GitHubFlow (GitHubFlow/v1)
+- TrunkBased (TrunkBased/preview1)
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
@@ -333,6 +334,91 @@ commit-message-incrementing: Enabled
 regex: ''
 source-branches: []
 is-source-branch-for: []
+tracks-release-branches: false
+is-release-branch: false
+is-main-branch: false
+```
+
+The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
+
+```yaml
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+tag-prefix: '[vV]?'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
+tag-pre-release-weight: 60000
+commit-date-format: yyyy-MM-dd
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
+strategies:
+- Mainline
+- ConfiguredNextVersion
+branches:
+  main:
+    mode: ContinuousDeployment
+    label: ''
+    increment: Patch
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: true
+    track-merge-target: false
+    regex: ^master$|^main$
+    source-branches: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
+  feature:
+    increment: Minor
+    regex: ^features?[/-](?<BranchName>.+)
+    prevent-increment:
+      when-current-commit-tagged: false
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  hotfix:
+    increment: Patch
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    prevent-increment:
+      when-current-commit-tagged: false
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDelivery
+    label: PullRequest
+    increment: Inherit
+    label-number-pattern: '[/-](?<number>\d+)'
+    regex: ^(pull|pull\-requests|pr)[/-]
+    source-branches:
+    - main
+    pre-release-weight: 30000
+  unknown:
+    increment: Patch
+    regex: (?<BranchName>.+)
+    prevent-increment:
+      when-current-commit-tagged: false
+    source-branches:
+    - main
+    pre-release-weight: 30000
+ignore:
+  sha: []
+mode: ContinuousDelivery
+label: '{BranchName}'
+increment: Inherit
+prevent-increment:
+  of-merged-branch: false
+  when-branch-merged: false
+  when-current-commit-tagged: true
+track-merge-target: false
+track-merge-message: true
+commit-message-incrementing: Enabled
+regex: ''
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
