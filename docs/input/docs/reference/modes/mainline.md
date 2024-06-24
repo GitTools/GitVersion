@@ -71,7 +71,7 @@ Deployment][continuous-deployment] by default). To change the [versioning
 mode][modes] to Mainline Development, just change the [configuration][configuration] as such:
 
 ```yaml
-mode: Mainline
+strategies: [Mainline]
 ```
 
 [configuration]: /docs/reference/configuration
