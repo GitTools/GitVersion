@@ -86,6 +86,15 @@ iterations. Release branches are taken from `main` (or from `develop`) and will
 be merged back afterwards. Finally the `main` branch is tagged with the
 released version.
 
+Release branches can be used in the `GitFlow` as well as `GitHubFlow` workflow.
+Sometimes you want to start on a large feature which may take a while 
+to stabilize so you want to keep it off main. 
+In these scenarios you can either create a long lived
+feature branch (if you do not know the version number this large feature will go
+into, and it's non-breaking) otherwise you can create a release branch for the
+next major version. You can then submit pull requests to the long lived feature
+branch or the release branch.
+
 ### Create release branch
 
 ![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_ReleaseBranch.png)

@@ -3,42 +3,32 @@ Order: 30
 Title: Continuous Deployment
 Description: |
     Sometimes you just want the version to keep changing and deploy continuously.
-    In this case, Continuous Deployment is a good mode to operate GitVersion by.
 RedirectFrom: docs/reference/versioning-modes/continuous-deployment
 ---
 
-Continuous Deployment is the process of checking into main, running all the
-tests and if everything goes green it is automatically pushed to production.
-
-A good case for Continuous Deployment is when using Octopus deploy, as you
-cannot publish the same version of a package into the same feed.
+Continuous Deployment is the process of checking into main and automatically
+deploying to production.
 
 For this mode we follow the logic in [this blog post by Xavier Decoster][blog]
 on the issues of incrementing automatically.
 
-As such we force a pre-release tag on all branches, this is fine for
-applications but can cause problems for libraries. As such this mode may or may
-not work for you, which leads us into a new mode in v4 of GitVersion:
-[Mainline Development][mainline].
+## How Continuous Deployment affects GitVersion
 
-### Usage
+The thing about continuous deployment is that there will be only one version
+to deploy on production. This means that GitVersion will build
+**the same semantic version** for every commit until it has been tagged. For instance:
 
-By default GitVersion is set up to do Continuous Deployment versioning on the
-`develop` branch, but for all other branches, [Continuous
-Delivery][continuous-delivery] is the default mode. From version 3 of GitVersion
-this behavior is [configurable][configuration].
+* 1.2.0
+* 1.1.0 (tag: 1.1.0) <-- This is the version which has been deployed on production
+* 1.1.0
+* 1.1.1
 
-The default behavior for v3 and how v1 & 2 worked was that the version only
-incremented after a tag, which signified a release. In v3 you can simply switch
-the default mode in the [configuration][configuration] from `ContinuousDelivery`
-to `ContinuousDeployment` and the version will then increment each commit,
-giving you the features of GitVersion with continuous deployment:
+Tags are required in this mode to communicate when the deployement happens on production.
 
-```yaml
-mode: ContinuousDeployment
-```
+## Resources
 
-[blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+* [Configuration][configuration]
+* [Semantic Versioning & auto-incremented NuGet package versions][blog]
+
 [configuration]: /docs/reference/configuration
-[continuous-delivery]: /docs/reference/modes/continuous-delivery
-[mainline]: /docs/reference/modes/mainline
+[blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions

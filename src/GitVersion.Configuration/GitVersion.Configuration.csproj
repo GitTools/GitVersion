@@ -40,10 +40,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="..\..\docs\input\docs\workflows\TrunkBased\v1.yml" Link="Workflows\TrunkBased\v1.yml" />
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitFlow\v1.yml" Link="Workflows\GitFlow\v1.yml" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitFlow\v1.yml" Link="Workflows\GitFlow\v1.yml" />
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\TrunkBased\preview1.yml" Link="Workflows\TrunkBased\preview1.yml" />
     </ItemGroup>
 </Project>
