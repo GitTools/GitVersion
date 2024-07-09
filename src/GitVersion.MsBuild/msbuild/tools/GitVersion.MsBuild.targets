@@ -8,10 +8,10 @@
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == 'true' And '$(GenerateGitVersionFiles)' == 'true' ">true</UpdateAssemblyInfo>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
 
-        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)$(TargetFramework)/gitversion.dll&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)$(TargetFramework)/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(TargetFramework)))gitversion.dll&quot;</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(TargetFramework)))GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
-    
+
     <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
     <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
     <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
