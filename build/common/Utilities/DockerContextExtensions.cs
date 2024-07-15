@@ -211,12 +211,13 @@ public static class DockerContextExtensions
 
         if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
         {
-            tags.AddRange(new[] { $"{name}:{context.Version.Version}", $"{name}:{context.Version.SemVersion}", });
+            tags.Add($"{name}:{context.Version.SemVersion}");
 
             if (context.IsStableRelease)
             {
                 tags.AddRange(
                 [
+                    $"{name}:{context.Version.Version}",
                     $"{name}:latest",
                     $"{name}:latest-{targetFramework}",
                     $"{name}:latest-{distro}",

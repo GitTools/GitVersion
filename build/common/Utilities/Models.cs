@@ -40,7 +40,7 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
             nugetVersion += $".{gitVersion.BuildMetaData}";
         }
 
-        return new BuildVersion(
+        return new(
             GitVersion: gitVersion,
             Version: version,
             Milestone: semVersion,
