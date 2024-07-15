@@ -7,6 +7,8 @@
         <PackageReference Include="Microsoft.Build" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
         <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="MSBuild.ProjectCreation" />
     </ItemGroup>
