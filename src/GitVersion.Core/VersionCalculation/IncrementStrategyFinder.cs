@@ -116,9 +116,9 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         var targetShas = new Lazy<HashSet<string>>(() =>
             taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
-                .SelectMany(_ => _)
-                .Where(_ => _.Value.IsMatchForBranchSpecificLabel(label))
-                .Select(_ => _.Tag.TargetSha)
+                .SelectMany(versionWithTags => versionWithTags)
+                .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))
+                .Select(versionWithTag => versionWithTag.Tag.TargetSha)
                 .ToHashSet()
         );
 

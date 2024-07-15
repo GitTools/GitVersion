@@ -53,8 +53,8 @@ public class HelpWriterTests : TestBase
 
     private static bool IsNotInHelp(IReadOnlyDictionary<string, string> lookup, string propertyName, string helpText)
     {
-        if (lookup.ContainsKey(propertyName))
-            return !helpText.Contains(lookup[propertyName]);
+        if (lookup.TryGetValue(propertyName, out var value))
+            return !helpText.Contains(value);
 
         return !helpText.Contains("/" + propertyName.ToLower());
     }

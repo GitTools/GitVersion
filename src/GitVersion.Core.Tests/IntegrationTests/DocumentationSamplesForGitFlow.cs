@@ -242,7 +242,7 @@ public class DocumentationSamplesForGitFlow
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.2.0")
             .WithVersionStrategies(VersionStrategies.ConfiguredNextVersion, VersionStrategies.Mainline)
-            .WithBranch("feature", _ => _.WithIncrement(IncrementStrategy.Minor))
+            .WithBranch("feature", builder => builder.WithIncrement(IncrementStrategy.Minor))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
