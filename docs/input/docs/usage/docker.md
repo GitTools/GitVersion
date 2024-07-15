@@ -5,22 +5,45 @@ Description: |
     Use GitVersion through one of its many published Docker containers.
 ---
 
-GitVersion can be used through one of its many published Docker
-containers. The list of available containers can be found on
-[Docker Hub][docker-hub]. Once you've found the image you want to use,
-you can run it like this:
+The recommended image to run is `alpine`, as they are the smallest Docker images we provide. This will execute GitVersion for the current working directory (`$(pwd)`) on Linux and Unix or powershell on Windows:
 
-```shell
-docker run --rm --volume "$(pwd):/repo" gittools/gitversion:6.0.0-fedora.36-6.0 /repo
+```sh
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
 ```
 
-The above command will run GitVersion with the current directory
-mapped to `/repo` inside the container (the `--volume "$(pwd):/repo"`
-part). The `/repo` directory is then passed in as the argument
-GitVersion should use to calculate the version.
+The following command will execute GitVersion for the current working directory (`%CD%`) on Windows with CMD:
 
-The `--rm` flag will remove the container after it has finished
-running.
+```sh
+docker run --rm -v "%CD%:/repo" gittools/gitversion:{tag} /repo
+```
+
+Note that the path `/repo` needs to be passed as an argument since the `gitversion` executable within the container is not aware of the fact that it's running inside a container.
+
+### CI Agents
+
+If you are running GitVersion on a CI agent, you may need to specify environment variables to allow GitVersion to work correctly.
+For example, on Azure DevOps you may need to set the following environment variables:
+
+```sh
+docker run --rm -v "$(pwd):/repo" --env TF_BUILD=true --env BUILD_SOURCEBRANCH=$(Build.SourceBranch) gittools/gitversion:{tag} /repo
+```
+
+On GitHub Actions, you may need to set the following environment variables:
+
+```sh
+docker run --rm -v "$(pwd):/repo" --env GITHUB_ACTIONS=true --env GITHUB_REF=$(GITHUB_REF) gittools/gitversion:{tag} /repo
+```
+
+### Tags
+
+Most of the tags we provide have both arm64 and amd64 variants. If you need to pull a architecture specific tag you can do that like:
+
+```sh
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag}-amd64 /repo
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag}-arm64 /repo
+```
+
+The list of available containers can be found on [Docker Hub][docker-hub].
 
 [Explore GitVersion on Docker Hub][docker-hub]{.btn .btn-primary}
 

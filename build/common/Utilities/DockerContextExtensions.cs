@@ -202,7 +202,7 @@ public static class DockerContextExtensions
         var distro = dockerImage.Distro;
         var targetFramework = dockerImage.TargetFramework;
 
-        if (context.Version == null) return Enumerable.Empty<string>();
+        if (context.Version == null) return [];
         var tags = new List<string>
         {
             $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
