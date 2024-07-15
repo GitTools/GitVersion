@@ -22,6 +22,10 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
     private sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
     {
+        public override string GetEnumName(Type enumType, string name) => innerTypeDescriptor.GetEnumName(enumType, name);
+
+        public override string GetEnumValue(object enumValue) => innerTypeDescriptor.GetEnumValue(enumValue);
+
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
             innerTypeDescriptor.GetProperties(type, container)
                 .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
