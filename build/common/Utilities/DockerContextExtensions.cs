@@ -202,7 +202,7 @@ public static class DockerContextExtensions
         var distro = dockerImage.Distro;
         var targetFramework = dockerImage.TargetFramework;
 
-        if (context.Version == null) return Enumerable.Empty<string>();
+        if (context.Version == null) return [];
         var tags = new List<string>
         {
             $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
@@ -211,12 +211,13 @@ public static class DockerContextExtensions
 
         if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
         {
-            tags.AddRange(new[] { $"{name}:{context.Version.Version}", $"{name}:{context.Version.SemVersion}", });
+            tags.Add($"{name}:{context.Version.SemVersion}");
 
             if (context.IsStableRelease)
             {
                 tags.AddRange(
                 [
+                    $"{name}:{context.Version.Version}",
                     $"{name}:latest",
                     $"{name}:latest-{targetFramework}",
                     $"{name}:latest-{distro}",

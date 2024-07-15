@@ -55,6 +55,7 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
         // language=markdown
         var readme = $"""
 # GitVersion
+
 ![GitVersion – From git log to SemVer in no time][banner]
 
 Versioning when using Git, solved. GitVersion looks at your git history and works out the [Semantic Version][semver] of the commit being built.
@@ -63,17 +64,34 @@ This repository contains the Docker images for [GitVersion][website]. Source cod
 
 ## Usage
 
-The recommended image to run is `alpine`, as they are the smallest Docker images we provide (83 MB). This will execute GitVersion for the current working directory (`$(pwd)`) on Linux and Unix or powershell on Windows:
+The recommended image to run is `alpine`, as they are the smallest Docker images we provide. This will execute GitVersion for the current working directory (`$(pwd)`) on Linux and Unix or powershell on Windows:
 
 ```sh
 docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
 ```
+
 The following command will execute GitVersion for the current working directory (`%CD%`) on Windows with CMD:
 
 ```sh
 docker run --rm -v "%CD%:/repo" gittools/gitversion:{tag} /repo
 ```
+
 Note that the path `/repo` needs to be passed as an argument since the `gitversion` executable within the container is not aware of the fact that it's running inside a container.
+
+### CI Agents
+
+If you are running GitVersion on a CI agent, you may need to specify environment variables to allow GitVersion to work correctly.
+For example, on Azure DevOps you may need to set the following environment variables:
+
+```sh
+docker run --rm -v "$(pwd):/repo" --env TF_BUILD=true --env BUILD_SOURCEBRANCH=$(Build.SourceBranch) gittools/gitversion:{tag} /repo
+```
+
+On GitHub Actions, you may need to set the following environment variables:
+
+```sh
+docker run --rm -v "$(pwd):/repo" --env GITHUB_ACTIONS=true --env GITHUB_REF=$(GITHUB_REF) gittools/gitversion:{tag} /repo
+```
 
 ### Tags
 
