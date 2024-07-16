@@ -31,10 +31,10 @@ jobs:
         $url = "https://github.com/GitTools/GitVersion/releases/download/{0}/gitversion-win-{1}-{0}.zip"
         $urls = @(($url -f $version, "x64"), ($url -f $version, "arm64")) -Join " "
         
-        $run_args = "update --identifier GitTools.GitVersion --version $version --urls $urls --token ${{ secrets.RELEASE_GITHUB_TOKEN }} --submit"
+        $run_args = "update GitTools.GitVersion --version $version --urls $urls --token ${{ secrets.RELEASE_GITHUB_TOKEN }} --submit"
         "version=$version" >> $env:GITHUB_OUTPUT
         "run_args=$run_args" >> $env:GITHUB_OUTPUT
     
-    - uses: michidk/run-komac@v2
+    - uses: michidk/run-komac@v2.1.0
       with:
         args: '${{ steps.get-version.outputs.run_args }}'
