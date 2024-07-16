@@ -5,7 +5,7 @@
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <NoWarn>$(NoWarn);RS1035</NoWarn>
+        <NoWarn>$(NoWarn);RS1035;CS8669</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
