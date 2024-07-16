@@ -1,4 +1,1 @@
 #nullable enable
-GitVersion.Agents.GitVersionBuildAgentsModule
-GitVersion.Agents.GitVersionBuildAgentsModule.GitVersionBuildAgentsModule() -> void
-GitVersion.Agents.GitVersionBuildAgentsModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
