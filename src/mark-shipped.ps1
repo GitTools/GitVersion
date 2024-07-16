@@ -1,4 +1,4 @@
-[CmdletBinding(PositionalBinding=$false)]
+[CmdletBinding(PositionalBinding = $false)]
 param ()
 
 Set-StrictMode -version 2.0
@@ -17,7 +17,7 @@ function MarkShipped([string]$dir) {
 
     foreach ($item in $unshipped) {
         if ($item.Length -gt 0) {
-            if ($item.StartsWith($removedPrefix)) {
+            if ( $item.StartsWith($removedPrefix)) {
                 $item = $item.Substring($removedPrefix.Length)
                 $removed += $item
             }
@@ -27,7 +27,7 @@ function MarkShipped([string]$dir) {
         }
     }
 
-    $shipped | Sort-Object -Unique |Where-Object { -not $removed.Contains($_) } | Out-File $shippedFilePath -Encoding Ascii
+    $shipped | Sort-Object -Unique | Where-Object { -not $removed.Contains($_) } | Out-File $shippedFilePath -Encoding Ascii
     "#nullable enable" | Out-File "PublicAPI.empty.txt" -Encoding Ascii
     Copy-Item ./PublicAPI.empty.txt $unshippedFilePath
 }
