@@ -30,20 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Workflows\GitFlow\" />
-      <Folder Include="Workflows\GitHubFlow\" />
-      <Folder Include="Workflows\TrunkBased\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitHubFlow\v1.yml" Link="Workflows\GitHubFlow\v1.yml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="..\..\docs\input\docs\workflows\GitFlow\v1.yml" Link="Workflows\GitFlow\v1.yml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="..\..\docs\input\docs\workflows\TrunkBased\preview1.yml" Link="Workflows\TrunkBased\preview1.yml" />
+      <Folder Include="Workflows\*\" />
+      <EmbeddedResource Include="..\..\docs\input\docs\workflows\**\*.yml" Link="Workflows\%(RecursiveDir)\%(Filename)%(Extension)" />
     </ItemGroup>
 </Project>
