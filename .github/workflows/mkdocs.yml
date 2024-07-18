@@ -1,0 +1,42 @@
+name: Markdown Update
+on:
+  push:
+
+env:
+  DOTNET_ROLL_FORWARD: "Major"
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
+  
+defaults:
+  run:
+    shell: pwsh
+    
+jobs:
+  docs:
+    name: Update Markdown (embedded snippets)
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: Run MarkdownSnippets
+        run: |
+          dotnet tool install --global MarkdownSnippets.Tool
+          mdsnippets --write-header false
+        working-directory: ${{ github.workspace }}/docs/input
+      - 
+        name: Check for changes
+        id: status
+        run: |
+          if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
+      - 
+        name: Push changes
+        run: |
+          git add --verbose .
+          git config user.name 'Artur Stolear'
+          git config user.email 'artur.stolear@gmail.com'
+          git commit -m 'Docs changes' --allow-empty
+          git push --force
+        if: steps.status.outputs.has_changes == '1'
