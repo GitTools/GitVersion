@@ -1,6 +1,0 @@
-site_name: GitVersion
-theme: readthedocs
-repo_url: https://github.com/GitTools/GitVersion
-
-pages:
-- Home: index.md

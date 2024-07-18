@@ -49,13 +49,6 @@ SemVer.
 If you want to fix the version, use `NuGetVersionV2` which will stay the same
 after NuGet 3.0 comes out
 
-## How do I choose my branching strategy (GitFlow vs GitHubFlow)
-
-If you run `gitversion init` then choose `Getting started wizard` then choose
-`Unsure, tell me more`, GitVersion will run through a series of questions which
-will try and help point you towards a branching strategy and why you would use
-it.
-
 ## Merged branch names as version source
 
 When GitVersion considers previous commits to calculate a version number, it's

@@ -15,7 +15,7 @@ remain on the same pre-released version until it has been deployed dedicatedly.
 
 The thing about manual deployment is that there will be _multiple_ candidates
 to deploy on testing and it is a human choice to deploy. This means that
-GitVersion will build **the same semantic version** until that version is
+GitVersion will build __the same semantic version__ until that version is
 deployed. For instance:
 
 * 1.1.0-2+1

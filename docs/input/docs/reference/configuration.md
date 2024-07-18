@@ -8,16 +8,6 @@ RedirectFrom: docs/configuration
 GitVersion, starting from version 3.0, is mainly powered by configuration and no
 longer has branching strategies hard-coded.
 
-## Configuration tool
-
-If you run `gitversion init`, GitVersion will launch into a configuration tool,
-which can help you configure GitVersion the way you want it.
-
-Once complete, the `init` command will create a `GitVersion.yml` file in the
-working directory. It can be the root repository directory or any subdirectory
-in case you have a single repository for more than one project or are restricted
-to commit into a subdirectory.
-
 :::{.alert .alert-info}
 **Note**
 
