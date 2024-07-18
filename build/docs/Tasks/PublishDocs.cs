@@ -58,7 +58,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         var filesChanged = context.GitDiff(Paths.Root, sourceCommit.Sha);
 
         const string path = "docs/";
-        var docFileChanged = filesChanged.Any(file => file.OldPath.StartsWith(path) || file.Path.StartsWith(path) || file.Path.Contains("config.wyam"));
+        var docFileChanged = filesChanged.Any(file => file.OldPath.StartsWith(path) || file.Path.StartsWith(path));
         return docFileChanged;
     }
 
