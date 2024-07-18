@@ -38,7 +38,9 @@ tag-prefix: '[abc]'
 
 The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
 
-```yaml
+<!-- snippet: /docs/workflows/GitFlow/v1.yml -->
+<a id='snippet-/docs/workflows/GitFlow/v1.yml'></a>
+```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
@@ -207,10 +209,14 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
 
-```yaml
+<!-- snippet: /docs/workflows/GitHubFlow/v1.yml -->
+<a id='snippet-/docs/workflows/GitHubFlow/v1.yml'></a>
+```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
@@ -270,12 +276,12 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
+    track-merge-message: true
     regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release
     is-source-branch-for: []
-    track-merge-message: true
     is-main-branch: false
     pre-release-weight: 30000
   pull-request:
@@ -286,13 +292,13 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
+    track-merge-message: true
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - main
     - release
     - feature
     is-source-branch-for: []
-    track-merge-message: true
     pre-release-weight: 30000
   unknown:
     mode: ManualDeployment
@@ -300,6 +306,7 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
+    track-merge-message: false
     regex: (?<BranchName>.+)
     source-branches:
     - main
@@ -307,7 +314,6 @@ branches:
     - feature
     - pull-request
     is-source-branch-for: []
-    track-merge-message: false
     is-main-branch: false
 ignore:
   sha: []
@@ -328,10 +334,14 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
 
-```yaml
+<!-- snippet: /docs/workflows/TrunkBased/preview1.yml -->
+<a id='snippet-/docs/workflows/TrunkBased/preview1.yml'></a>
+```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
@@ -346,8 +356,8 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
-- Mainline
 - ConfiguredNextVersion
+- Mainline
 branches:
   main:
     mode: ContinuousDeployment
@@ -355,46 +365,65 @@ branches:
     increment: Patch
     prevent-increment:
       of-merged-branch: true
-      when-current-commit-tagged: true
     track-merge-target: false
+    track-merge-message: true
     regex: ^master$|^main$
     source-branches: []
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
   feature:
+    mode: ContinuousDelivery
+    label: '{BranchName}'
     increment: Minor
-    regex: ^features?[/-](?<BranchName>.+)
     prevent-increment:
       when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
+    is-source-branch-for: []
+    is-main-branch: false
     pre-release-weight: 30000
   hotfix:
+    mode: ContinuousDelivery
+    label: '{BranchName}'
     increment: Patch
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
     prevent-increment:
       when-current-commit-tagged: false
+    regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
     - main
+    is-source-branch-for: []
+    is-release-branch: true
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
     label-number-pattern: '[/-](?<number>\d+)'
+    track-merge-message: true
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - main
+    - feature
+    - hotfix
+    is-source-branch-for: []
     pre-release-weight: 30000
   unknown:
     increment: Patch
-    regex: (?<BranchName>.+)
     prevent-increment:
       when-current-commit-tagged: false
+    regex: (?<BranchName>.+)
     source-branches:
     - main
+    is-source-branch-for: []
     pre-release-weight: 30000
 ignore:
   sha: []
@@ -409,10 +438,14 @@ track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
+source-branches: []
+is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 The details of the available options are as follows:
 
