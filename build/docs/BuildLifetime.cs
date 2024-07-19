@@ -20,14 +20,18 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
             Theme = "Samson",
             OutputPath = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")),
             RootPath = context.MakeAbsolute(Paths.Docs),
-            ConfigurationFile = context.MakeAbsolute(Paths.Docs.CombineWithFilePath("config.wyam")),
             Settings = new Dictionary<string, object>
             {
                 { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
                 { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
                 { "Title", "GitVersion" },
-                { "IncludeGlobalNamespace", false }
-            }
+                { "IncludeGlobalNamespace", false },
+                { "IgnoreFolders", "**/mdsource" }
+            },
+            EnvironmentVariables = new Dictionary<string, string>
+            {
+                { "DOTNET_ROLL_FORWARD", "Major" },
+            },
         };
 
         context.StartGroup("Build Setup");

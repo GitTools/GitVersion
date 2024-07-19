@@ -3,4 +3,17 @@
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
     </ItemGroup>
+
+    <!-- Add the following target to copy the workflow files to the docs folder.
+         Whenever the Workflow changes, the docs folder will be updated with the latest version.
+    -->
+    <Target Name="CopyWorkflowFiles" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <WorkflowFiles Include="Workflows\approved\**\*.yml" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(WorkflowFiles)"
+              DestinationFiles="@(WorkflowFiles->'..\..\docs\input\docs\workflows\%(RecursiveDir)%(Filename)%(Extension)')" />
+    </Target>
+
 </Project>

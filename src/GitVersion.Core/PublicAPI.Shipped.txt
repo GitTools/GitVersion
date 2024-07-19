@@ -107,6 +107,9 @@ GitVersion.Configuration.IBranchConfiguration.SourceBranches.get -> System.Colle
 GitVersion.Configuration.IBranchConfiguration.TrackMergeMessage.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.TracksReleaseBranches.get -> bool?
+GitVersion.Configuration.IConfigurationBuilder
+GitVersion.Configuration.IConfigurationBuilder.AddOverride(System.Collections.Generic.IReadOnlyDictionary<object!, object?>! value) -> void
+GitVersion.Configuration.IConfigurationBuilder.Build() -> GitVersion.Configuration.IGitVersionConfiguration!
 GitVersion.Configuration.IConfigurationFileLocator
 GitVersion.Configuration.IConfigurationFileLocator.GetConfigurationFile(string? directory) -> string?
 GitVersion.Configuration.IConfigurationFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
