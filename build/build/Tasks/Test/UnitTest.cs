@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion60, Constants.NetVersion70, Constants.NetVersion80)]
+[TaskArgument(Arguments.DotnetTarget, Constants.Version60, Constants.Version70, Constants.Version80)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -62,14 +62,14 @@ public class UnitTest : FrostingTask<BuildContext>
     private static void TestProjectForTarget(BuildContext context, FilePath project, string framework)
     {
         var testResultsPath = Paths.TestOutput;
-        var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
+        var projectName = $"{project.GetFilenameWithoutExtension()}.net{framework}";
         var settings = new DotNetTestSettings
         {
-            Framework = framework,
+            Framework = $"net{framework}",
             NoBuild = true,
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
-            TestAdapterPath = new DirectoryPath(".")
+            TestAdapterPath = new(".")
         };
 
         var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));

@@ -23,8 +23,9 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
 
         context.Information("\nTesting msbuild task with dotnet build\n");
-        foreach (var framework in Constants.Frameworks)
+        foreach (var netVersion in Constants.Frameworks)
         {
+            var framework = $"net{netVersion}";
             var dotnetMsBuildSettings = new DotNetMSBuildSettings();
             dotnetMsBuildSettings.SetTargetFramework(framework);
             dotnetMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);

@@ -180,7 +180,7 @@ public static class ContextExtensions
     private static void EndGroup(this IAzurePipelinesCommands _, ICakeContext context) => context.Information("##[endgroup]");
 
     public static FilePath? GetGitVersionToolLocation(this ICakeContext context) =>
-        context.GetFiles($"src/GitVersion.App/bin/{Constants.DefaultConfiguration}/{Constants.NetVersionLatest}/gitversion.dll").SingleOrDefault();
+        context.GetFiles($"src/GitVersion.App/bin/{Constants.DefaultConfiguration}/net{Constants.VersionLatest}/gitversion.dll").SingleOrDefault();
     public static FilePath? GetGitVersionDotnetToolLocation(this ICakeContext context) =>
         context.MakeAbsolute(Paths.Tools.Combine("gitversion").CombineWithFilePath("gitversion.dll"));
 

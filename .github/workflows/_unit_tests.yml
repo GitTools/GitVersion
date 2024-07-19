@@ -7,14 +7,14 @@ env:
   
 jobs:
   unit_test:
-    name: ${{ matrix.os }} - ${{ matrix.targetFramework }}
+    name: ${{ matrix.os }} - net${{ matrix.targetFramework }}
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-13, macos-14]
-        targetFramework: [ 'net8.0', 'net7.0', 'net6.0' ]
+        targetFramework: [ '6.0', '7.0', '8.0' ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -34,6 +34,6 @@ jobs:
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: matrix.targetFramework == 'net8.0'
+      if: matrix.targetFramework == '8.0'
       with:
         paths: artifacts/test-results/*.results.xml

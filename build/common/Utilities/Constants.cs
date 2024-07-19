@@ -10,17 +10,11 @@ public class Constants
     public const string Version80 = "8.0";
     public const string VersionLatest = Version80;
 
-    public const string NetVersion60 = $"net{Version60}";
-    public const string NetVersion70 = $"net{Version70}";
-    public const string NetVersion80 = $"net{Version80}";
-    public const string NetVersionLatest = $"net{VersionLatest}";
-
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
 
     public static readonly Architecture[] ArchToBuild = [Architecture.Amd64, Architecture.Arm64];
-    public static readonly string[] VersionsToBuild = [Version60, Version70, Version80];
-    public static readonly string[] Frameworks = [NetVersion60, NetVersion70, NetVersion80];
+    public static readonly string[] Frameworks = [Version60, Version70, Version80];
 
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
