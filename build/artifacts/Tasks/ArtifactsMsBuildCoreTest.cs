@@ -5,7 +5,7 @@ namespace Artifacts.Tasks;
 [TaskName(nameof(ArtifactsMsBuildCoreTest))]
 [TaskDescription("Tests the msbuild package in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70, Constants.Version80)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version80)]
 [TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
@@ -32,7 +32,7 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
 
             var targetFramework = framework switch
             {
-                Constants.Version60 or Constants.Version70 or Constants.Version80 => $"net{framework}",
+                Constants.Version60 or Constants.Version80 => $"net{framework}",
                 _ => framework
             };
 

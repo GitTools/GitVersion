@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.Version60, Constants.Version70, Constants.Version80)]
+[TaskArgument(Arguments.DotnetTarget, Constants.Version60, Constants.Version80)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
