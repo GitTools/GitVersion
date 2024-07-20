@@ -6,7 +6,6 @@ public class Constants
     public const string Repository = "GitVersion";
 
     public const string Version60 = "6.0";
-    public const string Version70 = "7.0";
     public const string Version80 = "8.0";
     public const string VersionLatest = Version80;
 
@@ -14,7 +13,7 @@ public class Constants
     public const string DefaultConfiguration = "Release";
 
     public static readonly Architecture[] ArchToBuild = [Architecture.Amd64, Architecture.Arm64];
-    public static readonly string[] Frameworks = [Version60, Version70, Version80];
+    public static readonly string[] Frameworks = [Version60, Version80];
 
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
