@@ -8,18 +8,17 @@ works out the [Semantic Version][semver] of the commit being built.
 [![codecov][codecov-badge]][codecov]
 [![Gitter][gitter-badge]][gitter]
 
-| Artifact                   | Stable                                                             |                                                         |
-|:---------------------------|:-------------------------------------------------------------------|---------------------------------------------------------|
-| **GitHub Release**         | [![GitHub release][gh-rel-badge]][gh-rel]                          |                                                         |
-| **GitVersion.Portable**    | [![Chocolatey][choco-badge]][choco]                                |                                                         |
-| **GitVersion.Tool**        | [![NuGet][gvgt-badge]][gvgt]                                       |                                                         |
-| **GitVersion.CommandLine** | [![NuGet][gvcl-badge]][gvcl]                                       |                                                         |
-| **GitVersion.MsBuild**     | [![NuGet][gvt-badge]][gvt]                                         | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
-| **Homebrew**               | [![homebrew][brew-badge]][brew]                                    |                                                         |
-| **Winget**                 | [![winget][winget-badge]][winget]                                  | `winget install gitversion`                             |
-| **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |                                                         |
-| **Github Action**          | [![Github Action][gh-actions-badge]][gh-actions]                   |                                                         |
-| **Docker**                 | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |                                                         |
+| Artifact                   | Stable                                                             |
+|:---------------------------|:-------------------------------------------------------------------|
+| **GitHub Release**         | [![GitHub release][gh-rel-badge]][gh-rel]                          |
+| **GitVersion.Portable**    | [![Chocolatey][choco-badge]][choco]                                |
+| **GitVersion.Tool**        | [![NuGet][gvgt-badge]][gvgt]                                       |
+| **GitVersion.MsBuild**     | [![NuGet][gvt-badge]][gvt]                                         |
+| **Homebrew**               | [![homebrew][brew-badge]][brew]                                    |
+| **Winget**                 | [![winget][winget-badge]][winget]                                  |
+| **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
+| **Github Action**          | [![Github Action][gh-actions-badge]][gh-actions]                   |
+| **Docker**                 | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |
 
 ## Compatibility
 
@@ -67,8 +66,6 @@ from The Noun Project.
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
 [gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/
-[gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
-[gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
 [brew]:                            https://formulae.brew.sh/formula/gitversion

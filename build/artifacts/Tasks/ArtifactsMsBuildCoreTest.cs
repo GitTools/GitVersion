@@ -28,15 +28,7 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
         {
             if (context.SkipImageTesting(dockerImage)) continue;
 
-            var framework = dockerImage.TargetFramework;
-
-            var targetFramework = framework switch
-            {
-                Constants.Version60 or Constants.Version80 => $"net{framework}",
-                _ => framework
-            };
-
-            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework {targetFramework}";
+            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework net{dockerImage.TargetFramework}";
 
             context.DockerTestArtifact(dockerImage, cmd);
         }

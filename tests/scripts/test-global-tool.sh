@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# sh /scripts/test-global-tool.sh --version 5.7.1-beta1.56 --nugetPath /nuget --repoPath /repo
+# sh /scripts/test-global-tool.sh --version 6.0.0 --nugetPath /nuget --repoPath /repo
 while test "$#" -gt 0
 do
     case $1 in

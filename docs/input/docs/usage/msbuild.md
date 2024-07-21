@@ -18,10 +18,6 @@ version information that is compiled into the resulting artifact.
 It currently works with desktop `MSBuild`. Support for CoreCLR with `dotnet build`
 is coming soon.
 
-> **Note**\
-> The nuget package was "_[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)_" up until version 5.5.1.\
-> From version 5.6.0 it has been called "_[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/)_"
-
 ## TL;DR
 
 ### Install the MSTask targets
@@ -40,7 +36,7 @@ If you're using `PackageReference` style NuGet dependencies (VS 2017+), add
 dependency of your package:
 
 ```xml
-<PackageReference Include="GitVersion.MsBuild" Version="5.6.10*">
+<PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
   <PrivateAssets>All</PrivateAssets>
 </PackageReference>
 ```
@@ -278,7 +274,7 @@ You can configure GitVersion to generate the `GitVersionInformation` class in a 
 
 ## Extra properties
 
-There are properties that correspont to certain
+There are properties that correspond to certain
 [command line arguments](/docs/usage/cli/arguments) for GetVersion task.
 In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch`
 during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables

@@ -14,6 +14,7 @@ namespace GitVersion.Core.Tests;
 [Parallelizable(ParallelScope.None)]
 public class ProjectFileUpdaterTests : TestBase
 {
+    private const string TargetFramework = "net8.0";
     private IVariableProvider variableProvider;
     private ILog log;
     private IFileSystem fileSystem;
@@ -45,28 +46,28 @@ public class ProjectFileUpdaterTests : TestBase
     [TestCase("Microsoft.NET.Sdk.BlazorWebAssembly")]
     public void CanUpdateProjectFileWithSdkProjectFileXml(string sdk)
     {
-        var xml = $@"
-<Project Sdk=""{sdk}"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-</Project>
-";
+        var xml = $"""
+                   <Project Sdk="{sdk}">
+                     <PropertyGroup>
+                       <OutputType>Exe</OutputType>
+                       <TargetFramework>{TargetFramework}</TargetFramework>
+                     </PropertyGroup>
+                   </Project>
+                   """;
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(true);
         logMessages.ShouldBeEmpty();
     }
 
-    [TestCase(@"
-<Project Sdk=""SomeOtherProject.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
+    [TestCase($"""
+               <Project Sdk="SomeOtherProject.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                 </PropertyGroup>
+               </Project>
+               """)]
     public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -78,14 +79,14 @@ public class ProjectFileUpdaterTests : TestBase
         logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
-    [TestCase(@"
-<Project>
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
+    [TestCase($"""
+               <Project>
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                 </PropertyGroup>
+               </Project>
+               """)]
     public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -97,15 +98,15 @@ public class ProjectFileUpdaterTests : TestBase
         logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-</Project>
-")]
+    [TestCase($"""
+               <Project Sdk="Microsoft.NET.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+                 </PropertyGroup>
+               </Project>
+               """)]
     public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -117,10 +118,10 @@ public class ProjectFileUpdaterTests : TestBase
         logMessages[0].ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-</Project>
-")]
+    [TestCase("""
+              <Project Sdk="Microsoft.NET.Sdk">
+              </Project>
+              """)]
     public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -132,13 +133,14 @@ public class ProjectFileUpdaterTests : TestBase
         logMessages[0].ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-</Project>"
+    [TestCase($"""
+               <Project Sdk="Microsoft.NET.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                 </PropertyGroup>
+               </Project>
+               """
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
@@ -149,25 +151,28 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var expectedXml = XElement.Parse(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>");
+        const string projectFileContent = $"""
+                                           <Project Sdk="Microsoft.NET.Sdk">
+                                             <PropertyGroup>
+                                               <OutputType>Exe</OutputType>
+                                               <TargetFramework>{TargetFramework}</TargetFramework>
+                                               <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                             </PropertyGroup>
+                                           </Project>
+                                           """;
+        var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>"
+    [TestCase($"""
+               <Project Sdk="Microsoft.NET.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                   <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                 </PropertyGroup>
+               </Project>
+               """
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
@@ -176,28 +181,31 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var expectedXml = XElement.Parse(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>");
+        var projectFileContent = $"""
+                                  <Project Sdk="Microsoft.NET.Sdk">
+                                    <PropertyGroup>
+                                      <OutputType>Exe</OutputType>
+                                      <TargetFramework>{TargetFramework}</TargetFramework>
+                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                    </PropertyGroup>
+                                  </Project>
+                                  """;
+        var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>"
+    [TestCase($"""
+               <Project Sdk="Microsoft.NET.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                   <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                 </PropertyGroup>
+                 <PropertyGroup>
+                   <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                 </PropertyGroup>
+               </Project>
+               """
     )]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
@@ -206,29 +214,32 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var expectedXml = XElement.Parse(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>");
+        var projectFileContent = $"""
+                                  <Project Sdk="Microsoft.NET.Sdk">
+                                    <PropertyGroup>
+                                      <OutputType>Exe</OutputType>
+                                      <TargetFramework>{TargetFramework}</TargetFramework>
+                                      <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                                    </PropertyGroup>
+                                    <PropertyGroup>
+                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                    </PropertyGroup>
+                                  </Project>
+                                  """;
+        var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>"
+    [TestCase($"""
+               <Project Sdk="Microsoft.NET.Sdk">
+                 <PropertyGroup>
+                   <OutputType>Exe</OutputType>
+                   <TargetFramework>{TargetFramework}</TargetFramework>
+                   <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                   <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                 </PropertyGroup>
+               </Project>
+               """
     )]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
@@ -237,25 +248,29 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var expectedXml = XElement.Parse(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-  </PropertyGroup>
-</Project>");
+        var projectFileContent = $"""
+                                  <Project Sdk="Microsoft.NET.Sdk">
+                                    <PropertyGroup>
+                                      <OutputType>Exe</OutputType>
+                                      <TargetFramework>{TargetFramework}</TargetFramework>
+                                      <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                    </PropertyGroup>
+                                  </Project>
+                                  """;
+        var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-</Project>")]
+    [TestCase("""
+
+              <Project Sdk="Microsoft.NET.Sdk">
+                <PropertyGroup>
+                  <OutputType>Exe</OutputType>
+                  <TargetFramework>net8.0</TargetFramework>
+                </PropertyGroup>
+              </Project>
+              """)]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
         var workingDirectory = PathHelper.GetTempPath();
@@ -266,17 +281,18 @@ public class ProjectFileUpdaterTests : TestBase
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new(workingDirectory, false, fileName));
 
-            const string expectedXml = @"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>2.3.1.0</AssemblyVersion>
-    <FileVersion>2.3.1.0</FileVersion>
-    <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
-    <Version>2.3.1</Version>
-  </PropertyGroup>
-</Project>";
+            const string expectedXml = $"""
+                                        <Project Sdk="Microsoft.NET.Sdk">
+                                          <PropertyGroup>
+                                            <OutputType>Exe</OutputType>
+                                            <TargetFramework>{TargetFramework}</TargetFramework>
+                                            <AssemblyVersion>2.3.1.0</AssemblyVersion>
+                                            <FileVersion>2.3.1.0</FileVersion>
+                                            <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
+                                            <Version>2.3.1</Version>
+                                          </PropertyGroup>
+                                        </Project>
+                                        """;
             var transformedXml = fs.ReadAllText(fileName);
             transformedXml.ShouldBe(XElement.Parse(expectedXml).ToString());
         });
@@ -289,13 +305,7 @@ public class ProjectFileUpdaterTests : TestBase
         Action<IFileSystem, GitVersionVariables>? verify = null)
     {
         this.fileSystem = Substitute.For<IFileSystem>();
-        var version = new SemanticVersion
-        {
-            BuildMetaData = new("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0),
-            Major = 2,
-            Minor = 3,
-            Patch = 1
-        };
+        var version = new SemanticVersion { BuildMetaData = new("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0), Major = 2, Minor = 3, Patch = 1 };
 
         this.fileSystem.Exists(fileName).Returns(true);
         this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);

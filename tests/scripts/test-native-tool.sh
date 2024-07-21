@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# sh /scripts/test-native-tool.sh --version 5.7.1-beta1-56 --runtime linux-musl-x64 /nuget --repoPath /repo
+# sh /scripts/test-native-tool.sh --version 6.0.0 --runtime linux-musl-x64 /nuget --repoPath /repo
 while test "$#" -gt 0
 do
     case $1 in
