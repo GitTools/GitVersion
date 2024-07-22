@@ -128,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -144,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -240,7 +241,7 @@ Details on the AppVeyor support in GitVersion									</td>
 								<tr>
 									<td><strong><a href="/docs/reference/build-servers/azure-devops">Azure DevOps</a></strong></td>
 									<td>
-Details on the Azure DevOps or Team Foundation Server Build Pipeline support&#xA;in GitVersion&#xA;									</td>
+Details on the Azure DevOps Build Pipeline support in GitVersion&#xA;									</td>
 								</tr>
 								<tr>
 									<td><strong><a href="/docs/reference/build-servers/bamboo">Bamboo</a></strong></td>
@@ -261,6 +262,11 @@ Details on the Buildkite support in GitVersion									</td>
 									<td><strong><a href="/docs/reference/build-servers/continua">Continua CI</a></strong></td>
 									<td>
 Details on the Continua CI support in GitVersion									</td>
+								</tr>
+								<tr>
+									<td><strong><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></strong></td>
+									<td>
+Details on the GitHub Actions Workflow support in GitVersion&#xA;									</td>
 								</tr>
 								<tr>
 									<td><strong><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></strong></td>
@@ -352,12 +358,6 @@ Details on the TeamCity support in GitVersion									</td>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

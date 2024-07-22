@@ -1,0 +1,467 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gitversion.net/schemas/5.12/GitVersion.configuration.json",
+  "title": "GitVersion Configuration",
+  "description": "GitVersion configuration schema",
+  "type": "object",
+  "properties": {
+    "assembly-file-versioning-format": {
+      "description": "Specifies the format of AssemblyFileVersion and overwrites the value of assembly-file-versioning-scheme.",
+      "type": "string"
+    },
+    "assembly-file-versioning-scheme": {
+      "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "enum": [
+        "MajorMinorPatchTag",
+        "MajorMinorPatch",
+        "MajorMinor",
+        "Major",
+        "None"
+      ]
+    },
+    "assembly-informational-format": {
+      "description": "Specifies the format of AssemblyInformationalVersion. The default value is {InformationalVersion}.",
+      "type": "string"
+    },
+    "assembly-versioning-format": {
+      "description": "Specifies the format of AssemblyVersion and overwrites the value of assembly-versioning-scheme.",
+      "type": "string"
+    },
+    "assembly-versioning-scheme": {
+      "description": "The scheme to use when setting AssemblyVersion attribute. Can be \u0027MajorMinorPatchTag\u0027, \u0027MajorMinorPatch\u0027, \u0027MajorMinor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "enum": [
+        "MajorMinorPatchTag",
+        "MajorMinorPatch",
+        "MajorMinor",
+        "Major",
+        "None"
+      ]
+    },
+    "branches": {
+      "description": "The header for all the individual branch configuration.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/BranchConfig"
+      }
+    },
+    "build-metadata-padding": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "commit-date-format": {
+      "format": "date-time",
+      "pattern": "\u0027yyyy-MM-dd\u0027",
+      "description": "The format to use when calculating the commit date. Defaults to \u0027yyyy-MM-dd\u0027.",
+      "type": "string"
+    },
+    "commit-message-incrementing": {
+      "enum": [
+        "Enabled",
+        "Disabled",
+        "MergeMessageOnly"
+      ]
+    },
+    "commits-since-version-source-padding": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "continuous-delivery-fallback-tag": {
+      "type": "string"
+    },
+    "ignore": {
+      "description": "The header property for the ignore configuration.",
+      "type": "object",
+      "properties": {
+        "commits-before": {
+          "$ref": "#/$defs/Nullable\u006012"
+        },
+        "sha": {
+          "$ref": "#/$defs/array"
+        }
+      }
+    },
+    "increment": {
+      "$ref": "#/$defs/Nullable\u00601"
+    },
+    "legacy-semver-padding": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "major-version-bump-message": {
+      "format": "regex",
+      "pattern": "\u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
+      "description": "The regex to match commit messages with to perform a major version increment. Default set to \u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
+      "type": "string"
+    },
+    "merge-message-formats": {
+      "description": "Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "minor-version-bump-message": {
+      "format": "regex",
+      "pattern": "\u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
+      "description": "The regex to match commit messages with to perform a minor version increment. Default set to \u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
+      "type": "string"
+    },
+    "next-version": {
+      "description": "Allows you to bump the next version explicitly. Useful for bumping main or a feature branch with breaking changes",
+      "type": "string"
+    },
+    "no-bump-message": {
+      "format": "regex",
+      "pattern": "\u0027\\\u002Bsemver:\\s?(none|skip)\u0027",
+      "description": "Used to tell GitVersion not to increment when in Mainline development mode. . Default set to \u0027\\\u002Bsemver:\\s?(none|skip)\u0027",
+      "type": "string"
+    },
+    "patch-version-bump-message": {
+      "format": "regex",
+      "pattern": "\u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
+      "description": "The regex to match commit messages with to perform a patch version increment. Default set to \u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
+      "type": "string"
+    },
+    "tag-prefix": {
+      "description": "A regex which is used to trim Git tags before processing. Defaults to [vV]",
+      "type": "string"
+    },
+    "tag-pre-release-weight": {
+      "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "update-build-number": {
+      "description": "Whether to update the build number in the project file. Defaults to true.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "mode": {
+      "$ref": "#/$defs/Nullable\u006011"
+    }
+  },
+  "$defs": {
+    "BranchConfig": {
+      "type": "object",
+      "properties": {
+        "commit-message-incrementing": {
+          "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be \u0027Disabled\u0027, \u0027Enabled\u0027 or \u0027MergeMessageOnly\u0027.",
+          "enum": [
+            "Enabled",
+            "Disabled",
+            "MergeMessageOnly"
+          ]
+        },
+        "increment": {
+          "$ref": "#/$defs/Nullable\u00601"
+        },
+        "is-mainline": {
+          "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "is-release-branch": {
+          "description": "Indicates this branch config represents a release branch in GitFlow.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "is-source-branch-for": {
+          "description": "The branches that this branch is a source branch.",
+          "type": "array",
+          "items": {
+            "description": "The branches that this branch is a source branch.",
+            "type": "string"
+          }
+        },
+        "pre-release-weight": {
+          "description": "Provides a way to translate the PreReleaseLabel to a number.",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "prevent-increment-of-merged-branch-version": {
+          "description": "Prevent increment of merged branch version.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "regex": {
+          "description": "The regex pattern to use to match this branch.",
+          "type": "string"
+        },
+        "source-branches": {
+          "description": "The source branches for this branch.",
+          "type": "array",
+          "items": {
+            "description": "The source branches for this branch.",
+            "type": "string"
+          }
+        },
+        "tag": {
+          "description": "The label to use for this branch. Can be \u0027useBranchName\u0027 to extract the label from the branch name.",
+          "type": "string"
+        },
+        "tag-number-pattern": {
+          "format": "regex",
+          "pattern": "[/-](?\u003Cnumber\u003E\\d\u002B)[-/]",
+          "description": "The regex pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
+          "type": "string"
+        },
+        "track-merge-target": {
+          "description": "Strategy which will look for tagged merge commits directly off the current branch.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "tracks-release-branches": {
+          "description": "Indicates this branch config represents develop in GitFlow.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "mode": {
+          "$ref": "#/$defs/Nullable\u006011"
+        }
+      }
+    },
+    "Nullable\u00601": {
+      "description": "The increment strategy for this branch. Can be \u0027Inherit\u0027, \u0027Patch\u0027, \u0027Minor\u0027, \u0027Major\u0027, \u0027None\u0027.",
+      "enum": [
+        "None",
+        "Major",
+        "Minor",
+        "Patch",
+        "Inherit"
+      ]
+    },
+    "Nullable\u006011": {
+      "description": "The versioning mode for this branch. Can be \u0027ContinuousDelivery\u0027, \u0027ContinuousDeployment\u0027, \u0027Mainline\u0027.",
+      "enum": [
+        "ContinuousDelivery",
+        "ContinuousDeployment",
+        "Mainline"
+      ]
+    },
+    "DateTimeOffset": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "day": {
+          "$ref": "#/$defs/integer"
+        },
+        "day-of-week": {
+          "enum": [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "readOnly": true
+        },
+        "day-of-year": {
+          "$ref": "#/$defs/integer"
+        },
+        "hour": {
+          "$ref": "#/$defs/integer"
+        },
+        "local-date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "millisecond": {
+          "$ref": "#/$defs/integer"
+        },
+        "minute": {
+          "$ref": "#/$defs/integer"
+        },
+        "month": {
+          "$ref": "#/$defs/integer"
+        },
+        "offset": {
+          "$ref": "#/$defs/TimeSpan"
+        },
+        "second": {
+          "$ref": "#/$defs/integer"
+        },
+        "ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "time-of-day": {
+          "$ref": "#/$defs/TimeSpan"
+        },
+        "utc-date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "utc-ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "year": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "DateTime": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "integer": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "integer1": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "number": {
+      "type": "number",
+      "readOnly": true
+    },
+    "TimeSpan": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "$ref": "#/$defs/integer"
+        },
+        "hours": {
+          "$ref": "#/$defs/integer"
+        },
+        "milliseconds": {
+          "$ref": "#/$defs/integer"
+        },
+        "minutes": {
+          "$ref": "#/$defs/integer"
+        },
+        "seconds": {
+          "$ref": "#/$defs/integer"
+        },
+        "ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "total-days": {
+          "$ref": "#/$defs/number"
+        },
+        "total-hours": {
+          "$ref": "#/$defs/number"
+        },
+        "total-milliseconds": {
+          "$ref": "#/$defs/number"
+        },
+        "total-minutes": {
+          "$ref": "#/$defs/number"
+        },
+        "total-seconds": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "readOnly": true
+    },
+    "Nullable\u006012": {
+      "format": "date-time",
+      "pattern": "\u0027yyyy-MM-ddTHH:mm:ss\u0027",
+      "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "day": {
+          "$ref": "#/$defs/integer"
+        },
+        "day-of-week": {
+          "enum": [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "readOnly": true
+        },
+        "day-of-year": {
+          "$ref": "#/$defs/integer"
+        },
+        "hour": {
+          "$ref": "#/$defs/integer"
+        },
+        "local-date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "millisecond": {
+          "$ref": "#/$defs/integer"
+        },
+        "minute": {
+          "$ref": "#/$defs/integer"
+        },
+        "month": {
+          "$ref": "#/$defs/integer"
+        },
+        "offset": {
+          "$ref": "#/$defs/TimeSpan"
+        },
+        "second": {
+          "$ref": "#/$defs/integer"
+        },
+        "ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "time-of-day": {
+          "$ref": "#/$defs/TimeSpan"
+        },
+        "utc-date-time": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "utc-ticks": {
+          "$ref": "#/$defs/integer1"
+        },
+        "year": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "array": {
+      "description": "A sequence of SHAs to be excluded from the version calculations.",
+      "type": "array",
+      "items": {
+        "description": "A sequence of SHAs to be excluded from the version calculations.",
+        "type": "string"
+      }
+    }
+  }
+}

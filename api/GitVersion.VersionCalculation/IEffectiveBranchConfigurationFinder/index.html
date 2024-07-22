@@ -145,34 +145,23 @@
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/EffectiveBranchConfigurationFinder">Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/NextVersion">NextVersion</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/NextVersionCalculator">Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/ShaVersionFilter">ShaVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/VariableProvider">VariableProvider</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionCalculationModule">Version<wbr>Calculation<wbr>Module</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
 			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersion">IBaseVersion</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionIncrement">I<wbr>Base<wbr>Version<wbr>Increment</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IDeploymentModeCalculator">I<wbr>Deployment<wbr>Mode<wbr>Calculator</a></li>
 				<li class="selected"><a href="/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder">I<wbr>Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/IIncrementStrategyFinder">I<wbr>Increment<wbr>Strategy<wbr>Finder</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/DeploymentMode">DeploymentMode</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategies">VersionStrategies</a></li>
 
 
                     </ul>
@@ -205,12 +194,6 @@
 							
 							
 							
-								<dt>Implementing Types</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/EffectiveBranchConfigurationFinder">Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></li>								
-									</ul>
-								</dd>				
 						</dl>
 					</div>		
 					<div class="col-md-6">
@@ -218,8 +201,6 @@
 							graph BT
 	Type["IEffectiveBranchConfigurationFinder"]
 class Type type-node
-	Implementing0["EffectiveBranchConfigurationFinder"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/EffectiveBranchConfigurationFinder"
 
 						</div>
 					</div>
@@ -252,8 +233,8 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder/2AC00F73">GetConfigurations<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion.Configuration/EffectiveBranchConfiguration">Effective<wbr>Branch<wbr>Configuration</a>&gt;<wbr></td>
+								<td><a href="/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder/1C616F9B">GetConfigurations<wbr>(IBranch, <wbr>I<wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;Effective<wbr>Branch<wbr>Configuration&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
@@ -276,14 +257,6 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Effective<wbr>Branch<wbr>Configuration<wbr>Finder&gt;<wbr><wbr>(string)<wbr></a></td>
 								<td>T</td>
 								<td>
@@ -315,12 +288,6 @@ class Type type-node
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

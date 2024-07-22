@@ -128,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -144,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -224,19 +225,19 @@
 						
 						<tbody>
 								<tr>
+									<td><strong><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></strong></td>
+									<td>
+The Manual Deployment mode can be used to remain on the same pre-released&#xA;version until it has been deployed dedicatedly.&#xA;									</td>
+								</tr>
+								<tr>
 									<td><strong><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></strong></td>
 									<td>
-Continuous Delivery is the default versioning mode. In this mode,&#xA;GitVersion calculates the next version and will use that until that is&#xA;released.&#xA;									</td>
+Sometimes you just want the version to keep changing and deploy continuously&#xA;to an testing system. In this case, Continuous Delivery is a good mode to&#xA;operate GitVersion by.&#xA;									</td>
 								</tr>
 								<tr>
 									<td><strong><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></strong></td>
 									<td>
-Sometimes you just want the version to keep changing and deploy continuously.&#xA;In this case, Continuous Deployment is a good mode to operate GitVersion by.&#xA;									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/docs/reference/modes/mainline">Mainline Development</a></strong></td>
-									<td>
-Mainline Development versioning mode works like the Continuous Delivery,&#xA;except that it tells GitVersion to *infer* releases from merges and commits&#xA;to `main`.&#xA;									</td>
+Sometimes you just want the version to keep changing and deploy continuously.&#xA;									</td>
 								</tr>
 						</tbody>				
 					</table>
@@ -262,12 +263,6 @@ Mainline Development versioning mode works like the Continuous Delivery,&#xA;exc
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

@@ -146,18 +146,20 @@
 		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationBuilder">ConfigurationBuilder</a></li>
 				<li class="selected"><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationModule">ConfigurationModule</a></li>
+				<li><a href="/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>
+				<li><a href="/api/GitVersion.Configuration/ReferenceNameExtensions">Reference<wbr>Name<wbr>Extensions</a></li>
 			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.Configuration/IBranchConfigurationCalculator">I<wbr>Branch<wbr>Configuration<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></li>
-				<li><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></li>
+				<li><a href="/api/GitVersion.Configuration/IBranchConfiguration">IBranchConfiguration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigurationBuilder">I<wbr>Configuration<wbr>Builder</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigurationFileLocator">I<wbr>Configuration<wbr>File<wbr>Locator</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigurationProvider">I<wbr>Configuration<wbr>Provider</a></li>
+				<li><a href="/api/GitVersion.Configuration/IGitVersionConfiguration">I<wbr>Git<wbr>Version<wbr>Configuration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IIgnoreConfiguration">IIgnoreConfiguration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IPreventIncrementConfiguration">I<wbr>Prevent<wbr>Increment<wbr>Configuration</a></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme">Assembly<wbr>File<wbr>Versioning<wbr>Scheme</a></li>
+				<li><a href="/api/GitVersion.Configuration/AssemblyVersioningScheme">Assembly<wbr>Versioning<wbr>Scheme</a></li>
 
 
                     </ul>
@@ -192,7 +194,6 @@
 								<dd>
 									<ul class="list-unstyled">										
 											<li>Exception</li>								
-											<li><a href="/api/GitVersion/GitToolsException">GitToolsException</a></li>								
 											<li><a href="/api/GitVersion/GitVersionException">GitVersionException</a></li>								
 									</ul>
 								</dd>				
@@ -205,9 +206,7 @@
 							graph BT
 	Type--&gt;Base0["GitVersionException"]
 	click Base0 "/api/GitVersion/GitVersionException"
-	Base0--&gt;Base1["GitToolsException"]
-	click Base1 "/api/GitVersion/GitToolsException"
-	Base1--&gt;Base2["Exception"]
+	Base0--&gt;Base1["Exception"]
 	Type["ConfigurationException"]
 class Type type-node
 
@@ -255,6 +254,18 @@ public class ConfigurationException : GitVersionException</code></pre>
 							</tr>
 						</thead>
 							<tbody><tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigurationException/F4157EA4">Configuration<wbr>Exception<wbr>()<wbr></a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigurationException/F147034A">Configuration<wbr>Exception<wbr>(string, <wbr>Exception)<wbr></a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigurationException/F7DD6A3B">Configuration<wbr>Exception<wbr>(string, <wbr>object[])<wbr></a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.Configuration/ConfigurationException/D91404EB">Configuration<wbr>Exception<wbr>(string)<wbr></a></td>
 									<td></td>
 							</tr>
@@ -280,14 +291,6 @@ public class ConfigurationException : GitVersionException</code></pre>
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>Configuration<wbr>Exception&gt;<wbr><wbr>(string)<wbr></a></td>
 								<td>T</td>
 								<td>
@@ -319,12 +322,6 @@ public class ConfigurationException : GitVersionException</code></pre>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

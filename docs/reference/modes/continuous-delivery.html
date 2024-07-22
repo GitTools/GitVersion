@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Continuous Delivery</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,11 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/modes/continuous-delivery.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#usage">Usage</a></p>
-<p><a href="#how-continuous-delivery-affects-gitversion">How Continuous Delivery affects GitVersion</a></p>
-<p><a href="#resources">Resources</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -130,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li class="selected"><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -146,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -214,59 +213,27 @@
 			<h1>Continuous Delivery</h1>
 		</section>
 	<section class="content">
-		<p>Continuous Delivery is the practice of having a deployment pipeline and is the
-default mode in GitVersion. Each stage of the pipeline gets the code going
-through the pipeline closer to production.</p>
-<p>The topic itself is rather large, here we will just focus on the building and
-creation of <em>releasable</em> artifacts. This is only a part of continuous delivery
-as a whole, with the hard part being the ability to measure the impacts of what
-you have deployed into production.</p>
-<p>In essence continuous delivery means:</p>
-<ul>
-<li>Your code is automatically built and tested</li>
-<li>If any of the automated tests fail, the team's #1 priority is to fix the
-build</li>
-<li>If the build is green, the application can be deployed at any time
-<ul>
-<li>Ideally the business should make that decision</li>
-<li>The same artifacts which were built and tested should be deployed</li>
-<li>That means no rebuilding everything when you are deploying</li>
-</ul>
-</li>
-</ul>
-<p>Continuous delivery does not work well with GitFlow. The reason is that you are
-required to <em>merge</em> to main to do a release, triggering a rebuild and a new
-set of artifacts to go through your pipeline. Depending on how long your
-pipeline is, this could be a while.</p>
-<p>GitHubFlow is a better fit for Continuous delivery, the <a href="/docs/reference/modes/mainline">mainline
-development</a> model means that every merged feature branch will be
-built as a <em>stable</em> version and if the build/builds go green then you are free
-to deploy to production at any time.</p>
-<h2 id="usage">Usage</h2>
-<p>By default, GitVersion is set up to do Continuous Delivery on all branches but
-<code>develop</code>, which is set up with <a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a>.
-To change the mode to Continuous Delivery, change your
-<a href="/docs/reference/configuration">configuration</a> to:</p>
-<pre><code class="language-yaml">mode: ContinuousDelivery
-</code></pre>
+		<p>Continuous Delivery is the process of checking into a branch, running all the
+tests and if everything goes green it is automatically pushed to a testing system.</p>
+<p>A good case for Continuous Delivery is when using Octopus deploy, as you
+cannot publish the same version of a package into the same feed.</p>
+<p>For this mode we follow the logic in <a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">this blog post by Xavier Decoster</a>
+on the issues of incrementing automatically.</p>
 <h2 id="how-continuous-delivery-affects-gitversion">How Continuous Delivery affects GitVersion</h2>
-<p>The thing about continuous delivery is that there will be <em>multiple</em> candidates
-to deploy to production and it is a human choice to deploy. This means that
-GitVersion will build <strong>the same semantic version</strong> until that version is
-deployed. For instance:</p>
+<p>Continuous delivery is good when you deploy continuously to an testing system.</p>
 <ul>
-<li>1.1.0+5</li>
-<li>1.1.0+6</li>
-<li>1.1.0+7  &lt;-- This is the artifact we release, tag the commit which created
-this version</li>
-<li>1.1.1+0</li>
+<li>1.1.0-3</li>
+<li>1.1.0-2 (tag: 1.1.0-2) &lt;-- This is the version which has been deployed on testing</li>
+<li>1.1.0-1</li>
+<li>1.1.1-0</li>
 </ul>
-<p>Tags are required in this mode to communicate when the release is done as it's
-an external manual process.</p>
+<p>Tags are not required but optional in this mode to communicate when the release
+is done as it's an automated process.</p>
 <h2 id="resources">Resources</h2>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Continuous_delivery">Continuous Delivery on Wikipedia</a></li>
-<li><a href="https://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912">Continuous Delivery, the book</a></li>
+<li><a href="/docs/reference/configuration">Configuration</a></li>
+<li><a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Semantic Versioning &amp; auto-incremented NuGet package versions</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Continuous_delivery">Continuous delivery</a></li>
 </ul>
 
 	</section>
@@ -287,12 +254,6 @@ an external manual process.</p>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -363,5 +324,5 @@ an external manual process.</p>
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

@@ -149,13 +149,7 @@
 				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
 				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.Logging/ConsoleAdapter">ConsoleAdapter</a></li>
-				<li><a href="/api/GitVersion.Logging/ConsoleAppender">ConsoleAppender</a></li>
-				<li><a href="/api/GitVersion.Logging/Disposable">Disposable</a></li>
-				<li><a href="/api/GitVersion.Logging/FileAppender">FileAppender</a></li>
-				<li><a href="/api/GitVersion.Logging/Log">Log</a></li>
 				<li><a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></li>
-				<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>
 			<li class="header">Delegate Types</li>
 				<li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
 				<li><a href="/api/GitVersion.Logging/LogActionEntry">LogActionEntry</a></li>
@@ -195,13 +189,6 @@
 							
 							
 							
-								<dt>Implementing Types</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>								
-											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
-									</ul>
-								</dd>				
 						</dl>
 					</div>		
 					<div class="col-md-6">
@@ -209,10 +196,6 @@
 							graph BT
 	Type["ILog"]
 class Type type-node
-	Implementing0["NullLog"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Logging/NullLog"
-	Implementing1["Log"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Logging/Log"
 
 						</div>
 					</div>
@@ -276,6 +259,13 @@ class Type type-node
 							<tr>
 								<td><a href="/api/GitVersion.Logging/ILog/8113BC98">IndentLog<wbr>(string)<wbr></a></td>
 								<td>IDisposable</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Logging/ILog/36312FC3">Separator<wbr>()<wbr></a></td>
+								<td>void</td>
 								<td>
 									<div></div>
 								</td>
@@ -374,14 +364,6 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -520,14 +502,6 @@ class Type type-node
 										<div><small><em>From <a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></em></small></div>
 								</td>
 							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Logging/LogExtensions/D054E835">Write<wbr>(LogLevel, <wbr>string, <wbr>object[])<wbr></a></td>
-								<td>void</td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></em></small></div>
-								</td>
-							</tr>
 					</tbody></table>
 				</div>
 			</div>
@@ -552,12 +526,6 @@ class Type type-node
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

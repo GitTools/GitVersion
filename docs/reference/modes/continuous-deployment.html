@@ -128,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li class="selected"><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -144,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -212,28 +213,26 @@
 			<h1>Continuous Deployment</h1>
 		</section>
 	<section class="content">
-		<p>Continuous Deployment is the process of checking into main, running all the
-tests and if everything goes green it is automatically pushed to production.</p>
-<p>A good case for Continuous Deployment is when using Octopus deploy, as you
-cannot publish the same version of a package into the same feed.</p>
+		<p>Continuous Deployment is the process of checking into main and automatically
+deploying to production.</p>
 <p>For this mode we follow the logic in <a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">this blog post by Xavier Decoster</a>
 on the issues of incrementing automatically.</p>
-<p>As such we force a pre-release tag on all branches, this is fine for
-applications but can cause problems for libraries. As such this mode may or may
-not work for you, which leads us into a new mode in v4 of GitVersion:
-<a href="/docs/reference/modes/mainline">Mainline Development</a>.</p>
-<h3 id="usage">Usage</h3>
-<p>By default GitVersion is set up to do Continuous Deployment versioning on the
-<code>develop</code> branch, but for all other branches, <a href="/docs/reference/modes/continuous-delivery">Continuous
-Delivery</a> is the default mode. From version 3 of GitVersion
-this behavior is <a href="/docs/reference/configuration">configurable</a>.</p>
-<p>The default behavior for v3 and how v1 &amp; 2 worked was that the version only
-incremented after a tag, which signified a release. In v3 you can simply switch
-the default mode in the <a href="/docs/reference/configuration">configuration</a> from <code>ContinuousDelivery</code>
-to <code>ContinuousDeployment</code> and the version will then increment each commit,
-giving you the features of GitVersion with continuous deployment:</p>
-<pre><code class="language-yaml">mode: ContinuousDeployment
-</code></pre>
+<h2 id="how-continuous-deployment-affects-gitversion">How Continuous Deployment affects GitVersion</h2>
+<p>The thing about continuous deployment is that there will be only one version
+to deploy on production. This means that GitVersion will build
+<strong>the same semantic version</strong> for every commit until it has been tagged. For instance:</p>
+<ul>
+<li>1.2.0</li>
+<li>1.1.0 (tag: 1.1.0) &lt;-- This is the version which has been deployed on production</li>
+<li>1.1.0</li>
+<li>1.1.1</li>
+</ul>
+<p>Tags are required in this mode to communicate when the deployement happens on production.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="/docs/reference/configuration">Configuration</a></li>
+<li><a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Semantic Versioning &amp; auto-incremented NuGet package versions</a></li>
+</ul>
 
 	</section>
                 
@@ -253,12 +252,6 @@ giving you the features of GitVersion with continuous deployment:</p>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

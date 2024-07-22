@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Azure DevOps</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,11 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/azure-devops.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#basic-usage">Basic Usage</a></p>
-<p><a href="#executing-gitversion">Executing GitVersion</a></p>
-<p><a href="#running-inside-tfs">Running inside TFS</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -130,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -146,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -214,141 +213,14 @@
 			<h1>Azure DevOps</h1>
 		</section>
 	<section class="content">
-		<h2 id="basic-usage">Basic Usage</h2>
-<p>In Azure DevOps Pipeline (the web based build system) you can call GitVersion
-either using the Command Line build step or install an extension / custom build
-step. The custom build step requires a one-time setup to import the GitVersion
-task into your TFS or Azure DevOps Pipeline instance.</p>
-<h2 id="executing-gitversion">Executing GitVersion</h2>
-<h3 id="using-gitversion-with-the-msbuild-task-nuget-package">Using GitVersion with the MSBuild Task NuGet Package</h3>
-<ol>
-<li>Add the <a href="https://www.nuget.org/packages/GitVersionTask/">GitVersionTask</a>
-NuGet package to your projects.</li>
-</ol>
-<p>See <a href="/docs/usage/msbuild">MSBuild Task</a> for further instructions how to use
-the MS Build Task.</p>
-<h3 id="using-gitversion-with-the-command-line-build-step">Using GitVersion with the Command Line build step</h3>
-<ol>
-<li>Make sure to have GitVersion.exe under version control. There exists also a
-<a href="https://chocolatey.org/packages/GitVersion.Portable">Chocolatey package</a> for
-installing GitVersion.exe on build agents.</li>
-<li>Add a Command Line build step to your build definition. You'll probably want
-to drag the task to be at or near the top to ensure it executes before your
-other build steps.</li>
-<li>Set the Tool parameter to <code>&lt;pathToGitVersion&gt;\GitVersion.exe</code>.</li>
-<li>Set the Arguments parameter to <code>/output buildserver /nofetch</code>.</li>
-<li>If you want the GitVersionTask to update AssemblyInfo files add
-<code>updateAssemblyInfo true</code> to the Arguments parameter.</li>
-<li>If you want to update the build number you need to send a
-<a href="https://github.com/microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md">logging command</a>
-to TFS.</li>
-</ol>
-<h3 id="using-the-custom-gitversion-build-step">Using the custom GitVersion build step</h3>
-<h4 id="installing">Installing</h4>
-<h5 id="installing-the-extension">Installing the extension</h5>
-<p>For Visual Studio Team Service or TFS 2015 Update 2 or higher it is recommended
-to install the GitVersion extension:</p>
-<ol>
-<li>Install the
-<a href="https://marketplace.visualstudio.com/items?itemName=gittools.usegitversion">GitVersion Extension</a>.</li>
-</ol>
-<h5 id="manually-installingupdating-the-custom-build-step">Manually installing/updating the custom build step</h5>
-<p>If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
-extension you can install the build task manually:</p>
-<ol>
-<li>Install the <code>tfx</code> command line tool as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/README.md#setup">here</a>.</li>
-<li>For TFS 2015 On-Prem configure Basic Authentication in TFS as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md">here</a>.</li>
-<li>Download the GitVersion TFS build task from the latest release on the
-<a href="https://github.com/GitTools/GitVersion/releases">GitVersion releases page</a> and
-unzip.</li>
-<li>Run <code>tfx login</code> as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/README.md#login">here</a>.</li>
-<li>From the directory outside of where you unzipped the task, run
-<code>tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite</code> where
-GitVersionVsixTask is the directory containing the files.</li>
-<li>It should successfully install.</li>
-</ol>
-<h4 id="using-the-gitversion-custom-build-step">Using the GitVersion custom build step</h4>
-<p>From a TFS build definition, select "Add a Step" and then in the Build category,
-choose GitVersion and click Add. You'll probably want to drag the task to be at
-or near the top to ensure it executes before your other build steps.</p>
-<p>If you want the GitVersionTask to update AssemblyInfo files, check the box in
-the task configuration. For advanced usage, you can pass additional options to
-the GitVersion exe in the Additional arguments section.</p>
-<p>The Azure DevOps Pipeline build step can update your build number with
-GitVersion variables. See below for details.</p>
-<h4 id="using-pipelines-yaml">Using Pipelines yaml</h4>
-<p>Add the following yaml task and variable to your <code>azure-pipelines.yml</code> file:</p>
-<pre><code class="language-yml">variables:
-  GitVersion.SemVer: ''
-
-steps:
-- task: UseGitVersion@5
-  displayName: gitversion
-  inputs:
-    versionSpec: '5.x'
-    updateAssemblyInfo: true
-</code></pre>
-<p>You can now use the <code>GitVersion.SemVer</code> environment variable in any subsequent
-tasks to refer to the semantic version number for your build. For example, you
-can build your dotnet core application with a semantic version number like so:</p>
-<pre><code class="language-yml">- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: build
-    projects: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    versioningScheme: byEnvVar
-    versionEnvVar: 'GitVersion.SemVer'
-
-</code></pre>
-<h2 id="running-inside-tfs">Running inside TFS</h2>
-<h3 id="using-the-gitversion-variables">Using the GitVersion Variables</h3>
-<p>GitVersion passes variables in the form of <code>GitVersion.*</code> (Eg:
-<code>GitVersion.Major</code>) to TFS Build and also writes <code>GITVERSION.*</code>
-(Eg: <code>GITVERSION.MAJOR</code>) environment variables that are available for any
-subsequent build step.</p>
-<p>To use these variables you can just refer to them using the standard variable
-syntax. For instance <code>$(GitVersion.NuGetVersion)</code> in your nuget pack task to set
-the version number. Since update 1 there are no known limitations.</p>
-<p>See <a href="/docs/reference/variables">Variables</a> for an overview of available variables.</p>
-<h4 id="using-gitversion-variables-in-build-name">Using GitVersion variables in build name</h4>
-<p>To use GitVersion's variables in the build name, just add them in the form
-<code>$(GITVERSION_FullSemVer)</code> into the Build definition's build number string. Then
-just ensure GitVersion is called with <code>/output buildserver</code> and it will replace
-those variables with the calculated version.  The TFS GitVersion Build Step
-(above) handles this too, so if you're already using that, there's nothing extra
-to configure.</p>
-<p>If GitVersion does not find any substitutions it will just default to using <code>FullSemVer</code></p>
+		<h2 id="installation-and-usage">Installation and usage</h2>
+<p>For Azure DevOps Services or Azure DevOps Server you can install the <a href="https://marketplace.visualstudio.com/items?itemName=gittools.gittools">GitTools Bundle</a>.</p>
 <div class="alert alert-danger"><p><strong>Important</strong></p>
-<p>If you currently use <code>$(rev:.r)</code> in your build number, that won't
-work correctly if you
-use GitVersion variables as well due to the delayed expansion of the GitVersion
-vars. Instead, you might be able to use <code>$(GitVersion_BuildMetaData)</code> to achieve
-a similar result.  See <a href="/docs/reference/variables">Variables</a> for more info on the
-variables.</p>
+<p>You must disable shallow fetch, either in the pipeline settings UI or by setting <code>fetchDepth: 0</code> in your <code>checkout</code> step;
+without it, Azure DevOps Pipelines will perform a shallow clone, which will cause GitVersion to display an error message.
+See <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines#shallow-fetch">the Azure DevOps documentation</a> for more information.</p>
 </div>
-<h4 id="known-limitations">Known limitations</h4>
-<ul>
-<li>If you are using on premises TFS, make sure you are using at least
-<strong>TFS 2015 Update 1</strong>, otherwise a few things will not work.</li>
-<li>Installing the extension on an on premise TFS requires at least TFS 2015
-Update 2.</li>
-<li>You need to make sure that all tags are fetched for the Git repository,
-otherwise you may end with wrong versions (e.g. <code>FullSemVer</code> like <code>1.2.0+5</code>
-instead of <code>1.2.0</code> for tagged releases)  Just checking the <code>Clean Repository</code>
-check box in the build definition settings might not be enough since this will
-run a <code>git clean -fdx/reset --hard</code> without fetching all tags later. You can
-force deletion of the whole folder and a re-clone containing all tags by
-settings the variable <code>Build.Clean</code> to <code>all</code>. This will take more time during
-build but makes sure that all tags are fetched. In the future it is planned to
-allow using <code>git.exe</code> instead of current <code>libgit2sharp</code> for syncing the repos
-which might allow other possibilities to solve this issue. For details see this
-<a href="https://github.com/microsoft/azure-pipelines-tasks/issues/1218">GitHub issue</a>.</li>
-<li>If running a build for a certain commit (through passing the commit SHA while
-queueing the build) all tags from the repository will be fetched, even the ones
-newer than the commit.  This can lead to different version numbers while
-re-running historical builds.</li>
-</ul>
+<p>More information can be found at <a href="https://github.com/GitTools/actions/blob/main/docs/examples/azure/gitversion/index.md">gittools/actions</a>.</p>
 
 	</section>
                 
@@ -368,12 +240,6 @@ re-running historical builds.</li>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -444,5 +310,5 @@ re-running historical builds.</li>
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

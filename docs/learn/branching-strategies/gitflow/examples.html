@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - GitFlow Examples</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,15 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/learn/branching-strategies/gitflow/examples.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#feature-branches">Feature Branches</a></p>
-<p><a href="#pull-request">Pull Request</a></p>
-<p><a href="#hotfix-branches">Hotfix Branches</a></p>
-<p><a href="#minor-release-branches">Minor Release Branches</a></p>
-<p><a href="#major-release-branches">Major Release Branches</a></p>
-<p><a href="#support-branches">Support Branches</a></p>
-<p><a href="#to-contribute">To Contribute</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -134,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -150,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -218,43 +213,76 @@
 			<h1>GitFlow Examples</h1>
 		</section>
 	<section class="content">
-		<p>These examples are using the <em>default</em> configuration with GitVersion. Which is
-<a href="/docs/reference/modes/continuous-deployment">continuous deployment</a> mode for
-<code>develop</code> and <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a> mode
-for all other branches.</p>
-<p>This default configuration allows you to publish CI builds from develop to a CI
-MyGet feed, or another CI feed. Then all other branches are manually released
-then tagged. Read more about this at <a href="/docs/reference/version-increments">version increments</a>.</p>
+		<p>These examples are illustrating the usage of the supported <code>GitFlow</code> workflow
+in GitVersion. To enable this workflow, the builtin template
+<a href="/docs/workflows/GitFlow/v1.json">GitFlow/v1</a> needs to be referenced in the
+configuration as follows:</p>
+<pre><code class="language-yaml">workflow: GitFlow/v1
+mode: ContinuousDelivery
+</code></pre>
+<p>Where
+the <a href="/docs/reference/modes/continuous-deployment">continuous deployment</a> mode for no branches,
+the <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a> mode for
+<code>main</code>, <code>support</code> and <code>develop</code> branches and
+the <a href="/docs/reference/modes/manual-deployment">manual deployment</a> mode
+for <code>release</code>, <code>feature</code>, <code>hotfix</code> and <code>unknown</code> branches are specified.</p>
+<p>This configuration allows you to publish CI (Continuous Integration) builds
+from <code>main</code>, <code>support</code> and <code>develop</code> branches to an artifact repository.
+All other branches are manually published. Read more about this at
+<a href="/docs/reference/version-increments">version increments</a>.</p>
+<div class="alert alert-info"><p>The <em>continuous delivery</em> mode has been used for the <code>main</code> and the
+<code>support</code> branch in this examples (specified as a fallback on the root
+configuration layer) to illustrate how the version increments are applied.
+In production context the <em>continuous deployment</em> mode might be a better
+option when e.g. the release process is automated or the commits are tagged
+by the pipeline automatically.</p>
+</div>
 <h2 id="feature-branches">Feature Branches</h2>
-<p>Feature branches will take the feature branch name and use that as the
-pre-release tag.</p>
-<p><img src="/docs/img/05119d0cd4ecaaefff94_feature-branch.png" class="img-fluid" alt="GitFlow"></p>
-<p>Notice after the feature branch is merged, the version on <code>develop</code> is
-<code>1.3.0-alpha.3</code>. This is due to <code>develop</code> running in <em>continuous deployment</em>
-mode. If you configured <code>develop</code> to use <em>continuous delivery</em> the version would
-still be <code>1.3.0-alpha.1</code> and you would have to use release tags to increment the
-<code>alpha.1</code>.</p>
-<p>You can see the difference on the feature branch itself, notice the version is
-the same before and after the commit on the feature branch? Only the metadata
-has changed. If you released the feature branch artifacts then tagged the
-commit, the following commit would increase to <code>-beta.2</code>.</p>
-<h2 id="pull-request">Pull Request</h2>
-<p>Because feature branches are most likely pushed to a fork, we are showing the
-pull request branch name which is created when you submit a pull request</p>
-<p><img src="/docs/img/09fdf46995b771f3164a_pull-request.png" class="img-fluid" alt="GitFlow"></p>
+<p>Feature branches can be used in the <code>GitFlow</code> workflow to implement a
+feature in an isolated environment. Feature branches will take the feature
+branch name and use that as the pre-release label. Feature branches will be
+created from a <code>develop</code>, <code>release</code>, <code>main</code>, <code>support</code> or <code>hotfix</code> branch.</p>
+<h3 id="create-feature-branch-from-main">Create feature branch from main</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_FeatureFromMainBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<div class="alert alert-info"><p>After the feature branch is merged, the version on <code>main</code> is <code>2.0.0-5</code>.
+This is due to <code>main</code> running in <em>continuous delivery</em> mode. If <code>main</code> was
+configured to use <em>continuous deployment</em> the version would be <code>2.0.0</code>.</p>
+</div>
+<h3 id="create-feature-branch-from-develop">Create feature branch from develop</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_FeatureFromDevelopBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<div class="alert alert-info"><p>After the feature branch is merged, the version on <code>develop</code> is
+<code>1.3.0-alpha.3</code>. This is due to <code>develop</code> running in <em>continuous delivery</em>
+mode. If <code>develop</code> was configured to use <em>manual deployment</em> the version
+would still be <code>1.3.0-alpha.1</code> and you would have to use pre-release tags
+to increment the pre-release label <code>alpha.1</code>.</p>
+</div>
 <h2 id="hotfix-branches">Hotfix Branches</h2>
-<p>Hotfix branches are used when you need to do a <em>patch</em> release in GitFlow and
-are always created off <code>main</code></p>
-<p><img src="/docs/img/f26ae57adbd9b74f74c4_hotfix.png" class="img-fluid" alt="GitFlow"></p>
-<h2 id="minor-release-branches">Minor Release Branches</h2>
-<p>Release branches are used for both major and minor releases for stabilisation
-before a release. Release branches are taken off <code>develop</code> then merged to both
-<code>develop</code> and <code>main</code>. Finally <code>main</code> is tagged with the released version.</p>
-<p><img src="/docs/img/6d33d35a70a777608fa1_minor-release.png" class="img-fluid" alt="GitFlow"></p>
-<h2 id="major-release-branches">Major Release Branches</h2>
-<p>Major releases are just like minor releases, the difference is you bump the
-major in the release branch name.</p>
-<p><img src="/docs/img/39f9d8b8b007c82f1f80_major-release.png" class="img-fluid" alt="GitFlow"></p>
+<p>Hotfix branches are used when you need to do a <em>patch</em> release in the
+<code>GitFlow</code> workflow and are always created from <code>main</code> branch.</p>
+<h3 id="create-hotfix-branch">Create hotfix branch</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_HotfixBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<h3 id="create-hotfix-branch-with-version-number">Create hotfix branch with version number</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_VersionedHotfixBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<h2 id="release-branches">Release Branches</h2>
+<p>Release branches are used for major and minor releases to stabilize a RC
+(Release Candidate) or to integrate features (in parallel) targeting different
+iterations. Release branches are taken from <code>main</code> (or from <code>develop</code>) and will
+be merged back afterwards. Finally the <code>main</code> branch is tagged with the
+released version.</p>
+<p>Release branches can be used in the <code>GitFlow</code> as well as <code>GitHubFlow</code> workflow.
+Sometimes you want to start on a large feature which may take a while
+to stabilize so you want to keep it off main.
+In these scenarios you can either create a long lived
+feature branch (if you do not know the version number this large feature will go
+into, and it's non-breaking) otherwise you can create a release branch for the
+next major version. You can then submit pull requests to the long lived feature
+branch or the release branch.</p>
+<h3 id="create-release-branch">Create release branch</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_ReleaseBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<h3 id="create-release-branch-with-version">Create release branch with version</h3>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_VersionedReleaseBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<h2 id="develop-branch">Develop Branch</h2>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_DevelopBranch.png" class="img-fluid" alt="GitFlow" /></p>
 <h2 id="support-branches">Support Branches</h2>
 <p>Support branches are not really covered in GitFlow, but are essential if you
 need to maintain multiple major versions at the same time. You could use support
@@ -262,19 +290,17 @@ branches for supporting minor releases as well. If you are just supporting the
 majors, then name your branch <code>support/&lt;major&gt;.x</code> (i.e <code>support/1.x</code>), to
 support minors use <code>support/&lt;major&gt;.&lt;minor&gt;.x</code> or <code>support/&lt;major&gt;.&lt;minor&gt;.0</code>.
 (i.e <code>support/1.3.x</code> or <code>support/1.3.0</code>)</p>
-<h3 id="hotfix">Hotfix</h3>
-<p>Depending on what you name your support branch, you may or may not need a hotfix
-branch. Naming it <code>support/1.x</code> will automatically bump the patch, if you name
-it <code>support/1.3.0</code> then the version in branch name rule will kick in and the
-patch <em>will not</em> automatically bump, meaning you have to use hotfix branches.
-<img src="/docs/img/b035b8ca99bd34239518_support-hotfix.png" class="img-fluid" alt="GitFlow"></p>
-<h3 id="minor-release">Minor Release</h3>
-<p><img src="/docs/img/2167fb1c4a5cf84edfd8_support-minor.png" class="img-fluid" alt="GitFlow"></p>
+<p><img src="/docs/img/DocumentationSamplesForGitFlow_SupportBranch.png" class="img-fluid" alt="GitFlow" /></p>
+<div class="alert alert-info"><p>Depending on what you name your support branch, you may or may not need a
+hotfix branch. Naming it <code>support/1.x</code> will automatically bump the patch,
+if you name it <code>support/1.3.0</code> then the version in branch name rule will
+kick in and the patch <em>will not</em> automatically bump, meaning you have to
+use hotfix branches.</p>
+</div>
 <h2 id="to-contribute">To Contribute</h2>
 <p>See <a href="/docs/learn/branching-strategies/contribute-examples">contributing examples</a>.</p>
 <h3 id="source">Source</h3>
-<p>See <code>DocumentationSamples.GitFlowExample</code>. To update, modify then run test.
-Update <a href="https://gist.github.com/JakeGinnivan/cf053d7f5d336ae9f7bb">https://gist.github.com/JakeGinnivan/cf053d7f5d336ae9f7bb</a></p>
+<p>See <code>DocumentationSamplesForGitFlow.cs</code>. To update, modify then run test.</p>
 
 	</section>
                 
@@ -294,12 +320,6 @@ Update <a href="https://gist.github.com/JakeGinnivan/cf053d7f5d336ae9f7bb">https
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -370,5 +390,5 @@ Update <a href="https://gist.github.com/JakeGinnivan/cf053d7f5d336ae9f7bb">https
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

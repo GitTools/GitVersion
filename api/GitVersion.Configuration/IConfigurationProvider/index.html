@@ -144,22 +144,21 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Class Types</li>
+				<li><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></li>
+				<li><a href="/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>
+				<li><a href="/api/GitVersion.Configuration/ReferenceNameExtensions">Reference<wbr>Name<wbr>Extensions</a></li>
 			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Configuration/IBranchConfiguration">IBranchConfiguration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigurationBuilder">I<wbr>Configuration<wbr>Builder</a></li>
 				<li><a href="/api/GitVersion.Configuration/IConfigurationFileLocator">I<wbr>Configuration<wbr>File<wbr>Locator</a></li>
 				<li class="selected"><a href="/api/GitVersion.Configuration/IConfigurationProvider">I<wbr>Configuration<wbr>Provider</a></li>
-			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.Configuration/BranchConfiguration">BranchConfiguration</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationBuilder">ConfigurationBuilder</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationExtensions">Configuration<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationFileLocator">Configuration<wbr>File<wbr>Locator</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationModule">ConfigurationModule</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationProvider">Configuration<wbr>Provider</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigurationSerializer">Configuration<wbr>Serializer</a></li>
-				<li><a href="/api/GitVersion.Configuration/EffectiveBranchConfiguration">Effective<wbr>Branch<wbr>Configuration</a></li>
-				<li><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></li>
-				<li><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></li>
-				<li><a href="/api/GitVersion.Configuration/IgnoreConfiguration">IgnoreConfiguration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IGitVersionConfiguration">I<wbr>Git<wbr>Version<wbr>Configuration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IIgnoreConfiguration">IIgnoreConfiguration</a></li>
+				<li><a href="/api/GitVersion.Configuration/IPreventIncrementConfiguration">I<wbr>Prevent<wbr>Increment<wbr>Configuration</a></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme">Assembly<wbr>File<wbr>Versioning<wbr>Scheme</a></li>
+				<li><a href="/api/GitVersion.Configuration/AssemblyVersioningScheme">Assembly<wbr>Versioning<wbr>Scheme</a></li>
 
 
                     </ul>
@@ -192,12 +191,6 @@
 							
 							
 							
-								<dt>Implementing Types</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/ConfigurationProvider">Configuration<wbr>Provider</a></li>								
-									</ul>
-								</dd>				
 						</dl>
 					</div>		
 					<div class="col-md-6">
@@ -205,8 +198,6 @@
 							graph BT
 	Type["IConfigurationProvider"]
 class Type type-node
-	Implementing0["ConfigurationProvider"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration/ConfigurationProvider"
 
 						</div>
 					</div>
@@ -239,22 +230,8 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/IConfigurationProvider/3C1EC4F3">Init<wbr>(string)<wbr></a></td>
-								<td>void</td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/IConfigurationProvider/9D107918">Provide<wbr>(<wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
-								<td><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/IConfigurationProvider/E8537182">Provide<wbr>(string, <wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
-								<td><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></td>
+								<td><a href="/api/GitVersion.Configuration/IConfigurationProvider/7666F18C">Provide<wbr>(IReadOnlyDictionary<wbr>&lt;object, <wbr>object&gt;<wbr>?)<wbr></a></td>
+								<td><a href="/api/GitVersion.Configuration/IGitVersionConfiguration">I<wbr>Git<wbr>Version<wbr>Configuration</a></td>
 								<td>
 									<div></div>
 								</td>
@@ -277,14 +254,6 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Configuration<wbr>Provider&gt;<wbr><wbr>(string)<wbr></a></td>
 								<td>T</td>
 								<td>
@@ -316,12 +285,6 @@ class Type type-node
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

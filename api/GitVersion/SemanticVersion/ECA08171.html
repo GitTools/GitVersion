@@ -150,24 +150,39 @@
 				<li class="selected"><a href="/api/GitVersion/SemanticVersion/ECA08171">SemanticVersion<wbr>(long, <wbr>long, <wbr>long)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/CE420650">SemanticVersion<wbr>(SemanticVersion)<wbr></a></li>
 			<li class="header">Field Members</li>
-				<li><a href="/api/GitVersion/SemanticVersion/4074A502">BuildMetaData</a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/A63BA935">Major</a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/95BB14F7">Minor</a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/9950B6EA">Patch</a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/52232251">PreReleaseTag</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/6BFB5A60">Empty</a></li>
+			<li class="header">Property Members</li>
+				<li><a href="/api/GitVersion/SemanticVersion/C80BE461">BuildMetaData</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/42465147">IsPreRelease</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/B1C412CB">Major</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/8244AF09">Minor</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/8EAF0D14">Patch</a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/DA5C6332">PreReleaseTag</a></li>
 			<li class="header">Method Members</li>
 				<li><a href="/api/GitVersion/SemanticVersion/0C4BD124">CompareTo<wbr>(SemanticVersion)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/55B2BE72">CompareTo<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/AF74BBA9">Equals<wbr>(SemanticVersion)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/0D5B3CBC">Equals<wbr>(object)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/1C152E12">GetHashCode<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/78FF3EEA">IncrementVersion<wbr>(VersionField)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/8A7C99F1">Increment<wbr>(VersionField, <wbr>string, <wbr>SemanticVersion[])<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/78A9763F">Increment<wbr>(VersionField, <wbr>string, <wbr>bool, <wbr>SemanticVersion[])<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/A209B5F1">Increment<wbr>(VersionField, <wbr>string, <wbr>SemanticVersion<wbr>.IncrementMode, <wbr>SemanticVersion[])<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/1449082E">IsEmpty<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/DB68CBB0">Parse<wbr>(string, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/EBFA502A">IsEqualTo<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/CC2EB6C6">IsGreaterThan<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/E7E005DB">Is<wbr>Greater<wbr>Than<wbr>Or<wbr>Equal<wbr>To<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/BE6F08DD">IsLabeledWith<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/14DA1783">IsLessThan<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/735AB2B1">IsLessThanOrEqualTo<wbr>(SemanticVersion, <wbr>bool)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/D0FD2108">Is<wbr>Match<wbr>For<wbr>Branch<wbr>Specific<wbr>Label<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/07CCF2B0">Parse<wbr>(string, <wbr>string, <wbr>Semantic<wbr>Version<wbr>Format)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/497DEB5F">ToString<wbr>()<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/64DCF316">ToString<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/SemanticVersion/29D83574">ToString<wbr>(string, <wbr>IFormatProvider?)<wbr></a></li>
-				<li><a href="/api/GitVersion/SemanticVersion/550F1A3B">TryParse<wbr>(string, <wbr>string, <wbr>SemanticVersion)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/CEA27259">TryParse<wbr>(string, <wbr>string, <wbr>SemanticVersion, <wbr>Semantic<wbr>Version<wbr>Format)<wbr></a></li>
+				<li><a href="/api/GitVersion/SemanticVersion/1525BB34">WithLabel<wbr>(string)<wbr></a></li>
+			<li class="header">NamedType Members</li>
+				<li><a href="/api/GitVersion/IncrementMode">SemanticVersion<wbr>.IncrementMode</a></li>
 
 
                     </ul>
@@ -278,12 +293,6 @@
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

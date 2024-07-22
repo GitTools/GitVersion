@@ -128,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -144,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -212,18 +213,27 @@
 			<h1>Docker</h1>
 		</section>
 	<section class="content">
-		<p>GitVersion can be used through one of its many published Docker
-containers. The list of available containers can be found on
-<a href="https://hub.docker.com/r/gittools/gitversion">Docker Hub</a>. Once you've found the image you want to use,
-you can run it like this:</p>
-<pre><code class="language-shell">docker run --rm --volume &quot;$(pwd):/repo&quot; gittools/gitversion:6.0.0-fedora.36-6.0 /repo
+		<p>The recommended image to run is <code>alpine</code>, as they are the smallest Docker images we provide. This will execute GitVersion for the current working directory (<code>$(pwd)</code>) on Linux and Unix or powershell on Windows:</p>
+<pre><code class="language-sh">docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:{tag} /repo
 </code></pre>
-<p>The above command will run GitVersion with the current directory
-mapped to <code>/repo</code> inside the container (the <code>--volume &quot;$(pwd):/repo&quot;</code>
-part). The <code>/repo</code> directory is then passed in as the argument
-GitVersion should use to calculate the version.</p>
-<p>The <code>--rm</code> flag will remove the container after it has finished
-running.</p>
+<p>The following command will execute GitVersion for the current working directory (<code>%CD%</code>) on Windows with CMD:</p>
+<pre><code class="language-sh">docker run --rm -v &quot;%CD%:/repo&quot; gittools/gitversion:{tag} /repo
+</code></pre>
+<p>Note that the path <code>/repo</code> needs to be passed as an argument since the <code>gitversion</code> executable within the container is not aware of the fact that it's running inside a container.</p>
+<h3 id="ci-agents">CI Agents</h3>
+<p>If you are running GitVersion on a CI agent, you may need to specify environment variables to allow GitVersion to work correctly.
+For example, on Azure DevOps you may need to set the following environment variables:</p>
+<pre><code class="language-sh">docker run --rm -v &quot;$(pwd):/repo&quot; --env TF_BUILD=true --env BUILD_SOURCEBRANCH=$(Build.SourceBranch) gittools/gitversion:{tag} /repo
+</code></pre>
+<p>On GitHub Actions, you may need to set the following environment variables:</p>
+<pre><code class="language-sh">docker run --rm -v &quot;$(pwd):/repo&quot; --env GITHUB_ACTIONS=true --env GITHUB_REF=$(GITHUB_REF) gittools/gitversion:{tag} /repo
+</code></pre>
+<h3 id="tags">Tags</h3>
+<p>Most of the tags we provide have both arm64 and amd64 variants. If you need to pull a architecture specific tag you can do that like:</p>
+<pre><code class="language-sh">docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:{tag}-amd64 /repo
+docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:{tag}-arm64 /repo
+</code></pre>
+<p>The list of available containers can be found on <a href="https://hub.docker.com/r/gittools/gitversion">Docker Hub</a>.</p>
 <p><a href="https://hub.docker.com/r/gittools/gitversion" class="btn btn-primary">Explore GitVersion on Docker Hub</a></p>
 
 	</section>
@@ -244,12 +254,6 @@ running.</p>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
         <script>           
             // Close the sidebar if we select an anchor link

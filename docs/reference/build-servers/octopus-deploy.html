@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Octopus Deploy</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,9 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/octopus-deploy.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#githubflow-solutions">GitHubFlow Solutions</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -128,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -144,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -236,19 +237,19 @@ depending on which build server you have this approach may or may not work for
 you.  For instance in TFS Build vNext you cannot chain builds to publish
 artifacts built in one build in another.</p>
 <ol>
-<li>Your CI build creates the stable NuGet package</li>
-</ol>
+<li><p>Your CI build creates the stable NuGet package</p>
 <ul>
 <li>Do <em>not</em> publish this package into the Octopus nuget feed</li>
 </ul>
-<ol start="2">
-<li>When you want to push a package into the Octopus deployment pipeline you trigger the second build</li>
-</ol>
+</li>
+<li><p>When you want to push a package into the Octopus deployment pipeline you trigger the second build</p>
 <ul>
 <li>it will either take the package built from the first build in the chain (your CI build?) or rebuild</li>
 <li>It will publish that package into the Octopus deploy feed</li>
 <li>The build then is <em>tagged</em> with the version, this will cause GitVersion to increment the version</li>
 </ul>
+</li>
+</ol>
 <p>This means that CI builds are <em>not</em> available to Octopus deploy, there will be a
 manual build in your <em>build server</em> which pushes the package to Octopus deploy.</p>
 <h3 id="tag-to-release">Tag to release</h3>
@@ -271,22 +272,22 @@ will tag and push the tag.</p>
 <pre><code class="language-powershell">[CmdletBinding()]
 param()
 
-##### <a href="/api/GitVersion.Model.Configuration/Config">Config</a> #####
+##### Config #####
 # Path to GitVersion.exe
-$gitversion = "tools\GitVersion\GitVersion.exe"
+$gitversion = &quot;tools\GitVersion\GitVersion.exe&quot;
 function Create-AdditionalReleaseArtifacts
 {
  param( [string]$Version )
 
  # Put any custom release logic here (like generating release notes?)
 }
-### END <a href="/api/GitVersion.Model.Configuration/Config">Config</a> ###
+### END Config ###
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = &quot;Stop&quot;
 trap
 {
    Pop-Location
-   Write-Error "$_"
+   Write-Error &quot;$_&quot;
    Exit 1
 }
 
@@ -306,7 +307,7 @@ if ($pendingChanges -ne $null)
 
 # Determine version to release
 $output = &amp; $gitversion /output json
-$versionInfoJson = $output -join "`n"
+$versionInfoJson = $output -join &quot;`n&quot;
 
 $versionInfo = $versionInfoJson | ConvertFrom-Json
 $stableVersion = $versionInfo.MajorMinorPatch
@@ -314,11 +315,11 @@ $stableVersion = $versionInfo.MajorMinorPatch
 # Create release
 Create-AdditionalReleaseArtifacts $stableVersion
 # Always create a new commit because some CI servers cannot be triggered by just pushing a tag
-&amp; git commit -Am "Create release $stableVersion" --allow-empty
+&amp; git commit -Am &quot;Create release $stableVersion&quot; --allow-empty
 &amp; git tag $stableVersion
 if ($LASTEXITCODE -ne 0) {
     &amp; git reset --hard HEAD^
-    throw "No changes detected since last release"
+    throw &quot;No changes detected since last release&quot;
 }
 
 &amp; git push origin main --tags
@@ -328,27 +329,27 @@ Pop-Location
 <h4 id="sample-build-script-build.ps1">Sample build script (build.ps1)</h4>
 <pre><code class="language-powershell">[CmdletBinding()]
 param()
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = &quot;Stop&quot;
 trap
 {
    Pop-Location
-   Write-Error "$_"
+   Write-Error &quot;$_&quot;
    Exit 1
 }
 Push-Location $PSScriptRoot
 
 # Tools
-$gitversion = "tools\GitVersion\GitVersion.exe"
-$octo = "tools\Octo\Octo.exe"
-$nuget = "tools\NuGet\NuGet.exe"
+$gitversion = &quot;tools\GitVersion\GitVersion.exe&quot;
+$octo = &quot;tools\Octo\Octo.exe&quot;
+$nuget = &quot;tools\NuGet\NuGet.exe&quot;
 # Calculate version
 $output = &amp; $gitversion /output json /l GitVersion.log /updateAssemblyInfo /nofetch
 if ($LASTEXITCODE -ne 0) {
-    Write-Verbose "$output"
-    throw "GitVersion Exit Code: $LASTEXITCODE"
+    Write-Verbose &quot;$output&quot;
+    throw &quot;GitVersion Exit Code: $LASTEXITCODE&quot;
 }
 
-$versionInfoJson = $output -join "`n"
+$versionInfoJson = $output -join &quot;`n&quot;
 Write-Host $versionInfoJson
 
 $versionInfo = $versionInfoJson | ConvertFrom-Json
@@ -361,10 +362,10 @@ msbuild MyProj.sln
 if ($versionInfo.PreReleaseTag -eq '')
 {
     Write-Host
-    Write-Host "Creating a release" -ForegroundColor Magenta
+    Write-Host &quot;Creating a release&quot; -ForegroundColor Magenta
 
     # You probably want to specify output directory too
-    &amp; $nuget pack "src\myProj\MyProj.nuspec" -version $nugetVersion
+    &amp; $nuget pack &quot;src\myProj\MyProj.nuspec&quot; -version $nugetVersion
 }
 </code></pre>
 <h3 id="configure-gitversion-to-increment-per-commit">Configure GitVersion to Increment Per Commit</h3>
@@ -390,12 +391,6 @@ can confuse consumers of your library as the version has semantic meaning.</p>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -466,5 +461,5 @@ can confuse consumers of your library as the version has semantic meaning.</p>
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

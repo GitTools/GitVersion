@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Arguments</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,10 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/usage/cli/arguments.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#help">Help</a></p>
-<p><a href="#override-config">Override config</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -129,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -145,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -227,7 +227,6 @@ GitVersion [path]
 
     path            The directory containing .git. If not defined current
                     directory is used. (Must be first argument)
-    init            Configuration utility for gitversion
     /version        Displays the version of GitVersion
     /diag           Runs GitVersion with additional diagnostic information
                     (requires git.exe to be installed)
@@ -238,13 +237,17 @@ GitVersion [path]
                     'file' or 'buildserver', will default to 'json'.
     /outputfile     Path to output file. It is used in combination with /output
                     'file'.
-    /showvariable   Used in conjuntion with /output json, will output just a
+    /showvariable   Used in conjunction with /output json, will output just a
                     particular variable. E.g. /output json /showvariable SemVer
                     - will output `1.2.3+beta.4`
+    /format         Used in conjunction with /output json, will output a format
+                    containing version variables.
+                    E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
+                         /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.
-    /config         Path to config file (defaults to GitVersion.yml)
+    /config         Path to config file (defaults to GitVersion.yml or GitVersion.yaml)
     /showconfig     Outputs the effective GitVersion config (defaults + custom
-                    from GitVersion.yml) in yaml format
+                    from GitVersion.yml or GitVersion.yaml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-
                     separated key value pairs e.g. /overrideconfig
                     tag-prefix=Foo)
@@ -265,13 +268,10 @@ GitVersion [path]
                     (.csproj/.vbproj/.fsproj) files in the git repo and update
                     them
                     Note: This is only compatible with the newer Sdk projects
-    /updateassemblyinfofilename
-                    Specify name of AssemblyInfo file. Can also
-                    /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with
-                    /updateassemblyinfo or /updateassemblyinfofilename is not
-                    found, it be created with these attributes:
+                    /updateassemblyinfo is not
+                    found, it will be created with these attributes:
                     AssemblyFileVersion, AssemblyVersion and
                     AssemblyInformationalVersion.
                     Supports writing version info for: C#, F#, VB
@@ -297,15 +297,13 @@ GitVersion [path]
                     Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause
                     GitVersion to not calculate your version as expected.
-
-gitversion init     Configuration utility for gitversion
 </code></pre>
 <h2 id="override-config">Override config</h2>
-<p><code>/overrideconfig [key=value]</code> will override appropriate <code>key</code> from 'GitVersion.yml'.</p>
+<p><code>/overrideconfig [key=value]</code> will override appropriate <code>key</code> from 'GitVersion.yml' or 'GitVersion.yaml'.</p>
 <p>To specify multiple options add multiple <code>/overrideconfig [key=value]</code> entries:
 <code>/overrideconfig key1=value1 /overrideconfig key2=value2</code>.</p>
-<p>To have <strong>space characters</strong> as a part of <code>value</code>, <code>value</code> has be enclosed with double quotes - <code>key="My value"</code>.</p>
-<p>Double quote character inside of the double quoted <code>value</code> has to be be escaped with a backslash '\' - <code>key="My \"escaped-quotes\""</code>.</p>
+<p>To have <strong>space characters</strong> as a part of <code>value</code>, <code>value</code> has be enclosed with double quotes - <code>key=&quot;My value&quot;</code>.</p>
+<p>Double quote character inside of the double quoted <code>value</code> has to be be escaped with a backslash '\' - <code>key=&quot;My \&quot;escaped-quotes\&quot;&quot;</code>.</p>
 <p>Following options are supported:</p>
 <ol>
 <li><code>assembly-file-versioning-format</code></li>
@@ -313,13 +311,10 @@ gitversion init     Configuration utility for gitversion
 <li><code>assembly-informational-format</code></li>
 <li><code>assembly-versioning-format</code></li>
 <li><code>assembly-versioning-scheme</code></li>
-<li><code>build-metadata-padding</code></li>
 <li><code>commit-date-format</code></li>
 <li><code>commit-message-incrementing</code></li>
-<li><code>commits-since-version-source-padding</code></li>
-<li><code>continuous-delivery-fallback-tag</code></li>
+<li><code>label</code></li>
 <li><code>increment</code></li>
-<li><code>legacy-semver-padding</code></li>
 <li><code>major-version-bump-message</code></li>
 <li><code>minor-version-bump-message</code></li>
 <li><code>mode</code></li>
@@ -331,11 +326,11 @@ gitversion init     Configuration utility for gitversion
 <li><code>update-build-number</code></li>
 </ol>
 <p>Read more about <a href="/docs/reference/configuration">Configuration</a>.</p>
-<p>Using <code>override-config</code> on the command line will not change the contents of the config file <code>GitVersion.yml</code>.</p>
+<p>Using <code>override-config</code> on the command line will not change the contents of the config file <code>GitVersion.yml</code> or <code>GitVersion.yaml</code>.</p>
 <h3 id="example-how-to-override-configuration-option-tag-prefix-to-use-prefix-custom">Example: How to override configuration option 'tag-prefix' to use prefix 'custom'</h3>
 <p><code>GitVersion.exe /output json /overrideconfig tag-prefix=custom</code></p>
 <h3 id="example-how-to-override-configuration-option-assembly-versioning-format">Example: How to override configuration option 'assembly-versioning-format'</h3>
-<p><code>GitVersion.exe /output json /overrideconfig assembly-versioning-format="{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 0}"</code></p>
+<p><code>GitVersion.exe /output json /overrideconfig assembly-versioning-format=&quot;{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 0}&quot;</code></p>
 <p>Will pickup up environment variable <code>BUILD_NUMBER</code> or fallback to zero for assembly revision number.</p>
 <h3 id="example-how-to-override-configuration-option-assembly-versioning-scheme">Example: How to override configuration option 'assembly-versioning-scheme'</h3>
 <p><code>GitVersion.exe /output json /overrideconfig assembly-versioning-scheme=MajorMinor</code></p>
@@ -365,12 +360,6 @@ gitversion init     Configuration utility for gitversion
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -441,5 +430,5 @@ gitversion init     Configuration utility for gitversion
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>

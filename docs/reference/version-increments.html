@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html><html><head>
+﻿<!DOCTYPE html>
+<html>
+    <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta name="description">
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="description" />
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Version Incrementing</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
-        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet">
+        <link href="/assets/css/override.css" rel="stylesheet" />
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -25,13 +27,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
-<meta property="og:site_name" content="GitVersion">
-<meta property="og:type" content="object">
-<meta property="og:title" content="GitVersion">
-<meta property="og:url" content="https://gitversion.net/">
-<meta property="og:description" content="From git log to SemVer in no time">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -81,10 +83,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/version-increments.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#approach">Approach</a></p>
-<p><a href="#manually-incrementing-the-version">Manually incrementing the version</a></p>
-<hr class="infobar-hidden">
-</div>
+    <div id="infobar-headings"></div>
 
                 </section>
                 <section class="sidebar">    
@@ -129,9 +128,9 @@
                     <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
+                <li><a href="/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
                 <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
                 <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
 
                     </ul>
                 </li>
@@ -145,6 +144,7 @@
                 <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
                 <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
                 <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
                 <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
                 <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
                 <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
@@ -276,12 +276,21 @@ than <code>1.0.0</code>, bumping the major version works as expected.</p>
 <p>If you want to use the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> standard,
 you can leverage this feature as follows:</p>
 <pre><code class="language-yaml">mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
-major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
-minor-version-bump-message: "^(feat)(\\([\\w\\s-]*\\))?:"
-patch-version-bump-message: "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
+major-version-bump-message: &quot;^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)&quot;
+minor-version-bump-message: &quot;^(feat)(\\([\\w\\s-,/\\\\]*\\))?:&quot;
+patch-version-bump-message: &quot;^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:&quot;
 </code></pre>
 <p>This will ensure that your version gets bumped according to the commits you've
 created.</p>
+<p>If your CI/CD workflow uses semantic-release's commit-analyzer, change
+<code>(fix|perf)</code> to <code>(fix|perf|revert)</code>.
+<a href="https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38">Why?</a></p>
+<p>Alternatively, you can override this rule in the
+<a href="https://github.com/semantic-release/commit-analyzer/tree/master#usage">configuration</a>
+of &#64;semantic-release/commit-analyzer. If you intend to write rules with
+patterns, note that instead of using Regular Expression,
+&#64;semantic-release/commit-analyzer uses
+<a href="https://github.com/micromatch/micromatch#matching-features">micromatch's glob implementation</a>.</p>
 <h3 id="gitversion.yml">GitVersion.yml</h3>
 <p>The first is by setting the <code>next-version</code> property in the GitVersion.yml file.
 This property only serves as a base version,</p>
@@ -292,15 +301,19 @@ from the branch name as a source. However, GitVersion can't use the <a href="/do
 name as a version source for <em>other branches</em></a>.</p>
 <h3 id="detached-head">Detached HEAD</h3>
 <p>If HEAD is in detached state tag will be <code>-no-branch-</code>.</p>
-<p>Example: <code>0.1.0--no-branch-.1+4</code></p>
+<p>Example: <code>0.0.1--no-branch-.1+4</code></p>
 <h3 id="tagging-commit">Tagging commit</h3>
 <p>By tagging a commit, GitVersion will use that tag for the version of that
 commit, then increment the next commit automatically based on the increment
 rules for that branch (some branches bump patch, some minor).</p>
+<p>Be aware that tags are local to a repository and will not be transferred when
+you perform a default <code>git push</code>. Instead, tags can be pushed separately with
+their own command. For more information, read the <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">git documentation on
+tagging</a>.</p>
 <h3 id="incrementing-per-commit">Incrementing per commit</h3>
-<p>When using the continuous deployment <code>mode</code> (which will increment the SemVer every
-commit) all builds <em>must</em> have a pre-release tag, except for builds that are
-explicitly tagged as stable.</p>
+<p>When using the continuous deployment <code>mode</code> (which will increment the SemVer
+every commit) all builds <em>must</em> have a pre-release tag, except for builds that
+are explicitly tagged as stable.</p>
 <p>Then the build metadata (which is the commit count) is promoted to the
 pre-release tag. Applying these rules, the above commit-graph would produce:</p>
 <pre><code class="language-log">e137e9 -&gt; 1.0.0+0
@@ -314,7 +327,8 @@ b5d142 -&gt; 2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
 </code></pre>
 <p>As you can see, the versions now no longer conflict. When you want to create a
 stable <code>2.0.0</code> release you simply <code>git tag 2.0.0</code>, then build the tag, and it
-will produce a stable <code>2.0.0</code> package.</p>
+will produce a stable <code>2.0.0</code> package. Be aware that
+<a href="#tagging-commit">tags are not transferred with <code>git push</code></a></p>
 <p>For more information/background on why we have come to this conclusion, read
 <a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Xavier Decoster's blog post on the subject</a>.</p>
 
@@ -336,12 +350,6 @@ will produce a stable <code>2.0.0</code> package.</p>
         <div class="github-button">
     <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
 </div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -412,5 +420,5 @@ will produce a stable <code>2.0.0</code> package.</p>
                 }, 500);
             });
         </script>
-    
-</body></html>
+    </body>
+</html>
