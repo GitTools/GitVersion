@@ -36,7 +36,7 @@ If you're using `PackageReference` style NuGet dependencies (VS 2017+), add
 dependency of your package:
 
 ```xml
-<PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
+<PackageReference Include="GitVersion.MsBuild" Version="6.0.0">
   <PrivateAssets>All</PrivateAssets>
 </PackageReference>
 ```
@@ -46,39 +46,6 @@ dependency of your package:
 The next thing you need to do is to remove the `Assembly*Version` attributes from
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
-
-### WPF specific concerns
-
-One further step needs to be taken for SDK-style WPF projects.
-
-Building projects with .NET Core SDK with a version lower than v5.0.200
-requires turning off automatic generation of the different versioning attributes.
-GitVersion usually controls these properties but cannot during WPF specific
-targets that generate a temporary project.
-
-```xml
-<PropertyGroup>
-  <!-- Wpf workaround: GitVersion and .NET SDK < v5.0.200 -->
-  <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-  <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-</PropertyGroup>
-```
-
-For .NET Core SDK v5.0.200 to v6.0.0-preview.1, a opt-in flag was introduced to
-allow package references to be imported to the temporary project.
-You can now remove the previous versioning attributes and replace them with
-a single property.
-
-```xml
-<PropertyGroup>
-  <!-- WPF workaround: GitVersion and .NET SDK between v5.0.200 and v6.0.0-preview.2  -->
-  <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
-</PropertyGroup>
-```
-
-You can remove all workarounds if you are building with .NET Core SDK
-v6.0.0-preview.2 or later as the flag is now opt-out.
 
 ### Done!
 
@@ -259,6 +226,18 @@ this:
 For SDK-style projects, `UpdateVersionProperties` controls setting the default
 variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 `InformationalVersion`, `AssemblyVersion` and `FileVersion`.
+
+## Overriding Target Framework
+
+If you want to override the target framework that GitVersion uses to determine the version, you can set the `GitVersionTargetFramework` property in your MSBuild script, like this:
+
+```xml
+<PropertyGroup>
+  ...
+  <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
+  ...
+</PropertyGroup>
+```
 
 ### Namespace generation
 
