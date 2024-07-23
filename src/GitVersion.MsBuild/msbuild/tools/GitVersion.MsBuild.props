@@ -16,6 +16,11 @@
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofetch</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nocache</GitVersion_ToolArgments>
+
+        <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == ''">$(TargetFramework)</GitVersionTargetFramework>
+
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(GitVersionTargetFramework)))gitversion.dll&quot;</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(GitVersionTargetFramework)))GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
