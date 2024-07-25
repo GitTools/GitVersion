@@ -71,7 +71,7 @@ from The Noun Project.
 [brew]:                            https://formulae.brew.sh/formula/gitversion
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
 [winget]:                          https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitTools/GitVersion
-[winget-badge]:                    https://img.shields.io/badge/winget-v5.12.0-blue.svg?logo=microsoft
+[winget-badge]:                    https://img.shields.io/badge/winget-v6.0.0-blue.svg?logo=microsoft
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg?logo=docker
 [az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=gittools.gittools
