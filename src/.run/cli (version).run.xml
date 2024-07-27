@@ -1,13 +1,13 @@
-﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="schema" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Schema/bin/Debug/net8.0/schema" />
-    <option name="PROGRAM_PARAMETERS" value="--OutputDirectory schemas --Version 6.0" />
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="cli (version)" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.App/bin/Debug/net8.0/gitversion" />
+    <option name="PROGRAM_PARAMETERS" value="-version" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Schema/GitVersion.Schema.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.App/GitVersion.App.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="0" />
