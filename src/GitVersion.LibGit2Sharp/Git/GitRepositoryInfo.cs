@@ -19,10 +19,10 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         this.options = options.NotNull();
 
-        this.dynamicGitRepositoryPath = new Lazy<string?>(GetDynamicGitRepositoryPath);
-        this.dotGitDirectory = new Lazy<string?>(GetDotGitDirectory);
-        this.gitRootPath = new Lazy<string?>(GetGitRootPath);
-        this.projectRootDirectory = new Lazy<string?>(GetProjectRootDirectory);
+        this.dynamicGitRepositoryPath = new(GetDynamicGitRepositoryPath);
+        this.dotGitDirectory = new(GetDotGitDirectory);
+        this.gitRootPath = new(GetGitRootPath);
+        this.projectRootDirectory = new(GetProjectRootDirectory);
     }
 
     public string? DynamicGitRepositoryPath => this.dynamicGitRepositoryPath.Value;
@@ -50,7 +50,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             bool possiblePathExists;
             do
             {
-                possiblePath = string.Concat(originalPath, "_", i++.ToString());
+                possiblePath = $"{originalPath}_{i++}";
                 possiblePathExists = Directory.Exists(possiblePath);
             } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
         }

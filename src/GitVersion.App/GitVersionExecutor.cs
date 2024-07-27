@@ -9,26 +9,29 @@ namespace GitVersion;
 internal class GitVersionExecutor(
     ILog log,
     IConsole console,
+    IVersionWriter versionWriter,
+    IHelpWriter helpWriter,
     IConfigurationFileLocator configurationFileLocator,
     IConfigurationProvider configurationProvider,
     IConfigurationSerializer configurationSerializer,
     IGitVersionCalculateTool gitVersionCalculateTool,
     IGitVersionOutputTool gitVersionOutputTool,
-    IVersionWriter versionWriter,
-    IHelpWriter helpWriter,
+    IGitRepository gitRepository,
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionExecutor
 {
     private readonly ILog log = log.NotNull();
     private readonly IConsole console = console.NotNull();
+    private readonly IVersionWriter versionWriter = versionWriter.NotNull();
+    private readonly IHelpWriter helpWriter = helpWriter.NotNull();
+
     private readonly IConfigurationFileLocator configurationFileLocator = configurationFileLocator.NotNull();
     private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
 
     private readonly IGitVersionCalculateTool gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
     private readonly IGitVersionOutputTool gitVersionOutputTool = gitVersionOutputTool.NotNull();
-    private readonly IVersionWriter versionWriter = versionWriter.NotNull();
-    private readonly IHelpWriter helpWriter = helpWriter.NotNull();
+    private readonly IGitRepository gitRepository = gitRepository.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public int Execute(GitVersionOptions gitVersionOptions)
@@ -49,6 +52,7 @@ internal class GitVersionExecutor(
 
     private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
     {
+        this.gitRepository.DiscoverRepository(gitVersionOptions.WorkingDirectory);
         var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 

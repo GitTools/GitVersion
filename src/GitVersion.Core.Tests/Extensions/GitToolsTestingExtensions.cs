@@ -46,6 +46,13 @@ public static class GitToolsTestingExtensions
         return branch;
     }
 
+    public static void DiscoverRepository(this IServiceProvider sp)
+    {
+        var gitRepository = sp.GetRequiredService<IGitRepository>();
+        var gitRepositoryInfo = sp.GetRequiredService<IGitRepositoryInfo>();
+        gitRepository.DiscoverRepository(gitRepositoryInfo.GitRootPath);
+    }
+
     public static IBranch FindBranch(this IGitRepository repository, string branchName)
         => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
             ?? throw new GitVersionException($"Branch {branchName} not found");
@@ -84,6 +91,9 @@ public static class GitToolsTestingExtensions
                 services.AddSingleton(options);
                 services.AddSingleton(configurationProviderMock);
             });
+
+            sp.DiscoverRepository();
+
             var variableProvider = sp.GetRequiredService<IVariableProvider>();
             var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
             var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();

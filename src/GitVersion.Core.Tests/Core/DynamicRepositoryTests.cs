@@ -74,6 +74,8 @@ public class DynamicRepositoryTests : TestBase
 
         var sp = ConfigureServices(services => services.AddSingleton(options));
 
+        sp.DiscoverRepository();
+
         var gitPreparer = sp.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
 

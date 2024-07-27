@@ -4,9 +4,9 @@ namespace GitVersion.App.Tests;
 
 public class ArgumentBuilder
 {
-    public ArgumentBuilder(string workingDirectory) => this.WorkingDirectory = workingDirectory;
+    public ArgumentBuilder(string? workingDirectory) => this.WorkingDirectory = workingDirectory;
 
-    public ArgumentBuilder(string workingDirectory, string? exec, string? execArgs, string? projectFile, string? projectArgs, string? logFile)
+    public ArgumentBuilder(string? workingDirectory, string? exec, string? execArgs, string? projectFile, string? projectArgs, string? logFile)
     {
         this.WorkingDirectory = workingDirectory;
         this.exec = exec;
@@ -16,14 +16,14 @@ public class ArgumentBuilder
         this.LogFile = logFile;
     }
 
-    public ArgumentBuilder(string workingDirectory, string? additionalArguments, string? logFile)
+    public ArgumentBuilder(string? workingDirectory, string? additionalArguments, string? logFile)
     {
         this.WorkingDirectory = workingDirectory;
         this.additionalArguments = additionalArguments;
         this.LogFile = logFile;
     }
 
-    public string WorkingDirectory { get; }
+    public string? WorkingDirectory { get; }
 
     public string? LogFile { get; }
 
@@ -31,7 +31,10 @@ public class ArgumentBuilder
     {
         var arguments = new StringBuilder();
 
-        arguments.Append(" /targetpath \"").Append(this.WorkingDirectory).Append('\"');
+        if (!this.WorkingDirectory.IsNullOrWhiteSpace())
+        {
+            arguments.Append(" /targetpath \"").Append(this.WorkingDirectory).Append('\"');
+        }
 
         if (!this.exec.IsNullOrWhiteSpace())
         {

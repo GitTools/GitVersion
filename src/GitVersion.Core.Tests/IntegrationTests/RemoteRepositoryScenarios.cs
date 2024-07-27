@@ -63,6 +63,8 @@ public class RemoteRepositoryScenarios : TestBase
             services.AddSingleton<IEnvironment>(environment);
         });
 
+        sp.DiscoverRepository();
+
         var gitPreparer = sp.GetRequiredService<IGitPreparer>();
 
         gitPreparer.Prepare();
