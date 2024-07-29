@@ -7,7 +7,7 @@ namespace GitVersion.App.Tests;
 
 public static class GitVersionHelper
 {
-    public static ExecutionResults ExecuteIn(string workingDirectory,
+    public static ExecutionResults ExecuteIn(string? workingDirectory,
         string? exec = null,
         string? execArgs = null,
         string? projectFile = null,
@@ -22,12 +22,12 @@ public static class GitVersionHelper
     }
 
     public static ExecutionResults ExecuteIn(
-        string workingDirectory,
+        string? workingDirectory,
         string? arguments,
         bool logToFile = true,
         params KeyValuePair<string, string?>[] environments)
     {
-        var logFile = logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
+        var logFile = workingDirectory is not null && logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, arguments, logFile);
         return ExecuteIn(args, environments);
     }
@@ -64,13 +64,15 @@ public static class GitVersionHelper
             Console.WriteLine("Executing: {0} {1}", executable, args);
             Console.WriteLine();
 
+            var workingDirectory = arguments.WorkingDirectory ?? PathHelper.GetCurrentDirectory();
+
             exitCode = ProcessHelper.Run(
                 s => output.AppendLine(s),
                 s => output.AppendLine(s),
                 null,
                 executable,
                 args,
-                arguments.WorkingDirectory,
+                workingDirectory,
                 [.. environmentalVariables]);
         }
         catch (Exception exception)

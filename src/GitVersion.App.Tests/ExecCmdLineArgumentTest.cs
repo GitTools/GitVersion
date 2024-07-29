@@ -52,11 +52,21 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
     {
-        var result = GitVersionHelper.ExecuteIn(SysEnv.SystemDirectory, null, false);
+        var result = GitVersionHelper.ExecuteIn(Path.GetTempPath(), null, false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();
         result.Output.ShouldContain("Cannot find the .git directory");
+    }
+
+    [TestCase(" -help")]
+    [TestCase(" -version")]
+    public void WorkingDirectoryWithoutGitFolderDoesNotFailForVersionAndHelp(string argument)
+    {
+        var result = GitVersionHelper.ExecuteIn(workingDirectory: null, arguments: argument);
+
+        result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
     }
 
     [Test]

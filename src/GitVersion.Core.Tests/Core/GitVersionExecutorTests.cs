@@ -34,6 +34,8 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
+        sp.DiscoverRepository();
+
         var preparer = this.sp.GetRequiredService<IGitPreparer>();
 
         preparer.Prepare();
@@ -77,6 +79,8 @@ public class GitVersionExecutorTests : TestBase
             var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = MainBranch }, WorkingDirectory = worktreePath };
 
             this.sp = GetServiceProvider(gitVersionOptions);
+
+            sp.DiscoverRepository();
 
             var preparer = this.sp.GetRequiredService<IGitPreparer>();
             preparer.Prepare();
@@ -516,6 +520,9 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        sp.DiscoverRepository();
+
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
@@ -543,6 +550,9 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        sp.DiscoverRepository();
+
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
@@ -568,6 +578,9 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        sp.DiscoverRepository();
+
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
@@ -582,6 +595,8 @@ public class GitVersionExecutorTests : TestBase
         this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.log = this.sp.GetRequiredService<ILog>();
         this.gitVersionCacheProvider = (GitVersionCacheProvider)this.sp.GetRequiredService<IGitVersionCacheProvider>();
+
+        sp.DiscoverRepository();
 
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
