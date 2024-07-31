@@ -103,6 +103,8 @@ internal static class ConfigurationExtensions
                 {
                     label = label.Replace("{" + groupName + "}", match.Groups[groupName].Value);
                 }
+
+                label = label.Replace('_', '-');
             }
         }
 
