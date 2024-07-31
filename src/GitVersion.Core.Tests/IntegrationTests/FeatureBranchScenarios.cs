@@ -185,6 +185,7 @@ public class FeatureBranchScenarios : TestBase
     [TestCase("alpha", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha")]
     [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha.JIRA-123")]
     [TestCase("{BranchName}-of-task-number-{TaskNumber}", "4711_this-is-a-feature", "^features?[/-](?<TaskNumber>\\d+)_(?<BranchName>.+)", "this-is-a-feature-of-task-number-4711")]
+    [TestCase("{BranchName}", "4711_this-is-a-feature", "^features?[/-](?<BranchName>.+)", "4711-this-is-a-feature")]
     public void ShouldUseConfiguredLabel(string label, string featureName, string regularExpression, string preReleaseLabelName)
     {
         var configuration = GitFlowConfigurationBuilder.New
