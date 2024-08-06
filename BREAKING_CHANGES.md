@@ -71,6 +71,19 @@
 * When creating a branch with name `hotfix/next` (by using the `GitFlow` workflow) or `release/next` (by the `GitHubFlow` workflow) the resulting version will yield to a patched version per default.
 * If you have a tag `1.0.0` on `main` and branch from `main` to `release/1.0.1` then the next version number will be `1.1.0` when using the `GitFlow` workflow. This behavior is expected (but different compared to the `GitHubFlow` workflow) because on the `GitFlow` workflow you have an addition branch configuration with name hotfix where `is-release-branch` is set to `true`. That means if you want `1.0.1` as a next version you need to branch to `hotfix/1.0.1` or `hotfix/next`.  On the other hand if you use the `GitHubFlow` workflow the next version number will be `1.0.1` because the increment on the `release` branch is set to `Patch`.
 
+### Legacy Output Variables
+
+The following legacy output variables have been removed in this version:
+
+* `BuildMetaDataPadded`
+* `LegacySemVer`
+* `LegacySemVerPadded`
+* `NuGetVersionV2`
+* `NuGetVersion`
+* `NuGetPreReleaseTagV2`
+* `NuGetPreReleaseTag`
+* `CommitsSinceVersionSourcePadded`
+
 ## v5.0.0
 
 * Version numbers in branches other than `release` branches are no longer
