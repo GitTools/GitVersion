@@ -1,28 +1,11 @@
-using GitVersion.Helpers;
-
 namespace GitVersion.Extensions;
 
 public static class GitExtensions
 {
-    public static void DumpGraph(string workingDirectory, Action<string>? writer = null, int? maxCommits = null)
+    public static void DumpGraphLog(Action<string>? writer = null, int? maxCommits = null)
     {
         var output = new StringBuilder();
-        try
-        {
-            ProcessHelper.Run(
-                o => output.AppendLine(o),
-                e => output.AppendLineFormat("ERROR: {0}", e),
-                null,
-                "git",
-                CreateGitLogArgs(maxCommits),
-                workingDirectory);
-        }
-        catch (FileNotFoundException exception) when (exception.FileName == "git")
-        {
-            output.AppendLine("Could not execute 'git log' due to the following error:");
-            output.AppendLine(exception.ToString());
-        }
-
+        output.AppendLine($"Please run `git {CreateGitLogArgs(maxCommits)}` to see the git graph. This can help you troubleshoot any issues.");
         if (writer != null)
         {
             writer(output.ToString());
@@ -36,6 +19,6 @@ public static class GitExtensions
     public static string CreateGitLogArgs(int? maxCommits)
     {
         var commits = maxCommits != null ? $" -n {maxCommits}" : null;
-        return $@"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*{commits}";
+        return $"""log --graph --format="%h %cr %d" --decorate --date=relative --all --remotes=*{commits}""";
     }
 }

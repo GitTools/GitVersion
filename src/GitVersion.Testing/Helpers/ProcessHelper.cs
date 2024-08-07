@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Testing;
 
-internal static class ProcessHelper
+public static class ProcessHelper
 {
     private static readonly object LockObject = new();
 

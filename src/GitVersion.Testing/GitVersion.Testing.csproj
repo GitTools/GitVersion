@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
@@ -7,6 +7,5 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\GitVersion.Core\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
-        <Compile Include="..\GitVersion.Core\Helpers\ProcessHelper.cs" Link="Helpers\ProcessHelper.cs" />
     </ItemGroup>
 </Project>

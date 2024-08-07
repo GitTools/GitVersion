@@ -753,7 +753,7 @@ static GitVersion.Extensions.EnumerableExtensions.AddRange<T>(this System.Collec
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
-static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
+static GitVersion.Extensions.GitExtensions.DumpGraphLog(System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.IncrementStrategyExtensions.ToVersionField(this GitVersion.IncrementStrategy strategy) -> GitVersion.VersionField
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource(this string! resourceName, System.Reflection.Assembly! assembly) -> string!
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource<T>(this string! resourceName) -> string!
