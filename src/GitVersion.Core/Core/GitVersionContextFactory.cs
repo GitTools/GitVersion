@@ -29,7 +29,8 @@ internal class GitVersionContextFactory(
             currentBranch, gitVersionOptions.RepositoryInfo.CommitId, configuration.Ignore
         );
 
-        if (currentCommit is null) throw new GitVersionException("No commits found on the current branch.");
+        if (currentCommit is null)
+            throw new GitVersionException("No commits found on the current branch.");
 
         if (currentBranch.IsDetachedHead)
         {

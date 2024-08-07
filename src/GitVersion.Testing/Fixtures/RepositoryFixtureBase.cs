@@ -73,7 +73,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         SequenceDiagram.Destroy(branch);
     }
 
-    public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}");
+    public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}", ".");
 
     public string MakeATaggedCommit(string tag)
     {
@@ -165,8 +165,8 @@ public abstract class RepositoryFixtureBase : IDisposable
     /// </summary>
     public void MakeShallow()
     {
-        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} pull --depth 1");
-        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} gc --prune=all");
+        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} pull --depth 1", ".");
+        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} gc --prune=all", ".");
     }
 
     public void Fetch(string remote, FetchOptions? options = null)

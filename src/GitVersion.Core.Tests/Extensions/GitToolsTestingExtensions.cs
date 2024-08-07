@@ -30,6 +30,7 @@ public static class GitToolsTestingExtensions
         commit.When.Returns(when.AddSeconds(1));
         return commit;
     }
+
     public static IBranch CreateMockBranch(string name, params ICommit[] commits)
     {
         var branch = Substitute.For<IBranch>();
@@ -55,13 +56,13 @@ public static class GitToolsTestingExtensions
 
     public static IBranch FindBranch(this IGitRepository repository, string branchName)
         => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
-            ?? throw new GitVersionException($"Branch {branchName} not found");
+           ?? throw new GitVersionException($"Branch {branchName} not found");
 
     public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null)
-        => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
+        => DumpGraph(repository.Path, writer, maxCommits);
 
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
-        => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+        => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
     public static GitVersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
         IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
@@ -173,4 +174,7 @@ public static class GitToolsTestingExtensions
         servicesOverrides?.Invoke(services);
         return services.BuildServiceProvider();
     }
+
+    private static void DumpGraph(string workingDirectory, Action<string>? writer = null, int? maxCommits = null)
+        => GitTestExtensions.ExecuteGitCmd(GitExtensions.CreateGitLogArgs(maxCommits), workingDirectory, writer);
 }

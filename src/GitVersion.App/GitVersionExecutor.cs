@@ -82,16 +82,13 @@ internal class GitVersionExecutor(
             var error = $"An unexpected error occurred:{PathHelper.NewLine}{exception}";
             this.log.Error(error);
 
-            this.log.Info("Attempting to show the current git graph (please include in issue): ");
-            this.log.Info("Showing max of 100 commits");
-
             try
             {
-                GitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => this.log.Info(mess), 100);
+                GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
             }
             catch (Exception dumpGraphException)
             {
-                this.log.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
+                this.log.Error($"Couldn't dump the git graph due to the following error: {dumpGraphException}");
             }
             return 1;
         }
@@ -131,8 +128,7 @@ internal class GitVersionExecutor(
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
         {
-            this.log.Info("Dumping commit graph: ");
-            GitExtensions.DumpGraph(workingDirectory, mess => this.log.Info(mess), 100);
+            GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
         }
 
         if (!Directory.Exists(workingDirectory))
