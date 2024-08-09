@@ -245,7 +245,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
-        TestContext.WriteLine(fileContent);
+        TestContext.Out.WriteLine(fileContent);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
