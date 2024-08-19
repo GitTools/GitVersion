@@ -15,10 +15,11 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Win32.Registry" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
-        <PackageReference Update="@(PackageReference)" PrivateAssets="All"/>
+        <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,7 +27,7 @@
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
-        <ProjectReference Update="@(ProjectReference)" PrivateAssets="All"/>
+        <ProjectReference Update="@(ProjectReference)" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
