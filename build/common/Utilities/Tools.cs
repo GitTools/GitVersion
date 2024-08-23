@@ -6,6 +6,6 @@ public class Tools
 
     public static readonly Dictionary<string, string> Versions = new()
     {
-        { CodecovUploaderCmd, "0.7.3" },
+        { CodecovUploaderCmd, "0.8.0" }
     };
 }
