@@ -65,13 +65,12 @@ from The Noun Project.
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg?logo=nuget
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
-[gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
 [brew]:                            https://formulae.brew.sh/formula/gitversion
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
 [winget]:                          https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitTools/GitVersion
-[winget-badge]:                    https://img.shields.io/badge/winget-v6.0.0-blue.svg?logo=microsoft
+[winget-badge]:                    https://img.shields.io/badge/winget-v6.0.2-blue.svg?logo=microsoft
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg?logo=docker
 [az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=gittools.gittools
