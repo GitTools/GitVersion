@@ -115,4 +115,17 @@ public class VersionBumpingScenarios : TestBase
 
         fixture.AssertFullSemver("2.0.1-1");
     }
+
+    [Theory]
+    [TestCase("Breaking change\n\n+semver:breaking", "0.2.0-1")]
+    [TestCase("Minor change\n\n+semver:minor", "0.1.1-1")]
+    [TestCase("Patch change\n\n+semver:patch", "0.1.1-1")]
+    public void BumpsCorrectPartDuringInitialDevelopment(string commitMessage, string expectedVersion)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.MakeATaggedCommit("0.1.0");
+        fixture.Repository.MakeACommit(commitMessage);
+        fixture.AssertFullSemver(expectedVersion);
+    }
 }
