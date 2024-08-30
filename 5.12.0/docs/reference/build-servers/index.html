@@ -1,432 +1,677 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-        <meta name="description" />
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="/5.12.0/assets/img/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/5.12.0/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - Build Servers</title>
-        <link href="/5.12.0/assets/css/highlight.css" rel="stylesheet">
-        <link href="/5.12.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
-        <link href="/5.12.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
-        <link href="/5.12.0/assets/css/theme/theme.css" rel="stylesheet" />
-        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
-        <link href="/5.12.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/5.12.0/assets/css/override.css" rel="stylesheet" />
-        <script src="/5.12.0/assets/js/jquery-2.2.3.min.js"></script>
-        <script src="/5.12.0/assets/js/bootstrap.min.js"></script>        
-        <script src="/5.12.0/assets/js/app.min.js"></script>         
-        <script src="/5.12.0/assets/js/highlight.pack.js"></script>   
-        <script src="/5.12.0/assets/js/jquery.slimscroll.min.js"></script>
-        <script src="/5.12.0/assets/js/jquery.sticky-kit.min.js"></script>
-        <script src="/5.12.0/assets/js/mermaid.min.js"></script>
-        <script src="/5.12.0/assets/js/svg-pan-zoom.min.js"></script>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="description" />
+    <meta
+      name="keywords"
+      content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="/5.12.0/assets/img/favicon.ico"
+      type="image/x-icon"
+    />
+    <link
+      rel="icon"
+      href="/5.12.0/assets/img/favicon.ico"
+      type="image/x-icon"
+    />
+    <title>GitVersion - Build Servers</title>
+    <link href="/5.12.0/assets/css/highlight.css" rel="stylesheet" />
+    <link href="/5.12.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="/5.12.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
+    <link href="/5.12.0/assets/css/theme/theme.css" rel="stylesheet" />
+    <link
+      href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i"
+      rel="stylesheet"
+    />
+    <link
+      href="/5.12.0/assets/css/font-awesome.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="/5.12.0/assets/css/override.css" rel="stylesheet" />
+    <script src="/5.12.0/assets/js/jquery-2.2.3.min.js"></script>
+    <script src="/5.12.0/assets/js/bootstrap.min.js"></script>
+    <script src="/5.12.0/assets/js/app.min.js"></script>
+    <script src="/5.12.0/assets/js/highlight.pack.js"></script>
+    <script src="/5.12.0/assets/js/jquery.slimscroll.min.js"></script>
+    <script src="/5.12.0/assets/js/jquery.sticky-kit.min.js"></script>
+    <script src="/5.12.0/assets/js/mermaid.min.js"></script>
+    <script src="/5.12.0/assets/js/svg-pan-zoom.min.js"></script>
 
-        <meta name="google" content="notranslate">
-<meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
-<meta property="og:site_name" content="GitVersion" />
-<meta property="og:type" content="object" />
-<meta property="og:title" content="GitVersion" />
-<meta property="og:url" content="https://gitversion.net/" />
-<meta property="og:description" content="From git log to SemVer in no time" />
-<link rel="icon" href="/5.12.0/assets/img/icon.png" type="image/png">
-<link rel="icon" href="/5.12.0/assets/img/icon.svg" type="image/svg">
-<link rel="apple-touch-icon" href="/5.12.0/assets/img/icon.png" type="image/png">
-<link rel="apple-touch-icon" href="/5.12.0/assets/img/icon.svg" type="image/svg">
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="Content-Language" content="en" />
+    <meta
+      name="google-site-verification"
+      content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII"
+    />
+    <meta
+      property="og:image"
+      content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png"
+    />
+    <meta property="og:site_name" content="GitVersion" />
+    <meta property="og:type" content="object" />
+    <meta property="og:title" content="GitVersion" />
+    <meta property="og:url" content="https://gitversion.net/" />
+    <meta
+      property="og:description"
+      content="From git log to SemVer in no time"
+    />
+    <link rel="icon" href="/5.12.0/assets/img/icon.png" type="image/png" />
+    <link rel="icon" href="/5.12.0/assets/img/icon.svg" type="image/svg" />
+    <link
+      rel="apple-touch-icon"
+      href="/5.12.0/assets/img/icon.png"
+      type="image/png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="/5.12.0/assets/img/icon.svg"
+      type="image/svg"
+    />
+  </head>
+  <body class="hold-transition wyam layout-boxed">
+    <div class="top-banner"></div>
+    <div class="wrapper with-container">
+      <!-- Header -->
+      <header class="main-header">
+        <a href="/" class="logo">
+          <span>GitVersion</span>
+        </a>
 
-    </head>
-    <body class="hold-transition wyam layout-boxed  ">    
-        <div class="top-banner"></div>
-        <div class="wrapper with-container">
-            <!-- Header -->
-            <header class="main-header">   
-                     
-                <a href="/" class="logo">
-                            <span>GitVersion</span>
-                </a>   
-                         
-                <nav class="navbar navbar-static-top" role="navigation">
-                    <!-- Sidebar toggle button-->
-                        <a href="#" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas" role="button">
-                            <span class="sr-only">Toggle side menu</span>
-                            <i class="fa fa-chevron-circle-right"></i>
-                        </a>
-                                        
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-                            <span class="sr-only">Toggle side menu</span>
-                            <i class="fa fa-chevron-circle-down"></i>
-                        </button>
-                    </div>
-            
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
-                        <ul class="nav navbar-nav">                            
-                                    <li class="active"><a href="/5.12.0/docs">Documentation</a></li>
-        <li><a href="/5.12.0/api">API</a></li>
- 
-                        </ul>       
-                    </div>
-                    <!-- /.navbar-collapse -->
-                
-                    <!-- Navbar Right Menu -->
-                </nav>
-            </header>
-            
-            <!-- Left side column. contains the logo and sidebar -->
-            <aside class="main-sidebar ">
-                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
-                    	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/index.cshtml"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"></div>
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a
+            href="#"
+            class="sidebar-toggle visible-xs-block"
+            data-toggle="offcanvas"
+            role="button"
+          >
+            <span class="sr-only">Toggle side menu</span>
+            <i class="fa fa-chevron-circle-right"></i>
+          </a>
 
-                </section>
-                <section class="sidebar">    
-                                     
-                    
+          <div class="navbar-header">
+            <button
+              type="button"
+              class="navbar-toggle collapsed"
+              data-toggle="collapse"
+              data-target="#navbar-collapse"
+            >
+              <span class="sr-only">Toggle side menu</span>
+              <i class="fa fa-chevron-circle-down"></i>
+            </button>
+          </div>
 
-                    <ul class="sidebar-menu">
-                        
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/5.12.0/docs">Documentation</a></li>
+              <li><a href="/5.12.0/api">API</a></li>
+            </ul>
+          </div>
+          <!-- /.navbar-collapse -->
 
+          <!-- Navbar Right Menu -->
+        </nav>
+      </header>
+
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+        <section
+          class="infobar"
+          data-spy="affix"
+          data-offset-top="60"
+          data-offset-bottom="200"
+        >
+          <div>
+            <p>
+              <a
+                href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/index.cshtml"
+                ><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit
+                Content</a
+              >
+            </p>
+          </div>
+          <div id="infobar-headings"></div>
+        </section>
+        <section class="sidebar">
+          <ul class="sidebar-menu">
+            <li class="treeview">
+              <a href="/5.12.0/docs/usage">Usage</a>
+              <a href="#" class="expand"></a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="/5.12.0/docs/usage/ci">Continuous Integration</a>
+                </li>
                 <li class="treeview">
-                    <a href="/5.12.0/docs/usage">Usage</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/usage/ci">Continuous Integration</a></li>
-                <li class="treeview">
-                    <a href="/5.12.0/docs/usage/cli">Command Line</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/usage/cli/installation">Installation</a></li>
-                <li><a href="/5.12.0/docs/usage/cli/arguments">Arguments</a></li>
-                <li><a href="/5.12.0/docs/usage/cli/output">Output</a></li>
-                <li><a href="/5.12.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
-
-                    </ul>
+                  <a href="/5.12.0/docs/usage/cli">Command Line</a>
+                  <a href="#" class="expand"></a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="/5.12.0/docs/usage/cli/installation"
+                        >Installation</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/usage/cli/arguments">Arguments</a>
+                    </li>
+                    <li><a href="/5.12.0/docs/usage/cli/output">Output</a></li>
+                    <li>
+                      <a href="/5.12.0/docs/usage/cli/assembly-patch"
+                        >Assembly Patching</a
+                      >
+                    </li>
+                  </ul>
                 </li>
                 <li><a href="/5.12.0/docs/usage/msbuild">MSBuild Task</a></li>
                 <li><a href="/5.12.0/docs/usage/library">Library</a></li>
                 <li><a href="/5.12.0/docs/usage/docker">Docker</a></li>
-
-                    </ul>
+              </ul>
+            </li>
+            <li class="treeview active">
+              <a href="/5.12.0/docs/reference">Reference</a>
+              <a href="#" class="expand"></a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="/5.12.0/docs/reference/configuration"
+                    >Configuration</a
+                  >
                 </li>
-                <li class="treeview active">
-                    <a href="/5.12.0/docs/reference">Reference</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/reference/configuration">Configuration</a></li>
-                <li><a href="/5.12.0/docs/reference/variables">Version Variables</a></li>
-                <li><a href="/5.12.0/docs/reference/requirements">Requirements</a></li>
-                <li><a href="/5.12.0/docs/reference/version-increments">Version Incrementing</a></li>
-                <li><a href="/5.12.0/docs/reference/version-sources">Version Sources</a></li>
+                <li>
+                  <a href="/5.12.0/docs/reference/variables"
+                    >Version Variables</a
+                  >
+                </li>
+                <li>
+                  <a href="/5.12.0/docs/reference/requirements">Requirements</a>
+                </li>
+                <li>
+                  <a href="/5.12.0/docs/reference/version-increments"
+                    >Version Incrementing</a
+                  >
+                </li>
+                <li>
+                  <a href="/5.12.0/docs/reference/version-sources"
+                    >Version Sources</a
+                  >
+                </li>
                 <li class="treeview">
-                    <a href="/5.12.0/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
-                <li><a href="/5.12.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/5.12.0/docs/reference/modes/mainline">Mainline Development</a></li>
-
-                    </ul>
+                  <a href="/5.12.0/docs/reference/modes">Versioning Modes</a>
+                  <a href="#" class="expand"></a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="/5.12.0/docs/reference/modes/continuous-delivery"
+                        >Continuous Delivery</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="/5.12.0/docs/reference/modes/continuous-deployment"
+                        >Continuous Deployment</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/modes/mainline"
+                        >Mainline Development</a
+                      >
+                    </li>
+                  </ul>
                 </li>
                 <li class="treeview active selected">
-                    <a href="/5.12.0/docs/reference/build-servers">Build Servers</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/continua">Continua CI</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/myget">MyGet</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
-                <li><a href="/5.12.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
-
-                    </ul>
+                  <a href="/5.12.0/docs/reference/build-servers"
+                    >Build Servers</a
+                  >
+                  <a href="#" class="expand"></a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/appveyor"
+                        >AppVeyor</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="/5.12.0/docs/reference/build-servers/azure-devops"
+                        >Azure DevOps</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/bamboo"
+                        >Bamboo</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="/5.12.0/docs/reference/build-servers/bitbucket-pipelines"
+                        >BitBucket Pipelines</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/buildkite"
+                        >Buildkite</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/continua"
+                        >Continua CI</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/gitlab"
+                        >GitLab CI</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/jenkins"
+                        >Jenkins</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/myget"
+                        >MyGet</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="/5.12.0/docs/reference/build-servers/octopus-deploy"
+                        >Octopus Deploy</a
+                      >
+                    </li>
+                    <li>
+                      <a href="/5.12.0/docs/reference/build-servers/teamcity"
+                        >TeamCity</a
+                      >
+                    </li>
+                  </ul>
                 </li>
-
-                    </ul>
+              </ul>
+            </li>
+            <li class="treeview">
+              <a href="/5.12.0/docs/learn">Learn</a>
+              <a href="#" class="expand"></a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="/5.12.0/docs/learn/how-it-works">How it works</a>
                 </li>
-                <li class="treeview">
-                    <a href="/5.12.0/docs/learn">Learn</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/learn/how-it-works">How it works</a></li>
-                <li><a href="/5.12.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
-                <li><a href="/5.12.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                <li>
+                  <a href="/5.12.0/docs/learn/intro-to-semver"
+                    >Intro to SemVer</a
+                  >
+                </li>
+                <li>
+                  <a href="/5.12.0/docs/learn/dynamic-repositories"
+                    >Dynamic Repositories</a
+                  >
+                </li>
                 <li><a href="/5.12.0/docs/learn/git-setup">Git Setup</a></li>
                 <li><a href="/5.12.0/docs/learn/faq">FAQ</a></li>
-                <li><a href="/5.12.0/docs/learn/why">Why use GitVersion?</a></li>
-                <li><a href="/5.12.0/docs/learn/who">Who is using GitVersion</a></li>
+                <li>
+                  <a href="/5.12.0/docs/learn/why">Why use GitVersion?</a>
+                </li>
+                <li>
+                  <a href="/5.12.0/docs/learn/who">Who is using GitVersion</a>
+                </li>
                 <li><a href="/5.12.0/docs/learn/credits">Credits</a></li>
                 <li class="treeview">
-                    <a href="/5.12.0/docs/learn/branching-strategies">Branching Strategies</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/learn/branching-strategies/overview">Overview</a></li>
-                <li class="treeview">
-                    <a href="/5.12.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
-                <li><a href="/5.12.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
-
-                    </ul>
+                  <a href="/5.12.0/docs/learn/branching-strategies"
+                    >Branching Strategies</a
+                  >
+                  <a href="#" class="expand"></a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="/5.12.0/docs/learn/branching-strategies/overview"
+                        >Overview</a
+                      >
+                    </li>
+                    <li class="treeview">
+                      <a href="/5.12.0/docs/learn/branching-strategies/gitflow"
+                        >Git Flow</a
+                      >
+                      <a href="#" class="expand"></a>
+                      <ul class="treeview-menu">
+                        <li>
+                          <a
+                            href="/5.12.0/docs/learn/branching-strategies/gitflow/examples"
+                            >GitFlow Examples</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/5.12.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow"
+                            >Converting to GitFlow</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="treeview">
+                      <a
+                        href="/5.12.0/docs/learn/branching-strategies/githubflow"
+                        >GitHub Flow</a
+                      >
+                      <a href="#" class="expand"></a>
+                      <ul class="treeview-menu">
+                        <li>
+                          <a
+                            href="/5.12.0/docs/learn/branching-strategies/githubflow/examples"
+                            >GitHubFlow Examples</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        href="/5.12.0/docs/learn/branching-strategies/contribute-examples"
+                        >Contribute Examples</a
+                      >
+                    </li>
+                  </ul>
                 </li>
-                <li class="treeview">
-                    <a href="/5.12.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/5.12.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+      </aside>
 
-                    </ul>
-                </li>
-                <li><a href="/5.12.0/docs/learn/branching-strategies/contribute-examples">Contribute Examples</a></li>
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h1>Build Servers</h1>
+        </section>
+        <section class="content">
+          <p>
+            Depending on the Build Server being used, i.e. TeamCity, Jenkins,
+            etc, GitVersion might need to extra repository information in order
+            to work correctly. GitVersion has knowledge of most of the main CI
+            Providers, and when instructed to do so, will fetch the necessary
+            information in order to correctly assert the semantic version
+            number.
+          </p>
 
-                    </ul>
-                </li>
+          <p>
+            In addition, most build servers allow the setting of the build
+            number within the system, GitVersion knows how to do this
+            automatically. GitVersion has support for quite a few build servers
+            out of the box. Currently we support:
+          </p>
 
-                    </ul>
-                </li>
+          <div class="box">
+            <div class="box-body no-padding">
+              <table
+                class="table table-striped table-hover two-cols-alt table-responsive"
+              >
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/appveyor"
+                          >AppVeyor</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the AppVeyor support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a
+                          href="/5.12.0/docs/reference/build-servers/azure-devops"
+                          >Azure DevOps</a
+                        ></strong
+                      >
+                    </td>
+                    <td>
+                      Details on the Azure DevOps or Team Foundation Server
+                      Build Pipeline support&#xA;in GitVersion&#xA;
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/bamboo"
+                          >Bamboo</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the Bamboo support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a
+                          href="/5.12.0/docs/reference/build-servers/bitbucket-pipelines"
+                          >BitBucket Pipelines</a
+                        ></strong
+                      >
+                    </td>
+                    <td>
+                      Details on the Atlassian BitBucket Pipelines support in
+                      GitVersion
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a
+                          href="/5.12.0/docs/reference/build-servers/buildkite"
+                          >Buildkite</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the Buildkite support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/continua"
+                          >Continua CI</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the Continua CI support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/gitlab"
+                          >GitLab CI</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the GitLab CI support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/jenkins"
+                          >Jenkins</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the Jenkins support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/myget"
+                          >MyGet</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the MyGet support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a
+                          href="/5.12.0/docs/reference/build-servers/octopus-deploy"
+                          >Octopus Deploy</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the Octopus Deploy support in GitVersion</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong
+                        ><a href="/5.12.0/docs/reference/build-servers/teamcity"
+                          >TeamCity</a
+                        ></strong
+                      >
+                    </td>
+                    <td>Details on the TeamCity support in GitVersion</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-                    </ul>
-                            
-                </section>                
-            </aside>
-            
-            <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
-                
+          <h2>Build Server Variables</h2>
 
+          <p>
+            When the <code>gitVersion</code> executable is run with the
+            <code>/output buildserver</code> flag instead of outputting JSON, it
+            will export its
+            <a href="/5.12.0/docs/reference/variables">version variables</a> to
+            the current build server as build-server native variables. For
+            instance if you are running in TeamCity after you run
+            <code>gitversion /output buildserver</code> you will have the
+            <code>%system.GitVersion.SemVer%</code> variable available for you
+            to use in the rest of the build configuration.
+          </p>
 
+          <h2>MSBuild Properties</h2>
 
-		<section class="content-header">
-			<h1>Build Servers</h1>
-		</section>
-	<section class="content">
-		
-<p>
-    Depending on the Build Server being used, i.e. TeamCity, Jenkins, etc,
-    GitVersion might need to extra repository information in order to work
-    correctly. GitVersion has knowledge of most of the main CI Providers, and when
-    instructed to do so, will fetch the necessary information in order to
-    correctly assert the semantic version number.
-</p>
+          <p>
+            When running in MSBuild either from the
+            <a href="/5.12.0/docs/usage/msbuild">MSBuild Task</a> or by using
+            <code>/proj myproject.sln</code> parameter, GitVersion will make its
+            <a href="/5.12.0/docs/reference/variables">version variables</a>
+            available as MSBuild properties in the format
+            <code>$(GitVersion_SemVer)</code>.
+          </p>
 
-<p>
-    In addition, most build servers allow the setting of the build number within
-    the system, GitVersion knows how to do this automatically. GitVersion has
-    support for quite a few build servers out of the box. Currently we support:
-</p>
+          <h2>Environment Variables</h2>
 
-			<div class="box">
-				<div class="box-body no-padding">
-					<table class="table table-striped table-hover two-cols-alt table-responsive">
-						
-						<tbody>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/appveyor">AppVeyor</a></strong></td>
-									<td>
-Details on the AppVeyor support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></strong></td>
-									<td>
-Details on the Azure DevOps or Team Foundation Server Build Pipeline support&#xA;in GitVersion&#xA;									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/bamboo">Bamboo</a></strong></td>
-									<td>
-Details on the Bamboo support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></strong></td>
-									<td>
-Details on the Atlassian BitBucket Pipelines support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/buildkite">Buildkite</a></strong></td>
-									<td>
-Details on the Buildkite support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/continua">Continua CI</a></strong></td>
-									<td>
-Details on the Continua CI support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/gitlab">GitLab CI</a></strong></td>
-									<td>
-Details on the GitLab CI support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/jenkins">Jenkins</a></strong></td>
-									<td>
-Details on the Jenkins support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/myget">MyGet</a></strong></td>
-									<td>
-Details on the MyGet support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></strong></td>
-									<td>
-Details on the Octopus Deploy support in GitVersion									</td>
-								</tr>
-								<tr>
-									<td><strong><a href="/5.12.0/docs/reference/build-servers/teamcity">TeamCity</a></strong></td>
-									<td>
-Details on the TeamCity support in GitVersion									</td>
-								</tr>
-						</tbody>				
-					</table>
-				</div>
-			</div> 
+          <p>
+            When executed within one of the supported build servers mentioned
+            above, GitVersion will also expose the
+            <a href="/5.12.0/docs/reference/variables">version variables</a> as
+            <strong>environment variables</strong>, in the format
+            <code>GitVersion_SemVer</code> (and in some circumstances, as
+            <code>GitVersion.SemVer</code>).
+          </p>
 
+          <h2>Normalization</h2>
 
-<h2>Build Server Variables</h2>
+          <p>
+            The standard <code>gitversion</code> executable normalize the
+            branches if there is a build server detected. This behavior can be
+            disabled with the <code>/nonormalize</code> option.
+          </p>
+        </section>
+      </div>
 
-<p>
-    When the <code>gitVersion</code> executable is run with the
-    <code>/output buildserver</code> flag instead of outputting JSON, it will
-    export its <a href="/5.12.0/docs/reference/variables">version variables</a> to the
-    current build server as build-server native variables. For instance if you
-    are running in TeamCity after you run
-    <code>gitversion /output buildserver</code> you will have the
-    <code>%system.GitVersion.SemVer%</code> variable available for you to use
-    in the rest of the build configuration.
-</p>
+      <!-- Footer -->
+      <footer class="main-footer"></footer>
+    </div>
+    <div class="wrapper bottom-wrapper">
+      <footer class="bottom-footer">
+        Generated by <a href="https://wyam2.github.io">Wyam2</a>
+      </footer>
+    </div>
+    <a href="javascript:" id="return-to-top"
+      ><i class="fa fa-chevron-up"></i
+    ></a>
+    <div class="github-button">
+      <a href="https://github.com/GitTools/GitVersion"
+        ><i class="fa fa-github"></i> GitHub</a
+      >
+    </div>
+    <script>
+      ((window.gitter = {}).chat = {}).options = {
+        room: "GitTools/GitVersion",
+      };
+    </script>
+    <script
+      src="https://sidecar.gitter.im/dist/sidecar.v1.js"
+      async
+      defer
+    ></script>
 
-<h2>MSBuild Properties</h2>
+    <script>
+      // Close the sidebar if we select an anchor link
+      $(".main-sidebar a[href^='#']:not('.expand')").click(function () {
+        $(document.body).removeClass("sidebar-open");
+      });
 
-<p>
-    When running in MSBuild either from the
-    <a href="/5.12.0/docs/usage/msbuild">MSBuild Task</a> or by using
-    <code>/proj myproject.sln</code> parameter, GitVersion will make its
-    <a href="/5.12.0/docs/reference/variables">version variables</a> available as
-    MSBuild properties in the format <code>$(GitVersion_SemVer)</code>.
-</p>
+      $(document).ready(function () {
+        mermaid.initialize({
+          flowchart: {
+            useMaxWidth: false,
+          },
+          startOnLoad: false,
+          cloneCssStyles: false,
+        });
+        mermaid.init(undefined, ".mermaid");
 
-<h2>Environment Variables</h2>
+        // Remove the max-width setting that Mermaid sets
+        var mermaidSvg = $(".mermaid svg");
+        mermaidSvg.addClass("img-responsive");
+        mermaidSvg.css("max-width", "");
 
-<p>
-    When executed within one of the supported build servers mentioned above,
-    GitVersion will also expose the <a href="/5.12.0/docs/reference/variables">version
-    variables</a> as <strong>environment variables</strong>, in the format
-    <code>GitVersion_SemVer</code> (and in some circumstances, as
-    <code>GitVersion.SemVer</code>).
-</p>
+        // Make it scrollable
+        var target = document.querySelector(".mermaid svg");
+        if (target !== null) {
+          var panZoom = (window.panZoom = svgPanZoom(target, {
+            zoomEnabled: true,
+            controlIconsEnabled: true,
+            fit: true,
+            center: true,
+            maxZoom: 20,
+            zoomScaleSensitivity: 0.6,
+          }));
 
-<h2>Normalization</h2>
+          // Do the reset once right away to fit the diagram
+          panZoom.resize();
+          panZoom.fit();
+          panZoom.center();
 
-<p>
-    The standard <code>gitversion</code> executable normalize the branches if
-    there is a build server detected. This behavior can be disabled with the
-    <code>/nonormalize</code> option.
-</p>
+          $(window).resize(function () {
+            panZoom.resize();
+            panZoom.fit();
+            panZoom.center();
+          });
+        }
 
-	</section>
-                
-            </div>           
-            
-            <!-- Footer -->
-            <footer class="main-footer">
-            </footer>
-            
-        </div>
-        <div class="wrapper bottom-wrapper">
-            <footer class="bottom-footer">
-                Generated by <a href="https://wyam2.github.io">Wyam2</a>
-            </footer>
-        </div>
-        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
-        <div class="github-button">
-    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
-</div>
-<script>
-    ((window.gitter = {}).chat = {}).options = {
-        room: 'GitTools/GitVersion'
-    };
-</script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+        $("pre code").each(function (i, block) {
+          hljs.highlightBlock(block);
+        });
+      });
 
-        <script>           
-            // Close the sidebar if we select an anchor link
-            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
-                $(document.body).removeClass('sidebar-open');
-            });
-            
-            $(document).ready(function() {
-                mermaid.initialize(
-                {
-                    flowchart:
-                    {
-                        useMaxWidth: false
-                    },
-					startOnLoad: false,
-					cloneCssStyles: false
-                });     
-                mermaid.init(undefined, ".mermaid");
+      hljs.initHighlightingOnLoad();
 
-                // Remove the max-width setting that Mermaid sets
-                var mermaidSvg = $('.mermaid svg');
-                mermaidSvg.addClass('img-responsive');
-                mermaidSvg.css('max-width', '');
-
-                // Make it scrollable
-				var target = document.querySelector(".mermaid svg");
-				if(target !== null)
-				{
-					var panZoom = window.panZoom = svgPanZoom(target, {
-						zoomEnabled: true,
-						controlIconsEnabled: true,
-						fit: true,
-						center: true,
-                        maxZoom: 20,
-                        zoomScaleSensitivity: 0.6
-					});			                          
-
-                    // Do the reset once right away to fit the diagram
-                    panZoom.resize();
-                    panZoom.fit();
-                    panZoom.center();
-                    
-                    $(window).resize(function(){
-                        panZoom.resize();
-                        panZoom.fit();
-                        panZoom.center();
-                    });
-				}
-                
-                $('pre code').each(function(i, block) {
-                    hljs.highlightBlock(block);
-                });  
-            });
-
-            hljs.initHighlightingOnLoad();
-
-            // Back to top
-            $(window).scroll(function() {
-                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
-                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
-                } else {
-                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
-                }
-            });
-            $('#return-to-top').click(function() {      // When arrow is clicked
-                $('body,html').animate({
-                    scrollTop : 0                       // Scroll to top of body
-                }, 500);
-            });
-        </script>
-    </body>
+      // Back to top
+      $(window).scroll(function () {
+        if ($(this).scrollTop() >= 200) {
+          // If page is scrolled more than 50px
+          $("#return-to-top").fadeIn(1000); // Fade in the arrow
+        } else {
+          $("#return-to-top").fadeOut(1000); // Else fade out the arrow
+        }
+      });
+      $("#return-to-top").click(function () {
+        // When arrow is clicked
+        $("body,html").animate(
+          {
+            scrollTop: 0, // Scroll to top of body
+          },
+          500,
+        );
+      });
+    </script>
+  </body>
 </html>
