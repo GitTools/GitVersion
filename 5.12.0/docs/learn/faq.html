@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html><html><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - FAQ</title>
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/override.css" rel="stylesheet">
+        <script src="/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/assets/js/bootstrap.min.js"></script>        
+        <script src="/assets/js/app.min.js"></script>         
+        <script src="/assets/js/highlight.pack.js"></script>   
+        <script src="/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/assets/js/mermaid.min.js"></script>
+        <script src="/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">    
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">   
+                     
+                <a href="/" class="logo">
+                            <span>GitVersion</span>
+                </a>   
+                         
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <a href="#" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas" role="button">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </a>
+                                        
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+            
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">                            
+                                    <li class="active"><a href="/docs">Documentation</a></li>
+        <li><a href="/api">API</a></li>
+ 
+                        </ul>       
+                    </div>
+                    <!-- /.navbar-collapse -->
+                
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+            
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
+                    	
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/learn/faq.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#why-is-my-version-not-incrementing">Why is my version not incrementing?</a></p>
+<p><a href="#im-using-octopus-deploy">I'm using Octopus deploy</a></p>
+<p><a href="#how-can-gitversion-run-for-a-shallow-clone-or-checkout-on-server-working-directories">How can GitVersion run for a shallow clone or checkout on server working directories</a></p>
+<p><a href="#i-dont-understand-what-semver-is-all-about">I don't understand what SemVer is all about</a></p>
+<p><a href="#i-cant-use-the-build-number-for-nuget">I can't use the build number for NuGet</a></p>
+<p><a href="#how-do-i-choose-my-branching-strategy-gitflow-vs-githubflow">How do I choose my branching strategy (GitFlow vs GitHubFlow)</a></p>
+<p><a href="#merged-branch-names-as-version-source">Merged branch names as version source</a></p>
+<hr class="infobar-hidden">
+</div>
+
+                </section>
+                <section class="sidebar">    
+                                     
+                    
+
+                    <ul class="sidebar-menu">
+                        
+
+                <li class="treeview">
+                    <a href="/docs/usage">Usage</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/usage/ci">Continuous Integration</a></li>
+                <li class="treeview">
+                    <a href="/docs/usage/cli">Command Line</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/usage/cli/installation">Installation</a></li>
+                <li><a href="/docs/usage/cli/arguments">Arguments</a></li>
+                <li><a href="/docs/usage/cli/output">Output</a></li>
+                <li><a href="/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="/docs/usage/msbuild">MSBuild Task</a></li>
+                <li><a href="/docs/usage/library">Library</a></li>
+                <li><a href="/docs/usage/docker">Docker</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/reference">Reference</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/configuration">Configuration</a></li>
+                <li><a href="/docs/reference/variables">Version Variables</a></li>
+                <li><a href="/docs/reference/requirements">Requirements</a></li>
+                <li><a href="/docs/reference/version-increments">Version Incrementing</a></li>
+                <li><a href="/docs/reference/version-sources">Version Sources</a></li>
+                <li class="treeview">
+                    <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/reference/build-servers">Build Servers</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+                <li class="treeview active">
+                    <a href="/docs/learn">Learn</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/how-it-works">How it works</a></li>
+                <li><a href="/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+                <li><a href="/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                <li><a href="/docs/learn/git-setup">Git Setup</a></li>
+                <li class="selected"><a href="/docs/learn/faq">FAQ</a></li>
+                <li><a href="/docs/learn/why">Why use GitVersion?</a></li>
+                <li><a href="/docs/learn/who">Who is using GitVersion</a></li>
+                <li><a href="/docs/learn/credits">Credits</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies">Branching Strategies</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="/docs/learn/branching-strategies/contribute-examples">Contribute Examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                            
+                </section>                
+            </aside>
+            
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>FAQ</h1>
+		</section>
+	<section class="content">
+		<h2 id="why-is-my-version-not-incrementing">Why is my version not incrementing?</h2>
+<p>GitVersion calculates the semantic version, this will only change once per
+<em>release</em>. Read more about <a href="/docs/reference/version-increments">version increments</a>.</p>
+<h2 id="im-using-octopus-deploy">I'm using Octopus deploy</h2>
+<p>Because Octopus deploy cannot have the same version of a package to a NuGet
+feed. There is no magic solution to this, but you can read more about your
+options at <a href="/docs/reference/build-servers/octopus-deploy">octopus deploy</a>.</p>
+<h2 id="how-can-gitversion-run-for-a-shallow-clone-or-checkout-on-server-working-directories">How can GitVersion run for a shallow clone or checkout on server working directories</h2>
+<p>GitVersion needs a proper git repository to run, some build servers do not do a
+proper clone which can cause issues. GitVersion has a feature called <a href="/docs/learn/dynamic-repositories">dynamic
+repositories</a> which solves this by cloning the repository and
+working against that clone instead of the working directory.</p>
+<h2 id="i-dont-understand-what-semver-is-all-about">I don't understand what SemVer is all about</h2>
+<p>Not a problem, we have a quick <a href="/docs/learn/intro-to-semver">introduction to SemVer</a> which can
+be a good primer to read before reading <a href="https://semver.org">SemVer.org</a>.</p>
+<h2 id="i-cant-use-the-build-number-for-nuget">I can't use the build number for NuGet</h2>
+<p>If you have used NuGet you would notice the versions above are not compatible
+with NuGet. GitVersion solves this by providing <a href="/docs/reference/variables">variables</a>.</p>
+<p>What you have seen above is the <code>SemVer</code> variable. You can use the
+<code>NuGetVersion</code> variable to have the version formatted in a NuGet compatible way.</p>
+<p>So <code>1.0.1-rc.1+5</code> would become <code>1.0.1-rc0001</code>, this takes into account
+characters which are not allowed and NuGets crap sorting.</p>
+<div class="alert alert-info"><p><strong>Note</strong></p>
+<p>The <code>NuGetVersion</code> variable is floating, so when NuGet 3.0 comes out
+with proper SemVer support GitVersion will switch this variable to a proper
+SemVer.</p>
+</div>
+<p>If you want to fix the version, use <code>NuGetVersionV2</code> which will stay the same
+after NuGet 3.0 comes out</p>
+<h2 id="how-do-i-choose-my-branching-strategy-gitflow-vs-githubflow">How do I choose my branching strategy (GitFlow vs GitHubFlow)</h2>
+<p>If you run <code>gitversion init</code> then choose <code>Getting started wizard</code> then choose
+<code>Unsure, tell me more</code>, GitVersion will run through a series of questions which
+will try and help point you towards a branching strategy and why you would use
+it.</p>
+<h2 id="merged-branch-names-as-version-source">Merged branch names as version source</h2>
+<p>When GitVersion considers previous commits to calculate a version number, it's
+important that the metadata to be considered is <em>stable</em>. Since branches are
+usually deleted after they are merged, the name of a branch can't be considered
+as a stable version source. <em>Branch names are not stable</em>, they are ephemeral.</p>
+<p>The only place a branch name can be considered for version calculation is for
+the branch itself. This is typically used for <code>release/*</code> branches, which
+usually have a version number in their name. For the release branch
+<code>release/1.2.3</code>, the verison number <code>1.2.3</code> will be used to calculate the final
+version number <em>for the release branch</em>.</p>
+<p>However, when the <code>release/1.2.3</code> branch is merged into <code>main</code>, the fact that
+the merged commits came from a branch named <code>release/1.2.3</code> vanishes with the
+branch which will be deleted. The name of the merged release branch can
+therefore not be considered for version calculation in the target branch of the
+merge.</p>
+
+	</section>
+                
+            </div>           
+            
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+            
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <div class="github-button">
+    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
+</div>
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'GitTools/GitVersion'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+
+        <script>           
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+            
+            $(document).ready(function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });     
+                mermaid.init(undefined, ".mermaid");
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});			                          
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+                    
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+                
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });  
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+</body></html>

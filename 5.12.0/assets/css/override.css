@@ -1,0 +1,221 @@
+a {
+  color: #682A7B;
+}
+a:hover {
+  color: #481d55;
+}
+.jumbotron {
+  padding: 4rem;
+}
+.jumbotron h1 {
+  color: #682A7B;
+}
+.jumbotron .container {
+  width: 60rem;
+  margin: 0 auto;
+  padding-left: 16rem;
+  background-image: url('/assets/img/icon.svg');
+  background-repeat: no-repeat;
+  background-position: 1rem 0;
+  background-size: 14rem;
+}
+.jumbotron .tagline {
+  font-size: 2.5rem;
+}
+.jumbotron .tagline code {
+  color: #047101;
+  background-color: transparent;
+}
+body.layout-boxed .top-banner,
+.layout-top-nav .main-header,
+.main-header,
+body.layout-boxed .top-banner > .logo,
+.layout-top-nav .main-header > .logo,
+.main-header > .logo,
+body.layout-boxed .top-banner .navbar,
+.layout-top-nav .main-header .navbar,
+.main-header .navbar {
+  background-color: #682A7B;
+  height: 50px;
+}
+/* For Gitter and GitHub */
+
+.bottom-footer {
+  margin-bottom: 40px !important;
+}
+.gitter-open-chat-button {
+  background-color: #682A7B;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  letter-spacing: normal;
+  right: 90px;
+}
+.gitter-open-chat-button:focus,
+.gitter-open-chat-button:hover,
+.github-button:focus,
+.github-button:hover {
+  background-color: #481d55;
+  color: #fff;
+}
+.gitter-chat-embed {
+  top: 49px;
+  border-top: 1px solid #000;
+  z-index: 10000;
+}
+.github-button {
+  z-index: 100;
+  position: fixed;
+  bottom: 0px;
+  right: 240px;
+  padding: 1em 3em;
+  background-color: #682A7B;
+  border: 0;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  font-family: sans-serif;
+  font-size: 9pt;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  cursor: hand;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+.github-button a,
+.github-button a:active,
+.github-button a:hover,
+.github-button a:focus {
+  color: #fff;
+}
+.logo-small {
+  color: #682A7B;
+  font-size: 50px;
+}
+.gitter-open-chat-button {
+  background-color: #682A7B;
+}
+main {
+  font-size: 2rem;
+}
+main h3 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+main .col-sm-6 {
+  margin: 4rem 0 6rem 0;
+}
+.table thead tr {
+  background-color: #682A7B;
+}
+.sidebar-menu li.selected > a {
+  background-color: #682A7B !important;
+}
+.sidebar-menu .treeview-menu > li > a {
+  padding-left: 26px;
+}
+.sidebar-menu li.active > a.expand {
+  padding-left: 18px;
+}
+.btn-primary {
+  background-color: #682A7B;
+  border-color: #481d55;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.btn-primary:hover {
+  background-color: #481d55;
+}
+.card-container {
+  display: flex;
+  flex-direction: row;
+}
+.card-container .card {
+  margin-right: 1.25rem;
+}
+.card-container .card:last-of-type {
+  margin-right: 0;
+}
+.card {
+  position: relative;
+  display: flex;
+  flex: 1 1 0px;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+.card-header {
+  display: flex;
+  flex-direction: row;
+  background-color: #682A7B;
+  padding: 0.25rem 1.25rem;
+  border-top-left-radius: calc(-0.75rem);
+  border-top-right-radius: calc(-0.75rem);
+  color: #fff;
+}
+.card-header img {
+  height: 2.6rem;
+  margin: 1.1rem 1.25rem 1.25rem 0;
+}
+.card-header h5 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  min-height: 2rem;
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+.card-text {
+  flex-grow: 1;
+}
+.box {
+  border-color: #682A7B;
+}
+.icons table {
+  border-spacing: 0 1rem;
+}
+.icons table thead {
+  display: none;
+}
+.icons table td {
+  border-top: none !important;
+  font-size: 2rem;
+  vertical-align: middle !important;
+}
+.icons table td:first-of-type {
+  width: 72px;
+}
+.icons table td:first-of-type a {
+  width: 55px;
+  height: 55px;
+  background-color: #682A7B;
+  border-radius: 10px;
+  display: table-cell;
+  vertical-align: middle;
+}
+.icons table td:first-of-type a:hover {
+  background-color: #481d55;
+}
+.icons table td:last-of-type {
+  padding-left: 0.5rem;
+}
+.icons table img {
+  max-width: 30px;
+  max-height: 30px;
+}
+@media only screen and (max-width: 890px) {
+  .card-container {
+    flex-direction: column;
+  }
+}
