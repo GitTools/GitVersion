@@ -65,8 +65,13 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li class="active"><a href="/docs">Documentation</a></li>
+                            <div class="navbar-right navbar-form">
+    <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off" autofocus="">
+</div>
+
+        <li class="active"><a href="/docs">Documentation</a></li>
         <li><a href="/api">API</a></li>
+        <li><a href="/5.12.0"><i></i> 5.12.0</a></li>
  
                         </ul>       
                     </div>
@@ -228,7 +233,7 @@ Package into the project you want to be versioned by GitVersion.</p>
 <p>If you're using <code>PackageReference</code> style NuGet dependencies (VS 2017+), add
 <code>&lt;PrivateAssets&gt;all&lt;/PrivateAssets&gt;</code> to prevent the task from becoming a
 dependency of your package:</p>
-<pre><code class="language-xml">&lt;PackageReference Include="GitVersion.MsBuild" Version="5.12.0"&gt;
+<pre><code class="language-xml">&lt;PackageReference Include="GitVersion.MsBuild" Version="6.0.0"&gt;
   &lt;PrivateAssets&gt;All&lt;/PrivateAssets&gt;
 &lt;/PackageReference&gt;
 </code></pre>
@@ -236,30 +241,6 @@ dependency of your package:</p>
 <p>The next thing you need to do is to remove the <code>Assembly*Version</code> attributes from
 your <code>Properties\AssemblyInfo.cs</code> files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.</p>
-<h3 id="wpf-specific-concerns">WPF specific concerns</h3>
-<p>One further step needs to be taken for SDK-style WPF projects.</p>
-<p>Building projects with .NET Core SDK with a version lower than v5.0.200
-requires turning off automatic generation of the different versioning attributes.
-GitVersion usually controls these properties but cannot during WPF specific
-targets that generate a temporary project.</p>
-<pre><code class="language-xml">&lt;PropertyGroup&gt;
-  &lt;!-- Wpf workaround: GitVersion and .NET SDK &lt; v5.0.200 --&gt;
-  &lt;GenerateAssemblyFileVersionAttribute&gt;false&lt;/GenerateAssemblyFileVersionAttribute&gt;
-  &lt;GenerateAssemblyInformationalVersionAttribute&gt;false&lt;/GenerateAssemblyInformationalVersionAttribute&gt;
-  &lt;GenerateAssemblyVersionAttribute&gt;false&lt;/GenerateAssemblyVersionAttribute&gt;
-&lt;/PropertyGroup&gt;
-</code></pre>
-<p>For .NET Core SDK v5.0.200 to v6.0.0-preview.1, a opt-in flag was introduced to
-allow package references to be imported to the temporary project.
-You can now remove the previous versioning attributes and replace them with
-a single property.</p>
-<pre><code class="language-xml">&lt;PropertyGroup&gt;
-  &lt;!-- WPF workaround: GitVersion and .NET SDK between v5.0.200 and v6.0.0-preview.2  --&gt;
-  &lt;IncludePackageReferencesDuringMarkupCompilation&gt;true&lt;/IncludePackageReferencesDuringMarkupCompilation&gt;
-&lt;/PropertyGroup&gt;
-</code></pre>
-<p>You can remove all workarounds if you are building with .NET Core SDK
-v6.0.0-preview.2 or later as the flag is now opt-out.</p>
 <h3 id="done">Done!</h3>
 <p>The setup process is now complete and GitVersion.MsBuild should be working its magic,
 versioning your assemblies like a champ. However, more can be done to further
@@ -395,6 +376,14 @@ this:</p>
 <p>For SDK-style projects, <code>UpdateVersionProperties</code> controls setting the default
 variables: <code>Version</code>, <code>VersionPrefix</code>, <code>VersionSuffix</code>, <code>PackageVersion</code>,
 <code>InformationalVersion</code>, <code>AssemblyVersion</code> and <code>FileVersion</code>.</p>
+<h2 id="overriding-target-framework">Overriding Target Framework</h2>
+<p>If you want to override the target framework that GitVersion uses to determine the version, you can set the <code>GitVersionTargetFramework</code> property in your MSBuild script, like this:</p>
+<pre><code class="language-xml">&lt;PropertyGroup&gt;
+  ...
+  &lt;GitVersionTargetFramework&gt;net8.0&lt;/GitVersionTargetFramework&gt;
+  ...
+&lt;/PropertyGroup&gt;
+</code></pre>
 <h3 id="namespace-generation">Namespace generation</h3>
 <p>You can configure GitVersion to generate the <code>GitVersionInformation</code> class in a namespace that matches the current assembly. By default this class is created in the global namespace. If <code>UseProjectNamespaceForGitVersionInformation</code> is set to true, the <code>GitVersionInfomation</code> class will instead be generated in a namespace matching the current project. If the property <code>&lt;RootNamespace&gt;</code> is set that value will be used, otherwise the name of the project file is used.</p>
 <pre><code class="language-xml">&lt;PropertyGroup&gt;

@@ -65,8 +65,13 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Documentation</a></li>
+                            <div class="navbar-right navbar-form">
+    <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off" autofocus="">
+</div>
+
+        <li><a href="/docs">Documentation</a></li>
         <li class="active"><a href="/api">API</a></li>
+        <li><a href="/5.12.0"><i></i> 5.12.0</a></li>
  
                         </ul>       
                     </div>
@@ -210,15 +215,15 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionCalculationModule">Version<wbr>Calculation<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.Agents/GitVersionBuildAgentsModule">Git<wbr>Version<wbr>Build<wbr>Agents<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.Output/GitVersionOutputModule">Git<wbr>Version<wbr>Output<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.MsBuild/GitVersionMsBuildModule">Git<wbr>Version<wbr>Ms<wbr>Build<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.Agents/GitVersionBuildAgentsModule">Git<wbr>Version<wbr>Build<wbr>Agents<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionCommonModule">Git<wbr>Version<wbr>Common<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -228,24 +233,24 @@
 							graph BT
 	Type["IGitVersionModule"]
 class Type type-node
-	Implementing0["GitVersionLibGit2SharpModule"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/GitVersionLibGit2SharpModule"
-	Implementing1["GitVersionCoreModule"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/GitVersionCoreModule"
-	Implementing2["VersionCalculationModule"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing0["VersionCalculationModule"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing1["GitVersionOutputModule"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Output/GitVersionOutputModule"
+	Implementing2["GitVersionMsBuildModule"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.MsBuild/GitVersionMsBuildModule"
 	Implementing3["GitVersionConfigurationModule"]-.-&gt;Type
 	click Implementing3 "/api/GitVersion.Configuration/GitVersionConfigurationModule"
-	Implementing4["GitVersionBuildAgentsModule"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-	Implementing5["GitVersionOutputModule"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.Output/GitVersionOutputModule"
-	Implementing6["VersionStrategyModule"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Implementing7["GitVersionMsBuildModule"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.MsBuild/GitVersionMsBuildModule"
-	Implementing8["GitVersionCommonModule"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion/GitVersionCommonModule"
+	Implementing4["VersionStrategyModule"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+	Implementing5["GitVersionBuildAgentsModule"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+	Implementing6["GitVersionCoreModule"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion/GitVersionCoreModule"
+	Implementing7["GitVersionCommonModule"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion/GitVersionCommonModule"
+	Implementing8["GitVersionLibGit2SharpModule"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion/GitVersionLibGit2SharpModule"
 
 						</div>
 					</div>

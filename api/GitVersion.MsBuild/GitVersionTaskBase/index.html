@@ -65,8 +65,13 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Documentation</a></li>
+                            <div class="navbar-right navbar-form">
+    <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off" autofocus="">
+</div>
+
+        <li><a href="/docs">Documentation</a></li>
         <li class="active"><a href="/api">API</a></li>
+        <li><a href="/5.12.0"><i></i> 5.12.0</a></li>
  
                         </ul>       
                     </div>
@@ -190,8 +195,8 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li><a href="/api/GitVersion.MsBuild.Tasks/GetVersion">GetVersion</a></li>								
-											<li><a href="/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation">Generate<wbr>Git<wbr>Version<wbr>Information</a></li>								
 											<li><a href="/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog">Write<wbr>Version<wbr>Info<wbr>To<wbr>Build<wbr>Log</a></li>								
+											<li><a href="/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation">Generate<wbr>Git<wbr>Version<wbr>Information</a></li>								
 											<li><a href="/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo">UpdateAssemblyInfo</a></li>								
 									</ul>
 								</dd>			
@@ -206,10 +211,10 @@
 class Type type-node
 	Derived0["GetVersion"]--&gt;Type
 	click Derived0 "/api/GitVersion.MsBuild.Tasks/GetVersion"
-	Derived1["GenerateGitVersionInformation"]--&gt;Type
-	click Derived1 "/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation"
-	Derived2["WriteVersionInfoToBuildLog"]--&gt;Type
-	click Derived2 "/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog"
+	Derived1["WriteVersionInfoToBuildLog"]--&gt;Type
+	click Derived1 "/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog"
+	Derived2["GenerateGitVersionInformation"]--&gt;Type
+	click Derived2 "/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation"
 	Derived3["UpdateAssemblyInfo"]--&gt;Type
 	click Derived3 "/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo"
 
