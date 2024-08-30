@@ -1,0 +1,13 @@
+@{
+    List<Tuple<string, string>> pages = new List<Tuple<string, string>>
+    {
+        Tuple.Create("Documentation", Context.GetLink("docs")),
+        Tuple.Create("API", Context.GetLink("api")),
+        Tuple.Create("<i></i> 5.12.0", "/5.12.0/docs"),
+    };
+    foreach(Tuple<string, string> p in pages)
+    {
+        string active = Context.GetLink(Document).StartsWith(p.Item2) ? "active" : null;
+        <li class="@active"><a href="@p.Item2">@Html.Raw(p.Item1)</a></li>
+    }
+}
