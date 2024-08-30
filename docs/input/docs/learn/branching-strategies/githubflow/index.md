@@ -15,7 +15,7 @@ GitHubFlow is in a nutshell:
 2. Create a feature branch `git checkout -b myFeatureBranch`
 3. Do the feature/work
 4. Push feature branch to [origin](/docs/learn/git-setup#origin)
-5. Create pull request from origin/<featureBranch> -> upstream/main
+5. Create pull request from origin/{featureBranch} -> upstream/main
 6. Review, fix raised comments, merge your PR or even better, get someone else to.
 
 The main rule of GitHub Flow is that main should _always_ be deployable.

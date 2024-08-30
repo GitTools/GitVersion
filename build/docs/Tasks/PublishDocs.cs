@@ -1,4 +1,5 @@
 using Cake.Git;
+using Cake.Npx;
 using Cake.Wyam;
 using Common.Utilities;
 
@@ -80,6 +81,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
             context.WyamSettings.OutputPath = publishFolder;
             context.WyamSettings.NoClean = true;
             context.Wyam(context.WyamSettings);
+            context.Npx("prettier", arguments: "--write **/*.html", configureSettings: settings => settings.WorkingDirectory = publishFolder);
         }
 
         var schemaTargetDir = publishFolder.Combine("schemas");
