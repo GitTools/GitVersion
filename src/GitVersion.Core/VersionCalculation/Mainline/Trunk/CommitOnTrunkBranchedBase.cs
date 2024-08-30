@@ -31,7 +31,7 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
         context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null) ?? context.Label;
         context.ForceIncrement = true;
 
-        yield return new BaseVersionOperator()
+        yield return new BaseVersionOperator
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

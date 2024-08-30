@@ -49,7 +49,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
 
                 baseVersion = new BaseVersion("Version in branch name", result.Value)
                 {
-                    Operator = new BaseVersionOperator()
+                    Operator = new BaseVersionOperator
                     {
                         Increment = VersionField.None,
                         ForceIncrement = false,

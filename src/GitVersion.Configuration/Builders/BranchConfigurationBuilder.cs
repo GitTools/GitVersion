@@ -177,7 +177,7 @@ internal class BranchConfigurationBuilder
         IsMainBranch = isMainBranch,
         IsReleaseBranch = isReleaseBranch,
         LabelNumberPattern = labelNumberPattern,
-        PreventIncrement = new PreventIncrementConfiguration()
+        PreventIncrement = new PreventIncrementConfiguration
         {
             OfMergedBranch = preventIncrementOfMergedBranch,
             WhenBranchMerged = preventIncrementWhenBranchMerged,

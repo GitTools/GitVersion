@@ -26,7 +26,7 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
             context.ForceIncrement = false;
 
-            yield return new BaseVersionOperator()
+            yield return new BaseVersionOperator
             {
                 Source = GetType().Name,
                 BaseVersionSource = context.BaseVersionSource,

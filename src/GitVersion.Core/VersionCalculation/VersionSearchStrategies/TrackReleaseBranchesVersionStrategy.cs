@@ -63,7 +63,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
             result = new BaseVersion(
                 "Release branch exists -> " + baseVersion.Source, baseVersion.SemanticVersion, baseVersionSource)
             {
-                Operator = new BaseVersionOperator()
+                Operator = new BaseVersionOperator
                 {
                     Increment = increment,
                     ForceIncrement = false,

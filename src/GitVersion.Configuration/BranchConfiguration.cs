@@ -90,7 +90,7 @@ internal record BranchConfiguration : IBranchConfiguration
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrement.OfMergedBranch,
                 WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrement.WhenBranchMerged,
@@ -117,7 +117,7 @@ internal record BranchConfiguration : IBranchConfiguration
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrementOfMergedBranch,
                 WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrementWhenBranchMerged,

@@ -49,9 +49,9 @@ internal sealed class FallbackVersionStrategy(
             label: label
         );
 
-        yield return new BaseVersion()
+        yield return new BaseVersion
         {
-            Operator = new BaseVersionOperator()
+            Operator = new BaseVersionOperator
             {
                 Source = "Fallback base version",
                 BaseVersionSource = baseVersionSource,

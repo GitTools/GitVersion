@@ -24,7 +24,7 @@ internal sealed class CommitOnTrunk : IIncrementer
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
         context.ForceIncrement = true;
 
-        yield return new BaseVersionOperator()
+        yield return new BaseVersionOperator
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

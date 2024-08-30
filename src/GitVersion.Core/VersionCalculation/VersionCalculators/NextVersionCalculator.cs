@@ -202,7 +202,7 @@ internal class NextVersionCalculator(
 
         BaseVersion calculatedBase = new()
         {
-            Operand = new BaseVersionOperand()
+            Operand = new BaseVersionOperand
             {
                 Source = maxVersion.BaseVersion.Source,
                 BaseVersionSource = latestBaseVersionSource,

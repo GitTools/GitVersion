@@ -30,7 +30,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         using var contextBuilder = new GitVersionContextBuilder();
 
-        var overrideConfiguration = new Dictionary<object, object?>()
+        var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
         };

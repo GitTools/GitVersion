@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
@@ -10,14 +11,14 @@ public class MergeMessage
 {
     private static readonly IList<MergeMessageFormat> DefaultFormats =
     [
-        new("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
-        new("SmartGit", @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
-        new("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-        new("BitBucketPullv7", @"^Pull request #(?<PullRequestNumber>\d+).*\r?\n\r?\nMerge in (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-        new("BitBucketCloudPull", @"^Merged in (?<SourceBranch>[^\s]*) \(pull request #(?<PullRequestNumber>\d+)\)"),
-        new("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:[^\s\/]+\/)?(?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
-        new("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*"),
-        new("AzureDevOpsPull", @"^Merge pull request (?<PullRequestNumber>\d+) from (?<SourceBranch>[^\s]*) into (?<TargetBranch>[^\s]*)")
+        new("Default", RegexPatterns.MergeMessage.DefaultMergeMessageRegex),
+        new("SmartGit", RegexPatterns.MergeMessage.SmartGitMergeMessageRegex),
+        new("BitBucketPull", RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex),
+        new("BitBucketPullv7", RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex),
+        new("BitBucketCloudPull", RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex),
+        new("GitHubPull", RegexPatterns.MergeMessage.GitHubPullMergeMessageRegex),
+        new("RemoteTracking", RegexPatterns.MergeMessage.RemoteTrackingMergeMessageRegex),
+        new("AzureDevOpsPull", RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex)
     ];
 
     public MergeMessage(string mergeMessage, IGitVersionConfiguration configuration)
@@ -29,7 +30,7 @@ public class MergeMessage
         // Concatenate configuration formats with the defaults.
         // Ensure configurations are processed first.
         var allFormats = configuration.MergeMessageFormats
-            .Select(x => new MergeMessageFormat(x.Key, x.Value))
+            .Select(x => new MergeMessageFormat(x.Key, new(x.Value, RegexOptions.IgnoreCase | RegexOptions.Compiled)))
             .Concat(DefaultFormats);
 
         foreach (var format in allFormats)
@@ -75,11 +76,11 @@ public class MergeMessage
         return null;
     }
 
-    private class MergeMessageFormat(string name, string pattern)
+    private class MergeMessageFormat(string name, Regex pattern)
     {
         public string Name { get; } = name;
 
-        public Regex Pattern { get; } = new(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public Regex Pattern { get; } = pattern;
     }
 
     private ReferenceName GetMergedBranchName(string mergedBranch)

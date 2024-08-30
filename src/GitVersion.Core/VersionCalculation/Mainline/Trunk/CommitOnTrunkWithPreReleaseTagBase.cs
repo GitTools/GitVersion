@@ -13,7 +13,7 @@ internal abstract class CommitOnTrunkWithPreReleaseTagBase : IIncrementer
     {
         context.BaseVersionSource = commit.Value;
 
-        yield return new BaseVersionOperand()
+        yield return new BaseVersionOperand
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -13,16 +14,12 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
     private readonly List<Action> restoreBackupTasks = [];
     private readonly List<Action> cleanupBackupTasks = [];
 
-    private readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
+    private readonly Dictionary<string, Regex> assemblyAttributeRegexes = new()
     {
-        {".cs", new Regex( @"(\s*\[\s*assembly:\s*(?:.*)\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
-        {".fs", new Regex( @"(\s*\[\s*\<assembly:\s*(?:.*)\>\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
-        {".vb", new Regex( @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", RegexOptions.Multiline) }
+        {".cs", RegexPatterns.Output.CsharpAssemblyAttributeRegex },
+        {".fs", RegexPatterns.Output.FsharpAssemblyAttributeRegex },
+        {".vb", RegexPatterns.Output.VisualBasicAssemblyAttributeRegex }
     };
-
-    private readonly Regex assemblyVersionRegex = new(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
-    private readonly Regex assemblyInfoVersionRegex = new(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*");
-    private readonly Regex assemblyFileVersionRegex = new(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*");
 
     private const string NewLine = "\r\n";
 
@@ -67,17 +64,17 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
             if (!assemblyVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (!assemblyFileVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (!assemblyInfoVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (appendedAttributes)

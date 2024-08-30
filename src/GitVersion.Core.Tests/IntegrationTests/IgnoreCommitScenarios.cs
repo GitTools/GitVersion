@@ -63,7 +63,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -81,7 +81,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -98,7 +98,7 @@ public class IgnoreCommitScenarios : TestBase
         var commitC = fixture.Repository.MakeACommit("C");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitC.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitC.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -117,7 +117,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitC.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitC.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -136,7 +136,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Before = commitC.Committer.When })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = commitC.Committer.When })
             .Build();
 
         // ✅ succeeds as expected
@@ -155,7 +155,7 @@ public class IgnoreCommitScenarios : TestBase
         var commitB = fixture.Repository.MakeACommit("B");
 
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .WithBranch("main", b => b.WithIncrement(IncrementStrategy.Patch)
                 .WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged)
                 .WithDeploymentMode(GitVersion.VersionCalculation.DeploymentMode.ContinuousDelivery)
@@ -213,7 +213,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -231,7 +231,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -248,7 +248,7 @@ public class IgnoreCommitScenarios : TestBase
         var commitC = fixture.Repository.MakeACommit("C");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitC.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitC.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -267,7 +267,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitC.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitC.Sha] })
             .Build();
 
         // ✅ succeeds as expected
@@ -286,7 +286,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("D");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Before = commitC.Committer.When })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = commitC.Committer.When })
             .Build();
 
         // ✅ succeeds as expected
@@ -305,7 +305,7 @@ public class IgnoreCommitScenarios : TestBase
         var commitB = fixture.Repository.MakeACommit("B");
 
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration() { Shas = [commitB.Sha] })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [commitB.Sha] })
             .WithBranch("main", b => b.WithPreventIncrementWhenCurrentCommitTagged(preventIncrementWhenCurrentCommitTagged))
             .Build();
 

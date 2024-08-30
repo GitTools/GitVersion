@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion;
@@ -8,15 +9,6 @@ namespace GitVersion;
 public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
 {
     public static readonly SemanticVersion Empty = new();
-
-    // uses the git-semver spec https://github.com/semver/semver/blob/master/semver.md
-    private static readonly Regex ParseSemVerStrict = new(
-        @"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    private static readonly Regex ParseSemVerLoose = new(
-        @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public long Major { get; init; }
 
@@ -176,7 +168,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     private static bool TryParseStrict(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
     {
-        var parsed = ParseSemVerStrict.Match(version);
+        var parsed = RegexPatterns.SemanticVersion.ParseStrictRegex.Match(version);
 
         if (!parsed.Success)
         {
@@ -198,7 +190,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     private static bool TryParseLoose(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
     {
-        var parsed = ParseSemVerLoose.Match(version);
+        var parsed = RegexPatterns.SemanticVersion.ParseLooseRegex.Match(version);
 
         if (!parsed.Success)
         {

@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -8,10 +8,6 @@ namespace GitVersion;
 public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
 {
     public static readonly SemanticVersionBuildMetaData Empty = new();
-
-    private static readonly Regex ParseRegex = new(
-        @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
         new(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
@@ -115,7 +111,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         if (buildMetaData.IsNullOrEmpty())
             return Empty;
 
-        var parsed = ParseRegex.Match(buildMetaData);
+        var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(buildMetaData);
 
         long? buildMetaDataCommitsSinceTag = null;
         long? buildMetaDataCommitsSinceVersionSource = null;
@@ -151,7 +147,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static string FormatMetaDataPart(string value)
     {
         if (!value.IsNullOrEmpty())
-            value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");
+            value = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex.Replace(value, "-");
         return value;
     }
 }

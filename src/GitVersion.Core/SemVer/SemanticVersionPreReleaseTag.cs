@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -10,10 +10,6 @@ public sealed class SemanticVersionPreReleaseTag :
 {
     private static readonly StringComparer IgnoreCaseComparer = StringComparer.InvariantCultureIgnoreCase;
     public static readonly SemanticVersionPreReleaseTag Empty = new();
-
-    private static readonly Regex ParseRegex = new(
-        @"(?<name>.*?)\.?(?<number>\d+)?$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
         new(x => x.Name, x => x.Number);
@@ -74,7 +70,7 @@ public sealed class SemanticVersionPreReleaseTag :
     {
         if (preReleaseTag.IsNullOrEmpty()) return Empty;
 
-        var match = ParseRegex.Match(preReleaseTag);
+        var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(preReleaseTag);
         if (!match.Success)
         {
             // TODO check how to log this

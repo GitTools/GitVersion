@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -39,9 +39,13 @@ internal static class ArgumentParserExtensions
     }
 
     public static bool IsSwitchArgument(this string? value)
-        => value != null
-           && (value.StartsWith('-') || value.StartsWith('/'))
-           && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
+    {
+        var patternRegex = RegexPatterns.Common.SwitchArgumentRegex;
+        return value != null
+               && (value.StartsWith('-') || value.StartsWith('/'))
+               && !patternRegex.Match(value).Success;
+        //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
+    }
 
     public static bool IsSwitch(this string? value, string switchName)
     {
