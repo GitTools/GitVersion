@@ -52,7 +52,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         if (context.SemanticVersion is not null)
         {
-            yield return new BaseVersionOperand()
+            yield return new BaseVersionOperand
             {
                 Source = GetType().Name,
                 BaseVersionSource = context.BaseVersionSource,
@@ -60,7 +60,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
             };
         }
 
-        yield return new BaseVersionOperator()
+        yield return new BaseVersionOperator
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

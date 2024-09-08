@@ -16,7 +16,7 @@ internal sealed class LastCommitOnNonTrunkWithStableTag : CommitOnNonTrunkWithSt
             yield return item;
         }
 
-        yield return new BaseVersionOperator()
+        yield return new BaseVersionOperator
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

@@ -20,7 +20,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
         {
             context.ForceIncrement = true;
 
-            yield return new BaseVersionOperator()
+            yield return new BaseVersionOperator
             {
                 Source = GetType().Name,
                 BaseVersionSource = context.BaseVersionSource,

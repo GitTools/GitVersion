@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Helpers;
 
 namespace GitVersion.Logging;
@@ -7,7 +7,6 @@ namespace GitVersion.Logging;
 internal sealed class Log(params ILogAppender[] appenders) : ILog
 {
     private IEnumerable<ILogAppender> appenders = appenders;
-    private readonly Regex obscurePasswordRegex = new("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
     private readonly StringBuilder sb = new();
     private string currentIndentation = string.Empty;
     private const string Indentation = "  ";
@@ -59,7 +58,7 @@ internal sealed class Log(params ILogAppender[] appenders) : ILog
 
     private string FormatMessage(string message, string level)
     {
-        var obscuredMessage = this.obscurePasswordRegex.Replace(message, "$1$2:*******@");
+        var obscuredMessage = RegexPatterns.Common.ObscurePasswordRegex.Replace(message, "$1$2:*******@");
         var timestamp = $"{DateTime.Now:yy-MM-dd H:mm:ss:ff}";
         return string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2}] {3}", this.currentIndentation, level, timestamp, obscuredMessage);
     }

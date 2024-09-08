@@ -26,7 +26,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
 
         if (commit.Successor is null)
         {
-            yield return new BaseVersionOperator()
+            yield return new BaseVersionOperator
             {
                 Source = GetType().Name,
                 BaseVersionSource = context.BaseVersionSource,

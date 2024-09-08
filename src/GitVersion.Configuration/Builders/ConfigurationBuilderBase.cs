@@ -423,7 +423,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsMainBranch = this.isMainBranch,
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = this.preventIncrementOfMergedBranch,
                 WhenBranchMerged = this.preventIncrementWhenBranchMerged,

@@ -17,7 +17,7 @@ internal sealed class LastMergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
             yield return item;
         }
 
-        yield return new BaseVersionOperator()
+        yield return new BaseVersionOperator
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,

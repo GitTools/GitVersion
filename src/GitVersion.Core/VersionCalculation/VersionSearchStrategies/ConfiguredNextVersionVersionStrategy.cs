@@ -34,7 +34,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
                 BaseVersionOperator? operation = null;
                 if (!semanticVersion.IsPreRelease || label is not null && semanticVersion.PreReleaseTag.Name != label)
                 {
-                    operation = new BaseVersionOperator()
+                    operation = new BaseVersionOperator
                     {
                         Increment = VersionField.None,
                         ForceIncrement = false,

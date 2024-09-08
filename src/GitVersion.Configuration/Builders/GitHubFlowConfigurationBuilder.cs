@@ -1,3 +1,4 @@
+using GitVersion.Core;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -13,10 +14,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             AssemblyFileVersioningScheme = ConfigurationConstants.DefaultAssemblyFileVersioningScheme,
             AssemblyVersioningScheme = ConfigurationConstants.DefaultAssemblyVersioningScheme,
             CommitDateFormat = ConfigurationConstants.DefaultCommitDateFormat,
-            MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
-            MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
-            NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
-            PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
+            MajorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMajorPattern,
+            MinorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMinorPattern,
+            NoBumpMessage = RegexPatterns.VersionCalculation.DefaultNoBumpPattern,
+            PatchVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultPatchPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = ConfigurationConstants.DefaultVersionStrategies,
             TagPrefix = ConfigurationConstants.DefaultTagPrefix,
@@ -26,7 +27,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = false,
                 WhenBranchMerged = false,
@@ -45,7 +46,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Label = string.Empty,
             Increment = IncrementStrategy.Patch,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true
             },
@@ -64,7 +65,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = "beta",
             Increment = IncrementStrategy.Patch,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenBranchMerged = false,
@@ -88,7 +89,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },
@@ -108,7 +109,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = "PullRequest",
             Increment = IncrementStrategy.Inherit,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
@@ -130,7 +131,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },

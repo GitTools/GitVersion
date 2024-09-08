@@ -62,7 +62,7 @@ internal sealed class TaggedCommitVersionStrategy(
             yield return new BaseVersion(
                 $"Git tag '{semanticVersionWithTag.Tag.Name.Friendly}'", semanticVersionWithTag.Value, baseVersionSource)
             {
-                Operator = new BaseVersionOperator()
+                Operator = new BaseVersionOperator
                 {
                     Increment = increment,
                     ForceIncrement = false,

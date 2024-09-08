@@ -1,3 +1,4 @@
+using GitVersion.Core;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -13,10 +14,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             AssemblyFileVersioningScheme = ConfigurationConstants.DefaultAssemblyFileVersioningScheme,
             AssemblyVersioningScheme = ConfigurationConstants.DefaultAssemblyVersioningScheme,
             CommitDateFormat = ConfigurationConstants.DefaultCommitDateFormat,
-            MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
-            MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
-            NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
-            PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
+            MajorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMajorPattern,
+            MinorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMinorPattern,
+            NoBumpMessage = RegexPatterns.VersionCalculation.DefaultNoBumpPattern,
+            PatchVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultPatchPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = ConfigurationConstants.DefaultVersionStrategies,
             TagPrefix = ConfigurationConstants.DefaultTagPrefix,
@@ -28,7 +29,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = false,
                 WhenBranchMerged = false,
@@ -48,7 +49,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             RegularExpression = DevelopBranch.RegexPattern,
             SourceBranches = [this.MainBranch.Name],
             Label = "alpha",
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },
@@ -66,7 +67,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             RegularExpression = MainBranch.RegexPattern,
             SourceBranches = [],
             Label = string.Empty,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true
             },
@@ -89,7 +90,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 this.SupportBranch.Name,
             ],
             Label = "beta",
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
@@ -115,7 +116,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 this.HotfixBranch.Name
             ],
             Label = ConfigurationConstants.BranchNamePlaceholder,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },
@@ -139,7 +140,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 this.HotfixBranch.Name
             ],
             Label = "PullRequest",
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
@@ -154,7 +155,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             Increment = IncrementStrategy.Inherit,
             RegularExpression = HotfixBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },
@@ -175,7 +176,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             RegularExpression = SupportBranch.RegexPattern,
             SourceBranches = [this.MainBranch.Name],
             Label = string.Empty,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true
             },
@@ -202,7 +203,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 this.SupportBranch.Name
             ],
             Label = ConfigurationConstants.BranchNamePlaceholder,
-            PreventIncrement = new PreventIncrementConfiguration()
+            PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = true
             },

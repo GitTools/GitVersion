@@ -1,16 +1,11 @@
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using GitVersion.Core;
 
 namespace GitVersion.Helpers;
 
 internal static class StringFormatWithExtension
 {
-    // This regex matches an expression to replace.
-    // - env:ENV name OR a member name
-    // - optional fallback value after " ?? "
-    // - the fallback value should be a quoted string, but simple unquoted text is allowed for back compat
-    private static readonly Regex TokensRegex = new(@"{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|""(?<fallback>.*)""))??}", RegexOptions.Compiled);
-
     /// <summary>
     /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces
     /// with the corresponding property from the <paramref name="source"/> or <paramref name="environment"/>.
@@ -45,7 +40,7 @@ internal static class StringFormatWithExtension
             throw new ArgumentNullException(nameof(source));
         }
 
-        foreach (Match match in TokensRegex.Matches(template).Cast<Match>())
+        foreach (Match match in RegexPatterns.Common.ExpandTokensRegex.Matches(template).Cast<Match>())
         {
             string propertyValue;
             string? fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;

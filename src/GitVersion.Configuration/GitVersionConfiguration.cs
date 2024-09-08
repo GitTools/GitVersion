@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration.Attributes;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using static GitVersion.Configuration.ConfigurationConstants;
@@ -49,7 +50,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? VersionInBranchPattern { get; internal set; }
 
     [JsonIgnore]
-    public Regex VersionInBranchRegex => versionInBranchRegex ??= new Regex(GetVersionInBranchPattern(), RegexOptions.Compiled);
+    public Regex VersionInBranchRegex => versionInBranchRegex ??= new(GetVersionInBranchPattern(), RegexOptions.Compiled);
     private Regex? versionInBranchRegex;
 
     private string GetVersionInBranchPattern()
@@ -72,26 +73,26 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string? nextVersion;
 
     [JsonPropertyName("major-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{IncrementStrategyFinder.DefaultMajorPattern}'")]
-    [JsonPropertyDefault(IncrementStrategyFinder.DefaultMajorPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMajorPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMajorPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MajorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("minor-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{IncrementStrategyFinder.DefaultMinorPattern}'")]
-    [JsonPropertyDefault(IncrementStrategyFinder.DefaultMinorPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMinorPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMinorPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MinorVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("patch-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{IncrementStrategyFinder.DefaultPatchPattern}'")]
-    [JsonPropertyDefault(IncrementStrategyFinder.DefaultPatchPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultPatchPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultPatchPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? PatchVersionBumpMessage { get; internal set; }
 
     [JsonPropertyName("no-bump-message")]
-    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{IncrementStrategyFinder.DefaultNoBumpPattern}'")]
-    [JsonPropertyDefault(IncrementStrategyFinder.DefaultNoBumpPattern)]
+    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{RegexPatterns.VersionCalculation.DefaultNoBumpPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultNoBumpPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? NoBumpMessage { get; internal set; }
 
