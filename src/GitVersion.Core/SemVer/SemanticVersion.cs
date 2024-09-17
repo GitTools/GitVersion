@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using GitVersion.Core;
 using GitVersion.Extensions;
 
@@ -76,18 +75,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return obj.GetType() == GetType() && Equals((SemanticVersion)obj);
     }
 
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            var hashCode = this.Major.GetHashCode();
-            hashCode = (hashCode * 397) ^ this.Minor.GetHashCode();
-            hashCode = (hashCode * 397) ^ this.Patch.GetHashCode();
-            hashCode = (hashCode * 397) ^ this.PreReleaseTag.GetHashCode();
-            hashCode = (hashCode * 397) ^ this.BuildMetaData.GetHashCode();
-            return hashCode;
-        }
-    }
+    public override int GetHashCode() => HashCode.Combine(Major, Minor, Patch, PreReleaseTag, BuildMetaData);
 
     public static bool operator ==(SemanticVersion? v1, SemanticVersion? v2)
     {
@@ -102,40 +90,32 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     public static bool operator >(SemanticVersion v1, SemanticVersion v2)
     {
-        if (v1 == null)
-            throw new ArgumentNullException(nameof(v1));
-        if (v2 == null)
-            throw new ArgumentNullException(nameof(v2));
+        ArgumentNullException.ThrowIfNull(v1);
+        ArgumentNullException.ThrowIfNull(v2);
 
         return v1.CompareTo(v2) > 0;
     }
 
     public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
     {
-        if (v1 == null)
-            throw new ArgumentNullException(nameof(v1));
-        if (v2 == null)
-            throw new ArgumentNullException(nameof(v2));
+        ArgumentNullException.ThrowIfNull(v1);
+        ArgumentNullException.ThrowIfNull(v2);
 
         return v1.CompareTo(v2) >= 0;
     }
 
     public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
     {
-        if (v1 == null)
-            throw new ArgumentNullException(nameof(v1));
-        if (v2 == null)
-            throw new ArgumentNullException(nameof(v2));
+        ArgumentNullException.ThrowIfNull(v1);
+        ArgumentNullException.ThrowIfNull(v2);
 
         return v1.CompareTo(v2) <= 0;
     }
 
     public static bool operator <(SemanticVersion v1, SemanticVersion v2)
     {
-        if (v1 == null)
-            throw new ArgumentNullException(nameof(v1));
-        if (v2 == null)
-            throw new ArgumentNullException(nameof(v2));
+        ArgumentNullException.ThrowIfNull(v1);
+        ArgumentNullException.ThrowIfNull(v2);
 
         return v1.CompareTo(v2) < 0;
     }
@@ -152,7 +132,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public static bool TryParse(string version, string? tagPrefixRegex,
         [NotNullWhen(true)] out SemanticVersion? semanticVersion, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
-        var match = Regex.Match(version, $"^({tagPrefixRegex})(?<version>.*)$");
+        var regex = RegexPatterns.Cache.GetOrAdd($"^({tagPrefixRegex})(?<version>.*)$");
+        var match = regex.Match(version);
 
         if (!match.Success)
         {

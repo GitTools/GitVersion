@@ -50,7 +50,8 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? VersionInBranchPattern { get; internal set; }
 
     [JsonIgnore]
-    public Regex VersionInBranchRegex => versionInBranchRegex ??= new(GetVersionInBranchPattern(), RegexOptions.Compiled);
+    public Regex VersionInBranchRegex
+        => versionInBranchRegex ??= RegexPatterns.Cache.GetOrAdd(GetVersionInBranchPattern());
     private Regex? versionInBranchRegex;
 
     private string GetVersionInBranchPattern()
@@ -103,9 +104,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("commit-date-format")]
     [JsonPropertyDescription($"The format to use when calculating the commit date. Defaults to '{DefaultCommitDateFormat}'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).")]
     [JsonPropertyDefault(DefaultCommitDateFormat)]
-#if NET7_0_OR_GREATER
-    [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")] // See https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute, https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute.datetimeformat?view=net-7.0#system-diagnostics-codeanalysis-stringsyntaxattribute-datetimeformat
-#endif
+    [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")]
     public string? CommitDateFormat { get; internal set; }
 
     [JsonPropertyName("merge-message-formats")]

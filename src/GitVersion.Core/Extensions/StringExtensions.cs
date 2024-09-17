@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 
 namespace GitVersion.Extensions;
 
@@ -11,7 +11,11 @@ public static class StringExtensions
         stringBuilder.AppendLine();
     }
 
-    public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None) => Regex.Replace(input, pattern, replace, options);
+    public static string RegexReplace(this string input, string pattern, string replace)
+    {
+        var regex = RegexPatterns.Cache.GetOrAdd(pattern);
+        return regex.Replace(input, replace);
+    }
 
     public static bool IsEquivalentTo(this string self, string? other) =>
         string.Equals(self, other, StringComparison.OrdinalIgnoreCase);

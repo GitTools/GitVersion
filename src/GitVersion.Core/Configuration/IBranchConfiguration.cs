@@ -1,4 +1,5 @@
-using System.Text.RegularExpressions;
+using GitVersion.Core;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -24,7 +25,15 @@ public interface IBranchConfiguration
     public string? RegularExpression { get; }
 
     public bool IsMatch(string branchName)
-        => RegularExpression != null && Regex.IsMatch(branchName, RegularExpression, RegexOptions.IgnoreCase);
+    {
+        if (string.IsNullOrWhiteSpace(RegularExpression))
+        {
+            return false;
+        }
+
+        var regex = RegexPatterns.Cache.GetOrAdd(RegularExpression);
+        return regex.IsMatch(branchName);
+    }
 
     IReadOnlyCollection<string> SourceBranches { get; }
 

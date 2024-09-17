@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Core;
@@ -10,7 +9,6 @@ namespace GitVersion.VersionCalculation;
 internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     : IIncrementStrategyFinder
 {
-    private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new();
     private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
@@ -44,15 +42,14 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         return commitMessageIncrement.Value;
     }
 
-    public VersionField? GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage,
-                                                string? patchVersionBumpMessage, string? noBumpMessage, ICommit[] commits)
+    private VersionField? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
     {
         commits.NotNull();
 
-        var majorRegex = TryGetRegexOrDefault(majorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMajorRegex);
-        var minorRegex = TryGetRegexOrDefault(minorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
-        var patchRegex = TryGetRegexOrDefault(patchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
-        var none = TryGetRegexOrDefault(noBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
+        var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMajorRegex);
+        var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
+        var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
+        var none = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
 
         var increments = commits
             .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
@@ -86,11 +83,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
             commits = commits.Where(c => c.Parents.Count > 1);
         }
 
-        return GetIncrementForCommits(
-            majorVersionBumpMessage: configuration.MajorVersionBumpMessage,
-            minorVersionBumpMessage: configuration.MinorVersionBumpMessage,
-            patchVersionBumpMessage: configuration.PatchVersionBumpMessage,
-            noBumpMessage: configuration.NoBumpMessage,
+        return GetIncrementForCommits(configuration,
             commits: commits.ToArray()
         );
     }
@@ -98,7 +91,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
         messageRegex == null
             ? defaultRegex
-            : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+            : RegexPatterns.Cache.GetOrAdd(messageRegex);
 
     private IReadOnlyCollection<ICommit> GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)

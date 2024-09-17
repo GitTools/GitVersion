@@ -90,16 +90,10 @@ public record EffectiveConfiguration
     public string? AssemblyVersioningFormat { get; }
     public string? AssemblyFileVersioningFormat { get; }
 
-    /// <summary>
-    ///     Git tag prefix
-    /// </summary>
     public string? TagPrefix { get; }
 
     public Regex VersionInBranchRegex { get; }
 
-    /// <summary>
-    ///     Label to use when calculating SemVer
-    /// </summary>
     public string? Label { get; }
 
     public string? NextVersion { get; }

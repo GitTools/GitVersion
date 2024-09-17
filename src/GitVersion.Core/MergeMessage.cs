@@ -30,7 +30,7 @@ public class MergeMessage
         // Concatenate configuration formats with the defaults.
         // Ensure configurations are processed first.
         var allFormats = configuration.MergeMessageFormats
-            .Select(x => new MergeMessageFormat(x.Key, new(x.Value, RegexOptions.IgnoreCase | RegexOptions.Compiled)))
+            .Select(x => new MergeMessageFormat(x.Key, RegexPatterns.Cache.GetOrAdd(x.Value)))
             .Concat(DefaultFormats);
 
         foreach (var format in allFormats)

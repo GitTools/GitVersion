@@ -106,7 +106,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
                 {
                     length += versionPart.Length;
                     var name = WithoutOrigin[length..].Trim('-');
-                    result = new(semanticVersion, name == string.Empty ? null : name);
+                    result = new(semanticVersion, name.Length == 0 ? null : name);
                     return true;
                 }
             }

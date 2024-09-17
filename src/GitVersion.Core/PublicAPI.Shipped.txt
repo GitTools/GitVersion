@@ -675,7 +675,6 @@ GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurati
 GitVersion.VersionCalculation.IIncrementStrategyFinder
 GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.Git.ICommit! currentCommit, GitVersion.Git.ICommit? baseVersionSource, bool shouldIncrement, GitVersion.Configuration.EffectiveConfiguration! configuration, string? label) -> GitVersion.VersionField
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForcedByCommit(GitVersion.Git.ICommit! commit, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> GitVersion.VersionField
-GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.Git.ICommit![]! commits) -> GitVersion.VersionField?
 GitVersion.VersionCalculation.IIncrementStrategyFinder.GetMergedCommits(GitVersion.Git.ICommit! mergeCommit, int index, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IEnumerable<GitVersion.Git.ICommit!>!
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.SemanticVersion!
@@ -748,7 +747,6 @@ static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyVers
 static GitVersion.Extensions.CommonExtensions.NotNull<T>(this T? value, string! name = "") -> T!
 static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
-static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.IDictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
 static GitVersion.Extensions.EnumerableExtensions.AddRange<T>(this System.Collections.Generic.ICollection<T>! source, System.Collections.Generic.IEnumerable<T>! items) -> void
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
@@ -764,7 +762,6 @@ static GitVersion.Extensions.StringExtensions.IsEmpty(this string? value) -> boo
 static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! self, string? other) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
-static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace, System.Text.RegularExpressions.RegexOptions options = System.Text.RegularExpressions.RegexOptions.None) -> string!
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! value, string! prefix) -> string!
 static GitVersion.Git.BranchCommit.operator !=(GitVersion.Git.BranchCommit left, GitVersion.Git.BranchCommit right) -> bool
 static GitVersion.Git.BranchCommit.operator ==(GitVersion.Git.BranchCommit left, GitVersion.Git.BranchCommit right) -> bool

@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Logging;
@@ -47,10 +47,10 @@ internal class MainlineBranchFinder(
             if (value.RegularExpression == null)
                 return false;
 
-            var mainlineRegex = value.RegularExpression;
+            var regex = RegexPatterns.Cache.GetOrAdd(value.RegularExpression);
             var branchName = this.branch.Name.WithoutOrigin;
-            var match = Regex.IsMatch(branchName, mainlineRegex);
-            this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
+            var match = regex.IsMatch(branchName);
+            this.log.Info($"'{value.RegularExpression}' {(match ? "matches" : "does not match")} '{branchName}'.");
             return match;
         }
     }
