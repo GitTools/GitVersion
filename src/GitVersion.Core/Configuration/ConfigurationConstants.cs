@@ -22,10 +22,13 @@ internal static class ConfigurationConstants
         VersionStrategies.VersionInBranchName
     ];
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
+    //language=regexp
     public const string DefaultTagPrefix = "[vV]?";
+    //language=regexp
     public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
     public const string DefaultCommitDateFormat = "yyyy-MM-dd";
     public const string BranchNamePlaceholder = "{BranchName}";
+    //language=regexp
     public const string DefaultLabelNumberPattern = @"[/-](?<number>\d+)";
     public const bool DefaultUpdateBuildNumber = true;
     public const int DefaultTagPreReleaseWeight = 60000;
@@ -40,12 +43,20 @@ internal static class ConfigurationConstants
     public const string SupportBranchKey = "support";
     public const string UnknownBranchKey = "unknown";
 
+    //language=regexp
     public const string MainBranchRegex = "^master$|^main$";
+    //language=regexp
     public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
+    //language=regexp
     public const string ReleaseBranchRegex = "^releases?[/-](?<BranchName>.+)";
+    //language=regexp
     public const string FeatureBranchRegex = "^features?[/-](?<BranchName>.+)";
+    //language=regexp
     public const string PullRequestBranchRegex = @"^(pull|pull\-requests|pr)[/-]";
+    //language=regexp
     public const string HotfixBranchRegex = "^hotfix(es)?[/-](?<BranchName>.+)";
+    //language=regexp
     public const string SupportBranchRegex = "^support[/-](?<BranchName>.+)";
+    //language=regexp
     public const string UnknownBranchRegex = "(?<BranchName>.+)";
 }
