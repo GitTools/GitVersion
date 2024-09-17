@@ -246,7 +246,7 @@ branches: {}";
         configuration.AssemblyInformationalFormat.ShouldBe(null);
         configuration.Branches["develop"].Label.ShouldBe("alpha");
         configuration.Branches["release"].Label.ShouldBe("beta");
-        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
+        configuration.TagPrefix.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
         configuration.NextVersion.ShouldBe(null);
     }
 
@@ -398,7 +398,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
+        configuration.TagPrefix.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
     }
 
     [Test]
@@ -437,7 +437,7 @@ tag-prefix: custom-tag-prefix-from-yml";
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
+        configuration.TagPrefix.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
     }
 
     [Test]

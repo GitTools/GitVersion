@@ -16,6 +16,42 @@ internal static class RegexPatterns
         public static Regex ExpandTokensRegex { get; } = new("""{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|"(?<fallback>.*)"))??}""", RegexOptions.Compiled);
     }
 
+    internal static class Configuration
+    {
+        //language=regexp
+        public const string DefaultTagPrefixPattern = "[vV]?";
+
+        //language=regexp
+        public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
+
+        //language=regexp
+        public const string DefaultLabelNumberPattern = @"[/-](?<number>\d+)";
+
+        //language=regexp
+        public const string MainBranchRegexPattern = "^master$|^main$";
+
+        //language=regexp
+        public const string DevelopBranchRegexPattern = "^dev(elop)?(ment)?$";
+
+        //language=regexp
+        public const string ReleaseBranchRegexPattern = "^releases?[/-](?<BranchName>.+)";
+
+        //language=regexp
+        public const string FeatureBranchRegexPattern = "^features?[/-](?<BranchName>.+)";
+
+        //language=regexp
+        public const string PullRequestBranchRegexPattern = @"^(pull|pull\-requests|pr)[/-]";
+
+        //language=regexp
+        public const string HotfixBranchRegexPattern = "^hotfix(es)?[/-](?<BranchName>.+)";
+
+        //language=regexp
+        public const string SupportBranchRegexPattern = "^support[/-](?<BranchName>.+)";
+
+        //language=regexp
+        public const string UnknownBranchRegexPattern = "(?<BranchName>.+)";
+    }
+
     internal static class MergeMessage
     {
         public static Regex DefaultMergeMessageRegex { get; } = new(@"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -52,10 +88,10 @@ internal static class RegexPatterns
         //language=regexp
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
-        public static Regex DefaultMajorPatternRegex { get; } = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public static Regex DefaultMinorPatternRegex { get; } = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public static Regex DefaultPatchPatternRegex { get; } = new(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public static Regex DefaultNoBumpPatternRegex { get; } = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public static Regex DefaultMajorRegex { get; } = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public static Regex DefaultMinorRegex { get; } = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public static Regex DefaultPatchRegex { get; } = new(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public static Regex DefaultNoBumpRegex { get; } = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
     }
 
     internal static class SemanticVersion

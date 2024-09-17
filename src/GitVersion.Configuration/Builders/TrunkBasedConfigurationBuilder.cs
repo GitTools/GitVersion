@@ -23,8 +23,8 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
                 VersionStrategies.ConfiguredNextVersion,
                 VersionStrategies.Mainline
             ],
-            TagPrefix = ConfigurationConstants.DefaultTagPrefix,
-            VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
+            TagPrefix = RegexPatterns.Configuration.DefaultTagPrefixPattern,
+            VersionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
@@ -112,7 +112,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
             },
-            LabelNumberPattern = ConfigurationConstants.DefaultLabelNumberPattern,
+            LabelNumberPattern = RegexPatterns.Configuration.DefaultLabelNumberPattern,
             RegularExpression = PullRequestBranch.RegexPattern,
             SourceBranches =
             [

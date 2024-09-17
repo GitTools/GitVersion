@@ -1,3 +1,4 @@
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -47,49 +48,49 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     protected readonly BranchMetaData MainBranch = new()
     {
         Name = ConfigurationConstants.MainBranchKey,
-        RegexPattern = ConfigurationConstants.MainBranchRegex
+        RegexPattern = RegexPatterns.Configuration.MainBranchRegexPattern
     };
 
     protected readonly BranchMetaData DevelopBranch = new()
     {
         Name = ConfigurationConstants.DevelopBranchKey,
-        RegexPattern = ConfigurationConstants.DevelopBranchRegex
+        RegexPattern = RegexPatterns.Configuration.DevelopBranchRegexPattern
     };
 
     protected readonly BranchMetaData ReleaseBranch = new()
     {
         Name = ConfigurationConstants.ReleaseBranchKey,
-        RegexPattern = ConfigurationConstants.ReleaseBranchRegex
+        RegexPattern = RegexPatterns.Configuration.ReleaseBranchRegexPattern
     };
 
     protected readonly BranchMetaData FeatureBranch = new()
     {
         Name = ConfigurationConstants.FeatureBranchKey,
-        RegexPattern = ConfigurationConstants.FeatureBranchRegex
+        RegexPattern = RegexPatterns.Configuration.FeatureBranchRegexPattern
     };
 
     protected readonly BranchMetaData PullRequestBranch = new()
     {
         Name = ConfigurationConstants.PullRequestBranchKey,
-        RegexPattern = ConfigurationConstants.PullRequestBranchRegex
+        RegexPattern = RegexPatterns.Configuration.PullRequestBranchRegexPattern
     };
 
     protected readonly BranchMetaData HotfixBranch = new()
     {
         Name = ConfigurationConstants.HotfixBranchKey,
-        RegexPattern = ConfigurationConstants.HotfixBranchRegex
+        RegexPattern = RegexPatterns.Configuration.HotfixBranchRegexPattern
     };
 
     protected readonly BranchMetaData SupportBranch = new()
     {
         Name = ConfigurationConstants.SupportBranchKey,
-        RegexPattern = ConfigurationConstants.SupportBranchRegex
+        RegexPattern = RegexPatterns.Configuration.SupportBranchRegexPattern
     };
 
     protected readonly BranchMetaData UnknownBranch = new()
     {
         Name = ConfigurationConstants.UnknownBranchKey,
-        RegexPattern = ConfigurationConstants.UnknownBranchRegex
+        RegexPattern = RegexPatterns.Configuration.UnknownBranchRegexPattern
     };
 
     protected ConfigurationBuilderBase()

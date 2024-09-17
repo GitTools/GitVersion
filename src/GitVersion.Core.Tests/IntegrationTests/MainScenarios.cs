@@ -215,7 +215,7 @@ public class MainScenarios : TestBase
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix($"version-|{ConfigurationConstants.DefaultTagPrefix}").Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix($"version-|{RegexPatterns.Configuration.DefaultTagPrefixPattern}").Build();
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);

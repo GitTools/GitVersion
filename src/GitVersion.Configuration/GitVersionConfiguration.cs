@@ -38,14 +38,14 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? AssemblyFileVersioningFormat { get; internal set; }
 
     [JsonPropertyName("tag-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{DefaultTagPrefix}'")]
-    [JsonPropertyDefault(DefaultTagPrefix)]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? TagPrefix { get; internal set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
-    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{DefaultVersionInBranchPattern}'.")]
-    [JsonPropertyDefault(DefaultVersionInBranchPattern)]
+    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchPattern}'.")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultVersionInBranchPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? VersionInBranchPattern { get; internal set; }
 
@@ -56,7 +56,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string GetVersionInBranchPattern()
     {
         var versionInBranchPattern = VersionInBranchPattern;
-        if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = DefaultVersionInBranchPattern;
+        if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern;
         return $"^{versionInBranchPattern.TrimStart('^')}";
     }
 
