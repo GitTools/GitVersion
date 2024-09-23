@@ -38,7 +38,8 @@ simply to show what happens if the check is true.
 
 Currently we have the following strategies:
 
-* `TaggedCommit` - Extracts version information from all tags on the branch which are valid, and not newer than the current commit.
+* `TaggedCommit` - Extracts version information from all tags on the branch which are valid,
+    and not newer than the current commit.
 * `VersionInBranchName` - Extracts version information from the
     branch name (e.g., `release/3.0.0` will find `3.0.0`)
 * `ConfiguredNextVersion` - Returns the version from the
@@ -49,7 +50,7 @@ Currently we have the following strategies:
     calculating the next version which is dependent on the increment strategy of
  the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
 * `TrackReleaseBranches` - TODO: Document this
-* `Mainline` - TODO: Document this
+* `Mainline` - Increments the version on every commit for branches configured with `mode: Mainline`
 
 Each strategy needs to return an instance of `BaseVersion` which has the
 following properties:
