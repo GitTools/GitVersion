@@ -1,4 +1,5 @@
 #nullable enable
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! referenceName, out (GitVersion.SemanticVersion! Value, string? Name) result, System.Text.RegularExpressions.Regex! versionPatternRegex, string? tagPrefix, GitVersion.SemanticVersionFormat format) -> bool
 static GitVersion.Extensions.DictionaryExtensions.GetOrAdd(this System.Collections.Concurrent.ConcurrentDictionary<string!, System.Text.RegularExpressions.Regex!>! dict, string! pattern) -> System.Text.RegularExpressions.Regex!
 static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.Dictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!

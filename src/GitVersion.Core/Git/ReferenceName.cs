@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -42,39 +41,33 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
 
-    public static bool TryParse([NotNullWhen(true)] out ReferenceName? value, string canonicalName)
-    {
-        value = null;
-
-        if (IsPrefixedBy(canonicalName, LocalBranchPrefix)
-            || IsPrefixedBy(canonicalName, RemoteTrackingBranchPrefix)
-            || IsPrefixedBy(canonicalName, TagPrefix)
-            || IsPrefixedBy(canonicalName, PullRequestPrefixes))
-        {
-            value = new(canonicalName);
-        }
-
-        return value is not null;
-    }
-
     public static ReferenceName FromBranchName(string branchName)
-    {
-        if (TryParse(out ReferenceName? value, branchName)) return value;
-        return Parse(LocalBranchPrefix + branchName);
-    }
+        => TryParse(out ReferenceName? value, branchName)
+            ? value
+            : Parse(LocalBranchPrefix + branchName);
 
     public string Canonical { get; }
+
     public string Friendly { get; }
+
     public string WithoutOrigin { get; }
+
     public bool IsLocalBranch { get; }
+
     public bool IsRemoteBranch { get; }
+
     public bool IsTag { get; }
+
     public bool IsPullRequest { get; }
 
     public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
+
     public int CompareTo(ReferenceName? other) => comparerHelper.Compare(this, other);
+
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);
+
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
+
     public override string ToString() => Friendly;
 
     public static bool operator ==(ReferenceName? left, ReferenceName? right)
@@ -85,38 +78,6 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     }
 
     public static bool operator !=(ReferenceName? left, ReferenceName? right) => !(left == right);
-
-    public bool TryGetSemanticVersion(out (SemanticVersion Value, string? Name) result,
-                                      Regex versionPatternRegex,
-                                      string? tagPrefix,
-                                      SemanticVersionFormat format)
-    {
-        result = default;
-
-        int length = 0;
-        foreach (var branchPart in WithoutOrigin.Split(GetBranchSeparator()))
-        {
-            if (string.IsNullOrEmpty(branchPart)) return false;
-
-            var match = versionPatternRegex.NotNull().Match(branchPart);
-            if (match.Success)
-            {
-                var versionPart = match.Groups["version"].Value;
-                if (SemanticVersion.TryParse(versionPart, tagPrefix, out var semanticVersion, format))
-                {
-                    length += versionPart.Length;
-                    var name = WithoutOrigin[length..].Trim('-');
-                    result = new(semanticVersion, name.Length == 0 ? null : name);
-                    return true;
-                }
-            }
-            length += branchPart.Length + 1;
-        }
-
-        return false;
-    }
-
-    private char GetBranchSeparator() => WithoutOrigin.Contains('/') || !WithoutOrigin.Contains('-') ? '/' : '-';
 
     public bool EquivalentTo(string? name) =>
         Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
@@ -143,7 +104,23 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         {
             return Friendly[OriginPrefix.Length..];
         }
+
         return Friendly;
+    }
+
+    private static bool TryParse([NotNullWhen(true)] out ReferenceName? value, string canonicalName)
+    {
+        value = null;
+
+        if (IsPrefixedBy(canonicalName, LocalBranchPrefix)
+            || IsPrefixedBy(canonicalName, RemoteTrackingBranchPrefix)
+            || IsPrefixedBy(canonicalName, TagPrefix)
+            || IsPrefixedBy(canonicalName, PullRequestPrefixes))
+        {
+            value = new(canonicalName);
+        }
+
+        return value is not null;
     }
 
     private static bool IsPrefixedBy(string input, string prefix) => input.StartsWith(prefix, StringComparison.Ordinal);

@@ -70,11 +70,7 @@ public class MergeMessage
     public SemanticVersion? Version { get; }
 
     private SemanticVersion? ParseVersion(Regex versionInBranchRegex, string? tagPrefix, SemanticVersionFormat format)
-    {
-        if (MergedBranch?.TryGetSemanticVersion(out var result, versionInBranchRegex, tagPrefix, format) == true)
-            return result.Value;
-        return null;
-    }
+        => MergedBranch?.TryGetSemanticVersion(out var result, versionInBranchRegex, tagPrefix, format) == true ? result.Value : null;
 
     private class MergeMessageFormat(string name, Regex pattern)
     {
