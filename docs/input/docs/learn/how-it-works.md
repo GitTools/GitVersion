@@ -49,7 +49,9 @@ Currently we have the following strategies:
 * `Fallback` - Always returns 0.0.0 and will be used for
     calculating the next version which is dependent on the increment strategy of
  the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
-* `TrackReleaseBranches` - TODO: Document this
+* `TrackReleaseBranches` - Considers the base version extracted from release branches when
+calculating the next version for branches configured with `track-release-branches: true`
+(part of default configuration for `develop` branch in `GitFlow` workflow)
 * `Mainline` - Increments the version on every commit for branches configured with `mode: Mainline`
 
 Each strategy needs to return an instance of `BaseVersion` which has the
