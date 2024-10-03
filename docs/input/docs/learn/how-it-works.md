@@ -52,7 +52,7 @@ Currently we have the following strategies:
 * `TrackReleaseBranches` - Considers the base version extracted from release branches when
 calculating the next version for branches configured with `track-release-branches: true`
 (part of default configuration for `develop` branch in `GitFlow` workflow)
-* `Mainline` - Increments the version on every commit for branches configured with `mode: Mainline`
+* `Mainline` - Increments the version on every commit for branches configured with `is-main-branch: true`
 
 Each strategy needs to return an instance of `BaseVersion` which has the
 following properties:
