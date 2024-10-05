@@ -1,6 +1,5 @@
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Scriban;
+using GitVersion.Polyfill;
+
 // ReSharper disable InconsistentNaming
 namespace GitVersion;
 
@@ -88,11 +87,11 @@ public class CommandImplGenerator : IIncrementalGenerator
         var name = Convert.ToString(ctorArguments[0].Value);
         var description = Convert.ToString(ctorArguments[1].Value);
 
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(description);
+        name.NotNull();
+        description.NotNull();
 
         ITypeSymbol? parentCommandType = null;
-        if (commandAttribute.AttributeClass != null && commandAttribute.AttributeClass.TypeArguments.Any())
+        if (commandAttribute.AttributeClass?.TypeArguments.Any() == true)
         {
             parentCommandType = commandAttribute.AttributeClass.TypeArguments.Single();
         }
@@ -130,8 +129,8 @@ public class CommandImplGenerator : IIncrementalGenerator
         var name = Convert.ToString(ctorArguments[0].Value);
         var description = Convert.ToString(ctorArguments[1].Value);
 
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(description);
+        name.NotNull();
+        description.NotNull();
 
         string alias = string.Empty;
         if (ctorArguments.Length == 3)

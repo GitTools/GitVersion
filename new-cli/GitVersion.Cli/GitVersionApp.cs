@@ -6,6 +6,7 @@ using Serilog.Events;
 
 namespace GitVersion;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 internal class GitVersionApp(RootCommandImpl rootCommand)
 {
     private readonly RootCommandImpl rootCommand = rootCommand.NotNull();

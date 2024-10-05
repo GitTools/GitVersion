@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis;
-
 namespace GitVersion;
 
 public static class RoslynExtensions
@@ -24,7 +22,10 @@ public static class RoslynExtensions
         }
     }
 
-    public static IEnumerable<T> GetAllMembers<T>(this ITypeSymbol type) where T : ISymbol => type.GetBaseTypesAndThis().SelectMany(n => n.GetMembers().OfType<T>());
+    public static IEnumerable<T> GetAllMembers<T>(this ITypeSymbol type) where T : ISymbol
+        => type.GetBaseTypesAndThis().SelectMany(n => n.GetMembers().OfType<T>());
 
-    public static AttributeData? GetAttributeData(this ISymbol namedType, string fullName) => namedType.GetAttributes().SingleOrDefault(a => a.AttributeClass?.OriginalDefinition.ToDisplayString() == fullName);
+    public static AttributeData? GetAttributeData(this ISymbol namedType, string fullName)
+        => namedType.GetAttributes()
+            .SingleOrDefault(a => a.AttributeClass?.OriginalDefinition.ToDisplayString() == fullName);
 }
