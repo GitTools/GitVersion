@@ -1,8 +1,6 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
 using GitVersion.Configuration.Attributes;
 using GitVersion.Core;
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using static GitVersion.Configuration.ConfigurationConstants;
 
@@ -38,27 +36,16 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? AssemblyFileVersioningFormat { get; internal set; }
 
     [JsonPropertyName("tag-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{DefaultTagPrefix}'")]
-    [JsonPropertyDefault(DefaultTagPrefix)]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixPattern)]
     [JsonPropertyFormat(Format.Regex)]
-    public string? TagPrefix { get; internal set; }
+    public string? TagPrefixPattern { get; internal set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
-    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{DefaultVersionInBranchPattern}'.")]
-    [JsonPropertyDefault(DefaultVersionInBranchPattern)]
+    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchPattern}'.")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultVersionInBranchPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? VersionInBranchPattern { get; internal set; }
-
-    [JsonIgnore]
-    public Regex VersionInBranchRegex => versionInBranchRegex ??= new(GetVersionInBranchPattern(), RegexOptions.Compiled);
-    private Regex? versionInBranchRegex;
-
-    private string GetVersionInBranchPattern()
-    {
-        var versionInBranchPattern = VersionInBranchPattern;
-        if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = DefaultVersionInBranchPattern;
-        return $"^{versionInBranchPattern.TrimStart('^')}";
-    }
 
     [JsonPropertyName("next-version")]
     [JsonPropertyDescription("Allows you to bump the next version explicitly. Useful for bumping main or a feature branch with breaking changes")]
@@ -103,9 +90,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyName("commit-date-format")]
     [JsonPropertyDescription($"The format to use when calculating the commit date. Defaults to '{DefaultCommitDateFormat}'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).")]
     [JsonPropertyDefault(DefaultCommitDateFormat)]
-#if NET7_0_OR_GREATER
-    [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")] // See https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute, https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.stringsyntaxattribute.datetimeformat?view=net-7.0#system-diagnostics-codeanalysis-stringsyntaxattribute-datetimeformat
-#endif
+    [System.Diagnostics.CodeAnalysis.StringSyntax("DateTimeFormat")]
     public string? CommitDateFormat { get; internal set; }
 
     [JsonPropertyName("merge-message-formats")]

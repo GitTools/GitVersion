@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -10,7 +9,9 @@ namespace GitVersion.Configuration;
 /// </summary>
 public record EffectiveConfiguration
 {
-    public EffectiveConfiguration(IGitVersionConfiguration configuration, IBranchConfiguration branchConfiguration,
+    public EffectiveConfiguration(
+        IGitVersionConfiguration configuration,
+        IBranchConfiguration branchConfiguration,
         EffectiveConfiguration? fallbackConfiguration = null)
     {
         configuration.NotNull();
@@ -50,8 +51,8 @@ public record EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         DeploymentMode = branchConfiguration.DeploymentMode.Value;
-        TagPrefix = configuration.TagPrefix;
-        VersionInBranchRegex = configuration.VersionInBranchRegex;
+        TagPrefix = configuration.TagPrefixPattern;
+        VersionInBranchPattern = configuration.VersionInBranchPattern;
         Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
@@ -90,16 +91,10 @@ public record EffectiveConfiguration
     public string? AssemblyVersioningFormat { get; }
     public string? AssemblyFileVersioningFormat { get; }
 
-    /// <summary>
-    ///     Git tag prefix
-    /// </summary>
     public string? TagPrefix { get; }
 
-    public Regex VersionInBranchRegex { get; }
+    public string? VersionInBranchPattern { get; }
 
-    /// <summary>
-    ///     Label to use when calculating SemVer
-    /// </summary>
     public string? Label { get; }
 
     public string? NextVersion { get; }

@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Attributes;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -26,8 +27,8 @@ internal record BranchConfiguration : IBranchConfiguration
     public PreventIncrementConfiguration PreventIncrement { get; internal set; } = new();
 
     [JsonPropertyName("label-number-pattern")]
-    [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{ConfigurationConstants.DefaultLabelNumberPattern}'.")]
-    [JsonPropertyDefault(ConfigurationConstants.DefaultLabelNumberPattern)]
+    [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{RegexPatterns.Configuration.DefaultLabelNumberPattern}'.")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultLabelNumberPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? LabelNumberPattern { get; internal set; }
 

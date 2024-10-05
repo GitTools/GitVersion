@@ -16,9 +16,9 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
     private readonly Dictionary<string, Regex> assemblyAttributeRegexes = new()
     {
-        {".cs", RegexPatterns.Output.CsharpAssemblyAttributeRegex },
-        {".fs", RegexPatterns.Output.FsharpAssemblyAttributeRegex },
-        {".vb", RegexPatterns.Output.VisualBasicAssemblyAttributeRegex }
+        [".cs"] = RegexPatterns.Output.CsharpAssemblyAttributeRegex,
+        [".fs"] = RegexPatterns.Output.FsharpAssemblyAttributeRegex,
+        [".vb"] = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex
     };
 
     private const string NewLine = "\r\n";

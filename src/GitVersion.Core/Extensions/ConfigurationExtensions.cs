@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
@@ -94,12 +94,12 @@ internal static class ConfigurationExtensions
         if (!configuration.RegularExpression.IsNullOrWhiteSpace() && !effectiveBranchName.IsNullOrEmpty())
         {
             effectiveBranchName = effectiveBranchName.RegexReplace("[^a-zA-Z0-9-_]", "-");
-            var pattern = new Regex(configuration.RegularExpression, RegexOptions.IgnoreCase);
-            var match = pattern.Match(effectiveBranchName);
+            var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
+            var match = regex.Match(effectiveBranchName);
             if (match.Success)
             {
                 // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (var groupName in pattern.GetGroupNames())
+                foreach (var groupName in regex.GetGroupNames())
                 {
                     label = label.Replace("{" + groupName + "}", match.Groups[groupName].Value);
                 }
@@ -111,7 +111,8 @@ internal static class ConfigurationExtensions
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
         if (!configuration.LabelNumberPattern.IsNullOrEmpty() && !effectiveBranchName.IsNullOrEmpty())
         {
-            var match = Regex.Match(effectiveBranchName, configuration.LabelNumberPattern);
+            var regex = RegexPatterns.Cache.GetOrAdd(configuration.LabelNumberPattern);
+            var match = regex.Match(effectiveBranchName);
             var numberGroup = match.Groups["number"];
             if (numberGroup.Success)
             {

@@ -79,7 +79,7 @@ internal class NextVersionCalculator(
         var ignore = Context.Configuration.Ignore;
         var alternativeSemanticVersion = taggedSemanticVersionService.GetTaggedSemanticVersionsOfBranch(
             branch: nextVersion.BranchConfiguration.Branch,
-            tagPrefix: Context.Configuration.TagPrefix,
+            tagPrefix: Context.Configuration.TagPrefixPattern,
             format: Context.Configuration.SemanticVersionFormat,
             ignore: Context.Configuration.Ignore,
             notOlderThan: Context.CurrentCommit.When

@@ -450,7 +450,7 @@ public class ArgumentParserTests : TestBase
             "tag-prefix=sample",
             new GitVersionConfiguration
             {
-                TagPrefix = "sample"
+                TagPrefixPattern = "sample"
             }
         );
         yield return new TestCaseData(
@@ -546,7 +546,7 @@ public class ArgumentParserTests : TestBase
             "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
-                TagPrefix = "sample",
+                TagPrefixPattern = "sample",
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
@@ -554,7 +554,7 @@ public class ArgumentParserTests : TestBase
             "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
-                TagPrefix = "sample",
+                TagPrefixPattern = "sample",
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
@@ -562,7 +562,7 @@ public class ArgumentParserTests : TestBase
             "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
-                TagPrefix = "sample",
+                TagPrefixPattern = "sample",
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
                 UpdateBuildNumber = true,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,

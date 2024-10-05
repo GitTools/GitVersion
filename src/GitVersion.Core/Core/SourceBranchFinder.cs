@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
@@ -18,7 +19,7 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
 
     private class SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
     {
-        private readonly IEnumerable<string> sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
+        private readonly IEnumerable<Regex> sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
 
         public bool IsSourceBranch(INamedReference sourceBranchCandidate)
         {
@@ -27,15 +28,15 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
 
             var branchName = sourceBranchCandidate.Name.WithoutOrigin;
 
-            return this.sourceBranchRegexes.Any(regex => Regex.IsMatch(branchName, regex));
+            return this.sourceBranchRegexes.Any(regex => regex.IsMatch(branchName));
         }
 
-        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, IGitVersionConfiguration configuration)
+        private static IEnumerable<Regex> GetSourceBranchRegexes(INamedReference branch, IGitVersionConfiguration configuration)
         {
             var currentBranchConfig = configuration.GetBranchConfiguration(branch.Name);
             if (currentBranchConfig.SourceBranches == null)
             {
-                yield return ".*";
+                yield return RegexPatterns.Cache.GetOrAdd(".*");
             }
             else
             {
@@ -44,7 +45,7 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
                 {
                     var regex = branches[sourceBranch].RegularExpression;
                     if (regex != null)
-                        yield return regex;
+                        yield return RegexPatterns.Cache.GetOrAdd(regex);
                 }
             }
         }

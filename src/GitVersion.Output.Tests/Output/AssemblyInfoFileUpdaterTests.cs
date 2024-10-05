@@ -45,7 +45,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
 
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0);
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0);
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(workingDir, true, assemblyInfoFile));
@@ -61,7 +61,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFile = PathHelper.Combine("src", "Project", "Properties", $"VersionAssemblyInfo.{fileExtension}");
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -76,7 +76,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     public void ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo(string fileExtension)
     {
         var assemblyInfoFiles = new HashSet<string> { "AssemblyInfo." + fileExtension, PathHelper.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension) };
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0);
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(workingDir, true, [.. assemblyInfoFiles]));
@@ -96,7 +96,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -113,7 +113,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         const string assemblyInfoFile = "VersionAssemblyInfo.js";
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
@@ -129,7 +129,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         string[] assemblyInfoFiles = [];
         var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", ConfigurationConstants.DefaultTagPrefix), EmptyConfigurationBuilder.New.Build(), 0
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
