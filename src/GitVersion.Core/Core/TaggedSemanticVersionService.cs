@@ -25,7 +25,7 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfBranchInternal(
                     branch: branch,
-                    tagPrefix: configuration.TagPrefix,
+                    tagPrefix: configuration.TagPrefixPattern,
                     format: configuration.SemanticVersionFormat,
                     ignore: configuration.Ignore,
                     label: label,
@@ -37,7 +37,7 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfMergeTargetInternal(
                     branch: branch,
-                    tagPrefix: configuration.TagPrefix,
+                    tagPrefix: configuration.TagPrefixPattern,
                     format: configuration.SemanticVersionFormat,
                     ignore: configuration.Ignore,
                     label: label,
@@ -192,7 +192,7 @@ internal sealed class TaggedSemanticVersionService(
         {
             var taggedSemanticVersions = GetTaggedSemanticVersionsOfBranchInternal(
                 branch: releaseBranch,
-                tagPrefix: configuration.TagPrefix,
+                tagPrefix: configuration.TagPrefixPattern,
                 format: configuration.SemanticVersionFormat,
                 ignore: configuration.Ignore,
                 label: label,
@@ -232,7 +232,7 @@ internal sealed class TaggedSemanticVersionService(
         {
             var taggedSemanticVersions = GetTaggedSemanticVersionsOfBranchInternal(
                 branch: releaseBranch,
-                tagPrefix: configuration.TagPrefix,
+                tagPrefix: configuration.TagPrefixPattern,
                 format: configuration.SemanticVersionFormat,
                 ignore: configuration.Ignore,
                 label: label,

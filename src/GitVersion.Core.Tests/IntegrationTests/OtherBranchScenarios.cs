@@ -22,7 +22,7 @@ public class OtherBranchScenarios : TestBase
         string expectedVersionAfterNewCommit)
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithTagPrefix(tagPrefix)
+            .WithTagPrefixPattern(tagPrefix)
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -61,7 +61,7 @@ public class OtherBranchScenarios : TestBase
     [TestCase("prefix", "bar", "2.1.0-1", "2.0.0-bar.1+1", ExpectedResult = "2.0.0-bar.1+1")]
     public string WhenTaggingACommitAsPreRelease(string tagPrefix, string? label, string tag, string expectedVersion)
     {
-        var configuration = GitFlowConfigurationBuilder.New.WithLabel(null).WithTagPrefix(tagPrefix)
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel(null).WithTagPrefixPattern(tagPrefix)
             .WithBranch("main", b => b.WithLabel(label).WithDeploymentMode(DeploymentMode.ManualDeployment))
             .Build();
 

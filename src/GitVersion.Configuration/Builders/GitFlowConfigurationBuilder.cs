@@ -20,7 +20,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PatchVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultPatchPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = ConfigurationConstants.DefaultVersionStrategies,
-            TagPrefix = RegexPatterns.Configuration.DefaultTagPrefixPattern,
+            TagPrefixPattern = RegexPatterns.Configuration.DefaultTagPrefixPattern,
             VersionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,

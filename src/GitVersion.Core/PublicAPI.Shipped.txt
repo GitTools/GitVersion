@@ -86,7 +86,6 @@ GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
-GitVersion.Configuration.EffectiveConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
 GitVersion.Configuration.EffectiveConfiguration.VersionStrategy.get -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.Configuration.IBranchConfiguration
 GitVersion.Configuration.IBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
@@ -132,11 +131,9 @@ GitVersion.Configuration.IGitVersionConfiguration.NextVersion.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.IGitVersionConfiguration.TagPrefix.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.TagPreReleaseWeight.get -> int?
 GitVersion.Configuration.IGitVersionConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchPattern.get -> string?
-GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
 GitVersion.Configuration.IGitVersionConfiguration.VersionStrategy.get -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IIgnoreConfiguration

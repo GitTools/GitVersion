@@ -9,7 +9,7 @@ namespace GitVersion;
 
 public class MergeMessage
 {
-    private static readonly IList<MergeMessageFormat> DefaultFormats =
+    private static readonly IList<(string Name, Regex Pattern)> DefaultFormats =
     [
         new("Default", RegexPatterns.MergeMessage.DefaultMergeMessageRegex),
         new("SmartGit", RegexPatterns.MergeMessage.SmartGitMergeMessageRegex),
@@ -25,21 +25,21 @@ public class MergeMessage
     {
         mergeMessage.NotNull();
 
-        if (mergeMessage == string.Empty) return;
+        if (mergeMessage.Length == 0) return;
 
         // Concatenate configuration formats with the defaults.
         // Ensure configurations are processed first.
         var allFormats = configuration.MergeMessageFormats
-            .Select(x => new MergeMessageFormat(x.Key, RegexPatterns.Cache.GetOrAdd(x.Value)))
+            .Select(x => (Name: x.Key, Pattern: RegexPatterns.Cache.GetOrAdd(x.Value)))
             .Concat(DefaultFormats);
 
-        foreach (var format in allFormats)
+        foreach (var (Name, Pattern) in allFormats)
         {
-            var match = format.Pattern.Match(mergeMessage);
+            var match = Pattern.Match(mergeMessage);
             if (!match.Success)
                 continue;
 
-            FormatName = format.Name;
+            FormatName = Name;
             var sourceBranch = match.Groups["SourceBranch"].Value;
             MergedBranch = GetMergedBranchName(sourceBranch);
 
@@ -53,9 +53,7 @@ public class MergeMessage
                 PullRequestNumber = pullNumber;
             }
 
-            Version = ParseVersion(
-                configuration.VersionInBranchRegex, configuration.TagPrefix, configuration.SemanticVersionFormat
-            );
+            Version = MergedBranch?.TryGetSemanticVersion(out var result, configuration) == true ? result.Value : null;
 
             break;
         }
@@ -68,16 +66,6 @@ public class MergeMessage
     public bool IsMergedPullRequest => PullRequestNumber != null;
     public int? PullRequestNumber { get; }
     public SemanticVersion? Version { get; }
-
-    private SemanticVersion? ParseVersion(Regex versionInBranchRegex, string? tagPrefix, SemanticVersionFormat format)
-        => MergedBranch?.TryGetSemanticVersion(out var result, versionInBranchRegex, tagPrefix, format) == true ? result.Value : null;
-
-    private class MergeMessageFormat(string name, Regex pattern)
-    {
-        public string Name { get; } = name;
-
-        public Regex Pattern { get; } = pattern;
-    }
 
     private ReferenceName GetMergedBranchName(string mergedBranch)
     {
@@ -102,7 +90,7 @@ public class MergeMessage
 
         if (isValidMergeCommit)
         {
-            mergeMessage = new(mergeCommit.Message, configuration);
+            mergeMessage = new MergeMessage(mergeCommit.Message, configuration);
         }
 
         return isValidMergeCommit;

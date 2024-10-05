@@ -23,7 +23,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
                 VersionStrategies.ConfiguredNextVersion,
                 VersionStrategies.Mainline
             ],
-            TagPrefix = RegexPatterns.Configuration.DefaultTagPrefixPattern,
+            TagPrefixPattern = RegexPatterns.Configuration.DefaultTagPrefixPattern,
             VersionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern,
             TagPreReleaseWeight = ConfigurationConstants.DefaultTagPreReleaseWeight,
             UpdateBuildNumber = ConfigurationConstants.DefaultUpdateBuildNumber,

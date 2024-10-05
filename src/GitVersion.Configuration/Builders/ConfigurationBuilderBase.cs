@@ -131,7 +131,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTagPrefix(string? value)
+    public virtual TConfigurationBuilder WithTagPrefixPattern(string? value)
     {
         this.tagPrefix = value;
         return (TConfigurationBuilder)this;
@@ -339,7 +339,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
         WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
         WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
-        WithTagPrefix(value.TagPrefix);
+        WithTagPrefixPattern(value.TagPrefixPattern);
         WithVersionInBranchPattern(value.VersionInBranchPattern);
         WithNextVersion(value.NextVersion);
         WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
@@ -398,7 +398,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             AssemblyInformationalFormat = this.assemblyInformationalFormat,
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
-            TagPrefix = this.tagPrefix,
+            TagPrefixPattern = this.tagPrefix,
             VersionInBranchPattern = this.versionInBranchPattern,
             NextVersion = this.nextVersion,
             MajorVersionBumpMessage = this.majorVersionBumpMessage,

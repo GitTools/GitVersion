@@ -208,14 +208,14 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix("version-").Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefixPattern("version-").Build();
         fixture.AssertFullSemver("1.0.4-5", configuration);
     }
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix($"version-|{RegexPatterns.Configuration.DefaultTagPrefixPattern}").Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefixPattern($"version-|{RegexPatterns.Configuration.DefaultTagPrefixPattern}").Build();
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -233,7 +233,7 @@ public class MainScenarios : TestBase
     [Test]
     public void AreTagsNotAdheringToTagPrefixIgnored()
     {
-        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix("").Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefixPattern("").Build();
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);

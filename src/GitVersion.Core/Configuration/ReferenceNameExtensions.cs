@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
@@ -6,11 +6,18 @@ namespace GitVersion.Configuration;
 
 public static class ReferenceNameExtensions
 {
-    public static bool TryGetSemanticVersion(this ReferenceName referenceName, out (SemanticVersion Value, string? Name) result,
-                                             Regex versionPatternRegex,
-                                             string? tagPrefix,
-                                             SemanticVersionFormat format)
+    public static bool TryGetSemanticVersion(this ReferenceName source, out (SemanticVersion Value, string? Name) result, EffectiveConfiguration configuration)
+        => source.TryGetSemanticVersion(out result, configuration.VersionInBranchPattern, configuration.TagPrefix, configuration.SemanticVersionFormat);
+
+    public static bool TryGetSemanticVersion(this ReferenceName source, out (SemanticVersion Value, string? Name) result, IGitVersionConfiguration configuration)
+        => source.TryGetSemanticVersion(out result, configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat);
+
+    private static bool TryGetSemanticVersion(this ReferenceName referenceName, out (SemanticVersion Value, string? Name) result,
+                                              string? versionPatternPattern,
+                                              string? tagPrefix,
+                                              SemanticVersionFormat format)
     {
+        var versionPatternRegex = RegexPatterns.Cache.GetOrAdd(GetVersionInBranchPattern(versionPatternPattern));
         result = default;
 
         int length = 0;
@@ -18,7 +25,7 @@ public static class ReferenceNameExtensions
         {
             if (string.IsNullOrEmpty(branchPart)) return false;
 
-            var match = versionPatternRegex.NotNull().Match(branchPart);
+            var match = versionPatternRegex.Match(branchPart);
             if (match.Success)
             {
                 var versionPart = match.Groups["version"].Value;
@@ -37,9 +44,11 @@ public static class ReferenceNameExtensions
         return false;
 
         char GetBranchSeparator() => referenceName.WithoutOrigin.Contains('/') || !referenceName.WithoutOrigin.Contains('-') ? '/' : '-';
-    }
 
-    public static bool TryGetSemanticVersion(
-        this ReferenceName source, out (SemanticVersion Value, string? Name) result, EffectiveConfiguration configuration)
-        => source.TryGetSemanticVersion(out result, configuration.VersionInBranchRegex, configuration.TagPrefix, configuration.SemanticVersionFormat);
+        static string GetVersionInBranchPattern(string? versionInBranchPattern)
+        {
+            if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern;
+            return $"^{versionInBranchPattern.TrimStart('^')}";
+        }
+    }
 }

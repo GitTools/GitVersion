@@ -49,10 +49,10 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMajorRegex);
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
         var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
-        var none = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
+        var noBumpRegex = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
 
         var increments = commits
-            .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
+            .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, noBumpRegex))
             .Where(v => v != null)
             .ToList();
 
@@ -168,13 +168,13 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
             GetCommitsReacheableFromHead(headCommit, ignore).ToArray());
 
-    private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none) =>
+    private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex) =>
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
-            GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, none));
+            GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, noBumpRegex));
 
-    private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
+    private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex)
     {
-        if (none.IsMatch(message)) return VersionField.None;
+        if (noBumpRegex.IsMatch(message)) return VersionField.None;
         if (majorRegex.IsMatch(message)) return VersionField.Major;
         if (minorRegex.IsMatch(message)) return VersionField.Minor;
         if (patchRegex.IsMatch(message)) return VersionField.Patch;
