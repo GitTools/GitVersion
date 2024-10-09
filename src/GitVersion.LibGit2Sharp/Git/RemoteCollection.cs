@@ -5,12 +5,15 @@ namespace GitVersion.Git;
 internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
+    private IReadOnlyCollection<IRemote>? remotes;
 
-    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection)
-        => this.innerCollection = collection.NotNull();
+    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection) => this.innerCollection = collection.NotNull();
 
     public IEnumerator<IRemote> GetEnumerator()
-        => this.innerCollection.Select(reference => new Remote(reference)).GetEnumerator();
+    {
+        this.remotes ??= this.innerCollection.Select(reference => new Remote(reference)).ToArray();
+        return this.remotes.GetEnumerator();
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -23,8 +26,15 @@ internal sealed class RemoteCollection : IRemoteCollection
         }
     }
 
-    public void Remove(string remoteName) => this.innerCollection.Remove(remoteName);
+    public void Remove(string remoteName)
+    {
+        this.innerCollection.Remove(remoteName);
+        this.remotes = null;
+    }
 
     public void Update(string remoteName, string refSpec)
-        => this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
+    {
+        this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
+        this.remotes = null;
+    }
 }

@@ -219,7 +219,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
         };
 
-        var commits = this.repository.Commits.QueryBy(filter).ToArray();
+        var commits = this.repository.Commits.QueryBy(filter);
 
         return ignore.Filter(commits).ToList();
     }
