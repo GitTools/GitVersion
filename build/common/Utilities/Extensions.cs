@@ -13,10 +13,7 @@ public static class Extensions
 
     public static string GetTaskDescription(this Type task)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        ArgumentNullException.ThrowIfNull(task);
 
         var attribute = task.GetCustomAttribute<TaskDescriptionAttribute>();
         return attribute != null ? attribute.Description : string.Empty;
@@ -24,10 +21,7 @@ public static class Extensions
 
     public static string GetTaskName(this Type task)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        ArgumentNullException.ThrowIfNull(task);
 
         var attribute = task.GetCustomAttribute<TaskNameAttribute>();
         return attribute != null ? attribute.Name : task.Name;
@@ -35,10 +29,7 @@ public static class Extensions
 
     public static string GetTaskArguments(this Type task)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        ArgumentNullException.ThrowIfNull(task);
 
         var attributes = task.GetCustomAttributes<TaskArgumentAttribute>().ToArray();
         if (attributes.Length != 0)

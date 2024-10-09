@@ -8,7 +8,7 @@ namespace Common.Addins.GitVersion;
 /// </summary>
 public sealed class GitVersionRunner : Tool<GitVersionSettings>
 {
-    private readonly ICakeLog log;
+    private readonly ICakeLog _log;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GitVersionRunner"/> class.
@@ -23,7 +23,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
         ICakeEnvironment environment,
         IProcessRunner processRunner,
         IToolLocator tools,
-        ICakeLog log) : base(fileSystem, environment, processRunner, tools) => this.log = log;
+        ICakeLog log) : base(fileSystem, environment, processRunner, tools) => this._log = log;
 
     /// <summary>
     /// Runs GitVersion and processes the results.
@@ -32,22 +32,19 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
     /// <returns>A task with the GitVersion results.</returns>
     public GitVersion Run(GitVersionSettings settings)
     {
-        if (settings == null)
-        {
-            throw new ArgumentNullException(nameof(settings));
-        }
+        ArgumentNullException.ThrowIfNull(settings);
 
         var output = string.Empty;
         Run(settings, GetArguments(settings), new ProcessSettings { RedirectStandardOutput = true }, process =>
         {
             output = string.Join("\n", process.GetStandardOutput());
-            if (log.Verbosity < Verbosity.Diagnostic)
+            if (this._log.Verbosity < Verbosity.Diagnostic)
             {
                 var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)")
                     .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
                 foreach (var error in errors)
                 {
-                    log.Error(error);
+                    this._log.Error(error);
                 }
             }
         });
@@ -55,8 +52,8 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
         if (!settings.OutputTypes.Contains(GitVersionOutput.Json))
             return new GitVersion();
 
-        var jsonStartIndex = output.IndexOf("{", StringComparison.Ordinal);
-        var jsonEndIndex = output.IndexOf("}", StringComparison.Ordinal);
+        var jsonStartIndex = output.IndexOf('{');
+        var jsonEndIndex = output.IndexOf('}');
         var json = output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
         return JsonConvert.DeserializeObject<GitVersion>(json) ?? new GitVersion();
@@ -119,7 +116,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             }
             else
             {
-                log.Warning("If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
+                this._log.Warning("If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.Commit))
@@ -146,7 +143,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append("-nofetch");
         }
 
-        var verbosity = settings.Verbosity ?? log.Verbosity;
+        var verbosity = settings.Verbosity ?? this._log.Verbosity;
 
         if (verbosity != Verbosity.Normal)
         {

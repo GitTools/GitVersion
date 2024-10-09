@@ -54,10 +54,7 @@ public static class GitVersionAliases
     [CakeMethodAlias]
     public static GitVersion GitVersion(this ICakeContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
 
         return GitVersion(context, new GitVersionSettings());
     }
@@ -104,10 +101,7 @@ public static class GitVersionAliases
     [CakeMethodAlias]
     public static GitVersion GitVersion(this ICakeContext context, GitVersionSettings settings)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
 
         var gitVersionRunner = new GitVersionRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools, context.Log);
         return gitVersionRunner.Run(settings);

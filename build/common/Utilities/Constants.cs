@@ -21,9 +21,12 @@ public static class Constants
     public const string GitHub = "github";
     public const string DockerHubRegistry = "docker.io";
     public const string GitHubContainerRegistry = "ghcr.io";
+    public static readonly string[] DockerRegistries = [DockerHub, GitHub];
 
     public const string Arm64 = "arm64";
     public const string Amd64 = "amd64";
+
+    public static readonly string[] Architectures = [Amd64, Arm64];
 
     public const string AlpineLatest = "alpine.3.20";
     public const string CentosStreamLatest = "centos.stream.9";
@@ -32,7 +35,6 @@ public static class Constants
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
     public const string Ubuntu2404 = "ubuntu.24.04";
-    public const string UbuntuLatest = Ubuntu2404;
 
     public const string DockerDistroLatest = DebianLatest;
 
