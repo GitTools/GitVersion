@@ -30,11 +30,18 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
             context.Information("Running BuildPrepare...");
             return;
         }
+
+        var gitVersionPath = context.GetGitVersionDotnetToolLocation();
+        if (gitVersionPath is null || context.FileExists(gitVersionPath) is false)
+        {
+            throw new FileNotFoundException("Failed to locate the Release build of gitversion.dll in ./tools/gitversion. Try running \"./build.ps1 -Stage build -Target BuildPrepare\"");
+        }
+
         var gitVersionSettings = new GitVersionSettings
         {
             OutputTypes = [GitVersionOutput.Json, GitVersionOutput.BuildServer],
             ToolPath = context.Tools.Resolve(["dotnet.exe", "dotnet"]),
-            ArgumentCustomization = args => args.Prepend(context.GetGitVersionDotnetToolLocation()?.FullPath ?? throw new FileNotFoundException("Failed to locate the Release build of gitversion.dll in ./tools/gitversion. Try running \"./build.ps1 -Stage build -Target BuildPrepare\""))
+            ArgumentCustomization = args => args.Prepend(gitVersionPath.FullPath)
         };
 
         var gitVersion = context.GitVersion(gitVersionSettings);

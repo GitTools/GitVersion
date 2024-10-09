@@ -50,7 +50,8 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     }
     private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)
     {
-        var nugetVersion = context.Version!.NugetVersion;
+        ArgumentNullException.ThrowIfNull(context.Version);
+        var nugetVersion = context.Version.NugetVersion;
         foreach (var (packageName, filePath, _) in context.Packages.Where(x => !x.IsChocoPackage))
         {
             context.Information($"Package {packageName}, version {nugetVersion} is being published.");

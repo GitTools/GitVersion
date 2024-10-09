@@ -16,7 +16,7 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
             new()
             {
                 Verbosity = DotNetVerbosity.Minimal,
-                Sources = new[] { Constants.NugetOrgUrl },
+                Sources = [Constants.NugetOrgUrl],
             });
 
         context.DotNetBuild("./src/GitVersion.App/GitVersion.App.csproj",

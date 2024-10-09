@@ -36,10 +36,10 @@ public class ArtifactsExecutableTest : FrostingTask<BuildContext>
 
         context.NuGetInstall(packageToTest, new NuGetInstallSettings
         {
-            Source = new[]
-            {
+            Source =
+            [
                 context.MakeAbsolute(Paths.Nuget).FullPath
-            },
+            ],
             ExcludeVersion = true,
             Prerelease = true,
             OutputDirectory = outputDirectory

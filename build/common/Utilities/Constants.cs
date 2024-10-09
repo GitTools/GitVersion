@@ -1,3 +1,4 @@
+// ReSharper disable MemberCanBePrivate.Global
 namespace Common.Utilities;
 
 public static class Constants
@@ -7,12 +8,13 @@ public static class Constants
 
     public const string VersionCurrent = "6.0";
     public const string VersionLatest = "8.0";
+    public static readonly string[] Frameworks = [VersionCurrent, VersionLatest];
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
 
     public static readonly Architecture[] ArchToBuild = [Architecture.Amd64, Architecture.Arm64];
-    public static readonly string[] Frameworks = [VersionCurrent, VersionLatest];
+    public static readonly string[] Architectures = [nameof(Architecture.Amd64), nameof(Architecture.Arm64)];
 
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
@@ -21,9 +23,7 @@ public static class Constants
     public const string GitHub = "github";
     public const string DockerHubRegistry = "docker.io";
     public const string GitHubContainerRegistry = "ghcr.io";
-
-    public const string Arm64 = "arm64";
-    public const string Amd64 = "amd64";
+    public static readonly string[] DockerRegistries = [DockerHub, GitHub];
 
     public const string AlpineLatest = "alpine.3.20";
     public const string CentosStreamLatest = "centos.stream.9";
@@ -32,7 +32,6 @@ public static class Constants
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
     public const string Ubuntu2404 = "ubuntu.24.04";
-    public const string UbuntuLatest = Ubuntu2404;
 
     public const string DockerDistroLatest = DebianLatest;
 

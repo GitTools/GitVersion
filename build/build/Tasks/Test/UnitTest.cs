@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.VersionCurrent, Constants.VersionLatest)]
+[DotnetArgument]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -73,7 +73,7 @@ public class UnitTest : FrostingTask<BuildContext>
         };
 
         var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-        settings.Loggers = new[] { $"junit;LogFilePath={resultsPath}" };
+        settings.Loggers = [$"junit;LogFilePath={resultsPath}"];
 
         var coverletSettings = new CoverletSettings
         {

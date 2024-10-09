@@ -16,7 +16,7 @@ public sealed class Build : FrostingTask<BuildContext>
         context.DotNetRestore(sln, new DotNetRestoreSettings
         {
             Verbosity = DotNetVerbosity.Minimal,
-            Sources = new[] { Constants.NugetOrgUrl },
+            Sources = [Constants.NugetOrgUrl],
             MSBuildSettings = context.MsBuildSettings
         });
 

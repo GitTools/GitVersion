@@ -108,13 +108,14 @@ public static class DockerContextExtensions
 
     public static void DockerManifest(this BuildContextBase context, DockerImage dockerImage)
     {
+        ArgumentNullException.ThrowIfNull(context.Version);
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
         {
             var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
             var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
 
-            var settings = GetManifestSettings(dockerImage, context.Version!, tag);
+            var settings = GetManifestSettings(dockerImage, context.Version, tag);
             context.DockerBuildXImageToolsCreate(settings, [amd64Tag, arm64Tag]);
         }
     }
@@ -186,13 +187,13 @@ public static class DockerContextExtensions
     private static void DockerTestRun(this BuildContextBase context, string image, Architecture arch, string command,
                                       params string[] args)
     {
+        ArgumentNullException.ThrowIfNull(context.Version?.GitVersion.FullSemVer);
         var settings = GetDockerRunSettings(context, arch);
         context.Information($"Testing image: {image}");
         var output = context.DockerRun(settings, image, command, args);
         context.Information("Output : " + output);
 
-        Assert.NotNull(context.Version?.GitVersion);
-        Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
+        Assert.Contains(context.Version.GitVersion.FullSemVer, output);
     }
 
     private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage,

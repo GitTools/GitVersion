@@ -31,7 +31,8 @@ public class PublishChocolateyInternal : AsyncFrostingTask<BuildContext>
             throw new InvalidOperationException("Could not resolve Chocolatey API key.");
         }
 
-        var nugetVersion = context.Version!.NugetVersion;
+        ArgumentNullException.ThrowIfNull(context.Version);
+        var nugetVersion = context.Version.NugetVersion;
         var packages = context.Packages
             .Where(x => x.IsChocoPackage)
             .OrderByDescending(x => x.PackageName);
