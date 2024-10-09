@@ -6,7 +6,7 @@ inputs:
     default: 'amd64'
   distro:
     description: 'Linux Distro'
-    default: 'debian.11'
+    default: 'debian.12'
   targetFramework:
     description: '.net version'
     default: '8.0'

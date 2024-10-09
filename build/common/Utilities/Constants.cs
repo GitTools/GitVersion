@@ -26,26 +26,24 @@ public class Constants
     public const string Arm64 = "arm64";
     public const string Amd64 = "amd64";
 
-    public const string Alpine317 = "alpine.3.17";
-    public const string Alpine318 = "alpine.3.18";
-    public const string CentosStream8 = "centos.stream.8";
-    public const string Debian11 = "debian.11";
-    public const string Fedora37 = "fedora.37";
+    public const string AlpineMin = "alpine.3.19";
+    public const string AlpineLatest = "alpine.3.20";
+    public const string CentosStreamLatest = "centos.stream.9";
+    public const string DebianLatest = "debian.12";
+    public const string FedoraLatest = "fedora.40";
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
     public const string Ubuntu2404 = "ubuntu.24.04";
-    public const string DockerDistroLatest = Debian11;
-    public const string DebianLatest = Debian11;
+    public const string DockerDistroLatest = DebianLatest;
     public const string UbuntuLatest = Ubuntu2404;
-    public const string AlpineLatest = Alpine318;
 
     public static readonly string[] DockerDistrosToBuild =
     [
-        Alpine317,
-        Alpine318,
-        CentosStream8,
-        Debian11,
-        Fedora37,
+        AlpineMin,
+        AlpineLatest,
+        CentosStreamLatest,
+        DebianLatest,
+        FedoraLatest,
         Ubuntu2004,
         Ubuntu2204,
         Ubuntu2404
