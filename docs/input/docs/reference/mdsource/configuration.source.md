@@ -558,7 +558,7 @@ Specifies which version strategy implementation (one ore more) will be used to d
 - TaggedCommit
 - TrackReleaseBranches
 - VersionInBranchName
-- TrunkBased
+- Mainline
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
