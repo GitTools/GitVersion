@@ -40,6 +40,11 @@ jobs:
         os: [windows-latest, ubuntu-latest]
 
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     -
       name: Checkout
       uses: actions/checkout@v4
@@ -93,6 +98,11 @@ jobs:
     needs: [ prepare ]
     runs-on: ubuntu-latest
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     -
       name: Checkout
       uses: actions/checkout@v4
@@ -132,6 +142,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
       GITHUB_USERNAME: ${{ github.actor }}
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     -
       name: Checkout
       uses: actions/checkout@v4
