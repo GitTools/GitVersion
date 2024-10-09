@@ -1,5 +1,5 @@
 ARG REGISTRY='docker.io'
-ARG DISTRO='debian.11'
+ARG DISTRO='debian.12'
 ARG DOTNET_VERSION='8.0'
 ARG VERSION='5.12.0'
 
