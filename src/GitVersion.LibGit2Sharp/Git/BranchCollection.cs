@@ -6,12 +6,16 @@ namespace GitVersion.Git;
 internal sealed class BranchCollection : IBranchCollection
 {
     private readonly LibGit2Sharp.BranchCollection innerCollection;
+    private readonly Lazy<IReadOnlyCollection<IBranch>> branches;
 
     internal BranchCollection(LibGit2Sharp.BranchCollection collection)
-        => this.innerCollection = collection.NotNull();
+    {
+        this.innerCollection = collection.NotNull();
+        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => this.innerCollection.Select(branch => new Branch(branch)).ToArray());
+    }
 
     public IEnumerator<IBranch> GetEnumerator()
-        => this.innerCollection.Select(branch => new Branch(branch)).GetEnumerator();
+        => this.branches.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -27,10 +31,8 @@ internal sealed class BranchCollection : IBranchCollection
 
     public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude)
     {
-        branchesToExclude = branchesToExclude.NotNull();
-
-        bool BranchIsNotExcluded(IBranch branch)
-            => branchesToExclude.All(branchToExclude => !branch.Equals(branchToExclude));
+        var toExclude = branchesToExclude as IBranch[] ?? branchesToExclude.ToArray();
+        bool BranchIsNotExcluded(IBranch branch) => toExclude.All(branchToExclude => !branch.Equals(branchToExclude));
 
         return this.Where(BranchIsNotExcluded);
     }
