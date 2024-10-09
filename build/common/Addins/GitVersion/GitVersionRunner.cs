@@ -6,7 +6,7 @@ namespace Common.Addins.GitVersion;
 /// <summary>
 /// The GitVersion runner.
 /// </summary>
-public sealed class GitVersionRunner : Tool<GitVersionSettings>
+public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 {
     private readonly ICakeLog _log;
 
@@ -38,14 +38,13 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
         Run(settings, GetArguments(settings), new ProcessSettings { RedirectStandardOutput = true }, process =>
         {
             output = string.Join("\n", process.GetStandardOutput());
-            if (this._log.Verbosity < Verbosity.Diagnostic)
+            if (this._log.Verbosity >= Verbosity.Diagnostic) return;
+            var regex = ParseErrorRegex();
+            var errors = regex.Matches(output)
+                .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
+            foreach (var error in errors)
             {
-                var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)")
-                    .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
-                foreach (var error in errors)
-                {
-                    this._log.Error(error);
-                }
+                this._log.Error(error);
             }
         });
 
@@ -68,6 +67,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append("-output");
             builder.Append("json");
         }
+
         if (settings.OutputTypes.Contains(GitVersionOutput.BuildServer))
         {
             builder.Append("-output");
@@ -116,7 +116,8 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             }
             else
             {
-                this._log.Warning("If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
+                this._log.Warning(
+                    "If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.Commit))
@@ -150,6 +151,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append("-verbosity");
             builder.Append(verbosity.ToString());
         }
+
         return builder;
     }
 
@@ -163,5 +165,14 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
     /// Gets the possible names of the tool executable.
     /// </summary>
     /// <returns>The tool executable name.</returns>
-    protected override IEnumerable<string> GetToolExecutableNames() => new[] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe", "gitversion" };
+    protected override IEnumerable<string> GetToolExecutableNames() =>
+    [
+        "GitVersion.exe",
+        "dotnet-gitversion",
+        "dotnet-gitversion.exe",
+        "gitversion"
+    ];
+
+    [GeneratedRegex(@"( *ERROR:? [^\n]*)\n([^\n]*)")]
+    private static partial Regex ParseErrorRegex();
 }

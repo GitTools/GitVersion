@@ -8,8 +8,9 @@ public sealed class GenerateSchemas : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
+        ArgumentNullException.ThrowIfNull(context.Version);
         var schemaTool = context.GetSchemaDotnetToolLocation();
-        var gitVersion = context.Version!.GitVersion;
+        var gitVersion = context.Version.GitVersion;
         var version = $"{gitVersion.Major}.{gitVersion.Minor}";
         var schemaTargetDir = context.MakeAbsolute(Paths.Root.Combine("schemas"));
         context.EnsureDirectoryExists(schemaTargetDir);

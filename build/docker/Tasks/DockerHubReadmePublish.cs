@@ -26,11 +26,12 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
+        ArgumentNullException.ThrowIfNull(context.Credentials?.DockerHub);
         var readme = GetReadmeContent(context);
 
         var response = context.HttpPost("https://hub.docker.com/v2/users/login", settings =>
         {
-            var credentials = context.Credentials!.DockerHub!;
+            var credentials = context.Credentials.DockerHub;
             settings
                 .SetContentType("application/json")
                 .SetJsonRequestBody(new { username = credentials.Username, password = credentials.Password });
@@ -49,7 +50,8 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
 
     private static string GetReadmeContent(BuildContextBase context)
     {
-        var version = context.Version!.GitVersion.MajorMinorPatch;
+        ArgumentNullException.ThrowIfNull(context.Version);
+        var version = context.Version.GitVersion.MajorMinorPatch;
         const string distro = Constants.AlpineLatest;
         const string dotnetVersion = Constants.VersionLatest;
         var tag = $"{version}-{distro}-{dotnetVersion}";

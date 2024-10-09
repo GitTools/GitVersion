@@ -35,10 +35,10 @@ public class PackageChocolatey : FrostingTask<BuildContext>
             .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
             .ToArray();
 
-        metaPackageSettings.Dependencies = new[]
-        {
+        metaPackageSettings.Dependencies =
+        [
             new ChocolateyNuSpecDependency { Id = "GitVersion.Portable", Version = context.Version?.ChocolateyVersion }
-        };
+        ];
 
         context.ChocolateyPack(metaPackageSettings);
     }
@@ -51,8 +51,8 @@ public class PackageChocolatey : FrostingTask<BuildContext>
             Version = context.Version?.ChocolateyVersion,
             Title = "GitVersion",
             Description = "Derives SemVer information from a repository following GitFlow or GitHubFlow.",
-            Authors = new[] { "GitTools and Contributors" },
-            Owners = new[] { "GitTools and Contributors" },
+            Authors = ["GitTools and Contributors"],
+            Owners = ["GitTools and Contributors"],
             Copyright = $"Copyright GitTools {DateTime.Now.Year}",
             DocsUrl = new Uri("https://gitversion.net/docs/"),
             LicenseUrl = new Uri("https://opensource.org/license/mit/"),
@@ -60,8 +60,9 @@ public class PackageChocolatey : FrostingTask<BuildContext>
             ProjectSourceUrl = new Uri("https://github.com/GitTools/GitVersion"),
             IconUrl = new Uri("https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/Color/icon_100x100.png"),
             RequireLicenseAcceptance = false,
-            Tags = new[] { "Git", "Versioning", "GitVersion", "GitFlowVersion", "GitFlow", "GitHubFlow", "SemVer" },
-            ReleaseNotes = new[] { $"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.ChocolateyVersion}" },
+            Tags = ["Git", "Versioning", "GitVersion", "GitFlowVersion", "GitFlow", "GitHubFlow", "SemVer"],
+            ReleaseNotes = [$"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.ChocolateyVersion}"
+            ],
             OutputDirectory = Paths.Nuget,
             LimitOutput = true,
         };

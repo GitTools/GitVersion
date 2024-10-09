@@ -2,7 +2,7 @@ namespace Common.Utilities;
 
 public class BuildContextBase : FrostingContext
 {
-    protected BuildContextBase(ICakeContext context) : base(context) => Platform = Environment.Platform.Family;
+    protected BuildContextBase(ICakeContext context) : base(context) => Platform = context.Environment.Platform.Family;
     public PlatformFamily Platform { get; set; }
     public BuildVersion? Version { get; set; }
     public bool IsOriginalRepo { get; set; }

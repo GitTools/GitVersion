@@ -36,7 +36,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
                 Verbosity = DotNetVerbosity.Minimal,
                 Configuration = context.MsBuildConfiguration,
                 MSBuildSettings = dotnetMsBuildSettings,
-                Sources = new[] { nugetSource }
+                Sources = [nugetSource]
             });
 
             var exe = Paths.Integration.Combine("build").Combine(framework).CombineWithFilePath("app.dll");
