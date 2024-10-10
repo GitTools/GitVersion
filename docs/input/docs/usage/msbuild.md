@@ -15,8 +15,11 @@ modifying your build process.
 Just install with NuGet and GitVersion will automatically generate assembly
 version information that is compiled into the resulting artifact.
 
-It currently works with desktop `MSBuild`. Support for CoreCLR with `dotnet build`
-is coming soon.
+Since version 6.0 only MSBuild running on .NET Core (`dotnet msbuild`) is supported.
+
+Unfortunately, up until at least Visual Studio 2022 17.11, Visual Studio runs all builds
+using the .NET Framework version of MSBuild, and therefore **Visual Studio is not supported**. 
+For more information see [this discussion](https://github.com/GitTools/GitVersion/discussions/4130).  
 
 ## TL;DR
 
