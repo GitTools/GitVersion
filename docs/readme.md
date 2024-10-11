@@ -21,7 +21,7 @@ To serve up the documentation locally, you need to run the following
 commands:
 
 ```shell
-./build.ps1 -Stage build -Target PrepareBuild
+./build.ps1 -Stage build -Target BuildPrepare
 ./build.ps1 -Stage build -Target Build
 ./build.ps1 -Stage docs -Target PreviewDocs
 ```
@@ -32,7 +32,7 @@ On Windows, you need to run the following commands in a PowerShell
 terminal:
 
 ```shell
-./build.ps1 -Stage build -Target PrepareBuild
+./build.ps1 -Stage build -Target BuildPrepare
 ./build.ps1 -Stage build -Target Build
 ./build.ps1 -Stage docs -Target PreviewDocs
 ```
@@ -43,14 +43,14 @@ First you need to [install PowerShell on macOS][ps-mac] or [Linux][ps-linux],
 then execute the following commands:
 
 ```shell
-./build.ps1 -Stage build -Target PrepareBuild
+./build.ps1 -Stage build -Target BuildPrepare
 ./build.ps1 -Stage build -Target Build
 ./build.ps1 -Stage docs -Target PreviewDocs
 ```
 
 After pressing enter, the documentation will be generated and then served under
-a local web server.  Information about the URL that can be used to view the docs
-will be shown in the output.  Copy/paste this URL into a browser window.
+a local web server. Information about the URL that can be used to view the docs
+will be shown in the output. Copy/paste this URL into a browser window.
 
 [gitversion.net]: https://gitversion.net/
 [forking]: https://guides.github.com/activities/forking/
