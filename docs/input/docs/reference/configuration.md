@@ -949,7 +949,9 @@ Example of invalid `Strict`, but valid `Loose`
 
 ### strategies
 
-Specifies which version strategy implementation (one ore more) will be used to determine the next version. Following values are supported and can be combined:
+Specifies which version strategy implementation (one or more) will be used to determine the next version.
+These strategies can be combined, and the order in which they are specified does not matter.
+The configuration accepts the following values:
 
 - Fallback
 - ConfiguredNextVersion
@@ -957,7 +959,7 @@ Specifies which version strategy implementation (one ore more) will be used to d
 - TaggedCommit
 - TrackReleaseBranches
 - VersionInBranchName
-- TrunkBased
+- Mainline
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
