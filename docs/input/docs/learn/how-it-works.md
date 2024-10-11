@@ -38,21 +38,20 @@ simply to show what happens if the check is true.
 
 Currently we have the following strategies:
 
-* `TaggedCommit` - Extracts version information from all tags on the branch which are valid,
-    and not newer than the current commit.
-* `VersionInBranchName` - Extracts version information from the
-    branch name (e.g., `release/3.0.0` will find `3.0.0`)
-* `ConfiguredNextVersion` - Returns the version from the
-    GitVersion.yaml file
-* `MergeMessage` - Finds version numbers from merge messages
-    (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
 * `Fallback` - Always returns 0.0.0 and will be used for
     calculating the next version which is dependent on the increment strategy of
     the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0).
     The fallback strategy only applies if no other selected strategy returns a base version.
+* `ConfiguredNextVersion` - Returns the version from the GitVersion.yaml file
+* `MergeMessage` - Finds version numbers from merge messages
+    (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
+* `TaggedCommit` - Extracts version information from all tags on the branch which are valid,
+    and not newer than the current commit.
 * `TrackReleaseBranches` - Considers the base version extracted from release branches when
-calculating the next version for branches configured with `track-release-branches: true`
-(part of default configuration for `develop` branch in `GitFlow` workflow)
+    calculating the next version for branches configured with `track-release-branches: true`
+    (part of default configuration for `develop` branch in `GitFlow` workflow)
+* `VersionInBranchName` - Extracts version information from the
+    branch name (e.g., `release/3.0.0` will find `3.0.0`)
 * `Mainline` - Increments the version on every commit for branches configured with `is-main-branch: true`
 
 Each strategy needs to return an instance of `BaseVersion` which has the
