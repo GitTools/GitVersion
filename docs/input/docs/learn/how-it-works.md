@@ -48,7 +48,8 @@ Currently we have the following strategies:
     (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
 * `Fallback` - Always returns 0.0.0 and will be used for
     calculating the next version which is dependent on the increment strategy of
- the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
+    the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0).
+    The fallback strategy only applies if no other selected strategy returns a base version.
 * `TrackReleaseBranches` - Considers the base version extracted from release branches when
 calculating the next version for branches configured with `track-release-branches: true`
 (part of default configuration for `develop` branch in `GitFlow` workflow)
