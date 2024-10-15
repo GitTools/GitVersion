@@ -17,9 +17,9 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 * Try to use feature branches rather than developing on main.
 * Please include tests covering the change.
 * The documentation is stored in the repository under the [`docs`](docs) folder.
-    Have a look at the [documentation readme file](docs/readme.md) for guidance
-    on how to improve the documentation and please include documentation updates
-    with your PR.
+  Have a look at the [documentation readme file](docs/readme.md) for guidance
+  on how to improve the documentation and please include documentation updates
+  with your PR.
 
 ## How it works
 
@@ -100,15 +100,15 @@ We use Cake for our build and deployment process. The way the release process is
 
 1. We build releasable artifacts with GitHub Actions
 2. We create a milestone for the release if it's not already created. Our milestones are named using the semver.
-    For example `5.12.0` or `6.0.0-beta.2`
+   For example `5.12.0` or `6.0.0-beta.2`
 3. We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
 4. We check that all the issues and pull requests that are going to be included in the release have a label assigned,
-    otherwise it will fail the release.
+   otherwise it will fail the release.
 5. We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
 6. We specify if the release is a pre-release or latest release in the GitHub UI.
 7. We publish the release.
 8. The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
-    and other distribution channels.
+   and other distribution channels.
 9. The issues and pull requests will get updated with message specifying in which release it was included.
 
 ## Code Style

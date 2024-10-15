@@ -43,6 +43,9 @@ the case on build servers, the `Git_Branch` environment variable needs to be
 defined and set to the reference being built.
 
 [git-unshallow]: https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow
+
 [gitflow]: /docs/learn/branching-strategies/gitflow
+
 [build-servers]: /docs/reference/build-servers
+
 [configuration]: /docs/reference/configuration

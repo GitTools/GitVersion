@@ -4,14 +4,14 @@
 
 | Version   | Supported          |
 | --------: | :----------------: |
-| 5.x       | :white_check_mark: |
+| 5.x       | :white\_check\_mark: |
 | ⋜ 5.x     | :x:                |
 
 ## Reporting Security Issues
 
 ⚠ **Please do not report security vulnerabilities through public GitHub issues.** ⚠
 
-Instead, please send an email to [security@gitversion.net](mailto:security@gitversion.net).
+Instead, please send an email to <security@gitversion.net>.
 
 You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
 

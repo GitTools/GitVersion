@@ -92,7 +92,7 @@ Now, when you build:
 
 * `AssemblyVersion` will be set to the `AssemblySemVer` variable.
 * `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0`
-    appended to it.
+  appended to it.
 * `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
 #### Other injected Variables

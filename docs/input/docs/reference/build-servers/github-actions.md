@@ -4,6 +4,7 @@ Title: GitHub Actions
 Description: |
     Details on the GitHub Actions Workflow support in GitVersion
 ---
+
 ## Installation and usage
 
 For GitHub Actions you can install the action from [GitTools Bundle](https://github.com/marketplace/actions/gittools).

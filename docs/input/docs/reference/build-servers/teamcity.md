@@ -63,22 +63,22 @@ See [dynamic repositories][dynamic-repo] for more info.
 
 * We update the TC build number to the GitVersion number automatically
 * We output the individual values of the GitVersion version variables as build
-    parameters with format `GitVersion.*` (Eg: `GitVersion.Major`) if you need
-    access to them in your build script. Being system variables they will be passed
-    as msbuild/environmental variables to other build steps
+  parameters with format `GitVersion.*` (Eg: `GitVersion.Major`) if you need
+  access to them in your build script. Being system variables they will be passed
+  as msbuild/environmental variables to other build steps
 
 ### NuGet in TeamCity
 
 * Add a dummy [parameter][parameter] to the project called `GitVersion.NuGetVersion`. If
-    many of your projects uses git-flow and SemVer you can add the parameter to
-    the "root-project" (TeamCity 8.x+). You need a dummy param because
-    GitVersion creates the variables at runtime, and you cannot reference a
-    parameter which is not available statically. GitVersion will overwrite the
-    dummy value.
+  many of your projects uses git-flow and SemVer you can add the parameter to
+  the "root-project" (TeamCity 8.x+). You need a dummy param because
+  GitVersion creates the variables at runtime, and you cannot reference a
+  parameter which is not available statically. GitVersion will overwrite the
+  dummy value.
 * Then setup you nuget pack build set the "version" to
-    `%GitVersion.NuGetVersion%`.
+  `%GitVersion.NuGetVersion%`.
 * If you do your pack in a build script then you can just use environmental
-    variables because teamcity will pass them through automatically.
+  variables because teamcity will pass them through automatically.
 
 ### When TeamCity -> GitHub can't use https
 
@@ -104,8 +104,13 @@ Sorry
 * [Continuous Delivery Setup in TeamCity][cd]
 
 [cd]: https://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
+
 [dynamic-repo]: /docs/learn/dynamic-repositories
+
 [general-settings]: https://www.jetbrains.com/help/teamcity/git.html#General+Settings
+
 [parameter]: https://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters
+
 [teamcity]: https://www.jetbrains.com/teamcity/
+
 [meta-runner]: https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion

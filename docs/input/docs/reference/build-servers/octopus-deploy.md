@@ -53,14 +53,14 @@ manual build in your _build server_ which pushes the package to Octopus deploy.
 Another simple option is to tag a stable version to release, the basic idea is:
 
 1. GitVersion is set to continuous deployment mode, so main will create `-ci.x`
-    pre-release builds
+   pre-release builds
 2. CI Builds only create NuGet packages for stable builds
 3. You tag main with a stable version of the next version then push it
 4. The CI build triggers, GitVersion will always respect tags so you will get a
-    stable version
+   stable version
 5. The stable package will be pushed to Octopus
 6. Because of the tag, then next build will be incremented and will be producing
-    pre-release packages of the next build
+   pre-release packages of the next build
 
 #### Script to create the release
 
@@ -179,4 +179,5 @@ will burn multiple versions per release. This might not be an issue for you, but
 can confuse consumers of your library as the version has semantic meaning.
 
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
+
 [increment-per-commit]: /docs/reference/version-increments#incrementing-per-commit

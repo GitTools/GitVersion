@@ -36,5 +36,7 @@ is done as it's an automated process.
 * [Continuous delivery][wikipedia]
 
 [configuration]: /docs/reference/configuration
+
 [blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+
 [wikipedia]: https://en.wikipedia.org/wiki/Continuous_delivery

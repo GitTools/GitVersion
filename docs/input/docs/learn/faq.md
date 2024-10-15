@@ -69,8 +69,13 @@ therefore not be considered for version calculation in the target branch of the
 merge.
 
 [dynamic-repos]: /docs/learn/dynamic-repositories
+
 [increments]: /docs/reference/version-increments
+
 [octopus]: /docs/reference/build-servers/octopus-deploy
+
 [semver-intro]: /docs/learn/intro-to-semver
+
 [semver]: https://semver.org
+
 [variables]: /docs/reference/variables

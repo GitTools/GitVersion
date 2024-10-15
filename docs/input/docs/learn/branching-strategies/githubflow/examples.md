@@ -8,6 +8,7 @@ These examples are illustrating the usage of the supported `GitHubFlow` workflow
 in GitVersion. To enable this workflow, the builtin template
 [GitHubFlow/v1](/docs/workflows/GitHubFlow/v1.json) needs to be referenced in the
 configuration as follows:
+
 ```yaml
 workflow: GitHubFlow/v1
 mode: ContinuousDelivery
@@ -26,7 +27,7 @@ All other branches are manually published. Read more about this at
 [version increments](/docs/reference/version-increments).
 
 :::{.alert .alert-info}
-The _continuous delivery_ mode has been used for the `main` branch in this 
+The _continuous delivery_ mode has been used for the `main` branch in this
 examples (specified as a fallback on the root
 configuration layer) to illustrate how the version increments are applied.
 In production context the _continuous deployment_ mode might be a better
@@ -37,7 +38,7 @@ by the pipeline automatically.
 ## Feature Branch
 
 Feature branches can be used in the `GitHubFlow` workflow to implement a
-feature or fix a bug in an isolated environment. Feature branches will take 
+feature or fix a bug in an isolated environment. Feature branches will take
 the feature
 branch name and use that as the pre-release label. Feature branches will be
 created from a `main` or `release` branch.
@@ -87,5 +88,7 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 See `DocumentationSamplesForGitHubFlow.cs`. To update, modify then run test.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
+
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
+
 [manual-deployment]: /docs/reference/modes/manual-deployment

@@ -11,18 +11,18 @@ SemVer compatible versions from this structure.
 ## Assumptions:
 
 * Using [GitFlow branching model](https://nvie.com/git-model/) which always has a
-    main and a develop branch
+  main and a develop branch
 * Following [Semantic Versioning](https://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches
-    prefixed with release-. Eg: release-4.1 (or release-4.1.0)
+  prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
 * The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
-    specifies branches with a "-" separator while the [git flow extensions](https://github.com/CJ-Systems/gitflow-cjs)
-    default to a "/" separator.  Either work with GitVersion.
+  specifies branches with a "-" separator while the [git flow extensions](https://github.com/CJ-Systems/gitflow-cjs)
+  default to a "/" separator.  Either work with GitVersion.
 * Tags are used on the main branch and reflects the SemVer of each stable
-    release eg 3.3.8 , 4.0.0, etc
+  release eg 3.3.8 , 4.0.0, etc
 * Tags can also be used to override versions while we transition repositories
-    over to GitVersion
+  over to GitVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
 
 ## How Branches are handled
@@ -72,7 +72,7 @@ Long version:
 * minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.{n}` where n = how many commits `develop` is in front of
-    `mainVersionCommit.Date` ('0' padded to 4 characters)
+  `mainVersionCommit.Date` ('0' padded to 4 characters)
 
 Long version:
 
@@ -91,7 +91,7 @@ Named: `hotfix-{versionNumber}` eg `hotfix-1.2`
 * minor: `mergeVersion.Minor`
 * patch: `mergeVersion.Patch`
 * pre-release: `beta{n}` where n = number of commits on branch  ('0' padded to
-    4 characters)
+  4 characters)
 
 Long version:
 
@@ -116,7 +116,7 @@ tag would be `1.2.0-alpha1`
 * minor: `mergeVersion.Minor`
 * patch: 0
 * pre-release: `{releaseTag.preRelease}.{n}` where n = 1 + the number of commits
-    since `releaseTag`.
+  since `releaseTag`.
 
 So on a branch named `release-1.2` with a tag `1.2.0-alpha1` and 4 commits after
 that tag the version would be `1.2.0-alpha1.4`
@@ -143,7 +143,7 @@ branches named like "4.0.3"
 * minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.feature-{n}` where n = First 8 characters of the commit
-    SHA of the first commit
+  SHA of the first commit
 
 Long version:
 
@@ -163,7 +163,7 @@ Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 * minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
-    4 characters)
+  4 characters)
 
 ## Nightly Builds
 
