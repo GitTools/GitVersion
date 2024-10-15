@@ -7,10 +7,6 @@
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="System.Text.Json"/>
-    </ItemGroup>
     
     <ItemGroup>
         <Compile Remove="*\AddFormats\**\*.*" />

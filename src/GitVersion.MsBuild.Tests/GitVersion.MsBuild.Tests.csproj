@@ -10,7 +10,11 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
         <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.IO.Redist" />
         <PackageReference Include="MSBuild.ProjectCreation" />
+        <PackageReference Include="System.Drawing.Common" />
+        <PackageReference Include="System.Security.Cryptography.Xml" />
+        <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
     <ItemGroup>
