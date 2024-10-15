@@ -1,18 +1,19 @@
+using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class BranchesContainingCommitFinder(IGitRepository repository, ILog log)
+internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, ILog log)
 {
     private readonly ILog log = log.NotNull();
-    private readonly IGitRepository repository = repository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
         commit.NotNull();
-        branches ??= [.. this.repository.Branches];
+        branches ??= [.. this.repositoryStore.Branches];
 
         // TODO Should we cache this?
         // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
@@ -45,7 +46,7 @@ internal class BranchesContainingCommitFinder(IGitRepository repository, ILog lo
             {
                 log.Info($"Searching for commits reachable from '{branch}'.");
 
-                var commits = GetCommitsReacheableFrom(commit, branch);
+                var commits = this.repositoryStore.GetCommitsReacheableFrom(commit, branch);
 
                 if (!commits.Any())
                 {
@@ -57,14 +58,6 @@ internal class BranchesContainingCommitFinder(IGitRepository repository, ILog lo
                 yield return branch;
             }
         }
-    }
-
-    private IEnumerable<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
-    {
-        var filter = new CommitFilter { IncludeReachableFrom = branch };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-
-        return commitCollection.Where(c => c.Sha == commit.Sha);
     }
 
     private static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked)

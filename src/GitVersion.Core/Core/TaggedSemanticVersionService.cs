@@ -5,12 +5,12 @@ using GitVersion.Git;
 namespace GitVersion.Core;
 
 internal sealed class TaggedSemanticVersionService(
-    ITaggedSemanticVersionRepository Repository, IBranchRepository BranchRepository)
+    ITaggedSemanticVersionRepository repository, IBranchRepository branchRepository)
     : ITaggedSemanticVersionService
 {
-    private ITaggedSemanticVersionRepository Repository { get; } = Repository.NotNull();
+    private readonly ITaggedSemanticVersionRepository repository = repository.NotNull();
 
-    private IBranchRepository BranchRepository { get; } = BranchRepository.NotNull();
+    private readonly IBranchRepository branchRepository = branchRepository.NotNull();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(
          IBranch branch,
@@ -99,7 +99,7 @@ internal sealed class TaggedSemanticVersionService(
         string? label,
         DateTimeOffset? notOlderThan)
     {
-        var semanticVersionsOfBranch = Repository.GetTaggedSemanticVersionsOfBranch(
+        var semanticVersionsOfBranch = this.repository.GetTaggedSemanticVersionsOfBranch(
             branch: branch, tagPrefix: tagPrefix, format: format, ignore: ignore
         );
         foreach (var grouping in semanticVersionsOfBranch)
@@ -145,7 +145,7 @@ internal sealed class TaggedSemanticVersionService(
          string? label,
          DateTimeOffset? notOlderThan)
     {
-        var semanticVersionsOfMergeTarget = Repository.GetTaggedSemanticVersionsOfMergeTarget(
+        var semanticVersionsOfMergeTarget = this.repository.GetTaggedSemanticVersionsOfMergeTarget(
             branch: branch,
             tagPrefix: tagPrefix,
             format: format,
@@ -188,7 +188,7 @@ internal sealed class TaggedSemanticVersionService(
         string? label,
         params IBranch[] excludeBranches)
     {
-        foreach (var releaseBranch in BranchRepository.GetMainBranches(configuration, excludeBranches))
+        foreach (var releaseBranch in this.branchRepository.GetMainBranches(configuration, excludeBranches))
         {
             var taggedSemanticVersions = GetTaggedSemanticVersionsOfBranchInternal(
                 branch: releaseBranch,
@@ -228,7 +228,7 @@ internal sealed class TaggedSemanticVersionService(
         string? label,
         params IBranch[] excludeBranches)
     {
-        foreach (var releaseBranch in BranchRepository.GetReleaseBranches(configuration, excludeBranches))
+        foreach (var releaseBranch in this.branchRepository.GetReleaseBranches(configuration, excludeBranches))
         {
             var taggedSemanticVersions = GetTaggedSemanticVersionsOfBranchInternal(
                 branch: releaseBranch,

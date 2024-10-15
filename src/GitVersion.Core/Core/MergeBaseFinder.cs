@@ -5,10 +5,9 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class MergeBaseFinder(IRepositoryStore repositoryStore, IGitRepository gitRepository, ILog log)
+internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
 {
     private readonly ILog log = log.NotNull();
-    private readonly IGitRepository repository = gitRepository.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = [];
 
@@ -71,7 +70,7 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, IGitRepository 
         do
         {
             // Now make sure that the merge base is not a forward merge
-            forwardMerge = GetForwardMerge(commitToFindCommonBase, findMergeBase);
+            forwardMerge = this.repositoryStore.GetForwardMerge(commitToFindCommonBase, findMergeBase);
 
             if (forwardMerge == null)
                 continue;
@@ -101,17 +100,5 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, IGitRepository 
         } while (forwardMerge != null);
 
         return findMergeBase;
-    }
-
-    private ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
-    {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = commitToFindCommonBase,
-            ExcludeReachableFrom = findMergeBase
-        };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-
-        return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }
 }

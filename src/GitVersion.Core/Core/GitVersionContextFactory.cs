@@ -27,11 +27,7 @@ internal class GitVersionContextFactory(
             ?? throw new InvalidOperationException("Need a branch to operate on");
         var currentCommit = this.repositoryStore.GetCurrentCommit(
             currentBranch, gitVersionOptions.RepositoryInfo.CommitId, configuration.Ignore
-        );
-
-        if (currentCommit is null)
-            throw new GitVersionException("No commits found on the current branch.");
-
+        ) ?? throw new GitVersionException("No commits found on the current branch.");
         if (currentBranch.IsDetachedHead)
         {
             var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(
@@ -45,7 +41,7 @@ internal class GitVersionContextFactory(
             format: configuration.SemanticVersionFormat,
             ignore: configuration.Ignore
         ).Contains(currentCommit);
-        var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
+        var numberOfUncommittedChanges = this.repositoryStore.UncommittedChangesCount;
 
         return new(currentBranch, currentCommit, configuration, isCurrentCommitTagged, numberOfUncommittedChanges);
     }

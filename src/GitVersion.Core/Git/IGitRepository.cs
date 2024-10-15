@@ -6,7 +6,9 @@ public interface IGitRepository : IDisposable
     string WorkingDirectory { get; }
     bool IsHeadDetached { get; }
     bool IsShallow { get; }
+
     IBranch Head { get; }
+
     ITagCollection Tags { get; }
     IReferenceCollection Refs { get; }
     IBranchCollection Branches { get; }
@@ -14,6 +16,6 @@ public interface IGitRepository : IDisposable
     IRemoteCollection Remotes { get; }
 
     ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
-    int GetNumberOfUncommittedChanges();
+    int UncommittedChangesCount();
     void DiscoverRepository(string? gitDirectory);
 }

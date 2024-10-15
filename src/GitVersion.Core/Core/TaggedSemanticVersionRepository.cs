@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -6,7 +7,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Core;
 
-internal sealed class TaggedSemanticVersionRepository(ILog log, IGitRepository gitRepository) : ITaggedSemanticVersionRepository
+internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {
     private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
         taggedSemanticVersionsOfBranchCache = new();
@@ -16,7 +17,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IGitRepository g
         taggedSemanticVersionsCache = new();
     private readonly ILog log = log.NotNull();
 
-    private readonly IGitRepository gitRepository = gitRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
        IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
@@ -28,7 +29,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IGitRepository g
         var result = taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            return GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When).ToList();
+            return [.. GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When)];
         });
 
         if (isCached)
@@ -123,7 +124,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IGitRepository g
         {
             this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
 
-            foreach (var tag in ignore.Filter(this.gitRepository.Tags))
+            foreach (var tag in ignore.Filter(this.repositoryStore.Tags))
             {
                 if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {

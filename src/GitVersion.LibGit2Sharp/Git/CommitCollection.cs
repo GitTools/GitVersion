@@ -19,6 +19,12 @@ internal sealed class CommitCollection : ICommitCollection
 
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter)
     {
+        var includeReachableFrom = GetReacheableFrom(commitFilter.IncludeReachableFrom);
+        var excludeReachableFrom = GetReacheableFrom(commitFilter.ExcludeReachableFrom);
+        var filter = new LibGit2Sharp.CommitFilter { IncludeReachableFrom = includeReachableFrom, ExcludeReachableFrom = excludeReachableFrom, FirstParentOnly = commitFilter.FirstParentOnly, SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy };
+        var commitLog = ((IQueryableCommitLog)this.innerCollection).QueryBy(filter);
+        return new CommitCollection(commitLog);
+
         static object? GetReacheableFrom(object? item) =>
             item switch
             {
@@ -26,11 +32,5 @@ internal sealed class CommitCollection : ICommitCollection
                 Branch b => (LibGit2Sharp.Branch)b,
                 _ => null
             };
-
-        var includeReachableFrom = GetReacheableFrom(commitFilter.IncludeReachableFrom);
-        var excludeReachableFrom = GetReacheableFrom(commitFilter.ExcludeReachableFrom);
-        var filter = new LibGit2Sharp.CommitFilter { IncludeReachableFrom = includeReachableFrom, ExcludeReachableFrom = excludeReachableFrom, FirstParentOnly = commitFilter.FirstParentOnly, SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy };
-        var commitLog = ((IQueryableCommitLog)this.innerCollection).QueryBy(filter);
-        return new CommitCollection(commitLog);
     }
 }

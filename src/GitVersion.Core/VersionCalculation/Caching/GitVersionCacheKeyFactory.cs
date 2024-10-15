@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -14,7 +15,7 @@ internal class GitVersionCacheKeyFactory(
     IOptions<GitVersionOptions> options,
     IConfigurationFileLocator configFileLocator,
     IConfigurationSerializer configurationSerializer,
-    IGitRepository gitRepository,
+    IRepositoryStore repositoryStore,
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
 {
@@ -23,7 +24,7 @@ internal class GitVersionCacheKeyFactory(
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
-    private readonly IGitRepository gitRepository = gitRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public GitVersionCacheKey Create(IReadOnlyDictionary<object, object?>? overrideConfiguration)
@@ -44,7 +45,7 @@ internal class GitVersionCacheKeyFactory(
         // traverse the directory and get a list of files, use that for GetHash
         var contents = CalculateDirectoryContents(PathHelper.Combine(dotGitDirectory, "refs"));
 
-        return GetHash(contents.ToArray());
+        return GetHash([.. contents]);
     }
 
     // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
@@ -139,7 +140,7 @@ internal class GitVersionCacheKeyFactory(
 
     private string GetRepositorySnapshotHash()
     {
-        var head = this.gitRepository.Head;
+        var head = this.repositoryStore.Head;
         if (head.Tip == null)
         {
             return head.Name.Canonical;
