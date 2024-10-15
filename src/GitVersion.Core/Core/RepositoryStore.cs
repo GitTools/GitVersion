@@ -60,7 +60,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             this.log.Info("Using latest commit on specified branch");
         }
 
-        commits = ignore.Filter(commits);
+        commits = ignore.Filter(commits.ToArray());
         return commits.FirstOrDefault();
     }
 
@@ -219,8 +219,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
         };
 
-        var commits = this.repository.Commits.QueryBy(filter);
-
+        var commits = FilterCommits(filter).ToArray();
         return ignore.Filter(commits).ToList();
     }
 
@@ -232,16 +231,16 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
         };
 
-        var commits = this.repository.Commits.QueryBy(filter);
+        var commits = FilterCommits(filter).ToArray();
         return ignore.Filter(commits).ToList();
     }
 
     public IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
 
-        return commitCollection.Where(c => c.Sha == commit.Sha).ToList();
+        var commits = FilterCommits(filter);
+        return commits.Where(c => c.Sha == commit.Sha).ToList();
     }
 
     public ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
@@ -251,17 +250,19 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             IncludeReachableFrom = commitToFindCommonBase,
             ExcludeReachableFrom = findMergeBase
         };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
 
-        return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+        var commits = FilterCommits(filter);
+        return commits.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }
 
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-        return commitCollection.Contains(firstMatchingCommit);
+        var commits = FilterCommits(filter);
+        return commits.Contains(firstMatchingCommit);
     }
+
+    private IEnumerable<ICommit> FilterCommits(CommitFilter filter) => this.repository.Commits.QueryBy(filter);
 
     public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
