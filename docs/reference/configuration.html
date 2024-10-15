@@ -391,10 +391,10 @@ tag-prefix: '[abc]'
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
 version-in-branch-pattern: (?&lt;version&gt;[vV]?\d+(\.\d+)?(\.\d+)?).*
-major-version-bump-message: '\+semver:\s?(breaking|major)'
-minor-version-bump-message: '\+semver:\s?(feature|minor)'
-patch-version-bump-message: '\+semver:\s?(fix|patch)'
-no-bump-message: '\+semver:\s?(none|skip)'
+major-version-bump-message: \+semver:\s?(breaking|major)
+minor-version-bump-message: \+semver:\s?(feature|minor)
+patch-version-bump-message: \+semver:\s?(fix|patch)
+no-bump-message: \+semver:\s?(none|skip)
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -583,10 +583,10 @@ is-main-branch: false
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
 version-in-branch-pattern: (?&lt;version&gt;[vV]?\d+(\.\d+)?(\.\d+)?).*
-major-version-bump-message: '\+semver:\s?(breaking|major)'
-minor-version-bump-message: '\+semver:\s?(feature|minor)'
-patch-version-bump-message: '\+semver:\s?(fix|patch)'
-no-bump-message: '\+semver:\s?(none|skip)'
+major-version-bump-message: \+semver:\s?(breaking|major)
+minor-version-bump-message: \+semver:\s?(feature|minor)
+patch-version-bump-message: \+semver:\s?(fix|patch)
+no-bump-message: \+semver:\s?(none|skip)
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -724,10 +724,10 @@ is-main-branch: false
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
 version-in-branch-pattern: (?&lt;version&gt;[vV]?\d+(\.\d+)?(\.\d+)?).*
-major-version-bump-message: '\+semver:\s?(breaking|major)'
-minor-version-bump-message: '\+semver:\s?(feature|minor)'
-patch-version-bump-message: '\+semver:\s?(fix|patch)'
-no-bump-message: '\+semver:\s?(none|skip)'
+major-version-bump-message: \+semver:\s?(breaking|major)
+minor-version-bump-message: \+semver:\s?(feature|minor)
+patch-version-bump-message: \+semver:\s?(fix|patch)
+no-bump-message: \+semver:\s?(none|skip)
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -1471,9 +1471,10 @@ assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 4
 </code></pre>
           <h3 id="strategies">strategies</h3>
           <p>
-            Specifies which version strategy implementation (one ore more) will
-            be used to determine the next version. Following values are
-            supported and can be combined:
+            Specifies which version strategy implementation (one or more) will
+            be used to determine the next version. These strategies can be
+            combined, and the order in which they are specified does not matter.
+            The configuration accepts the following values:
           </p>
           <ul>
             <li>Fallback</li>
@@ -1482,7 +1483,7 @@ assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 4
             <li>TaggedCommit</li>
             <li>TrackReleaseBranches</li>
             <li>VersionInBranchName</li>
-            <li>TrunkBased</li>
+            <li>Mainline</li>
           </ul>
         </section>
       </div>

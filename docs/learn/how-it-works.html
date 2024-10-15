@@ -371,9 +371,8 @@
             </li>
             <li>
               A set of strategies are evaluated to decide on the base version
-              and some metadata about that version. These strategies include
-              HighestReachableTag, NextVersionInConfig, MergedBranchWithVersion,
-              VersionInBranchName etc.
+              and some metadata about that version. See
+              <a href="#version-strategies">Version Strategies</a>
             </li>
             <li>
               The highest base version is selected, using that base version as
@@ -390,7 +389,7 @@
           </p>
           <p>
             <a
-              href="https://www.plantuml.com/plantuml/form?url=https://www.plantuml.com/plantuml/png/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00"
+              href="https://www.plantuml.com/plantuml/uml/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00"
               >Edit Diagram</a
             >
           </p>
@@ -400,33 +399,49 @@
             version is out of context with the rest of the example. It is here
             simply to show what happens if the check is true.
           </p>
-          <h3 id="base-version-strategies">Base Version Strategies</h3>
+          <h3 id="version-strategies">Version Strategies</h3>
           <p>Currently we have the following strategies:</p>
           <ul>
             <li>
-              <code>HighestTagBaseVersionStrategy</code> - Finds the highest
-              reachable tag from the current branch
+              <code>Fallback</code> - Always returns 0.0.0 and will be used for
+              calculating the next version which is dependent on the increment
+              strategy of the effected branch (e.g. on main the next version is
+              0.0.1 or on develop it is 0.1.0). The fallback strategy only
+              applies if no other selected strategy returns a base version.
             </li>
             <li>
-              <code>VersionInBranchBaseVersionStrategy</code> - Extracts version
-              information from the branch name (e.g.,
-              <code>release/3.0.0</code> will find <code>3.0.0</code>)
+              <code>ConfiguredNextVersion</code> - Returns the version from the
+              GitVersion.yaml file
             </li>
             <li>
-              <code>ConfigNextVersionBaseVersionStrategy</code> - Returns the
-              version from the GitVersion.yaml file
-            </li>
-            <li>
-              <code>MergeMessageBaseVersionStrategy</code> - Finds version
-              numbers from merge messages (e.g.,
+              <code
+                ><a href="/api/GitVersion/MergeMessage">MergeMessage</a></code
+              >
+              - Finds version numbers from merge messages (e.g.,
               <code>Merge 'release/3.0.0' into 'main'</code> will return
               <code>3.0.0</code>)
             </li>
             <li>
-              <code>FallbackBaseVersionStrategy</code> - Always returns 0.0.0
-              and will be used for calculating the next version which is
-              dependent on the increment strategy of the effected branch (e.g.
-              on main the next version is 0.0.1 or on develop it is 0.1.0)
+              <code>TaggedCommit</code> - Extracts version information from all
+              tags on the branch which are valid, and not newer than the current
+              commit.
+            </li>
+            <li>
+              <code>TrackReleaseBranches</code> - Considers the base version
+              extracted from release branches when calculating the next version
+              for branches configured with
+              <code>track-release-branches: true</code> (part of default
+              configuration for <code>develop</code> branch in
+              <code>GitFlow</code> workflow)
+            </li>
+            <li>
+              <code>VersionInBranchName</code> - Extracts version information
+              from the branch name (e.g., <code>release/3.0.0</code> will find
+              <code>3.0.0</code>)
+            </li>
+            <li>
+              <code>Mainline</code> - Increments the version on every commit for
+              branches configured with <code>is-main-branch: true</code>
             </li>
           </ul>
           <p>
@@ -441,8 +456,8 @@
             <li>
               <code>ShouldIncrement</code> - Some strategies should have the
               version incremented, others do not (e.g.,
-              <code>ConfigNextVersionBaseVersionStrategy</code> returns false,
-              <code>HighestTagBaseVersionStrategy</code> returns true)
+              <code>ConfiguredNextVersion</code> returns false,
+              <code>TaggedCommit</code> returns true)
             </li>
             <li>
               <code
@@ -455,17 +470,16 @@
             <li>
               <code>BaseVersionSource</code> - SHA hash of the source. Commits
               will be counted from this hash. Can be null (e.g.,
-              <code>ConfigNextVersionBaseVersionStrategy</code> returns null).
+              <code>ConfiguredNextVersion</code> returns null).
             </li>
             <li>
               <code>BranchNameOverride</code> - When
               <code>useBranchName</code> or <code>{BranchName}</code> is used in
               the tag configuration, this allows the branch name to be changed
-              by a base version.
-              <code>VersionInBranchBaseVersionStrategy</code> uses this to strip
-              out anything before the first <code>-</code> or <code>/.</code> so
-              <code>foo</code> ends up being evaluated as <code>foo</code>. If
-              in doubt, just use null.
+              by a base version. <code>VersionInBranchName</code> uses this to
+              strip out anything before the first <code>-</code> or
+              <code>/.</code> so <code>foo</code> ends up being evaluated as
+              <code>foo</code>. If in doubt, just use null.
             </li>
           </ul>
         </section>
