@@ -29,19 +29,20 @@ internal sealed class BranchCollection : IBranchCollection
     {
         branchesToExclude = branchesToExclude.NotNull();
 
+        return this.Where(BranchIsNotExcluded);
+
         bool BranchIsNotExcluded(IBranch branch)
             => branchesToExclude.All(branchToExclude => !branch.Equals(branchToExclude));
-
-        return this.Where(BranchIsNotExcluded);
     }
 
     public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName)
     {
         var branchToUpdate = (Branch)branch.NotNull();
 
+        this.innerCollection.Update(branchToUpdate, Updater);
+        return;
+
         void Updater(BranchUpdater branchUpdater) =>
             branchUpdater.TrackedBranch = remoteTrackingReferenceName;
-
-        this.innerCollection.Update(branchToUpdate, Updater);
     }
 }

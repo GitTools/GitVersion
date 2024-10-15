@@ -1,12 +1,13 @@
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion.Core;
 
-internal sealed class BranchRepository(IGitRepository gitRepository) : IBranchRepository
+internal sealed class BranchRepository(IRepositoryStore repositoryStore) : IBranchRepository
 {
-    private readonly IGitRepository gitRepository = gitRepository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public IEnumerable<IBranch> GetMainBranches(IGitVersionConfiguration configuration, params IBranch[] excludeBranches)
         => GetBranches(configuration, [.. excludeBranches], branchConfiguration => branchConfiguration.IsMainBranch == true);
@@ -19,7 +20,7 @@ internal sealed class BranchRepository(IGitRepository gitRepository) : IBranchRe
     {
         predicate.NotNull();
 
-        foreach (var branch in this.gitRepository.Branches)
+        foreach (var branch in this.repositoryStore.Branches)
         {
             if (!excludeBranches.Contains(branch))
             {

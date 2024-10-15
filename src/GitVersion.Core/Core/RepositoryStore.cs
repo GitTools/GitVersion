@@ -7,25 +7,27 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore : IRepositoryStore
+internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositoryStore
 {
-    private readonly ILog log;
-    private readonly IGitRepository repository;
+    private readonly ILog log = log.NotNull();
+    private readonly IGitRepository repository = repository.NotNull();
 
-    private readonly MergeBaseFinder mergeBaseFinder;
+    public int UncommittedChangesCount => this.repository.UncommittedChangesCount();
 
-    public RepositoryStore(ILog log, IGitRepository repository)
-    {
-        this.log = log.NotNull();
-        this.repository = repository.NotNull();
-        this.mergeBaseFinder = new(this, repository, log);
-    }
+    public IBranch Head => this.repository.Head;
+
+    public IBranchCollection Branches => this.repository.Branches;
+
+    public ITagCollection Tags => this.repository.Tags;
 
     /// <summary>
     ///     Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
-        => this.mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
+    {
+        var mergeBaseFinder = new MergeBaseFinder(this, log);
+        return mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
+    }
 
     public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId, IIgnoreConfiguration ignore)
     {
@@ -90,15 +92,13 @@ internal class RepositoryStore : IRepositoryStore
 
     public IBranch? FindBranch(ReferenceName branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.Equals(branchName));
 
-    public IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
-
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
         commit.NotNull();
 
-        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
+        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this, this.log);
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
@@ -207,21 +207,6 @@ internal class RepositoryStore : IRepositoryStore
             IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
         => FindCommitBranchesBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
-        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
-    {
-        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
-        {
-            if (branch.Tip == null)
-            {
-                this.log.Warning($"{branch} has no tip.");
-                return [];
-            }
-
-            return new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch).ToList();
-        }
-    }
-
     public IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore)
     {
         currentCommit.NotNull();
@@ -239,6 +224,38 @@ internal class RepositoryStore : IRepositoryStore
         return ignore.Filter(commits).ToList();
     }
 
+    public IReadOnlyList<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore)
+    {
+        var filter = new CommitFilter
+        {
+            IncludeReachableFrom = headCommit,
+            SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+        };
+
+        var commits = this.repository.Commits.QueryBy(filter);
+        return ignore.Filter(commits).ToList();
+    }
+
+    public IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
+    {
+        var filter = new CommitFilter { IncludeReachableFrom = branch };
+        var commitCollection = this.repository.Commits.QueryBy(filter);
+
+        return commitCollection.Where(c => c.Sha == commit.Sha).ToList();
+    }
+
+    public ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
+    {
+        var filter = new CommitFilter
+        {
+            IncludeReachableFrom = commitToFindCommonBase,
+            ExcludeReachableFrom = findMergeBase
+        };
+        var commitCollection = this.repository.Commits.QueryBy(filter);
+
+        return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+    }
+
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
@@ -248,5 +265,20 @@ internal class RepositoryStore : IRepositoryStore
 
     public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
-    public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
+    private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
+
+    private IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    {
+        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
+        {
+            if (branch.Tip == null)
+            {
+                this.log.Warning($"{branch} has no tip.");
+                return [];
+            }
+
+            return new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch).ToList();
+        }
+    }
 }

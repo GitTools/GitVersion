@@ -22,6 +22,7 @@ internal sealed partial class GitRepository
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
     public IBranch Head => new Branch(RepositoryInstance.Head);
+
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
     public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
@@ -52,10 +53,10 @@ internal sealed partial class GitRepository
         });
     }
 
-    public int GetNumberOfUncommittedChanges()
+    public int UncommittedChangesCount()
     {
         var retryAction = new RetryAction<LibGit2Sharp.LockedFileException, int>();
-        return retryAction.Execute(GetNumberOfUncommittedChangesInternal);
+        return retryAction.Execute(GetUncommittedChangesCountInternal);
     }
 
     public void Dispose()
@@ -63,7 +64,7 @@ internal sealed partial class GitRepository
         if (this.repositoryLazy is { IsValueCreated: true }) RepositoryInstance.Dispose();
     }
 
-    private int GetNumberOfUncommittedChangesInternal()
+    private int GetUncommittedChangesCountInternal()
     {
         // check if we have a branch tip at all to behave properly with empty repos
         // => return that we have actually un-committed changes because we are apparently

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
@@ -6,14 +7,14 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     : IIncrementStrategyFinder
 {
     private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
 
-    private readonly IGitRepository repository = repository.NotNull();
+    private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
 
     public VersionField DetermineIncrementedField(
@@ -166,7 +167,7 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
     /// </summary>
     private ICommit[] GetHeadCommits(ICommit? headCommit, IIgnoreConfiguration ignore) =>
         this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
-            GetCommitsReacheableFromHead(headCommit, ignore).ToArray());
+            [.. this.repositoryStore.GetCommitsReacheableFromHead(headCommit, ignore)]);
 
     private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex) =>
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
@@ -181,18 +182,6 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
         return null;
     }
 
-    private IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore)
-    {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = headCommit,
-            SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
-        };
-
-        var commits = repository.Commits.QueryBy(filter);
-        return ignore.Filter(commits);
-    }
-
     public IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index, IIgnoreConfiguration ignore)
     {
         mergeCommit.NotNull();
@@ -202,11 +191,11 @@ internal class IncrementStrategyFinder(IGitRepository repository, ITaggedSemanti
             throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
         }
 
-        ICommit baseCommit = mergeCommit.Parents.First();
+        ICommit baseCommit = mergeCommit.Parents[0];
         ICommit mergedCommit = GetMergedHead(mergeCommit);
         if (index == 0) (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
 
-        ICommit findMergeBase = this.repository.FindMergeBase(baseCommit, mergedCommit)
+        ICommit findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
             ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
 
         return GetIntermediateCommits(findMergeBase, mergedCommit, ignore);
