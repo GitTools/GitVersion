@@ -39,9 +39,7 @@ tag-prefix: '[abc]'
 The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
 
 <!-- snippet: /docs/workflows/GitFlow/v1.yml -->
-
 <a id='snippet-/docs/workflows/GitFlow/v1.yml'></a>
-
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -211,17 +209,13 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-
 <sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
-
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
 
 <!-- snippet: /docs/workflows/GitHubFlow/v1.yml -->
-
 <a id='snippet-/docs/workflows/GitHubFlow/v1.yml'></a>
-
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -340,17 +334,13 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-
 <sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
-
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
 
 <!-- snippet: /docs/workflows/TrunkBased/preview1.yml -->
-
 <a id='snippet-/docs/workflows/TrunkBased/preview1.yml'></a>
-
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -454,9 +444,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-
 <sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
-
 <!-- endSnippet -->
 
 The details of the available options are as follows:
