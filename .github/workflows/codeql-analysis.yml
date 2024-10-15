@@ -71,7 +71,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
