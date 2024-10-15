@@ -5,15 +5,23 @@ namespace GitVersion.Git;
 internal sealed class ReferenceCollection : IReferenceCollection
 {
     private readonly LibGit2Sharp.ReferenceCollection innerCollection;
+    private IReadOnlyCollection<IReference>? references;
 
-    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection)
-        => this.innerCollection = collection.NotNull();
+    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => this.innerCollection = collection.NotNull();
 
-    public IEnumerator<IReference> GetEnumerator() => this.innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
+    public IEnumerator<IReference> GetEnumerator()
+    {
+        this.references ??= this.innerCollection.Select(reference => new Reference(reference)).ToArray();
+        return this.references.GetEnumerator();
+    }
 
     public void Add(string name, string canonicalRefNameOrObject, bool allowOverwrite = false) => this.innerCollection.Add(name, canonicalRefNameOrObject, allowOverwrite);
 
-    public void UpdateTarget(IReference directRef, IObjectId targetId) => RepositoryExtensions.RunSafe(() => this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId));
+    public void UpdateTarget(IReference directRef, IObjectId targetId)
+    {
+        RepositoryExtensions.RunSafe(() => this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId));
+        this.references = null;
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
