@@ -83,8 +83,13 @@ This should work on all operating systems supported by Docker (at the time
 of writing: Linux, macOS, Windows).
 
 [dotnet-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool
+
 [tool]: https://www.nuget.org/packages/GitVersion.Tool/
+
 [brew]: https://formulae.brew.sh/formula/gitversion
+
 [homebrew]: https://brew.sh/
+
 [docker]: https://hub.docker.com/r/gittools/gitversion
+
 [choco]: https://chocolatey.org/packages/GitVersion.Portable

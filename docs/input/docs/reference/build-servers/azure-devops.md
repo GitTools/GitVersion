@@ -5,6 +5,7 @@ Description: |
     Details on the Azure DevOps Build Pipeline support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/azure-devops
 ---
+
 ## Installation and usage
 
 For Azure DevOps Services or Azure DevOps Server you can install the [GitTools Bundle](https://marketplace.visualstudio.com/items?itemName=gittools.gittools).

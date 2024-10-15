@@ -10,6 +10,7 @@ These examples are illustrating the usage of the supported `GitFlow` workflow
 in GitVersion. To enable this workflow, the builtin template
 [GitFlow/v1](/docs/workflows/GitFlow/v1.json) needs to be referenced in the
 configuration as follows:
+
 ```yaml
 workflow: GitFlow/v1
 mode: ContinuousDelivery
@@ -45,7 +46,7 @@ created from a `develop`, `release`, `main`, `support` or `hotfix` branch.
 
 ### Create feature branch from main
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_FeatureFromMainBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromMainBranch.png)
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `main` is `2.0.0-5`.
@@ -55,7 +56,7 @@ configured to use _continuous deployment_ the version would be `2.0.0`.
 
 ### Create feature branch from develop
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_FeatureFromDevelopBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromDevelopBranch.png)
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `develop` is
@@ -72,23 +73,23 @@ Hotfix branches are used when you need to do a _patch_ release in the
 
 ### Create hotfix branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_HotfixBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_HotfixBranch.png)
 
 ### Create hotfix branch with version number
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_VersionedHotfixBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedHotfixBranch.png)
 
 ## Release Branches
 
-Release branches are used for major and minor releases to stabilize a RC 
+Release branches are used for major and minor releases to stabilize a RC
 (Release Candidate) or to integrate features (in parallel) targeting different
 iterations. Release branches are taken from `main` (or from `develop`) and will
 be merged back afterwards. Finally the `main` branch is tagged with the
 released version.
 
 Release branches can be used in the `GitFlow` as well as `GitHubFlow` workflow.
-Sometimes you want to start on a large feature which may take a while 
-to stabilize so you want to keep it off main. 
+Sometimes you want to start on a large feature which may take a while
+to stabilize so you want to keep it off main.
 In these scenarios you can either create a long lived
 feature branch (if you do not know the version number this large feature will go
 into, and it's non-breaking) otherwise you can create a release branch for the
@@ -97,15 +98,15 @@ branch or the release branch.
 
 ### Create release branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_ReleaseBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_ReleaseBranch.png)
 
 ### Create release branch with version
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_VersionedReleaseBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedReleaseBranch.png)
 
 ## Develop Branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_DevelopBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_DevelopBranch.png)
 
 ## Support Branches
 
@@ -116,7 +117,7 @@ majors, then name your branch `support/<major>.x` (i.e `support/1.x`), to
 support minors use `support/<major>.<minor>.x` or `support/<major>.<minor>.0`.
 (i.e `support/1.3.x` or `support/1.3.0`)
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow\_SupportBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_SupportBranch.png)
 
 :::{.alert .alert-info}
 Depending on what you name your support branch, you may or may not need a
@@ -135,5 +136,7 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 See `DocumentationSamplesForGitFlow.cs`. To update, modify then run test.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
+
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
+
 [manual-deployment]: /docs/reference/modes/manual-deployment

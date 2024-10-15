@@ -25,9 +25,9 @@ To see the effective configuration (defaults and overrides), you can run
 
 The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
 
-- GitFlow (GitFlow/v1)
-- GitHubFlow (GitHubFlow/v1)
-- TrunkBased (TrunkBased/preview1)
+* GitFlow (GitFlow/v1)
+* GitHubFlow (GitHubFlow/v1)
+* TrunkBased (TrunkBased/preview1)
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
@@ -39,7 +39,9 @@ tag-prefix: '[abc]'
 The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
 
 <!-- snippet: /docs/workflows/GitFlow/v1.yml -->
+
 <a id='snippet-/docs/workflows/GitFlow/v1.yml'></a>
+
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -209,13 +211,17 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+
 <sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
 
 <!-- snippet: /docs/workflows/GitHubFlow/v1.yml -->
+
 <a id='snippet-/docs/workflows/GitHubFlow/v1.yml'></a>
+
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -334,13 +340,17 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+
 <sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
 
 <!-- snippet: /docs/workflows/TrunkBased/preview1.yml -->
+
 <a id='snippet-/docs/workflows/TrunkBased/preview1.yml'></a>
+
 ```yml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -444,7 +454,9 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
+
 <sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -638,9 +650,9 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-- `SourceBranch` - Identifies the source branch of the merge
-- `TargetBranch` - Identifies the target branch of the merge
-- `PullRequestNumber` - Captures the pull-request number
+* `SourceBranch` - Identifies the source branch of the merge
+* `TargetBranch` - Identifies the target branch of the merge
+* `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
 Support for [Conventional Commits][conventional-commits] can be
@@ -768,16 +780,16 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-- feature/foo branches off release/v1.0.0
-  - Branch release/v1.0.0 from main
-  - Branch feature/foo from release/v1.0.0
-  - Add a commit to both release/v1.0.0 and feature/foo
-  - release/v1.0.0 is the base for feature/foo
-- release/v1.0.0 branches off feature/foo
-  - Branch feature/foo from main
-  - Branch release/v1.0.0 from feature/foo
-  - Add a commit to both release/v1.0.0 and feature/foo
-  - feature/foo is the base for release/v1.0.0
+* feature/foo branches off release/v1.0.0
+  * Branch release/v1.0.0 from main
+  * Branch feature/foo from release/v1.0.0
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * release/v1.0.0 is the base for feature/foo
+* release/v1.0.0 branches off feature/foo
+  * Branch feature/foo from main
+  * Branch release/v1.0.0 from feature/foo
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * feature/foo is the base for release/v1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
 `release/v1.0.0` or `feature/foo`.
@@ -941,7 +953,7 @@ Can be `Strict` - using the [regex](https://regex101.com/r/Ly7O1x/3/)
 or `Loose` the old way of parsing. The default if not specified is `Strict`
 Example of invalid `Strict`, but valid `Loose`
 
-``` log
+```log
 1.2-alpha4
 01.02.03-rc03
 1.2.3.4
@@ -953,19 +965,26 @@ Specifies which version strategy implementation (one or more) will be used to de
 These strategies can be combined, and the order in which they are specified does not matter.
 The configuration accepts the following values:
 
-- Fallback
-- ConfiguredNextVersion
-- MergeMessage
-- TaggedCommit
-- TrackReleaseBranches
-- VersionInBranchName
-- Mainline
+* Fallback
+* ConfiguredNextVersion
+* MergeMessage
+* TaggedCommit
+* TrackReleaseBranches
+* VersionInBranchName
+* Mainline
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
+
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
+
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+
 [conventional-commits-config]: /docs/reference/version-increments#conventional-commit-messages
+
 [conventional-commits]: https://www.conventionalcommits.org/
+
 [modes]: /docs/reference/modes
+
 [variables]: /docs/reference/variables
+
 [version-sources]: /docs/reference/version-sources

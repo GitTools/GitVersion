@@ -109,9 +109,9 @@ If your CI/CD workflow uses semantic-release's commit-analyzer, change
 
 Alternatively, you can override this rule in the
 [configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage)
-of \@semantic-release/commit-analyzer. If you intend to write rules with
+of @semantic-release/commit-analyzer. If you intend to write rules with
 patterns, note that instead of using Regular Expression,
-\@semantic-release/commit-analyzer uses
+@semantic-release/commit-analyzer uses
 [micromatch's glob implementation](https://github.com/micromatch/micromatch#matching-features).
 
 ### GitVersion.yml
@@ -172,7 +172,11 @@ For more information/background on why we have come to this conclusion, read
 [Xavier Decoster's blog post on the subject][auto-incremented-nuget-package].
 
 [auto-incremented-nuget-package]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
+
 [conventional-commits]: https://www.conventionalcommits.org/
+
 [faq-branch-name-source]: /docs/learn/faq#merged-branch-names-as-version-source
+
 [git-tagging]: https://git-scm.com/book/en/v2/Git-Basics-Tagging

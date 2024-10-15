@@ -23,9 +23,9 @@ It also requires a few variables which will automatically be filled by
 GitVersion. The example below are just a few, any of the GitVersion variables
 written to the output can be used.
 
-* GitVersion_FullSemVer
-* GitVersion_MajorMinorPatch
-* GitVersion_NuGetVersion
+* GitVersion\_FullSemVer
+* GitVersion\_MajorMinorPatch
+* GitVersion\_NuGetVersion
 
 You also need to add a property collector for the agents to detect the
 GitVersion tool on the agents:
@@ -36,7 +36,7 @@ GitVersion tool on the agents:
 * Property Name => Path
 * Executable => GitVersion.exe
 * Search paths => your installation folder (e.g. `C:\Tools\GitVersion` or if you
-    are using Chocolatey `C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools`)
+  are using Chocolatey `C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools`)
 
 ## Basic Usage
 

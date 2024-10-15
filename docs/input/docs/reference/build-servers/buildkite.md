@@ -50,6 +50,9 @@ eval $(gitversion | jq -r 'to_entries[] | "buildkite-agent meta-data set GitVers
 Assuming your Buildkite agent has dotnet and gitversion installed and on the path, all the calculated GitVersion variables will have a corresponding meta-data key set.
 
 [buildkite]: https://buildkite.com/
+
 [configuration]: https://buildkite.com/docs/agent/v3/hooks
+
 [hooks]: https://buildkite.com/docs/agent/v3/hooks
+
 [meta-data]: https://buildkite.com/docs/agent/v3/cli-meta-data

@@ -53,6 +53,9 @@ a local web server. Information about the URL that can be used to view the docs
 will be shown in the output. Copy/paste this URL into a browser window.
 
 [gitversion.net]: https://gitversion.net/
+
 [forking]: https://guides.github.com/activities/forking/
+
 [ps-mac]: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-macos?view=powershell-7.1
+
 [ps-linux]: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7.1
