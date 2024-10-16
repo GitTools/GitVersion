@@ -30,7 +30,7 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
-      uses: ./.github/actions/artifacts-restore
+      uses: ./.github/actions/cache-restore
     -
       name: Set up Docker
       uses: crazy-max/ghaction-setup-docker@v3

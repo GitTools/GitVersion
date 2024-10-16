@@ -37,7 +37,7 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
-      uses: ./.github/actions/artifacts-restore
+      uses: ./.github/actions/cache-restore
     -
       uses: actions/download-artifact@v4
       name: Download nuget packages
@@ -48,7 +48,7 @@ jobs:
       uses: actions/download-artifact@v4
       name: Download native packages
       with:
-        name: native-${{ runner.os }}
+        name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: '[Test Artifacts]'
