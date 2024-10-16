@@ -22,7 +22,7 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
-      uses: ./.github/actions/artifacts-restore
+      uses: ./.github/actions/cache-restore
     -
       uses: actions/download-artifact@v4
       name: Download nuget packages

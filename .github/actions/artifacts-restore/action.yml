@@ -5,21 +5,26 @@ runs:
   using: 'composite'
   steps:
   -
-    name: Use cached cake frosting
-    id: cache-cake
-    uses: actions/cache@v4
+    uses: actions/download-artifact@v4
+    name: Download native linux packages
     with:
-      path: run
-      key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+      name: native-Linux
+      path: ${{ github.workspace }}/artifacts/packages/native
   -
-    name: Use cached tools
-    id: cache-tools
-    uses: actions/cache@v4
+    uses: actions/download-artifact@v4
+    name: Download native windows packages
     with:
-      path: tools
-      key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+      name: native-Windows
+      path: ${{ github.workspace }}/artifacts/packages/native
   -
-    name: Setup .NET SDK
-    uses: actions/setup-dotnet@v4
+    uses: actions/download-artifact@v4
+    name: Download native macos packages
     with:
-      global-json-file: global.json
+      name: native-macOS
+      path: ${{ github.workspace }}/artifacts/packages/native
+  -
+    uses: actions/download-artifact@v4
+    name: Download nuget packages
+    with:
+      name: nuget
+      path: ${{ github.workspace }}/artifacts/packages/nuget

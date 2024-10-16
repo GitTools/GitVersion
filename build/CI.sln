@@ -7,11 +7,6 @@ ProjectSection(SolutionItems) = preProject
 	..\.gitignore = ..\.gitignore
 	..\.config\dotnet-tools.json = ..\.config\dotnet-tools.json
 	..\package.json = ..\package.json
-	
-	
-	
-	
-	
 	..\.remarkrc.yaml = ..\.remarkrc.yaml
 EndProjectSection
 EndProject
@@ -54,18 +49,39 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9B92261-AB9C-47D6-A8A7-616A5A62B063}"
-	ProjectSection(SolutionItems) = preProject
-		..\.github\actions\artifacts-restore\action.yml = ..\.github\actions\artifacts-restore\action.yml
-		..\.github\actions\docker-manifests\action.yml = ..\.github\actions\docker-manifests\action.yml
-		..\.github\actions\docker-publish\action.yml = ..\.github\actions\docker-publish\action.yml
-		..\.github\actions\docker-test\action.yml = ..\.github\actions\docker-test\action.yml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{960DC223-117E-41DE-8A89-C85E3D69A8E8}"
 	ProjectSection(SolutionItems) = preProject
 		..\tests\scripts\test-global-tool.sh = ..\tests\scripts\test-global-tool.sh
 		..\tests\scripts\test-msbuild-task.sh = ..\tests\scripts\test-msbuild-task.sh
 		..\tests\scripts\test-native-tool.sh = ..\tests\scripts\test-native-tool.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cache-restore", "cache-restore", "{6B2EAF4B-81AF-44F8-8578-1B051C8AAA26}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\cache-restore\action.yml = ..\.github\actions\cache-restore\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-manifests", "docker-manifests", "{9F17919E-097F-4696-AB9C-20036F7F5E1D}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\docker-manifests\action.yml = ..\.github\actions\docker-manifests\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-publish", "docker-publish", "{EEB7B107-B408-4C4B-886D-7728EC692CBD}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\docker-publish\action.yml = ..\.github\actions\docker-publish\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-test", "docker-test", "{965AC311-8A65-4AEB-B11F-3E4EBDFFBB8F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artifacts-restore", "artifacts-restore", "{FF815E24-AE9E-49E5-BC93-F859450F9CD0}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\artifacts-restore\action.yml = ..\.github\actions\artifacts-restore\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artifacts-attest", "artifacts-attest", "{C4A801B1-45B1-4D2E-8911-4823778BF582}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\artifacts-attest\action.yml = ..\.github\actions\artifacts-attest\action.yml
 	EndProjectSection
 EndProject
 Global
@@ -106,5 +122,13 @@ Global
 		{8DAB65D8-57E8-4185-96FC-8A7C7373FC23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DAB65D8-57E8-4185-96FC-8A7C7373FC23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DAB65D8-57E8-4185-96FC-8A7C7373FC23}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B2EAF4B-81AF-44F8-8578-1B051C8AAA26} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{9F17919E-097F-4696-AB9C-20036F7F5E1D} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{EEB7B107-B408-4C4B-886D-7728EC692CBD} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{965AC311-8A65-4AEB-B11F-3E4EBDFFBB8F} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{FF815E24-AE9E-49E5-BC93-F859450F9CD0} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{C4A801B1-45B1-4D2E-8911-4823778BF582} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
 	EndGlobalSection
 EndGlobal

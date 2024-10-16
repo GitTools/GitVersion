@@ -100,7 +100,7 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
-      uses: ./.github/actions/artifacts-restore
+      uses: ./.github/actions/cache-restore
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -139,7 +139,7 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
-      uses: ./.github/actions/artifacts-restore
+      uses: ./.github/actions/cache-restore
     -
       name: '[Build Schemas]'
       shell: pwsh

@@ -1,0 +1,13 @@
+name: 'Artifacts attestation'
+description: 'Artifacts attestation'
+
+runs:
+  using: 'composite'
+  steps:
+  -
+    name: 'Attestation'
+    uses: actions/attest-build-provenance@v1
+    with:
+      subject-path: |
+        ${{ github.workspace }}/artifacts/packages/native
+        ${{ github.workspace }}/artifacts/packages/nuget

@@ -34,8 +34,10 @@ env:
   ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
 
 permissions:
+  id-token: write
   contents: read
   packages: write
+  attestations: write
 
 jobs:
   prepare:
@@ -118,25 +120,14 @@ jobs:
         fetch-depth: 0
     -
       name: Restore State
+      uses: ./.github/actions/cache-restore
+    -
+      name: Restore Artifacts
       uses: ./.github/actions/artifacts-restore
     -
-      uses: actions/download-artifact@v4
-      name: Download native linux packages
-      with:
-        name: native-Linux
-        path: ${{ github.workspace }}/artifacts/packages/native
-    -
-      uses: actions/download-artifact@v4
-      name: Download native windows packages
-      with:
-        name: native-Windows
-        path: ${{ github.workspace }}/artifacts/packages/native
-    -
-      uses: actions/download-artifact@v4
-      name: Download native macos packages
-      with:
-        name: native-macOS
-        path: ${{ github.workspace }}/artifacts/packages/native
+      name: Attetstation
+      if: ${{ github.event_name == 'repository_dispatch' }}
+      uses: ./.github/actions/artifacts-attest
     -
       name: '[Release]'
       shell: pwsh
