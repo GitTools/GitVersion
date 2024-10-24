@@ -6,7 +6,7 @@
     <PackageVersion Include="Cake.Compression" Version="0.3.0" />
     <PackageVersion Include="Cake.Codecov" Version="3.0.0" />
     <PackageVersion Include="Cake.Coverlet" Version="4.0.1" />
-    <PackageVersion Include="Cake.Frosting" Version="4.0.0" />
+    <PackageVersion Include="Cake.Frosting" Version="4.2.0" />
     <PackageVersion Include="Cake.Frosting.Git" Version="4.0.0" />
     <PackageVersion Include="Cake.Http" Version="4.0.0" />
     <PackageVersion Include="Cake.Incubator" Version="8.0.0" />
