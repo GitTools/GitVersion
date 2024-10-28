@@ -1,6 +1,9 @@
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   prepare:
     name: ${{ matrix.os }}
