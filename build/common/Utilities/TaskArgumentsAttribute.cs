@@ -13,15 +13,15 @@ public class TaskArgumentAttribute(string name, params string[] possibleValues) 
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DotnetArgumentAttribute()
-    : TaskArgumentAttribute(Arguments.DotnetTarget, Constants.Frameworks);
+    : TaskArgumentAttribute(Arguments.DotnetVersion, Constants.DotnetVersions);
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DockerDotnetArgumentAttribute()
-    : TaskArgumentAttribute(Arguments.DockerDotnetVersion, Constants.Frameworks);
+    : TaskArgumentAttribute(Arguments.DotnetVersion, Constants.DotnetVersions);
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DockerDistroArgumentAttribute()
-    : TaskArgumentAttribute(Arguments.DockerDistro, Constants.DockerDistrosToBuild);
+    : TaskArgumentAttribute(Arguments.DockerDistro, Constants.DockerDistros);
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DockerRegistryArgumentAttribute()

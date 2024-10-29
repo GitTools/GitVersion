@@ -16,15 +16,15 @@ public class UnitTest : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
-        var dotnetTarget = context.Argument(Arguments.DotnetTarget, string.Empty);
-        var frameworks = Constants.Frameworks;
-        if (!string.IsNullOrWhiteSpace(dotnetTarget))
+        var dotnetVersion = context.Argument(Arguments.DotnetVersion, string.Empty);
+        var frameworks = Constants.DotnetVersions;
+        if (!string.IsNullOrWhiteSpace(dotnetVersion))
         {
-            if (!frameworks.Contains(dotnetTarget, StringComparer.OrdinalIgnoreCase))
+            if (!frameworks.Contains(dotnetVersion, StringComparer.OrdinalIgnoreCase))
             {
-                throw new Exception($"Dotnet Target {dotnetTarget} is not supported at the moment");
+                throw new Exception($"Dotnet Target {dotnetVersion} is not supported at the moment");
             }
-            frameworks = [dotnetTarget];
+            frameworks = [dotnetVersion];
         }
 
         foreach (var framework in frameworks)

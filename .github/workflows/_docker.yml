@@ -14,12 +14,12 @@ env:
 
 jobs:
   docker:
-    name: ${{ matrix.distro }} - net${{ matrix.targetFramework }}
+    name: ${{ matrix.dockerDistro }} - net${{ matrix.dotnetVersion }}
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
       matrix:
-        distro:
+        dockerDistro:
           - alpine.3.20
           - centos.stream.9
           - debian.12
@@ -27,7 +27,7 @@ jobs:
           - ubuntu.20.04
           - ubuntu.22.04
           - ubuntu.24.04
-        targetFramework: [ '8.0', '6.0' ]
+        dotnetVersion: [ '8.0', '6.0' ]
 
     steps:
     -
@@ -65,16 +65,16 @@ jobs:
       uses: ./.github/actions/docker-test
       with:
         arch: ${{ inputs.arch }}
-        distro: ${{ matrix.distro }}
-        targetFramework: ${{ matrix.targetFramework }}
+        dockerDistro: ${{ matrix.dockerDistro }}
+        dotnetVersion: ${{ matrix.dotnetVersion }}
     -
       name: Docker Publish
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
       uses: ./.github/actions/docker-publish
       with:
         arch: ${{ inputs.arch }}
-        distro: ${{ matrix.distro }}
-        targetFramework: ${{ matrix.targetFramework }}
+        dockerDistro: ${{ matrix.dockerDistro }}
+        dotnetVersion: ${{ matrix.dotnetVersion }}
         docker_registry_username: ${{ secrets.DOCKER_USERNAME }}
         docker_registry_password: ${{ secrets.DOCKER_PASSWORD }}
         github_registry_username: ${{ github.repository_owner }}
