@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "build", "build\build.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csproj", "{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chores", "chores\chores.csproj", "{E8346E70-2A34-460E-90FD-DFD5B15FD476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "config", "config\config.csproj", "{E8346E70-2A34-460E-90FD-DFD5B15FD476}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "artifacts", "artifacts\artifacts.csproj", "{7162B10E-40A1-44E3-AE5E-E7D1755AADAD}"
 EndProject
@@ -73,6 +73,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-publish", "docker-pu
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-test", "docker-test", "{965AC311-8A65-4AEB-B11F-3E4EBDFFBB8F}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\actions\docker-test\action.yml = ..\.github\actions\docker-test\action.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artifacts-restore", "artifacts-restore", "{FF815E24-AE9E-49E5-BC93-F859450F9CD0}"
 	ProjectSection(SolutionItems) = preProject
