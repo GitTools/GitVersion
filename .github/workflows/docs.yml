@@ -33,11 +33,7 @@ env:
 jobs:
   prepare:
     name: Prepare Build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
     -
@@ -127,7 +123,7 @@ jobs:
   publish:
     name: Publish docs
     needs: [ validate ]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
       GITHUB_USERNAME: ${{ github.actor }}
@@ -143,8 +139,7 @@ jobs:
     -
       name: '[Build Schemas]'
       shell: pwsh
-      run: |
-        dotnet run/docs.dll --target=GenerateSchemas
+      run: dotnet run/docs.dll --target=GenerateSchemas
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'repository_dispatch' }}

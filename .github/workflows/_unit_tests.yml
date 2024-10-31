@@ -1,6 +1,9 @@
 on:
   workflow_call:
-
+    inputs:
+      dotnetVersions:
+        required: true
+        type: string
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
@@ -14,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-15]
-        dotnetVersion: [ '8.0', '6.0' ]
+        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
 
     runs-on: ${{ matrix.os }}
     steps:

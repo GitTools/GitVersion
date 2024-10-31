@@ -7,7 +7,12 @@ on:
       arch:
         required: true
         type: string
-
+      dockerDistros:
+        required: true
+        type: string
+      dotnetVersions:
+        required: true
+        type: string
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
@@ -18,17 +23,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
-      matrix:
-        dockerDistro:
-          - alpine.3.20
-          - centos.stream.9
-          - debian.12
-          - fedora.40
-          - ubuntu.20.04
-          - ubuntu.22.04
-          - ubuntu.24.04
-        dotnetVersion: [ '8.0', '6.0' ]
-
+      matrix: 
+        dockerDistro: ${{ fromJson(inputs.dockerDistros) }}
+        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
     steps:
     -
       name: Checkout

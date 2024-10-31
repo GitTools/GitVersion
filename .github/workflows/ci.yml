@@ -43,7 +43,7 @@ jobs:
   prepare:
     name: Prepare
     uses: ./.github/workflows/_prepare.yml
-
+  
   build:
     name: Build & Package
     needs: [ prepare ]
@@ -53,6 +53,8 @@ jobs:
     name: Test
     needs: [ prepare ]
     uses: ./.github/workflows/_unit_tests.yml
+    with:
+      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
     secrets: inherit
 
   artifacts_windows_test:
@@ -61,7 +63,7 @@ jobs:
     uses: ./.github/workflows/_artifacts_windows.yml
 
   artifacts_linux_test:
-    needs: [ build ]
+    needs: [ prepare, build ]
     name: Artifacts Linux (${{ matrix.arch }})
     strategy:
       fail-fast: false
@@ -75,9 +77,11 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
+      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
+      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
 
   docker_linux_images:
-    needs: [ build ]
+    needs: [ prepare, build ]
     name: Docker Images (${{ matrix.arch }})
     strategy:
       fail-fast: false
@@ -92,12 +96,17 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
+      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
+      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
     secrets: inherit
 
   docker_linux_manifests:
-    needs: [ docker_linux_images ]
+    needs: [ prepare, docker_linux_images ]
     name: Docker Manifests
     uses: ./.github/workflows/_docker_manifests.yml
+    with:
+      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
+      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
     secrets: inherit
 
   publish:

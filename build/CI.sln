@@ -34,14 +34,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\format.yml = ..\.github\workflows\format.yml
 		..\.github\workflows\homebrew.yml = ..\.github\workflows\homebrew.yml
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
-		..\.github\workflows\_artifacts_linux.yml = ..\.github\workflows\_artifacts_linux.yml
-		..\.github\workflows\_artifacts_windows.yml = ..\.github\workflows\_artifacts_windows.yml
-		..\.github\workflows\_build.yml = ..\.github\workflows\_build.yml
-		..\.github\workflows\_docker.yml = ..\.github\workflows\_docker.yml
-		..\.github\workflows\_docker_manifests.yml = ..\.github\workflows\_docker_manifests.yml
-		..\.github\workflows\_prepare.yml = ..\.github\workflows\_prepare.yml
-		..\.github\workflows\_publish.yml = ..\.github\workflows\_publish.yml
-		..\.github\workflows\_unit_tests.yml = ..\.github\workflows\_unit_tests.yml
 		..\.github\workflows\stale.yml = ..\.github\workflows\stale.yml
 		..\.github\workflows\winget.yml = ..\.github\workflows\winget.yml
 		..\.github\workflows\mkdocs.yml = ..\.github\workflows\mkdocs.yml
@@ -85,6 +77,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artifacts-attest", "artifacts-attest", "{C4A801B1-45B1-4D2E-8911-4823778BF582}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\actions\artifacts-attest\action.yml = ..\.github\actions\artifacts-attest\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{C9CB0BFB-E2C4-44F6-86A4-54DDF600EE5D}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\_artifacts_linux.yml = ..\.github\workflows\_artifacts_linux.yml
+		..\.github\workflows\_artifacts_windows.yml = ..\.github\workflows\_artifacts_windows.yml
+		..\.github\workflows\_build.yml = ..\.github\workflows\_build.yml
+		..\.github\workflows\_docker.yml = ..\.github\workflows\_docker.yml
+		..\.github\workflows\_docker_manifests.yml = ..\.github\workflows\_docker_manifests.yml
+		..\.github\workflows\_prepare.yml = ..\.github\workflows\_prepare.yml
+		..\.github\workflows\_publish.yml = ..\.github\workflows\_publish.yml
+		..\.github\workflows\_unit_tests.yml = ..\.github\workflows\_unit_tests.yml
 	EndProjectSection
 EndProject
 Global
@@ -133,5 +137,6 @@ Global
 		{965AC311-8A65-4AEB-B11F-3E4EBDFFBB8F} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
 		{FF815E24-AE9E-49E5-BC93-F859450F9CD0} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
 		{C4A801B1-45B1-4D2E-8911-4823778BF582} = {A9B92261-AB9C-47D6-A8A7-616A5A62B063}
+		{C9CB0BFB-E2C4-44F6-86A4-54DDF600EE5D} = {8E5B758F-925A-49E4-9011-20AD2A9E1F43}
 	EndGlobalSection
 EndGlobal
