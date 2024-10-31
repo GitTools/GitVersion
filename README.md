@@ -91,7 +91,7 @@ from The Noun Project.
 
 [winget]: https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitTools/GitVersion
 
-[winget-badge]: https://img.shields.io/badge/winget-v6.0.2-blue.svg?logo=microsoft
+[winget-badge]: https://img.shields.io/badge/winget-v6.0.3-blue.svg?logo=microsoft
 
 [dockerhub]: https://hub.docker.com/r/gittools/gitversion/
 
