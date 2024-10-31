@@ -138,6 +138,14 @@ jobs:
       if: ${{ github.event_name == 'repository_dispatch' }}
       uses: ./.github/actions/artifacts-attest
     -
+      name: DockerHub Publish Readme
+      if: ${{ github.event_name == 'repository_dispatch' }}
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerHubReadmePublish
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    -
       name: '[Release]'
       shell: pwsh
       run: dotnet run/release.dll --target=PublishRelease
