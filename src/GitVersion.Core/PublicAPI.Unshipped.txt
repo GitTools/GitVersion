@@ -1,15 +1,1 @@
 #nullable enable
-GitVersion.Common.IRepositoryStore.Branches.get -> GitVersion.Git.IBranchCollection!
-GitVersion.Common.IRepositoryStore.GetCommitsReacheableFrom(GitVersion.Git.IGitObject! commit, GitVersion.Git.IBranch! branch) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
-GitVersion.Common.IRepositoryStore.GetCommitsReacheableFromHead(GitVersion.Git.ICommit? headCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
-GitVersion.Common.IRepositoryStore.GetForwardMerge(GitVersion.Git.ICommit? commitToFindCommonBase, GitVersion.Git.ICommit? findMergeBase) -> GitVersion.Git.ICommit?
-GitVersion.Common.IRepositoryStore.Head.get -> GitVersion.Git.IBranch!
-GitVersion.Common.IRepositoryStore.Tags.get -> GitVersion.Git.ITagCollection!
-GitVersion.Common.IRepositoryStore.UncommittedChangesCount.get -> int
-GitVersion.Configuration.EffectiveConfiguration.VersionInBranchPattern.get -> string?
-GitVersion.Configuration.IGitVersionConfiguration.TagPrefixPattern.get -> string?
-GitVersion.Git.IGitRepository.UncommittedChangesCount() -> int
-static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
-static GitVersion.Extensions.DictionaryExtensions.GetOrAdd(this System.Collections.Concurrent.ConcurrentDictionary<string!, System.Text.RegularExpressions.Regex!>! dict, string! pattern) -> System.Text.RegularExpressions.Regex!
-static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.Dictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
-static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
