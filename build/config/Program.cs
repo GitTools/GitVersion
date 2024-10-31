@@ -1,4 +1,4 @@
-using Chores;
+using Config;
 
 return new CakeHost()
     .UseContext<BuildContext>()

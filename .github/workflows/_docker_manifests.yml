@@ -1,27 +1,25 @@
 on:
   workflow_call:
-
+    inputs:
+      dockerDistros:
+        required: true
+        type: string
+      dotnetVersions:
+        required: true
+        type: string
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
 
 jobs:
   manifest:
-    name: ${{ matrix.distro }} - net${{ matrix.targetFramework }}
+    name: ${{ matrix.dockerDistro }} - net${{ matrix.dotnetVersion }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        distro:
-          - alpine.3.20
-          - centos.stream.9
-          - debian.12
-          - fedora.40
-          - ubuntu.20.04
-          - ubuntu.22.04
-          - ubuntu.24.04
-        targetFramework: [ '8.0', '6.0' ]
-
+        dockerDistro: ${{ fromJson(inputs.dockerDistros) }}
+        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
     steps:
     -
       name: Checkout
@@ -51,8 +49,8 @@ jobs:
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
       uses: ./.github/actions/docker-manifests
       with:
-        distro: ${{ matrix.distro }}
-        targetFramework: ${{ matrix.targetFramework }}
+        dockerDistro: ${{ matrix.dockerDistro }}
+        dotnetVersion: ${{ matrix.dotnetVersion }}
         docker_registry_username: ${{ secrets.DOCKER_USERNAME }}
         docker_registry_password: ${{ secrets.DOCKER_PASSWORD }}
         github_registry_username: ${{ github.repository_owner }}

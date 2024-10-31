@@ -12,11 +12,11 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", string.Empty) == "linux";
 
         var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.DockerHub);
-        var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
+        var dotnetVersion = context.Argument(Arguments.DotnetVersion, string.Empty).ToLower();
         var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
-        var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.Frameworks : [dotnetVersion];
-        var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : [dockerDistro];
+        var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.DotnetVersions : [dotnetVersion];
+        var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistros : [dockerDistro];
 
         var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
         var platformArch = context.IsRunningOnAmd64() ? Architecture.Amd64 : Architecture.Arm64;

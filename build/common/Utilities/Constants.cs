@@ -8,7 +8,7 @@ public static class Constants
 
     public const string VersionCurrent = "6.0";
     public const string VersionLatest = "8.0";
-    public static readonly string[] Frameworks = [VersionCurrent, VersionLatest];
+    public static readonly string[] DotnetVersions = [VersionCurrent, VersionLatest];
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
@@ -35,7 +35,7 @@ public static class Constants
 
     public const string DockerDistroLatest = DebianLatest;
 
-    public static readonly string[] DockerDistrosToBuild =
+    public static readonly string[] DockerDistros =
     [
         AlpineLatest,
         CentosStreamLatest,

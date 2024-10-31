@@ -1,6 +1,12 @@
 on:
   workflow_call:
-
+    outputs:
+      dockerDistros:
+        description: 'List of Docker distros'
+        value: ${{ jobs.set_matrix.outputs.dockerDistros }}
+      dotnetVersions:
+        description: 'List of .NET versions'
+        value: ${{ jobs.set_matrix.outputs.dotnetVersions }}
 jobs:
   prepare:
     name: ${{ matrix.os }}
@@ -40,3 +46,22 @@ jobs:
       name: '[Prepare]'
       shell: pwsh
       run: dotnet run/build.dll --target=BuildPrepare
+  set_matrix:
+    needs: [ prepare ]
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      dockerDistros: ${{ steps.set_matrix.outputs.dockerDistros }}
+      dotnetVersions: ${{ steps.set_matrix.outputs.dotnetVersions }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Restore State
+        uses: ./.github/actions/cache-restore
+      -
+        name: '[Matrix]'
+        id: set_matrix
+        shell: pwsh
+        run: dotnet run/config.dll --target=SetMatrix

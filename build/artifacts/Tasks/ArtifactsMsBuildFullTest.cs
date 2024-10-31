@@ -23,7 +23,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
 
         context.Information("\nTesting msbuild task with dotnet build\n");
-        foreach (var netVersion in Constants.Frameworks)
+        foreach (var netVersion in Constants.DotnetVersions)
         {
             var framework = $"net{netVersion}";
             var dotnetMsBuildSettings = new DotNetMSBuildSettings();

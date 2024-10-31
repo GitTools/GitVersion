@@ -1,20 +1,23 @@
 on:
   workflow_call:
-
+    inputs:
+      dotnetVersions:
+        required: true
+        type: string
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
   
 jobs:
   unit_test:
-    name: ${{ matrix.os }} - net${{ matrix.targetFramework }}
+    name: ${{ matrix.os }} - net${{ matrix.dotnetVersion }}
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-15]
-        targetFramework: [ '8.0', '6.0' ]
+        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,11 +32,11 @@ jobs:
     -
       name: '[Unit Test]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
+      run: dotnet run/build.dll --target=Test --dotnet_version=${{ matrix.dotnetVersion }}
 
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: matrix.targetFramework == '8.0'
+      if: matrix.dotnetVersion == '8.0'
       with:
         paths: artifacts/test-results/*.results.xml

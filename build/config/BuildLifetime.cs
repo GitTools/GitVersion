@@ -1,6 +1,6 @@
 using Common.Utilities;
 
-namespace Chores;
+namespace Config;
 
 public class BuildLifetime : FrostingLifetime<BuildContext>
 {
