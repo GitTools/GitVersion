@@ -11,7 +11,7 @@ public class DockerHubReadmePublish : FrostingTask<BuildContext>;
 
 [TaskName(nameof(DockerHubReadmePublishInternal))]
 [TaskDescription("Publish the DockerHub updated README.md")]
-public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
+public class DockerHubReadmePublishInternal : AsyncFrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
     {
@@ -24,12 +24,15 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
         return shouldRun;
     }
 
-    public override void Run(BuildContext context)
+    public override async Task RunAsync(BuildContext context)
     {
         ArgumentNullException.ThrowIfNull(context.Credentials?.DockerHub);
         var readme = GetReadmeContent(context);
 
-        var response = context.HttpPost("https://hub.docker.com/v2/users/login", settings =>
+        context.Information("Publishing README.md to DockerHub");
+
+        context.Information("Logging in to DockerHub");
+        var response = await context.HttpPostAsync("https://hub.docker.com/v2/users/login", settings =>
         {
             var credentials = context.Credentials.DockerHub;
             settings
@@ -37,7 +40,7 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
                 .SetJsonRequestBody(new { username = credentials.Username, password = credentials.Password });
         });
 
-
+        context.Information("Updating README.md on DockerHub");
         context.HttpPatch("https://hub.docker.com/v2/repositories/gittools/gitversion", settings =>
         {
             var token = context.ParseJson(response).Value<string>("token");
@@ -46,6 +49,7 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
                 .SetAuthorization("JWT", token)
                 .SetJsonRequestBody(new { full_description = readme });
         });
+        context.Information("README.md updated on DockerHub");
     }
 
     private static string GetReadmeContent(BuildContextBase context)
