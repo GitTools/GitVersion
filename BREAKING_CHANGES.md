@@ -98,6 +98,9 @@
 
 * If you have a tag `1.0.0` on `main` and branch from `main` to `release/1.0.1` then the next version number will be `1.1.0` when using the `GitFlow` workflow. This behavior is expected (but different compared to the `GitHubFlow` workflow) because on the `GitFlow` workflow you have an addition branch configuration with name hotfix where `is-release-branch` is set to `true`. That means if you want `1.0.1` as a next version you need to branch to `hotfix/1.0.1` or `hotfix/next`.  On the other hand if you use the `GitHubFlow` workflow the next version number will be `1.0.1` because the increment on the `release` branch is set to `Patch`.
 
+* There is a new configuration parameter `semantic-version-format` with default of `Strict`. The behavior of `Strict` is, that every possible non-semver version e.g. `1.2.3.4` is ignored when trying to calculate the next version. So, if you have three-part and four-part version numbers mixed, it will compute the next version on basis of the last found three-part version number, ignoring all four-part numbers.
+This is different compared to v5 where per default it was a `Loose` comparison.
+
 ### Legacy Output Variables
 
 The following legacy output variables have been removed in this version:
