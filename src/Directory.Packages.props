@@ -23,8 +23,8 @@
     <PackageVersion Include="JunitXml.TestLogger" Version="4.1.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="13.0.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Build" Version="17.11.4" />
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.11.4" />
+    <PackageVersion Include="Microsoft.Build" Version="17.12.6" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.12.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
