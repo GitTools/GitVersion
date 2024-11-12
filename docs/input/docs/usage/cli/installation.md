@@ -13,8 +13,14 @@ GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
 [`GitVersion.Tool`][tool] by executing the following in a terminal:
 
 ```shell
-dotnet tool install --global GitVersion.Tool --version 5.*
+dotnet tool install --global GitVersion.Tool
 ```
+
+:::{.alert .alert-info}
+**Hint:** To install an older version of GitVersion.Tools, use the --version flag of dotnet tool install
+
+Example: `dotnet tool install GitVersion.Tool --global --version 5.*`
+:::
 
 If you want to pin to a specific version of GitVersion, you can find the available
 versions of [`GitVersion.Tool` on NuGet](https://www.nuget.org/packages/GitVersion.Tool/).
@@ -62,15 +68,15 @@ without installing any other dependencies. To use the Docker image, execute
 the following:
 
 ```shell
-docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.6.6 /repo
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-debian.12 /repo
 ```
 
 The important arguments here are:
 
 |                    Argument | Description                                                                                                  |
-| --------------------------: | :----------------------------------------------------------------------------------------------------------- |
+|----------------------------:|:-------------------------------------------------------------------------------------------------------------|
 |            `"$(pwd):/repo"` | Maps the output of `pwd` (the working directory) to the `/repo` directory within the Docker container.       |
-| `gittools/gitversion:5.6.6` | The name and tag of the GitVersion container to use.                                                         |
+| `gittools/gitversion:{tag}` | The name and tag of the GitVersion container to use.                                                         |
 |                     `/repo` | The directory within the Docker container GitVersion should use as its working directory. Don't change this. |
 
 :::{.alert .alert-warning}
