@@ -27,7 +27,7 @@ pipelines:
       name: Version and build
       script:
         - export PATH="$PATH:/root/.dotnet/tools"
-        - dotnet tool install --global GitVersion.Tool --version 5.*
+        - dotnet tool install --global GitVersion.Tool
         - dotnet-gitversion /output buildserver
         - source gitversion.properties
         - echo Building with semver $GITVERSION_FULLSEMVER
@@ -61,7 +61,7 @@ pipelines:
       name: Version
       script:
         - export PATH="$PATH:/root/.dotnet/tools"
-        - dotnet tool install --global GitVersion.Tool --version 5.*
+        - dotnet tool install --global GitVersion.Tool
         - dotnet-gitversion /output buildserver
       artifacts:
         - gitversion.properties

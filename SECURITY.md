@@ -2,10 +2,10 @@
 
 ## Supported Versions
 
-| Version   | Supported          |
-| --------: | :----------------: |
-| 5.x       | :white\_check\_mark: |
-| ⋜ 5.x     | :x:                |
+| Version |      Supported       |
+|--------:|:--------------------:|
+|     6.x | :white\_check\_mark: |
+|   < 6.x |         :x:          |
 
 ## Reporting Security Issues
 
