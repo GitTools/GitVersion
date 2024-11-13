@@ -15,7 +15,7 @@ public class DockerHubReadmePublishInternal : AsyncFrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
     {
-        var shouldRun = false;
+        var shouldRun = true;
         if (context.DockerRegistry == DockerRegistry.DockerHub)
         {
             shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(DockerHubReadmePublish)} works only for tagged releases.");
