@@ -20,6 +20,7 @@ body:
     - GitVersion.Portable
     - gittools/actions
     - AzureDevops task
+    - N/A
     multiple: true
   validations:
     required: true
