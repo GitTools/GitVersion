@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <TargetFrameworks>net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 
         <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
@@ -22,7 +22,7 @@
         <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>
 
         <DebugType>embedded</DebugType>
-        <LangVersion>12</LangVersion>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
