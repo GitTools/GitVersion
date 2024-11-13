@@ -358,8 +358,18 @@
             artifact.
           </p>
           <p>
-            It currently works with desktop <code>MSBuild</code>. Support for
-            CoreCLR with <code>dotnet build</code> is coming soon.
+            Since version 6.0 only MSBuild running on .NET Core (<code
+              >dotnet msbuild</code
+            >) is supported.
+          </p>
+          <p>
+            Unfortunately, up until at least Visual Studio 2022 17.11, Visual
+            Studio runs all builds using the .NET Framework version of MSBuild,
+            and therefore <strong>Visual Studio is not supported</strong>. For
+            more information see
+            <a href="https://github.com/GitTools/GitVersion/discussions/4130"
+              >this discussion</a
+            >.
           </p>
           <h2 id="tldr">TL;DR</h2>
           <h3 id="install-the-mstask-targets">Install the MSTask targets</h3>

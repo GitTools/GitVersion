@@ -361,8 +361,21 @@
             >
             by executing the following in a terminal:
           </p>
-          <pre><code class="language-shell">dotnet tool install --global GitVersion.Tool --version 5.*
+          <pre><code class="language-shell">dotnet tool install --global GitVersion.Tool
 </code></pre>
+          <div class="alert alert-info">
+            <p>
+              <strong>Hint:</strong> To install an older version of
+              GitVersion.Tools, use the --version flag of dotnet tool install
+            </p>
+            <p>
+              Example:
+              <code
+                >dotnet tool install GitVersion.Tool --global --version
+                5.*</code
+              >
+            </p>
+          </div>
           <p>
             If you want to pin to a specific version of GitVersion, you can find
             the available versions of
@@ -418,7 +431,7 @@
             allows you to use GitVersion through Docker, without installing any
             other dependencies. To use the Docker image, execute the following:
           </p>
-          <pre><code class="language-shell">docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:5.6.6 /repo
+          <pre><code class="language-shell">docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:latest-debian.12 /repo
 </code></pre>
           <p>The important arguments here are:</p>
           <table class="table">
@@ -440,7 +453,7 @@
               </tr>
               <tr>
                 <td style="text-align: right">
-                  <code>gittools/gitversion:5.6.6</code>
+                  <code>gittools/gitversion:{tag}</code>
                 </td>
                 <td style="text-align: left">
                   The name and tag of the GitVersion container to use.
