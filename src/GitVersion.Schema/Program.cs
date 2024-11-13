@@ -21,6 +21,15 @@ AttributeHandler.AddHandler<DescriptionAttributeHandler1>();
 AttributeHandler.AddHandler<DescriptionAttributeHandler2>();
 AttributeHandler.AddHandler<FormatAttributeHandler>();
 
+if (!Directory.Exists(schemasDirectory))
+{
+    Directory.CreateDirectory(schemasDirectory);
+}
+if (!Directory.Exists(Path.Combine(schemasDirectory, schemaVersion)))
+{
+    Directory.CreateDirectory(Path.Combine(schemasDirectory, schemaVersion));
+}
+
 var builder = new JsonSchemaBuilder();
 builder.Schema("http://json-schema.org/draft-07/schema#");
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.configuration.json");
