@@ -16,7 +16,7 @@ in your build step.
 An example pipeline is shown below:
 
 ```yml
-image: mcr.microsoft.com/dotnet/sdk:6.0
+image: mcr.microsoft.com/dotnet/sdk:8.0
 
 clone:
   depth: full
@@ -50,7 +50,7 @@ If you want to share the text file across multiple build steps, then you will ne
 is shown below:
 
 ```yml
-image: mcr.microsoft.com/dotnet/sdk:6.0
+image: mcr.microsoft.com/dotnet/sdk:8.0
 
 clone:
   depth: full

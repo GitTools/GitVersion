@@ -6,9 +6,8 @@ public static class Constants
     public const string RepoOwner = "GitTools";
     public const string Repository = "GitVersion";
 
-    public const string VersionCurrent = "6.0";
     public const string VersionLatest = "8.0";
-    public static readonly string[] DotnetVersions = [VersionCurrent, VersionLatest];
+    public static readonly string[] DotnetVersions = [VersionLatest];
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
