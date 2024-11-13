@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Publish Chocolatey" type="DotNetProject" factoryName=".NET Project" folderName="Publish">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/../run/publish.exe" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../run/publish" />
     <option name="PROGRAM_PARAMETERS" value="--target=PublishChocolatey" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
@@ -16,7 +16,7 @@
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="0" />
     <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value="net8.0" />
+    <option name="PROJECT_TFM" value="net9.0" />
     <method v="2">
       <option name="Build" />
     </method>
