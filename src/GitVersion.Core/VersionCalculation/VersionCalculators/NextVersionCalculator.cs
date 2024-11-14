@@ -244,35 +244,36 @@ internal class NextVersionCalculator(
             var effectiveBranchConfigurations = this.effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration).ToArray();
             foreach (var effectiveBranchConfiguration in effectiveBranchConfigurations)
             {
-                this.log.Info($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'");
-
-                var strategies = this.versionStrategies.ToList();
-                var fallbackVersionStrategy = strategies.Find(element => element is FallbackVersionStrategy);
-                if (fallbackVersionStrategy is not null)
+                using (this.log.IndentLog($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
                 {
-                    strategies.Remove(fallbackVersionStrategy);
-                    strategies.Add(fallbackVersionStrategy);
-                }
-
-                var atLeastOneBaseVersionReturned = false;
-                foreach (var versionStrategy in strategies)
-                {
-                    if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
-
-                    using (this.log.IndentLog($"[Using '{versionStrategy.GetType().Name}' strategy]"))
+                    var strategies = this.versionStrategies.ToList();
+                    var fallbackVersionStrategy = strategies.Find(element => element is FallbackVersionStrategy);
+                    if (fallbackVersionStrategy is not null)
                     {
-                        foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
-                        {
-                            log.Info(baseVersion.ToString());
-                            if (IncludeVersion(baseVersion, configuration.Ignore))
-                            {
-                                atLeastOneBaseVersionReturned = true;
+                        strategies.Remove(fallbackVersionStrategy);
+                        strategies.Add(fallbackVersionStrategy);
+                    }
 
-                                yield return new NextVersion(
-                                    incrementedVersion: baseVersion.GetIncrementedVersion(),
-                                    baseVersion: baseVersion,
-                                    configuration: effectiveBranchConfiguration
-                                );
+                    var atLeastOneBaseVersionReturned = false;
+                    foreach (var versionStrategy in strategies)
+                    {
+                        if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
+
+                        using (this.log.IndentLog($"[Using '{versionStrategy.GetType().Name}' strategy]"))
+                        {
+                            foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
+                            {
+                                log.Info(baseVersion.ToString());
+                                if (IncludeVersion(baseVersion, configuration.Ignore))
+                                {
+                                    atLeastOneBaseVersionReturned = true;
+
+                                    yield return new NextVersion(
+                                        incrementedVersion: baseVersion.GetIncrementedVersion(),
+                                        baseVersion: baseVersion,
+                                        configuration: effectiveBranchConfiguration
+                                    );
+                                }
                             }
                         }
                     }
