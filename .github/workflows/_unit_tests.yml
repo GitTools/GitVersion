@@ -37,6 +37,6 @@ jobs:
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: matrix.dotnetVersion == '8.0'
+      if: matrix.dotnetVersion == '9.0'
       with:
         paths: artifacts/test-results/*.results.xml
