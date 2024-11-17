@@ -53,10 +53,11 @@ public class GitVersionInfoGeneratorTests : TestBase
     /// <summary>
     /// Regression test for issue #4196 (https://github.com/GitTools/GitVersion/issues/4196)
     /// </summary>
-    [TestCase]
-    public void ShouldProperlyOutputNamespaceDeclaration()
+    [TestCase("cs")]
+    [TestCase("fs")]
+    [TestCase("vb")]
+    public void ShouldProperlyOutputNamespaceDeclaration(string fileExtension)
     {
-        const string fileExtension = "cs";
         const string targetNamespace = "My.Custom.Namespace";
 
         var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
