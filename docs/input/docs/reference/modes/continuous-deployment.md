@@ -23,7 +23,7 @@ to deploy on production. This means that GitVersion will build
 * 1.1.0
 * 1.1.1
 
-Tags are required in this mode to communicate when the deployement happens on production.
+Tags are required in this mode to communicate when the deployment happens on production.
 
 ## Resources
 
