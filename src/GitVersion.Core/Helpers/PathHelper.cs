@@ -26,6 +26,13 @@ internal static class PathHelper
 
     public static string GetRepositoryTempPath() => Combine(GetTempPath(), "TestRepositories", Guid.NewGuid().ToString());
 
+    public static string GetDirectoryName(string? path)
+    {
+        ArgumentNullException.ThrowIfNull(path, nameof(path));
+
+        return Path.GetDirectoryName(path)!;
+    }
+
     public static string GetFullPath(string? path)
     {
         ArgumentNullException.ThrowIfNull(path, nameof(path));

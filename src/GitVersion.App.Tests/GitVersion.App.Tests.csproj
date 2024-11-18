@@ -19,9 +19,7 @@
         <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestConsoleAdapter.cs" Link="Helpers\TestConsoleAdapter.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\GitVersionVariablesExtensions.cs" Link="Extensions\GitVersionVariablesExtensions.cs" />

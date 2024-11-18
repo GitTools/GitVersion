@@ -17,7 +17,7 @@ public class GitVersionCoreTestModule : IGitVersionModule
         services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionCoreModule());
 
-        services.AddSingleton<IFileSystem, TestFileSystem>();
+        services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, TestEnvironment>();
         services.AddSingleton<ILog, NullLog>();
     }

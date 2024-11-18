@@ -118,7 +118,7 @@ internal class GitVersionCacheKeyFactory(
                 {
                     var fi = new FileInfo(file);
                     result.Add(fi.Name);
-                    result.Add(File.ReadAllText(file));
+                    result.Add(this.fileSystem.ReadAllText(file));
                 }
                 catch (IOException e)
                 {
