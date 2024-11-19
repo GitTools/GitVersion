@@ -24,16 +24,14 @@ internal class FileSystem : IFileSystem
 
     public void WriteAllText(string? file, string fileContents, Encoding encoding)
     {
-        if (string.IsNullOrEmpty(file))
-            throw new ArgumentNullException(nameof(file));
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
 
         File.WriteAllText(file, fileContents, encoding);
     }
 
     public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)
     {
-        if (string.IsNullOrEmpty(directory))
-            throw new ArgumentNullException(nameof(directory));
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
 
         return Directory.EnumerateFiles(directory, searchPattern, searchOption);
     }

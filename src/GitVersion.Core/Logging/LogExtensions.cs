@@ -96,10 +96,7 @@ public static class LogExtensions
 
     private static IDisposable WithVerbosity(this ILog log, Verbosity verbosity)
     {
-        if (log == null)
-        {
-            throw new ArgumentNullException(nameof(log));
-        }
+        ArgumentNullException.ThrowIfNull(log);
         var lastVerbosity = log.Verbosity;
         log.Verbosity = verbosity;
         return Disposable.Create(() => log.Verbosity = lastVerbosity);

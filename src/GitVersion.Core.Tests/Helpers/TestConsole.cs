@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 
@@ -12,7 +13,7 @@ public class TestConsole(params string[] responses) : IConsole
 
     public void WriteLine() => this.log.Info(PathHelper.NewLine);
 
-    public void Write(string? msg) => this.log.Info(msg ?? throw new ArgumentNullException(nameof(msg)));
+    public void Write(string? msg) => this.log.Info(msg.NotNull());
 
     public string ReadLine() => this.responses.Dequeue();
 

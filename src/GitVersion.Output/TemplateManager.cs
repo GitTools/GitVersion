@@ -15,10 +15,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetTemplateFor(string fileExtension)
     {
-        if (fileExtension == null)
-        {
-            throw new ArgumentNullException(nameof(fileExtension));
-        }
+        ArgumentNullException.ThrowIfNull(fileExtension);
 
         string? result = null;
 
@@ -32,10 +29,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetAddFormatFor(string fileExtension)
     {
-        if (fileExtension == null)
-        {
-            throw new ArgumentNullException(nameof(fileExtension));
-        }
+        ArgumentNullException.ThrowIfNull(fileExtension);
 
         string? result = null;
 
@@ -49,10 +43,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public bool IsSupported(string fileExtension)
     {
-        if (fileExtension == null)
-        {
-            throw new ArgumentNullException(nameof(fileExtension));
-        }
+        ArgumentNullException.ThrowIfNull(fileExtension);
 
         return this.templates.ContainsKey(fileExtension);
     }

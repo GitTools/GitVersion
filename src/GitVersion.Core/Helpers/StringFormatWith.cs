@@ -30,15 +30,8 @@ internal static class StringFormatWithExtension
     /// </example>
     public static string FormatWith<T>(this string template, T? source, IEnvironment environment)
     {
-        if (template is null)
-        {
-            throw new ArgumentNullException(nameof(template));
-        }
-
-        if (source is null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(template);
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach (Match match in RegexPatterns.Common.ExpandTokensRegex.Matches(template).Cast<Match>())
         {

@@ -1,6 +1,7 @@
 using GitVersion.Helpers;
 using GitVersion.Testing.Internal;
 using LibGit2Sharp;
+using Shouldly;
 
 namespace GitVersion.Testing;
 
@@ -17,7 +18,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     protected RepositoryFixtureBase(Repository repository)
     {
         SequenceDiagram = new();
-        Repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        Repository = repository.ShouldNotBeNull();
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
     }

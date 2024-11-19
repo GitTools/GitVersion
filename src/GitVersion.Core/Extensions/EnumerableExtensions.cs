@@ -4,12 +4,11 @@ public static class EnumerableExtensions
 {
     public static T? OnlyOrDefault<T>(this IEnumerable<T> source)
     {
-        switch (source)
+        ArgumentNullException.ThrowIfNull(source);
+
+        if (source is IList<T> { Count: 1 } list)
         {
-            case null:
-                throw new ArgumentNullException(nameof(source));
-            case IList<T> { Count: 1 } list:
-                return list[0];
+            return list[0];
         }
 
         using var e = source.GetEnumerator();
@@ -21,10 +20,7 @@ public static class EnumerableExtensions
 
     public static T SingleOfType<T>(this IEnumerable source)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
         return source.OfType<T>().Single();
     }
