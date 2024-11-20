@@ -1,5 +1,13 @@
 version: 2
 updates:
+- package-ecosystem: dotnet-sdk
+  labels:
+      - "dependencies"
+  commit-message:
+      prefix: "(deps)"
+  directory: "/"
+  schedule:
+    interval: daily
 - package-ecosystem: nuget
   labels:
     - "dependencies"
