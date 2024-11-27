@@ -10,39 +10,20 @@ public class DynamicRepositoryTests : TestBase
 {
     private string? workDirectory;
 
-    private static void ClearReadOnly(DirectoryInfo parentDirectory)
-    {
-        parentDirectory.Attributes = FileAttributes.Normal;
-        foreach (var fi in parentDirectory.GetFiles())
-        {
-            fi.Attributes = FileAttributes.Normal;
-        }
-        foreach (var di in parentDirectory.GetDirectories())
-        {
-            ClearReadOnly(di);
-        }
-    }
-
     [SetUp]
-    public void CreateTemporaryRepository()
+    public void SetUp()
     {
-        // Note: we can't use guid because paths will be too long
+        // // Note: we can't use guid because paths will be too long
         this.workDirectory = PathHelper.Combine(Path.GetTempPath(), "GV");
 
-        // Clean directory upfront, some build agents are having troubles
-        if (Directory.Exists(this.workDirectory))
+        if (!Directory.Exists(this.workDirectory))
         {
-            var di = new DirectoryInfo(this.workDirectory);
-            ClearReadOnly(di);
-
-            Directory.Delete(this.workDirectory, true);
+            Directory.CreateDirectory(this.workDirectory);
         }
-
-        Directory.CreateDirectory(this.workDirectory);
     }
 
     [TearDown]
-    public void Cleanup()
+    public void TearDown()
     {
     }
 
@@ -64,7 +45,7 @@ public class DynamicRepositoryTests : TestBase
                 TargetBranch = targetBranch,
                 CommitId = commitId
             },
-            Settings = { NoFetch = false },
+            Settings = { NoFetch = false, NoCache = true },
             WorkingDirectory = workingDirectory
         };
         var options = Options.Create(gitVersionOptions);
