@@ -29,13 +29,6 @@ internal class FileSystem : IFileSystem
         File.WriteAllText(file, fileContents, encoding);
     }
 
-    public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
-
-        return Directory.EnumerateFiles(directory, searchPattern, searchOption);
-    }
-
     public Stream OpenWrite(string path) => File.OpenWrite(path);
 
     public Stream OpenRead(string path) => File.OpenRead(path);
@@ -43,6 +36,17 @@ internal class FileSystem : IFileSystem
     public void CreateDirectory(string path) => Directory.CreateDirectory(path);
 
     public bool DirectoryExists(string path) => Directory.Exists(path);
+
+    public string[] GetFiles(string path) => Directory.GetFiles(path);
+
+    public string[] GetDirectories(string path) => Directory.GetDirectories(path);
+
+    public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+
+        return Directory.EnumerateFiles(directory, searchPattern, searchOption);
+    }
 
     public long GetLastDirectoryWrite(string path) => new DirectoryInfo(path)
         .GetDirectories("*.*", SearchOption.AllDirectories)

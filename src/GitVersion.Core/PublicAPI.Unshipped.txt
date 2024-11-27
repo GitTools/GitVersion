@@ -1,1 +1,3 @@
 #nullable enable
+GitVersion.IFileSystem.GetDirectories(string! path) -> string![]!
+GitVersion.IFileSystem.GetFiles(string! path) -> string![]!

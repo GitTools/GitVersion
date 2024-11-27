@@ -11,16 +11,7 @@ public class DynamicRepositoryTests : TestBase
     private string? workDirectory;
 
     [SetUp]
-    public void SetUp()
-    {
-        // // Note: we can't use guid because paths will be too long
-        this.workDirectory = PathHelper.Combine(Path.GetTempPath(), "GV");
-
-        if (!Directory.Exists(this.workDirectory))
-        {
-            Directory.CreateDirectory(this.workDirectory);
-        }
-    }
+    public void SetUp() => this.workDirectory = PathHelper.Combine(Path.GetTempPath(), "GV");
 
     [TearDown]
     public void TearDown()
@@ -50,15 +41,16 @@ public class DynamicRepositoryTests : TestBase
         };
         var options = Options.Create(gitVersionOptions);
 
-        Directory.CreateDirectory(dynamicDirectory);
-        Directory.CreateDirectory(workingDirectory);
-
         var sp = ConfigureServices(services => services.AddSingleton(options));
 
         sp.DiscoverRepository();
 
         var gitPreparer = sp.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
+
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
+        fileSystem.CreateDirectory(dynamicDirectory);
+        fileSystem.CreateDirectory(workingDirectory);
 
         var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 

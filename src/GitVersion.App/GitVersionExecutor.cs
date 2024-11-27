@@ -8,6 +8,7 @@ namespace GitVersion;
 
 internal class GitVersionExecutor(
     ILog log,
+    IFileSystem fileSystem,
     IConsole console,
     IVersionWriter versionWriter,
     IHelpWriter helpWriter,
@@ -21,6 +22,7 @@ internal class GitVersionExecutor(
     : IGitVersionExecutor
 {
     private readonly ILog log = log.NotNull();
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IConsole console = console.NotNull();
     private readonly IVersionWriter versionWriter = versionWriter.NotNull();
     private readonly IHelpWriter helpWriter = helpWriter.NotNull();
@@ -131,7 +133,7 @@ internal class GitVersionExecutor(
             GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
         }
 
-        if (!Directory.Exists(workingDirectory))
+        if (!this.fileSystem.DirectoryExists(workingDirectory))
         {
             this.log.Warning($"The working directory '{workingDirectory}' does not exist.");
         }

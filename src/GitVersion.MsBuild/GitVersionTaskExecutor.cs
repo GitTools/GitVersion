@@ -34,7 +34,7 @@ internal class GitVersionTaskExecutor(
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
         var versionVariables = GitVersionVariables(task);
-        FileHelper.DeleteTempFiles();
+        DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
@@ -98,6 +98,28 @@ internal class GitVersionTaskExecutor(
         var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
+    }
+
+    private void DeleteTempFiles()
+    {
+        if (!this.fileSystem.DirectoryExists(FileHelper.TempPath))
+        {
+            return;
+        }
+
+        foreach (var file in this.fileSystem.GetFiles(FileHelper.TempPath))
+        {
+            if (File.GetLastWriteTime(file) >= DateTime.Now.AddDays(-1))
+                continue;
+            try
+            {
+                File.Delete(file);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //ignore contention
+            }
+        }
     }
 
     private GitVersionVariables GitVersionVariables(GitVersionTaskBase task) => serializer.FromFile(task.VersionFile);
