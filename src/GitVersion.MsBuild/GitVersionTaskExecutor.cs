@@ -46,6 +46,10 @@ internal class GitVersionTaskExecutor(
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
+        if (!this.fileSystem.DirectoryExists(fileWriteInfo.WorkingDirectory))
+        {
+            this.fileSystem.CreateDirectory(fileWriteInfo.WorkingDirectory);
+        }
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
@@ -68,6 +72,10 @@ internal class GitVersionTaskExecutor(
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
+        if (!this.fileSystem.DirectoryExists(fileWriteInfo.WorkingDirectory))
+        {
+            this.fileSystem.CreateDirectory(fileWriteInfo.WorkingDirectory);
+        }
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         var targetNamespace = GetTargetNamespace(task);
@@ -102,18 +110,19 @@ internal class GitVersionTaskExecutor(
 
     private void DeleteTempFiles()
     {
-        if (!this.fileSystem.DirectoryExists(FileHelper.TempPath))
+        var tempPath = FileHelper.TempPath;
+        if (!this.fileSystem.DirectoryExists(tempPath))
         {
             return;
         }
 
-        foreach (var file in this.fileSystem.GetFiles(FileHelper.TempPath))
+        foreach (var file in this.fileSystem.GetFiles(tempPath))
         {
-            if (File.GetLastWriteTime(file) >= DateTime.Now.AddDays(-1))
+            if (this.fileSystem.GetLastWriteTime(file) >= DateTime.Now.AddDays(-1).Ticks)
                 continue;
             try
             {
-                File.Delete(file);
+                this.fileSystem.Delete(file);
             }
             catch (UnauthorizedAccessException)
             {

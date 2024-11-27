@@ -10,12 +10,7 @@ internal static class FileHelper
 {
     public static readonly string TempPath = MakeAndGetTempPath();
 
-    private static string MakeAndGetTempPath()
-    {
-        var tempPath = PathHelper.Combine(Path.GetTempPath(), "GitVersionTask");
-        Directory.CreateDirectory(tempPath);
-        return tempPath;
-    }
+    private static string MakeAndGetTempPath() => PathHelper.Combine(Path.GetTempPath(), "GitVersionTask");
 
     public static string GetFileExtension(string language) => language switch
     {

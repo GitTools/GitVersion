@@ -17,4 +17,5 @@ public interface IFileSystem
     string[] GetDirectories(string path);
     IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption);
     long GetLastDirectoryWrite(string path);
+    long GetLastWriteTime(string path);
 }

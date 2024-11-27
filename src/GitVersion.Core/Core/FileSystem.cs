@@ -48,6 +48,8 @@ internal class FileSystem : IFileSystem
         return Directory.EnumerateFiles(directory, searchPattern, searchOption);
     }
 
+    public long GetLastWriteTime(string path) => File.GetLastWriteTime(path).Ticks;
+
     public long GetLastDirectoryWrite(string path) => new DirectoryInfo(path)
         .GetDirectories("*.*", SearchOption.AllDirectories)
         .Select(d => d.LastWriteTimeUtc)
