@@ -21,7 +21,7 @@
     <PackageVersion Include="Buildalyzer" Version="7.1.0" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="4.6.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="4.1.0" />
-    <PackageVersion Include="MSBuild.ProjectCreation" Version="14.0.0" />
+    <PackageVersion Include="MSBuild.ProjectCreation" Version="14.0.5" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Build" Version="17.12.6" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.12.6" />
