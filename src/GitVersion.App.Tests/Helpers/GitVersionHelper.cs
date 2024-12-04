@@ -7,20 +7,6 @@ namespace GitVersion.App.Tests;
 
 public static class GitVersionHelper
 {
-    public static ExecutionResults ExecuteIn(string? workingDirectory,
-        string? exec = null,
-        string? execArgs = null,
-        string? projectFile = null,
-        string? projectArgs = null,
-        bool logToFile = true,
-        params KeyValuePair<string, string?>[] environments
-    )
-    {
-        var logFile = logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
-        var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile);
-        return ExecuteIn(args, environments);
-    }
-
     public static ExecutionResults ExecuteIn(
         string? workingDirectory,
         string? arguments,
