@@ -19,6 +19,11 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     -
       name: Checkout
       uses: actions/checkout@v4
