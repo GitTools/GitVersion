@@ -31,7 +31,7 @@ jobs:
       uses: ./.github/actions/cache-restore
     -
       name: Set up Docker
-      uses: crazy-max/ghaction-setup-docker@v3
+      uses: docker/setup-docker-action@v4
       with:
         daemon-config: '{ "features": { "containerd-snapshotter": true } }'
     -
