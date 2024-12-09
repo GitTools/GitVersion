@@ -95,6 +95,10 @@ internal class WixFileTests : TestBase
 
         // fake an already existing file
         var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        if (!fileSystem.DirectoryExists(workingDir))
+        {
+            fileSystem.CreateDirectory(workingDir);
+        }
         fileSystem.WriteAllText(file, new('x', 1024 * 1024));
 
         wixVersionFileUpdater.Execute(versionVariables, new(workingDir));

@@ -57,7 +57,7 @@ internal class GitVersionCacheKeyFactory(
         // examined for files.
         var dirs = new Stack<string>();
 
-        if (!Directory.Exists(root))
+        if (!this.fileSystem.DirectoryExists(root))
         {
             throw new DirectoryNotFoundException($"Root directory does not exist: {root}");
         }
@@ -74,7 +74,7 @@ internal class GitVersionCacheKeyFactory(
             string[] subDirs;
             try
             {
-                subDirs = Directory.GetDirectories(currentDir);
+                subDirs = this.fileSystem.GetDirectories(currentDir);
             }
             // An UnauthorizedAccessException exception will be thrown if we do not have
             // discovery permission on a folder or file. It may or may not be acceptable
@@ -99,7 +99,7 @@ internal class GitVersionCacheKeyFactory(
             string[] files;
             try
             {
-                files = Directory.GetFiles(currentDir);
+                files = this.fileSystem.GetFiles(currentDir);
             }
             catch (UnauthorizedAccessException e)
             {
@@ -116,9 +116,9 @@ internal class GitVersionCacheKeyFactory(
             {
                 try
                 {
-                    var fi = new FileInfo(file);
-                    result.Add(fi.Name);
-                    result.Add(File.ReadAllText(file));
+                    if (!this.fileSystem.Exists(file)) continue;
+                    result.Add(Path.GetFileName(file));
+                    result.Add(this.fileSystem.ReadAllText(file));
                 }
                 catch (IOException e)
                 {

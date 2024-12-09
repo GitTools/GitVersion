@@ -123,24 +123,24 @@ internal static class ConfigurationExtensions
         return label;
     }
 
-    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this string path)
+    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string path)
     {
         string? startingDir = path;
         while (startingDir is not null)
         {
             var dirOrFilePath = PathHelper.Combine(startingDir, ".git");
-            if (Directory.Exists(dirOrFilePath))
+            if (fileSystem.DirectoryExists(dirOrFilePath))
             {
                 return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
             }
 
-            if (File.Exists(dirOrFilePath))
+            if (fileSystem.Exists(dirOrFilePath))
             {
                 string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
                     var fullGitDirPath = Path.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
-                    if (Directory.Exists(fullGitDirPath))
+                    if (fileSystem.DirectoryExists(fullGitDirPath))
                     {
                         return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);
                     }

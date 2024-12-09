@@ -21,7 +21,7 @@ internal class ConfigurationProvider(
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
-        var projectRootDirectory = workingDirectory.FindGitDir()?.WorkingTreeDirectory;
+        var projectRootDirectory = this.fileSystem.FindGitDir(workingDirectory)?.WorkingTreeDirectory;
 
         var configurationFile = this.configFileLocator.GetConfigurationFile(workingDirectory)
                              ?? this.configFileLocator.GetConfigurationFile(projectRootDirectory);

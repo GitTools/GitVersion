@@ -13,6 +13,12 @@ public static class Extensions
         }
 
         var fullPath = PathHelper.Combine(path, fileName);
+        var directory = PathHelper.GetDirectoryName(fullPath);
+        if (!fileSystem.DirectoryExists(directory))
+        {
+            fileSystem.CreateDirectory(directory);
+        }
+
         fileSystem.WriteAllText(fullPath, text);
 
         return Disposable.Create(fullPath, () => fileSystem.Delete(fullPath));

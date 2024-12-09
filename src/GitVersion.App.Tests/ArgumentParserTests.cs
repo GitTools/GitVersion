@@ -12,6 +12,7 @@ public class ArgumentParserTests : TestBase
 {
     private IEnvironment environment;
     private IArgumentParser argumentParser;
+    private IFileSystem fileSystem;
 
     [SetUp]
     public void SetUp()
@@ -23,6 +24,7 @@ public class ArgumentParserTests : TestBase
         });
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
     }
 
     [Test]
@@ -337,7 +339,8 @@ public class ArgumentParserTests : TestBase
         using var file2 = File.Create(assemblyFile2);
 
         var subdir = PathHelper.Combine(repo.RepositoryPath, "subdir");
-        Directory.CreateDirectory(subdir);
+
+        this.fileSystem.CreateDirectory(subdir);
         var assemblyFile3 = PathHelper.Combine(subdir, "LocalAssemblyInfo.cs");
         using var file3 = File.Create(assemblyFile3);
 
@@ -358,7 +361,7 @@ public class ArgumentParserTests : TestBase
         using var file = File.Create(assemblyFile);
 
         var targetPath = PathHelper.Combine(repo.RepositoryPath, "subdir1", "subdir2");
-        Directory.CreateDirectory(targetPath);
+        this.fileSystem.CreateDirectory(targetPath);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);

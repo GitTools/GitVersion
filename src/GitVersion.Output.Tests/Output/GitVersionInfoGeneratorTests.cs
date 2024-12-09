@@ -19,12 +19,6 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("vb")]
     public void ShouldCreateFile(string fileExtension)
     {
-        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
-        var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = PathHelper.Combine(directory, fileName);
-
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
@@ -32,14 +26,20 @@ public class GitVersionInfoGeneratorTests : TestBase
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new("versionSourceSha", 5,
-                "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
         var sp = ConfigureServices();
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
 
+        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+        if (!fileSystem.DirectoryExists(directory))
+            fileSystem.CreateDirectory(directory);
+        var fileName = "GitVersionInformation.g." + fileExtension;
+        var fullPath = PathHelper.Combine(directory, fileName);
+
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 
@@ -60,12 +60,6 @@ public class GitVersionInfoGeneratorTests : TestBase
     {
         const string targetNamespace = "My.Custom.Namespace";
 
-        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
-        var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = PathHelper.Combine(directory, fileName);
-
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
@@ -79,8 +73,14 @@ public class GitVersionInfoGeneratorTests : TestBase
         var sp = ConfigureServices();
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
 
+        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+        if (!fileSystem.DirectoryExists(directory))
+            fileSystem.CreateDirectory(directory);
+        var fileName = "GitVersionInformation.g." + fileExtension;
+        var fullPath = PathHelper.Combine(directory, fileName);
+
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 

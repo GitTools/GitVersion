@@ -34,7 +34,7 @@ internal class GitVersionTaskExecutor(
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
         var versionVariables = GitVersionVariables(task);
-        FileHelper.DeleteTempFiles();
+        DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
@@ -46,6 +46,10 @@ internal class GitVersionTaskExecutor(
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
+        if (!this.fileSystem.DirectoryExists(fileWriteInfo.WorkingDirectory))
+        {
+            this.fileSystem.CreateDirectory(fileWriteInfo.WorkingDirectory);
+        }
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
@@ -68,6 +72,10 @@ internal class GitVersionTaskExecutor(
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
+        if (!this.fileSystem.DirectoryExists(fileWriteInfo.WorkingDirectory))
+        {
+            this.fileSystem.CreateDirectory(fileWriteInfo.WorkingDirectory);
+        }
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         var targetNamespace = GetTargetNamespace(task);
@@ -98,6 +106,29 @@ internal class GitVersionTaskExecutor(
         var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
+    }
+
+    private void DeleteTempFiles()
+    {
+        var tempPath = FileHelper.TempPath;
+        if (!this.fileSystem.DirectoryExists(tempPath))
+        {
+            return;
+        }
+
+        foreach (var file in this.fileSystem.GetFiles(tempPath))
+        {
+            if (this.fileSystem.GetLastWriteTime(file) >= DateTime.Now.AddDays(-1).Ticks)
+                continue;
+            try
+            {
+                this.fileSystem.Delete(file);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //ignore contention
+            }
+        }
     }
 
     private GitVersionVariables GitVersionVariables(GitVersionTaskBase task) => serializer.FromFile(task.VersionFile);

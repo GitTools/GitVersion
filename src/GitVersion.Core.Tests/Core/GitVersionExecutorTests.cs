@@ -67,7 +67,7 @@ public class GitVersionExecutorTests : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
-        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        var worktreePath = GetWorktreePath(fixture);
         try
         {
             // create a branch and a new worktree for it
@@ -395,7 +395,7 @@ public class GitVersionExecutorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        var worktreePath = GetWorktreePath(fixture);
         try
         {
             // create a branch and a new worktree for it
@@ -451,7 +451,7 @@ public class GitVersionExecutorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        var worktreePath = GetWorktreePath(fixture);
         try
         {
             // create a branch and a new worktree for it
@@ -586,6 +586,12 @@ public class GitVersionExecutorTests : TestBase
         // Execute & Verify
         var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
         exception?.Message.ShouldBe("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
+    }
+
+    private static string GetWorktreePath(EmptyRepositoryFixture fixture)
+    {
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        return worktreePath;
     }
 
     private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog? logger = null, IGitRepository? repository = null, IFileSystem? fs = null)

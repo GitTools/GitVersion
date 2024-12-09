@@ -19,7 +19,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     private string workingDir;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => workingDir = PathHelper.Combine(PathHelper.GetTempPath(), "AssemblyInfoFileUpdaterTests");
+    public void OneTimeSetUp() => workingDir = PathHelper.Combine(PathHelper.GetTempPath(), nameof(AssemblyInfoFileUpdaterTests));
 
     [OneTimeTearDown]
     public void OneTimeTearDown() => DirectoryHelper.DeleteDirectory(workingDir);
@@ -93,7 +93,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     [TestCase("vb")]
     public void ShouldNotCreateAssemblyInfoFileWhenNotExistsAndNotEnsureAssemblyInfo(string fileExtension)
     {
-        var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
+        var assemblyInfoFile = "NoVersionAssemblyInfo." + fileExtension;
         var fullPath = PathHelper.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixPattern), EmptyConfigurationBuilder.New.Build(), 0

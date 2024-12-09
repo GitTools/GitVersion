@@ -10,6 +10,7 @@ namespace GitVersion;
 
 internal class GitPreparer(
     ILog log,
+    IFileSystem fileSystem,
     IEnvironment environment,
     ICurrentBuildAgent buildAgent,
     IOptions<GitVersionOptions> options,
@@ -19,6 +20,7 @@ internal class GitPreparer(
     : IGitPreparer
 {
     private readonly ILog log = log.NotNull();
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
     private readonly IMutatingGitRepository repository = repository.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
@@ -112,7 +114,11 @@ internal class GitPreparer(
         {
             var gitVersionOptions = this.options.Value;
             var authentication = gitVersionOptions.AuthenticationInfo;
-            if (!Directory.Exists(gitDirectory))
+            if (string.IsNullOrWhiteSpace(gitDirectory))
+            {
+                throw new("Dynamic Git repositories should have a path specified");
+            }
+            if (!this.fileSystem.DirectoryExists(gitDirectory))
             {
                 CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);
             }
