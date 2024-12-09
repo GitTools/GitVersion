@@ -114,6 +114,10 @@ internal class GitPreparer(
         {
             var gitVersionOptions = this.options.Value;
             var authentication = gitVersionOptions.AuthenticationInfo;
+            if (string.IsNullOrWhiteSpace(gitDirectory))
+            {
+                throw new("Dynamic Git repositories should have a path specified");
+            }
             if (!this.fileSystem.DirectoryExists(gitDirectory))
             {
                 CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);

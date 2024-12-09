@@ -166,7 +166,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             EnsureArgumentValueCount(values);
             arguments.TargetPath = value;
-            if (!this.fileSystem.DirectoryExists(value))
+            if (string.IsNullOrWhiteSpace(value) || !this.fileSystem.DirectoryExists(value))
             {
                 this.console.WriteLine($"The working directory '{value}' does not exist.");
             }
