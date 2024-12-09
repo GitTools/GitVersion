@@ -288,7 +288,6 @@
                     <dt>Implementing Types</dt>
                     <dd>
                       <ul class="list-unstyled">
-                        <li><a href="/api/GitVersion.Git/ITag">ITag</a></li>
                         <li>
                           <a href="/api/GitVersion.Git/IReference"
                             >IReference</a
@@ -297,6 +296,7 @@
                         <li>
                           <a href="/api/GitVersion.Git/IBranch">IBranch</a>
                         </li>
+                        <li><a href="/api/GitVersion.Git/ITag">ITag</a></li>
                       </ul>
                     </dd>
                   </dl>
@@ -304,12 +304,12 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type["INamedReference"] class Type type-node
-                    Implementing0["ITag"]-.-&gt;Type click Implementing0
-                    "/api/GitVersion.Git/ITag"
-                    Implementing1["IReference"]-.-&gt;Type click Implementing1
+                    Implementing0["IReference"]-.-&gt;Type click Implementing0
                     "/api/GitVersion.Git/IReference"
-                    Implementing2["IBranch"]-.-&gt;Type click Implementing2
+                    Implementing1["IBranch"]-.-&gt;Type click Implementing1
                     "/api/GitVersion.Git/IBranch"
+                    Implementing2["ITag"]-.-&gt;Type click Implementing2
+                    "/api/GitVersion.Git/ITag"
                   </div>
                 </div>
               </div>

@@ -15,10 +15,7 @@
       type="image/x-icon"
     />
     <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon" />
-    <title>
-      GitVersion - API - IFileSystem.WriteAllText(string, string, Encoding)
-      Method
-    </title>
+    <title>GitVersion - API - IFileSystem.GetFiles(string) Method</title>
     <link href="/assets/css/highlight.css" rel="stylesheet" />
     <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
     <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
@@ -235,7 +232,7 @@
                 >GetDirectories<wbr />(string)<wbr
               /></a>
             </li>
-            <li>
+            <li class="selected">
               <a href="/api/GitVersion/IFileSystem/FC2D4973"
                 >GetFiles<wbr />(string)<wbr
               /></a>
@@ -275,7 +272,7 @@
                 >WriteAllText<wbr />(string, <wbr />string)<wbr
               /></a>
             </li>
-            <li class="selected">
+            <li>
               <a href="/api/GitVersion/IFileSystem/11049817"
                 >WriteAllText<wbr />(string, <wbr />string,
                 <wbr />Encoding)<wbr
@@ -289,10 +286,7 @@
       <div class="content-wrapper">
         <section class="content-header">
           <h3><a href="/api/GitVersion/IFileSystem">IFileSystem</a>.</h3>
-          <h1>
-            WriteAllText<wbr />(string, <wbr />string, <wbr />Encoding)<wbr />
-            <small>Method</small>
-          </h1>
+          <h1>GetFiles<wbr />(string)<wbr /> <small>Method</small></h1>
         </section>
         <section class="content">
           <div class="panel panel-default">
@@ -308,7 +302,7 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>void WriteAllText(string file, string fileContents, Encoding encoding)</code></pre>
+          <pre><code>string[] GetFiles(string path)</code></pre>
 
           <h1 id="Parameters">Parameters</h1>
           <div class="box">
@@ -323,18 +317,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>file</td>
+                    <td>path</td>
                     <td>string</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>fileContents</td>
-                    <td>string</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>encoding</td>
-                    <td>Encoding</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -354,7 +338,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>void</td>
+                    <td>string[]</td>
                     <td></td>
                   </tr>
                 </tbody>
