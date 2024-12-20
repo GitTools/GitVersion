@@ -32,8 +32,6 @@ updates:
     - "/new-cli"
     - "/src"
     - "/"
-  ignore:
-    - dependency-name: "LibGit2Sharp"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
