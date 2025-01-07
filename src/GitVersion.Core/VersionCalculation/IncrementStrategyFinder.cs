@@ -106,11 +106,7 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
                 .ToHashSet()
         );
 
-        var intermediateCommits = this.repositoryStore.GetCommitLog(
-            baseVersionSource: baseVersionSource,
-            currentCommit: currentCommit,
-            ignore: ignore
-        );
+        var intermediateCommits = this.repositoryStore.GetCommitLog(baseVersionSource, currentCommit, ignore);
         var commitLog = intermediateCommits.ToDictionary(element => element.Id.Sha);
 
         foreach (var intermediateCommit in intermediateCommits.Reverse())
