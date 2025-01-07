@@ -1,6 +1,8 @@
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using static GitVersion.Core.RegexPatterns;
 
 namespace GitVersion.VersionCalculation;
 
@@ -10,7 +12,7 @@ namespace GitVersion.VersionCalculation;
 /// Increments if the tag is not the current commit.
 /// </summary>
 internal sealed class TaggedCommitVersionStrategy(
-    Lazy<GitVersionContext> contextLazy,
+    Lazy<GitVersionContext> contextLazy, ILog log,
     ITaggedSemanticVersionService taggedSemanticVersionService,
     IIncrementStrategyFinder incrementStrategyFinder)
     : IVersionStrategy
@@ -18,6 +20,7 @@ internal sealed class TaggedCommitVersionStrategy(
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly ILog log = log.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -41,12 +44,26 @@ internal sealed class TaggedCommitVersionStrategy(
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
 
+        SemanticVersion semanticVersionTreshold = new(0, 0, 0);
         List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = [];
         foreach (var semanticVersionWithTag in taggedSemanticVersions)
         {
             if (!semanticVersionWithTag.Value.IsMatchForBranchSpecificLabel(label))
             {
                 alternativeSemanticVersionsWithTag.Add(semanticVersionWithTag);
+                continue;
+            }
+
+            var alternativeSemanticVersionMax = alternativeSemanticVersionsWithTag.Max()?.Value;
+            var highestPossibleSemanticVersion = semanticVersionWithTag.Value.Increment(
+                VersionField.Major, null, forceIncrement: true, alternativeSemanticVersionMax
+            );
+            if (highestPossibleSemanticVersion.IsLessThan(semanticVersionTreshold, includePreRelease: false))
+            {
+                this.log.Info(
+                    $"The tag '{semanticVersionWithTag.Value}' is skipped because it will never be higher than other tags."
+                );
+                alternativeSemanticVersionsWithTag.Clear();
                 continue;
             }
 
@@ -58,6 +75,7 @@ internal sealed class TaggedCommitVersionStrategy(
                 configuration: configuration.Value,
                 label: label
             );
+            semanticVersionTreshold = semanticVersionWithTag.Value.Increment(increment, null, forceIncrement: true);
 
             yield return new BaseVersion(
                 $"Git tag '{semanticVersionWithTag.Tag.Name.Friendly}'", semanticVersionWithTag.Value, baseVersionSource)
@@ -67,7 +85,7 @@ internal sealed class TaggedCommitVersionStrategy(
                     Increment = increment,
                     ForceIncrement = false,
                     Label = label,
-                    AlternativeSemanticVersion = alternativeSemanticVersionsWithTag.Max()?.Value
+                    AlternativeSemanticVersion = alternativeSemanticVersionMax
                 }
             };
             alternativeSemanticVersionsWithTag.Clear();

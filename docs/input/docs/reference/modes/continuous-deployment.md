@@ -21,7 +21,7 @@ to deploy on production. This means that GitVersion will build
 * 1.2.0
 * 1.1.0 (tag: 1.1.0) <-- This is the version which has been deployed on production
 * 1.1.0
-* 1.1.1
+* 1.1.0
 
 Tags are required in this mode to communicate when the deployment happens on production.
 

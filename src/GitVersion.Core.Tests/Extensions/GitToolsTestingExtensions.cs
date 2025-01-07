@@ -138,7 +138,7 @@ public static class GitToolsTestingExtensions
     /// <summary>
     /// Simulates running on build server
     /// </summary>
-    public static void InitializeRepo(this RemoteRepositoryFixture fixture)
+    public static void InitializeRepository(this RemoteRepositoryFixture fixture)
     {
         var gitVersionOptions = new GitVersionOptions
         {
