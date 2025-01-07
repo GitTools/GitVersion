@@ -12,10 +12,13 @@ public class PerformanceScenarios : TestBase
 
         using var fixture = new EmptyRepositoryFixture();
 
-        const int maxCommits = 500;
-        for (int i = 0; i < maxCommits; i++)
+        Random random = new(4711);
+        SemanticVersion semanticVersion = SemanticVersion.Empty;
+        for (int i = 0; i < 500; i++)
         {
-            fixture.MakeATaggedCommit($"1.0.{i}");
+            VersionField versionField = (VersionField)random.Next(1, 4);
+            semanticVersion = semanticVersion.Increment(versionField, string.Empty, forceIncrement: true);
+            fixture.MakeATaggedCommit(semanticVersion.ToString("j"));
         }
 
         fixture.BranchTo("feature");
@@ -23,9 +26,9 @@ public class PerformanceScenarios : TestBase
 
         var sw = Stopwatch.StartNew();
 
-        fixture.AssertFullSemver($"1.0.{maxCommits}-feature.1+1", configuration);
+        fixture.AssertFullSemver("170.3.3-feature.1+1", configuration);
         sw.Stop();
 
-        sw.ElapsedMilliseconds.ShouldBeLessThan(5000);
+        sw.ElapsedMilliseconds.ShouldBeLessThan(2500);
     }
 }

@@ -21,7 +21,7 @@ deployed. For instance:
 * 1.1.0-2+1
 * 1.1.0-1+2 (tag: 1.1.0-1) <-- This is the version which has been deployed on testing
 * 1.1.0-1+1
-* 1.1.1-1+0
+* 1.1.0-1+0
 
 Tags are required in this mode to communicate when the release is done as it's
 an external manual process.

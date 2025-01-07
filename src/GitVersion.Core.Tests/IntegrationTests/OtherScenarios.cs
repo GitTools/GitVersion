@@ -26,7 +26,7 @@ public class OtherScenarios : TestBase
         Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
-        fixture.InitializeRepo();
+        fixture.InitializeRepository();
         fixture.AssertFullSemver("1.0.1-1");
     }
 
@@ -92,7 +92,7 @@ public class OtherScenarios : TestBase
         Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
-        fixture.InitializeRepo();
+        fixture.InitializeRepository();
         fixture.AssertFullSemver("1.1.0-alpha.1");
     }
 
@@ -100,7 +100,7 @@ public class OtherScenarios : TestBase
     [TestCase(false, 1)]
     [TestCase(true, 5)]
     [TestCase(false, 5)]
-    public void HasDirtyFlagWhenUncommittedChangesAreInRepo(bool stageFile, int numberOfFiles)
+    public void HasDirtyFlagWhenUncommittedChangesAreInRepository(bool stageFile, int numberOfFiles)
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -133,7 +133,7 @@ public class OtherScenarios : TestBase
 
     [TestCase(false, "1.1.0-alpha.2")]
     [TestCase(true, "1.2.0-alpha.1")]
-    public void EnsureTrackMergeTargetStrategyWhichWillLookForTaggedMergecommits(bool trackMergeTarget, string expectedVersion)
+    public void EnsureTrackMergeTargetStrategyWhichWillLookForTaggedMergeCommits(bool trackMergeTarget, string expectedVersion)
     {
         // * 9daa6ea 53 minutes ago  (HEAD -> develop)
         // | *   85536f2 55 minutes ago  (tag: 1.1.0, main)
@@ -1283,7 +1283,7 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase(false, "2.0.0-alpha.3")]
-    [TestCase(true, "2.0.0-alpha.3")]
+    [TestCase(true, "3.0.0-alpha.2")]
     public void EnsureVersionAfterMainIsMergedBackToDevelopIsCorrectForGitFlow(bool applyTag, string semanticVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
@@ -1300,7 +1300,7 @@ public class OtherScenarios : TestBase
 
         fixture.Checkout("main");
         fixture.MakeACommit("C");
-        if (applyTag) fixture.ApplyTag("1.0.1");
+        if (applyTag) fixture.ApplyTag("2.0.0");
         fixture.Checkout("develop");
         fixture.MergeNoFF("main");
 
@@ -1380,7 +1380,8 @@ public class OtherScenarios : TestBase
     }
 
     [TestCase(null, "6.0.0-beta.6")]
-    [TestCase("beta", "6.0.0-beta.21")]
+    [TestCase("beta", "6.0.0-beta.6")]
+    [TestCase("gamma", "6.0.0-gamma.21")]
     public void AlternativeSemanticVersionsShouldBeConsidered(string? labelOnMain, string version)
     {
         var configuration = GitFlowConfigurationBuilder.New
@@ -1391,14 +1392,16 @@ public class OtherScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeATaggedCommit("4.0.0-beta.14");
         fixture.MakeACommit("A");
+        fixture.ApplyTag("4.0.0-beta.14");
+        fixture.ApplyTag("4.0.0-gamma.14");
+        fixture.MakeACommit("B");
         fixture.MakeATaggedCommit("6.0.0-alpha.1");
         fixture.MakeATaggedCommit("6.0.0-alpha.2");
         fixture.MakeATaggedCommit("6.0.0-alpha.3");
-        fixture.MakeACommit("B");
-        fixture.MakeATaggedCommit("6.0.0-beta.5");
         fixture.MakeACommit("C");
+        fixture.MakeATaggedCommit("6.0.0-beta.5");
+        fixture.MakeACommit("D");
 
         fixture.AssertFullSemver(version, configuration);
     }

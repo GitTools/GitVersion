@@ -106,7 +106,11 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
                 .ToHashSet()
         );
 
-        var intermediateCommits = GetIntermediateCommits(baseVersionSource, currentCommit, ignore).ToArray();
+        var intermediateCommits = this.repositoryStore.GetCommitLog(
+            baseVersionSource: baseVersionSource,
+            currentCommit: currentCommit,
+            ignore: ignore
+        );
         var commitLog = intermediateCommits.ToDictionary(element => element.Id.Sha);
 
         foreach (var intermediateCommit in intermediateCommits.Reverse())
@@ -197,7 +201,6 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
 
         ICommit findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
             ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
-
         return GetIntermediateCommits(findMergeBase, mergedCommit, ignore);
     }
 

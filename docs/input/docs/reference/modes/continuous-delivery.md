@@ -24,7 +24,7 @@ Continuous delivery is good when you deploy continuously to an testing system.
 * 1.1.0-3
 * 1.1.0-2 (tag: 1.1.0-2) <-- This is the version which has been deployed on testing
 * 1.1.0-1
-* 1.1.1-0
+* 1.1.0-0
 
 Tags are not required but optional in this mode to communicate when the release
 is done as it's an automated process.
