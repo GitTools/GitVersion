@@ -16,7 +16,7 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.9" />
     <!-- specific packages -->
     <PackageVersion Include="Scriban" Version="5.12.0" />
-    <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.Map" Version="2.0.0" />
