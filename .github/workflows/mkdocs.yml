@@ -15,7 +15,7 @@ defaults:
 jobs:
   docs:
     name: Update Markdown (embedded snippets)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout

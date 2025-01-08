@@ -17,7 +17,7 @@ jobs:
     permissions:
       contents: none
     name: Bump winget manifest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Get version
       id: get-version

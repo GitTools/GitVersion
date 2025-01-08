@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-15]
+        os: [windows-latest, ubuntu-24.04, macos-15]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -49,7 +49,7 @@ jobs:
   set_matrix:
     needs: [ prepare ]
     name: Set Matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       dockerDistros: ${{ steps.set_matrix.outputs.dockerDistros }}
       dotnetVersions: ${{ steps.set_matrix.outputs.dotnetVersions }}

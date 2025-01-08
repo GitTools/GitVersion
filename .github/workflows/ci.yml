@@ -70,9 +70,9 @@ jobs:
       matrix:
         include:
           - arch: amd64
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
           - arch: arm64
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
     uses: ./.github/workflows/_artifacts_linux.yml
     with:
       runner: ${{ matrix.runner }}
@@ -88,9 +88,9 @@ jobs:
       matrix:
         include:
           - arch: amd64
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
           - arch: arm64
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
 
     uses: ./.github/workflows/_docker.yml
     with:
