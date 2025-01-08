@@ -27,6 +27,9 @@ updates:
     nunit:
       patterns:
       - "NUnit.*"
+    LibGit2Sharp:
+      patterns:
+      - "LibGit2Sharp.*"
   directories:
     - "/build"
     - "/new-cli"
