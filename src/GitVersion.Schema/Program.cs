@@ -12,7 +12,6 @@ var schemaVersion = configurationManager["Version"]!;
 var configuration = new SchemaGeneratorConfiguration
 {
     PropertyNameResolver = PropertyNameResolvers.KebabCase,
-    Nullability = Nullability.AllowForNullableValueTypes,
     PropertyOrder = PropertyOrder.ByName,
 };
 
