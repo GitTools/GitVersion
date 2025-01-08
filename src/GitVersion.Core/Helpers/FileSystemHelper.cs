@@ -73,7 +73,7 @@ internal static class FileSystemHelper
 
         public static string GetCurrentDirectory() => AppContext.BaseDirectory ?? throw new InvalidOperationException();
 
-        public static string GetTempPathLegacy() => fileSystem.Path.GetTempPath();
+        public static string GetTempPathLegacy() => fileSystem.Path.GetTempPath().TrimEnd(DirectorySeparatorChar);
         public static string GetTempPath()
         {
             var tempPath = GetCurrentDirectory();
