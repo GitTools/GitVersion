@@ -118,7 +118,7 @@ jobs:
   release:
     name: Release
     needs: [ publish, docker_linux_manifests ]
-    runs-on: windows-latest
+    runs-on: windows-2025
     env:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
     steps:

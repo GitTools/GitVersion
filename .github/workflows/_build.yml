@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-24.04, macos-15]
+        os: [windows-2025, ubuntu-24.04, macos-15]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -30,21 +30,21 @@ jobs:
     -
       name: 'Upload nuget packages'
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'windows-2025'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'windows-2025'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.zip
     -
       name: 'Upload native packages'
       uses: actions/upload-artifact@v4
-      if: matrix.os != 'windows-latest'
+      if: matrix.os != 'windows-2025'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz

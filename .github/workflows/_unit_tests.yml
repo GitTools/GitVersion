@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-24.04, macos-15]
+        os: [windows-2025, ubuntu-24.04, macos-15]
         dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
 
     runs-on: ${{ matrix.os }}
