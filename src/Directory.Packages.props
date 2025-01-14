@@ -14,7 +14,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.IO.Redist" Version="6.1.0" />
-    <PackageVersion Include="Polly" Version="8.5.0" />
+    <PackageVersion Include="Polly" Version="8.5.1" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.10" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.10" />
     <!-- specific packages -->
