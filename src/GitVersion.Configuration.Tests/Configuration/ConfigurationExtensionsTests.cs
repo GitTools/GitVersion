@@ -40,8 +40,8 @@ public class ConfigurationExtensionsTests : TestBase
         isReleaseBranch.ShouldBe(expectedIsReleaseBranch);
     }
 
-    [TestCase("feature/sc-1000/Description", "^features?[/-](?<BranchName>.+)", "{BranchName}", "sc-1000-Description")]
-    [TestCase("feature/sc-1000/Description", "^features?[/-](?<StoryNo>sc-\\d+)[-/].+", "{StoryNo}", "sc-1000")]
+    [TestCase("feature/sc-1000/Description", @"^features?[\/-](?<BranchName>.+)", "{BranchName}", "sc-1000-Description")]
+    [TestCase("feature/sc-1000/Description", @"^features?[\/-](?<StoryNo>sc-\d+)[-\/].+", "{StoryNo}", "sc-1000")]
     public void EnsureGetBranchSpecificLabelWorksAsExpected(string branchName, string regularExpression, string label, string expectedLabel)
     {
         var configuration = GitFlowConfigurationBuilder.New

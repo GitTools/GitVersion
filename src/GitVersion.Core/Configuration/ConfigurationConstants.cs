@@ -24,6 +24,7 @@ internal static class ConfigurationConstants
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
     public const string DefaultCommitDateFormat = "yyyy-MM-dd";
     public const string BranchNamePlaceholder = "{BranchName}";
+    public const string PullRequestNumberPlaceholder = "{Number}";
     public const bool DefaultUpdateBuildNumber = true;
     public const int DefaultTagPreReleaseWeight = 60000;
 

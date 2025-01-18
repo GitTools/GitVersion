@@ -57,7 +57,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-](?<BranchName>.+)
+    regex: ^releases?[\/-](?<BranchName>.+)
     source-branches:
     - main
     - support
@@ -73,7 +73,7 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-message: true
-    regex: ^features?[/-](?<BranchName>.+)
+    regex: ^features?[\/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -85,14 +85,13 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
     source-branches:
     - develop
     - main
@@ -108,7 +107,7 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    regex: ^hotfix(es)?[\/-](?<BranchName>.+)
     source-branches:
     - main
     - support
@@ -122,7 +121,7 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
-    regex: ^support[/-](?<BranchName>.+)
+    regex: ^support[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []

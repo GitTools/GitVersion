@@ -182,10 +182,13 @@ public class FeatureBranchScenarios : TestBase
         fixture.AssertFullSemver("0.3.0-PROJ-1.1+4", configuration);
     }
 
-    [TestCase("alpha", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha")]
-    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "^features?[/-](?<BranchName>.+)", "alpha.JIRA-123")]
-    [TestCase("{BranchName}-of-task-number-{TaskNumber}", "4711_this-is-a-feature", "^features?[/-](?<TaskNumber>\\d+)_(?<BranchName>.+)", "this-is-a-feature-of-task-number-4711")]
-    [TestCase("{BranchName}", "4711_this-is-a-feature", "^features?[/-](?<BranchName>.+)", "4711-this-is-a-feature")]
+    [TestCase("alpha", "JIRA-123", @"^features?[\/-](?<BranchName>.+)", "alpha")]
+    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", @"^features?[\/-](?<BranchName>.+)", "alpha.JIRA-123")]
+    [TestCase("{BranchName}-of-task-number-{TaskNumber}", "4711_this-is-a-feature", @"^features?[\/-](?<TaskNumber>\d+)_(?<BranchName>.+)", "this-is-a-feature-of-task-number-4711")]
+    [TestCase("{BranchName}", "4711_this-is-a-feature", @"^features?[\/-](?<BranchName>.+)", "4711-this-is-a-feature")]
+    [TestCase("{BranchName}.xyz", "x_y.7.z", @"^features?[\/-](?<BranchName>.+)", "x-y-7-z.xyz")]
+    [TestCase("{BranchName}", "yourname/dash-separated-words", @".*\/(?<BranchName>[^\/]+)$", "dash-separated-words")]
+    [TestCase("{X}.{Z}-{Y}.{X}-{Z}.{X}", "xxxyyz", @"^features?[\/-](?<X>x+)(?<Y>y+)(?<Z>z+)$", "xxx.z-yy.xxx-z.xxx")]
     public void ShouldUseConfiguredLabel(string label, string featureName, string regularExpression, string preReleaseLabelName)
     {
         var configuration = GitFlowConfigurationBuilder.New

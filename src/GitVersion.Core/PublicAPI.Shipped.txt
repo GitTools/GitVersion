@@ -71,7 +71,6 @@ GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.Incr
 GitVersion.Configuration.EffectiveConfiguration.IsMainBranch.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.Label.get -> string?
-GitVersion.Configuration.EffectiveConfiguration.LabelNumberPattern.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.MajorVersionBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.MinorVersionBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.NextVersion.get -> string?
@@ -103,7 +102,6 @@ GitVersion.Configuration.IBranchConfiguration.IsMatch(string! branchName) -> boo
 GitVersion.Configuration.IBranchConfiguration.IsReleaseBranch.get -> bool?
 GitVersion.Configuration.IBranchConfiguration.IsSourceBranchFor.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 GitVersion.Configuration.IBranchConfiguration.Label.get -> string?
-GitVersion.Configuration.IBranchConfiguration.LabelNumberPattern.get -> string?
 GitVersion.Configuration.IBranchConfiguration.PreReleaseWeight.get -> int?
 GitVersion.Configuration.IBranchConfiguration.PreventIncrement.get -> GitVersion.Configuration.IPreventIncrementConfiguration!
 GitVersion.Configuration.IBranchConfiguration.RegularExpression.get -> string?

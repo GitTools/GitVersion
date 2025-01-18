@@ -90,38 +90,31 @@ internal static class ConfigurationExtensions
         }
 
         var effectiveBranchName = branchNameOverride ?? branchName;
-
         if (!configuration.RegularExpression.IsNullOrWhiteSpace() && !effectiveBranchName.IsNullOrEmpty())
         {
-            effectiveBranchName = effectiveBranchName.RegexReplace("[^a-zA-Z0-9-_]", "-");
             var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
             var match = regex.Match(effectiveBranchName);
             if (match.Success)
             {
-                // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var groupName in regex.GetGroupNames())
                 {
-                    label = label.Replace("{" + groupName + "}", match.Groups[groupName].Value);
+                    var groupValue = match.Groups[groupName].Value;
+                    Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharaters(groupValue));
+                    var placeholder = $"{{{groupName}}}";
+                    int index, startIndex = 0;
+                    while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
+                    {
+                        var escapedGroupValue = escapedGroupValueLazy.Value;
+                        label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
+                        startIndex = index + escapedGroupValue.Length;
+                    }
                 }
-
-                label = label.Replace('_', '-');
             }
         }
-
-        // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        if (!configuration.LabelNumberPattern.IsNullOrEmpty() && !effectiveBranchName.IsNullOrEmpty())
-        {
-            var regex = RegexPatterns.Cache.GetOrAdd(configuration.LabelNumberPattern);
-            var match = regex.Match(effectiveBranchName);
-            var numberGroup = match.Groups["number"];
-            if (numberGroup.Success)
-            {
-                label += numberGroup.Value;
-            }
-        }
-
         return label;
     }
+
+    private static string EscapeInvalidCharaters(string groupValue) => groupValue.RegexReplace(@"[^a-zA-Z0-9-]", "-");
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string path)
     {

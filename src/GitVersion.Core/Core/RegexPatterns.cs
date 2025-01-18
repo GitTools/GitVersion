@@ -18,7 +18,6 @@ internal static class RegexPatterns
 
         Cache.TryAdd(Configuration.DefaultTagPrefixRegex.ToString(), Configuration.DefaultTagPrefixRegex);
         Cache.TryAdd(Configuration.DefaultVersionInBranchRegex.ToString(), Configuration.DefaultVersionInBranchRegex);
-        Cache.TryAdd(Configuration.DefaultLabelNumberRegex.ToString(), Configuration.DefaultLabelNumberRegex);
         Cache.TryAdd(Configuration.MainBranchRegex.ToString(), Configuration.MainBranchRegex);
         Cache.TryAdd(Configuration.DevelopBranchRegex.ToString(), Configuration.DevelopBranchRegex);
         Cache.TryAdd(Configuration.ReleaseBranchRegex.ToString(), Configuration.ReleaseBranchRegex);
@@ -84,35 +83,31 @@ internal static class RegexPatterns
         public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultLabelNumberPattern = @"[/-](?<number>\d+)";
-
-        [StringSyntax(StringSyntaxAttribute.Regex)]
         public const string MainBranchRegexPattern = "^master$|^main$";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
         public const string DevelopBranchRegexPattern = "^dev(elop)?(ment)?$";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string ReleaseBranchRegexPattern = "^releases?[/-](?<BranchName>.+)";
+        public const string ReleaseBranchRegexPattern = @"^releases?[\/-](?<BranchName>.+)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string FeatureBranchRegexPattern = "^features?[/-](?<BranchName>.+)";
+        public const string FeatureBranchRegexPattern = @"^features?[\/-](?<BranchName>.+)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string PullRequestBranchRegexPattern = @"^(pull|pull\-requests|pr)[/-]";
+        public const string PullRequestBranchRegexPattern = @"^(pull-requests|pull|pr)[\/-](?<Number>\d*)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string HotfixBranchRegexPattern = "^hotfix(es)?[/-](?<BranchName>.+)";
+        public const string HotfixBranchRegexPattern = @"^hotfix(es)?[\/-](?<BranchName>.+)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string SupportBranchRegexPattern = "^support[/-](?<BranchName>.+)";
+        public const string SupportBranchRegexPattern = @"^support[\/-](?<BranchName>.+)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
         public const string UnknownBranchRegexPattern = "(?<BranchName>.+)";
 
         public static Regex DefaultTagPrefixRegex { get; } = new(DefaultTagPrefixPattern, Options);
         public static Regex DefaultVersionInBranchRegex { get; } = new(DefaultVersionInBranchPattern, Options);
-        public static Regex DefaultLabelNumberRegex { get; } = new(DefaultLabelNumberPattern, Options);
         public static Regex MainBranchRegex { get; } = new(MainBranchRegexPattern, Options);
         public static Regex DevelopBranchRegex { get; } = new(DevelopBranchRegexPattern, Options);
         public static Regex ReleaseBranchRegex { get; } = new(ReleaseBranchRegexPattern, Options);

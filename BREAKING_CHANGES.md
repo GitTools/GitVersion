@@ -1,3 +1,7 @@
+## v6.1.0
+
+* The configuration property `label-number-pattern` was removed. The functionality can be still used by changing the label and the branch name regular expression for pull-request branches.
+
 ## v6.0.0
 
 ### Platforms
@@ -60,7 +64,7 @@
 * The `useBranchName` magic string has been removed. Instead use `{BranchName}` for `label`.
 
 * The `BranchPrefixToTrim` configuration property has been removed. `RegularExpression` is now used to capture named groups instead.
-  * Default `RegularExpression` for feature branches is changed from `^features?[/-]` to `^features?[/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
+  * Default `RegularExpression` for feature branches is changed from `^features?[\/-]` to `^features?[\/-](?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
   * Default `RegularExpression` for unknown branches is changed from `.*` to `(?<BranchName>.+)` to support using `{BranchName}` out-of-the-box
 
 * The `Mainline` mode and the related implementation has been removed completely. The new `Mainline` version strategy should be used instead.

@@ -165,7 +165,7 @@ public class EffectiveBranchConfigurationFinderTests
             .WithBranch("release", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithLabel("not-latest")
-                .WithRegularExpression("releases?[/-]")
+                .WithRegularExpression(@"releases?[\/-]")
             )
             .Build();
 

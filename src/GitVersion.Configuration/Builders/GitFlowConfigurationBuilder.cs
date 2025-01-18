@@ -139,13 +139,12 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 this.SupportBranch.Name,
                 this.HotfixBranch.Name
             ],
-            Label = "PullRequest",
+            Label = $"PullRequest{ConfigurationConstants.PullRequestNumberPlaceholder}",
             PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
             },
-            LabelNumberPattern = RegexPatterns.Configuration.DefaultLabelNumberPattern,
             TrackMergeMessage = true,
             PreReleaseWeight = 30000
         });
