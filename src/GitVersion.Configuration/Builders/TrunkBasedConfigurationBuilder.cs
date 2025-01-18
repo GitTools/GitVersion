@@ -105,14 +105,13 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
         WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDelivery,
-            Label = "PullRequest",
+            Label = $"PullRequest{ConfigurationConstants.PullRequestNumberPlaceholder}",
             Increment = IncrementStrategy.Inherit,
             PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
             },
-            LabelNumberPattern = RegexPatterns.Configuration.DefaultLabelNumberPattern,
             RegularExpression = PullRequestBranch.RegexPattern,
             SourceBranches =
             [

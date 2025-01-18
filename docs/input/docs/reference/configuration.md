@@ -100,7 +100,7 @@ branches:
       of-merged-branch: true
       when-current-commit-tagged: false
     track-merge-target: false
-    regex: ^releases?[/-](?<BranchName>.+)
+    regex: ^releases?[\/-](?<BranchName>.+)
     source-branches:
     - main
     - support
@@ -116,7 +116,7 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-message: true
-    regex: ^features?[/-](?<BranchName>.+)
+    regex: ^features?[\/-](?<BranchName>.+)
     source-branches:
     - develop
     - main
@@ -128,14 +128,13 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
     source-branches:
     - develop
     - main
@@ -151,7 +150,7 @@ branches:
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    regex: ^hotfix(es)?[\/-](?<BranchName>.+)
     source-branches:
     - main
     - support
@@ -165,7 +164,7 @@ branches:
     prevent-increment:
       of-merged-branch: true
     track-merge-target: false
-    regex: ^support[/-](?<BranchName>.+)
+    regex: ^support[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -262,7 +261,7 @@ branches:
       when-current-commit-tagged: false
     track-merge-target: false
     track-merge-message: true
-    regex: ^releases?[/-](?<BranchName>.+)
+    regex: ^releases?[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -277,7 +276,7 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-message: true
-    regex: ^features?[/-](?<BranchName>.+)
+    regex: ^features?[\/-](?<BranchName>.+)
     source-branches:
     - main
     - release
@@ -286,14 +285,13 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
     source-branches:
     - main
     - release
@@ -381,7 +379,7 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-message: true
-    regex: ^features?[/-](?<BranchName>.+)
+    regex: ^features?[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -393,7 +391,7 @@ branches:
     increment: Patch
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    regex: ^hotfix(es)?[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -402,14 +400,13 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
     source-branches:
     - main
     - feature
@@ -690,7 +687,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 0
   release:
-    regex: ^releases?[/-]
+    regex: ^releases?[\/-]
     mode: ContinuousDelivery
     label: beta
     increment: None
@@ -702,29 +699,28 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    regex: ^features?[/-]
+    regex: ^features?[\/-]
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
   pull-request:
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-]
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
   hotfix:
-    regex: ^hotfix(es)?[/-]
+    regex: ^hotfix(es)?[\/-]
     mode: ContinuousDelivery
     label: beta
     increment: Inherit
     source-branches: [ 'release', 'main', 'support', 'hotfix' ]
     pre-release-weight: 30000
   support:
-    regex: ^support[/-]
+    regex: ^support[\/-]
     mode: ContinuousDelivery
     label: ''
     increment: Patch
@@ -840,9 +836,9 @@ The pre-release label to use for this branch. Use the value `{BranchName}` as a 
 insert the value of the named group `BranchName` from the [regular expression](#regex).
 
 For example: branch `feature/foo` would become a pre-release label
-of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[/-](?<BranchName>.+)'`.
+of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?<BranchName>.+)'`.
 
-Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[/-](?<StoryNo>sc-\d+)[-/].+'`.
+Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
 
 **Note:** To clear a default use an empty string: `label: ''`
 
@@ -870,30 +866,6 @@ The increment of the merged branch will be ignored when this branch related prop
 ### prevent-increment-when-current-commit-tagged
 
 This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.
-
-### label-number-pattern
-
-Pull requests require us to extract the pre-release number out of the branch
-name so `refs/pulls/534/merge` builds as `PullRequest.534`. This is a regex with
-a named capture group called `number`.
-
-If the branch `mode` is set to `ContinuousDeployment`, then the extracted
-`number` is appended to the name of the pre-release label and the number portion
-is the number of commits since the last label. This enables consecutive commits to
-the pull request branch to generate unique full semantic version numbers when
-the branch is configured to use ContinuousDeployment mode.
-
-**Example usage:**
-
-```yaml
-branches:
-  pull-request:
-    mode: ContinuousDeployment
-    label: PullRequest
-    increment: Inherit
-    track-merge-target: true
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
-```
 
 ### track-merge-target
 

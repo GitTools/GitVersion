@@ -26,7 +26,7 @@ public class MainlineDevelopmentScenarios : TestBase
         .WithBranch("hotfix", builder => builder
             .WithIsMainBranch(false).WithIncrement(IncrementStrategy.Patch)
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
-            .WithRegularExpression("^hotfix[/-](?<BranchName>.+)").WithLabel("{BranchName}")
+            .WithRegularExpression(@"^hotfix[\/-](?<BranchName>.+)").WithLabel("{BranchName}")
             .WithSourceBranches("main")
         )
         .WithBranch("pull-request", builder => builder

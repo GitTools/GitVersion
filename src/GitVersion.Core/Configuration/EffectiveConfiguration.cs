@@ -60,7 +60,6 @@ public record EffectiveConfiguration
         PreventIncrementOfMergedBranch = branchConfiguration.PreventIncrement.OfMergedBranch ?? false;
         PreventIncrementWhenBranchMerged = branchConfiguration.PreventIncrement.WhenBranchMerged ?? false;
         PreventIncrementWhenCurrentCommitTagged = branchConfiguration.PreventIncrement.WhenCurrentCommitTagged ?? true;
-        LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;
         TrackMergeMessage = branchConfiguration.TrackMergeMessage ?? true;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
@@ -108,8 +107,6 @@ public record EffectiveConfiguration
     public bool PreventIncrementWhenBranchMerged { get; }
 
     public bool PreventIncrementWhenCurrentCommitTagged { get; }
-
-    public string? LabelNumberPattern { get; }
 
     public bool TrackMergeTarget { get; }
 

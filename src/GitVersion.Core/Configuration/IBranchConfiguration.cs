@@ -14,8 +14,6 @@ public interface IBranchConfiguration
 
     IPreventIncrementConfiguration PreventIncrement { get; }
 
-    string? LabelNumberPattern { get; }
-
     bool? TrackMergeTarget { get; }
 
     bool? TrackMergeMessage { get; }

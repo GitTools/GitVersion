@@ -12,7 +12,6 @@ internal class BranchConfigurationBuilder
     private bool? preventIncrementOfMergedBranch;
     private bool? preventIncrementWhenBranchMerged;
     private bool? preventIncrementWhenCurrentCommitTagged;
-    private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
@@ -61,12 +60,6 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithPreventIncrementWhenCurrentCommitTagged(bool? value)
     {
         this.preventIncrementWhenCurrentCommitTagged = value;
-        return this;
-    }
-
-    public virtual BranchConfigurationBuilder WithLabelNumberPattern(string? value)
-    {
-        this.labelNumberPattern = value;
         return this;
     }
 
@@ -150,7 +143,6 @@ internal class BranchConfigurationBuilder
         WithPreventIncrementOfMergedBranch(value.PreventIncrement.OfMergedBranch);
         WithPreventIncrementWhenBranchMerged(value.PreventIncrement.WhenBranchMerged);
         WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrement.WhenCurrentCommitTagged);
-        WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
@@ -176,7 +168,6 @@ internal class BranchConfigurationBuilder
         CommitMessageIncrementing = commitMessageIncrementing,
         IsMainBranch = isMainBranch,
         IsReleaseBranch = isReleaseBranch,
-        LabelNumberPattern = labelNumberPattern,
         PreventIncrement = new PreventIncrementConfiguration
         {
             OfMergedBranch = preventIncrementOfMergedBranch,

@@ -395,7 +395,7 @@ public class DevelopScenarios : TestBase
             )
             .WithBranch("hotfix", builder => builder
                 .WithPreventIncrementOfMergedBranch(true)
-                .WithRegularExpression("^(origin/)?hotfix[/-]")
+                .WithRegularExpression(@"^(origin/)?hotfix[\/-]")
             )
             .Build();
 

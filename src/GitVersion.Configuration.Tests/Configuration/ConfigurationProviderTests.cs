@@ -103,7 +103,7 @@ branches:
         const string text = @"
 branches:
     bug:
-        regex: 'bug[/-]'
+        regex: 'bug[\/-]'
         label: bugfix
         source-branches: [notconfigured]";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
@@ -120,7 +120,7 @@ branches:
         var text = $@"
 branches:
     bug:
-        regex: 'bug[/-]'
+        regex: 'bug[\/-]'
         label: bugfix
         source-branches: [{wellKnownBranchKey}]";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
@@ -136,13 +136,13 @@ branches:
 next-version: 2.0.0
 branches:
     bug:
-        regex: 'bug[/-]'
+        regex: 'bug[\/-]'
         label: bugfix
         source-branches: []";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["bug"].RegularExpression.ShouldBe("bug[/-]");
+        configuration.Branches["bug"].RegularExpression.ShouldBe(@"bug[\/-]");
         configuration.Branches["bug"].Label.ShouldBe("bugfix");
     }
 

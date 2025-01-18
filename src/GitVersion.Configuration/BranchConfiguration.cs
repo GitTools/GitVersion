@@ -1,5 +1,4 @@
 using GitVersion.Configuration.Attributes;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -25,12 +24,6 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyName("prevent-increment")]
     [JsonPropertyDescription("The prevent increment configuration section.")]
     public PreventIncrementConfiguration PreventIncrement { get; internal set; } = new();
-
-    [JsonPropertyName("label-number-pattern")]
-    [JsonPropertyDescription($"The regular expression pattern to use to extract the number from the branch name. Defaults to '{RegexPatterns.Configuration.DefaultLabelNumberPattern}'.")]
-    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultLabelNumberPattern)]
-    [JsonPropertyFormat(Format.Regex)]
-    public string? LabelNumberPattern { get; internal set; }
 
     [JsonPropertyName("track-merge-target")]
     [JsonPropertyDescription("Strategy which will look for tagged merge commits directly off the current branch.")]
@@ -97,7 +90,6 @@ internal record BranchConfiguration : IBranchConfiguration
                 WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrement.WhenBranchMerged,
                 WhenCurrentCommitTagged = PreventIncrement.WhenCurrentCommitTagged ?? configuration.PreventIncrement.WhenCurrentCommitTagged
             },
-            LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,
             CommitMessageIncrementing = CommitMessageIncrementing ?? configuration.CommitMessageIncrementing,
@@ -124,7 +116,6 @@ internal record BranchConfiguration : IBranchConfiguration
                 WhenBranchMerged = PreventIncrement.WhenBranchMerged ?? configuration.PreventIncrementWhenBranchMerged,
                 WhenCurrentCommitTagged = PreventIncrement.WhenCurrentCommitTagged ?? configuration.PreventIncrementWhenCurrentCommitTagged
             },
-            LabelNumberPattern = LabelNumberPattern ?? configuration.LabelNumberPattern,
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,
             CommitMessageIncrementing = CommitMessageIncrementing ?? configuration.CommitMessageIncrementing,
