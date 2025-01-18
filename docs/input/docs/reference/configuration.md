@@ -208,7 +208,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L166' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -332,7 +332,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L115' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -441,7 +441,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L100' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -687,7 +687,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 0
   release:
-    regex: ^releases?[\/-]
+    regex: ^releases?[/-]
     mode: ContinuousDelivery
     label: beta
     increment: None
@@ -699,28 +699,29 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    regex: ^features?[\/-]
+    regex: ^features?[/-]
     mode: ContinuousDelivery
     label: '{BranchName}'
     increment: Inherit
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
   pull-request:
-    regex: ^(pull-requests|pull|pr)[\/-]
+    regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     label: PullRequest
     increment: Inherit
+    label-number-pattern: '[/-](?<number>\d+)[-/]'
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
   hotfix:
-    regex: ^hotfix(es)?[\/-]
+    regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     label: beta
     increment: Inherit
     source-branches: [ 'release', 'main', 'support', 'hotfix' ]
     pre-release-weight: 30000
   support:
-    regex: ^support[\/-]
+    regex: ^support[/-]
     mode: ContinuousDelivery
     label: ''
     increment: Patch
@@ -836,9 +837,9 @@ The pre-release label to use for this branch. Use the value `{BranchName}` as a 
 insert the value of the named group `BranchName` from the [regular expression](#regex).
 
 For example: branch `feature/foo` would become a pre-release label
-of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?<BranchName>.+)'`.
+of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[/-](?<BranchName>.+)'`.
 
-Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
+Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[/-](?<StoryNo>sc-\d+)[-/].+'`.
 
 **Note:** To clear a default use an empty string: `label: ''`
 
@@ -866,6 +867,30 @@ The increment of the merged branch will be ignored when this branch related prop
 ### prevent-increment-when-current-commit-tagged
 
 This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.
+
+### label-number-pattern
+
+Pull requests require us to extract the pre-release number out of the branch
+name so `refs/pulls/534/merge` builds as `PullRequest.534`. This is a regex with
+a named capture group called `number`.
+
+If the branch `mode` is set to `ContinuousDeployment`, then the extracted
+`number` is appended to the name of the pre-release label and the number portion
+is the number of commits since the last label. This enables consecutive commits to
+the pull request branch to generate unique full semantic version numbers when
+the branch is configured to use ContinuousDeployment mode.
+
+**Example usage:**
+
+```yaml
+branches:
+  pull-request:
+    mode: ContinuousDeployment
+    label: PullRequest
+    increment: Inherit
+    track-merge-target: true
+    label-number-pattern: '[/-](?<number>\d+)[-/]'
+```
 
 ### track-merge-target
 
