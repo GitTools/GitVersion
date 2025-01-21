@@ -54,7 +54,7 @@ jobs:
     needs: [ prepare ]
     uses: ./.github/workflows/_unit_tests.yml
     with:
-      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
+      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
     secrets: inherit
 
   artifacts_windows_test:
@@ -77,8 +77,8 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
-      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
-      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
+      docker_distros: ${{ needs.prepare.outputs.docker_distros }}
+      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
 
   docker_linux_images:
     needs: [ prepare, build ]
@@ -96,8 +96,8 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
-      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
-      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
+      docker_distros: ${{ needs.prepare.outputs.docker_distros }}
+      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
     secrets: inherit
 
   docker_linux_manifests:
@@ -105,8 +105,8 @@ jobs:
     name: Docker Manifests
     uses: ./.github/workflows/_docker_manifests.yml
     with:
-      dockerDistros: ${{ needs.prepare.outputs.dockerDistros }}
-      dotnetVersions: ${{ needs.prepare.outputs.dotnetVersions }}
+      docker_distros: ${{ needs.prepare.outputs.docker_distros }}
+      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
     secrets: inherit
 
   publish:

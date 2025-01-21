@@ -1,7 +1,7 @@
 on:
   workflow_call:
     inputs:
-      dotnetVersions:
+      dotnet_versions:
         required: true
         type: string
 env:
@@ -10,14 +10,14 @@ env:
   
 jobs:
   unit_test:
-    name: ${{ matrix.os }} - net${{ matrix.dotnetVersion }}
+    name: ${{ matrix.os }} - net${{ matrix.dotnet_version }}
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-2025, ubuntu-24.04, macos-15]
-        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
+        dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -32,11 +32,11 @@ jobs:
     -
       name: '[Unit Test]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Test --dotnet_version=${{ matrix.dotnetVersion }}
+      run: dotnet run/build.dll --target=Test --dotnet_version=${{ matrix.dotnet_version }}
 
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: matrix.dotnetVersion == '9.0'
+      if: matrix.dotnet_version == '9.0'
       with:
         paths: artifacts/test-results/*.results.xml
