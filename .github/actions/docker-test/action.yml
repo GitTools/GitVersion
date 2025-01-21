@@ -17,8 +17,14 @@ runs:
   -
     name: '[Docker Build & Test] DockerHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerTest --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll --target=DockerTest `
+              --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} `
+              --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: '[Docker Build & Test] GitHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerTest --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll --target=DockerTest `
+              --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} `
+              --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic

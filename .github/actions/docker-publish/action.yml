@@ -35,7 +35,10 @@ runs:
   -
     name: '[Docker Publish] DockerHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
+    run: | 
+        dotnet run/docker.dll `
+              --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} `
+              --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: Login to GitHub
     uses: docker/login-action@v3
@@ -46,4 +49,7 @@ runs:
   -
     name: '[Docker Publish] GitHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll `
+              --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} `
+              --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic

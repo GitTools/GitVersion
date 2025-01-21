@@ -50,4 +50,7 @@ jobs:
     -
       name: '[Test Artifacts]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch=${{ inputs.arch }} --dotnet_version=${{ matrix.dotnetVersion }} --docker_distro=${{ matrix.dockerDistro }}
+      run: |
+          dotnet run/artifacts.dll `
+                --target=ArtifactsTest --arch=${{ inputs.arch }} --dotnet_version=${{ matrix.dotnetVersion }} `
+                --docker_distro=${{ matrix.dockerDistro }}
