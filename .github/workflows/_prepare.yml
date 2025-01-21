@@ -1,12 +1,12 @@
 on:
   workflow_call:
     outputs:
-      dockerDistros:
+      docker_distros:
         description: 'List of Docker distros'
-        value: ${{ jobs.set_matrix.outputs.dockerDistros }}
-      dotnetVersions:
+        value: ${{ jobs.set_matrix.outputs.docker_distros }}
+      dotnet_versions:
         description: 'List of .NET versions'
-        value: ${{ jobs.set_matrix.outputs.dotnetVersions }}
+        value: ${{ jobs.set_matrix.outputs.dotnet_versions }}
 jobs:
   prepare:
     name: ${{ matrix.os }}
@@ -51,8 +51,8 @@ jobs:
     name: Set Matrix
     runs-on: ubuntu-24.04
     outputs:
-      dockerDistros: ${{ steps.set_matrix.outputs.dockerDistros }}
-      dotnetVersions: ${{ steps.set_matrix.outputs.dotnetVersions }}
+      docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
+      dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}
     steps:
       -
         name: Checkout

@@ -7,10 +7,10 @@ on:
       arch:
         required: true
         type: string
-      dockerDistros:
+      docker_distros:
         required: true
         type: string
-      dotnetVersions:
+      dotnet_versions:
         required: true
         type: string
 env:
@@ -19,13 +19,13 @@ env:
 
 jobs:
   docker:
-    name: ${{ matrix.dockerDistro }} - net${{ matrix.dotnetVersion }}
+    name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
       matrix:
-        dockerDistro: ${{ fromJson(inputs.dockerDistros) }}
-        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
+        docker_distro: ${{ fromJson(inputs.docker_distros) }}
+        dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
     steps:
     -
       name: Checkout
@@ -43,35 +43,23 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Set up Docker
-      uses: docker/setup-docker-action@v4
-      with:
-        daemon-config: '{ "features": { "containerd-snapshotter": true } }'        
-    -
-      name: Setup QEMU
-      uses: docker/setup-qemu-action@v3
-    -
-      name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      with:
-        version: 'latest'
-        driver-opts: 'image=moby/buildkit:buildx-stable-1'
-        install: true    
+      uses: ./.github/actions/docker-setup
     -
       name: Docker Test
       if: success() && github.event_name == 'pull_request' || github.repository_owner != 'GitTools'
       uses: ./.github/actions/docker-test
       with:
         arch: ${{ inputs.arch }}
-        dockerDistro: ${{ matrix.dockerDistro }}
-        dotnetVersion: ${{ matrix.dotnetVersion }}
+        docker_distro: ${{ matrix.docker_distro }}
+        dotnet_version: ${{ matrix.dotnet_version }}
     -
       name: Docker Publish
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main'
       uses: ./.github/actions/docker-publish
       with:
         arch: ${{ inputs.arch }}
-        dockerDistro: ${{ matrix.dockerDistro }}
-        dotnetVersion: ${{ matrix.dotnetVersion }}
+        docker_distro: ${{ matrix.docker_distro }}
+        dotnet_version: ${{ matrix.dotnet_version }}
         docker_registry_username: ${{ secrets.DOCKER_USERNAME }}
         docker_registry_password: ${{ secrets.DOCKER_PASSWORD }}
         github_registry_username: ${{ github.repository_owner }}

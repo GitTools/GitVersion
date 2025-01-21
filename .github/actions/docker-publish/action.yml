@@ -4,10 +4,10 @@ inputs:
   arch:
     description: 'Docker architecture'
     required: true
-  dockerDistro:
+  docker_distro:
     description: 'Linux Distro'
     required: true
-  dotnetVersion:
+  dotnet_version:
     description: '.net version'
     required: true
   docker_registry_username:
@@ -35,7 +35,10 @@ runs:
   -
     name: '[Docker Publish] DockerHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
+    run: | 
+        dotnet run/docker.dll `
+              --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
+              --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: Login to GitHub
     uses: docker/login-action@v3
@@ -46,4 +49,7 @@ runs:
   -
     name: '[Docker Publish] GitHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll `
+              --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
+              --docker_distro=${{ inputs.docker_distro }} --docker_registry github --verbosity=diagnostic

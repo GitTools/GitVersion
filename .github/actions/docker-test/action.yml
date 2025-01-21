@@ -4,10 +4,10 @@ inputs:
   arch:
     description: 'Docker architecture'
     default: 'amd64'
-  dockerDistro:
+  docker_distro:
     description: 'Linux Distro'
     default: 'debian.12'
-  dotnetVersion:
+  dotnet_version:
     description: '.net version'
     default: '8.0'
 
@@ -17,8 +17,14 @@ runs:
   -
     name: '[Docker Build & Test] DockerHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerTest --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry dockerhub --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll --target=DockerTest `
+              --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
+              --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: '[Docker Build & Test] GitHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerTest --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnetVersion }} --docker_distro=${{ inputs.dockerDistro }} --docker_registry github --verbosity=diagnostic
+    run: |
+        dotnet run/docker.dll --target=DockerTest `
+              --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
+              --docker_distro=${{ inputs.docker_distro }} --docker_registry github --verbosity=diagnostic

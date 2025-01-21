@@ -7,10 +7,10 @@ on:
       arch:
         required: true
         type: string
-      dockerDistros:
+      docker_distros:
         required: true
         type: string
-      dotnetVersions:
+      dotnet_versions:
         required: true
         type: string
 env:
@@ -19,13 +19,13 @@ env:
   
 jobs:
   artifacts:
-    name: ${{ matrix.dockerDistro }} - net${{ matrix.dotnetVersion }}
+    name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
-      matrix: 
-        dockerDistro: ${{ fromJson(inputs.dockerDistros) }}
-        dotnetVersion: ${{ fromJson(inputs.dotnetVersions) }}
+      matrix:
+        docker_distro: ${{ fromJson(inputs.docker_distros) }}
+        dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
     steps:
     -
       name: Checkout
@@ -48,6 +48,12 @@ jobs:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
+      name: Set up Docker
+      uses: ./.github/actions/docker-setup
+    -
       name: '[Test Artifacts]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch=${{ inputs.arch }} --dotnet_version=${{ matrix.dotnetVersion }} --docker_distro=${{ matrix.dockerDistro }}
+      run: |
+          dotnet run/artifacts.dll `
+                --target=ArtifactsTest --arch=${{ inputs.arch }} --dotnet_version=${{ matrix.dotnet_version }} `
+                --docker_distro=${{ matrix.docker_distro }}
