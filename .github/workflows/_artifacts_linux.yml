@@ -48,6 +48,9 @@ jobs:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
+      name: Set up Docker
+      uses: ./.github/actions/docker-setup
+    -
       name: '[Test Artifacts]'
       shell: pwsh
       run: |

@@ -43,16 +43,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Set up Docker
-      uses: docker/setup-docker-action@v4
-      with:
-        daemon-config: '{ "features": { "containerd-snapshotter": true } }'        
-    -
-      name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      with:
-        version: 'latest'
-        driver-opts: 'image=moby/buildkit:buildx-stable-1'
-        install: true    
+      uses: ./.github/actions/docker-setup
     -
       name: Docker Test
       if: success() && github.event_name == 'pull_request' || github.repository_owner != 'GitTools'
