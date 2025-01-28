@@ -13,7 +13,7 @@ internal class GitVersionApp(RootCommandImpl rootCommand)
 
     public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
     {
-        var cliConfiguration = new CliConfiguration(rootCommand);
+        var cliConfiguration = new CommandLineConfiguration(rootCommand);
         var parseResult = cliConfiguration.Parse(args);
 
         var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
