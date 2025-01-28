@@ -35,7 +35,7 @@
     <PackageVersion Include="NUnit" Version="4.3.2" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.6.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
-    <PackageVersion Include="Shouldly" Version="4.2.1" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Drawing.Common" Version="9.0.1" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="9.0.1" />
     <PackageVersion Include="System.Text.Json" Version="9.0.1" />
