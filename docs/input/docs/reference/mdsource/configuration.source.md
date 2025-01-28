@@ -265,77 +265,84 @@ If you have branch specific configuration upgrading to v4 will force you to
 upgrade.
 
 ```yaml
+workflow: 'GitHubFlow/v1'
 branches:
   main:
-    regex: ^master$|^main$
-    mode: ContinuousDelivery
     label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment:
+      of-merged-branch: true
     track-merge-target: false
-    source-branches: [ 'develop', 'release' ]
+    track-merge-message: true
+    regex: ^master$|^main$
+    source-branches: []
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
     pre-release-weight: 55000
-  develop:
-    regex: ^dev(elop)?(ment)?$
-    mode: ContinuousDeployment
-    label: alpha
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    source-branches: []
-    tracks-release-branches: true
-    is-release-branch: false
-    is-main-branch: false
-    pre-release-weight: 0
   release:
-    regex: ^releases?[/-]
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: beta
-    increment: None
-    prevent-increment-of-merged-branch-version: true
+    increment: Patch
+    prevent-increment:
+      of-merged-branch: true
+      when-branch-merged: false
+      when-current-commit-tagged: false
     track-merge-target: false
-    source-branches: [ 'develop', 'main', 'support', 'release' ]
+    track-merge-message: true
+    regex: ^releases?[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    regex: ^features?[/-]
-    mode: ContinuousDelivery
+    mode: ManualDeployment
     label: '{BranchName}'
     increment: Inherit
-    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^features?[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    is-source-branch-for: []
+    is-main-branch: false
     pre-release-weight: 30000
   pull-request:
-    regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
-    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
+    source-branches:
+    - main
+    - release
+    - feature
+    is-source-branch-for: []
     pre-release-weight: 30000
-  hotfix:
-    regex: ^hotfix(es)?[/-]
-    mode: ContinuousDelivery
-    label: beta
+  unknown:
+    mode: ManualDeployment
+    label: '{BranchName}'
     increment: Inherit
-    source-branches: [ 'release', 'main', 'support', 'hotfix' ]
-    pre-release-weight: 30000
-  support:
-    regex: ^support[/-]
-    mode: ContinuousDelivery
-    label: ''
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    source-branches: [ 'main' ]
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: false
+    regex: (?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    - pull-request
+    is-source-branch-for: []
+    is-main-branch: false
 ```
 
 If you don't specify the regex, the built-in for that branch config will be
@@ -441,9 +448,9 @@ The pre-release label to use for this branch. Use the value `{BranchName}` as a 
 insert the value of the named group `BranchName` from the [regular expression](#regex).
 
 For example: branch `feature/foo` would become a pre-release label
-of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[/-](?<BranchName>.+)'`.
+of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?<BranchName>.+)'`.
 
-Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[/-](?<StoryNo>sc-\d+)[-/].+'`.
+Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
 
 **Note:** To clear a default use an empty string: `label: ''`
 
@@ -475,25 +482,28 @@ This branch related property controls the behvior whether to use the tagged (val
 ### label-number-pattern
 
 Pull requests require us to extract the pre-release number out of the branch
-name so `refs/pulls/534/merge` builds as `PullRequest.534`. This is a regex with
-a named capture group called `number`.
-
-If the branch `mode` is set to `ContinuousDeployment`, then the extracted
-`number` is appended to the name of the pre-release label and the number portion
-is the number of commits since the last label. This enables consecutive commits to
-the pull request branch to generate unique full semantic version numbers when
-the branch is configured to use ContinuousDeployment mode.
+name so `refs/pull/534/merge` builds as `PullRequest534`. This is a regex with
+a named capture group called `Number`.
 
 **Example usage:**
 
 ```yaml
 branches:
   pull-request:
-    mode: ContinuousDeployment
-    label: PullRequest
+    mode: ContinuousDelivery
+    label: PullRequest{Number}
     increment: Inherit
-    track-merge-target: true
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
+    source-branches:
+    - main
+    - release
+    - feature
+    is-source-branch-for: []
+    pre-release-weight: 30000
 ```
 
 ### track-merge-target
