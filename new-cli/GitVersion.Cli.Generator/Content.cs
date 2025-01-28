@@ -27,7 +27,7 @@ using {{Model.SettingsTypeNamespace}};{{ end }}
 
 namespace {{Namespace}};
 
-public class {{Model.CommandTypeName}}Impl : CliCommand, ICommandImpl
+public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 {
     public string CommandName => nameof({{Model.CommandTypeName}}Impl);
     {{- if (Model.ParentCommand | string.empty) }}
@@ -38,14 +38,14 @@ public class {{Model.CommandTypeName}}Impl : CliCommand, ICommandImpl
     {{- $settingsProperties = Model.SettingsProperties | array.sort "Name" }}
     // Options list
     {{~ for $prop in $settingsProperties ~}}
-    protected readonly CliOption<{{$prop.TypeName}}> {{$prop.Name}}Option;
+    protected readonly Option<{{$prop.TypeName}}> {{$prop.Name}}Option;
     {{~ end ~}}
 
     public {{Model.CommandTypeName}}Impl({{Model.CommandTypeName}} command)
         : base("{{Model.CommandName}}", "{{Model.CommandDescription}}")
     {
         {{~ for $prop in $settingsProperties ~}}
-        {{$prop.Name}}Option = new CliOption<{{$prop.TypeName}}>("{{$prop.OptionName}}", [{{$prop.Aliases}}])
+        {{$prop.Name}}Option = new Option<{{$prop.TypeName}}>("{{$prop.OptionName}}", [{{$prop.Aliases}}])
         {
             Required = {{$prop.Required}},
             Description = "{{$prop.Description}}",
@@ -80,7 +80,7 @@ using System.CommandLine;
 using {{InfraNamespaceName}};
 namespace {{Namespace}};
 
-public class RootCommandImpl : CliRootCommand
+public class RootCommandImpl : RootCommand
 {
     public RootCommandImpl(IEnumerable<ICommandImpl> commands)
     {
@@ -94,12 +94,12 @@ public class RootCommandImpl : CliRootCommand
     {
         if (!string.IsNullOrWhiteSpace(command.ParentCommandName))
         {
-            var parent = map[command.ParentCommandName] as CliCommand;
-            parent?.Add((CliCommand)command);
+            var parent = map[command.ParentCommandName] as Command;
+            parent?.Add((Command)command);
         }
         else
         {
-            Add((CliCommand)command);
+            Add((Command)command);
         }
     }
 }
