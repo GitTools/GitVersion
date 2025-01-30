@@ -1,6 +1,7 @@
 namespace GitVersion.VersionCalculation;
 
 [Flags]
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum VersionStrategies
 {
     None = 0,

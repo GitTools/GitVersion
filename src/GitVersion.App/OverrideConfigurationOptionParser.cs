@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
@@ -45,7 +46,8 @@ internal class OverrideConfigurationOptionParser
         return unwrappedType == typeof(string)
                || unwrappedType.IsEnum
                || unwrappedType == typeof(int)
-               || unwrappedType == typeof(bool);
+               || unwrappedType == typeof(bool)
+               || unwrappedType == typeof(VersionStrategies[]);
     }
 
     internal void SetValue(string key, string value) => overrideConfiguration[key] = QuotedStringHelpers.UnquoteText(value);
