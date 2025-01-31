@@ -30,5 +30,6 @@ public class VersionStrategiesConverter : IYamlTypeConverter
     public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         // Convert from an object to text during serialization.
+        throw new NotImplementedException();
     }
 }
