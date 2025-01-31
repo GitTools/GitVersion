@@ -9,15 +9,21 @@ namespace GitVersion.Agents.Tests;
 [TestFixture]
 public class GitLabCiTests : TestBase
 {
-    private GitLabCi buildServer;
     private IServiceProvider sp;
+    private GitLabCi buildServer;
+    private IEnvironment environment;
 
     [SetUp]
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<GitLabCi>());
         this.buildServer = this.sp.GetRequiredService<GitLabCi>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, "true");
     }
+
+    [TearDown]
+    public void TearDown() => this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, null);
 
     [Test]
     public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
@@ -32,6 +38,55 @@ public class GitLabCiTests : TestBase
         var generatedParameterMessages = this.buildServer.GenerateSetParameterMessage("name", "value");
         generatedParameterMessages.Length.ShouldBe(1);
         generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
+    }
+
+    [TestCase("main", "main")]
+    [TestCase("dev", "dev")]
+    [TestCase("development", "development")]
+    [TestCase("my_cool_feature", "my_cool_feature")]
+    [TestCase("#3-change_projectname", "#3-change_projectname")]
+    public void GetCurrentBranchShouldHandleBranches(string branchName, string expectedResult)
+    {
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe(expectedResult);
+    }
+
+    [TestCase("main", "", "main")]
+    [TestCase("v1.0.0", "v1.0.0", null)]
+    [TestCase("development", "", "development")]
+    [TestCase("v1.2.1", "v1.2.1", null)]
+    public void GetCurrentBranchShouldHandleTags(string branchName, string commitTag, string? expectedResult)
+    {
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
+        this.environment.SetEnvironmentVariable("CI_COMMIT_TAG", commitTag); // only set in pipelines for tags
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        if (!string.IsNullOrEmpty(expectedResult))
+        {
+            result.ShouldBe(expectedResult);
+        }
+        else
+        {
+            result.ShouldBeNull();
+        }
+    }
+
+    [TestCase("main", "main")]
+    [TestCase("dev", "dev")]
+    [TestCase("development", "development")]
+    [TestCase("my_cool_feature", "my_cool_feature")]
+    [TestCase("#3-change_projectname", "#3-change_projectname")]
+    public void GetCurrentBranchShouldHandlePullRequests(string branchName, string expectedResult)
+    {
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe(expectedResult);
     }
 
     [Test]
