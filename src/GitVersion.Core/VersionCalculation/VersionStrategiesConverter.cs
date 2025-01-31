@@ -9,22 +9,34 @@ public class VersionStrategiesConverter : IYamlTypeConverter
 {
     public static readonly IYamlTypeConverter Instance = new VersionStrategiesConverter();
 
-    public bool Accepts(Type type)
-    {
-        return type == typeof(VersionStrategies[]);
-    }
+    public bool Accepts(Type type) => type == typeof(VersionStrategies[]);
 
     public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
-        string data = parser.Consume<Scalar>().Value;
+        List<VersionStrategies> strategies = new();
 
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml 
-            .Build();
+        if (parser.TryConsume<SequenceStart>(out var _))
+        {
+            while (!parser.TryConsume<SequenceEnd>(out var _))
+            {
+                string data = parser.Consume<Scalar>().Value;
 
-        VersionStrategies[] strategies = deserializer.Deserialize<VersionStrategies[]>(data);
+                var strategy = Enum.Parse<VersionStrategies>(data);
+                strategies.Add(strategy);
+            }
+        }
+        else
+        {
+            string data = parser.Consume<Scalar>().Value;
 
-        return strategies;
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml 
+                .Build();
+
+            strategies = deserializer.Deserialize<List<VersionStrategies>>(data);
+        }
+
+        return strategies.ToArray();
     }
 
     public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
