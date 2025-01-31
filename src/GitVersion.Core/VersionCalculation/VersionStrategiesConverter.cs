@@ -29,7 +29,15 @@ public class VersionStrategiesConverter : IYamlTypeConverter
 
     public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
-        // Convert from an object to text during serialization.
-        throw new NotImplementedException();
+        VersionStrategies[] strategies = (VersionStrategies[])value!;
+
+        var s = new SerializerBuilder()
+            .JsonCompatible() // <- Looks good
+            //.WithDefaultScalarStyle(ScalarStyle.DoubleQuoted)
+            //.WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+        var data = s.Serialize(strategies);
+
+        emitter.Emit(new Scalar(data));
     }
 }
