@@ -104,15 +104,6 @@
               "null"
             ]
           },
-          "label-number-pattern": {
-            "format": "regex",
-            "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\\d+)'.",
-            "default": "[/-](?<number>\\d+)",
-            "type": [
-              "string",
-              "null"
-            ]
-          },
           "pre-release-weight": {
             "description": "Provides a way to translate the PreReleaseLabel to a number.",
             "type": [
@@ -228,15 +219,6 @@
     },
     "label": {
       "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "label-number-pattern": {
-      "format": "regex",
-      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\\d+)'.",
-      "default": "[/-](?<number>\\d+)",
       "type": [
         "string",
         "null"

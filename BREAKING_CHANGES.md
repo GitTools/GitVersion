@@ -1,4 +1,4 @@
-## v6.1.0
+## v6.2.0
 
 * The configuration property `label-number-pattern` was removed. The functionality can be still used by changing the label and the branch name regular expression for pull-request branches.
 
