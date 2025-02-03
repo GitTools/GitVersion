@@ -710,7 +710,7 @@ GitVersion.VersionCalculation.VersionStrategies.VersionInBranchName = 32 -> GitV
 GitVersion.VersionCalculation.VersionStrategiesConverter
 GitVersion.VersionCalculation.VersionStrategiesConverter.VersionStrategiesConverter() -> void
 static readonly GitVersion.VersionCalculation.VersionStrategiesConverter.Instance -> YamlDotNet.Serialization.IYamlTypeConverter!
-GitVersion.VersionCalculation.VersionStrategiesConverter.Accepts(System.Type type) -> bool
+GitVersion.VersionCalculation.VersionStrategiesConverter.Accepts(System.Type! type) -> bool
 GitVersion.VersionCalculation.VersionStrategiesConverter.ReadYaml(YamlDotNet.Core.IParser! parser, System.Type! type, YamlDotNet.Serialization.ObjectDeserializer! rootDeserializer) -> object?
 GitVersion.VersionCalculation.VersionStrategiesConverter.WriteYaml(YamlDotNet.Core.IEmitter! emitter, object? value, System.Type! type, YamlDotNet.Serialization.ObjectSerializer! serializer) -> void
 GitVersion.VersionCalculation.VersionStrategyModule
