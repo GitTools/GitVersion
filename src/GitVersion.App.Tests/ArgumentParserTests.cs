@@ -535,9 +535,9 @@ public class ArgumentParserTests : TestBase
         );
         yield return new TestCaseData(
             "strategies=[\"None\",\"Mainline\"]",
-            new GitVersionConfiguration()
+            new GitVersionConfiguration
             {
-                VersionStrategies = [ VersionStrategies.None, VersionStrategies.Mainline]
+                VersionStrategies = [VersionStrategies.None, VersionStrategies.Mainline]
             }
         );
     }
