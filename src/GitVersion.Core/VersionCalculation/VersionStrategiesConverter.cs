@@ -30,7 +30,7 @@ public class VersionStrategiesConverter : IYamlTypeConverter
             string data = parser.Consume<Scalar>().Value;
 
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml 
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)
                 .Build();
 
             strategies = deserializer.Deserialize<List<VersionStrategies>>(data);
@@ -44,9 +44,7 @@ public class VersionStrategiesConverter : IYamlTypeConverter
         VersionStrategies[] strategies = (VersionStrategies[])value!;
 
         var s = new SerializerBuilder()
-            .JsonCompatible() // <- Looks good
-            //.WithDefaultScalarStyle(ScalarStyle.DoubleQuoted)
-            //.WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .JsonCompatible()
             .Build();
         var data = s.Serialize(strategies);
 
