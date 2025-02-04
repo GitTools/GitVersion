@@ -1,11 +1,12 @@
+using GitVersion.VersionCalculation;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GitVersion.VersionCalculation;
+namespace GitVersion.Configuration;
 
-public class VersionStrategiesConverter : IYamlTypeConverter
+internal class VersionStrategiesConverter : IYamlTypeConverter
 {
     public static readonly IYamlTypeConverter Instance = new VersionStrategiesConverter();
 
