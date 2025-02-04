@@ -1,4 +1,3 @@
-using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.TypeInspectors;
