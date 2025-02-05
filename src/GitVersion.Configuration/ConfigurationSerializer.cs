@@ -8,6 +8,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 {
     private static IDeserializer Deserializer => new DeserializerBuilder()
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
+        .WithTypeConverter(VersionStrategiesConverter.Instance)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .Build();
 
