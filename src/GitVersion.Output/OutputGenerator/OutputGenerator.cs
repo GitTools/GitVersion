@@ -28,9 +28,32 @@ internal sealed class OutputGenerator(
     public void Execute(GitVersionVariables variables, OutputContext context)
     {
         var gitVersionOptions = this.options.Value;
+
         if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
         {
             this.buildAgent.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
+        }
+
+        if (gitVersionOptions.Output.Contains(OutputType.DotEnv))
+        {
+            List<string> dotEnvEntries = [];
+            foreach (var (key, value) in variables.OrderBy(x => x.Key))
+            {
+                string prefixedKey = "GitVersion_" + key;
+                string environmentValue = "''";
+                if (!value.IsNullOrEmpty())
+                {
+                    environmentValue = value;
+                }
+                dotEnvEntries.Add(prefixedKey + "=" + environmentValue);
+            }
+
+            foreach(var dotEnvEntry in dotEnvEntries)
+            {
+                this.console.WriteLine(dotEnvEntry);
+            }
+
+            return;
         }
 
         var json = this.serializer.ToJson(variables);

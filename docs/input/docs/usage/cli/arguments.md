@@ -30,7 +30,7 @@ GitVersion [path]
 
     /targetpath     Same as 'path', but not positional
     /output         Determines the output to the console. Can be either 'json',
-                    'file' or 'buildserver', will default to 'json'.
+                    'file', 'buildserver' or 'dotenv', will default to 'json'.
     /outputfile     Path to output file. It is used in combination with /output
                     'file'.
     /showvariable   Used in conjunction with /output json, will output just a
