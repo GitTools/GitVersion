@@ -19,7 +19,7 @@ on the issues of incrementing automatically.
 
 ## How Continuous Delivery affects GitVersion
 
-Continuous delivery is good when you deploy continuously to an testing system.
+Continuous delivery is good when you deploy continuously to a testing system.
 
 * 1.1.0-3
 * 1.1.0-2 (tag: 1.1.0-2) <-- This is the version which has been deployed on testing
