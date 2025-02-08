@@ -53,6 +53,18 @@ cat gitversion.json | gitversion output buildserver
 # Read version variables from stdin and write to Jenkins.
 cat gitversion.json | gitversion output buildserver --buildserver Jenkins
 
+# Output version variables in Dotenv format
+gitversion /output dotenv
+
+# Show only a subset of the version variables in Dotenv format (Unix syntax)
+gitversion /output dotenv | grep -i "prerelease"
+
+# Show only a subset of the version variables that match the regex in Dotenv format (Unix syntax)
+gitversion /output dotenv | grep -iE "major|sha=|_prerelease"
+
+# Write version variables in Dotenv format into a file
+gitversion /output dotenv > gitversion.env
+
 # Read version variables from stdin and write to globbed .wxi files.
 cat gitversion.json | gitversion output wix --path ./**/*.wxi
 
