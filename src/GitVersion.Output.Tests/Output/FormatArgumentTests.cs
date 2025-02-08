@@ -68,6 +68,126 @@ public class FormatArgumentTests : TestBase
         output.ShouldBeEquivalentTo(expectedValue);
     }
 
+    [TestCase("Major", "1")]
+    [TestCase("MajorMinorPatch", "1.1.0")]
+    [TestCase("SemVer", "1.1.0-foo.1")]
+    [TestCase("PreReleaseTagWithDash", "-foo.1")]
+    [TestCase("AssemblySemFileVer", "1.1.0.0")]
+    [TestCase("BranchName", "feature/foo")]
+    [TestCase("FullSemVer", "1.1.0-foo.1+1")]
+    public void ShouldOutputDotEnvEntries(string variableName, string expectedValue)
+    {
+        var fixture = CreateTestRepository();
+
+        var consoleBuilder = new StringBuilder();
+        IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
+
+        var sp = ConfigureServices(services =>
+        {
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = fixture.Repository.ToGitRepository();
+
+            services.AddSingleton(options);
+            services.AddSingleton(repository);
+            services.AddSingleton(consoleAdapter);
+        });
+
+        var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
+        var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
+
+        outputGenerator.Execute(versionVariables, new());
+        var output = consoleBuilder.ToString();
+        output.ShouldContain("GitVersion_" + variableName + "=" + expectedValue + "\n");
+    }
+
+    [TestCase]
+    public void ShouldOutputAllCalculatedVariablesAsDotEnvEntries()
+    {
+        var fixture = CreateTestRepository();
+
+        var consoleBuilder = new StringBuilder();
+        IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
+
+        var sp = ConfigureServices(services =>
+        {
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = fixture.Repository.ToGitRepository();
+
+            services.AddSingleton(options);
+            services.AddSingleton(repository);
+            services.AddSingleton(consoleAdapter);
+        });
+
+        var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
+        var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
+
+        outputGenerator.Execute(versionVariables, new());
+        var output = consoleBuilder.ToString();
+        var totalOutputLines = output.Split("\n").Length - 1; // ignore last item that also ends with \n
+        Assert.That(totalOutputLines, Is.EqualTo(versionVariables.Count()));
+    }
+
+    [TestCase("Major", "0")]
+    [TestCase("MajorMinorPatch", "0.0.1")]
+    [TestCase("SemVer", "0.0.1-1")]
+    [TestCase("BuildMetaData", "''")]
+    [TestCase("AssemblySemVer", "0.0.1.0")]
+    [TestCase("PreReleaseTagWithDash", "-1")]
+    [TestCase("BranchName", "main")]
+    [TestCase("PreReleaseLabel", "''")]
+    [TestCase("PreReleaseLabelWithDash", "''")]
+    public void ShouldOutputAllDotEnvEntriesEvenForMinimalRepositories(string variableName, string expectedValue)
+    {
+        var fixture = CreateMinimalTestRepository();
+
+        var consoleBuilder = new StringBuilder();
+        IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
+
+        var sp = ConfigureServices(services =>
+        {
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = fixture.Repository.ToGitRepository();
+
+            services.AddSingleton(options);
+            services.AddSingleton(repository);
+            services.AddSingleton(consoleAdapter);
+        });
+
+        var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
+        var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
+
+        outputGenerator.Execute(versionVariables, new());
+        var output = consoleBuilder.ToString();
+        output.ShouldContain("GitVersion_" + variableName + "=" + expectedValue + "\n");
+    }
+
+    [TestCase]
+    public void ShouldOutputAllCalculatedVariablesAsDotEnvEntriesEvenForMinimalRepositories()
+    {
+        var fixture = CreateMinimalTestRepository();
+
+        var consoleBuilder = new StringBuilder();
+        IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
+
+        var sp = ConfigureServices(services =>
+        {
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = fixture.Repository.ToGitRepository();
+
+            services.AddSingleton(options);
+            services.AddSingleton(repository);
+            services.AddSingleton(consoleAdapter);
+        });
+
+        var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();
+        var outputGenerator = sp.GetRequiredService<IOutputGenerator>();
+
+        outputGenerator.Execute(versionVariables, new());
+        var output = consoleBuilder.ToString();
+        var totalOutputLines = output.Split("\n").Length - 1; // ignore last item that also ends with \n
+        Assert.That(totalOutputLines, Is.EqualTo(versionVariables.Count()));
+    }
+
     private static EmptyRepositoryFixture CreateTestRepository()
     {
         var fixture = new EmptyRepositoryFixture();
@@ -77,6 +197,13 @@ public class FormatArgumentTests : TestBase
         _ = fixture.Repository.Tags.Add("1.0.0", secondCommit);
         var featureBranch = fixture.Repository.CreateBranch("feature/foo");
         Commands.Checkout(fixture.Repository, featureBranch);
+        _ = fixture.Repository.MakeACommit();
+        return fixture;
+    }
+
+    private static EmptyRepositoryFixture CreateMinimalTestRepository()
+    {
+        var fixture = new EmptyRepositoryFixture();
         _ = fixture.Repository.MakeACommit();
         return fixture;
     }

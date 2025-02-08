@@ -417,6 +417,7 @@ GitVersion.OutputType
 GitVersion.OutputType.BuildServer = 0 -> GitVersion.OutputType
 GitVersion.OutputType.File = 2 -> GitVersion.OutputType
 GitVersion.OutputType.Json = 1 -> GitVersion.OutputType
+GitVersion.OutputType.DotEnv = 3 -> GitVersion.OutputType
 GitVersion.OutputVariables.GitVersionVariables
 GitVersion.OutputVariables.GitVersionVariables.AssemblySemFileVer.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.AssemblySemFileVer.init -> void
