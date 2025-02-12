@@ -25,7 +25,7 @@ public class PackageNuget : FrostingTask<BuildContext>
         // GitVersion.MsBuild, global tool & core
         context.DotNetPack("./src/GitVersion.Core", settings);
 
-        settings.ArgumentCustomization = arg => arg.Append("-p:PackAsTool=true");
+        settings.ArgumentCustomization = arg => arg.Append("-p:PackAsTool=true").Append("-p:BuildInParallel=false");
         context.DotNetPack("./src/GitVersion.App", settings);
 
         settings.ArgumentCustomization = arg => arg.Append("-p:IsPackaging=true");
