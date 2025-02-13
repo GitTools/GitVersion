@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -7,6 +8,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
+    private readonly static Dictionary<string, Patch> patchsCache = [];
 
     private IRepository RepositoryInstance
     {
@@ -28,9 +30,6 @@ internal sealed partial class GitRepository
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
     public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
     public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
-    public IQueryableCommitLog InnerCommits => RepositoryInstance.Commits;
-    public IEnumerable<LibGit2Sharp.Tag> InnerTags => RepositoryInstance.Tags;
-    public Diff InnerDiff => RepositoryInstance.Diff;
 
     public void DiscoverRepository(string? gitDirectory)
     {
@@ -54,6 +53,26 @@ internal sealed partial class GitRepository
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
             return mergeBase == null ? null : new Commit(mergeBase);
         });
+    }
+
+    public IEnumerable<string>? FindPatchPaths(ICommit commit, string? tagPrefix)
+    {
+        Patch? patch = null;
+        var innerCommit = RepositoryInstance.Commits.First(c => c.Sha == commit.Sha);
+        var match = new Regex($"^({tagPrefix ?? ""}).*$", RegexOptions.Compiled);
+
+        if (!patchsCache.ContainsKey(commit.Sha))
+        {
+            if (!RepositoryInstance.Tags.Any(t => t.Target.Sha == commit.Sha && match.IsMatch(t.FriendlyName)))
+            {
+                Tree commitTree = innerCommit.Tree; // Main Tree
+                Tree? parentCommitTree = innerCommit.Parents.FirstOrDefault()?.Tree; // Secondary Tree
+                patch = RepositoryInstance.Diff.Compare<Patch>(parentCommitTree, commitTree); // Difference
+            }
+            patchsCache[commit.Sha] = patch;
+        }
+
+        return patch?.Select(p => p.Path);
     }
 
     public int UncommittedChangesCount()

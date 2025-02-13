@@ -1,5 +1,3 @@
 #nullable enable
 GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-GitVersion.Git.IGitRepository.InnerCommits.get -> LibGit2Sharp.IQueryableCommitLog!
-GitVersion.Git.IGitRepository.InnerDiff.get -> LibGit2Sharp.Diff!
-GitVersion.Git.IGitRepository.InnerTags.get -> System.Collections.Generic.IEnumerable<LibGit2Sharp.Tag!>!
+GitVersion.Git.IGitRepository.FindPatchPaths(GitVersion.Git.ICommit! commit, string? tagPrefix) -> System.Collections.Generic.IEnumerable<string!>?
