@@ -97,7 +97,7 @@ public class FormatArgumentTests : TestBase
 
         outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString();
-        output.ShouldContain("GitVersion_" + variableName + "=" + expectedValue + "\n");
+        output.ShouldContain($"GitVersion_{variableName}={expectedValue}{SysEnv.NewLine}");
     }
 
     [TestCase]
@@ -123,7 +123,7 @@ public class FormatArgumentTests : TestBase
 
         outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString();
-        var totalOutputLines = output.Split("\n").Length - 1; // ignore last item that also ends with \n
+        var totalOutputLines = output.Split(SysEnv.NewLine).Length - 1; // ignore last item that also ends with the newline string
         Assert.That(totalOutputLines, Is.EqualTo(versionVariables.Count()));
     }
 
@@ -158,7 +158,7 @@ public class FormatArgumentTests : TestBase
 
         outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString();
-        output.ShouldContain("GitVersion_" + variableName + "=" + expectedValue + "\n");
+        output.ShouldContain($"GitVersion_{variableName}={expectedValue}{SysEnv.NewLine}");
     }
 
     [TestCase]
@@ -184,7 +184,7 @@ public class FormatArgumentTests : TestBase
 
         outputGenerator.Execute(versionVariables, new());
         var output = consoleBuilder.ToString();
-        var totalOutputLines = output.Split("\n").Length - 1; // ignore last item that also ends with \n
+        var totalOutputLines = output.Split(SysEnv.NewLine).Length - 1; // ignore last item that also ends with the newline string
         Assert.That(totalOutputLines, Is.EqualTo(versionVariables.Count()));
     }
 
