@@ -28,6 +28,9 @@ internal sealed partial class GitRepository
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
     public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
     public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
+    public IQueryableCommitLog InnerCommits => RepositoryInstance.Commits;
+    public IEnumerable<LibGit2Sharp.Tag> InnerTags => RepositoryInstance.Tags;
+    public Diff InnerDiff => RepositoryInstance.Diff;
 
     public void DiscoverRepository(string? gitDirectory)
     {

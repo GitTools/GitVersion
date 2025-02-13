@@ -11,6 +11,7 @@ namespace GitVersion.VersionCalculation;
 internal class NextVersionCalculator(
     ILog log,
     Lazy<GitVersionContext> versionContext,
+    IGitRepository repository,
     IEnumerable<IDeploymentModeCalculator> deploymentModeCalculators,
     IEnumerable<IVersionStrategy> versionStrategies,
     IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
@@ -284,7 +285,7 @@ internal class NextVersionCalculator(
 
     private bool IncludeVersion(IBaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
     {
-        foreach (var versionFilter in ignoreConfiguration.ToFilters())
+        foreach (var versionFilter in ignoreConfiguration.ToFilters(repository, Context))
         {
             if (versionFilter.Exclude(baseVersion, out var reason))
             {

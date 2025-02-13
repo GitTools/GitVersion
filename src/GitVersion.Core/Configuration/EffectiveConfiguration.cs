@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -67,7 +68,6 @@ public record EffectiveConfiguration
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing.Value;
-        VersionFilters = configuration.Ignore.ToFilters();
         Ignore = configuration.Ignore;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
         IsReleaseBranch = branchConfiguration.IsReleaseBranch ?? false;
@@ -121,8 +121,6 @@ public record EffectiveConfiguration
     public string? NoBumpMessage { get; }
 
     public CommitMessageIncrementMode CommitMessageIncrementing { get; }
-
-    public IEnumerable<IVersionFilter> VersionFilters { get; }
 
     public IIgnoreConfiguration Ignore { get; }
 

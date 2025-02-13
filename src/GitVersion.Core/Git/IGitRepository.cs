@@ -1,3 +1,5 @@
+using LibGit2Sharp;
+
 namespace GitVersion.Git;
 
 public interface IGitRepository : IDisposable
@@ -14,6 +16,9 @@ public interface IGitRepository : IDisposable
     IBranchCollection Branches { get; }
     ICommitCollection Commits { get; }
     IRemoteCollection Remotes { get; }
+    IQueryableCommitLog InnerCommits { get; }
+    IEnumerable<Tag> InnerTags { get; }
+    Diff InnerDiff { get; }
 
     ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
     int UncommittedChangesCount();
