@@ -6,6 +6,8 @@ public sealed record BaseVersionOperator : IBaseVersionIncrement
 {
     public string Source { get; init; } = string.Empty;
 
+    public VersionIncrementSourceType SourceType { get; } = VersionIncrementSourceType.Tree;
+
     public ICommit? BaseVersionSource { get; init; }
 
     public VersionField Increment { get; init; }

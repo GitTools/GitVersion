@@ -3,3 +3,16 @@ GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersio
 GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 GitVersion.Git.IGitRepository.FindPatchPaths(GitVersion.Git.ICommit! commit, string? tagPrefix) -> System.Collections.Generic.IEnumerable<string!>?
+GitVersion.VersionCalculation.BaseVersion.BaseVersion(string! source, GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource = null, GitVersion.VersionCalculation.VersionIncrementSourceType sourceType = GitVersion.VersionCalculation.VersionIncrementSourceType.Tree) -> void
+GitVersion.VersionCalculation.BaseVersion.SourceType.get -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.BaseVersion.SourceType.init -> void
+GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand(string! Source, GitVersion.SemanticVersion! SemanticVersion, GitVersion.Git.ICommit? BaseVersionSource = null, GitVersion.VersionCalculation.VersionIncrementSourceType SourceType = GitVersion.VersionCalculation.VersionIncrementSourceType.Tree) -> void
+GitVersion.VersionCalculation.BaseVersionOperand.SourceType.get -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.BaseVersionOperand.SourceType.init -> void
+GitVersion.VersionCalculation.BaseVersionOperator.SourceType.get -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.IBaseVersionIncrement.SourceType.get -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.VersionIncrementSourceType.Fallback = 2 -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.VersionIncrementSourceType.NextVersionConfig = 3 -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.VersionIncrementSourceType.Tag = 1 -> GitVersion.VersionCalculation.VersionIncrementSourceType
+GitVersion.VersionCalculation.VersionIncrementSourceType.Tree = 0 -> GitVersion.VersionCalculation.VersionIncrementSourceType

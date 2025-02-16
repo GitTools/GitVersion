@@ -617,7 +617,6 @@ GitVersion.Settings.OnlyTrackedBranches -> bool
 GitVersion.VersionCalculation.BaseVersion
 GitVersion.VersionCalculation.BaseVersion.BaseVersion() -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersion(GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void
-GitVersion.VersionCalculation.BaseVersion.BaseVersion(string! source, GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersion.GetIncrementedVersion() -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.BaseVersion.Operand.get -> GitVersion.VersionCalculation.BaseVersionOperand!
@@ -629,7 +628,6 @@ GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.get -> bool
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.BaseVersionOperand
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand() -> void
-GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand(string! Source, GitVersion.SemanticVersion! SemanticVersion, GitVersion.Git.ICommit? BaseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.init -> void
 GitVersion.VersionCalculation.BaseVersionOperand.SemanticVersion.get -> GitVersion.SemanticVersion!

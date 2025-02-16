@@ -16,7 +16,7 @@ internal class PathFilter(IGitRepository repository, GitVersionContext context, 
         ArgumentNullException.ThrowIfNull(baseVersion);
 
         reason = null;
-        if (baseVersion.Source.StartsWith("Fallback") || baseVersion.Source.StartsWith("Git tag") || baseVersion.Source.StartsWith("NextVersion")) return false;
+        if (baseVersion.SourceType != VersionIncrementSourceType.Tree) return false;
 
         return Exclude(baseVersion.BaseVersionSource, out reason);
     }

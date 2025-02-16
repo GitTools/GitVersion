@@ -42,7 +42,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
                     };
                 }
 
-                yield return new BaseVersion("NextVersion in GitVersion configuration file", semanticVersion)
+                yield return new BaseVersion("NextVersion in GitVersion configuration file", semanticVersion, sourceType: VersionIncrementSourceType.NextVersionConfig)
                 {
                     Operator = operation
                 };
