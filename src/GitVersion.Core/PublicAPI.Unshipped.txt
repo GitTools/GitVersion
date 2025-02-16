@@ -1,3 +1,5 @@
 #nullable enable
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration, GitVersion.Git.IGitRepository? repository = null, System.Lazy<GitVersion.GitVersionContext!>? versionContext = null, GitVersion.Configuration.EffectiveConfiguration? fallbackConfiguration = null) -> void
+GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 GitVersion.Git.IGitRepository.FindPatchPaths(GitVersion.Git.ICommit! commit, string? tagPrefix) -> System.Collections.Generic.IEnumerable<string!>?

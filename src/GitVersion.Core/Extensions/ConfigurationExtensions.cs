@@ -24,7 +24,7 @@ internal static class ConfigurationExtensions
         {
             fallbackConfiguration = parentConfiguration;
         }
-        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
+        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration: fallbackConfiguration);
     }
 
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)

@@ -65,7 +65,6 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> 
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Configuration.EffectiveConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration, GitVersion.Configuration.EffectiveConfiguration? fallbackConfiguration = null) -> void
 GitVersion.Configuration.EffectiveConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainBranch.get -> bool
