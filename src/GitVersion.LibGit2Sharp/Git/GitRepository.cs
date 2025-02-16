@@ -8,7 +8,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
-    private readonly static Dictionary<string, Patch> patchsCache = [];
+    private readonly static Dictionary<string, Patch> patchCache = [];
 
     private IRepository RepositoryInstance
     {
@@ -61,7 +61,7 @@ internal sealed partial class GitRepository
         var innerCommit = RepositoryInstance.Commits.First(c => c.Sha == commit.Sha);
         var match = new Regex($"^({tagPrefix ?? ""}).*$", RegexOptions.Compiled);
 
-        if (!patchsCache.ContainsKey(commit.Sha))
+        if (!this.patchsCache.ContainsKey(commit.Sha))
         {
             if (!RepositoryInstance.Tags.Any(t => t.Target.Sha == commit.Sha && match.IsMatch(t.FriendlyName)))
             {
