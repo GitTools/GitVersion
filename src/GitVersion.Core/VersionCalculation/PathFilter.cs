@@ -28,21 +28,21 @@ internal class PathFilter(IGitRepository repository, GitVersionContext context, 
 
         if (commit != null)
         {
-            var patchPaths = repository.FindPatchPaths(commit, context.Configuration.TagPrefixPattern);
+            var patchPaths = repository.FindPatchPaths(commit, this.context.Configuration.TagPrefixPattern);
 
             if (patchPaths != null)
             {
-                switch (mode)
+                switch (this.mode)
                 {
                     case PathFilterMode.Inclusive:
-                        if (!paths.Any(path => patchPaths.Any(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
+                        if (!this.paths.Any(path => patchPaths.Any(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
                         {
                             reason = "Source was ignored due to commit path is not present";
                             return true;
                         }
                         break;
                     case PathFilterMode.Exclusive:
-                        if (paths.Any(path => patchPaths.All(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
+                        if (this.paths.Any(path => patchPaths.All(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
                         {
                             reason = "Source was ignored due to commit path excluded";
                             return true;

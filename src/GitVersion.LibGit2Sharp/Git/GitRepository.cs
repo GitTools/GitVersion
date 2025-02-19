@@ -58,16 +58,16 @@ internal sealed partial class GitRepository
     public IEnumerable<string>? FindPatchPaths(ICommit commit, string? tagPrefix)
     {
         Patch? patch = null;
-        var innerCommit = RepositoryInstance.Commits.First(c => c.Sha == commit.Sha);
+        var innerCommit = this.RepositoryInstance.Commits.First(c => c.Sha == commit.Sha);
         var match = new Regex($"^({tagPrefix ?? ""}).*$", RegexOptions.Compiled);
 
         if (!this.patchCache.ContainsKey(commit.Sha))
         {
-            if (!RepositoryInstance.Tags.Any(t => t.Target.Sha == commit.Sha && match.IsMatch(t.FriendlyName)))
+            if (!this.RepositoryInstance.Tags.Any(t => t.Target.Sha == commit.Sha && match.IsMatch(t.FriendlyName)))
             {
                 Tree commitTree = innerCommit.Tree; // Main Tree
                 Tree? parentCommitTree = innerCommit.Parents.FirstOrDefault()?.Tree; // Secondary Tree
-                patch = RepositoryInstance.Diff.Compare<Patch>(parentCommitTree, commitTree); // Difference
+                patch = this.RepositoryInstance.Diff.Compare<Patch>(parentCommitTree, commitTree); // Difference
                 this.patchCache[commit.Sha] = patch;
             }
         }
