@@ -23,7 +23,6 @@ internal class PathFilter(IGitRepository repository, GitVersionContext context, 
 
     public bool Exclude(ICommit? commit, out string? reason)
     {
-        commit.NotNull();
         reason = null;
 
         if (commit != null)

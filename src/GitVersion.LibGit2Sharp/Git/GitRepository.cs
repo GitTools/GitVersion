@@ -71,6 +71,10 @@ internal sealed partial class GitRepository
                 this.patchCache[commit.Sha] = patch;
             }
         }
+        else
+        {
+            patch = this.patchCache[commit.Sha];
+        }
 
         return patch?.Select(p => p.Path);
     }
