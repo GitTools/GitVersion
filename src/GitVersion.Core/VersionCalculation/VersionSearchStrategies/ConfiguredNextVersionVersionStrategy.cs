@@ -18,16 +18,16 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
     {
         configuration.NotNull();
 
-        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
+        if (!this.Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
             yield break;
 
-        var nextVersion = Context.Configuration.NextVersion;
+        var nextVersion = this.Context.Configuration.NextVersion;
         if (!nextVersion.IsNullOrEmpty())
         {
             var semanticVersion = SemanticVersion.Parse(
-                nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
+                nextVersion, this.Context.Configuration.TagPrefixPattern, this.Context.Configuration.SemanticVersionFormat
             );
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+            var label = configuration.Value.GetBranchSpecificLabel(this.Context.CurrentBranch.Name, null);
 
             if (semanticVersion.IsMatchForBranchSpecificLabel(label))
             {
