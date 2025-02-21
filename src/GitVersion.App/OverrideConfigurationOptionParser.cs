@@ -18,7 +18,7 @@ internal class OverrideConfigurationOptionParser
     /// </summary>
     /// <returns></returns>
     /// <remarks>
-    /// Lookup keys are created from <see cref="System.Text.Json.Serialization.JsonPropertyNameAttribute"/> to match 'GitVersion.yml' or 'GitVersion.yaml' file
+    /// Lookup keys are created from <see cref="System.Text.Json.Serialization.JsonPropertyNameAttribute"/> to match 'GitVersion.yml', 'GitVersion.yaml', '.GitVersion.yml' or '.GitVersion.yaml' file
     /// options as close as possible.
     /// </remarks>
     private static ILookup<string?, PropertyInfo> GetSupportedProperties() => typeof(GitVersionConfiguration).GetProperties(BindingFlags.Public | BindingFlags.Instance)

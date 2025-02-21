@@ -13,6 +13,9 @@ internal class ConfigurationFileLocator(
 {
     public const string DefaultFileName = "GitVersion.yml";
     public const string DefaultAlternativeFileName = "GitVersion.yaml";
+    public const string DefaultFileNameDotted = $".{DefaultFileName}";
+    public const string DefaultAlternativeFileNameDotted = $".{DefaultAlternativeFileName}";
+    public List<string> PossibleConfigFileNames = [DefaultFileName, DefaultAlternativeFileName, DefaultFileNameDotted, DefaultAlternativeFileNameDotted];
 
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ILog log = log.NotNull();
@@ -30,11 +33,17 @@ internal class ConfigurationFileLocator(
     public string? GetConfigurationFile(string? directory)
     {
         if (directory is null) return null;
-        string?[] candidates = [this.ConfigurationFile, DefaultFileName, DefaultAlternativeFileName];
-        var candidatePaths =
-            from candidate in candidates
-            where !candidate.IsNullOrWhiteSpace()
-            select PathHelper.Combine(directory, candidate);
+        var candidateList = new List<string>(PossibleConfigFileNames);
+        if (!this.ConfigurationFile.IsNullOrEmpty())
+        {
+            // give configuration value the highest priority
+            candidateList.Insert(0, this.ConfigurationFile);
+        }
+
+        var candidatePaths = candidateList
+            .Where(candidate => !string.IsNullOrWhiteSpace(candidate))
+            .Select(candidate => PathHelper.Combine(directory, candidate))
+            .ToList();
 
         foreach (var candidatePath in candidatePaths)
         {
@@ -65,7 +74,7 @@ internal class ConfigurationFileLocator(
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
         {
-            if (this.ConfigurationFile is not (DefaultFileName or DefaultAlternativeFileName))
+            if (!PossibleConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile)))
             {
                 workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
                 projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
