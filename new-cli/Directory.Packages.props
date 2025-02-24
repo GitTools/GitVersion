@@ -12,8 +12,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
     <PackageVersion Include="Polly" Version="8.5.2" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.13.0" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.13.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.13.1" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.13.1" />
     <!-- specific packages -->
     <PackageVersion Include="Scriban" Version="5.12.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
