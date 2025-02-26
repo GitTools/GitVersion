@@ -33,17 +33,12 @@ internal class ConfigurationFileLocator(
     public string? GetConfigurationFile(string? directory)
     {
         if (directory is null) return null;
-        var candidateList = new List<string>(SupportedConfigFileNames);
-        if (!this.ConfigurationFile.IsNullOrEmpty())
-        {
-            // give configuration value the highest priority
-            candidateList.Insert(0, this.ConfigurationFile);
-        }
 
-        var candidatePaths = candidateList
-            .Where(candidate => !string.IsNullOrWhiteSpace(candidate))
-            .Select(candidate => PathHelper.Combine(directory, candidate))
-            .ToList();
+        string?[] candidates = [this.ConfigurationFile, ..SupportedConfigFileNames];
+        var candidatePaths =
+            from candidate in candidates
+            where !candidate.IsNullOrWhiteSpace()
+            select PathHelper.Combine(directory, candidate);
 
         foreach (var candidatePath in candidatePaths)
         {
