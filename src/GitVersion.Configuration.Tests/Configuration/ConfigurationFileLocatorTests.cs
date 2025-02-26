@@ -73,6 +73,18 @@ public static class ConfigurationFileLocatorTests
             Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         }
 
+        [TestCase(ConfigurationFileLocator.DefaultFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
+        public void NoWarnOnLowercasedGitVersionYmlFile(string configurationFile)
+        {
+            var lowercasedConfigurationFile = configurationFile.ToLower();
+            using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: lowercasedConfigurationFile);
+
+            Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
+        }
+
         [Test]
         public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
     }

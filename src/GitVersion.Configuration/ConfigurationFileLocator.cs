@@ -74,7 +74,7 @@ internal class ConfigurationFileLocator(
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
         {
-            if (!SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile)))
+            if (!SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase)))
             {
                 workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
                 projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
