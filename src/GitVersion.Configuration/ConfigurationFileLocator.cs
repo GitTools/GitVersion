@@ -13,6 +13,9 @@ internal class ConfigurationFileLocator(
 {
     public const string DefaultFileName = "GitVersion.yml";
     public const string DefaultAlternativeFileName = "GitVersion.yaml";
+    public const string DefaultFileNameDotted = $".{DefaultFileName}";
+    public const string DefaultAlternativeFileNameDotted = $".{DefaultAlternativeFileName}";
+    public List<string> SupportedConfigFileNames = [DefaultFileName, DefaultAlternativeFileName, DefaultFileNameDotted, DefaultAlternativeFileNameDotted];
 
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ILog log = log.NotNull();
@@ -30,7 +33,8 @@ internal class ConfigurationFileLocator(
     public string? GetConfigurationFile(string? directory)
     {
         if (directory is null) return null;
-        string?[] candidates = [this.ConfigurationFile, DefaultFileName, DefaultAlternativeFileName];
+
+        string?[] candidates = [this.ConfigurationFile, .. SupportedConfigFileNames];
         var candidatePaths =
             from candidate in candidates
             where !candidate.IsNullOrWhiteSpace()
@@ -65,7 +69,7 @@ internal class ConfigurationFileLocator(
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
         {
-            if (this.ConfigurationFile is not (DefaultFileName or DefaultAlternativeFileName))
+            if (!SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase)))
             {
                 workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
                 projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);

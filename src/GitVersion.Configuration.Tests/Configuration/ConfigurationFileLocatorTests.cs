@@ -37,8 +37,20 @@ public static class ConfigurationFileLocatorTests
 
         [TestCase(ConfigurationFileLocator.DefaultFileName, ConfigurationFileLocator.DefaultFileName)]
         [TestCase(ConfigurationFileLocator.DefaultFileName, ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileName, ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultFileName, ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
         [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName, ConfigurationFileLocator.DefaultFileName)]
         [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName, ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName, ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName, ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted, ConfigurationFileLocator.DefaultFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted, ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted, ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted, ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted, ConfigurationFileLocator.DefaultFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted, ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted, ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted, ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
         public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
         {
             using var repositoryConfigFilePath = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: repoConfigFile);
@@ -52,9 +64,23 @@ public static class ConfigurationFileLocatorTests
 
         [TestCase(ConfigurationFileLocator.DefaultFileName)]
         [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
         public void NoWarnOnGitVersionYmlFile(string configurationFile)
         {
             using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: configurationFile);
+
+            Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
+        }
+
+        [TestCase(ConfigurationFileLocator.DefaultFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
+        [TestCase(ConfigurationFileLocator.DefaultFileNameDotted)]
+        [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
+        public void NoWarnOnLowercasedGitVersionYmlFile(string configurationFile)
+        {
+            var lowercasedConfigurationFile = configurationFile.ToLower();
+            using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: lowercasedConfigurationFile);
 
             Should.NotThrow(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         }

@@ -243,6 +243,8 @@ public class GitVersionExecutorTests : TestBase
 
     [TestCase(ConfigurationFileLocator.DefaultFileName)]
     [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
+    [TestCase(ConfigurationFileLocator.DefaultFileNameDotted)]
+    [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
     public void ConfigChangeInvalidatesCache(string configFileName)
     {
         const string versionCacheFileContent = """
