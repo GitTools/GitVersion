@@ -48,7 +48,7 @@ internal sealed class OutputGenerator(
                 dotEnvEntries.Add(prefixedKey + "=" + environmentValue);
             }
 
-            foreach(var dotEnvEntry in dotEnvEntries)
+            foreach (var dotEnvEntry in dotEnvEntries)
             {
                 this.console.WriteLine(dotEnvEntry);
             }
