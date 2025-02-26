@@ -34,7 +34,7 @@ internal class ConfigurationFileLocator(
     {
         if (directory is null) return null;
 
-        string?[] candidates = [this.ConfigurationFile, ..SupportedConfigFileNames];
+        string?[] candidates = [this.ConfigurationFile, .. SupportedConfigFileNames];
         var candidatePaths =
             from candidate in candidates
             where !candidate.IsNullOrWhiteSpace()
