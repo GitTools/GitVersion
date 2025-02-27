@@ -156,10 +156,10 @@ internal class NextVersionCalculator(
 
     private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {
-        var nextVersions = GetNextVersions(branch, configuration);
+        var nextVersions = GetNextVersions(branch, configuration).OrderByDescending(v => v.IncrementedVersion);
         log.Separator();
 
-        var maxVersion = nextVersions.Max()
+        var maxVersion = nextVersions.FirstOrDefault(v => ShouldIncludeVersion(configuration, v))
             ?? throw new GitVersionException("No base versions determined on the current branch.");
 
         ICommit? latestBaseVersionSource;
@@ -168,6 +168,7 @@ internal class NextVersionCalculator(
             .Where(
                 element => element.BaseVersion.BaseVersionSource != null
                     && element.IncrementedVersion == maxVersion.IncrementedVersion
+                    && ShouldIncludeVersion(configuration, element)
             ).ToArray();
         if (matchingVersionsOnceIncremented.Length > 1)
         {
@@ -193,11 +194,11 @@ internal class NextVersionCalculator(
                 .Where(v => v.BaseVersion.BaseVersionSource != null)
                 .OrderByDescending(v => v.IncrementedVersion)
                 .ThenByDescending(v => v.BaseVersion.BaseVersionSource?.When)
-                .FirstOrDefault();
+                .FirstOrDefault(v => ShouldIncludeVersion(configuration, v));
 
             version ??= versions.Where(v => v.BaseVersion.BaseVersionSource == null)
                 .OrderByDescending(v => v.IncrementedVersion)
-                .First();
+                .First(v => ShouldIncludeVersion(configuration, v));
             latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
         }
 
@@ -216,6 +217,9 @@ internal class NextVersionCalculator(
 
         return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
+
+    private bool ShouldIncludeVersion(IGitVersionConfiguration configuration, NextVersion version) =>
+        configuration.Ignore.ToFilters(repository, this.Context).All(filter => !filter.Exclude(version.BaseVersion, out _));
 
     private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)
     {
@@ -265,7 +269,8 @@ internal class NextVersionCalculator(
                             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                             {
                                 log.Info(baseVersion.ToString());
-                                if (IncludeVersion(baseVersion, configuration.Ignore))
+                                if (versionStrategy is not FallbackVersionStrategy || IncludeVersion(baseVersion, configuration.Ignore))
+                                //Defer the version inclusion check to the caller, for strategies other than FallbackVersionStrategy
                                 {
                                     atLeastOneBaseVersionReturned = true;
 

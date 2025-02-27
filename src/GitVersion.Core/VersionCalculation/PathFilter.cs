@@ -1,14 +1,14 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal class PathFilter(IGitRepository repository, GitVersionContext context, IEnumerable<string> paths, PathFilter.PathFilterMode mode = PathFilter.PathFilterMode.Inclusive) : IVersionFilter
+internal class PathFilter(IGitRepository repository, GitVersionContext context, IEnumerable<string> paths) : IVersionFilter
 {
     public enum PathFilterMode { Inclusive = 0, Exclusive = 1 }
 
     private readonly IEnumerable<string> paths = paths.NotNull();
-    private readonly PathFilterMode mode = mode;
     private readonly GitVersionContext context = context;
 
     public bool Exclude(IBaseVersion baseVersion, out string? reason)
@@ -31,22 +31,10 @@ internal class PathFilter(IGitRepository repository, GitVersionContext context, 
 
             if (patchPaths != null)
             {
-                switch (this.mode)
+                if (this.paths.Any(path => patchPaths.All(p => Regex.IsMatch(p, path, RegexOptions.IgnoreCase))))
                 {
-                    case PathFilterMode.Inclusive:
-                        if (!this.paths.Any(path => patchPaths.Any(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
-                        {
-                            reason = "Source was ignored due to commit path is not present";
-                            return true;
-                        }
-                        break;
-                    case PathFilterMode.Exclusive:
-                        if (this.paths.Any(path => patchPaths.All(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase))))
-                        {
-                            reason = "Source was ignored due to commit path excluded";
-                            return true;
-                        }
-                        break;
+                    reason = "Source was ignored due to commit path matching ignore regex";
+                    return true;
                 }
             }
         }

@@ -11,6 +11,7 @@ namespace GitVersion.VersionCalculation;
 
 internal sealed class MainlineVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
+    IGitRepository repository,
     IRepositoryStore repositoryStore,
     ITaggedSemanticVersionService taggedSemanticVersionService,
     IIncrementStrategyFinder incrementStrategyFinder)
@@ -19,6 +20,7 @@ internal sealed class MainlineVersionStrategy(
     private volatile int iterationCounter;
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
+    private readonly IGitRepository repository = repository.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
 
@@ -323,16 +325,16 @@ internal sealed class MainlineVersionStrategy(
         return result;
     }
 
-    private static BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel,
+    private BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel,
             IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
-        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration);
+        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration, this.repository, this.Context);
 
     internal static BaseVersion DetermineBaseVersionRecursive(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IGitRepository repository, GitVersionContext gitverContext)
     {
         iteration.NotNull();
 
-        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration).ToArray();
+        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, repository, gitverContext).ToArray();
 
         BaseVersion? result = null;
         foreach (var baseVersionIncrement in incrementSteps)
@@ -355,15 +357,20 @@ internal sealed class MainlineVersionStrategy(
     }
 
     private static IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IGitRepository repository, GitVersionContext gitverContext)
     {
-        MainlineContext context = new(incrementStrategyFinder, configuration)
+        MainlineContext context = new(incrementStrategyFinder, configuration, repository, gitverContext)
         {
             TargetLabel = targetLabel
         };
 
         foreach (var commit in iteration.Commits)
         {
+            if (configuration.Ignore.ToFilters(repository, gitverContext).OfType<PathFilter>().Any(f => f.Exclude(commit.Value, out _)))
+            {
+                continue;
+            }
+
             foreach (var item in TrunkContextPreEnricherCollection)
             {
                 item.Enrich(iteration, commit, context);
