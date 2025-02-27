@@ -20,9 +20,9 @@ public interface IBranchConfiguration
 
     CommitMessageIncrementMode? CommitMessageIncrementing { get; }
 
-    public string? RegularExpression { get; }
+    string? RegularExpression { get; }
 
-    public bool IsMatch(string branchName)
+    bool IsMatch(string branchName)
     {
         if (string.IsNullOrWhiteSpace(RegularExpression))
         {

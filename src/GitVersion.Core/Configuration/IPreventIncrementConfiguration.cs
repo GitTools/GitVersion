@@ -2,9 +2,9 @@ namespace GitVersion.Configuration;
 
 public interface IPreventIncrementConfiguration
 {
-    public bool? OfMergedBranch { get; }
+    bool? OfMergedBranch { get; }
 
-    public bool? WhenBranchMerged { get; }
+    bool? WhenBranchMerged { get; }
 
-    public bool? WhenCurrentCommitTagged { get; }
+    bool? WhenCurrentCommitTagged { get; }
 }

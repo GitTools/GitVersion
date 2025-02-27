@@ -7,6 +7,11 @@ on:
       dotnet_versions:
         description: 'List of .NET versions'
         value: ${{ jobs.set_matrix.outputs.dotnet_versions }}
+
+env:
+  DOTNET_INSTALL_DIR: "./.dotnet"
+  DOTNET_ROLL_FORWARD: "Major"
+
 jobs:
   prepare:
     name: ${{ matrix.os }}
