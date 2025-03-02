@@ -16,8 +16,24 @@ internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBa
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
     ];
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("GIT_BRANCH")
-        ?? Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos)
+    {
+        var gitBranch = Environment.GetEnvironmentVariable("GIT_BRANCH");
+        if (gitBranch is not null)
+            return gitBranch;
+
+        var sourceBranch = Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+
+        // https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+        // BUILD_SOURCEBRANCH must be used only for "real" branches, not for tags.
+        // Azure Pipelines sets BUILD_SOURCEBRANCH to refs/tags/<tag> when the pipeline is triggered for a tag.
+        if (sourceBranch?.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return null;
+        }
+
+        return sourceBranch;
+    }
 
     public override bool PreventFetch() => true;
 
