@@ -10,12 +10,12 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
     {
     }
 
-    public BaseVersion(string source, SemanticVersion semanticVersion, ICommit? baseVersionSource = null)
-        : this(new BaseVersionOperand(source, semanticVersion, baseVersionSource))
-    {
-    }
+    public BaseVersion(string source, SemanticVersion semanticVersion, ICommit? baseVersionSource = null, VersionIncrementSourceType sourceType = VersionIncrementSourceType.Tree)
+        : this(new BaseVersionOperand(source, semanticVersion, baseVersionSource, sourceType)) => this.SourceType = sourceType;
 
     public string Source => (Operator?.Source).IsNullOrEmpty() ? Operand.Source : Operator.Source;
+
+    public VersionIncrementSourceType SourceType { get; init; } = VersionIncrementSourceType.Tree;
 
     public SemanticVersion SemanticVersion => Operand.SemanticVersion;
 

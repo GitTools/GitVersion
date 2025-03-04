@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using GitVersion.Configuration.Attributes;
 
 namespace GitVersion.Configuration;
@@ -22,4 +23,11 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     [JsonPropertyName("sha")]
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
     public HashSet<string> Shas { get; init; } = [];
+
+    [JsonIgnore]
+    IReadOnlyCollection<string> IIgnoreConfiguration.Paths => Paths;
+
+    [JsonPropertyName("paths")]
+    [JsonPropertyDescription("A sequence of file paths to be excluded from the version calculations.")]
+    public Collection<string> Paths { get; init; } = [];
 }

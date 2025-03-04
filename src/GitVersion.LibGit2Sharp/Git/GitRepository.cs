@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -7,6 +8,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
+    private readonly Dictionary<string, Patch> patchCache = [];
 
     private IRepository RepositoryInstance
     {
@@ -51,6 +53,30 @@ internal sealed partial class GitRepository
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
             return mergeBase == null ? null : new Commit(mergeBase);
         });
+    }
+
+    public IEnumerable<string>? FindPatchPaths(ICommit commit, string? tagPrefix)
+    {
+        Patch? patch = null;
+        var innerCommit = this.RepositoryInstance.Commits.First(c => c.Sha == commit.Sha);
+        var match = new Regex($"^({tagPrefix ?? ""}).*$", RegexOptions.Compiled);
+
+        if (!this.patchCache.ContainsKey(commit.Sha))
+        {
+            if (!this.RepositoryInstance.Tags.Any(t => t.Target.Sha == commit.Sha && match.IsMatch(t.FriendlyName)))
+            {
+                Tree commitTree = innerCommit.Tree; // Main Tree
+                Tree? parentCommitTree = innerCommit.Parents.FirstOrDefault()?.Tree; // Secondary Tree
+                patch = this.RepositoryInstance.Diff.Compare<Patch>(parentCommitTree, commitTree); // Difference
+                this.patchCache[commit.Sha] = patch;
+            }
+        }
+        else
+        {
+            patch = this.patchCache[commit.Sha];
+        }
+
+        return patch?.Select(p => p.Path);
     }
 
     public int UncommittedChangesCount()
