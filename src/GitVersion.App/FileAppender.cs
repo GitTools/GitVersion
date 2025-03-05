@@ -1,6 +1,7 @@
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
-namespace GitVersion.Logging;
+namespace GitVersion;
 
 internal class FileAppender : ILogAppender
 {
