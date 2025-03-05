@@ -1,4 +1,3 @@
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;

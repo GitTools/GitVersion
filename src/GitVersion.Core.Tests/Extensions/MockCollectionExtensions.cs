@@ -11,5 +11,9 @@ public static class MockCollectionExtensions
     }
 
     public static void MockCollectionReturn<T>(this IEnumerable<T> items, params T[] itemsToReturn)
-        => items.GetEnumerator().Returns(_ => GetEnumerator(itemsToReturn));
+    {
+        var enumerator = items.GetEnumerator();
+        enumerator.Returns(_ => GetEnumerator(itemsToReturn));
+        enumerator.Dispose();
+    }
 }

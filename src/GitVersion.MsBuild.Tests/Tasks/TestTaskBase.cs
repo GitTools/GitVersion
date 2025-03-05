@@ -71,7 +71,7 @@ public class TestTaskBase : TestBase
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
         AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
-        msbuildFixture.WithEnv([new("GITHUB_ACTIONS", "true")]);
+        msbuildFixture.WithEnv(new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"));
         var result = msbuildFixture.Execute(task);
         if (!result.Success)
             Console.WriteLine(result.Log);

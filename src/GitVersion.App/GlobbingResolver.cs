@@ -13,5 +13,6 @@ internal class GlobbingResolver : IGlobbingResolver
         return this.matcher.Execute(GetDirectoryInfoWrapper(workingDirectory)).Files.Select(file => file.Path);
     }
 
-    protected virtual DirectoryInfoBase GetDirectoryInfoWrapper(string workingDirectory) => new DirectoryInfoWrapper(new DirectoryInfo(workingDirectory));
+    private static DirectoryInfoWrapper GetDirectoryInfoWrapper(string workingDirectory)
+        => new(new DirectoryInfo(workingDirectory));
 }

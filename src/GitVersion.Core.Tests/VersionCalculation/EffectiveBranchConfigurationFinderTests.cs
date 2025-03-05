@@ -46,7 +46,7 @@ public class EffectiveBranchConfigurationFinderTests
             .WithBranch("develop", builder => builder.WithDeploymentMode(null).WithIncrement(IncrementStrategy.Inherit))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -75,7 +75,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -109,7 +109,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -136,7 +136,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -292,7 +292,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -325,7 +325,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -360,7 +360,7 @@ public class EffectiveBranchConfigurationFinderTests
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 

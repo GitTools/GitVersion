@@ -1,8 +1,6 @@
-using GitVersion.Helpers;
+namespace GitVersion.Helpers;
 
-namespace GitVersion.Core.Tests.Helpers;
-
-public static class DirectoryHelper
+internal static class DirectoryHelper
 {
     private static readonly Dictionary<string, string> ToRename = new()
     {

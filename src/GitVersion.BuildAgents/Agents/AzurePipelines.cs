@@ -35,7 +35,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBa
         if (buildNumberEnv == newBuildNumber)
         {
             var buildNumber = variables.FullSemVer.EndsWith("+0")
-                ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2)
+                ? variables.FullSemVer[..^2]
                 : variables.FullSemVer;
 
             return $"##vso[build.updatebuildnumber]{buildNumber}";

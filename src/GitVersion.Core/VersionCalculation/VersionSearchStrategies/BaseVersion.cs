@@ -55,9 +55,7 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
             stringBuilder.Append($"{Source}: ");
             stringBuilder.Append(Operator.ForceIncrement ? "Force version increment " : "Version increment ");
 
-            if (SemanticVersion is not null)
-                stringBuilder.Append($"'{SemanticVersion:f}' ");
-
+            stringBuilder.Append($"'{SemanticVersion:f}' ");
             stringBuilder.Append($"+semver '{Operator.Increment}'");
 
             if (Operator.Label is null)

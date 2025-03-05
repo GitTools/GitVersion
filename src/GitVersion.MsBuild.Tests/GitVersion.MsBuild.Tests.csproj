@@ -26,7 +26,6 @@
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
