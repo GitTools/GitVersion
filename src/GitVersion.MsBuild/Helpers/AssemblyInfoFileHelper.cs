@@ -6,7 +6,7 @@ using static GitVersion.Core.RegexPatterns.AssemblyVersion;
 
 namespace GitVersion.MsBuild;
 
-internal static class FileHelper
+internal static class AssemblyInfoFileHelper
 {
     public static readonly string TempPath = MakeAndGetTempPath();
 

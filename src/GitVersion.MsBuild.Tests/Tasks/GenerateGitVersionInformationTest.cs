@@ -21,7 +21,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFile(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation { Language = language };
 
         using var result = ExecuteMsBuildTask(task);
@@ -42,7 +42,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileInBuildServer(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation { Language = language };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -65,7 +65,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     {
         const string taskName = nameof(GenerateGitVersionInformation);
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
 
         using var result = ExecuteMsBuildExe(project =>
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language), language);
@@ -92,7 +92,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     {
         const string taskName = nameof(GenerateGitVersionInformation);
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
 
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language), language);
@@ -117,7 +117,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenIntermediateOutputPathDoesNotExist(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTask(task);
@@ -139,7 +139,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileInBuildServerWhenIntermediateOutputPathDoesNotExist(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -165,7 +165,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -196,7 +196,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -227,7 +227,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -260,7 +260,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -288,7 +288,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceUnSet(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation
         {
             Language = language,
@@ -314,7 +314,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void GenerateGitVersionInformationTaskShouldCreateFileWithUseProjectNamespaceSetAndRootNamespaceIsSet(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new GenerateGitVersionInformation
         {
             Language = language,

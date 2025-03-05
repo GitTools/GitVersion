@@ -19,7 +19,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFile(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language };
 
         using var result = ExecuteMsBuildTask(task);
@@ -36,7 +36,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileInBuildServer(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -56,7 +56,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string taskName = nameof(UpdateAssemblyInfo);
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language), language);
 
@@ -79,7 +79,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string taskName = nameof(UpdateAssemblyInfo);
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language), language);
 
@@ -99,7 +99,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenIntermediateOutputPathDoesNotExist(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTask(task);
@@ -117,7 +117,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenIntermediateOutputPathDoesNotExistInBuildServer(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -139,7 +139,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -166,7 +166,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);

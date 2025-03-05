@@ -34,8 +34,7 @@ internal class GitVersionTaskExecutor(
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
         var versionVariables = GitVersionVariables(task);
-        DeleteTempFiles();
-        FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
+        AssemblyInfoFileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
@@ -110,7 +109,7 @@ internal class GitVersionTaskExecutor(
 
     private void DeleteTempFiles()
     {
-        var tempPath = FileHelper.TempPath;
+        var tempPath = AssemblyInfoFileHelper.TempPath;
         if (!this.fileSystem.DirectoryExists(tempPath))
         {
             return;
