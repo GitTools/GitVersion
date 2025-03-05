@@ -9,7 +9,7 @@ public class ShaVersionFilterTests : TestBase
     [Test]
     public void VerifyNullGuard()
     {
-        var commit = GitToolsTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
         var sut = new ShaVersionFilter([commit.Sha]);
 
         Should.Throw<ArgumentNullException>(() => sut.Exclude(null!, out _));
@@ -18,7 +18,7 @@ public class ShaVersionFilterTests : TestBase
     [Test]
     public void WhenShaMatchShouldExcludeWithReason()
     {
-        var commit = GitToolsTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
         BaseVersion version = new("dummy", new SemanticVersion(1), commit);
         var sut = new ShaVersionFilter([commit.Sha]);
 
@@ -29,7 +29,7 @@ public class ShaVersionFilterTests : TestBase
     [Test]
     public void WhenShaMismatchShouldNotExclude()
     {
-        var commit = GitToolsTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
         BaseVersion version = new("dummy", new SemanticVersion(1), commit);
         var sut = new ShaVersionFilter(["mismatched"]);
 

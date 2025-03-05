@@ -31,7 +31,7 @@
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Extensions\GitRepositoryTestingExtensions.cs" Link="Extensions\GitRepositoryTestingExtensions.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\GitVersionVariablesExtensions.cs" Link="Extensions\GitVersionVariablesExtensions.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\MockCollectionExtensions.cs" Link="Extensions\MockCollectionExtensions.cs" />
     </ItemGroup>

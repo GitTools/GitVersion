@@ -14,7 +14,7 @@ public class EffectiveBranchConfigurationFinderTests
         DeploymentMode versioningMode)
     {
         // Arrange
-        var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+        var branchMock = GitRepositoryTestingExtensions.CreateMockBranch("main", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithDeploymentMode(versioningMode)
             .WithBranch("main", builder => builder.WithDeploymentMode(null))
@@ -38,8 +38,8 @@ public class EffectiveBranchConfigurationFinderTests
         DeploymentMode versioningMode)
     {
         // Arrange
-        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var mainBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithDeploymentMode(null)
             .WithBranch("main", builder => builder.WithDeploymentMode(versioningMode))
@@ -64,8 +64,8 @@ public class EffectiveBranchConfigurationFinderTests
         DeploymentMode versioningMode)
     {
         // Arrange
-        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var mainBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithDeploymentMode(null)
             .WithBranch("main", builder => builder.WithDeploymentMode(versioningMode))
@@ -99,8 +99,8 @@ public class EffectiveBranchConfigurationFinderTests
     public void When_getting_configurations_of_a_branch_with_tag_alpha_Given_branch_which_inherits_from_parent_branch_Then_result_should_have_tag_alpha()
     {
         // Arrange
-        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var mainBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithLabel(string.Empty))
             .WithBranch("develop", builder => builder
@@ -126,8 +126,8 @@ public class EffectiveBranchConfigurationFinderTests
     public void When_getting_configurations_of_a_branch_without_tag_Given_branch_which_inherits_from_parent_branch_Then_result_should_have_tag_from_parent()
     {
         // Arrange
-        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var mainBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithLabel(string.Empty))
             .WithBranch("develop", builder => builder
@@ -154,7 +154,7 @@ public class EffectiveBranchConfigurationFinderTests
     public void UsesFirstBranchConfigWhenMultipleMatch(string branchName, IncrementStrategy incrementStrategy, string label)
     {
         // Arrange
-        var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
+        var releaseBranchMock = GitRepositoryTestingExtensions.CreateMockBranch(branchName, GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
             .WithBranch("release/latest", builder => builder
@@ -188,7 +188,7 @@ public class EffectiveBranchConfigurationFinderTests
     public void When_getting_configurations_of_an_orphaned_branch_Given_fallback_configuration_with_increment_inherit_Then_result_should_be_empty()
     {
         // Arrange
-        var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var branchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(IncrementStrategy.Inherit)
             .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
@@ -213,7 +213,7 @@ public class EffectiveBranchConfigurationFinderTests
         IncrementStrategy fallbackIncrement)
     {
         // Arrange
-        var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var branchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(fallbackIncrement)
             .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
@@ -236,7 +236,7 @@ public class EffectiveBranchConfigurationFinderTests
     public void When_getting_configurations_of_an_unknown_branch_Given_fallback_and_unknown_configuration_with_increment_inherit_Then_result_should_be_empty()
     {
         // Arrange
-        var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
+        var branchMock = GitRepositoryTestingExtensions.CreateMockBranch("unknown", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(IncrementStrategy.Inherit)
             .WithBranch("unknown", builder => builder.WithIncrement(IncrementStrategy.Inherit))
@@ -261,7 +261,7 @@ public class EffectiveBranchConfigurationFinderTests
     IncrementStrategy fallbackIncrement)
     {
         // Arrange
-        var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
+        var branchMock = GitRepositoryTestingExtensions.CreateMockBranch("unknown", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(fallbackIncrement)
             .WithBranch("unknown", builder => builder.WithIncrement(IncrementStrategy.Inherit))
@@ -285,13 +285,13 @@ public class EffectiveBranchConfigurationFinderTests
         IncrementStrategy fallbackIncrement, IncrementStrategy developIncrement)
     {
         // Arrange
-        var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
+        var unknownBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("unknown", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(fallbackIncrement)
             .WithBranch("develop", builder => builder.WithIncrement(developIncrement))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
@@ -318,13 +318,13 @@ public class EffectiveBranchConfigurationFinderTests
         IncrementStrategy fallbackIncrement)
     {
         // Arrange
-        var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
+        var unknownBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("unknown", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(fallbackIncrement)
             .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
@@ -353,13 +353,13 @@ public class EffectiveBranchConfigurationFinderTests
         IncrementStrategy developBranchIncrement)
     {
         // Arrange
-        var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
+        var unknownBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("unknown", GitRepositoryTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
             .WithIncrement(IncrementStrategy.Inherit)
             .WithBranch("develop", builder => builder.WithIncrement(developBranchIncrement))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);

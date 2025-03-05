@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Core.Tests;
 
-public static class GitToolsTestingExtensions
+public static class GitRepositoryTestingExtensions
 {
     private static int commitCount = 1;
     private static readonly DateTimeOffset when = DateTimeOffset.Now;
