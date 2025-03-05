@@ -18,6 +18,4 @@ public class UpdateAssemblyInfo : GitVersionTaskBase
 
     [Output]
     public string AssemblyInfoTempFilePath { get; set; }
-
-    protected override bool OnExecute() => GitVersionTasks.UpdateAssemblyInfo(this);
 }

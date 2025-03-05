@@ -1,6 +1,5 @@
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.MsBuild;
 
@@ -18,11 +17,5 @@ public abstract class GitVersionTaskBase : ITask
 
     public TaskLoggingHelper Log { get; }
 
-    public bool Execute() => OnExecute();
-
-    protected abstract bool OnExecute();
-
-    public Action<IServiceCollection>? Overrides { get; set; }
-
-    public void WithOverrides(Action<IServiceCollection> overrides) => Overrides = overrides;
+    public bool Execute() => GitVersionTasks.Execute(this);
 }

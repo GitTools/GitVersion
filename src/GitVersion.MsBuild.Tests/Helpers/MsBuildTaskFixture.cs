@@ -23,7 +23,7 @@ public class MsBuildTaskFixture(RepositoryFixtureBase fixture)
 
             task.VersionFile = versionFile;
 
-            var result = task.Execute();
+            var result = GitVersionTasks.Execute(task);
 
             return new MsBuildTaskFixtureResult<T>(fixture)
             {

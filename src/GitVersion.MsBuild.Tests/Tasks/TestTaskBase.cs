@@ -1,10 +1,8 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
-using GitVersion.Output;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
 
@@ -22,7 +20,6 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateLocalRepositoryFixture();
         task.SolutionDirectory = fixture.RepositoryPath;
-        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var result = msbuildFixture.Execute(task);
         if (!result.Success) Console.WriteLine(result.Log);
@@ -46,7 +43,6 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
-        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var environmentVariables = env.ToList();
         if (buildNumber != null)
@@ -69,7 +65,6 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
-        AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         msbuildFixture.WithEnv(new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"));
         var result = msbuildFixture.Execute(task);
@@ -92,12 +87,6 @@ public class TestTaskBase : TestBase
         if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
         return result;
     }
-    private static void AddOverrides(GitVersionTaskBase task) =>
-        task.WithOverrides(services =>
-        {
-            services.AddModule(new GitVersionBuildAgentsModule());
-            services.AddModule(new GitVersionOutputModule());
-        });
 
     private static EmptyRepositoryFixture CreateLocalRepositoryFixture()
     {
