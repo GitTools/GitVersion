@@ -5,7 +5,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class MyGet(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class MyGet(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     public const string EnvironmentVariableName = "BuildRunner";
     protected override string EnvironmentVariable => EnvironmentVariableName;

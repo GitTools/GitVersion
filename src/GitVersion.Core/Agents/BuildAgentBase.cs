@@ -4,10 +4,11 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal abstract class BuildAgentBase(IEnvironment environment, ILog log) : ICurrentBuildAgent
+internal abstract class BuildAgentBase(IEnvironment environment, ILog log, IFileSystem fileSystem) : ICurrentBuildAgent
 {
     protected readonly ILog Log = log.NotNull();
-    protected IEnvironment Environment { get; } = environment.NotNull();
+    protected readonly IEnvironment Environment = environment.NotNull();
+    protected readonly IFileSystem FileSystem = fileSystem.NotNull();
 
     protected abstract string EnvironmentVariable { get; }
     public virtual bool IsDefault => false;

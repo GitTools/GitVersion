@@ -10,7 +10,7 @@ internal class Jenkins : BuildAgentBase
     private string? file;
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public Jenkins(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
+    public Jenkins(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem) => WithPropertyFile("gitversion.properties");
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 

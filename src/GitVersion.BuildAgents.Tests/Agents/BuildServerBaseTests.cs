@@ -48,7 +48,7 @@ public class BuildServerBaseTests : TestBase
         writes.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
     }
 
-    private class BuildAgent(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+    private class BuildAgent(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
     {
         protected override string EnvironmentVariable => throw new NotImplementedException();
 

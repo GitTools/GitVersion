@@ -4,7 +4,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class GitHubActions(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 

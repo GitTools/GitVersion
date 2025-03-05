@@ -12,7 +12,7 @@ internal class BitBucketPipelines : BuildAgentBase
     private string? propertyFile;
     private string? ps1File;
 
-    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log)
+    public BitBucketPipelines(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem)
     {
         WithPropertyFile("gitversion.properties");
         WithPowershellFile("gitversion.ps1");

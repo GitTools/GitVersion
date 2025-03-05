@@ -4,7 +4,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class Drone(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class Drone(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     public const string EnvironmentVariableName = "DRONE";
     protected override string EnvironmentVariable => EnvironmentVariableName;
