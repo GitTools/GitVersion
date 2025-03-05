@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="System.Collections.Immutable" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />

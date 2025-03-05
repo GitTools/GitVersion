@@ -19,6 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
         <PackageReference Update="@(PackageReference)" PrivateAssets="All"/>
+        <PackageReference Include="System.Collections.Immutable" />
     </ItemGroup>
 
     <ItemGroup>
