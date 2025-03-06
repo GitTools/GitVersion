@@ -108,30 +108,5 @@ internal class GitVersionTaskExecutor(
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }
 
-    private void DeleteTempFiles()
-    {
-        var tempPath = AssemblyInfoFileHelper.TempPath;
-        if (!this.fileSystem.Directory.Exists(tempPath))
-        {
-            return;
-        }
-
-        foreach (var file in this.fileSystem.Directory.GetFiles(tempPath))
-        {
-            if (this.fileSystem.GetLastDirectoryWrite(file) >= DateTime.Now.AddDays(-1).Ticks)
-            {
-                continue;
-            }
-            try
-            {
-                this.fileSystem.File.Delete(file);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                //ignore contention
-            }
-        }
-    }
-
     private GitVersionVariables GitVersionVariables(GitVersionTaskBase task) => serializer.FromFile(task.VersionFile);
 }
