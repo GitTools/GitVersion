@@ -23,7 +23,7 @@ public class GitHubActionsTests : TestBase
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
         this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "branch");
 
-        this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();
+        this.githubSetEnvironmentTempFilePath = PathHelper.GetTempFileName();
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
     }
 

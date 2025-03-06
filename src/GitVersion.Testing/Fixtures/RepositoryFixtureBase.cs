@@ -45,7 +45,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         }
 
         Repository.Dispose();
-        var directoryPath = Path.GetFileName(RepositoryPath);
+        var directoryPath = PathHelper.GetFileName(RepositoryPath);
 
         try
         {

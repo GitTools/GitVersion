@@ -90,7 +90,7 @@ internal class GitVersionTaskExecutor(
                 targetNamespace = task.RootNamespace;
                 if (string.IsNullOrWhiteSpace(targetNamespace))
                 {
-                    targetNamespace = Path.GetFileNameWithoutExtension(task.ProjectFile);
+                    targetNamespace = PathHelper.GetFileNameWithoutExtension(task.ProjectFile);
                 }
             }
 

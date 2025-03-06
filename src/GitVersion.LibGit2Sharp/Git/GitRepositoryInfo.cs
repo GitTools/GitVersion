@@ -40,7 +40,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         var targetUrl = repositoryInfo.TargetUrl;
         var clonePath = repositoryInfo.ClonePath;
 
-        var userTemp = clonePath ?? Path.GetTempPath();
+        var userTemp = clonePath ?? PathHelper.GetTempPath();
         var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
         var possiblePath = PathHelper.Combine(userTemp, repositoryName);
 

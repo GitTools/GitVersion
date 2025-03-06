@@ -107,14 +107,14 @@ internal class ArgumentParser(IEnvironment environment,
     {
         if (arguments.ConfigurationFile.IsNullOrWhiteSpace()) return;
 
-        if (Path.IsPathRooted(arguments.ConfigurationFile))
+        if (PathHelper.IsPathRooted(arguments.ConfigurationFile))
         {
             if (!this.fileSystem.File.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
-            arguments.ConfigurationFile = Path.GetFullPath(arguments.ConfigurationFile);
+            arguments.ConfigurationFile = PathHelper.GetFullPath(arguments.ConfigurationFile);
         }
         else
         {
-            var configFilePath = Path.GetFullPath(PathHelper.Combine(arguments.TargetPath, arguments.ConfigurationFile));
+            var configFilePath = PathHelper.GetFullPath(PathHelper.Combine(arguments.TargetPath, arguments.ConfigurationFile));
             if (!this.fileSystem.File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
             arguments.ConfigurationFile = configFilePath;
         }
@@ -156,7 +156,7 @@ internal class ArgumentParser(IEnvironment environment,
 
             foreach (var path in paths)
             {
-                yield return Path.GetFullPath(PathHelper.Combine(workingDirectory, path));
+                yield return PathHelper.GetFullPath(PathHelper.Combine(workingDirectory, path));
             }
         }
     }
@@ -182,7 +182,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             if (name?.StartsWith('/') == true)
             {
-                if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
+                if (PathHelper.DirectorySeparatorChar == '/' && name.IsValidPath())
                 {
                     arguments.TargetPath = name;
                     return;

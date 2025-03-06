@@ -20,7 +20,7 @@ public class GitVersionTaskDirectoryTests : TestBase
         var sp = ConfigureServices();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.workDirectory = PathHelper.Combine(PathHelper.GetTempPath(), Guid.NewGuid().ToString());
-        this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
+        this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(PathHelper.DirectorySeparatorChar);
         Assert.That(this.gitDirectory, Is.Not.Null);
     }
 

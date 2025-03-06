@@ -100,7 +100,7 @@ internal static class ConfigurationExtensions
                 foreach (var groupName in regex.GetGroupNames())
                 {
                     var groupValue = match.Groups[groupName].Value;
-                    Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharaters(groupValue));
+                    Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharacters(groupValue));
                     var placeholder = $"{{{groupName}}}";
                     int index, startIndex = 0;
                     while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
@@ -115,9 +115,9 @@ internal static class ConfigurationExtensions
         return label;
     }
 
-    private static string EscapeInvalidCharaters(string groupValue) => groupValue.RegexReplace(@"[^a-zA-Z0-9-]", "-");
+    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace("[^a-zA-Z0-9-]", "-");
 
-    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string path)
+    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
     {
         string? startingDir = path;
         while (startingDir is not null)
@@ -125,7 +125,7 @@ internal static class ConfigurationExtensions
             var dirOrFilePath = PathHelper.Combine(startingDir, ".git");
             if (fileSystem.Directory.Exists(dirOrFilePath))
             {
-                return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
+                return (dirOrFilePath, PathHelper.GetDirectoryName(dirOrFilePath));
             }
 
             if (fileSystem.File.Exists(dirOrFilePath))
@@ -133,15 +133,15 @@ internal static class ConfigurationExtensions
                 string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
-                    var fullGitDirPath = Path.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
+                    var fullGitDirPath = PathHelper.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
                     if (fileSystem.Directory.Exists(fullGitDirPath))
                     {
-                        return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);
+                        return (fullGitDirPath, PathHelper.GetDirectoryName(dirOrFilePath));
                     }
                 }
             }
 
-            startingDir = Path.GetDirectoryName(startingDir);
+            startingDir = PathHelper.GetDirectoryName(startingDir);
         }
 
         return null;

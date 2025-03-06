@@ -26,7 +26,9 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
             originalFileContents = this.fileSystem.File.ReadAllText(filePath);
         }
 
-        var fileExtension = Path.GetExtension(filePath);
+        var fileExtension = PathHelper.GetExtension(filePath);
+        ArgumentNullException.ThrowIfNull(fileExtension);
+
         var template = this.templateManager.GetTemplateFor(fileExtension);
         var addFormat = this.templateManager.GetAddFormatFor(fileExtension);
         var targetNamespace = getTargetNamespace(fileExtension);
@@ -59,7 +61,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
 
         return;
 
-        string getTargetNamespace(string extension) => extension switch
+        string getTargetNamespace(string? extension) => extension switch
         {
             ".vb" => context.TargetNamespace ?? "Global",
             ".cs" => context.TargetNamespace != null ? $"{PathHelper.NewLine}namespace {context.TargetNamespace}" : "",

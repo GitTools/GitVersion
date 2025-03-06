@@ -56,7 +56,7 @@ internal class GitVersionExecutor(
     private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
     {
         this.gitRepository.DiscoverRepository(gitVersionOptions.WorkingDirectory);
-        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
+        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(PathHelper.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 
         try

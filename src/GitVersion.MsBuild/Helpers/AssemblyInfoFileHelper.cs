@@ -11,7 +11,7 @@ internal static class AssemblyInfoFileHelper
 {
     public static readonly string TempPath = MakeAndGetTempPath();
 
-    private static string MakeAndGetTempPath() => PathHelper.Combine(Path.GetTempPath(), "GitVersionTask");
+    private static string MakeAndGetTempPath() => PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionTask");
 
     public static string GetFileExtension(string language) => language switch
     {
@@ -40,7 +40,7 @@ internal static class AssemblyInfoFileHelper
 
     private static bool FileContainsVersionAttribute(IFileSystem fileSystem, string compileFile, string projectFile)
     {
-        var compileFileExtension = Path.GetExtension(compileFile);
+        var compileFileExtension = PathHelper.GetExtension(compileFile);
 
         var (attributeRegex, triviaRegex) = compileFileExtension switch
         {
@@ -55,7 +55,7 @@ internal static class AssemblyInfoFileHelper
 
     private static bool FileContainsVersionAttribute(IFileSystem fileSystem, string compileFile, string projectFile, Regex attributeRegex, Regex triviaRegex)
     {
-        var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
+        var combine = PathHelper.Combine(PathHelper.GetDirectoryName(projectFile), compileFile);
         var allText = fileSystem.File.ReadAllText(combine);
         allText += PathHelper.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line.
 
@@ -75,7 +75,7 @@ internal static class AssemblyInfoFileHelper
 
         if (intermediateOutputPath == null)
         {
-            fileName = $"{outputFileName}_{Path.GetFileNameWithoutExtension(projectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
+            fileName = $"{outputFileName}_{PathHelper.GetFileNameWithoutExtension(projectFile)}_{PathHelper.GetRandomFileName()}.g.{fileExtension}";
             workingDirectory = TempPath;
         }
         else

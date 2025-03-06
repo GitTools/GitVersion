@@ -189,7 +189,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
             return false;
         }
 
-        var assemblyInfoSource = this.templateManager.GetTemplateFor(Path.GetExtension(fullPath));
+        var assemblyInfoSource = this.templateManager.GetTemplateFor(PathHelper.GetExtension(fullPath)!);
 
         if (!assemblyInfoSource.IsNullOrWhiteSpace())
         {

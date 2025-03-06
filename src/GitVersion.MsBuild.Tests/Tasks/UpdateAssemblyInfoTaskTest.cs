@@ -66,7 +66,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -89,7 +89,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -152,7 +152,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -179,7 +179,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);

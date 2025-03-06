@@ -26,7 +26,7 @@ internal class ConfigurationFileLocator(
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (Path.IsPathRooted(this.ConfigurationFile)) return;
+        if (PathHelper.IsPathRooted(this.ConfigurationFile)) return;
         if (PathHelper.Equal(workingDirectory, projectRootDirectory)) return;
         WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
