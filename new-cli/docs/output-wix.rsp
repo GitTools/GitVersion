@@ -1,1 +1,1 @@
-output --output-dir C:\Projects\OSS\GitTools\GitVersion --input-file version.json wix --wix-file project.wix
+output --output-dir ./output --input-file version.json wix --wix-file project.wix
