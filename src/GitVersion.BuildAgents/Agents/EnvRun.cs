@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -13,7 +14,7 @@ internal class EnvRun(IEnvironment environment, ILog log, IFileSystem fileSystem
         var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
         if (!envRunDatabasePath.IsNullOrEmpty())
         {
-            if (!File.Exists(envRunDatabasePath))
+            if (!this.FileSystem.File.Exists(envRunDatabasePath))
             {
                 this.Log.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
                 return false;

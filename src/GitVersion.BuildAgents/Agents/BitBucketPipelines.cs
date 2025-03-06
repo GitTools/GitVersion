@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -54,13 +55,13 @@ internal class BitBucketPipelines : BuildAgentBase
             .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
             .ToList();
 
-        File.WriteAllLines(this.propertyFile, exports);
+        this.FileSystem.File.WriteAllLines(this.propertyFile, exports);
 
         var psExports = variables
             .Select(variable => $"$GITVERSION_{variable.Key.ToUpperInvariant()} = \"{variable.Value}\"")
             .ToList();
 
-        File.WriteAllLines(this.ps1File, psExports);
+        this.FileSystem.File.WriteAllLines(this.ps1File, psExports);
     }
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)

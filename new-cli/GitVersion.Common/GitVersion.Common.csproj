@@ -4,7 +4,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IEnvironment.cs" Link="Infrastructure\%(Filename)%(Extension)" />
-    <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IFileSystem.cs" Link="Infrastructure\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\%(Filename)%(Extension)"/>
     <Compile Include="..\..\src\GitVersion.Core\Core\RegexPatterns.cs" Link="%(Filename)%(Extension)" />
     <Compile Include="..\..\src\GitVersion.Core\Extensions\DictionaryExtensions.cs" Link="%(Filename)%(Extension)" />

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 

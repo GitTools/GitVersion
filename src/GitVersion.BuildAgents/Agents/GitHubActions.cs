@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -31,7 +32,7 @@ internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fil
         if (gitHubSetEnvFilePath != null)
         {
             writer($"Writing version variables to $GITHUB_ENV file for '{GetType().Name}'.");
-            using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
+            using var streamWriter = this.FileSystem.File.AppendText(gitHubSetEnvFilePath);
             foreach (var (key, value) in variables)
             {
                 if (!value.IsNullOrEmpty())

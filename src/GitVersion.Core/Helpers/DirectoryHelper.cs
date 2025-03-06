@@ -2,37 +2,6 @@ namespace GitVersion.Helpers;
 
 internal static class DirectoryHelper
 {
-    private static readonly Dictionary<string, string> ToRename = new()
-    {
-        { "gitted", ".git" },
-        { "gitmodules", ".gitmodules" }
-    };
-
-    public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
-    {
-        // From http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c/58779#58779
-
-        foreach (var dir in source.GetDirectories())
-        {
-            CopyFilesRecursively(dir, target.CreateSubdirectory(Rename(dir.Name)));
-        }
-        foreach (var file in source.GetFiles())
-        {
-            file.CopyTo(PathHelper.Combine(target.FullName, Rename(file.Name)));
-        }
-    }
-
-    private static string Rename(string name) => ToRename.GetValueOrDefault(name, name);
-
-    public static void DeleteSubDirectories(string parentPath)
-    {
-        var dirs = Directory.GetDirectories(parentPath);
-        foreach (var dir in dirs)
-        {
-            DeleteDirectory(dir);
-        }
-    }
-
     public static void DeleteDirectory(string directoryPath)
     {
         // From http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true/329502#329502

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using System.Security.Cryptography;
 using GitVersion.Common;
 using GitVersion.Configuration;
@@ -57,7 +58,7 @@ internal class GitVersionCacheKeyFactory(
         // examined for files.
         var dirs = new Stack<string>();
 
-        if (!this.fileSystem.DirectoryExists(root))
+        if (!this.fileSystem.Directory.Exists(root))
         {
             throw new DirectoryNotFoundException($"Root directory does not exist: {root}");
         }
@@ -68,13 +69,13 @@ internal class GitVersionCacheKeyFactory(
         {
             var currentDir = dirs.Pop();
 
-            var di = new DirectoryInfo(currentDir);
+            var di = this.fileSystem.DirectoryInfo.New(currentDir);
             result.Add(di.Name);
 
             string[] subDirs;
             try
             {
-                subDirs = this.fileSystem.GetDirectories(currentDir);
+                subDirs = this.fileSystem.Directory.GetDirectories(currentDir);
             }
             // An UnauthorizedAccessException exception will be thrown if we do not have
             // discovery permission on a folder or file. It may or may not be acceptable
@@ -99,7 +100,7 @@ internal class GitVersionCacheKeyFactory(
             string[] files;
             try
             {
-                files = this.fileSystem.GetFiles(currentDir);
+                files = this.fileSystem.Directory.GetFiles(currentDir);
             }
             catch (UnauthorizedAccessException e)
             {
@@ -116,9 +117,9 @@ internal class GitVersionCacheKeyFactory(
             {
                 try
                 {
-                    if (!this.fileSystem.Exists(file)) continue;
+                    if (!this.fileSystem.File.Exists(file)) continue;
                     result.Add(Path.GetFileName(file));
-                    result.Add(this.fileSystem.ReadAllText(file));
+                    result.Add(this.fileSystem.File.ReadAllText(file));
                 }
                 catch (IOException e)
                 {
@@ -174,9 +175,9 @@ internal class GitVersionCacheKeyFactory(
         var configFilePath = this.configFileLocator.GetConfigurationFile(workingDirectory)
                              ?? this.configFileLocator.GetConfigurationFile(projectRootDirectory);
         if (configFilePath == null) return string.Empty;
-        if (!this.fileSystem.Exists(configFilePath)) return string.Empty;
+        if (!this.fileSystem.File.Exists(configFilePath)) return string.Empty;
 
-        var configFileContent = this.fileSystem.ReadAllText(configFilePath);
+        var configFileContent = this.fileSystem.File.ReadAllText(configFilePath);
         return GetHash(configFileContent);
     }
 

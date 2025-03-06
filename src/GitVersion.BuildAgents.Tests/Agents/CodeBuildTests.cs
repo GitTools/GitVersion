@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -10,6 +11,7 @@ namespace GitVersion.Agents.Tests;
 public sealed class CodeBuildTests : TestBase
 {
     private IEnvironment environment;
+    private IFileSystem fileSystem;
     private IServiceProvider sp;
     private CodeBuild buildServer;
 
@@ -18,6 +20,7 @@ public sealed class CodeBuildTests : TestBase
     {
         this.sp = ConfigureServices(services => services.AddSingleton<CodeBuild>());
         this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.buildServer = this.sp.GetRequiredService<CodeBuild>();
     }
 
@@ -62,7 +65,7 @@ public sealed class CodeBuildTests : TestBase
         }
         finally
         {
-            File.Delete(f);
+            this.fileSystem.File.Delete(f);
         }
     }
 
@@ -92,9 +95,9 @@ public sealed class CodeBuildTests : TestBase
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        File.Exists(file).ShouldBe(true);
+        this.fileSystem.File.Exists(file).ShouldBe(true);
 
-        var props = File.ReadAllText(file);
+        var props = this.fileSystem.File.ReadAllText(file);
 
         props.ShouldContain("GitVersion_Major=1");
         props.ShouldContain("GitVersion_Minor=2");

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -34,8 +35,8 @@ public class GitVersionInfoGeneratorTests : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
 
         var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!fileSystem.DirectoryExists(directory))
-            fileSystem.CreateDirectory(directory);
+        if (!fileSystem.Directory.Exists(directory))
+            fileSystem.Directory.CreateDirectory(directory);
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = PathHelper.Combine(directory, fileName);
 
@@ -45,7 +46,7 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         generator.Execute(variables, new(directory, fileName, fileExtension));
 
-        fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
+        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
 
         DirectoryHelper.DeleteDirectory(directory);
     }
@@ -75,8 +76,8 @@ public class GitVersionInfoGeneratorTests : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
 
         var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!fileSystem.DirectoryExists(directory))
-            fileSystem.CreateDirectory(directory);
+        if (!fileSystem.Directory.Exists(directory))
+            fileSystem.Directory.CreateDirectory(directory);
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = PathHelper.Combine(directory, fileName);
 
@@ -86,7 +87,7 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         generator.Execute(variables, new(directory, fileName, fileExtension, targetNamespace));
 
-        fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
+        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
 
         DirectoryHelper.DeleteDirectory(directory);
     }

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -8,10 +9,15 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class DocumentationTests : TestBase
 {
-    private DirectoryInfo docsDirectory;
+    private IFileSystem fileSystem;
+    private IDirectoryInfo docsDirectory;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => this.docsDirectory = GetDocsDirectory();
+    public void OneTimeSetUp()
+    {
+        this.fileSystem = new FileSystem();
+        this.docsDirectory = GetDocsDirectory();
+    }
 
     [Test]
     public void ConfigurationDocumentationIsUpToDate()
@@ -56,28 +62,28 @@ public class DocumentationTests : TestBase
     {
         var documentationFilePath = PathHelper.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
         // Normalize path separators and such.
-        documentationFilePath = new FileInfo(documentationFilePath).FullName;
+        documentationFilePath = fileSystem.FileInfo.New(documentationFilePath).FullName;
 
-        if (!File.Exists(documentationFilePath))
+        if (!this.fileSystem.File.Exists(documentationFilePath))
         {
             throw new FileNotFoundException($"The documentation file '{documentationFilePath}' couldn't be found.", documentationFilePath);
         }
 
-        return File.ReadAllText(documentationFilePath);
+        return this.fileSystem.File.ReadAllText(documentationFilePath);
     }
 
-    private static DirectoryInfo GetDocsDirectory()
+    private IDirectoryInfo GetDocsDirectory()
     {
-        var currentDirectory = new FileInfo(typeof(DocumentationTests).Assembly.Location).Directory;
+        var currentDirectory = this.fileSystem.FileInfo.New(typeof(DocumentationTests).Assembly.Location).Directory;
         while (currentDirectory != null)
         {
-            var docsDirectory = currentDirectory
+            var searchedDirectory = currentDirectory
                 .EnumerateDirectories("docs", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
 
-            if (docsDirectory != null)
+            if (searchedDirectory != null)
             {
-                currentDirectory = docsDirectory;
+                currentDirectory = searchedDirectory;
                 break;
             }
 

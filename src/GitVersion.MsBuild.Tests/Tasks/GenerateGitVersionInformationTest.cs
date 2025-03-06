@@ -31,7 +31,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
@@ -52,7 +52,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
@@ -79,7 +79,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
@@ -106,7 +106,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
@@ -127,7 +127,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
@@ -149,7 +149,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
@@ -181,7 +181,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
@@ -212,7 +212,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
@@ -243,7 +243,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         TestContext.Out.WriteLine(fileContent);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
@@ -276,7 +276,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "0"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
@@ -302,7 +302,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
@@ -329,7 +329,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
         result.Task.GitVersionInformationFilePath.ShouldMatch($@"GitVersionInformation.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.GitVersionInformationFilePath);
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Major), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Minor), "2"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
@@ -46,7 +47,7 @@ internal class GitVersionCacheProvider(
         var cacheFileName = GetCacheFileName(cacheKey);
         using (this.log.IndentLog($"Loading version variables from disk cache file {cacheFileName}"))
         {
-            if (!this.fileSystem.Exists(cacheFileName))
+            if (!this.fileSystem.File.Exists(cacheFileName))
             {
                 this.log.Info($"Cache file {cacheFileName} not found.");
                 return null;
@@ -63,7 +64,7 @@ internal class GitVersionCacheProvider(
                 this.log.Info(ex.ToString());
                 try
                 {
-                    this.fileSystem.Delete(cacheFileName);
+                    this.fileSystem.File.Delete(cacheFileName);
                 }
                 catch (Exception deleteEx)
                 {
@@ -92,7 +93,7 @@ internal class GitVersionCacheProvider(
         var cacheDir = GetCacheDirectory();
 
         // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-        this.fileSystem.CreateDirectory(cacheDir);
+        this.fileSystem.Directory.CreateDirectory(cacheDir);
 
         return cacheDir;
     }

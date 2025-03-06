@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -7,17 +8,18 @@ namespace GitVersion.Git;
 
 internal class GitRepositoryInfo : IGitRepositoryInfo
 {
-    private readonly IOptions<GitVersionOptions> options;
-    private GitVersionOptions gitVersionOptions => this.options.Value;
+    private readonly IFileSystem fileSystem;
+    private readonly GitVersionOptions gitVersionOptions;
 
     private readonly Lazy<string?> dynamicGitRepositoryPath;
     private readonly Lazy<string?> dotGitDirectory;
     private readonly Lazy<string?> gitRootPath;
     private readonly Lazy<string?> projectRootDirectory;
 
-    public GitRepositoryInfo(IOptions<GitVersionOptions> options)
+    public GitRepositoryInfo(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
-        this.options = options.NotNull();
+        this.fileSystem = fileSystem.NotNull();
+        this.gitVersionOptions = options.NotNull().Value;
 
         this.dynamicGitRepositoryPath = new(GetDynamicGitRepositoryPath);
         this.dotGitDirectory = new(GetDotGitDirectory);
@@ -43,7 +45,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         var possiblePath = PathHelper.Combine(userTemp, repositoryName);
 
         // Verify that the existing directory is ok for us to use
-        if (Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
+        if (this.fileSystem.Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
         {
             var i = 1;
             var originalPath = possiblePath;
@@ -51,7 +53,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             do
             {
                 possiblePath = $"{originalPath}_{i++}";
-                possiblePathExists = Directory.Exists(possiblePath);
+                possiblePathExists = this.fileSystem.Directory.Exists(possiblePath);
             } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
         }
 
@@ -69,9 +71,9 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        var directoryInfo = Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
+        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
         return gitDirectory.Contains(PathHelper.Combine(".git", "worktrees"))
-            ? Directory.GetParent(directoryInfo.FullName)?.FullName
+            ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
     }
 

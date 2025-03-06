@@ -29,7 +29,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
@@ -46,7 +46,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 
@@ -69,7 +69,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
@@ -92,7 +92,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 
@@ -109,7 +109,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
         DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
@@ -127,7 +127,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
         DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
@@ -155,7 +155,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
@@ -182,7 +182,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -38,7 +39,7 @@ internal sealed class OutputGenerator(
             var retryOperation = new RetryAction<IOException>();
             retryOperation.Execute(() =>
             {
-                if (context.OutputFile != null) this.fileSystem.WriteAllText(context.OutputFile, json);
+                if (context.OutputFile != null) this.fileSystem.File.WriteAllText(context.OutputFile, json);
             });
         }
 

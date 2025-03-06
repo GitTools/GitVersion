@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -108,13 +109,13 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (Path.IsPathRooted(arguments.ConfigurationFile))
         {
-            if (!this.fileSystem.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
+            if (!this.fileSystem.File.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
             arguments.ConfigurationFile = Path.GetFullPath(arguments.ConfigurationFile);
         }
         else
         {
             var configFilePath = Path.GetFullPath(PathHelper.Combine(arguments.TargetPath, arguments.ConfigurationFile));
-            if (!this.fileSystem.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
+            if (!this.fileSystem.File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
             arguments.ConfigurationFile = configFilePath;
         }
     }
@@ -166,7 +167,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             EnsureArgumentValueCount(values);
             arguments.TargetPath = value;
-            if (string.IsNullOrWhiteSpace(value) || !this.fileSystem.DirectoryExists(value))
+            if (string.IsNullOrWhiteSpace(value) || !this.fileSystem.Directory.Exists(value))
             {
                 this.console.WriteLine($"The working directory '{value}' does not exist.");
             }

@@ -1,6 +1,8 @@
+using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -10,8 +12,10 @@ public class WorktreeScenarios : TestBase
     [Test]
     public void UseWorktreeRepositoryForVersion()
     {
+        var sp = ConfigureServices();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
         using var fixture = new EmptyRepositoryFixture();
-        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
+        var repoDir = fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
 
         repoDir.Parent.ShouldNotBeNull();
         var worktreePath = PathHelper.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -5,11 +6,21 @@ using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.MsBuild.Tests.Tasks;
 
 public class TestTaskBase : TestBase
 {
+    protected IFileSystem FileSystem;
+
+    [SetUp]
+    public void SetUp()
+    {
+        var sp = ConfigureServices();
+        this.FileSystem = sp.GetRequiredService<IFileSystem>();
+    }
+
     private static readonly IDictionary<string, string?> env = new Dictionary<string, string?>
     {
         { AzurePipelines.EnvironmentVariableName, "true" },

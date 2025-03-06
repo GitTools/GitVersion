@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,8 +50,8 @@ public class DynamicRepositoryTests : TestBase
         gitPreparer.Prepare();
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
-        fileSystem.CreateDirectory(dynamicDirectory);
-        fileSystem.CreateDirectory(workingDirectory);
+        fileSystem.Directory.CreateDirectory(dynamicDirectory);
+        fileSystem.Directory.CreateDirectory(workingDirectory);
 
         var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -122,18 +123,18 @@ internal static class ConfigurationExtensions
         while (startingDir is not null)
         {
             var dirOrFilePath = PathHelper.Combine(startingDir, ".git");
-            if (fileSystem.DirectoryExists(dirOrFilePath))
+            if (fileSystem.Directory.Exists(dirOrFilePath))
             {
                 return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
             }
 
-            if (fileSystem.Exists(dirOrFilePath))
+            if (fileSystem.File.Exists(dirOrFilePath))
             {
                 string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
                     var fullGitDirPath = Path.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
-                    if (fileSystem.DirectoryExists(fullGitDirPath))
+                    if (fileSystem.Directory.Exists(fullGitDirPath))
                     {
                         return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);
                     }

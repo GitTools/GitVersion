@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -43,7 +44,7 @@ internal class ConfigurationFileLocator(
         foreach (var candidatePath in candidatePaths)
         {
             this.log.Debug($"Trying to find configuration file at '{candidatePath}'");
-            if (fileSystem.Exists(candidatePath))
+            if (fileSystem.File.Exists(candidatePath))
             {
                 this.log.Info($"Found configuration file at '{candidatePath}'");
                 return candidatePath;

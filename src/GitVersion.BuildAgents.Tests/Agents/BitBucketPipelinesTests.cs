@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -10,6 +11,7 @@ namespace GitVersion.Agents.Tests;
 public class BitBucketPipelinesTests : TestBase
 {
     private IEnvironment environment;
+    private IFileSystem fileSystem;
     private BitBucketPipelines buildServer;
     private IServiceProvider sp;
 
@@ -18,6 +20,7 @@ public class BitBucketPipelinesTests : TestBase
     {
         this.sp = ConfigureServices(services => services.AddSingleton<BitBucketPipelines>());
         this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.buildServer = this.sp.GetRequiredService<BitBucketPipelines>();
 
         this.environment.SetEnvironmentVariable(BitBucketPipelines.EnvironmentVariableName, "MyWorkspace");
@@ -128,8 +131,8 @@ public class BitBucketPipelinesTests : TestBase
         }
         finally
         {
-            File.Delete(propertyFile);
-            File.Delete(ps1File);
+            this.fileSystem.File.Delete(propertyFile);
+            this.fileSystem.File.Delete(ps1File);
         }
     }
 
@@ -156,18 +159,18 @@ public class BitBucketPipelinesTests : TestBase
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        File.Exists(propertyFile).ShouldBe(true);
+        this.fileSystem.File.Exists(propertyFile).ShouldBe(true);
 
-        var props = File.ReadAllText(propertyFile);
+        var props = this.fileSystem.File.ReadAllText(propertyFile);
 
         props.ShouldContain("export GITVERSION_MAJOR=1");
         props.ShouldContain("export GITVERSION_MINOR=2");
         props.ShouldContain("export GITVERSION_SHA=f28807e615e9f06aec8a33c87780374e0c1f6fb8");
         props.ShouldContain("export GITVERSION_COMMITDATE=2022-04-06");
 
-        File.Exists(ps1File).ShouldBe(true);
+        this.fileSystem.File.Exists(ps1File).ShouldBe(true);
 
-        var psProps = File.ReadAllText(ps1File);
+        var psProps = this.fileSystem.File.ReadAllText(ps1File);
 
         psProps.ShouldContain("$GITVERSION_MAJOR = \"1\"");
         psProps.ShouldContain("$GITVERSION_MINOR = \"2\"");

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -44,6 +45,6 @@ internal class GitLabCi : BuildAgentBase
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
 
-        File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 }

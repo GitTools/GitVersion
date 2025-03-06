@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -37,7 +38,7 @@ internal sealed class CodeBuild : BuildAgentBase
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 
     public override bool PreventFetch() => true;
