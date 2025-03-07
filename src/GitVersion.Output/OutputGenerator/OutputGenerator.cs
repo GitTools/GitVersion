@@ -40,12 +40,12 @@ internal sealed class OutputGenerator(
             foreach (var (key, value) in variables.OrderBy(x => x.Key))
             {
                 string prefixedKey = "GitVersion_" + key;
-                string environmentValue = "''";
+                string environmentValue = "";
                 if (!value.IsNullOrEmpty())
                 {
                     environmentValue = value;
                 }
-                dotEnvEntries.Add(prefixedKey + "=" + environmentValue);
+                dotEnvEntries.Add($"{prefixedKey}='{environmentValue}'");
             }
 
             foreach (var dotEnvEntry in dotEnvEntries)

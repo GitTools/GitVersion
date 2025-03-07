@@ -68,13 +68,13 @@ public class FormatArgumentTests : TestBase
         output.ShouldBeEquivalentTo(expectedValue);
     }
 
-    [TestCase("Major", "1")]
-    [TestCase("MajorMinorPatch", "1.1.0")]
-    [TestCase("SemVer", "1.1.0-foo.1")]
-    [TestCase("PreReleaseTagWithDash", "-foo.1")]
-    [TestCase("AssemblySemFileVer", "1.1.0.0")]
-    [TestCase("BranchName", "feature/foo")]
-    [TestCase("FullSemVer", "1.1.0-foo.1+1")]
+    [TestCase("Major", "'1'")]
+    [TestCase("MajorMinorPatch", "'1.1.0'")]
+    [TestCase("SemVer", "'1.1.0-foo.1'")]
+    [TestCase("PreReleaseTagWithDash", "'-foo.1'")]
+    [TestCase("AssemblySemFileVer", "'1.1.0.0'")]
+    [TestCase("BranchName", "'feature/foo'")]
+    [TestCase("FullSemVer", "'1.1.0-foo.1+1'")]
     public void ShouldOutputDotEnvEntries(string variableName, string expectedValue)
     {
         var fixture = CreateTestRepository();
@@ -127,13 +127,13 @@ public class FormatArgumentTests : TestBase
         Assert.That(totalOutputLines, Is.EqualTo(versionVariables.Count()));
     }
 
-    [TestCase("Major", "0")]
-    [TestCase("MajorMinorPatch", "0.0.1")]
-    [TestCase("SemVer", "0.0.1-1")]
+    [TestCase("Major", "'0'")]
+    [TestCase("MajorMinorPatch", "'0.0.1'")]
+    [TestCase("SemVer", "'0.0.1-1'")]
     [TestCase("BuildMetaData", "''")]
-    [TestCase("AssemblySemVer", "0.0.1.0")]
-    [TestCase("PreReleaseTagWithDash", "-1")]
-    [TestCase("BranchName", "main")]
+    [TestCase("AssemblySemVer", "'0.0.1.0'")]
+    [TestCase("PreReleaseTagWithDash", "'-1'")]
+    [TestCase("BranchName", "'main'")]
     [TestCase("PreReleaseLabel", "''")]
     [TestCase("PreReleaseLabelWithDash", "''")]
     public void ShouldOutputAllDotEnvEntriesEvenForMinimalRepositories(string variableName, string expectedValue)
