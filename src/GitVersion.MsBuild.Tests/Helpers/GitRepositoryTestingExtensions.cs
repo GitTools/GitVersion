@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild.Tests.Helpers;
 
-public static class GitToolsTestingExtensions
+public static class GitRepositoryTestingExtensions
 {
     /// <summary>
     /// Simulates running on build server

@@ -4,8 +4,18 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
+        <PackageReference Include="System.Reflection.Metadata" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="..\GitVersion.Core\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
         <Compile Include="..\GitVersion.Core\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Configuration.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
+        <InternalsVisibleTo Include="GitVersion.App.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 </Project>

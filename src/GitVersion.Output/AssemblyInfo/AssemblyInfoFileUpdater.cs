@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using GitVersion.Core;
 using GitVersion.Extensions;
@@ -44,21 +45,21 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
         {
             var localAssemblyInfo = assemblyInfoFile.FullName;
             var backupAssemblyInfo = localAssemblyInfo + ".bak";
-            fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
+            fileSystem.File.Copy(localAssemblyInfo, backupAssemblyInfo, true);
 
             this.restoreBackupTasks.Add(() =>
             {
-                if (fileSystem.Exists(localAssemblyInfo))
+                if (fileSystem.File.Exists(localAssemblyInfo))
                 {
-                    fileSystem.Delete(localAssemblyInfo);
+                    fileSystem.File.Delete(localAssemblyInfo);
                 }
 
-                fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
+                fileSystem.File.Move(backupAssemblyInfo, localAssemblyInfo);
             });
 
-            this.cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
+            this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupAssemblyInfo));
 
-            var originalFileContents = fileSystem.ReadAllText(localAssemblyInfo);
+            var originalFileContents = fileSystem.File.ReadAllText(localAssemblyInfo);
             var fileContents = originalFileContents;
             var appendedAttributes = false;
 
@@ -85,7 +86,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
             if (originalFileContents != fileContents)
             {
-                fileSystem.WriteAllText(localAssemblyInfo, fileContents);
+                fileSystem.File.WriteAllText(localAssemblyInfo, fileContents);
             }
         }
         CommitChanges();
@@ -143,7 +144,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
         return inputString;
     }
 
-    private IEnumerable<FileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
+    private IEnumerable<IFileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
     {
         var workingDirectory = context.WorkingDirectory;
         var ensureAssemblyInfo = context.EnsureAssemblyInfo;
@@ -157,15 +158,15 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
                 if (EnsureVersionAssemblyInfoFile(fullPath, ensureAssemblyInfo))
                 {
-                    yield return new FileInfo(fullPath);
+                    yield return fileSystem.FileInfo.New(fullPath);
                 }
             }
         }
         else
         {
-            foreach (var item in fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
+            foreach (var item in fileSystem.Directory.EnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
             {
-                var assemblyInfoFile = new FileInfo(item);
+                var assemblyInfoFile = fileSystem.FileInfo.New(item);
 
                 if (this.templateManager.IsSupported(assemblyInfoFile.Extension))
                 {
@@ -178,7 +179,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
     private bool EnsureVersionAssemblyInfoFile(string fullPath, bool ensureAssemblyInfo)
     {
         fullPath = fullPath.NotNull();
-        if (fileSystem.Exists(fullPath))
+        if (fileSystem.File.Exists(fullPath))
         {
             return true;
         }
@@ -188,18 +189,18 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
             return false;
         }
 
-        var assemblyInfoSource = this.templateManager.GetTemplateFor(Path.GetExtension(fullPath));
+        var assemblyInfoSource = this.templateManager.GetTemplateFor(PathHelper.GetExtension(fullPath)!);
 
         if (!assemblyInfoSource.IsNullOrWhiteSpace())
         {
-            var fileInfo = new FileInfo(fullPath);
+            var fileInfo = fileSystem.FileInfo.New(fullPath);
 
-            if (fileInfo.Directory != null && !fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+            if (fileInfo.Directory != null && !fileSystem.Directory.Exists(fileInfo.Directory.FullName))
             {
-                fileSystem.CreateDirectory(fileInfo.Directory.FullName);
+                fileSystem.Directory.CreateDirectory(fileInfo.Directory.FullName);
             }
 
-            fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+            fileSystem.File.WriteAllText(fullPath, assemblyInfoSource);
             return true;
         }
 

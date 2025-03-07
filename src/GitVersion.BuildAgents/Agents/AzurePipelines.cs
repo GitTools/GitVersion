@@ -1,10 +1,11 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     public const string EnvironmentVariableName = "TF_BUILD";
 
@@ -35,7 +36,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log) : BuildAgentBa
         if (buildNumberEnv == newBuildNumber)
         {
             var buildNumber = variables.FullSemVer.EndsWith("+0")
-                ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2)
+                ? variables.FullSemVer[..^2]
                 : variables.FullSemVer;
 
             return $"##vso[build.updatebuildnumber]{buildNumber}";

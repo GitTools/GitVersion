@@ -15,11 +15,11 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     {
         // When a branch is merged in you want to start building stable packages of that version
         // So we shouldn't bump the version
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockCommit = GitRepositoryTestingExtensions.CreateMockCommit();
         mockCommit.Message.Returns("Merge branch 'release-0.1.5'");
         mockCommit.Parents.Returns(GetParents(true));
 
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, mockCommit);
+        var mockBranch = GitRepositoryTestingExtensions.CreateMockBranch(MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
         branches.MockCollectionReturn(mockBranch);
 
@@ -154,11 +154,11 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
     private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, IReadOnlyDictionary<object, object?>? configuration = null)
     {
-        var commit = GitToolsTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
         commit.Message.Returns(message);
         commit.Parents.Returns(parents);
 
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, commit, GitToolsTestingExtensions.CreateMockCommit());
+        var mockBranch = GitRepositoryTestingExtensions.CreateMockBranch(MainBranch, commit, GitRepositoryTestingExtensions.CreateMockCommit());
 
         var mockRepository = Substitute.For<IGitRepository>();
         mockRepository.Head.Returns(mockBranch);

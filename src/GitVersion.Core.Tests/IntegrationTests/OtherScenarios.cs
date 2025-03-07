@@ -1,10 +1,12 @@
 using System.Globalization;
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -102,15 +104,17 @@ public class OtherScenarios : TestBase
     [TestCase(false, 5)]
     public void HasDirtyFlagWhenUncommittedChangesAreInRepository(bool stageFile, int numberOfFiles)
     {
+        var sp = ConfigureServices();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
 
         for (int i = 0; i < numberOfFiles; i++)
         {
-            var tempFile = Path.GetTempFileName();
-            var repoFile = PathHelper.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
-            File.Move(tempFile, repoFile);
-            File.WriteAllText(repoFile, $"Hello world / testfile {i}");
+            var tempFile = PathHelper.GetTempFileName();
+            var repoFile = PathHelper.Combine(fixture.RepositoryPath, PathHelper.GetFileNameWithoutExtension(tempFile) + ".txt");
+            fileSystem.File.Move(tempFile, repoFile);
+            fileSystem.File.WriteAllText(repoFile, $"Hello world / testfile {i}");
 
             if (stageFile)
                 Commands.Stage(fixture.Repository, repoFile);

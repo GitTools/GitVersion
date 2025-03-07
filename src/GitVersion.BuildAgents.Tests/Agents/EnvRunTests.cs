@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ public class EnvRunTests : TestBase
     private const string EnvVarName = "ENVRUN_DATABASE";
     private string mFilePath;
     private IEnvironment environment;
+    private IFileSystem fileSystem;
     private EnvRun buildServer;
 
     [SetUp]
@@ -17,19 +19,20 @@ public class EnvRunTests : TestBase
     {
         var sp = ConfigureServices(services => services.AddSingleton<EnvRun>());
         this.environment = sp.GetRequiredService<IEnvironment>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.buildServer = sp.GetRequiredService<EnvRun>();
 
         // set environment variable and create an empty envrun file to indicate that EnvRun is running...
         this.mFilePath = PathHelper.Combine(PathHelper.GetTempPath(), "envrun.db");
         this.environment.SetEnvironmentVariable(EnvVarName, this.mFilePath);
-        File.OpenWrite(this.mFilePath).Dispose();
+        this.fileSystem.File.OpenWrite(this.mFilePath).Dispose();
     }
 
     [TearDown]
     public void ClearEnvironmentVariableForTest()
     {
         this.environment.SetEnvironmentVariable(EnvVarName, null);
-        File.Delete(this.mFilePath);
+        this.fileSystem.File.Delete(this.mFilePath);
     }
 
     [Test]

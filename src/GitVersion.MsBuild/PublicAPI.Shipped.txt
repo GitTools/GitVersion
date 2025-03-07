@@ -1,5 +1,4 @@
 #nullable enable
-abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
 GitVersion.MsBuild.GitVersionMsBuildModule
 GitVersion.MsBuild.GitVersionMsBuildModule.GitVersionMsBuildModule() -> void
 GitVersion.MsBuild.GitVersionMsBuildModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
@@ -11,13 +10,10 @@ GitVersion.MsBuild.GitVersionTaskBase.GitVersionTaskBase() -> void
 GitVersion.MsBuild.GitVersionTaskBase.HostObject.get -> Microsoft.Build.Framework.ITaskHost!
 GitVersion.MsBuild.GitVersionTaskBase.HostObject.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.Log.get -> Microsoft.Build.Utilities.TaskLoggingHelper!
-GitVersion.MsBuild.GitVersionTaskBase.Overrides.get -> System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>?
-GitVersion.MsBuild.GitVersionTaskBase.Overrides.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.get -> string!
 GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.VersionFile.get -> string!
 GitVersion.MsBuild.GitVersionTaskBase.VersionFile.set -> void
-GitVersion.MsBuild.GitVersionTaskBase.WithOverrides(System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>! overrides) -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformation() -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFilePath.get -> string!
@@ -98,7 +94,3 @@ GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.UpdateAssemblyInfo() -> void
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.WriteVersionInfoToBuildLog() -> void
-override GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.OnExecute() -> bool
-override GitVersion.MsBuild.Tasks.GetVersion.OnExecute() -> bool
-override GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.OnExecute() -> bool
-override GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.OnExecute() -> bool

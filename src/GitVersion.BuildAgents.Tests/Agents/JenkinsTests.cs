@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -14,6 +15,7 @@ public class JenkinsTests : TestBase
     private const string localBranch = "GIT_LOCAL_BRANCH";
     private const string pipelineBranch = "BRANCH_NAME";
     private IEnvironment environment;
+    private IFileSystem fileSystem;
     private IServiceProvider sp;
     private Jenkins buildServer;
 
@@ -22,6 +24,7 @@ public class JenkinsTests : TestBase
     {
         this.sp = ConfigureServices(services => services.AddSingleton<Jenkins>());
         this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
         this.buildServer = this.sp.GetRequiredService<Jenkins>();
     }
 
@@ -108,7 +111,7 @@ public class JenkinsTests : TestBase
     [Test]
     public void WriteAllVariablesToTheTextWriter()
     {
-        var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var assemblyLocation = PathHelper.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
         var f = PathHelper.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
 
@@ -118,7 +121,7 @@ public class JenkinsTests : TestBase
         }
         finally
         {
-            File.Delete(f);
+            this.fileSystem.File.Delete(f);
         }
     }
 
@@ -144,9 +147,9 @@ public class JenkinsTests : TestBase
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        File.Exists(file).ShouldBe(true);
+        this.fileSystem.File.Exists(file).ShouldBe(true);
 
-        var props = File.ReadAllText(file);
+        var props = this.fileSystem.File.ReadAllText(file);
 
         props.ShouldContain("GitVersion_Major=1");
         props.ShouldContain("GitVersion_Minor=2");

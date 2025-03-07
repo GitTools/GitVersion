@@ -74,21 +74,17 @@ public class WriteVersionInfoTest : TestTaskBase
         envFilePath = $"{PathHelper.GetTempPath()}/github-env.txt";
         SysEnv.SetEnvironmentVariable("GITHUB_ENV", envFilePath);
 
-        if (File.Exists(envFilePath))
-        {
-            File.Delete(envFilePath);
-        }
-
         var task = new WriteVersionInfoToBuildLog();
 
         using var result = ExecuteMsBuildTaskInGitHubActions(task);
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        string content = File.ReadAllText(envFilePath);
+
+        string content = this.FileSystem.File.ReadAllText(envFilePath);
         content.ShouldContain("GitVersion_SemVer=1.0.1");
 
-        File.Delete(envFilePath);
+        this.FileSystem.File.Delete(envFilePath);
     }
 
     [Test]

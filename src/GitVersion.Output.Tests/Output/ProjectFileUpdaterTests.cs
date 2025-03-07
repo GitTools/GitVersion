@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using System.Xml.Linq;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -293,7 +294,7 @@ public class ProjectFileUpdaterTests : TestBase
                                           </PropertyGroup>
                                         </Project>
                                         """;
-            var transformedXml = fs.ReadAllText(fileName);
+            var transformedXml = fs.File.ReadAllText(fileName);
             transformedXml.ShouldBe(XElement.Parse(expectedXml).ToString());
         });
     }
@@ -304,20 +305,23 @@ public class ProjectFileUpdaterTests : TestBase
         AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
         Action<IFileSystem, GitVersionVariables>? verify = null)
     {
-        this.fileSystem = Substitute.For<IFileSystem>();
+        var file = Substitute.For<IFile>();
         var version = new SemanticVersion { BuildMetaData = new("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0), Major = 2, Minor = 3, Patch = 1 };
 
-        this.fileSystem.Exists(fileName).Returns(true);
-        this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
-        this.fileSystem.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
+        file.Exists(fileName).Returns(true);
+        file.ReadAllText(fileName).Returns(projectFileContent);
+        file.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
         {
             projectFileContent = c.ArgAt<string>(1);
-            this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
+            file.ReadAllText(fileName).Returns(projectFileContent);
         });
 
         var configuration = EmptyConfigurationBuilder.New.WithAssemblyVersioningScheme(versioningScheme).Build();
         var variables = this.variableProvider.GetVariablesFor(version, configuration, 0);
 
+        this.fileSystem = Substitute.For<IFileSystem>();
+        this.fileSystem.File.Returns(file);
+        this.fileSystem.FileInfo.Returns(new FileSystem().FileInfo);
         verify?.Invoke(this.fileSystem, variables);
     }
 }

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Core.Tests;

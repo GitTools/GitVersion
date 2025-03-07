@@ -42,8 +42,8 @@ public class GitVersionContextBuilder : IDisposable
 
     private GitVersionContextBuilder AddBranch(string branchName)
     {
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
+        var mockCommit = GitRepositoryTestingExtensions.CreateMockCommit();
+        var mockBranch = GitRepositoryTestingExtensions.CreateMockBranch(branchName, mockCommit);
 
         this.repository ??= CreateRepository();
 
@@ -71,8 +71,8 @@ public class GitVersionContextBuilder : IDisposable
 
     private static IGitRepository CreateRepository()
     {
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
+        var mockCommit = GitRepositoryTestingExtensions.CreateMockCommit();
+        var mockBranch = GitRepositoryTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
         branches.MockCollectionReturn(mockBranch);
 

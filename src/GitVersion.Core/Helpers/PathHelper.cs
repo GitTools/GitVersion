@@ -5,6 +5,7 @@ namespace GitVersion.Helpers;
 internal static class PathHelper
 {
     public static string NewLine => SysEnv.NewLine;
+    public static char DirectorySeparatorChar => Path.DirectorySeparatorChar;
 
     private static readonly StringComparison OsDependentComparison =
         RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
@@ -33,12 +34,18 @@ internal static class PathHelper
         return Path.GetDirectoryName(path)!;
     }
 
-    public static string GetFullPath(string? path)
+    public static string GetFileName(string? path)
     {
         ArgumentNullException.ThrowIfNull(path, nameof(path));
 
-        return Path.GetFullPath(path);
+        return Path.GetFileName(path);
     }
+
+    public static string? GetFileNameWithoutExtension(string? path) => Path.GetFileNameWithoutExtension(path);
+
+    public static string? GetExtension(string? path) => Path.GetExtension(path);
+
+    public static string GetFullPath(string? path) => Path.GetFullPath(path!);
 
     public static string Combine(string? path1, string? path2)
     {
@@ -79,4 +86,10 @@ internal static class PathHelper
             GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
             GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
             OsDependentComparison);
+
+    public static string GetRandomFileName() => Path.GetRandomFileName();
+
+    public static string GetTempFileName() => Path.GetTempFileName();
+
+    public static bool IsPathRooted(string? path) => Path.IsPathRooted(path);
 }

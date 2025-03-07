@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ namespace GitVersion.Agents.Tests;
 public class GitHubActionsTests : TestBase
 {
     private IEnvironment environment;
+    private IFileSystem fileSystem;
     private GitHubActions buildServer;
     private string? githubSetEnvironmentTempFilePath;
 
@@ -16,11 +18,12 @@ public class GitHubActionsTests : TestBase
     {
         var sp = ConfigureServices(services => services.AddSingleton<GitHubActions>());
         this.environment = sp.GetRequiredService<IEnvironment>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.buildServer = sp.GetRequiredService<GitHubActions>();
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
         this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "branch");
 
-        this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();
+        this.githubSetEnvironmentTempFilePath = PathHelper.GetTempFileName();
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
     }
 
@@ -29,10 +32,10 @@ public class GitHubActionsTests : TestBase
     {
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
-        if (this.githubSetEnvironmentTempFilePath == null || !File.Exists(this.githubSetEnvironmentTempFilePath))
+        if (this.githubSetEnvironmentTempFilePath == null || !this.fileSystem.File.Exists(this.githubSetEnvironmentTempFilePath))
             return;
 
-        File.Delete(this.githubSetEnvironmentTempFilePath);
+        this.fileSystem.File.Delete(this.githubSetEnvironmentTempFilePath);
         this.githubSetEnvironmentTempFilePath = null;
     }
 
@@ -145,7 +148,7 @@ public class GitHubActionsTests : TestBase
         var expectedFileContents = new List<string> { "GitVersion_Major=1.0.0" };
 
         this.githubSetEnvironmentTempFilePath.ShouldNotBeNull();
-        var actualFileContents = File.ReadAllLines(this.githubSetEnvironmentTempFilePath);
+        var actualFileContents = this.fileSystem.File.ReadAllLines(this.githubSetEnvironmentTempFilePath);
 
         actualFileContents.ShouldBe(expectedFileContents);
     }

@@ -331,7 +331,6 @@ GitVersion.GitVersionOptions.WixInfo.get -> GitVersion.WixInfo!
 GitVersion.GitVersionOptions.WorkingDirectory.get -> string!
 GitVersion.GitVersionOptions.WorkingDirectory.set -> void
 GitVersion.Helpers.Disposable
-GitVersion.Helpers.EncodingHelper
 GitVersion.Helpers.IDisposable<T>
 GitVersion.Helpers.IDisposable<T>.Value.get -> T
 GitVersion.Helpers.LambdaEqualityHelper<T>
@@ -352,23 +351,6 @@ GitVersion.IConverterContext.WorkingDirectory.get -> string!
 GitVersion.IEnvironment
 GitVersion.IEnvironment.GetEnvironmentVariable(string! variableName) -> string?
 GitVersion.IEnvironment.SetEnvironmentVariable(string! variableName, string? value) -> void
-GitVersion.IFileSystem
-GitVersion.IFileSystem.Copy(string! from, string! to, bool overwrite) -> void
-GitVersion.IFileSystem.CreateDirectory(string! path) -> void
-GitVersion.IFileSystem.Delete(string! path) -> void
-GitVersion.IFileSystem.DirectoryEnumerateFiles(string? directory, string! searchPattern, System.IO.SearchOption searchOption) -> System.Collections.Generic.IEnumerable<string!>!
-GitVersion.IFileSystem.DirectoryExists(string! path) -> bool
-GitVersion.IFileSystem.Exists(string! file) -> bool
-GitVersion.IFileSystem.GetDirectories(string! path) -> string![]!
-GitVersion.IFileSystem.GetFiles(string! path) -> string![]!
-GitVersion.IFileSystem.GetLastDirectoryWrite(string! path) -> long
-GitVersion.IFileSystem.GetLastWriteTime(string! path) -> long
-GitVersion.IFileSystem.Move(string! from, string! to) -> void
-GitVersion.IFileSystem.OpenRead(string! path) -> System.IO.Stream!
-GitVersion.IFileSystem.OpenWrite(string! path) -> System.IO.Stream!
-GitVersion.IFileSystem.ReadAllText(string! path) -> string!
-GitVersion.IFileSystem.WriteAllText(string? file, string! fileContents, System.Text.Encoding! encoding) -> void
-GitVersion.IFileSystem.WriteAllText(string? file, string! fileContents) -> void
 GitVersion.IGitPreparer
 GitVersion.IGitPreparer.EnsureLocalBranchExistsForCurrentBranch(GitVersion.Git.IRemote! remote, string! currentBranch) -> void
 GitVersion.IGitPreparer.Prepare() -> void
@@ -778,8 +760,6 @@ static GitVersion.Git.ReferenceName.operator ==(GitVersion.Git.ReferenceName? le
 static GitVersion.Git.ReferenceName.Parse(string! canonicalName) -> GitVersion.Git.ReferenceName!
 static GitVersion.Helpers.Disposable.Create(System.Action! disposer) -> System.IDisposable!
 static GitVersion.Helpers.Disposable.Create<T>(T value, System.Action! disposer) -> GitVersion.Helpers.IDisposable<T>!
-static GitVersion.Helpers.EncodingHelper.DetectEncoding(string? filename) -> System.Text.Encoding?
-static GitVersion.Helpers.EncodingHelper.DetectEncoding(System.Collections.Generic.IList<byte>! bytes) -> System.Text.Encoding?
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void

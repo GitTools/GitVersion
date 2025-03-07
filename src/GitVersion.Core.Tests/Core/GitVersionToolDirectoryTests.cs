@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -11,17 +12,20 @@ public class GitVersionTaskDirectoryTests : TestBase
 {
     private string gitDirectory;
     private string workDirectory;
+    private IFileSystem fileSystem;
 
     [SetUp]
     public void SetUp()
     {
+        var sp = ConfigureServices();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.workDirectory = PathHelper.Combine(PathHelper.GetTempPath(), Guid.NewGuid().ToString());
-        this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
+        this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(PathHelper.DirectorySeparatorChar);
         Assert.That(this.gitDirectory, Is.Not.Null);
     }
 
     [TearDown]
-    public void Cleanup() => Directory.Delete(this.workDirectory, true);
+    public void Cleanup() => this.fileSystem.Directory.Delete(this.workDirectory, true);
 
     [Test]
     public void FindsGitDirectory()
@@ -43,7 +47,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     public void FindsGitDirectoryInParent()
     {
         var childDir = PathHelper.Combine(this.workDirectory, "child");
-        Directory.CreateDirectory(childDir);
+        this.fileSystem.Directory.CreateDirectory(childDir);
 
         var exception = Assert.Catch(() =>
         {

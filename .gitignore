@@ -136,3 +136,5 @@ node_modules
 
 dogfood/
 new-cli/log.txt
+
+new-cli/logs/

@@ -1,1 +1,1 @@
-output --output-dir C:\Projects\OSS\GitTools\GitVersion --input-file version.json project --project-file project.csproj
+output --output-dir ./output --input-file version.json project --project-file project.csproj

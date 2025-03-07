@@ -1,6 +1,8 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -147,7 +149,7 @@ public class GitVersionExecutorTests : TestBase
         var cacheKey = cacheKeyFactory.Create(null);
         var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
-        this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
+        this.fileSystem.File.WriteAllText(cacheFileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
@@ -199,7 +201,7 @@ public class GitVersionExecutorTests : TestBase
         var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey = cacheKeyFactory.Create(null);
         var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
-        this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
+        this.fileSystem.File.WriteAllText(cacheFileName, versionCacheFileContent);
 
         var cacheDirectory = this.gitVersionCacheProvider.GetCacheDirectory();
 
@@ -292,13 +294,13 @@ public class GitVersionExecutorTests : TestBase
         var cacheKey = cacheKeyFactory.Create(null);
         var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
-        this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
+        this.fileSystem.File.WriteAllText(cacheFileName, versionCacheFileContent);
 
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
         var configPath = PathHelper.Combine(fixture.RepositoryPath, configFileName);
-        this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
+        this.fileSystem.File.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
 
@@ -354,7 +356,7 @@ public class GitVersionExecutorTests : TestBase
         var cacheKey = cacheKeyFactory.Create(null);
         var cacheFileName = this.gitVersionCacheProvider.GetCacheFileName(cacheKey);
 
-        this.fileSystem.WriteAllText(cacheFileName, versionCacheFileContent);
+        this.fileSystem.File.WriteAllText(cacheFileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
@@ -478,8 +480,9 @@ public class GitVersionExecutorTests : TestBase
     public void CalculateVersionFromWorktreeHead()
     {
         // Setup
+        this.fileSystem = new FileSystem();
         using var fixture = new EmptyRepositoryFixture();
-        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
+        var repoDir = fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
         var worktreePath = PathHelper.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
@@ -492,7 +495,7 @@ public class GitVersionExecutorTests : TestBase
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
-        var sut = GetGitVersionCalculator(gitVersionOptions);
+        var sut = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
 
         // Execute
         var version = sut.CalculateVersionVariables();
@@ -590,9 +593,9 @@ public class GitVersionExecutorTests : TestBase
         exception?.Message.ShouldBe("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
     }
 
-    private static string GetWorktreePath(EmptyRepositoryFixture fixture)
+    private string GetWorktreePath(EmptyRepositoryFixture fixture)
     {
-        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(this.fileSystem.Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         return worktreePath;
     }
 
@@ -625,6 +628,10 @@ public class GitVersionExecutorTests : TestBase
             if (environment != null) services.AddSingleton(environment);
             var options = Options.Create(gitVersionOptions);
             services.AddSingleton(options);
-            services.AddSingleton<IGitRepositoryInfo>(new GitRepositoryInfo(options));
+            services.AddSingleton<IGitRepositoryInfo>(sp =>
+            {
+                var fs = sp.GetRequiredService<IFileSystem>();
+                return new GitRepositoryInfo(fs, options);
+            });
         });
 }

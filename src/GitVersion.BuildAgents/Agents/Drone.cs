@@ -1,10 +1,11 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class Drone(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class Drone(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     public const string EnvironmentVariableName = "DRONE";
     protected override string EnvironmentVariable => EnvironmentVariableName;

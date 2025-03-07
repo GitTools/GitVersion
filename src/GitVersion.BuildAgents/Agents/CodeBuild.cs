@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -10,7 +11,7 @@ internal sealed class CodeBuild : BuildAgentBase
     public const string WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";
     public const string SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION";
 
-    public CodeBuild(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
+    public CodeBuild(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem) => WithPropertyFile("gitversion.properties");
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
@@ -37,7 +38,7 @@ internal sealed class CodeBuild : BuildAgentBase
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 
     public override bool PreventFetch() => true;

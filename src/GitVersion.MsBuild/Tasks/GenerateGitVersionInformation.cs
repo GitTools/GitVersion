@@ -19,6 +19,4 @@ public class GenerateGitVersionInformation : GitVersionTaskBase
 
     [Output]
     public string GitVersionInformationFilePath { get; set; }
-
-    protected override bool OnExecute() => GitVersionTasks.GenerateGitVersionInformation(this);
 }

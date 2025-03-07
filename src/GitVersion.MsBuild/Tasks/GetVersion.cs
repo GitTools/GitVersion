@@ -78,6 +78,4 @@ public class GetVersion : GitVersionTaskBase
 
     [Output]
     public string UncommittedChanges { get; set; }
-
-    protected override bool OnExecute() => GitVersionTasks.GetVersion(this);
 }

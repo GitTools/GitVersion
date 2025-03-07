@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -12,7 +13,7 @@ internal class BitBucketPipelines : BuildAgentBase
     private string? propertyFile;
     private string? ps1File;
 
-    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log)
+    public BitBucketPipelines(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem)
     {
         WithPropertyFile("gitversion.properties");
         WithPowershellFile("gitversion.ps1");
@@ -54,13 +55,13 @@ internal class BitBucketPipelines : BuildAgentBase
             .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
             .ToList();
 
-        File.WriteAllLines(this.propertyFile, exports);
+        this.FileSystem.File.WriteAllLines(this.propertyFile, exports);
 
         var psExports = variables
             .Select(variable => $"$GITVERSION_{variable.Key.ToUpperInvariant()} = \"{variable.Value}\"")
             .ToList();
 
-        File.WriteAllLines(this.ps1File, psExports);
+        this.FileSystem.File.WriteAllLines(this.ps1File, psExports);
     }
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)

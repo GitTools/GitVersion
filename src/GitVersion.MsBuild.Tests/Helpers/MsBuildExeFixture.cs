@@ -22,7 +22,7 @@ public class MsBuildExeFixture
 
     public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "", string language = "C#")
     {
-        var projectExtension = FileHelper.GetProjectExtension(language);
+        var projectExtension = AssemblyInfoFileHelper.GetProjectExtension(language);
         this.fixture = fixture;
         this.ProjectPath = PathHelper.Combine(workingDirectory, $"app.{projectExtension}");
 

@@ -1,16 +1,21 @@
+using System.IO.Abstractions;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
-namespace GitVersion.Logging;
+namespace GitVersion;
 
 internal class FileAppender : ILogAppender
 {
+    private readonly IFileSystem fileSystem;
     private readonly string filePath;
 
-    public FileAppender(string filePath)
+    public FileAppender(IFileSystem fileSystem, string filePath)
     {
+        this.fileSystem = fileSystem.NotNull();
         this.filePath = filePath;
 
-        var logFile = new FileInfo(Path.GetFullPath(filePath));
+        var logFile = this.fileSystem.FileInfo.New(PathHelper.GetFullPath(filePath));
 
         logFile.Directory?.Create();
         if (logFile.Exists) return;
@@ -30,9 +35,9 @@ internal class FileAppender : ILogAppender
         }
     }
 
-    private static void WriteLogEntry(string logFilePath, string str)
+    private void WriteLogEntry(string logFilePath, string str)
     {
         var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{PathHelper.NewLine}";
-        File.AppendAllText(logFilePath, contents);
+        this.fileSystem.File.AppendAllText(logFilePath, contents);
     }
 }

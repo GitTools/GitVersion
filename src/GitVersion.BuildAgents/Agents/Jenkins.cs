@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -10,7 +11,7 @@ internal class Jenkins : BuildAgentBase
     private string? file;
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public Jenkins(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
+    public Jenkins(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem) => WithPropertyFile("gitversion.properties");
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
@@ -43,6 +44,6 @@ internal class Jenkins : BuildAgentBase
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 }

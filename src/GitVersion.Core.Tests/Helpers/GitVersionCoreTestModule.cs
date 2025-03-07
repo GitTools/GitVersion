@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;

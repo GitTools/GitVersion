@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 
 namespace GitVersion.Output;
 
@@ -13,7 +14,7 @@ internal class TemplateManager(TemplateType templateType)
     private readonly Dictionary<string, string> templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
 
-    public string? GetTemplateFor(string fileExtension)
+    public string? GetTemplateFor(string? fileExtension)
     {
         ArgumentNullException.ThrowIfNull(fileExtension);
 
@@ -27,7 +28,7 @@ internal class TemplateManager(TemplateType templateType)
         return result;
     }
 
-    public string? GetAddFormatFor(string fileExtension)
+    public string? GetAddFormatFor(string? fileExtension)
     {
         ArgumentNullException.ThrowIfNull(fileExtension);
 
@@ -56,7 +57,12 @@ internal class TemplateManager(TemplateType templateType)
         {
             if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
             {
-                yield return (ext: Path.GetExtension(name), name);
+                var extension = PathHelper.GetExtension(name);
+                if (string.IsNullOrWhiteSpace(extension))
+                {
+                    continue;
+                }
+                yield return (ext: extension, name);
             }
         }
     }

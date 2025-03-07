@@ -23,7 +23,7 @@ internal sealed class Remote : IRemote
         {
             var refSpecs = this.innerRemote.RefSpecs;
             return refSpecs is null
-                ? Enumerable.Empty<IRefSpec>()
+                ? []
                 : new RefSpecCollection((LibGit2Sharp.RefSpecCollection)refSpecs);
         }
     }

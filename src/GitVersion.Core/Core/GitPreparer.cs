@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -118,7 +119,7 @@ internal class GitPreparer(
             {
                 throw new("Dynamic Git repositories should have a path specified");
             }
-            if (!this.fileSystem.DirectoryExists(gitDirectory))
+            if (!this.fileSystem.Directory.Exists(gitDirectory))
             {
                 CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);
             }

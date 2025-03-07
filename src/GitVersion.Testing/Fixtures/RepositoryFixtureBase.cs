@@ -1,5 +1,4 @@
 using GitVersion.Helpers;
-using GitVersion.Testing.Internal;
 using LibGit2Sharp;
 using Shouldly;
 
@@ -46,7 +45,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         }
 
         Repository.Dispose();
-        var directoryPath = Path.GetFileName(RepositoryPath);
+        var directoryPath = PathHelper.GetFileName(RepositoryPath);
 
         try
         {

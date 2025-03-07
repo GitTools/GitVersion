@@ -1,1 +1,1 @@
-calculate -l c:\logs\log.txt --work-dir C:\Projects\OSS\GitTools\GitVersion --verbosity verbose
+calculate -l ./logs/log.txt --work-dir . --verbosity verbose

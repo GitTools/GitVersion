@@ -1,4 +1,3 @@
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
@@ -20,7 +19,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFile(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language };
 
         using var result = ExecuteMsBuildTask(task);
@@ -30,14 +29,14 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileInBuildServer(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -47,7 +46,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 
@@ -57,7 +56,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string taskName = nameof(UpdateAssemblyInfo);
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language), language);
 
@@ -67,10 +66,10 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
@@ -80,7 +79,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string taskName = nameof(UpdateAssemblyInfo);
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language), language);
 
@@ -90,17 +89,17 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenIntermediateOutputPathDoesNotExist(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTask(task);
@@ -110,7 +109,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
         DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
@@ -118,7 +117,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     [TestCaseSource(nameof(Languages))]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenIntermediateOutputPathDoesNotExistInBuildServer(string language)
     {
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         var task = new UpdateAssemblyInfo { Language = language, IntermediateOutputPath = Guid.NewGuid().ToString("N") };
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task);
@@ -128,7 +127,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
-        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
         DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
     }
@@ -140,7 +139,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -153,10 +152,10 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
     }
 
@@ -167,7 +166,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
         var randDir = Guid.NewGuid().ToString("N");
 
-        var extension = FileHelper.GetFileExtension(language);
+        var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
             var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
@@ -180,10 +179,10 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-        var fileContent = File.ReadAllText(generatedFilePath);
+        var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
     }
 

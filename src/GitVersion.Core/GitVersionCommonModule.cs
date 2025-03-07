@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;

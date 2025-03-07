@@ -1,10 +1,11 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class GitHubActions(IEnvironment environment, ILog log) : BuildAgentBase(environment, log)
+internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
     // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 
@@ -31,7 +32,7 @@ internal class GitHubActions(IEnvironment environment, ILog log) : BuildAgentBas
         if (gitHubSetEnvFilePath != null)
         {
             writer($"Writing version variables to $GITHUB_ENV file for '{GetType().Name}'.");
-            using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
+            using var streamWriter = this.FileSystem.File.AppendText(gitHubSetEnvFilePath);
             foreach (var (key, value) in variables)
             {
                 if (!value.IsNullOrEmpty())

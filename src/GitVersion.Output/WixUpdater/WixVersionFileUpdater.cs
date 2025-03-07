@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -25,16 +26,16 @@ internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : 
         var root = doc.DocumentElement;
         doc.InsertBefore(xmlDecl, root);
 
-        if (this.fileSystem.Exists(this.wixVersionFile))
+        if (this.fileSystem.File.Exists(this.wixVersionFile))
         {
-            this.fileSystem.Delete(this.wixVersionFile);
+            this.fileSystem.File.Delete(this.wixVersionFile);
         }
 
-        if (!this.fileSystem.DirectoryExists(context.WorkingDirectory))
+        if (!this.fileSystem.Directory.Exists(context.WorkingDirectory))
         {
-            this.fileSystem.CreateDirectory(context.WorkingDirectory);
+            this.fileSystem.Directory.CreateDirectory(context.WorkingDirectory);
         }
-        using var fs = this.fileSystem.OpenWrite(this.wixVersionFile);
+        using var fs = this.fileSystem.File.OpenWrite(this.wixVersionFile);
         doc.Save(fs);
     }
 
