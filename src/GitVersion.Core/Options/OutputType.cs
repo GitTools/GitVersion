@@ -4,5 +4,6 @@ public enum OutputType
 {
     BuildServer,
     Json,
-    File
+    File,
+    DotEnv
 }

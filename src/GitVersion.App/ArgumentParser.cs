@@ -432,7 +432,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             if (!Enum.TryParse(v, true, out OutputType outputType))
             {
-                throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
+                throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json', 'file', 'buildserver' or 'dotenv'");
             }
 
             arguments.Output.Add(outputType);
