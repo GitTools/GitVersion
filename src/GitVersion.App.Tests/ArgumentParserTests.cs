@@ -103,7 +103,7 @@ public class ArgumentParserTests : TestBase
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
         exception.ShouldNotBeNull();
-        exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
+        exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file', 'buildserver' or 'dotenv'");
     }
 
     [Test]
