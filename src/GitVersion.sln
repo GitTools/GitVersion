@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7D3A83B4-9
 		..\.gitignore = ..\.gitignore
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\global.json = ..\global.json
+		..\GitReleaseManager.yml = ..\GitReleaseManager.yml
 	EndProjectSection
 EndProject
 Global

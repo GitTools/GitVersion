@@ -31,6 +31,7 @@ create:
   sha-section-heading: "SHA256 Hashes of the release artifacts"
   sha-section-line-format: "- `{1}\t- {0}`"
   allow-update-to-published: true
+  include-contributors: true
 close:
   use-issue-comments: true
   issue-comment: |-
