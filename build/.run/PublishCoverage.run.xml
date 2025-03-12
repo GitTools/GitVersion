@@ -1,4 +1,4 @@
-﻿<component name="ProjectRunConfigurationManager">
+<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PublishCoverage" type="DotNetProject" factoryName=".NET Project" folderName="Unit Test">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/build" />
     <option name="PROGRAM_PARAMETERS" value="--target=PublishCoverage --dotnet_version=8.0" />

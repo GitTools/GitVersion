@@ -154,6 +154,22 @@ public static class ConfigurationFileLocatorTests
         }
 
         [Test]
+        public void DoNotThrowWhenFileNameAreSame_WithDifferentCasing()
+        {
+            this.workingPath = this.repoPath;
+
+            this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = "MyConfig.yaml" } };
+            var sp = GetServiceProvider(this.gitVersionOptions);
+            this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+
+            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile.ToLower());
+
+            var config = Should.NotThrow(() => this.configFileLocator.GetConfigurationFile(this.workingPath));
+            config.ShouldNotBe(null);
+        }
+
+        [Test]
         public void DoNotThrowWhenConfigFileIsInSubDirectoryOfRepoPath()
         {
             this.workingPath = this.repoPath;

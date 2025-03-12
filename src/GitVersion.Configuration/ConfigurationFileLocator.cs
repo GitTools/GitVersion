@@ -16,7 +16,14 @@ internal class ConfigurationFileLocator(
     public const string DefaultAlternativeFileName = "GitVersion.yaml";
     public const string DefaultFileNameDotted = $".{DefaultFileName}";
     public const string DefaultAlternativeFileNameDotted = $".{DefaultAlternativeFileName}";
-    public List<string> SupportedConfigFileNames = [DefaultFileName, DefaultAlternativeFileName, DefaultFileNameDotted, DefaultAlternativeFileNameDotted];
+
+    private readonly string[] SupportedConfigFileNames =
+    [
+        DefaultFileName,
+        DefaultAlternativeFileName,
+        DefaultFileNameDotted,
+        DefaultAlternativeFileNameDotted
+    ];
 
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ILog log = log.NotNull();
@@ -35,21 +42,28 @@ internal class ConfigurationFileLocator(
     {
         if (directory is null) return null;
 
-        string?[] candidates = [this.ConfigurationFile, .. SupportedConfigFileNames];
-        var candidatePaths =
-            from candidate in candidates
-            where !candidate.IsNullOrWhiteSpace()
-            select PathHelper.Combine(directory, candidate);
+        string[] candidates = !string.IsNullOrWhiteSpace(this.ConfigurationFile)
+            ? [this.ConfigurationFile, .. this.SupportedConfigFileNames]
+            : this.SupportedConfigFileNames;
 
-        foreach (var candidatePath in candidatePaths)
+        foreach (var fileName in candidates)
         {
-            this.log.Debug($"Trying to find configuration file at '{candidatePath}'");
-            if (fileSystem.File.Exists(candidatePath))
+            this.log.Debug($"Trying to find configuration file {fileName} at '{directory}'");
+            if (directory != null && fileSystem.Directory.Exists(directory))
             {
-                this.log.Info($"Found configuration file at '{candidatePath}'");
-                return candidatePath;
+                var files = fileSystem.Directory.GetFiles(directory);
+
+                var matchingFile = files.FirstOrDefault(file =>
+                    string.Equals(fileSystem.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
+
+                if (matchingFile != null)
+                {
+                    this.log.Info($"Found configuration file at '{matchingFile}'");
+                    return matchingFile;
+                }
             }
-            this.log.Debug($"Configuration file not found at '{candidatePath}'");
+
+            this.log.Debug($"Configuration file {fileName} not found at '{directory}'");
         }
 
         return null;
@@ -60,22 +74,18 @@ internal class ConfigurationFileLocator(
         var workingConfigFile = GetConfigurationFile(workingDirectory);
         var projectRootConfigFile = GetConfigurationFile(projectRootDirectory);
 
-        var hasConfigInWorkingDirectory = workingConfigFile != null;
-        var hasConfigInProjectRootDirectory = projectRootConfigFile != null;
+        var hasConfigInWorkingDirectory = workingConfigFile is not null;
+        var hasConfigInProjectRootDirectory = projectRootConfigFile is not null;
 
         if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
         {
             throw new WarningException($"Ambiguous configuration file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
         }
 
-        if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
-        {
-            if (!SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase)))
-            {
-                workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
-                projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
-                throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
-            }
-        }
+        if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase))) return;
+
+        workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
+        projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
+        throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
     }
 }

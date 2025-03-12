@@ -1,4 +1,4 @@
-﻿<component name="ProjectRunConfigurationManager">
+<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tester" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Core.Tester/bin/Debug/net9.0/gv" />
     <option name="PROGRAM_PARAMETERS" value="" />
