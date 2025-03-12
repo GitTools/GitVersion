@@ -1,4 +1,4 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{EC2C1EC4-BE56-4CAE-A3EE-4A67EED6BC6C}"
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props

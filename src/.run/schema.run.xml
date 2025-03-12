@@ -1,4 +1,4 @@
-﻿<component name="ProjectRunConfigurationManager">
+<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="schema" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Schema/bin/Debug/net9.0/schema" />
     <option name="PROGRAM_PARAMETERS" value="--OutputDirectory schemas --Version 6.1" />

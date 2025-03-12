@@ -1,1 +1,1 @@
-﻿[<assembly: {0}>]
+[<assembly: {0}>]
