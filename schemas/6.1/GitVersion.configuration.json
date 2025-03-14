@@ -189,6 +189,13 @@
             "null"
           ]
         },
+        "paths": {
+          "description": "A sequence of file paths to be excluded from the version calculations.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "sha": {
           "description": "A sequence of SHAs to be excluded from the version calculations.",
           "$ref": "#/$defs/hashSetOfString"
