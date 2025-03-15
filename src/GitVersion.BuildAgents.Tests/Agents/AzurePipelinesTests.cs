@@ -77,4 +77,43 @@ public class AzurePipelinesTests : TestBase
         var logMessage = this.buildServer.GenerateSetVersionMessage(vars);
         logMessage.ShouldBe(logPrefix + expectedBuildNumber);
     }
+
+    [Test]
+    public void GetCurrentBranchShouldHandleBranches()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("BUILD_SOURCEBRANCH", $"refs/heads/{MainBranch}");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBe($"refs/heads/{MainBranch}");
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandleTags()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("BUILD_SOURCEBRANCH", "refs/tags/1.0.0");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandlePullRequests()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("BUILD_SOURCEBRANCH", "refs/pull/1/merge");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBe("refs/pull/1/merge");
+    }
 }
