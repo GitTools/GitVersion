@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -12,6 +13,8 @@ public record EffectiveConfiguration
     public EffectiveConfiguration(
         IGitVersionConfiguration configuration,
         IBranchConfiguration branchConfiguration,
+        IGitRepository? repository = null,
+        Lazy<GitVersionContext>? versionContext = null,
         EffectiveConfiguration? fallbackConfiguration = null)
     {
         configuration.NotNull();
@@ -67,7 +70,7 @@ public record EffectiveConfiguration
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing.Value;
-        VersionFilters = configuration.Ignore.ToFilters();
+        VersionFilters = versionContext != null && repository != null ? configuration.Ignore.ToFilters(repository, versionContext.Value) : [];
         Ignore = configuration.Ignore;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
         IsReleaseBranch = branchConfiguration.IsReleaseBranch ?? false;

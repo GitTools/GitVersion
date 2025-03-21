@@ -65,7 +65,6 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> 
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Configuration.EffectiveConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.IBranchConfiguration! branchConfiguration, GitVersion.Configuration.EffectiveConfiguration? fallbackConfiguration = null) -> void
 GitVersion.Configuration.EffectiveConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainBranch.get -> bool
@@ -88,7 +87,6 @@ GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.UpdateBuildNumber.get -> bool
-GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 GitVersion.Configuration.EffectiveConfiguration.VersionInBranchPattern.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.VersionStrategy.get -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.Configuration.IBranchConfiguration
@@ -602,7 +600,6 @@ GitVersion.Settings.OnlyTrackedBranches -> bool
 GitVersion.VersionCalculation.BaseVersion
 GitVersion.VersionCalculation.BaseVersion.BaseVersion() -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersion(GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void
-GitVersion.VersionCalculation.BaseVersion.BaseVersion(string! source, GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersion.GetIncrementedVersion() -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.BaseVersion.Operand.get -> GitVersion.VersionCalculation.BaseVersionOperand!
@@ -614,7 +611,6 @@ GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.get -> bool
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.BaseVersionOperand
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand() -> void
-GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionOperand(string! Source, GitVersion.SemanticVersion! SemanticVersion, GitVersion.Git.ICommit? BaseVersionSource = null) -> void
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.BaseVersionOperand.BaseVersionSource.init -> void
 GitVersion.VersionCalculation.BaseVersionOperand.SemanticVersion.get -> GitVersion.SemanticVersion!
