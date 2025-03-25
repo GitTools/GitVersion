@@ -58,7 +58,8 @@ internal sealed class FallbackVersionStrategy(
                 Increment = increment,
                 ForceIncrement = false,
                 Label = label
-            }
+            },
+            SourceType = VersionIncrementSourceType.Fallback
         };
     }
 }

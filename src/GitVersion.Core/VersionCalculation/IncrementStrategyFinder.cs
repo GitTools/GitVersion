@@ -7,7 +7,11 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+internal class IncrementStrategyFinder(
+    IRepositoryStore repositoryStore,
+    Lazy<GitVersionContext> versionContext,
+    IGitRepository repository,
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     : IIncrementStrategyFinder
 {
     private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
@@ -51,15 +55,14 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
         var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
         var noBumpRegex = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
+        var pathFilters = configuration.Ignore.ToFilters(repository, versionContext.Value).OfType<PathFilter>();
 
         var increments = commits
-            .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, noBumpRegex))
-            .Where(v => v != null)
-            .ToList();
+            .Select(c => (commit: c, increment: GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, noBumpRegex)))
+            .Where(pair => pair.increment != null)
+            .OrderByDescending(pair => pair.increment);
 
-        return increments.Count != 0
-            ? increments.Max()
-            : null;
+        return increments.FirstOrDefault(pair => !pathFilters.Any(f => f.Exclude(pair.commit, out _)), (null!, null)).increment;
     }
 
     private VersionField? FindCommitMessageIncrement(

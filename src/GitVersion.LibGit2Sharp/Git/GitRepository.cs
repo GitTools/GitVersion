@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -7,6 +8,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
+    private readonly ConcurrentDictionary<string, IReadOnlyList<string>?> patchPathsCache = new();
 
     private IRepository RepositoryInstance
     {
@@ -51,6 +53,39 @@ internal sealed partial class GitRepository
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
             return mergeBase == null ? null : new Commit(mergeBase);
         });
+    }
+
+    public IReadOnlyList<string>? FindPatchPaths(ICommit commit, string? tagPrefix)
+    {
+        ArgumentNullException.ThrowIfNull(commit);
+
+        return patchPathsCache.GetOrAdd(commit.Sha, commitSha =>
+        {
+            if (PatchPathsNeedsToBeDetermined(commitSha, tagPrefix))
+            {
+                var innerCommit = this.RepositoryInstance.Commits.First(c => c.Sha == commitSha);
+                Tree commitTree = innerCommit.Tree; // Main Tree
+                Tree? parentCommitTree = innerCommit.Parents.FirstOrDefault()?.Tree; // Secondary Tree
+                Patch patch = this.RepositoryInstance.Diff.Compare<Patch>(parentCommitTree, commitTree); // Difference
+                return patch.Select(element => element.Path).ToList();
+            }
+            return null;
+        });
+    }
+
+    private bool PatchPathsNeedsToBeDetermined(string commitSha, string? tagPrefix)
+    {
+        if (!string.IsNullOrEmpty(tagPrefix))
+        {
+            foreach (var tag in this.RepositoryInstance.Tags.Where(element => element.Target.Sha == commitSha))
+            {
+                if (tag.FriendlyName.StartsWith(tagPrefix, StringComparison.InvariantCulture))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public int UncommittedChangesCount()

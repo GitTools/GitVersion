@@ -78,7 +78,7 @@ internal sealed class TaggedCommitVersionStrategy(
             semanticVersionTreshold = semanticVersion.Value.Increment(increment, null, forceIncrement: true);
 
             yield return new BaseVersion(
-                $"Git tag '{semanticVersion.Tag.Name.Friendly}'", semanticVersion.Value, baseVersionSource)
+                $"Git tag '{semanticVersion.Tag.Name.Friendly}'", semanticVersion.Value, baseVersionSource, VersionIncrementSourceType.Tag)
             {
                 Operator = new BaseVersionOperator
                 {
