@@ -2,6 +2,8 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
+using CommitSemanticVersion = (GitVersion.Git.ICommit Commit, GitVersion.SemanticVersionWithTag SemanticVersion);
+
 namespace GitVersion.Core;
 
 internal sealed class TaggedSemanticVersionService(
@@ -19,7 +21,7 @@ internal sealed class TaggedSemanticVersionService(
          DateTimeOffset? notOlderThan,
          TaggedSemanticVersions taggedSemanticVersion)
     {
-        IEnumerable<IEnumerable<KeyValuePair<ICommit, SemanticVersionWithTag>>> GetElements()
+        IEnumerable<IEnumerable<CommitSemanticVersion>> GetElements()
         {
             if (taggedSemanticVersion.HasFlag(TaggedSemanticVersions.OfBranch))
             {
@@ -67,8 +69,8 @@ internal sealed class TaggedSemanticVersionService(
         }
 
         return GetElements().SelectMany(elements => elements).Distinct()
-            .OrderByDescending(element => element.Key.When)
-            .ToLookup(element => element.Key, element => element.Value);
+            .OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
@@ -87,11 +89,11 @@ internal sealed class TaggedSemanticVersionService(
             label: label,
             notOlderThan: notOlderThan);
 
-        return result.Distinct().OrderByDescending(element => element.Key.When)
-            .ToLookup(element => element.Key, element => element.Value);
+        return result.Distinct().OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
-    private IEnumerable<KeyValuePair<ICommit, SemanticVersionWithTag>> GetTaggedSemanticVersionsOfBranchInternal(
+    private IEnumerable<CommitSemanticVersion> GetTaggedSemanticVersionsOfBranchInternal(
         IBranch branch,
         string? tagPrefix,
         SemanticVersionFormat format,
@@ -110,7 +112,7 @@ internal sealed class TaggedSemanticVersionService(
             {
                 if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
                 {
-                    yield return new(grouping.Key, semanticVersion);
+                    yield return (grouping.Key, semanticVersion);
                 }
             }
         }
@@ -133,11 +135,11 @@ internal sealed class TaggedSemanticVersionService(
             notOlderThan: notOlderThan);
 
         return result.Distinct()
-            .OrderByDescending(element => element.Key.When)
-            .ToLookup(element => element.Key, element => element.Value);
+            .OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
-    private IEnumerable<KeyValuePair<ICommit, SemanticVersionWithTag>> GetTaggedSemanticVersionsOfMergeTargetInternal(
+    private IEnumerable<CommitSemanticVersion> GetTaggedSemanticVersionsOfMergeTargetInternal(
          IBranch branch,
          string? tagPrefix,
          SemanticVersionFormat format,
@@ -178,11 +180,11 @@ internal sealed class TaggedSemanticVersionService(
             excludeBranches: excludeBranches);
 
         return result.Distinct()
-            .OrderByDescending(element => element.Key.When)
-            .ToLookup(element => element.Key, element => element.Value);
+            .OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
-    private IEnumerable<KeyValuePair<ICommit, SemanticVersionWithTag>> GetTaggedSemanticVersionsOfMainBranchesInternal(
+    private IEnumerable<CommitSemanticVersion> GetTaggedSemanticVersionsOfMainBranchesInternal(
         IGitVersionConfiguration configuration,
         DateTimeOffset? notOlderThan,
         string? label,
@@ -218,11 +220,11 @@ internal sealed class TaggedSemanticVersionService(
             excludeBranches: excludeBranches);
 
         return result.Distinct()
-            .OrderByDescending(element => element.Key.When)
-            .ToLookup(element => element.Key, element => element.Value);
+            .OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
-    private IEnumerable<KeyValuePair<ICommit, SemanticVersionWithTag>> GetTaggedSemanticVersionsOfReleaseBranchesInternal(
+    private IEnumerable<CommitSemanticVersion> GetTaggedSemanticVersionsOfReleaseBranchesInternal(
         IGitVersionConfiguration configuration,
         DateTimeOffset? notOlderThan,
         string? label,

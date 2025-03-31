@@ -211,10 +211,8 @@ internal sealed class MainlineVersionStrategy(
                     {
                         return true;
                     }
-                    else
-                    {
-                        returnTrueWhenTheIncrementIsKnown = true;
-                    }
+
+                    returnTrueWhenTheIncrementIsKnown = true;
                 }
             }
 
@@ -242,7 +240,7 @@ internal sealed class MainlineVersionStrategy(
                             if (configuration.IsMainBranch == true) throw new NotImplementedException();
 
                             mergedCommitsInReverseOrderLazy = new(
-                                () => incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse().ToList()
+                                () => [.. incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
                             );
                             childConfiguration = configuration;
                             childBranchName = iteration.BranchName;
@@ -260,9 +258,8 @@ internal sealed class MainlineVersionStrategy(
                             iteration: childIteration,
                             targetBranch: targetBranch,
                             targetLabel: targetLabel,
-                            traversedCommits: traversedCommits,
-                            taggedSemanticVersions: taggedSemanticVersions
-                        );
+                            taggedSemanticVersions: taggedSemanticVersions,
+                            traversedCommits: traversedCommits);
 
                         commit.AddChildIteration(childIteration);
                         if (done) return true;
@@ -316,9 +313,7 @@ internal sealed class MainlineVersionStrategy(
         // If a main branch existing we need to ensure that it will be present at the first position in the list.
         foreach (var item in result)
         {
-            result[item.Key] = item.Value
-                .OrderByDescending(element => (element.Configuration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)
-                .ToList();
+            result[item.Key] = [.. item.Value.OrderByDescending(element => (element.Configuration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)];
         }
         return result;
     }
