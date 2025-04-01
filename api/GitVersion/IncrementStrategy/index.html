@@ -269,7 +269,6 @@
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
             </li>
             <li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
-            <li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
             <li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
             <li>
               <a href="/api/GitVersion/IGitVersionCalculateTool"
@@ -316,6 +315,7 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>IComparable</li>
+                        <li>ISpanFormattable</li>
                         <li>IFormattable</li>
                         <li>IConvertible</li>
                       </ul>
@@ -336,8 +336,9 @@
                     graph BT Type--&gt;Base0["Enum"]
                     Base0--&gt;Base1["ValueType"] Base1--&gt;Base2["object"]
                     Type-.-&gt;Interface0["IComparable"]
-                    Type-.-&gt;Interface1["IFormattable"]
-                    Type-.-&gt;Interface2["IConvertible"]
+                    Type-.-&gt;Interface1["ISpanFormattable"]
+                    Type-.-&gt;Interface2["IFormattable"]
+                    Type-.-&gt;Interface3["IConvertible"]
                     Type["IncrementStrategy"] class Type type-node
                   </div>
                 </div>

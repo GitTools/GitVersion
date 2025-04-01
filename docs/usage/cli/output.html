@@ -362,6 +362,36 @@
             <a href="/docs/reference/build-servers">build servers</a> for more
             information about this.
           </p>
+          <p>
+            You can even store the
+            <a href="/docs/reference/variables">variables</a> in a Dotenv file
+            and load it to have the variables available in your environment. For
+            that you have to run <code>GitVersion.exe /output dotenv</code> and
+            store the output into e.g. a <code>gitversion.env</code> file. These
+            files can also be passed around in CI environments like
+            <a
+              href="https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#passing-values-between-steps-and-jobs-in-a-workflow"
+              >GitHub</a
+            >
+            or
+            <a
+              href="https://docs.gitlab.com/ee/ci/variables/#pass-an-environment-variable-to-another-job"
+              >GitLab</a
+            >. Below are some examples of using the Dotenv format in the Unix
+            command line:
+          </p>
+          <pre><code class="language-bash"># Output version variables in Dotenv format
+gitversion /output dotenv
+
+# Show only a subset of the version variables in Dotenv format
+gitversion /output dotenv | grep -i &quot;prerelease&quot;
+
+# Show only a subset of the version variables that match the regex in Dotenv format
+gitversion /output dotenv | grep -iE &quot;major|sha=|_prerelease&quot;
+
+# Write version variables in Dotenv format into a file
+gitversion /output dotenv &gt; gitversion.env
+</code></pre>
         </section>
       </div>
 

@@ -1,4 +1,4 @@
-﻿assembly-versioning-scheme: MajorMinorPatch
+assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 tag-prefix: '[vV]?'
 version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
@@ -37,7 +37,7 @@ branches:
     prevent-increment:
       when-current-commit-tagged: false
     track-merge-message: true
-    regex: ^features?[/-](?<BranchName>.+)
+    regex: ^features?[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -49,7 +49,7 @@ branches:
     increment: Patch
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    regex: ^hotfix(es)?[\/-](?<BranchName>.+)
     source-branches:
     - main
     is-source-branch-for: []
@@ -58,14 +58,13 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest{Number}
     increment: Inherit
     prevent-increment:
       of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
     source-branches:
     - main
     - feature

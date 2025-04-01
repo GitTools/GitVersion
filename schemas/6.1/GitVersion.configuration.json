@@ -7,7 +7,10 @@
   "properties": {
     "assembly-file-versioning-format": {
       "description": "Specifies the format of AssemblyFileVersion and overwrites the value of assembly-file-versioning-scheme.",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "assembly-file-versioning-scheme": {
       "description": "The scheme to use when setting AssemblyFileVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
@@ -17,17 +20,24 @@
         "MajorMinorPatch",
         "MajorMinor",
         "Major",
-        "None"
+        "None",
+        null
       ]
     },
     "assembly-informational-format": {
       "description": "Specifies the format of AssemblyInformationalVersion. Defaults to '{InformationalVersion}'.",
       "default": "'{InformationalVersion}'",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "assembly-versioning-format": {
       "description": "Specifies the format of AssemblyVersion and overwrites the value of assembly-versioning-scheme.",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "assembly-versioning-scheme": {
       "description": "The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'. Defaults to 'MajorMinorPatch'.",
@@ -37,62 +47,191 @@
         "MajorMinorPatch",
         "MajorMinor",
         "Major",
-        "None"
+        "None",
+        null
       ]
     },
     "branches": {
       "description": "The header for all the individual branch configuration.",
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/$defs/branchConfiguration"
+        "type": "object",
+        "properties": {
+          "commit-message-incrementing": {
+            "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be 'Disabled', 'Enabled' or 'MergeMessageOnly'.",
+            "enum": [
+              "Enabled",
+              "Disabled",
+              "MergeMessageOnly",
+              null
+            ]
+          },
+          "mode": {
+            "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+            "enum": [
+              "ManualDeployment",
+              "ContinuousDelivery",
+              "ContinuousDeployment",
+              null
+            ]
+          },
+          "increment": {
+            "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
+            "$ref": "#/$defs/incrementStrategy"
+          },
+          "is-main-branch": {
+            "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "is-release-branch": {
+            "description": "Indicates this branch configuration represents a release branch in GitFlow.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "is-source-branch-for": {
+            "description": "The branches that this branch is a source branch.",
+            "$ref": "#/$defs/hashSetOfString"
+          },
+          "label": {
+            "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pre-release-weight": {
+            "description": "Provides a way to translate the PreReleaseLabel to a number.",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "prevent-increment": {
+            "description": "The prevent increment configuration section.",
+            "$ref": "#/$defs/preventIncrementConfiguration"
+          },
+          "regex": {
+            "format": "regex",
+            "description": "The regular expression pattern to use to match this branch.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source-branches": {
+            "description": "The source branches for this branch.",
+            "$ref": "#/$defs/hashSetOfString"
+          },
+          "track-merge-message": {
+            "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "track-merge-target": {
+            "description": "Strategy which will look for tagged merge commits directly off the current branch.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "tracks-release-branches": {
+            "description": "Indicates this branch configuration represents develop in GitFlow.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
       }
     },
     "commit-date-format": {
       "description": "The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).",
       "default": "yyyy-MM-dd",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "commit-message-incrementing": {
-      "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
+      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be 'Disabled', 'Enabled' or 'MergeMessageOnly'.",
+      "enum": [
+        "Enabled",
+        "Disabled",
+        "MergeMessageOnly",
+        null
+      ]
     },
     "mode": {
-      "$ref": "#/$defs/nullableOfDeploymentMode"
+      "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+      "enum": [
+        "ManualDeployment",
+        "ContinuousDelivery",
+        "ContinuousDeployment",
+        null
+      ]
     },
     "ignore": {
       "description": "The header property for the ignore configuration.",
       "type": "object",
       "properties": {
         "commits-before": {
-          "$ref": "#/$defs/string3"
+          "format": "date-time",
+          "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "sha": {
-          "$ref": "#/$defs/hashSetOfString2"
+          "description": "A sequence of SHAs to be excluded from the version calculations.",
+          "$ref": "#/$defs/hashSetOfString"
         }
       }
     },
     "increment": {
+      "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
       "$ref": "#/$defs/incrementStrategy"
     },
     "is-main-branch": {
-      "$ref": "#/$defs/nullableOfBoolean"
+      "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
+      "type": [
+        "boolean",
+        "null"
+      ]
     },
     "is-release-branch": {
-      "$ref": "#/$defs/nullableOfBoolean1"
+      "description": "Indicates this branch configuration represents a release branch in GitFlow.",
+      "type": [
+        "boolean",
+        "null"
+      ]
     },
     "is-source-branch-for": {
+      "description": "The branches that this branch is a source branch.",
       "$ref": "#/$defs/hashSetOfString"
     },
     "label": {
-      "$ref": "#/$defs/string"
-    },
-    "label-number-pattern": {
-      "$ref": "#/$defs/string1"
+      "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "major-version-bump-message": {
       "format": "regex",
       "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '\\+semver:\\s?(breaking|major)'",
       "default": "\\+semver:\\s?(breaking|major)",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "merge-message-formats": {
       "description": "Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.",
@@ -105,32 +244,54 @@
       "format": "regex",
       "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '\\+semver:\\s?(feature|minor)'",
       "default": "\\+semver:\\s?(feature|minor)",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "next-version": {
       "description": "Allows you to bump the next version explicitly. Useful for bumping main or a feature branch with breaking changes",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "no-bump-message": {
       "format": "regex",
       "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '\\+semver:\\s?(none|skip)'",
       "default": "\\+semver:\\s?(none|skip)",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "patch-version-bump-message": {
       "format": "regex",
       "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",
       "default": "\\+semver:\\s?(fix|patch)",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "pre-release-weight": {
-      "$ref": "#/$defs/nullableOfInt32"
+      "description": "Provides a way to translate the PreReleaseLabel to a number.",
+      "type": [
+        "integer",
+        "null"
+      ]
     },
     "prevent-increment": {
+      "description": "The prevent increment configuration section.",
       "$ref": "#/$defs/preventIncrementConfiguration"
     },
     "regex": {
-      "$ref": "#/$defs/string2"
+      "format": "regex",
+      "description": "The regular expression pattern to use to match this branch.",
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "semantic-version-format": {
       "description": "Specifies the semantic version format that is used when parsing the string. Can be 'Strict' or 'Loose'. Defaults to 'Strict'.",
@@ -141,13 +302,17 @@
       ]
     },
     "source-branches": {
-      "$ref": "#/$defs/hashSetOfString1"
+      "description": "The source branches for this branch.",
+      "$ref": "#/$defs/hashSetOfString"
     },
     "tag-prefix": {
       "format": "regex",
       "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
       "default": "[vV]?",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "tag-pre-release-weight": {
       "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
@@ -157,13 +322,25 @@
       ]
     },
     "track-merge-message": {
-      "$ref": "#/$defs/nullableOfBoolean4"
+      "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
+      "type": [
+        "boolean",
+        "null"
+      ]
     },
     "track-merge-target": {
-      "$ref": "#/$defs/nullableOfBoolean5"
+      "description": "Strategy which will look for tagged merge commits directly off the current branch.",
+      "type": [
+        "boolean",
+        "null"
+      ]
     },
     "tracks-release-branches": {
-      "$ref": "#/$defs/nullableOfBoolean6"
+      "description": "Indicates this branch configuration represents develop in GitFlow.",
+      "type": [
+        "boolean",
+        "null"
+      ]
     },
     "update-build-number": {
       "description": "Whether to update the build number in the project file. Defaults to true.",
@@ -174,13 +351,15 @@
       "format": "regex",
       "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
       "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "strategies": {
       "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
       "type": "array",
       "items": {
-        "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
         "enum": [
           "None",
           "Fallback",
@@ -195,78 +374,14 @@
     },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "$defs": {
-    "branchConfiguration": {
-      "type": "object",
-      "properties": {
-        "commit-message-incrementing": {
-          "$ref": "#/$defs/nullableOfCommitMessageIncrementMode"
-        },
-        "mode": {
-          "$ref": "#/$defs/nullableOfDeploymentMode"
-        },
-        "increment": {
-          "$ref": "#/$defs/incrementStrategy"
-        },
-        "is-main-branch": {
-          "$ref": "#/$defs/nullableOfBoolean"
-        },
-        "is-release-branch": {
-          "$ref": "#/$defs/nullableOfBoolean1"
-        },
-        "is-source-branch-for": {
-          "$ref": "#/$defs/hashSetOfString"
-        },
-        "label": {
-          "$ref": "#/$defs/string"
-        },
-        "label-number-pattern": {
-          "$ref": "#/$defs/string1"
-        },
-        "pre-release-weight": {
-          "$ref": "#/$defs/nullableOfInt32"
-        },
-        "prevent-increment": {
-          "$ref": "#/$defs/preventIncrementConfiguration"
-        },
-        "regex": {
-          "$ref": "#/$defs/string2"
-        },
-        "source-branches": {
-          "$ref": "#/$defs/hashSetOfString1"
-        },
-        "track-merge-message": {
-          "$ref": "#/$defs/nullableOfBoolean4"
-        },
-        "track-merge-target": {
-          "$ref": "#/$defs/nullableOfBoolean5"
-        },
-        "tracks-release-branches": {
-          "$ref": "#/$defs/nullableOfBoolean6"
-        }
-      }
-    },
-    "nullableOfCommitMessageIncrementMode": {
-      "description": "Sets whether it should be possible to increment the version with special syntax in the commit message. Can be 'Disabled', 'Enabled' or 'MergeMessageOnly'.",
-      "enum": [
-        "Enabled",
-        "Disabled",
-        "MergeMessageOnly"
-      ]
-    },
-    "nullableOfDeploymentMode": {
-      "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
-      "enum": [
-        "ManualDeployment",
-        "ContinuousDelivery",
-        "ContinuousDeployment"
-      ]
-    },
     "incrementStrategy": {
-      "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
       "enum": [
         "None",
         "Major",
@@ -275,119 +390,36 @@
         "Inherit"
       ]
     },
-    "nullableOfBoolean": {
-      "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "nullableOfBoolean1": {
-      "description": "Indicates this branch configuration represents a release branch in GitFlow.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
     "hashSetOfString": {
-      "description": "The branches that this branch is a source branch.",
       "type": "array",
       "items": {
-        "description": "The branches that this branch is a source branch.",
         "type": "string"
       }
     },
-    "string": {
-      "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
-      "type": "string"
-    },
-    "string1": {
-      "format": "regex",
-      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to '[/-](?<number>\\d+)'.",
-      "default": "[/-](?<number>\\d+)",
-      "type": "string"
-    },
-    "nullableOfInt32": {
-      "description": "Provides a way to translate the PreReleaseLabel to a number.",
-      "type": [
-        "integer",
-        "null"
-      ]
-    },
     "preventIncrementConfiguration": {
-      "description": "The prevent increment configuration section.",
       "type": "object",
       "properties": {
         "of-merged-branch": {
-          "$ref": "#/$defs/nullableOfBoolean2"
+          "description": "Prevent increment when branch merged.",
+          "type": [
+            "boolean",
+            "null"
+          ]
         },
         "when-branch-merged": {
-          "$ref": "#/$defs/nullableOfBoolean2"
+          "description": "Prevent increment when branch merged.",
+          "type": [
+            "boolean",
+            "null"
+          ]
         },
         "when-current-commit-tagged": {
-          "$ref": "#/$defs/nullableOfBoolean3"
+          "description": "This branch related property controls the behavior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
+          "type": [
+            "boolean",
+            "null"
+          ]
         }
-      }
-    },
-    "nullableOfBoolean2": {
-      "description": "Prevent increment when branch merged.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "nullableOfBoolean3": {
-      "description": "This branch related property controls the behavior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "string2": {
-      "format": "regex",
-      "description": "The regular expression pattern to use to match this branch.",
-      "type": "string"
-    },
-    "hashSetOfString1": {
-      "description": "The source branches for this branch.",
-      "type": "array",
-      "items": {
-        "description": "The source branches for this branch.",
-        "type": "string"
-      }
-    },
-    "nullableOfBoolean4": {
-      "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "nullableOfBoolean5": {
-      "description": "Strategy which will look for tagged merge commits directly off the current branch.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "nullableOfBoolean6": {
-      "description": "Indicates this branch configuration represents develop in GitFlow.",
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "string3": {
-      "format": "date-time",
-      "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
-      "type": "string"
-    },
-    "hashSetOfString2": {
-      "description": "A sequence of SHAs to be excluded from the version calculations.",
-      "type": "array",
-      "items": {
-        "description": "A sequence of SHAs to be excluded from the version calculations.",
-        "type": "string"
       }
     }
   }

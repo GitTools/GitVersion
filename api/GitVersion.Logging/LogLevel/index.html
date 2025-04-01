@@ -194,6 +194,13 @@
               <a href="/api/GitVersion.Logging">GitVersion<wbr />.Logging</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Delegate Types</li>
+            <li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
+            <li>
+              <a href="/api/GitVersion.Logging/LogActionEntry"
+                >LogActionEntry</a
+              >
+            </li>
             <li class="header">Enum Types</li>
             <li class="selected">
               <a href="/api/GitVersion.Logging/LogLevel">LogLevel</a>
@@ -202,13 +209,6 @@
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a>
-            </li>
-            <li class="header">Delegate Types</li>
-            <li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
-            <li>
-              <a href="/api/GitVersion.Logging/LogActionEntry"
-                >LogActionEntry</a
-              >
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
@@ -242,6 +242,7 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>IComparable</li>
+                        <li>ISpanFormattable</li>
                         <li>IFormattable</li>
                         <li>IConvertible</li>
                       </ul>
@@ -262,8 +263,9 @@
                     graph BT Type--&gt;Base0["Enum"]
                     Base0--&gt;Base1["ValueType"] Base1--&gt;Base2["object"]
                     Type-.-&gt;Interface0["IComparable"]
-                    Type-.-&gt;Interface1["IFormattable"]
-                    Type-.-&gt;Interface2["IConvertible"] Type["LogLevel"] class
+                    Type-.-&gt;Interface1["ISpanFormattable"]
+                    Type-.-&gt;Interface2["IFormattable"]
+                    Type-.-&gt;Interface3["IConvertible"] Type["LogLevel"] class
                     Type type-node
                   </div>
                 </div>
