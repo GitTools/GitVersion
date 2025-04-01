@@ -1,3 +1,1 @@
 #nullable enable
-GitVersion.Extensions.FileSystemExtensions
-static GitVersion.Extensions.FileSystemExtensions.GetLastDirectoryWrite(this System.IO.Abstractions.IFileSystem! fileSystem, string! path) -> long

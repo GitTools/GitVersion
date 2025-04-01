@@ -157,6 +157,7 @@ GitVersion.Extensions.AssemblyVersionsGeneratorExtensions
 GitVersion.Extensions.CommonExtensions
 GitVersion.Extensions.DictionaryExtensions
 GitVersion.Extensions.EnumerableExtensions
+GitVersion.Extensions.FileSystemExtensions
 GitVersion.Extensions.GitExtensions
 GitVersion.Extensions.IncrementStrategyExtensions
 GitVersion.Extensions.ReadEmbeddedResourceExtensions
@@ -415,9 +416,9 @@ GitVersion.MergeMessage.TargetBranch.get -> string?
 GitVersion.MergeMessage.Version.get -> GitVersion.SemanticVersion?
 GitVersion.OutputType
 GitVersion.OutputType.BuildServer = 0 -> GitVersion.OutputType
+GitVersion.OutputType.DotEnv = 3 -> GitVersion.OutputType
 GitVersion.OutputType.File = 2 -> GitVersion.OutputType
 GitVersion.OutputType.Json = 1 -> GitVersion.OutputType
-GitVersion.OutputType.DotEnv = 3 -> GitVersion.OutputType
 GitVersion.OutputVariables.GitVersionVariables
 GitVersion.OutputVariables.GitVersionVariables.AssemblySemFileVer.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.AssemblySemFileVer.init -> void
@@ -738,6 +739,7 @@ static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this Sy
 static GitVersion.Extensions.EnumerableExtensions.AddRange<T>(this System.Collections.Generic.ICollection<T>! source, System.Collections.Generic.IEnumerable<T>! items) -> void
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T
+static GitVersion.Extensions.FileSystemExtensions.GetLastDirectoryWrite(this System.IO.Abstractions.IFileSystem! fileSystem, string! path) -> long
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
 static GitVersion.Extensions.GitExtensions.DumpGraphLog(System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.IncrementStrategyExtensions.ToVersionField(this GitVersion.IncrementStrategy strategy) -> GitVersion.VersionField
