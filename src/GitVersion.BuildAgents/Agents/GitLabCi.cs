@@ -15,9 +15,9 @@ internal class GitLabCi : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+    public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"GitVersion_{name}={value}"
     ];
@@ -45,6 +45,6 @@ internal class GitLabCi : BuildAgentBase
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
 
-        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
     }
 }

@@ -26,9 +26,9 @@ internal class EnvRun(IEnvironment environment, ILog log, IFileSystem fileSystem
         return false;
     }
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+    public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"@@envrun[set name='GitVersion_{name}' value='{value}']"
     ];

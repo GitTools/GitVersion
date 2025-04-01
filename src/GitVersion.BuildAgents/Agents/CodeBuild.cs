@@ -17,9 +17,9 @@ internal sealed class CodeBuild : BuildAgentBase
 
     protected override string EnvironmentVariable => WebHookEnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+    public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"GitVersion_{name}={value}"
     ];
@@ -38,7 +38,7 @@ internal sealed class CodeBuild : BuildAgentBase
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        this.FileSystem.File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
+        this.FileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
     }
 
     public override bool PreventFetch() => true;

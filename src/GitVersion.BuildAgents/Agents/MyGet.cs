@@ -18,22 +18,18 @@ internal class MyGet(IEnvironment environment, ILog log, IFileSystem fileSystem)
                && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public override string[] GenerateSetParameterMessage(string name, string? value)
+    public override string[] SetOutputVariables(string name, string? value)
     {
         var messages = new List<string>
         {
             $"##myget[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
         };
 
-        if (string.Equals(name, "SemVer", StringComparison.InvariantCultureIgnoreCase))
-        {
-            messages.Add($"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(value)}']");
-        }
-
         return [.. messages];
     }
 
-    public override string? GenerateSetVersionMessage(GitVersionVariables variables) => null;
+    public override string? SetBuildNumber(GitVersionVariables variables) =>
+        $"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
 
     public override bool PreventFetch() => false;
 }

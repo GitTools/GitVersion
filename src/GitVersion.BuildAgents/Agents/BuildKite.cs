@@ -12,10 +12,10 @@ internal class BuildKite(IEnvironment environment, ILog log, IFileSystem fileSys
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) =>
+    public override string SetBuildNumber(GitVersionVariables variables) =>
         string.Empty; // There is no equivalent function in BuildKite.
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
         []; // There is no equivalent function in BuildKite.
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)

@@ -12,15 +12,15 @@ internal abstract class BuildAgentBase(IEnvironment environment, ILog log, IFile
     protected readonly IFileSystem FileSystem = fileSystem.NotNull();
 
     protected abstract string EnvironmentVariable { get; }
-    public virtual bool IsDefault => false;
 
-    public abstract string? GenerateSetVersionMessage(GitVersionVariables variables);
-    public abstract string[] GenerateSetParameterMessage(string name, string? value);
+    public abstract string? SetBuildNumber(GitVersionVariables variables);
+    public abstract string[] SetOutputVariables(string name, string? value);
 
     public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
 
     public virtual string? GetCurrentBranch(bool usingDynamicRepos) => null;
 
+    public virtual bool IsDefault => false;
     public virtual bool PreventFetch() => true;
     public virtual bool ShouldCleanUpRemotes() => false;
 
@@ -28,23 +28,24 @@ internal abstract class BuildAgentBase(IEnvironment environment, ILog log, IFile
     {
         if (updateBuildNumber)
         {
-            writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
-            writer(GenerateSetVersionMessage(variables));
+            writer($"Set Build Number for '{GetType().Name}'.");
+            writer(SetBuildNumber(variables));
         }
-        writer($"Executing GenerateBuildLogOutput for '{GetType().Name}'.");
-        foreach (var buildParameter in GenerateBuildLogOutput(variables))
+
+        writer($"Set Output Variables for '{GetType().Name}'.");
+        foreach (var buildParameter in SetOutputVariables(variables))
         {
             writer(buildParameter);
         }
     }
 
-    protected IEnumerable<string> GenerateBuildLogOutput(GitVersionVariables variables)
+    protected IEnumerable<string> SetOutputVariables(GitVersionVariables variables)
     {
         var output = new List<string>();
 
         foreach (var (key, value) in variables)
         {
-            output.AddRange(GenerateSetParameterMessage(key, value));
+            output.AddRange(SetOutputVariables(key, value));
         }
 
         return output;

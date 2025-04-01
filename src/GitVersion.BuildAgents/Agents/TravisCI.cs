@@ -11,9 +11,9 @@ internal class TravisCi(IEnvironment environment, ILog log, IFileSystem fileSyst
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+    public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"GitVersion_{name}={value}"
     ];

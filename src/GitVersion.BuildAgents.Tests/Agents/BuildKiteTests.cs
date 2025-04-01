@@ -73,23 +73,23 @@ public class BuildKiteTests : TestBase
     }
 
     [Test]
-    public void GetSetParameterMessageShouldReturnEmptyArray()
+    public void ShouldSetOutputVariables()
     {
         // Act
-        var result = this.buildServer.GenerateSetParameterMessage("Foo", "Bar");
+        var result = this.buildServer.SetOutputVariables("Foo", "Bar");
 
         // Assert
         result.ShouldBeEmpty();
     }
 
     [Test]
-    public void GetEmptyGenerateSetVersionMessage()
+    public void ShouldSetBuildNumber()
     {
         // Arrange
         var vars = new TestableGitVersionVariables { FullSemVer = "1.0.0" };
 
         // Act
-        var message = this.buildServer.GenerateSetVersionMessage(vars);
+        var message = this.buildServer.SetBuildNumber(vars);
 
         // Assert
         message.ShouldBeEmpty();

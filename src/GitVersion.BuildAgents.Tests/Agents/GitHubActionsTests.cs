@@ -103,23 +103,23 @@ public class GitHubActionsTests : TestBase
     }
 
     [Test]
-    public void GetSetParameterMessage()
+    public void ShouldSetOutputVariables()
     {
         // Assert
         this.environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
 
         // Act
-        var result = this.buildServer.GenerateSetParameterMessage("GitVersion_Something", "1.0.0");
+        var result = this.buildServer.SetOutputVariables("GitVersion_Something", "1.0.0");
 
         // Assert
         result.ShouldContain(_ => true, 0);
     }
 
     [Test]
-    public void SkipEmptySetParameterMessage()
+    public void SkipEmptyOutputVariables()
     {
         // Act
-        var result = this.buildServer.GenerateSetParameterMessage("Hello", string.Empty);
+        var result = this.buildServer.SetOutputVariables("Hello", string.Empty);
 
         // Assert
         result.ShouldBeEquivalentTo(Array.Empty<string>());
@@ -140,7 +140,7 @@ public class GitHubActionsTests : TestBase
         this.buildServer.WriteIntegration(s => list.Add(s), vars);
 
         // Assert
-        var expected = new List<string> { "Executing GenerateSetVersionMessage for 'GitHubActions'.", "", "Executing GenerateBuildLogOutput for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
+        var expected = new List<string> { "Set Build Number for 'GitHubActions'.", "", "Set Output Variables for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
 
         string.Join(PathHelper.NewLine, list)
             .ShouldBe(string.Join(PathHelper.NewLine, expected));
@@ -167,17 +167,17 @@ public class GitHubActionsTests : TestBase
         // Act
         this.buildServer.WriteIntegration(s => list.Add(s), vars, false);
 
-        list.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
+        list.ShouldNotContain(x => x != null && x.StartsWith("Set Build Number for "));
     }
 
     [Test]
-    public void GetEmptyGenerateSetVersionMessage()
+    public void ShouldSetBuildNumber()
     {
         // Arrange
         var vars = new TestableGitVersionVariables { FullSemVer = "1.0.0" };
 
         // Act
-        var message = this.buildServer.GenerateSetVersionMessage(vars);
+        var message = this.buildServer.SetBuildNumber(vars);
 
         // Assert
         message.ShouldBeEmpty();

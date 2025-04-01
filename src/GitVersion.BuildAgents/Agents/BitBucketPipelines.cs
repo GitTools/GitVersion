@@ -21,13 +21,13 @@ internal class BitBucketPipelines : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+    public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
     public void WithPropertyFile(string propertiesFileName) => this.propertyFile = propertiesFileName;
 
     public void WithPowershellFile(string powershellFileName) => this.ps1File = powershellFileName;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => [$"GITVERSION_{name.ToUpperInvariant()}={value}"];
+    public override string[] SetOutputVariables(string name, string? value) => [$"GITVERSION_{name.ToUpperInvariant()}={value}"];
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {

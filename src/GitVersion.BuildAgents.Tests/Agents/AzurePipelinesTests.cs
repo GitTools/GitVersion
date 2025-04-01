@@ -26,18 +26,18 @@ public class AzurePipelinesTests : TestBase
     public void ClearEnvironmentVariableForTest() => this.environment.SetEnvironmentVariable(key, null);
 
     [Test]
-    public void DevelopBranch()
+    public void ShouldSetBuildNumber()
     {
         var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Unstable4" };
-        var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
+        var vsVersion = this.buildServer.SetBuildNumber(vars);
 
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
     }
 
     [Test]
-    public void EscapeValues()
+    public void ShouldSetOutputVariables()
     {
-        var vsVersion = this.buildServer.GenerateSetParameterMessage("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+        var vsVersion = this.buildServer.SetOutputVariables("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
 
         vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
         vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo;isOutput=true]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
@@ -50,7 +50,7 @@ public class AzurePipelinesTests : TestBase
 
         const string semver = "0.0.0-Unstable4";
         var vars = new TestableGitVersionVariables { FullSemVer = semver };
-        var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
+        var vsVersion = this.buildServer.SetBuildNumber(vars);
         vsVersion.ShouldBe(semver);
     }
 
@@ -62,7 +62,7 @@ public class AzurePipelinesTests : TestBase
     {
         this.environment.SetEnvironmentVariable(key, buildNumberFormat);
         var vars = new TestableGitVersionVariables { FullSemVer = myFullSemVer };
-        var logMessage = this.buildServer.GenerateSetVersionMessage(vars);
+        var logMessage = this.buildServer.SetBuildNumber(vars);
         logMessage.ShouldBe(logPrefix + expectedBuildNumber);
     }
 
@@ -74,7 +74,7 @@ public class AzurePipelinesTests : TestBase
     {
         this.environment.SetEnvironmentVariable(key, buildNumberFormat);
         var vars = new TestableGitVersionVariables { SemVer = mySemVer };
-        var logMessage = this.buildServer.GenerateSetVersionMessage(vars);
+        var logMessage = this.buildServer.SetBuildNumber(vars);
         logMessage.ShouldBe(logPrefix + expectedBuildNumber);
     }
 }

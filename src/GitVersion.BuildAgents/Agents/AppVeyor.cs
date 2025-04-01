@@ -11,7 +11,7 @@ internal class AppVeyor(IEnvironment environment, ILog log, IFileSystem fileSyst
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables)
+    public override string SetBuildNumber(GitVersionVariables variables)
     {
         var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
         var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
@@ -38,7 +38,7 @@ internal class AppVeyor(IEnvironment environment, ILog log, IFileSystem fileSyst
         return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
     }
 
-    public override string[] GenerateSetParameterMessage(string name, string? value)
+    public override string[] SetOutputVariables(string name, string? value)
     {
         var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
         var httpClient = GetHttpClient(apiUrl);

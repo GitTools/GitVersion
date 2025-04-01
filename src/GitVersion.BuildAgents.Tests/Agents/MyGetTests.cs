@@ -16,24 +16,17 @@ public class MyGetTests : TestBase
     }
 
     [Test]
-    public void DevelopBranch()
+    public void ShouldSetBuildNumber()
     {
         var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Unstable4" };
-        var message = this.buildServer.GenerateSetVersionMessage(vars);
-        Assert.That(message, Is.EqualTo(null));
+        var message = this.buildServer.SetBuildNumber(vars);
+        Assert.That(message, Is.EqualTo("##myget[buildNumber '0.0.0-Unstable4']"));
     }
 
     [Test]
-    public void EscapeValues()
+    public void ShouldSetOutputVariables()
     {
-        var message = this.buildServer.GenerateSetParameterMessage("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+        var message = this.buildServer.SetOutputVariables("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
         Assert.That(message[0], Is.EqualTo("##myget[setParameter name='GitVersion.Foo' value='0.8.0-unstable568 Branch:|'develop|' Sha:|'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb|'']"));
-    }
-
-    [Test]
-    public void BuildNumber()
-    {
-        var message = this.buildServer.GenerateSetParameterMessage("SemVer", "0.8.0-unstable568");
-        Assert.That(message[1], Is.EqualTo("##myget[buildNumber '0.8.0-unstable568']"));
     }
 }

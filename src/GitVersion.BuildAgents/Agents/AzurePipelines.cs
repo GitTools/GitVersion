@@ -11,7 +11,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"##vso[task.setvariable variable=GitVersion.{name}]{value}",
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
@@ -22,7 +22,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
 
     public override bool PreventFetch() => true;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables)
+    public override string SetBuildNumber(GitVersionVariables variables)
     {
         // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
         // specified

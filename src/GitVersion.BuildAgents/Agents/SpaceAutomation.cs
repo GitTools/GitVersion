@@ -12,7 +12,7 @@ internal class SpaceAutomation(IEnvironment environment, ILog log, IFileSystem f
 
     public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) => [];
+    public override string[] SetOutputVariables(string name, string? value) => [];
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => string.Empty;
+    public override string SetBuildNumber(GitVersionVariables variables) => string.Empty;
 }

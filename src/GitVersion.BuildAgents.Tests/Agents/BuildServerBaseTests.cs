@@ -46,7 +46,7 @@ public class BuildServerBaseTests : TestBase
 
         writes = [];
         buildAgent.WriteIntegration(writes.Add, variables, false);
-        writes.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
+        writes.ShouldNotContain(x => x != null && x.StartsWith("Set Build Number for "));
     }
 
     private class BuildAgent(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
@@ -55,8 +55,8 @@ public class BuildServerBaseTests : TestBase
 
         public override bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-        public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
+        public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string? value) => [];
+        public override string[] SetOutputVariables(string name, string? value) => [];
     }
 }

@@ -14,10 +14,10 @@ internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fil
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) =>
+    public override string SetBuildNumber(GitVersionVariables variables) =>
         string.Empty; // There is no equivalent function in GitHub Actions.
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
         []; // There is no equivalent function in GitHub Actions.
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)

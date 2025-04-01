@@ -84,13 +84,13 @@ public class SpaceAutomationTests : TestBase
     }
 
     [Test]
-    public void GetEmptyGenerateSetVersionMessage()
+    public void ShouldSetBuildNumber()
     {
         // Arrange
         var vars = new TestableGitVersionVariables { FullSemVer = "1.0.0" };
 
         // Act
-        var message = this.buildServer.GenerateSetVersionMessage(vars);
+        var message = this.buildServer.SetBuildNumber(vars);
 
         // Assert
         message.ShouldBeEmpty();

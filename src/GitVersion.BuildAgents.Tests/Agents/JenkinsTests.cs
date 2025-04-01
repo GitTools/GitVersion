@@ -94,18 +94,18 @@ public class JenkinsTests : TestBase
     }
 
     [Test]
-    public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
+    public void ShouldSetBuildNumber()
     {
         var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Beta4.7" };
-        this.buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
+        this.buildServer.SetBuildNumber(vars).ShouldBe("0.0.0-Beta4.7");
     }
 
     [Test]
-    public void GenerateMessageTest()
+    public void ShouldSetOutputVariables()
     {
-        var generatedParameterMessages = this.buildServer.GenerateSetParameterMessage("name", "value");
-        generatedParameterMessages.Length.ShouldBe(1);
-        generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
+        var result = this.buildServer.SetOutputVariables("name", "value");
+        result.Length.ShouldBe(1);
+        result[0].ShouldBe("GitVersion_name=value");
     }
 
     [Test]

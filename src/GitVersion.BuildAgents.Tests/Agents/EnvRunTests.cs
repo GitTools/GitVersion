@@ -52,18 +52,18 @@ public class EnvRunTests : TestBase
 
     [TestCase("1.2.3")]
     [TestCase("1.2.3-rc4")]
-    public void GenerateSetVersionMessage(string fullSemVer)
+    public void ShouldSetBuildNumber(string fullSemVer)
     {
         var vars = new TestableGitVersionVariables { FullSemVer = fullSemVer };
-        var version = this.buildServer.GenerateSetVersionMessage(vars);
+        var version = this.buildServer.SetBuildNumber(vars);
         version.ShouldBe(fullSemVer);
     }
 
     [TestCase("Version", "1.2.3", "@@envrun[set name='GitVersion_Version' value='1.2.3']")]
     [TestCase("Version", "1.2.3-rc4", "@@envrun[set name='GitVersion_Version' value='1.2.3-rc4']")]
-    public void GenerateSetParameterMessage(string name, string? value, string expected)
+    public void ShouldSetOutputVariables(string name, string? value, string expected)
     {
-        var output = this.buildServer.GenerateSetParameterMessage(name, value);
+        var output = this.buildServer.SetOutputVariables(name, value);
         output.ShouldHaveSingleItem();
         output[0].ShouldBe(expected);
     }

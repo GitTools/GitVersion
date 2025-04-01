@@ -10,12 +10,12 @@ internal class ContinuaCi(IEnvironment environment, ILog log, IFileSystem fileSy
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string[] GenerateSetParameterMessage(string name, string? value) =>
+    public override string[] SetOutputVariables(string name, string? value) =>
     [
         $"@@continua[setVariable name='GitVersion_{name}' value='{value}' skipIfNotDefined='true']"
     ];
 
-    public override string GenerateSetVersionMessage(GitVersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
+    public override string SetBuildNumber(GitVersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
 
     public override bool PreventFetch() => false;
 }
