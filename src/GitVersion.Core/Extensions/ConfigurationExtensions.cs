@@ -25,7 +25,7 @@ internal static class ConfigurationExtensions
         {
             fallbackConfiguration = parentConfiguration;
         }
-        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
+        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration: fallbackConfiguration);
     }
 
     public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
@@ -38,12 +38,13 @@ internal static class ConfigurationExtensions
         return branchConfiguration;
     }
 
-    public static IEnumerable<IVersionFilter> ToFilters(this IIgnoreConfiguration source)
+    public static IEnumerable<IVersionFilter> ToFilters(this IIgnoreConfiguration source, IGitRepository repository, GitVersionContext versionContext)
     {
         source.NotNull();
 
         if (source.Shas.Count != 0) yield return new ShaVersionFilter(source.Shas);
         if (source.Before.HasValue) yield return new MinDateVersionFilter(source.Before.Value);
+        if (source.Paths.Count != 0) yield return new PathFilter(repository, versionContext, source.Paths);
     }
 
     private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
