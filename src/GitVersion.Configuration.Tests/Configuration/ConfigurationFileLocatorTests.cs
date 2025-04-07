@@ -154,19 +154,39 @@ public static class ConfigurationFileLocatorTests
         }
 
         [Test]
-        public void DoNotThrowWhenFileNameAreSame_WithDifferentCasing()
+        public void ReturnConfigurationFilePathIfCustomConfigurationIsSet()
+        {
+            this.workingPath = this.repoPath;
+            string configurationFilePath = Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
+
+            this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configurationFilePath } };
+
+            var serviceProvider = GetServiceProvider(this.gitVersionOptions);
+            this.fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
+
+            using var _ = this.fileSystem.SetupConfigFile(
+                path: Path.Combine(this.workingPath, "Configuration"), fileName: "CustomConfig.yaml"
+            );
+            this.configFileLocator = serviceProvider.GetRequiredService<IConfigurationFileLocator>();
+
+            var config = this.configFileLocator.GetConfigurationFile(this.workingPath);
+            config.ShouldBe(configurationFilePath);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase("Configuration/CustomConfig2.yaml")]
+        public void ReturnConfigurationFilePathIfCustomConfigurationIsSet_InvalidConfigurationFilePaths(string? configFile)
         {
             this.workingPath = this.repoPath;
 
-            this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = "MyConfig.yaml" } };
+            this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configFile } };
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile.ToLower());
-
-            var config = Should.NotThrow(() => this.configFileLocator.GetConfigurationFile(this.workingPath));
-            config.ShouldNotBe(null);
+            var config = this.configFileLocator.GetConfigurationFile(this.workingPath);
+            config.ShouldBe(null);
         }
 
         [Test]
