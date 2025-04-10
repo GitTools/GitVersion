@@ -13,5 +13,7 @@ public enum GitVersionOutput
     /// <summary>
     /// Outputs to the stdout in a way usable by a detected build server.
     /// </summary>
-    BuildServer
+    BuildServer,
+    File,
+    DotEnv
 }

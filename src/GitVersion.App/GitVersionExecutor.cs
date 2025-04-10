@@ -123,7 +123,6 @@ internal class GitVersionExecutor(
         if (gitVersionOptions.Diag)
         {
             gitVersionOptions.Settings.NoCache = true;
-            gitVersionOptions.Output.Add(OutputType.BuildServer);
         }
 
         ConfigureLogging(gitVersionOptions, this.log, this.fileSystem);

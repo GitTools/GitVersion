@@ -18,6 +18,7 @@
     <option name="PROJECT_TFM" value="net9.0" />
     <method v="2">
       <option name="Build" />
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="Build Prepare" run_configuration_type="DotNetProject" />
     </method>
   </configuration>
 </component>
