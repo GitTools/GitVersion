@@ -1,0 +1,87 @@
+#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+version: "1.0"
+#Specify IDE code to run analysis without container (Applied in CI/CD pipeline)
+ide: QDNET
+#Specify inspection profile for code analysis
+profile:
+  name: qodana.starter
+include:
+  - name: ConvertIfStatementToReturnStatement
+  - name: ConvertIfStatementToConditionalTernaryExpression
+  - name: AutoPropertyCanBeMadeGetOnly.Global
+  - name: CanReplaceCastWithLambdaReturnType
+  - name: ChangeFieldTypeToSystemThreadingLock
+  - name: ConvertIfStatementToSwitchStatement
+  - name: ConvertToConstant.Local
+  - name: DuplicatedSequentialIfBodies
+  - name: InlineTemporaryVariable
+  - name: InvertIf
+  - name: UseVerbatimString
+  - name: LoopCanBeConvertedToQuery
+  - name: MemberCanBePrivate.Global
+  - name: MemberCanBeProtected.Global
+  - name: MergeIntoPattern
+  - name: UnusedMethodReturnValue.Global
+  - name: EditorConfigNoMatchingFiles
+  - name: ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+  - name: PreferConcreteValueOverDefault
+  - name: PropertyCanBeMadeInitOnly.Global
+  - name: MoveLocalFunctionAfterJumpStatement
+  - name: RedundantExplicitParamsArrayCreation
+  - name: RedundantOverload.Global
+  - name: RedundantStringInterpolation
+  - name: RedundantVerbatimStringPrefix
+  - name: ReplaceSubstringWithRangeIndexer
+  - name: RCS1001
+  - name: RCS1003
+  - name: RCS1123
+  - name: SYSLIB1045
+  - name: CA1826
+  - name: RCS1256
+  - name: RCS1118
+  - name: RCS1077
+  - name: RCS1205
+  - name: RCS1214
+  - name: RCS1249
+  - name: RCS1192
+  - name: SYSLIB1054
+  - name: CA1512
+  - name: CA1866
+  - name: CA1859
+  - name: RCS1246
+  - name: CA1829
+  - name: RCS1266
+  - name: RCS1267
+  - name: RCS1227
+  - name: SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+  - name: SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+  - name: RedundantAlwaysMatchSubpattern
+  - name: UnusedType.Global
+  - name: UnusedMemberInSuper.Global
+  - name: UnusedMember.Local
+  - name: EditorConfigKeyCorrectness
+  - name: UseCollectionCountProperty
+  - name: UseDiscardAssignment
+  - name: ArrangeNamespaceBody
+  - name: SuggestDiscardDeclarationVarStyle
+  - name: ArrangeTrailingCommaInMultilineLists
+  - name: ArrangeObjectCreationWhenTypeNotEvident
+  - name: UseRawString
+  - name: VirtualMemberNeverOverridden.Global
+
+#Enable inspections
+#include:
+#  - name: <SomeEnabledInspectionId>
+#Disable inspections
+#exclude:
+#  - name: <SomeDisabledInspectionId>
+#    paths:
+#      - <path/where/not/run/inspection>
+#Execute shell command before Qodana execution (Applied in CI/CD pipeline)
+#bootstrap: sh ./prepare-qodana.sh
+#Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
+#plugins:
+#  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
