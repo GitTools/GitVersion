@@ -140,7 +140,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithNoLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -253,7 +253,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithNoLabelAndDisabledMessageIncrementingOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -367,7 +367,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithNoLabelAndMergeMessageOnlyIncrementingOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -481,7 +481,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithEmptyLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -596,7 +596,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithEmptyLabelAndDisabledMessageIncrementingOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -712,7 +712,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithEmptyLabelAndMergeMessageOnlyIncrementingOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty)
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -826,7 +826,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithLabelFooOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -940,7 +940,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelFooAndDisabledMessageIncrementModeOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -1055,7 +1055,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelFooAndMergeMessageOnlyIncrementModeOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 )
@@ -1170,7 +1170,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "3.0.0-foo.1+0")]
         public string GetVersionWithLabelBarOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -1284,7 +1284,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelBarAndDisabledMessageIncrementModeOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
@@ -1399,7 +1399,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelBarAndMergeMessageOnlyIncrementModeOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar")
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 ).WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))

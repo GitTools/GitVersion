@@ -11,7 +11,7 @@ internal class FormatAttributeHandler : IAttributeHandler<FormatAttribute>
     {
         if (attribute is FormatAttribute formatAttribute)
         {
-            Json.Schema.Format? format = formatAttribute.Format switch
+            var format = formatAttribute.Format switch
             {
                 Format.Date => Formats.Date,
                 Format.DateTime => Formats.DateTime,

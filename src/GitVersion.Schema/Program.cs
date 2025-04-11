@@ -12,7 +12,7 @@ var schemaVersion = configurationManager["Version"]!;
 var configuration = new SchemaGeneratorConfiguration
 {
     PropertyNameResolver = PropertyNameResolvers.KebabCase,
-    PropertyOrder = PropertyOrder.ByName,
+    PropertyOrder = PropertyOrder.ByName
 };
 
 AttributeHandler.AddHandler<DefaultAttributeHandler>();

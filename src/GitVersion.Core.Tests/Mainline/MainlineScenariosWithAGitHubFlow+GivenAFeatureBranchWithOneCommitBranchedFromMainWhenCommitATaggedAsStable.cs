@@ -142,7 +142,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithNoLabelOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -256,7 +256,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithEmptyLabelOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -370,7 +370,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelFooOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -484,7 +484,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelBarOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();

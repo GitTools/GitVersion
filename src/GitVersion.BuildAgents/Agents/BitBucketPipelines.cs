@@ -38,16 +38,16 @@ internal class BitBucketPipelines : BuildAgentBase
         writer($"Outputting variables to '{this.propertyFile}' for Bash,");
         writer($"and to '{this.ps1File}' for Powershell ... ");
         writer("To import the file into your build environment, add the following line to your build step:");
-        writer($"Bash:");
+        writer("Bash:");
         writer($"  - source {this.propertyFile}");
-        writer($"Powershell:");
+        writer("Powershell:");
         writer($"  - . .\\{this.ps1File}");
         writer("");
         writer("To reuse the file across build steps, add the file as a build artifact:");
-        writer($"Bash:");
+        writer("Bash:");
         writer("  artifacts:");
         writer($"    - {this.propertyFile}");
-        writer($"Powershell:");
+        writer("Powershell:");
         writer("  artifacts:");
         writer($"    - {this.ps1File}");
 

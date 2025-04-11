@@ -60,7 +60,7 @@ internal partial class MainlineScenariosWithAGitFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, ExpectedResult = "2.0.0-alpha.1+0")]
         public string GetVersionWithTrackMergeTargetOnDevelop(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(true))
                 .Build();
@@ -89,7 +89,7 @@ internal partial class MainlineScenariosWithAGitFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, ExpectedResult = "2.0.0-alpha.1+1")]
         public string GetVersionWithNoTrackMergeTargetOnDevelop(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(false))
                 .Build();

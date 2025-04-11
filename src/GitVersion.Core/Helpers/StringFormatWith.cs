@@ -33,21 +33,21 @@ internal static class StringFormatWithExtension
         ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(source);
 
-        foreach (Match match in RegexPatterns.Common.ExpandTokensRegex.Matches(template).Cast<Match>())
+        foreach (var match in RegexPatterns.Common.ExpandTokensRegex.Matches(template).Cast<Match>())
         {
             string propertyValue;
-            string? fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
+            var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
 
             if (match.Groups["envvar"].Success)
             {
-                string envVar = match.Groups["envvar"].Value;
+                var envVar = match.Groups["envvar"].Value;
                 propertyValue = environment.GetEnvironmentVariable(envVar) ?? fallback
                     ?? throw new ArgumentException($"Environment variable {envVar} not found and no fallback string provided");
             }
             else
             {
                 var objType = source.GetType();
-                string memberAccessExpression = match.Groups["member"].Value;
+                var memberAccessExpression = match.Groups["member"].Value;
                 var expression = CompileDataBinder(objType, memberAccessExpression);
                 // It would be better to throw if the expression and fallback produce null, but provide an empty string for back compat.
                 propertyValue = expression(source)?.ToString() ?? fallback ?? "";
@@ -61,7 +61,7 @@ internal static class StringFormatWithExtension
 
     private static Func<object?, object?> CompileDataBinder(Type type, string expr)
     {
-        ParameterExpression param = Expression.Parameter(typeof(object));
+        var param = Expression.Parameter(typeof(object));
         Expression body = Expression.Convert(param, type);
         body = expr.Split('.').Aggregate(body, Expression.PropertyOrField);
         body = Expression.Convert(body, typeof(object)); // Convert result in case the body produces a Nullable value type.

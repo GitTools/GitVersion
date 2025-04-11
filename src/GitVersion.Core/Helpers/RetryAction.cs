@@ -18,8 +18,7 @@ public class RetryAction<T, Result> where T : Exception
 
     public RetryAction(int maxRetries = 5)
     {
-        if (maxRetries < 0)
-            throw new ArgumentOutOfRangeException(nameof(maxRetries));
+        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
 
         var linearBackoff = LinearBackoff(TimeSpan.FromMilliseconds(100), maxRetries);
         this.retryPolicy = Policy<Result>
@@ -39,15 +38,15 @@ public class RetryAction<T, Result> where T : Exception
 
         static IEnumerable<TimeSpan> Enumerate(TimeSpan initial, int retry, bool fast, double f)
         {
-            int i = 0;
+            var i = 0;
             if (fast)
             {
                 i++;
                 yield return TimeSpan.Zero;
             }
 
-            double ms = initial.TotalMilliseconds;
-            double ad = f * ms;
+            var ms = initial.TotalMilliseconds;
+            var ad = f * ms;
 
             for (; i < retry; i++, ms += ad)
             {

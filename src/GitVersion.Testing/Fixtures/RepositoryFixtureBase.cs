@@ -127,7 +127,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void MergeTo(string branchName, bool removeBranchAfterMerging = false)
     {
-        string mergeSource = Repository.Head.FriendlyName;
+        var mergeSource = Repository.Head.FriendlyName;
         Checkout(branchName);
         MergeNoFF(mergeSource);
         if (removeBranchAfterMerging)

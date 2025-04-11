@@ -35,7 +35,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.ShowVariable), "/showvariable" },
             { nameof(Arguments.Format), "/format" }
         };
-        string helpText = string.Empty;
+        var helpText = string.Empty;
 
         this.helpWriter.WriteTo(s => helpText = s);
 

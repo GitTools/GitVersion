@@ -32,7 +32,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
             if (semanticVersion.IsMatchForBranchSpecificLabel(label))
             {
                 BaseVersionOperator? operation = null;
-                if (!semanticVersion.IsPreRelease || label is not null && semanticVersion.PreReleaseTag.Name != label)
+                if (!semanticVersion.IsPreRelease || (label is not null && semanticVersion.PreReleaseTag.Name != label))
                 {
                     operation = new BaseVersionOperator
                     {

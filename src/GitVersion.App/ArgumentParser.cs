@@ -379,7 +379,7 @@ internal class ArgumentParser(IEnvironment environment,
         if (versionVariable == null)
         {
             var message = $"{name} requires a valid version variable. Available variables are:{FileSystemHelper.Path.NewLine}" +
-                          string.Join(", ", availableVariables.Select(x => string.Concat("'", x, "'")));
+                          string.Join(", ", availableVariables.Select(x => $"'{x}'"));
             throw new WarningException(message);
         }
 

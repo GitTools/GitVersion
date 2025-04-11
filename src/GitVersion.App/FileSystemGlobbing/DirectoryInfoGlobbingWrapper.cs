@@ -57,7 +57,7 @@ internal sealed class DirectoryInfoGlobbingWrapper
                 {
                     IDirectoryInfo info => new DirectoryInfoGlobbingWrapper(this.fileSystem, info),
                     IFileInfo info => new FileInfoGlobbingWrapper(this.fileSystem, info),
-                    _ => new FileSystemInfoGlobbingWrapper(this.fileSystem, fileSystemInfo),
+                    _ => new FileSystemInfoGlobbingWrapper(this.fileSystem, fileSystemInfo)
                 };
             }
         }
@@ -82,7 +82,7 @@ internal sealed class DirectoryInfoGlobbingWrapper
         {
             { Length: 1 } => new DirectoryInfoGlobbingWrapper(this.fileSystem, dirs[0], parentPath),
             { Length: 0 } => null,
-            _ => throw new InvalidOperationException($"More than one sub directories are found under {this.directoryInfo.FullName} with name {path}."),
+            _ => throw new InvalidOperationException($"More than one sub directories are found under {this.directoryInfo.FullName} with name {path}.")
         };
     }
 

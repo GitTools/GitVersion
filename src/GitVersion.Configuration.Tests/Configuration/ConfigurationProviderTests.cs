@@ -72,11 +72,13 @@ branches:
     [Test]
     public void CanRemoveLabel()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    release:
-        label: """"";
+        const string text =
+            """
+            next-version: 2.0.0
+            branches:
+                release:
+                    label: ""
+            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 

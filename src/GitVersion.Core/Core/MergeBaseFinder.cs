@@ -35,7 +35,7 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
 
             if (commitToFindCommonBase?.Parents.Contains(commit) == true)
             {
-                commitToFindCommonBase = commitToFindCommonBase.Parents.First();
+                commitToFindCommonBase = commitToFindCommonBase.Parents[0];
             }
 
             if (commitToFindCommonBase == null)

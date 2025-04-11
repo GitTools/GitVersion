@@ -115,12 +115,12 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
         ? VersionCalculation.VersionStrategies.None : VersionStrategies.Aggregate((one, another) => one | another);
 
     [JsonPropertyName("strategies")]
-    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.")]
+    [JsonPropertyDescription($"Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: '{nameof(VersionCalculation.VersionStrategies.ConfiguredNextVersion)}', '{nameof(VersionCalculation.VersionStrategies.MergeMessage)}', '{nameof(VersionCalculation.VersionStrategies.TaggedCommit)}', '{nameof(VersionCalculation.VersionStrategies.TrackReleaseBranches)}', '{nameof(VersionCalculation.VersionStrategies.VersionInBranchName)}' and '{nameof(VersionCalculation.VersionStrategies.Mainline)}'.")]
     public VersionStrategies[] VersionStrategies { get; internal set; } = [];
 
     [JsonIgnore]
     IReadOnlyDictionary<string, IBranchConfiguration> IGitVersionConfiguration.Branches
-        => Branches.ToDictionary(element => element.Key, element => (IBranchConfiguration)element.Value);
+        => Branches.ToDictionary(element => element.Key, IBranchConfiguration (element) => element.Value);
 
     [JsonPropertyName("branches")]
     [JsonPropertyDescription("The header for all the individual branch configuration.")]

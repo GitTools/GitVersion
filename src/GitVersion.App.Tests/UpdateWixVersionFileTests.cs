@@ -39,7 +39,7 @@ internal class UpdateWixVersionFileTests
         var gitVersionVarsInWix = GetGitVersionVarsInWixFile(FileSystemHelper.Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
         var gitVersionVars = GitVersionVariables.AvailableVariables;
 
-        Assert.That(gitVersionVarsInWix, Has.Count.EqualTo(gitVersionVars.Count()));
+        Assert.That(gitVersionVarsInWix, Has.Count.EqualTo(gitVersionVars.Count));
     }
 
     [Test]

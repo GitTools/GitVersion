@@ -13,10 +13,10 @@ public class PerformanceScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         Random random = new(4711);
-        SemanticVersion semanticVersion = SemanticVersion.Empty;
-        for (int i = 0; i < 500; i++)
+        var semanticVersion = SemanticVersion.Empty;
+        for (var i = 0; i < 500; i++)
         {
-            VersionField versionField = (VersionField)random.Next(1, 4);
+            var versionField = (VersionField)random.Next(1, 4);
             semanticVersion = semanticVersion.Increment(versionField, string.Empty, forceIncrement: true);
             fixture.MakeATaggedCommit(semanticVersion.ToString("j"));
         }

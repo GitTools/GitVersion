@@ -157,7 +157,7 @@ public static class ConfigurationFileLocatorTests
         public void ReturnConfigurationFilePathIfCustomConfigurationIsSet()
         {
             this.workingPath = this.repoPath;
-            string configurationFilePath = FileSystemHelper.Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
+            var configurationFilePath = FileSystemHelper.Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
 
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configurationFilePath } };
 
@@ -238,7 +238,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            string path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
+            var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
             using var _ = this.fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();

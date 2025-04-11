@@ -419,7 +419,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             {
                 OfMergedBranch = this.preventIncrementOfMergedBranch,
                 WhenBranchMerged = this.preventIncrementWhenBranchMerged,
-                WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
+                WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged
             },
             PreReleaseWeight = this.preReleaseWeight
         };

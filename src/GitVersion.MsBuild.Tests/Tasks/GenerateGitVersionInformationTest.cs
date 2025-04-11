@@ -293,7 +293,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         {
             Language = language,
             UseProjectNamespaceForGitVersionInformation = "true",
-            ProjectFile = "App.Project.csproj",
+            ProjectFile = "App.Project.csproj"
         };
         using var result = ExecuteMsBuildTask(task);
 
@@ -320,7 +320,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
             Language = language,
             UseProjectNamespaceForGitVersionInformation = "true",
             ProjectFile = "App.Project.csproj",
-            RootNamespace = "App.Project.RootNamespace",
+            RootNamespace = "App.Project.RootNamespace"
         };
         using var result = ExecuteMsBuildTask(task);
 
@@ -357,7 +357,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
                 { "Language", "$(Language)" },
                 { "IntermediateOutputPath", intermediateOutputPath },
                 { "UseProjectNamespaceForGitVersionInformation", "$(UseProjectNamespaceForGitVersionInformation)" },
-                { "RootNamespace", "$(RootNamespace)" },
+                { "RootNamespace", "$(RootNamespace)" }
             })
             .TaskOutputProperty(outputProperty, outputProperty)
             .ItemGroup()

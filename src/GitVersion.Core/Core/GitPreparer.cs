@@ -372,7 +372,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
         if (currentBranch.IsNullOrEmpty()) return;
 
-        var referencePrefix = "refs/";
+        const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
         var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
             ? ReferenceName.LocalBranchPrefix + currentBranch

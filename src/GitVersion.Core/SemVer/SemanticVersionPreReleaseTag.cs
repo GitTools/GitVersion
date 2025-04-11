@@ -125,5 +125,5 @@ public sealed class SemanticVersionPreReleaseTag :
         };
     }
 
-    public bool HasTag() => !Name.IsNullOrEmpty() || Number.HasValue && PromoteTagEvenIfNameIsEmpty;
+    public bool HasTag() => !Name.IsNullOrEmpty() || (Number.HasValue && PromoteTagEvenIfNameIsEmpty);
 }

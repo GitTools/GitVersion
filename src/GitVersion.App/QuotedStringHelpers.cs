@@ -26,13 +26,13 @@ internal static class QuotedStringHelpers
             return [];
 
         var split = new List<string>();
-        bool isPreviousCharBackslash = false;
-        bool isInsideQuotes = false;
+        var isPreviousCharBackslash = false;
+        var isInsideQuotes = false;
 
-        int startIndex = 0;
-        for (int i = 0; i < input.Length; i++)
+        var startIndex = 0;
+        for (var i = 0; i < input.Length; i++)
         {
-            char current = input[i];
+            var current = input[i];
             switch (current)
             {
                 case '"':

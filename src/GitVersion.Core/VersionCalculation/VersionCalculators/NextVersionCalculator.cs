@@ -31,7 +31,7 @@ internal class NextVersionCalculator(
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
         EffectiveConfiguration effectiveConfiguration = new(Context.Configuration, branchConfiguration);
 
-        bool someBranchRelatedPropertiesMightBeNotKnown = branchConfiguration.Increment == IncrementStrategy.Inherit;
+        var someBranchRelatedPropertiesMightBeNotKnown = branchConfiguration.Increment == IncrementStrategy.Inherit;
 
         if (Context.IsCurrentCommitTagged && !someBranchRelatedPropertiesMightBeNotKnown && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged)
         {
@@ -50,7 +50,7 @@ internal class NextVersionCalculator(
             }
         }
 
-        NextVersion nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
+        var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
 
         if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown
             && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
@@ -108,8 +108,8 @@ internal class NextVersionCalculator(
     {
         result = null;
 
-        string? label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-        SemanticVersionWithTag? currentCommitTaggedVersion = taggedSemanticVersionsOfCurrentCommit
+        var label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var currentCommitTaggedVersion = taggedSemanticVersionsOfCurrentCommit
             .Where(element => element.Value.IsMatchForBranchSpecificLabel(label)).Max();
 
         if (currentCommitTaggedVersion is not null)
@@ -124,7 +124,7 @@ internal class NextVersionCalculator(
                 numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
             );
 
-            SemanticVersionPreReleaseTag preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
+            var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
             if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)
             {
                 preReleaseTag = SemanticVersionPreReleaseTag.Empty;

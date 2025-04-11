@@ -87,7 +87,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             SourceBranches =
             [
                 this.MainBranch.Name,
-                this.SupportBranch.Name,
+                this.SupportBranch.Name
             ],
             Label = "beta",
             PreventIncrement = new PreventIncrementConfiguration
@@ -161,7 +161,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             SourceBranches =
             [
                 this.MainBranch.Name,
-                this.SupportBranch.Name,
+                this.SupportBranch.Name
             ],
             Label = "beta",
             IsReleaseBranch = true,
@@ -206,7 +206,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             {
                 WhenCurrentCommitTagged = true
             },
-            IsMainBranch = false,
+            IsMainBranch = false
         });
     }
 }
