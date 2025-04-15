@@ -222,7 +222,7 @@ public static class ConfigurationFileLocatorTests
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
             configurationProvider.ProvideForDirectory(this.repoPath);
-            stringLogger.Length.ShouldBe(0);
+            stringLogger.ShouldMatch("No configuration file found, using default configuration");
         }
 
         [Test]
@@ -244,7 +244,7 @@ public static class ConfigurationFileLocatorTests
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
             configurationProvider.ProvideForDirectory(this.repoPath);
-            stringLogger.Length.ShouldBe(0);
+            stringLogger.ShouldMatch("No configuration file found, using default configuration");
         }
 
         [Test]

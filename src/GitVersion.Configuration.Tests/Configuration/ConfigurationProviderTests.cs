@@ -287,7 +287,7 @@ branches: {}";
         this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         var filePath = PathHelper.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
-        stringLogger.ShouldContain($"Found configuration file at '{filePath}'");
+        stringLogger.ShouldContain($"Using configuration file '{filePath}'");
     }
 
     [Test]
