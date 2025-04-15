@@ -43,6 +43,7 @@ internal class ConfigurationFileLocator(
         string? customConfigurationFile = GetCustomConfigurationFilePathIfEligable(directoryPath);
         if (!string.IsNullOrWhiteSpace(customConfigurationFile))
         {
+            this.log.Info($"Found configuration file at '{customConfigurationFile}'");
             return customConfigurationFile;
         }
 
