@@ -1,0 +1,38 @@
+<Solution>
+  <Folder Name="/Modules/">
+    <Project Path="GitVersion.BuildAgents.Tests/GitVersion.BuildAgents.Tests.csproj" />
+    <Project Path="GitVersion.BuildAgents/GitVersion.BuildAgents.csproj" />
+    <Project Path="GitVersion.Configuration.Tests/GitVersion.Configuration.Tests.csproj" />
+    <Project Path="GitVersion.Configuration/GitVersion.Configuration.csproj" />
+    <Project Path="GitVersion.LibGit2Sharp/GitVersion.LibGit2Sharp.csproj" />
+    <Project Path="GitVersion.Output.Tests/GitVersion.Output.Tests.csproj" />
+    <Project Path="GitVersion.Output/GitVersion.Output.csproj" />
+  </Folder>
+  <Folder Name="/root/">
+    <File Path="../.editorconfig" />
+    <File Path="../.gitattributes" />
+    <File Path="../.gitignore" />
+    <File Path="../.gitversion.yml" />
+    <File Path="../GitReleaseManager.yml" />
+    <File Path="../global.json" />
+  </Folder>
+  <Folder Name="/root/readme/">
+    <File Path="../BREAKING_CHANGES.md" />
+    <File Path="../CONTRIBUTING.md" />
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+    <File Path="../SECURITY.md" />
+  </Folder>
+  <Folder Name="/sln/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="GitVersion.App.Tests/GitVersion.App.Tests.csproj" />
+  <Project Path="GitVersion.App/GitVersion.App.csproj" />
+  <Project Path="GitVersion.Core.Tests/GitVersion.Core.Tests.csproj" />
+  <Project Path="GitVersion.Core/GitVersion.Core.csproj" />
+  <Project Path="GitVersion.MsBuild.Tests/GitVersion.MsBuild.Tests.csproj" />
+  <Project Path="GitVersion.MsBuild/GitVersion.MsBuild.csproj" />
+  <Project Path="GitVersion.Schema/GitVersion.Schema.csproj" />
+  <Project Path="GitVersion.Testing/GitVersion.Testing.csproj" />
+</Solution>

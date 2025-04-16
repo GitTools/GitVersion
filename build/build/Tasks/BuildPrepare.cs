@@ -11,7 +11,7 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
     {
         context.Information("Builds solution...");
 
-        const string sln = "./src/GitVersion.sln";
+        const string sln = "./src/GitVersion.slnx";
         context.DotNetRestore(sln,
             new()
             {

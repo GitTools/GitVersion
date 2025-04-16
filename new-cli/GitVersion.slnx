@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/cmds/">
+    <File Path="command.md" />
+    <File Path="docs/calculate.rsp" />
+    <File Path="docs/config-help.rsp" />
+    <File Path="docs/config-init.rsp" />
+    <File Path="docs/config-show.rsp" />
+    <File Path="docs/help.rsp" />
+    <File Path="docs/normalize.rsp" />
+    <File Path="docs/output-assemblyinfo.rsp" />
+    <File Path="docs/output-help.rsp" />
+    <File Path="docs/output-project.rsp" />
+    <File Path="docs/output-wix.rsp" />
+    <File Path="docs/version.rsp" />
+  </Folder>
+  <Folder Name="/Plugins/">
+    <Project Path="GitVersion.Calculation/GitVersion.Calculation.csproj" />
+    <Project Path="GitVersion.Configuration/GitVersion.Configuration.csproj" />
+    <Project Path="GitVersion.Normalization/GitVersion.Normalization.csproj" />
+    <Project Path="GitVersion.Output/GitVersion.Output.csproj" />
+  </Folder>
+  <Folder Name="/root/">
+    <File Path="../global.json" />
+  </Folder>
+  <Folder Name="/sln/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Project Path="GitVersion.Cli.Generator/GitVersion.Cli.Generator.csproj" />
+  <Project Path="GitVersion.Cli/GitVersion.Cli.csproj" />
+  <Project Path="GitVersion.Common.Command/GitVersion.Common.Command.csproj" />
+  <Project Path="GitVersion.Common/GitVersion.Common.csproj" />
+  <Project Path="GitVersion.Core.Libgit2Sharp/GitVersion.Core.Libgit2Sharp.csproj" />
+  <Project Path="GitVersion.Core.Tester/GitVersion.Core.Tester.csproj" />
+  <Project Path="GitVersion.Core/GitVersion.Core.csproj" />
+</Solution>

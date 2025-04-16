@@ -84,10 +84,8 @@ Thumbs.db
 Desktop.ini
 
 _NCrunch_GitVersion
-GitVersion.sln.ide/
 .vs/
 Packages/
-site/
 /TestResult.xml
 
 ################
@@ -95,8 +93,6 @@ site/
 ################
 
 .idea
-*.sln.iml
-
 
 ####################
 # Visual Studio Code
