@@ -11,6 +11,7 @@
 # Custom for Visual Studio
 *.cs     diff=csharp
 *.sln
+*.slnx
 *.csproj
 *.vbproj
 *.fsproj

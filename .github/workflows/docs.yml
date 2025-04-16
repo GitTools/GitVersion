@@ -78,7 +78,7 @@ jobs:
     -
       name: '[Build]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/CI.sln --configuration=Release
+      run: dotnet build build/ --configuration=Release
     -
       name: '[Prepare]'
       shell: pwsh
