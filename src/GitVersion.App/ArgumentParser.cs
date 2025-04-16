@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Extensions;
+using GitVersion.FileSystemGlobbing;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -152,11 +153,9 @@ internal class ArgumentParser(IEnvironment environment,
 
         foreach (var file in assemblyInfoFiles)
         {
-            var paths = this.globbingResolver.Resolve(workingDirectory, file);
-
-            foreach (var path in paths)
+            foreach (var path in this.globbingResolver.Resolve(workingDirectory, file))
             {
-                yield return FileSystemHelper.Path.GetFullPath(FileSystemHelper.Path.Combine(workingDirectory, path));
+                yield return path;
             }
         }
     }

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Polly" />
+    <PackageReference Include="System.IO.Abstractions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IEnvironment.cs" Link="Infrastructure\%(Filename)%(Extension)" />

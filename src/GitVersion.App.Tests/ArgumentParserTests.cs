@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
@@ -18,11 +19,7 @@ public class ArgumentParserTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton<IArgumentParser, ArgumentParser>();
-            services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
-        });
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
