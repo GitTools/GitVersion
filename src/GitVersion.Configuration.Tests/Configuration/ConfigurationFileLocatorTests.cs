@@ -23,8 +23,8 @@ public static class ConfigurationFileLocatorTests
         [SetUp]
         public void Setup()
         {
-            this.repoPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo");
-            this.workingPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo", "Working");
+            this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
+            this.workingPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo", "Working");
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
@@ -103,8 +103,8 @@ public static class ConfigurationFileLocatorTests
         public void Setup()
         {
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = "my-config.yaml" } };
-            this.repoPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo");
-            this.workingPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo", "Working");
+            this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
+            this.workingPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo", "Working");
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -157,7 +157,7 @@ public static class ConfigurationFileLocatorTests
         public void ReturnConfigurationFilePathIfCustomConfigurationIsSet()
         {
             this.workingPath = this.repoPath;
-            string configurationFilePath = Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
+            string configurationFilePath = FileSystemHelper.Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
 
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configurationFilePath } };
 
@@ -165,7 +165,7 @@ public static class ConfigurationFileLocatorTests
             this.fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
 
             using var _ = this.fileSystem.SetupConfigFile(
-                path: Path.Combine(this.workingPath, "Configuration"), fileName: "CustomConfig.yaml"
+                path: FileSystemHelper.Path.Combine(this.workingPath, "Configuration"), fileName: "CustomConfig.yaml"
             );
             this.configFileLocator = serviceProvider.GetRequiredService<IConfigurationFileLocator>();
 
@@ -238,7 +238,7 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            string path = PathHelper.Combine(PathHelper.GetTempPath(), "unrelatedPath");
+            string path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
             using var _ = this.fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
@@ -256,8 +256,8 @@ public static class ConfigurationFileLocatorTests
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
             var configurationFile = this.gitVersionOptions.ConfigurationInfo.ConfigurationFile;
-            var workingPathFileConfig = PathHelper.Combine(this.workingPath, configurationFile);
-            var repoPathFileConfig = PathHelper.Combine(this.repoPath, configurationFile);
+            var workingPathFileConfig = FileSystemHelper.Path.Combine(this.workingPath, configurationFile);
+            var repoPathFileConfig = FileSystemHelper.Path.Combine(this.repoPath, configurationFile);
             var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
             exception.Message.ShouldBe(expectedMessage);
         }

@@ -50,7 +50,7 @@ public class TestTaskBase : TestBase
         return result;
     }
 
-    protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInAzurePipeline<T>(T task, string? buildNumber = null, string? configurationText = null) where T : GitVersionTaskBase
+    protected MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInAzurePipeline<T>(T task, string? buildNumber = null, string? configurationText = null) where T : GitVersionTaskBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
@@ -123,9 +123,9 @@ public class TestTaskBase : TestBase
         return fixture;
     }
 
-    private static void CreateConfiguration(string repoFolder, string content)
+    private void CreateConfiguration(string repoFolder, string content)
     {
-        var configFilePath = PathHelper.Combine(repoFolder, ConfigurationFileLocator.DefaultFileName);
-        File.WriteAllText(configFilePath, content);
+        var configFilePath = FileSystemHelper.Path.Combine(repoFolder, ConfigurationFileLocator.DefaultFileName);
+        this.FileSystem.File.WriteAllText(configFilePath, content);
     }
 }

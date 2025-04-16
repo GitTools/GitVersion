@@ -154,7 +154,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
         {
             foreach (var item in assemblyInfoFileNames)
             {
-                var fullPath = PathHelper.Combine(workingDirectory, item);
+                var fullPath = FileSystemHelper.Path.Combine(workingDirectory, item);
 
                 if (EnsureVersionAssemblyInfoFile(fullPath, ensureAssemblyInfo))
                 {
@@ -189,7 +189,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
             return false;
         }
 
-        var assemblyInfoSource = this.templateManager.GetTemplateFor(PathHelper.GetExtension(fullPath)!);
+        var assemblyInfoSource = this.templateManager.GetTemplateFor(FileSystemHelper.Path.GetExtension(fullPath)!);
 
         if (!assemblyInfoSource.IsNullOrWhiteSpace())
         {

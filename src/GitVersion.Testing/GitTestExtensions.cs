@@ -17,21 +17,20 @@ public static class GitTestExtensions
         FastForwardStrategy = FastForwardStrategy.NoFastForward
     });
 
-    public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake) => Enumerable.Range(1, numCommitsToMake)
-        .Select(_ => repository.MakeACommit())
-        .ToArray();
+    public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake)
+        => [.. Enumerable.Range(1, numCommitsToMake).Select(_ => repository.MakeACommit())];
 
     private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string? commitMessage = null)
     {
-        var randomFile = PathHelper.Combine(repository.Info.WorkingDirectory, relativeFileName);
-        if (File.Exists(randomFile))
+        var randomFile = FileSystemHelper.Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
+        if (FileSystemHelper.File.Exists(randomFile))
         {
-            File.Delete(randomFile);
+            FileSystemHelper.File.Delete(randomFile);
         }
 
         var totalWidth = 36 + (_pad++ % 10);
         var contents = Guid.NewGuid().ToString().PadRight(totalWidth, '.');
-        File.WriteAllText(randomFile, contents);
+        FileSystemHelper.File.WriteAllText(randomFile, contents);
 
         Commands.Stage(repository, randomFile);
 

@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
@@ -18,11 +19,7 @@ public class ArgumentParserTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton<IArgumentParser, ArgumentParser>();
-            services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
-        });
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
@@ -283,13 +280,13 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = this.fileSystem.File.Create(assemblyFile);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
     }
 
     [Test]
@@ -297,17 +294,17 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile1 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = this.fileSystem.File.Create(assemblyFile1);
 
-        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+        var assemblyFile2 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
         using var file2 = this.fileSystem.File.Create(assemblyFile2);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
     }
 
     [Test]
@@ -315,17 +312,17 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
+        var assemblyFile1 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
         using var file = this.fileSystem.File.Create(assemblyFile1);
 
-        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
+        var assemblyFile2 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
         using var file2 = this.fileSystem.File.Create(assemblyFile2);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateProjectFiles CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
         arguments.UpdateProjectFiles.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("CommonAssemblyInfo.csproj"));
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("VersionAssemblyInfo.csproj"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.csproj"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("VersionAssemblyInfo.csproj"));
     }
 
     [Test]
@@ -333,24 +330,24 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile1 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = this.fileSystem.File.Create(assemblyFile1);
 
-        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+        var assemblyFile2 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
         using var file2 = this.fileSystem.File.Create(assemblyFile2);
 
-        var subdir = PathHelper.Combine(repo.RepositoryPath, "subdir");
+        var subdir = FileSystemHelper.Path.Combine(repo.RepositoryPath, "subdir");
 
         this.fileSystem.Directory.CreateDirectory(subdir);
-        var assemblyFile3 = PathHelper.Combine(subdir, "LocalAssemblyInfo.cs");
+        var assemblyFile3 = FileSystemHelper.Path.Combine(subdir, "LocalAssemblyInfo.cs");
         using var file3 = this.fileSystem.File.Create(assemblyFile3);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
     }
 
     [Test]
@@ -358,16 +355,16 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = this.fileSystem.File.Create(assemblyFile);
 
-        var targetPath = PathHelper.Combine(repo.RepositoryPath, "subdir1", "subdir2");
+        var targetPath = FileSystemHelper.Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
         this.fileSystem.Directory.CreateDirectory(targetPath);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
-        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => PathHelper.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+        arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
     }
 
     [Test]
@@ -765,7 +762,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void EnsureConfigurationFileIsSet()
     {
-        var configFile = PathHelper.GetTempPath() + Guid.NewGuid() + ".yaml";
+        var configFile = FileSystemHelper.Path.GetTempPath() + Guid.NewGuid() + ".yaml";
         this.fileSystem.File.WriteAllText(configFile, "next-version: 1.0.0");
         var arguments = this.argumentParser.ParseArguments($"-config {configFile}");
         arguments.ConfigurationFile.ShouldBe(configFile);

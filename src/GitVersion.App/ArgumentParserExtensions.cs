@@ -19,15 +19,15 @@ internal static class ArgumentParserExtensions
 
         try
         {
-            _ = PathHelper.GetFullPath(path);
+            _ = FileSystemHelper.Path.GetFullPath(path);
         }
         catch
         {
-            path = PathHelper.Combine(SysEnv.CurrentDirectory, path);
+            path = FileSystemHelper.Path.Combine(SysEnv.CurrentDirectory, path);
 
             try
             {
-                _ = PathHelper.GetFullPath(path);
+                _ = FileSystemHelper.Path.GetFullPath(path);
             }
             catch
             {
@@ -35,7 +35,7 @@ internal static class ArgumentParserExtensions
             }
         }
 
-        return Directory.Exists(path);
+        return FileSystemHelper.Directory.Exists(path);
     }
 
     public static bool IsSwitchArgument(this string? value)
@@ -74,7 +74,7 @@ internal static class ArgumentParserExtensions
         var argumentMightRequireValue = !booleanArguments.Contains(argument[1..], StringComparer.OrdinalIgnoreCase);
 
         // If this is the first argument that might be a target path, the argument starts with slash, and we're on an OS that supports paths with slashes, the argument does not require a value.
-        if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith('/') && PathHelper.DirectorySeparatorChar == '/' && argument.IsValidPath())
+        if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith('/') && FileSystemHelper.Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
             return false;
 
         return argumentMightRequireValue;

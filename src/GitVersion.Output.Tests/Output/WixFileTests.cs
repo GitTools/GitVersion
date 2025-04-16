@@ -16,10 +16,10 @@ internal class WixFileTests : TestBase
     private string workingDir;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => workingDir = PathHelper.Combine(PathHelper.GetTempPath(), "WixFileTests");
+    public void OneTimeSetUp() => workingDir = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "WixFileTests");
 
     [OneTimeTearDown]
-    public void OneTimeTearDown() => DirectoryHelper.DeleteDirectory(workingDir);
+    public void OneTimeTearDown() => FileSystemHelper.Directory.DeleteDirectory(workingDir);
 
     [SetUp]
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -57,10 +57,10 @@ internal class WixFileTests : TestBase
 
         wixVersionFileUpdater.Execute(versionVariables, new(workingDir));
 
-        var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        var file = FileSystemHelper.Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
         fileSystem
             .File.ReadAllText(file)
-            .ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved")));
+            .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
     }
 
     [Test]
@@ -95,7 +95,7 @@ internal class WixFileTests : TestBase
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
         // fake an already existing file
-        var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        var file = FileSystemHelper.Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
         if (!fileSystem.Directory.Exists(workingDir))
         {
             fileSystem.Directory.CreateDirectory(workingDir);
@@ -106,6 +106,6 @@ internal class WixFileTests : TestBase
 
         fileSystem
             .File.ReadAllText(file)
-            .ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved")));
+            .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
     }
 }

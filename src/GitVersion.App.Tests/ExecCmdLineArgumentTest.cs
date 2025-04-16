@@ -52,7 +52,8 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
     {
-        var result = GitVersionHelper.ExecuteIn(Path.GetTempPath(), null, false);
+        var workingDirectory = FileSystemHelper.Path.GetTempPathLegacy();
+        var result = GitVersionHelper.ExecuteIn(workingDirectory, null, false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();
@@ -84,7 +85,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
     {
-        var workingDirectory = PathHelper.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
+        var workingDirectory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
         var executable = ExecutableHelper.GetDotNetExecutable();
 
         var output = new StringBuilder();
@@ -96,7 +97,7 @@ public class ExecCmdLineArgumentTest
             null,
             executable,
             args,
-            PathHelper.GetCurrentDirectory());
+            FileSystemHelper.Path.GetCurrentDirectory());
 
         exitCode.ShouldNotBe(0);
         var outputString = output.ToString();

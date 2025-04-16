@@ -196,8 +196,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                 return possibleBranches.SingleOrDefault();
 
             var first = possibleBranches[0];
-            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{PathHelper.NewLine}" +
-                          $"This may result in incorrect commit counting.{PathHelper.NewLine}Options were:{PathHelper.NewLine}" +
+            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{FileSystemHelper.Path.NewLine}" +
+                          $"This may result in incorrect commit counting.{FileSystemHelper.Path.NewLine}Options were:{FileSystemHelper.Path.NewLine}" +
                           string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
             return first;
         }

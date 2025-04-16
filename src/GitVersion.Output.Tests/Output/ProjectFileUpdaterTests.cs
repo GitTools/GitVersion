@@ -274,8 +274,8 @@ public class ProjectFileUpdaterTests : TestBase
               """)]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
-        var workingDirectory = PathHelper.GetTempPath();
-        var fileName = PathHelper.Combine(workingDirectory, "TestProject.csproj");
+        var workingDirectory = FileSystemHelper.Path.GetTempPath();
+        var fileName = FileSystemHelper.Path.Combine(workingDirectory, "TestProject.csproj");
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {

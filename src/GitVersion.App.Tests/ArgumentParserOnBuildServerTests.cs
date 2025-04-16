@@ -1,5 +1,6 @@
 using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,8 +16,7 @@ public class ArgumentParserOnBuildServerTests : TestBase
     {
         var sp = ConfigureServices(services =>
         {
-            services.AddSingleton<IArgumentParser, ArgumentParser>();
-            services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
+            services.AddModule(new GitVersionAppModule());
             services.AddSingleton<ICurrentBuildAgent, MockBuildAgent>();
         });
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();

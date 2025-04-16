@@ -44,7 +44,7 @@ internal class GitVersionTaskExecutor(
         }
 
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
-        task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
+        task.AssemblyInfoTempFilePath = FileSystemHelper.Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         if (!this.fileSystem.Directory.Exists(fileWriteInfo.WorkingDirectory))
         {
@@ -70,7 +70,7 @@ internal class GitVersionTaskExecutor(
         }
 
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
-        task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
+        task.GitVersionInformationFilePath = FileSystemHelper.Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         if (!this.fileSystem.Directory.Exists(fileWriteInfo.WorkingDirectory))
         {
@@ -90,7 +90,7 @@ internal class GitVersionTaskExecutor(
                 targetNamespace = task.RootNamespace;
                 if (string.IsNullOrWhiteSpace(targetNamespace))
                 {
-                    targetNamespace = PathHelper.GetFileNameWithoutExtension(task.ProjectFile);
+                    targetNamespace = FileSystemHelper.Path.GetFileNameWithoutExtension(task.ProjectFile);
                 }
             }
 

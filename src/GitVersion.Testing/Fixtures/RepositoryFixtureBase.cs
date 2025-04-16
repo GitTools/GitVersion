@@ -10,7 +10,7 @@ namespace GitVersion.Testing;
 public abstract class RepositoryFixtureBase : IDisposable
 {
     protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
-        : this(repositoryBuilder(PathHelper.GetRepositoryTempPath()))
+        : this(repositoryBuilder(FileSystemHelper.Path.GetRepositoryTempPath()))
     {
     }
 
@@ -45,12 +45,12 @@ public abstract class RepositoryFixtureBase : IDisposable
         }
 
         Repository.Dispose();
-        var directoryPath = PathHelper.GetFileName(RepositoryPath);
+        var directoryPath = FileSystemHelper.Path.GetFileName(RepositoryPath);
 
         try
         {
             Console.WriteLine("Cleaning up repository path at {0}", directoryPath);
-            DirectoryHelper.DeleteDirectory(RepositoryPath);
+            FileSystemHelper.Directory.DeleteDirectory(RepositoryPath);
             Console.WriteLine("Cleaned up repository path at {0}", directoryPath);
         }
         catch (Exception e)
@@ -141,7 +141,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     /// </summary>
     public LocalRepositoryFixture CloneRepository()
     {
-        var localPath = PathHelper.GetRepositoryTempPath();
+        var localPath = FileSystemHelper.Path.GetRepositoryTempPath();
         Repository.Clone(RepositoryPath, localPath);
         Console.WriteLine($"Cloned repository to '{localPath}' from '{RepositoryPath}'");
         return new LocalRepositoryFixture(new Repository(localPath));

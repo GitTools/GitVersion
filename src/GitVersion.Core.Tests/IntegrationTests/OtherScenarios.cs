@@ -111,9 +111,8 @@ public class OtherScenarios : TestBase
 
         for (int i = 0; i < numberOfFiles; i++)
         {
-            var tempFile = PathHelper.GetTempFileName();
-            var repoFile = PathHelper.Combine(fixture.RepositoryPath, PathHelper.GetFileNameWithoutExtension(tempFile) + ".txt");
-            fileSystem.File.Move(tempFile, repoFile);
+            var tempFile = FileSystemHelper.Path.GetRandomFileName();
+            var repoFile = FileSystemHelper.Path.Combine(fixture.RepositoryPath, FileSystemHelper.Path.GetFileNameWithoutExtension(tempFile) + ".txt");
             fileSystem.File.WriteAllText(repoFile, $"Hello world / testfile {i}");
 
             if (stageFile)

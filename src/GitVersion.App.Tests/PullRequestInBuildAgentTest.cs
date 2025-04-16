@@ -144,7 +144,7 @@ public class PullRequestInBuildAgentTest
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture();
-        var remoteRepositoryPath = PathHelper.GetRepositoryTempPath();
+        var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
@@ -184,7 +184,7 @@ public class PullRequestInBuildAgentTest
         result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest5.3");
 
         // Cleanup repository files
-        DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
+        FileSystemHelper.Directory.DeleteDirectory(remoteRepositoryPath);
     }
 
     private static readonly object[] PrMergeRefInputs =

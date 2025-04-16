@@ -13,7 +13,7 @@ public static class GitVersionHelper
         bool logToFile = true,
         params KeyValuePair<string, string?>[] environments)
     {
-        var logFile = workingDirectory is not null && logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
+        var logFile = workingDirectory is not null && logToFile ? FileSystemHelper.Path.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, arguments, logFile);
         return ExecuteIn(args, environments);
     }
@@ -50,7 +50,7 @@ public static class GitVersionHelper
             Console.WriteLine("Executing: {0} {1}", executable, args);
             Console.WriteLine();
 
-            var workingDirectory = arguments.WorkingDirectory ?? PathHelper.GetCurrentDirectory();
+            var workingDirectory = arguments.WorkingDirectory ?? FileSystemHelper.Path.GetCurrentDirectory();
 
             exitCode = ProcessHelper.Run(
                 s => output.AppendLine(s),
@@ -77,12 +77,12 @@ public static class GitVersionHelper
         Console.WriteLine();
         Console.WriteLine("-------------------------------------------------------");
 
-        if (arguments.LogFile.IsNullOrWhiteSpace() || !File.Exists(arguments.LogFile))
+        if (arguments.LogFile.IsNullOrWhiteSpace() || !FileSystemHelper.File.Exists(arguments.LogFile))
         {
             return new(exitCode, output.ToString());
         }
 
-        var logContents = File.ReadAllText(arguments.LogFile);
+        var logContents = FileSystemHelper.File.ReadAllText(arguments.LogFile);
         Console.WriteLine("Log from gitversion tool");
         Console.WriteLine("-------------------------------------------------------");
         Console.WriteLine(logContents);

@@ -18,7 +18,7 @@ public class WorktreeScenarios : TestBase
         var repoDir = fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
 
         repoDir.Parent.ShouldNotBeNull();
-        var worktreePath = PathHelper.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");
+        var worktreePath = FileSystemHelper.Path.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
         var branchV1 = fixture.Repository.CreateBranch("support/1.0");

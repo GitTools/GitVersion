@@ -16,7 +16,7 @@ internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : 
 
     public void Execute(GitVersionVariables variables, WixVersionContext context)
     {
-        this.wixVersionFile = PathHelper.Combine(context.WorkingDirectory, WixVersionFileName);
+        this.wixVersionFile = FileSystemHelper.Path.Combine(context.WorkingDirectory, WixVersionFileName);
         this.log.Info("Updating GitVersion_WixVersion.wxi");
 
         var doc = new XmlDocument();

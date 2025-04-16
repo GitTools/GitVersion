@@ -1,4 +1,4 @@
-namespace GitVersion;
+namespace GitVersion.FileSystemGlobbing;
 
 internal interface IGlobbingResolver
 {

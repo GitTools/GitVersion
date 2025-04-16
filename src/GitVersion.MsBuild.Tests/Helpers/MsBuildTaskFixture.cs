@@ -18,7 +18,7 @@ public class MsBuildTaskFixture(RepositoryFixtureBase fixture)
 
             task.BuildEngine = buildEngine;
 
-            var versionFile = PathHelper.Combine(task.SolutionDirectory, "gitversion.json");
+            var versionFile = FileSystemHelper.Path.Combine(task.SolutionDirectory, "gitversion.json");
             fixture.WriteVersionVariables(versionFile);
 
             task.VersionFile = versionFile;

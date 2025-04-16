@@ -183,7 +183,7 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         {
             foreach (var item in assemblyInfoFileNames)
             {
-                var fullPath = PathHelper.Combine(workingDirectory, item);
+                var fullPath = FileSystemHelper.Path.Combine(workingDirectory, item);
 
                 if (fileSystem.File.Exists(fullPath))
                 {

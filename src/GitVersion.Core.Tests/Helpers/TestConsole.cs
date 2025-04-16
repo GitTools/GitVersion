@@ -9,9 +9,9 @@ public class TestConsole(params string[] responses) : IConsole
     private readonly Queue<string> responses = new(responses);
     private readonly ILog log = new NullLog();
 
-    public void WriteLine(string? msg) => this.log.Info(msg + PathHelper.NewLine);
+    public void WriteLine(string? msg) => this.log.Info(msg + FileSystemHelper.Path.NewLine);
 
-    public void WriteLine() => this.log.Info(PathHelper.NewLine);
+    public void WriteLine() => this.log.Info(FileSystemHelper.Path.NewLine);
 
     public void Write(string? msg) => this.log.Info(msg.NotNull());
 

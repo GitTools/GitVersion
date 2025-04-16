@@ -10,11 +10,11 @@ public static class Extensions
     {
         if (path.IsNullOrEmpty())
         {
-            path = PathHelper.GetRepositoryTempPath();
+            path = FileSystemHelper.Path.GetRepositoryTempPath();
         }
 
-        var fullPath = PathHelper.Combine(path, fileName);
-        var directory = PathHelper.GetDirectoryName(fullPath);
+        var fullPath = FileSystemHelper.Path.Combine(path, fileName);
+        var directory = FileSystemHelper.Path.GetDirectoryName(fullPath);
         if (!fileSystem.Directory.Exists(directory))
         {
             fileSystem.Directory.CreateDirectory(directory);

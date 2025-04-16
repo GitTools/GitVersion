@@ -76,7 +76,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -103,7 +103,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -133,7 +133,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.2.4"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.2.4-1"));
-        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
+        FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -155,7 +155,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.Patch), "1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.MajorMinorPatch), "1.0.1"));
         fileContent.ShouldMatch(string.Format(regexPattern, nameof(GitVersionVariables.FullSemVer), "1.0.1-1"));
-        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
+        FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -168,7 +168,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -178,7 +178,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -199,7 +199,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -209,7 +209,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -230,7 +230,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True").Property("RootNamespace", "Test.Root");
         }, language);
 
@@ -240,7 +240,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -263,7 +263,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath).Property("UseProjectNamespaceForGitVersionInformation", "True");
         }, language);
 
@@ -273,7 +273,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"GitVersionInformation.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);

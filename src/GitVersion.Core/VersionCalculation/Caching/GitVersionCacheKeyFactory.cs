@@ -44,7 +44,7 @@ internal class GitVersionCacheKeyFactory(
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
 
         // traverse the directory and get a list of files, use that for GetHash
-        var contents = CalculateDirectoryContents(PathHelper.Combine(dotGitDirectory, "refs"));
+        var contents = CalculateDirectoryContents(FileSystemHelper.Path.Combine(dotGitDirectory, "refs"));
 
         return GetHash([.. contents]);
     }
@@ -118,7 +118,7 @@ internal class GitVersionCacheKeyFactory(
                 try
                 {
                     if (!this.fileSystem.File.Exists(file)) continue;
-                    result.Add(PathHelper.GetFileName(file));
+                    result.Add(FileSystemHelper.Path.GetFileName(file));
                     result.Add(this.fileSystem.File.ReadAllText(file));
                 }
                 catch (IOException e)

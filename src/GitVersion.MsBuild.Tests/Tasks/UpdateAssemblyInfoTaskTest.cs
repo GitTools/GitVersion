@@ -66,7 +66,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -89,7 +89,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -111,7 +111,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
-        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
+        FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -129,7 +129,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
         fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
-        DirectoryHelper.DeleteDirectory(task.IntermediateOutputPath);
+        FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -142,7 +142,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExe(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -152,7 +152,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
@@ -169,7 +169,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         var extension = AssemblyInfoFileHelper.GetFileExtension(language);
         using var result = ExecuteMsBuildExeInAzurePipeline(project =>
         {
-            var intermediateOutputPath = PathHelper.Combine("$(MSBuildProjectDirectory)", randDir);
+            var intermediateOutputPath = FileSystemHelper.Path.Combine("$(MSBuildProjectDirectory)", randDir);
             AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty, language, intermediateOutputPath);
         }, language);
 
@@ -179,7 +179,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = PathHelper.Combine(PathHelper.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
+        var generatedFilePath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetDirectoryName(result.ProjectPath), randDir, $"AssemblyInfo.g.{extension}");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);

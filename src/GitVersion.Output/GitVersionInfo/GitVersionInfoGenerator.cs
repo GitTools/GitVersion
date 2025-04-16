@@ -17,7 +17,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
     {
         var fileName = context.FileName;
         var directory = context.WorkingDirectory;
-        var filePath = PathHelper.Combine(directory, fileName);
+        var filePath = FileSystemHelper.Path.Combine(directory, fileName);
 
         string? originalFileContents = null;
 
@@ -26,7 +26,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
             originalFileContents = this.fileSystem.File.ReadAllText(filePath);
         }
 
-        var fileExtension = PathHelper.GetExtension(filePath);
+        var fileExtension = FileSystemHelper.Path.GetExtension(filePath);
         ArgumentNullException.ThrowIfNull(fileExtension);
 
         var template = this.templateManager.GetTemplateFor(fileExtension);
@@ -44,13 +44,13 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
         if (!string.IsNullOrWhiteSpace(targetNamespace) && fileExtension == ".cs")
         {
             indent = "    ";
-            closeBracket = PathHelper.NewLine + "}";
-            openBracket = PathHelper.NewLine + "{";
+            closeBracket = FileSystemHelper.Path.NewLine + "}";
+            openBracket = FileSystemHelper.Path.NewLine + "{";
             indentation += "    ";
         }
 
         var lines = variables.OrderBy(x => x.Key).Select(v => string.Format(indentation + addFormat, v.Key, v.Value));
-        var members = string.Join(PathHelper.NewLine, lines);
+        var members = string.Join(FileSystemHelper.Path.NewLine, lines);
 
         var fileContents = string.Format(template, members, targetNamespace, openBracket, closeBracket, indent);
 
@@ -64,7 +64,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
         string getTargetNamespace(string? extension) => extension switch
         {
             ".vb" => context.TargetNamespace ?? "Global",
-            ".cs" => context.TargetNamespace != null ? $"{PathHelper.NewLine}namespace {context.TargetNamespace}" : "",
+            ".cs" => context.TargetNamespace != null ? $"{FileSystemHelper.Path.NewLine}namespace {context.TargetNamespace}" : "",
             ".fs" => context.TargetNamespace ?? "global",
             _ => targetNamespaceSentinelValue,
         };
