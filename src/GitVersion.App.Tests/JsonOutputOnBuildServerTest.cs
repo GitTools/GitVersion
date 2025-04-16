@@ -60,8 +60,8 @@ public class JsonOutputOnBuildServerTest
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(expectedVersion);
 
-        var filePath = PathHelper.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
-        var json = File.ReadAllText(filePath);
+        var filePath = FileSystemHelper.Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
+        var json = FileSystemHelper.File.ReadAllText(filePath);
 
         var outputVariables = json.ToGitVersionVariables();
         outputVariables.ShouldNotBeNull();

@@ -221,7 +221,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
         this.log.Info($"HEAD is detached and points at commit '{headSha}'.");
         var localRefs = this.repository.Refs.FromGlob("*").Select(r => $"{r.Name.Canonical} ({r.TargetIdentifier})");
-        this.log.Info($"Local Refs:{PathHelper.NewLine}" + string.Join(PathHelper.NewLine, localRefs));
+        this.log.Info($"Local Refs:{FileSystemHelper.Path.NewLine}" + string.Join(FileSystemHelper.Path.NewLine, localRefs));
 
         // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
         // If they do, go ahead and checkout that branch

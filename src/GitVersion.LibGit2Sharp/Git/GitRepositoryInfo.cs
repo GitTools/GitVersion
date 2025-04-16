@@ -40,9 +40,9 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         var targetUrl = repositoryInfo.TargetUrl;
         var clonePath = repositoryInfo.ClonePath;
 
-        var userTemp = clonePath ?? PathHelper.GetTempPath();
+        var userTemp = clonePath ?? FileSystemHelper.Path.GetTempPath();
         var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
-        var possiblePath = PathHelper.Combine(userTemp, repositoryName);
+        var possiblePath = FileSystemHelper.Path.Combine(userTemp, repositoryName);
 
         // Verify that the existing directory is ok for us to use
         if (this.fileSystem.Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
@@ -57,7 +57,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
         }
 
-        var repositoryPath = PathHelper.Combine(possiblePath, ".git");
+        var repositoryPath = FileSystemHelper.Path.Combine(possiblePath, ".git");
         return repositoryPath;
     }
 
@@ -72,7 +72,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
         var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
-        return gitDirectory.Contains(PathHelper.Combine(".git", "worktrees"))
+        return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
             ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
     }

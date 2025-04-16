@@ -93,7 +93,7 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
                 : network.ListReferences(remote))
             .Select(r => r.ResolveToDirectReference()).ToList();
 
-        this.log.Info($"Remote Refs:{PathHelper.NewLine}" + string.Join(PathHelper.NewLine, remoteTips.Select(r => r.CanonicalName)));
+        this.log.Info($"Remote Refs:{FileSystemHelper.Path.NewLine}" + string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName)));
         var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
         switch (refs.Count)

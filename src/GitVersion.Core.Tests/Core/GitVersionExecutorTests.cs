@@ -92,7 +92,7 @@ public class GitVersionExecutorTests : TestBase
         }
         finally
         {
-            DirectoryHelper.DeleteDirectory(worktreePath);
+            FileSystemHelper.Directory.DeleteDirectory(worktreePath);
         }
     }
 
@@ -299,7 +299,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = PathHelper.Combine(fixture.RepositoryPath, configFileName);
+        var configPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, configFileName);
         this.fileSystem.File.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
@@ -416,7 +416,7 @@ public class GitVersionExecutorTests : TestBase
         }
         finally
         {
-            DirectoryHelper.DeleteDirectory(worktreePath);
+            FileSystemHelper.Directory.DeleteDirectory(worktreePath);
         }
     }
 
@@ -445,7 +445,7 @@ public class GitVersionExecutorTests : TestBase
         this.sp = GetServiceProvider(gitVersionOptions);
         var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-        var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
+        var expectedPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, ".git");
         repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
     }
 
@@ -467,12 +467,12 @@ public class GitVersionExecutorTests : TestBase
             this.sp = GetServiceProvider(gitVersionOptions);
             var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-            var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
+            var expectedPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, ".git");
             repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
         }
         finally
         {
-            DirectoryHelper.DeleteDirectory(worktreePath);
+            FileSystemHelper.Directory.DeleteDirectory(worktreePath);
         }
     }
 
@@ -483,7 +483,7 @@ public class GitVersionExecutorTests : TestBase
         this.fileSystem = new FileSystem();
         using var fixture = new EmptyRepositoryFixture();
         var repoDir = fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
-        var worktreePath = PathHelper.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
+        var worktreePath = FileSystemHelper.Path.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
         var branchV1 = fixture.Repository.CreateBranch("support/1.0");
@@ -595,7 +595,7 @@ public class GitVersionExecutorTests : TestBase
 
     private string GetWorktreePath(EmptyRepositoryFixture fixture)
     {
-        var worktreePath = PathHelper.Combine(this.fileSystem.Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
+        var worktreePath = FileSystemHelper.Path.Combine(this.fileSystem.Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         return worktreePath;
     }
 

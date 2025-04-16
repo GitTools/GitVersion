@@ -15,7 +15,7 @@ internal class FileAppender : ILogAppender
         this.fileSystem = fileSystem.NotNull();
         this.filePath = filePath;
 
-        var logFile = this.fileSystem.FileInfo.New(PathHelper.GetFullPath(filePath));
+        var logFile = this.fileSystem.FileInfo.New(FileSystemHelper.Path.GetFullPath(filePath));
 
         logFile.Directory?.Create();
         if (logFile.Exists) return;
@@ -37,7 +37,7 @@ internal class FileAppender : ILogAppender
 
     private void WriteLogEntry(string logFilePath, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{PathHelper.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{FileSystemHelper.Path.NewLine}";
         this.fileSystem.File.AppendAllText(logFilePath, contents);
     }
 }

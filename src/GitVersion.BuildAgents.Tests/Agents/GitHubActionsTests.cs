@@ -23,7 +23,7 @@ public class GitHubActionsTests : TestBase
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
         this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "branch");
 
-        this.githubSetEnvironmentTempFilePath = PathHelper.GetTempFileName();
+        this.githubSetEnvironmentTempFilePath = FileSystemHelper.Path.GetRandomFileName();
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
     }
 
@@ -142,8 +142,8 @@ public class GitHubActionsTests : TestBase
         // Assert
         var expected = new List<string> { "Set Build Number for 'GitHubActions'.", "", "Set Output Variables for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
 
-        string.Join(PathHelper.NewLine, list)
-            .ShouldBe(string.Join(PathHelper.NewLine, expected));
+        string.Join(FileSystemHelper.Path.NewLine, list)
+            .ShouldBe(string.Join(FileSystemHelper.Path.NewLine, expected));
 
         var expectedFileContents = new List<string> { "GitVersion_Major=1.0.0" };
 

@@ -39,7 +39,7 @@ public class DocumentationTests : TestBase
         {
             var formattedConfigProperty = $"### {configProperty}";
             configurationDocumentationFile.ShouldContain(formattedConfigProperty, Case.Insensitive,
-                PathHelper.NewLine + configurationDocumentationFile);
+                FileSystemHelper.Path.NewLine + configurationDocumentationFile);
         }
     }
 
@@ -54,13 +54,13 @@ public class DocumentationTests : TestBase
         foreach (var variable in variables)
         {
             variableDocumentationFile.ShouldContain(variable, Case.Insensitive,
-                PathHelper.NewLine + variableDocumentationFile);
+                FileSystemHelper.Path.NewLine + variableDocumentationFile);
         }
     }
 
     private string ReadDocumentationFile(string relativeDocumentationFilePath)
     {
-        var documentationFilePath = PathHelper.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
+        var documentationFilePath = FileSystemHelper.Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
         // Normalize path separators and such.
         documentationFilePath = fileSystem.FileInfo.New(documentationFilePath).FullName;
 

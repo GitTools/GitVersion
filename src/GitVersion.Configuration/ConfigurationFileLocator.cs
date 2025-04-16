@@ -33,8 +33,8 @@ internal class ConfigurationFileLocator(
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (PathHelper.IsPathRooted(this.ConfigurationFile)) return;
-        if (PathHelper.Equal(workingDirectory, projectRootDirectory)) return;
+        if (FileSystemHelper.Path.IsPathRooted(this.ConfigurationFile)) return;
+        if (FileSystemHelper.Path.Equal(workingDirectory, projectRootDirectory)) return;
         WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
 
@@ -56,7 +56,7 @@ internal class ConfigurationFileLocator(
         foreach (var fileName in this.SupportedConfigFileNames)
         {
             this.log.Debug($"Trying to find configuration file {fileName} at '{directoryPath}'");
-            string? matchingFile = files.FirstOrDefault(file => string.Equals(PathHelper.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
+            string? matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
             if (matchingFile != null)
             {
                 this.log.Info($"Found configuration file at '{matchingFile}'");
@@ -74,7 +74,7 @@ internal class ConfigurationFileLocator(
             string configurationFilePath = this.ConfigurationFile;
             if (!string.IsNullOrWhiteSpace(directoryPath))
             {
-                configurationFilePath = Path.Combine(directoryPath, this.ConfigurationFile);
+                configurationFilePath = FileSystemHelper.Path.Combine(directoryPath, this.ConfigurationFile);
             }
 
             if (fileSystem.File.Exists(configurationFilePath))
@@ -101,8 +101,8 @@ internal class ConfigurationFileLocator(
 
         if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase))) return;
 
-        workingConfigFile = PathHelper.Combine(workingDirectory, this.ConfigurationFile);
-        projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.ConfigurationFile);
+        workingConfigFile = FileSystemHelper.Path.Combine(workingDirectory, this.ConfigurationFile);
+        projectRootConfigFile = FileSystemHelper.Path.Combine(projectRootDirectory, this.ConfigurationFile);
         throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
     }
 }

@@ -120,10 +120,10 @@ public class BitBucketPipelinesTests : TestBase
     [Test]
     public void WriteAllVariablesToTheTextWriter()
     {
-        var assemblyLocation = PathHelper.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var assemblyLocation = FileSystemHelper.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
-        var propertyFile = PathHelper.Combine(assemblyLocation, "gitversion.properties");
-        var ps1File = PathHelper.Combine(assemblyLocation, "gitversion.ps1");
+        var propertyFile = FileSystemHelper.Path.Combine(assemblyLocation, "gitversion.properties");
+        var ps1File = FileSystemHelper.Path.Combine(assemblyLocation, "gitversion.ps1");
 
         try
         {

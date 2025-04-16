@@ -122,35 +122,35 @@ internal static class ConfigurationExtensions
         string? startingDir = path;
         while (startingDir is not null)
         {
-            var dirOrFilePath = PathHelper.Combine(startingDir, ".git");
+            var dirOrFilePath = FileSystemHelper.Path.Combine(startingDir, ".git");
             if (fileSystem.Directory.Exists(dirOrFilePath))
             {
-                return (dirOrFilePath, PathHelper.GetDirectoryName(dirOrFilePath));
+                return (dirOrFilePath, FileSystemHelper.Path.GetDirectoryName(dirOrFilePath));
             }
 
             if (fileSystem.File.Exists(dirOrFilePath))
             {
-                string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
+                string? relativeGitDirPath = ReadGitDirFromFile(fileSystem, dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
-                    var fullGitDirPath = PathHelper.GetFullPath(PathHelper.Combine(startingDir, relativeGitDirPath));
+                    var fullGitDirPath = FileSystemHelper.Path.GetFullPath(FileSystemHelper.Path.Combine(startingDir, relativeGitDirPath));
                     if (fileSystem.Directory.Exists(fullGitDirPath))
                     {
-                        return (fullGitDirPath, PathHelper.GetDirectoryName(dirOrFilePath));
+                        return (fullGitDirPath, FileSystemHelper.Path.GetDirectoryName(dirOrFilePath));
                     }
                 }
             }
 
-            startingDir = PathHelper.GetDirectoryName(startingDir);
+            startingDir = FileSystemHelper.Path.GetDirectoryName(startingDir);
         }
 
         return null;
     }
 
-    private static string? ReadGitDirFromFile(string fileName)
+    private static string? ReadGitDirFromFile(IFileSystem fileSystem, string fileName)
     {
         const string expectedPrefix = "gitdir: ";
-        var firstLineOfFile = File.ReadLines(fileName).FirstOrDefault();
+        var firstLineOfFile = fileSystem.File.ReadLines(fileName).FirstOrDefault();
         if (firstLineOfFile?.StartsWith(expectedPrefix) ?? false)
         {
             return firstLineOfFile[expectedPrefix.Length..]; // strip off the prefix, leaving just the path

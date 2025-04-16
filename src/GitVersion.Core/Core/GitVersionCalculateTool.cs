@@ -56,7 +56,7 @@ internal class GitVersionCalculateTool(
         }
         catch (AggregateException e)
         {
-            this.log.Warning($"One or more exceptions during cache write:{PathHelper.NewLine}{e}");
+            this.log.Warning($"One or more exceptions during cache write:{FileSystemHelper.Path.NewLine}{e}");
         }
 
         return versionVariables;

@@ -57,7 +57,7 @@ internal class TemplateManager(TemplateType templateType)
         {
             if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
             {
-                var extension = PathHelper.GetExtension(name);
+                var extension = FileSystemHelper.Path.GetExtension(name);
                 if (string.IsNullOrWhiteSpace(extension))
                 {
                     continue;

@@ -21,7 +21,7 @@ public class ConfigurationProviderTests : TestBase
     [SetUp]
     public void Setup()
     {
-        this.repoPath = PathHelper.Combine(PathHelper.GetTempPath(), "MyGitRepo");
+        this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
@@ -94,7 +94,7 @@ branches:
         label: bugfix";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{PathHelper.NewLine}" +
+        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{FileSystemHelper.Path.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 
@@ -109,7 +109,7 @@ branches:
         source-branches: [notconfigured]";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{PathHelper.NewLine}" +
+        ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{FileSystemHelper.Path.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 
@@ -286,7 +286,7 @@ branches: {}";
 
         this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        var filePath = PathHelper.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
+        var filePath = FileSystemHelper.Path.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
         stringLogger.ShouldContain($"Using configuration file '{filePath}'");
     }
 

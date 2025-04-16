@@ -1,5 +1,4 @@
 using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace GitVersion;
 
@@ -10,9 +9,6 @@ internal class GlobbingResolver : IGlobbingResolver
     public IEnumerable<string> Resolve(string workingDirectory, string pattern)
     {
         this.matcher.AddInclude(pattern);
-        return this.matcher.Execute(GetDirectoryInfoWrapper(workingDirectory)).Files.Select(file => file.Path);
+        return this.matcher.GetResultsInFullPath(workingDirectory);
     }
-
-    private static DirectoryInfoWrapper GetDirectoryInfoWrapper(string workingDirectory)
-        => new(new DirectoryInfo(workingDirectory));
 }

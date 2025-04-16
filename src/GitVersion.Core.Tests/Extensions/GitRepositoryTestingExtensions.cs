@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -117,9 +118,7 @@ public static class GitRepositoryTestingExtensions
     {
         var versionVariables = fixture.GetVersion();
 
-        using var stream = File.Open(versionFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-        using var writer = new StreamWriter(stream);
-        writer.Write(versionVariables.ToJson());
+        FileSystemHelper.File.WriteAllText(versionFile, versionVariables.ToJson());
     }
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,

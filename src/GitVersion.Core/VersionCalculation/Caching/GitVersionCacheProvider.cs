@@ -85,7 +85,7 @@ internal class GitVersionCacheProvider(
     internal string GetCacheDirectory()
     {
         var gitDir = this.repositoryInfo.DotGitDirectory;
-        return PathHelper.Combine(gitDir, "gitversion_cache");
+        return FileSystemHelper.Path.Combine(gitDir, "gitversion_cache");
     }
 
     private string PrepareCacheDirectory()
@@ -104,5 +104,5 @@ internal class GitVersionCacheProvider(
         return cacheKey;
     }
 
-    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, key.Value);
+    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => FileSystemHelper.Path.Combine(cacheDir, key.Value);
 }

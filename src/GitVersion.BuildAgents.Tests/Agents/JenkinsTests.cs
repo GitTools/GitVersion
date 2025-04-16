@@ -111,9 +111,9 @@ public class JenkinsTests : TestBase
     [Test]
     public void WriteAllVariablesToTheTextWriter()
     {
-        var assemblyLocation = PathHelper.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var assemblyLocation = FileSystemHelper.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
-        var f = PathHelper.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
+        var f = FileSystemHelper.Path.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
 
         try
         {

@@ -12,7 +12,7 @@ public class DynamicRepositoryTests : TestBase
     private string? workDirectory;
 
     [SetUp]
-    public void SetUp() => this.workDirectory = PathHelper.Combine(Path.GetTempPath(), "GV");
+    public void SetUp() => this.workDirectory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPathLegacy(), "GV");
 
     [TearDown]
     public void TearDown()
@@ -25,9 +25,9 @@ public class DynamicRepositoryTests : TestBase
     [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "efddf2f92c539a9c27f1904d952dcab8fb955f0e", "5.8.2-56")]
     public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
     {
-        var root = PathHelper.Combine(this.workDirectory, name);
-        var dynamicDirectory = PathHelper.Combine(root, "D"); // dynamic, keeping directory as short as possible
-        var workingDirectory = PathHelper.Combine(root, "W"); // working, keeping directory as short as possible
+        var root = FileSystemHelper.Path.Combine(this.workDirectory, name);
+        var dynamicDirectory = FileSystemHelper.Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
+        var workingDirectory = FileSystemHelper.Path.Combine(root, "W"); // working, keeping directory as short as possible
         var gitVersionOptions = new GitVersionOptions
         {
             RepositoryInfo =

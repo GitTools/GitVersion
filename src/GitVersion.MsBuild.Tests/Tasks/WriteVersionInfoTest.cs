@@ -71,7 +71,7 @@ public class WriteVersionInfoTest : TestTaskBase
             return;
         }
 
-        envFilePath = $"{PathHelper.GetTempPath()}/github-env.txt";
+        envFilePath = $"{FileSystemHelper.Path.GetTempPath()}/github-env.txt";
         SysEnv.SetEnvironmentVariable("GITHUB_ENV", envFilePath);
 
         var task = new WriteVersionInfoToBuildLog();

@@ -20,7 +20,7 @@ internal class MsBuildAppender(TaskLoggingHelper taskLog) : ILogAppender
 
     private void WriteLogEntry(LogLevel level, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{PathHelper.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{FileSystemHelper.Path.NewLine}";
         switch (level)
         {
             case LogLevel.Fatal:

@@ -35,7 +35,7 @@ public class TagCheckoutInBuildAgentTests
     private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture();
-        var remoteRepositoryPath = PathHelper.GetRepositoryTempPath();
+        var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
@@ -66,6 +66,6 @@ public class TagCheckoutInBuildAgentTests
         result.OutputVariables.FullSemVer.ShouldBe("0.2.0");
 
         // Cleanup repository files
-        DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
+        FileSystemHelper.Directory.DeleteDirectory(remoteRepositoryPath);
     }
 }

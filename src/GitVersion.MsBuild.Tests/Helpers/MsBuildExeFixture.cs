@@ -24,9 +24,9 @@ public class MsBuildExeFixture
     {
         var projectExtension = AssemblyInfoFileHelper.GetProjectExtension(language);
         this.fixture = fixture;
-        this.ProjectPath = PathHelper.Combine(workingDirectory, $"app.{projectExtension}");
+        this.ProjectPath = FileSystemHelper.Path.Combine(workingDirectory, $"app.{projectExtension}");
 
-        var versionFile = PathHelper.Combine(workingDirectory, "gitversion.json");
+        var versionFile = FileSystemHelper.Path.Combine(workingDirectory, "gitversion.json");
 
         fixture.WriteVersionVariables(versionFile);
     }

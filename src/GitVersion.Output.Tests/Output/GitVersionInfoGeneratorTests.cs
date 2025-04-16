@@ -34,11 +34,11 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
         if (!fileSystem.Directory.Exists(directory))
             fileSystem.Directory.CreateDirectory(directory);
         var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = PathHelper.Combine(directory, fileName);
+        var fullPath = FileSystemHelper.Path.Combine(directory, fileName);
 
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
@@ -46,9 +46,9 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         generator.Execute(variables, new(directory, fileName, fileExtension));
 
-        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
+        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
 
-        DirectoryHelper.DeleteDirectory(directory);
+        FileSystemHelper.Directory.DeleteDirectory(directory);
     }
 
     /// <summary>
@@ -75,11 +75,11 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-        var directory = PathHelper.Combine(PathHelper.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
         if (!fileSystem.Directory.Exists(directory))
             fileSystem.Directory.CreateDirectory(directory);
         var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = PathHelper.Combine(directory, fileName);
+        var fullPath = FileSystemHelper.Path.Combine(directory, fileName);
 
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
@@ -87,8 +87,8 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         generator.Execute(variables, new(directory, fileName, fileExtension, targetNamespace));
 
-        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
+        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
 
-        DirectoryHelper.DeleteDirectory(directory);
+        FileSystemHelper.Directory.DeleteDirectory(directory);
     }
 }

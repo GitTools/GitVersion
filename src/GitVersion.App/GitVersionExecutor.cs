@@ -56,7 +56,7 @@ internal class GitVersionExecutor(
     private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
     {
         this.gitRepository.DiscoverRepository(gitVersionOptions.WorkingDirectory);
-        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(PathHelper.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
+        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(FileSystemHelper.Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 
         try
@@ -76,13 +76,13 @@ internal class GitVersionExecutor(
         }
         catch (WarningException exception)
         {
-            var error = $"An error occurred:{PathHelper.NewLine}{exception.Message}";
+            var error = $"An error occurred:{FileSystemHelper.Path.NewLine}{exception.Message}";
             this.log.Warning(error);
             return 1;
         }
         catch (Exception exception)
         {
-            var error = $"An unexpected error occurred:{PathHelper.NewLine}{exception}";
+            var error = $"An unexpected error occurred:{FileSystemHelper.Path.NewLine}{exception}";
             this.log.Error(error);
 
             try

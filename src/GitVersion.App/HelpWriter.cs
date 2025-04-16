@@ -18,7 +18,7 @@ internal class HelpWriter(IVersionWriter versionWriter, IConsole console) : IHel
         this.versionWriter.WriteTo(assembly, v => version = v);
 
         var args = ArgumentList();
-        var message = $"GitVersion {version}{PathHelper.NewLine}{PathHelper.NewLine}{args}";
+        var message = $"GitVersion {version}{FileSystemHelper.Path.NewLine}{FileSystemHelper.Path.NewLine}{args}";
 
         writeAction(message);
     }
