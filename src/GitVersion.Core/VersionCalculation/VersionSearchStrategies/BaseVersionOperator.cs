@@ -21,17 +21,14 @@ public sealed record BaseVersionOperator : IBaseVersionIncrement
         StringBuilder stringBuilder = new();
 
         stringBuilder.Append($"{Source}: ");
-        if (ForceIncrement)
-            stringBuilder.Append("Force version increment ");
-        else
-        {
-            stringBuilder.Append("Version increment ");
-        }
+        stringBuilder.Append(ForceIncrement ? "Force version increment " : "Version increment ");
 
         stringBuilder.Append($"+semver '{Increment}'");
 
         if (Label is null)
+        {
             stringBuilder.Append(" with no label");
+        }
         else
         {
             stringBuilder.Append($" with label '{Label}'");

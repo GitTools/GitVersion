@@ -44,7 +44,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 
-        generator.Execute(variables, new(directory, fileName, fileExtension));
+        generator.Execute(variables, new(directory, fileName));
 
         fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
 
@@ -85,7 +85,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 
-        generator.Execute(variables, new(directory, fileName, fileExtension, targetNamespace));
+        generator.Execute(variables, new(directory, fileName, targetNamespace));
 
         fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
 

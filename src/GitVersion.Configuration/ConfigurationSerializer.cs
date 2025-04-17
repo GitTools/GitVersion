@@ -34,7 +34,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
                 {
                     var descriptor = new PropertyDescriptor(p);
                     var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
-                    if (member is { Name: not null })
+                    if (member is not null)
                     {
                         descriptor.Name = member.Name;
                     }

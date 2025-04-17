@@ -227,7 +227,7 @@ public class RepositoryStoreTests : TestBase
         branch.ShouldNotBeNull();
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchBranchedFrom(branch, configuration, []);
+        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchBranchedFrom(branch, configuration);
         branchedCommit.ShouldBe(BranchCommit.Empty);
 
         var branchedCommits = gitRepoMetadataProvider.FindCommitBranchesBranchedFrom(branch, configuration).ToArray();
