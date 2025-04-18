@@ -319,12 +319,12 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersion Increment(
         VersionField increment, string? label, IncrementMode mode, params SemanticVersion?[] alternativeSemanticVersions)
     {
-        long major = Major;
-        long minor = Minor;
-        long patch = Patch;
-        long? preReleaseNumber = PreReleaseTag.Number;
+        var major = Major;
+        var minor = Minor;
+        var patch = Patch;
+        var preReleaseNumber = PreReleaseTag.Number;
 
-        bool hasPreReleaseTag = PreReleaseTag.HasTag();
+        var hasPreReleaseTag = PreReleaseTag.HasTag();
 
         switch (increment)
         {
@@ -380,7 +380,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
         SemanticVersion semanticVersion = new(major, minor, patch);
 
-        bool foundAlternativeSemanticVersion = false;
+        var foundAlternativeSemanticVersion = false;
         foreach (var alternativeSemanticVersion in alternativeSemanticVersions)
         {
             if (semanticVersion.IsLessThan(alternativeSemanticVersion, includePreRelease: false))

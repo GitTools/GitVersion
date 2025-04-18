@@ -133,7 +133,7 @@ internal partial class MainlineScenariosWithAGitFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "bar", ExpectedResult = "3.0.0-bar.1+3")]
         public string GetVersion(IncrementStrategy increment, IncrementStrategy incrementOnFeature, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(increment).WithLabel(label))
                 .WithBranch("feature", b => b.WithIncrement(incrementOnFeature))
                 .Build();
@@ -227,7 +227,7 @@ internal partial class MainlineScenariosWithAGitFlow
         public string GetVersionWithPreventIncrementOfMergedBranchVersionFalseOnMain(
             IncrementStrategy increment, IncrementStrategy incrementOnFeature, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(increment).WithLabel(label).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", b => b.WithIncrement(incrementOnFeature))
                 .Build();

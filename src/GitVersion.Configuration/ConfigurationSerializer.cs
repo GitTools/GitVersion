@@ -30,7 +30,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
             innerTypeDescriptor.GetProperties(type, container)
                 .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-                .Select(p =>
+                .Select(IPropertyDescriptor (p) =>
                 {
                     var descriptor = new PropertyDescriptor(p);
                     var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
@@ -39,7 +39,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
                         descriptor.Name = member.Name;
                     }
 
-                    return (IPropertyDescriptor)descriptor;
+                    return descriptor;
                 })
                 .OrderBy(p => p.Order);
     }

@@ -1,0 +1,26 @@
+name: Qodana
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'fix/*'
+      - 'feature/*'
+jobs:
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: 'Qodana Scan'
+        uses: jetbrains/qodana-action@v2024.3.4
+        with:
+          pr-mode: 'false'
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}

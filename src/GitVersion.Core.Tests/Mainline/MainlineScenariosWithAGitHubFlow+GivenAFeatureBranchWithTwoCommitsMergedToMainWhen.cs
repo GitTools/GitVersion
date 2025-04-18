@@ -147,7 +147,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+3")]
         public string GetVersionWithLabelNullOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -262,7 +262,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelNullAndPreventIncrementOfMergedBranchVersionFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -376,7 +376,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-1+3")]
         public string GetVersionWithEmptyLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -491,7 +491,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithEmptyLabelAndPreventIncrementOfMergedBranchVersionFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty).WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -605,7 +605,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-foo.1+3")]
         public string GetVersionWithLabelFooOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -720,7 +720,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelFooAndPreventIncrementOfMergedBranchVersionFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("foo").WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -834,7 +834,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Inherit, "{BranchName}", ExpectedResult = "2.0.0-bar.1+3")]
         public string GetVersionWithLabelBarOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar"))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
@@ -949,7 +949,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         public string GetVersionWithLabelBarAndPreventIncrementOfMergedBranchVersionFalseOnMain(
             IncrementStrategy incrementOnMain, IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel("bar").WithPreventIncrementOfMergedBranch(false))
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();

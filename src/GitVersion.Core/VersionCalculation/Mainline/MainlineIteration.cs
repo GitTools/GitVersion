@@ -23,7 +23,7 @@ internal record MainlineIteration
             return this.effectiveConfiguration;
         }
 
-        IBranchConfiguration branchConfiguration = Configuration;
+        var branchConfiguration = Configuration;
 
         if (branchConfiguration.Increment == IncrementStrategy.Inherit && Commits.FirstOrDefault() is { } commit)
         {

@@ -97,7 +97,7 @@ internal class ConfigurationProvider(
         string? workflow = null;
         foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
         {
-            if (item?.TryGetValue("workflow", out object? value) == true && value != null)
+            if (item?.TryGetValue("workflow", out var value) == true && value != null)
             {
                 workflow = (string)value;
             }

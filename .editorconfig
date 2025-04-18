@@ -68,9 +68,9 @@ dotnet_diagnostic.CA1016.severity = none
 #### C# Coding Conventions ####
 
 # Prefer "var" everywhere
-csharp_style_var_for_built_in_types = true:silent
-csharp_style_var_when_type_is_apparent = true:silent
-csharp_style_var_elsewhere = true:silent
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
 
 # Prefer method-like constructs to have a block body, except for lambdas
 csharp_style_expression_bodied_methods = true:warning
@@ -152,8 +152,9 @@ csharp_space_between_method_call_parameter_list_parentheses = false
 csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
 csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
-csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
+
+csharp_use_roslyn_logic_for_evident_types = true
 
 # Alignment
 align_multiline_parameter = true
@@ -194,4 +195,4 @@ dotnet_diagnostic.RCS1037.severity = error
 # RCS1036: Remove redundant empty line.
 dotnet_diagnostic.RCS1036.severity = error
 
-[resharper_]xml_space_before_self_closing = true
+xml_space_before_self_closing = true

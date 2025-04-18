@@ -41,7 +41,7 @@ internal class OverrideConfigurationOptionParser
     /// <remarks>Only simple types are supported</remarks>
     private static bool IsSupportedPropertyType(Type propertyType)
     {
-        Type unwrappedType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+        var unwrappedType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
         return unwrappedType == typeof(string)
                || unwrappedType.IsEnum

@@ -20,7 +20,7 @@ internal class VersionStrategiesConverter : IYamlTypeConverter
         {
             while (!parser.TryConsume<SequenceEnd>(out var _))
             {
-                string data = parser.Consume<Scalar>().Value;
+                var data = parser.Consume<Scalar>().Value;
 
                 var strategy = Enum.Parse<VersionStrategies>(data);
                 strategies.Add(strategy);
@@ -28,7 +28,7 @@ internal class VersionStrategiesConverter : IYamlTypeConverter
         }
         else
         {
-            string data = parser.Consume<Scalar>().Value;
+            var data = parser.Consume<Scalar>().Value;
 
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
@@ -42,7 +42,7 @@ internal class VersionStrategiesConverter : IYamlTypeConverter
 
     public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
-        VersionStrategies[] strategies = (VersionStrategies[])value!;
+        var strategies = (VersionStrategies[])value!;
 
         var s = new SerializerBuilder()
             .JsonCompatible()

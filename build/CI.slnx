@@ -44,6 +44,7 @@
     <File Path="../.github/workflows/release.yml" />
     <File Path="../.github/workflows/stale.yml" />
     <File Path="../.github/workflows/winget.yml" />
+    <File Path="../.github/workflows/qodana_code_quality.yml" />
   </Folder>
   <Folder Name="/workflows/_/">
     <File Path="../.github/workflows/_artifacts_linux.yml" />

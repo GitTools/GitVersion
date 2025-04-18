@@ -191,11 +191,11 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
             throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
         }
 
-        ICommit baseCommit = mergeCommit.Parents[0];
-        ICommit mergedCommit = GetMergedHead(mergeCommit);
+        var baseCommit = mergeCommit.Parents[0];
+        var mergedCommit = GetMergedHead(mergeCommit);
         if (index == 0) (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
 
-        ICommit findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
+        var findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
             ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
         return GetIntermediateCommits(findMergeBase, mergedCommit, ignore);
     }

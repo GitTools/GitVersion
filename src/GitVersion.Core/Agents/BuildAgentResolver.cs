@@ -11,7 +11,7 @@ internal class BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log
 
     private ICurrentBuildAgent ResolveInternal()
     {
-        ICurrentBuildAgent instance = (ICurrentBuildAgent)buildAgents.Single(x => x.IsDefault);
+        var instance = (ICurrentBuildAgent)buildAgents.Single(x => x.IsDefault);
 
         foreach (var buildAgent in buildAgents.Where(x => !x.IsDefault))
         {

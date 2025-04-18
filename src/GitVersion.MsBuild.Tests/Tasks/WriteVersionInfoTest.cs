@@ -81,7 +81,7 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
 
-        string content = this.FileSystem.File.ReadAllText(envFilePath);
+        var content = this.FileSystem.File.ReadAllText(envFilePath);
         content.ShouldContain("GitVersion_SemVer=1.0.1");
 
         this.FileSystem.File.Delete(envFilePath);

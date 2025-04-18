@@ -49,7 +49,7 @@ internal static class ConfigurationExtensions
     private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
     {
         IBranchConfiguration? unknownBranchConfiguration = null;
-        foreach ((string key, IBranchConfiguration branchConfiguration) in configuration.Branches)
+        foreach ((var key, var branchConfiguration) in configuration.Branches)
         {
             if (branchConfiguration.IsMatch(branchName))
             {
@@ -119,7 +119,7 @@ internal static class ConfigurationExtensions
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
     {
-        string? startingDir = path;
+        var startingDir = path;
         while (startingDir is not null)
         {
             var dirOrFilePath = FileSystemHelper.Path.Combine(startingDir, ".git");

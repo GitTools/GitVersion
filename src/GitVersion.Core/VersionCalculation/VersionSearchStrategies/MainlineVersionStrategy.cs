@@ -84,7 +84,7 @@ internal sealed class MainlineVersionStrategy(
 
         var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits.ToArray());
 
-        TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+        var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
         if (branchConfiguration.TrackMergeTarget == true) taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
         if (branchConfiguration.TracksReleaseBranches == true)
         {
@@ -133,7 +133,7 @@ internal sealed class MainlineVersionStrategy(
     {
         traversedCommits ??= [];
 
-        bool returnTrueWhenTheIncrementIsKnown = false;
+        var returnTrueWhenTheIncrementIsKnown = false;
 
         var configuration = iteration.Configuration;
         var branchName = iteration.BranchName;
@@ -170,7 +170,7 @@ internal sealed class MainlineVersionStrategy(
                             : GetCommitsWasBranchedFrom(branch, excludeBranch is null ? [] : [excludeBranch])
                     );
 
-                    TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+                    var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
                     if ((configuration.TrackMergeTarget ?? Context.Configuration.TrackMergeTarget) == true)
                     {
                         taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;

@@ -39,7 +39,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
         var indentation = GetIndentation(fileExtension);
         string? closeBracket = null;
         string? openBracket = null;
-        string indent = "";
+        var indent = "";
 
         if (!string.IsNullOrWhiteSpace(targetNamespace) && fileExtension == ".cs")
         {

@@ -120,7 +120,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     [JsonIgnore]
     IReadOnlyDictionary<string, IBranchConfiguration> IGitVersionConfiguration.Branches
-        => Branches.ToDictionary(element => element.Key, element => (IBranchConfiguration)element.Value);
+        => Branches.ToDictionary(element => element.Key, IBranchConfiguration (element) => element.Value);
 
     [JsonPropertyName("branches")]
     [JsonPropertyDescription("The header for all the individual branch configuration.")]

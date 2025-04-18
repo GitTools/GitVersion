@@ -148,7 +148,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
         {
-            bool referenceMatchFound = false;
+            var referenceMatchFound = false;
             var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
 
             foreach (var item in branchGrouping)

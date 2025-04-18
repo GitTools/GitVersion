@@ -60,9 +60,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     {
         if (effectiveConfiguration is not null) return effectiveConfiguration;
 
-        IBranchConfiguration branchConfiguration = Configuration;
+        var branchConfiguration = Configuration;
 
-        IBranchConfiguration last = Configuration;
+        var last = Configuration;
         for (var i = this; i is not null; i = i.Predecessor)
         {
             if (branchConfiguration.Increment != IncrementStrategy.Inherit) break;

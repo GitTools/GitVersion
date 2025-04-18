@@ -109,7 +109,7 @@ public class OtherScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
 
-        for (int i = 0; i < numberOfFiles; i++)
+        for (var i = 0; i < numberOfFiles; i++)
         {
             var tempFile = FileSystemHelper.Path.GetRandomFileName();
             var repoFile = FileSystemHelper.Path.Combine(fixture.RepositoryPath, FileSystemHelper.Path.GetFileNameWithoutExtension(tempFile) + ".txt");
@@ -1217,7 +1217,7 @@ public class OtherScenarios : TestBase
 
         if (tags is not null)
         {
-            foreach (string tag in tags)
+            foreach (var tag in tags)
             {
                 fixture.ApplyTag(tag);
             }
