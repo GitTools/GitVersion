@@ -67,11 +67,13 @@ public class VersionInMergedBranchNameScenarios : TestBase
         fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-7");
     }
 
-    [Category("LibGitSharp 0.31.0")]
-    [Ignore("LibGitSharp 0.31.0 fails")]
     [Test]
     public void DoesNotTakeVersionFromNameOfRemoteReleaseBranchInCustomRemote()
     {
+        if (SysEnv.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            Assert.Ignore("Test ignored on Windows - LibGitSharp 0.31.0 fails");
+        }
         using var fixture = new RemoteRepositoryFixture();
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
         fixture.BranchTo("release/2.0.0");

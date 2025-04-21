@@ -94,12 +94,14 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    [Category("LibGitSharp 0.31.0")]
-    [Ignore("LibGitSharp 0.31.0 fails")]
     [TestCase("origin", "release-2.0.0", "2.0.0")]
     [TestCase("origin", "release/3.0.0", "3.0.0")]
     public void CanTakeVersionFromNameOfRemoteReleaseBranch(string origin, string branchName, string expectedBaseVersion)
     {
+        if (SysEnv.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            Assert.Ignore("Test ignored on Windows - LibGitSharp 0.31.0 fails");
+        }
         using var fixture = new RemoteRepositoryFixture();
 
         fixture.CreateBranch(branchName);
