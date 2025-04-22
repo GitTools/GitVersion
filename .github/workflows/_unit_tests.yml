@@ -7,7 +7,7 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
-  
+
 jobs:
   unit_test:
     name: ${{ matrix.os }} - net${{ matrix.dotnet_version }}
@@ -37,6 +37,6 @@ jobs:
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: matrix.dotnet_version == '9.0'
+      if: ${{ always() && matrix.dotnet_version == '9.0' }}
       with:
         paths: artifacts/test-results/*.results.xml
