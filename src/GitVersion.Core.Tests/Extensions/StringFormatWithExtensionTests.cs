@@ -6,7 +6,7 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class StringFormatWithExtensionTests
 {
-    private IEnvironment environment;
+    private TestEnvironment environment;
 
     [SetUp]
     public void Setup() => this.environment = new TestEnvironment();

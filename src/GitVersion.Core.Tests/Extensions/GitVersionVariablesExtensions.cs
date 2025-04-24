@@ -12,8 +12,5 @@ public static class GitVersionVariablesExtensions
     }
 
     public static GitVersionVariables ToGitVersionVariables(this string json)
-    {
-        var serializer = new VersionVariableSerializer(new FileSystem());
-        return serializer.FromJson(json);
-    }
+        => VersionVariableSerializer.FromJson(json);
 }

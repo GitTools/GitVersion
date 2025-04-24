@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace GitVersion.Testing;
@@ -165,6 +166,7 @@ public static partial class ProcessHelper
     }
 
     [Flags]
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private enum ErrorModes
     {
         Default = 0x0,

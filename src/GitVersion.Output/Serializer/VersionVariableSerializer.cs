@@ -7,7 +7,7 @@ namespace GitVersion.OutputVariables;
 
 internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVariableSerializer
 {
-    public GitVersionVariables FromJson(string json)
+    public static GitVersionVariables FromJson(string json)
     {
         var serializeOptions = JsonSerializerOptions();
         var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);

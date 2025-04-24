@@ -28,7 +28,7 @@ internal class GitVersionOutputTool(
     {
         using (this.outputGenerator)
         {
-            this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
+            this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.OutputFile, updateBuildNumber));
         }
     }
 

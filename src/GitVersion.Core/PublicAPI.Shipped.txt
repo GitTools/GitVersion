@@ -346,7 +346,6 @@ GitVersion.Helpers.RetryAction<T>.Execute(System.Action! operation) -> void
 GitVersion.Helpers.RetryAction<T>.RetryAction(int maxRetries = 5) -> void
 GitVersion.Helpers.ServiceMessageEscapeHelper
 GitVersion.IConverterContext
-GitVersion.IConverterContext.WorkingDirectory.get -> string!
 GitVersion.IEnvironment
 GitVersion.IEnvironment.GetEnvironmentVariable(string! variableName) -> string?
 GitVersion.IEnvironment.SetEnvironmentVariable(string! variableName, string? value) -> void
@@ -472,7 +471,6 @@ GitVersion.OutputVariables.GitVersionVariables.WeightedPreReleaseNumber.get -> s
 GitVersion.OutputVariables.GitVersionVariables.WeightedPreReleaseNumber.init -> void
 GitVersion.OutputVariables.IVersionVariableSerializer
 GitVersion.OutputVariables.IVersionVariableSerializer.FromFile(string! filePath) -> GitVersion.OutputVariables.GitVersionVariables!
-GitVersion.OutputVariables.IVersionVariableSerializer.FromJson(string! json) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.OutputVariables.IVersionVariableSerializer.ToFile(GitVersion.OutputVariables.GitVersionVariables! gitVersionVariables, string! filePath) -> void
 GitVersion.OutputVariables.IVersionVariableSerializer.ToJson(GitVersion.OutputVariables.GitVersionVariables! gitVersionVariables) -> string!
 GitVersion.RepositoryInfo

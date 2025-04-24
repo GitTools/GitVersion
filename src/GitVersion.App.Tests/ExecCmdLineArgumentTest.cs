@@ -1,4 +1,4 @@
-using GitVersion.Core.Tests.Helpers;
+using GitVersion.App.Tests.Helpers;
 using GitVersion.Helpers;
 
 namespace GitVersion.App.Tests;

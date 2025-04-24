@@ -1,6 +1,6 @@
 using GitVersion.Helpers;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.App.Tests.Helpers;
 
 public static class ExecutableHelper
 {
