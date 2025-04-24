@@ -22,13 +22,11 @@ internal sealed class BranchRepository(IRepositoryStore repositoryStore) : IBran
 
         foreach (var branch in this.repositoryStore.Branches)
         {
-            if (!excludeBranches.Contains(branch))
+            if (excludeBranches.Contains(branch)) continue;
+            var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
+            if (predicate(branchConfiguration))
             {
-                var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
-                if (predicate(branchConfiguration))
-                {
-                    yield return branch;
-                }
+                yield return branch;
             }
         }
     }

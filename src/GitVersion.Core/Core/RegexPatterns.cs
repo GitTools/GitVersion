@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Core;
 
+[SuppressMessage("Performance", "SYSLIB1045:Convert to \'GeneratedRegexAttribute\'.")]
 internal static class RegexPatterns
 {
     private const RegexOptions Options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
@@ -64,14 +65,22 @@ internal static class RegexPatterns
 
     internal static class Common
     {
-        public static Regex SwitchArgumentRegex { get; } = new(@"/\w+:", Options);
-        public static Regex ObscurePasswordRegex { get; } = new("(https?://)(.+)(:.+@)", Options);
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string SwitchArgumentRegexPattern = @"/\w+:";
 
-        // This regex matches an expression to replace.
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)";
+
+        // this regex matches an expression to replace.
         // - env:ENV name OR a member name
         // - optional fallback value after " ?? "
         // - the fallback value should be a quoted string, but simple unquoted text is allowed for back compat
-        public static Regex ExpandTokensRegex { get; } = new("""{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|"(?<fallback>.*)"))??}""", Options);
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ExpandTokensRegexPattern = """{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|"(?<fallback>.*)"))??}""";
+
+        public static Regex SwitchArgumentRegex { get; } = new(SwitchArgumentRegexPattern, Options);
+        public static Regex ObscurePasswordRegex { get; } = new(ObscurePasswordRegexPattern, Options);
+        public static Regex ExpandTokensRegex { get; } = new(ExpandTokensRegexPattern, Options);
     }
 
     internal static class Configuration
@@ -120,24 +129,66 @@ internal static class RegexPatterns
 
     internal static class MergeMessage
     {
-        public static Regex DefaultMergeMessageRegex { get; } = new(@"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*", Options);
-        public static Regex SmartGitMergeMessageRegex { get; } = new(@"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*", Options);
-        public static Regex BitBucketPullMergeMessageRegex { get; } = new(@"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)", Options);
-        public static Regex BitBucketPullv7MergeMessageRegex { get; } = new(@"^Pull request #(?<PullRequestNumber>\d+).*\r?\n\r?\nMerge in (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)", Options);
-        public static Regex BitBucketCloudPullMergeMessageRegex { get; } = new(@"^Merged in (?<SourceBranch>[^\s]*) \(pull request #(?<PullRequestNumber>\d+)\)", Options);
-        public static Regex GitHubPullMergeMessageRegex { get; } = new(@"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:[^\s\/]+\/)?(?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*", Options);
-        public static Regex RemoteTrackingMergeMessageRegex { get; } = new(@"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*", Options);
-        public static Regex AzureDevOpsPullMergeMessageRegex { get; } = new(@"^Merge pull request (?<PullRequestNumber>\d+) from (?<SourceBranch>[^\s]*) into (?<TargetBranch>[^\s]*)", Options);
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string DefaultMergeMessageRegexPattern = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string SmartGitMergeMessageRegexPattern = @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string BitBucketPullMergeMessageRegexPattern = @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string BitBucketPullv7MergeMessageRegexPattern = @"^Pull request #(?<PullRequestNumber>\d+).*\r?\n\r?\nMerge in (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string BitBucketCloudPullMergeMessageRegexPattern = @"^Merged in (?<SourceBranch>[^\s]*) \(pull request #(?<PullRequestNumber>\d+)\)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string GitHubPullMergeMessageRegexPattern = @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:[^\s\/]+\/)?(?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string RemoteTrackingMergeMessageRegexPattern = @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string AzureDevOpsPullMergeMessageRegexPattern = @"^Merge pull request (?<PullRequestNumber>\d+) from (?<SourceBranch>[^\s]*) into (?<TargetBranch>[^\s]*)";
+
+        public static Regex DefaultMergeMessageRegex { get; } = new(DefaultMergeMessageRegexPattern, Options);
+        public static Regex SmartGitMergeMessageRegex { get; } = new(SmartGitMergeMessageRegexPattern, Options);
+        public static Regex BitBucketPullMergeMessageRegex { get; } = new(BitBucketPullMergeMessageRegexPattern, Options);
+        public static Regex BitBucketPullv7MergeMessageRegex { get; } = new(BitBucketPullv7MergeMessageRegexPattern, Options);
+        public static Regex BitBucketCloudPullMergeMessageRegex { get; } = new(BitBucketCloudPullMergeMessageRegexPattern, Options);
+        public static Regex GitHubPullMergeMessageRegex { get; } = new(GitHubPullMergeMessageRegexPattern, Options);
+        public static Regex RemoteTrackingMergeMessageRegex { get; } = new(RemoteTrackingMergeMessageRegexPattern, Options);
+        public static Regex AzureDevOpsPullMergeMessageRegex { get; } = new(AzureDevOpsPullMergeMessageRegexPattern, Options);
     }
 
     internal static class Output
     {
-        public static Regex AssemblyVersionRegex { get; } = new(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*", Options);
-        public static Regex AssemblyInfoVersionRegex { get; } = new(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*", Options);
-        public static Regex AssemblyFileVersionRegex { get; } = new(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*", Options);
-        public static Regex CsharpAssemblyAttributeRegex { get; } = new(@"(\s*\[\s*assembly:\s*(?:.*)\s*\]\s*$(\r?\n)?)", Options | RegexOptions.Multiline);
-        public static Regex FsharpAssemblyAttributeRegex { get; } = new(@"(\s*\[\s*\<assembly:\s*(?:.*)\>\s*\]\s*$(\r?\n)?)", Options | RegexOptions.Multiline);
-        public static Regex VisualBasicAssemblyAttributeRegex { get; } = new(@"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", Options | RegexOptions.Multiline);
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string AssemblyVersionRegexPattern = @"AssemblyVersion(Attribute)?\s*\(.*\)\s*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string AssemblyInfoVersionRegexPattern = @"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string AssemblyFileVersionRegexPattern = @"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string CsharpAssemblyAttributeRegexPattern = @"(\s*\[\s*assembly:\s*(?:.*)\s*\]\s*$(\r?\n)?)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string FsharpAssemblyAttributeRegexPattern = @"(\s*\[\s*\<assembly:\s*(?:.*)\>\s*\]\s*$(\r?\n)?)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string VisualBasicAssemblyAttributeRegexPattern = @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)";
+
+        public static Regex AssemblyVersionRegex { get; } = new(AssemblyVersionRegexPattern, Options);
+        public static Regex AssemblyInfoVersionRegex { get; } = new(AssemblyInfoVersionRegexPattern, Options);
+        public static Regex AssemblyFileVersionRegex { get; } = new(AssemblyFileVersionRegexPattern, Options);
+        public static Regex CsharpAssemblyAttributeRegex { get; } = new(CsharpAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline);
+        public static Regex FsharpAssemblyAttributeRegex { get; } = new(FsharpAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline);
+        public static Regex VisualBasicAssemblyAttributeRegex { get; } = new(VisualBasicAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline);
     }
 
     internal static class VersionCalculation
@@ -162,74 +213,104 @@ internal static class RegexPatterns
 
     internal static class SemanticVersion
     {
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ParseStrictRegexPattern = @"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ParseLooseRegexPattern = @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ParseBuildMetaDataRegexPattern = @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string FormatBuildMetaDataRegexPattern = "[^0-9A-Za-z-.]";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        private const string ParsePreReleaseTagRegexPattern = @"(?<name>.*?)\.?(?<number>\d+)?$";
+
         // uses the git-semver spec https://github.com/semver/semver/blob/master/semver.md
-        public static Regex ParseStrictRegex { get; } = new(
-            @"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
-            Options);
+        public static Regex ParseStrictRegex { get; } = new(ParseStrictRegexPattern, Options);
 
-        public static Regex ParseLooseRegex { get; } = new(
-            @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
-            Options);
+        public static Regex ParseLooseRegex { get; } = new(ParseLooseRegexPattern, Options);
 
-        public static Regex ParseBuildMetaDataRegex { get; } = new(
-            @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
-            Options);
+        public static Regex ParseBuildMetaDataRegex { get; } = new(ParseBuildMetaDataRegexPattern, Options);
 
-        public static Regex FormatBuildMetaDataRegex { get; } = new("[^0-9A-Za-z-.]",
-            Options);
+        public static Regex FormatBuildMetaDataRegex { get; } = new(FormatBuildMetaDataRegexPattern, Options);
 
-        public static Regex ParsePreReleaseTagRegex { get; } = new(
-            @"(?<name>.*?)\.?(?<number>\d+)?$",
-            Options);
+        public static Regex ParsePreReleaseTagRegex { get; } = new(ParsePreReleaseTagRegexPattern, Options);
     }
 
     internal static class AssemblyVersion
     {
         internal static class CSharp
         {
-            public static Regex TriviaRegex { get; } = new(@"
-    /\*(.*?)\*/                       # Block comments: matches /* ... */
-    |//(.*?)\r?\n                     # Line comments: matches // ... followed by a newline
-    |""((\\[^\n]|[^""\n])*)""         # Strings: matches "" ... "" including escaped quotes",
-                RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string TriviaRegexPattern =
+                """
+                /\*(.*?)\*/                    # Block comments: matches /* ... */
+                |//(.*?)\r?\n                  # Line comments: matches // ... followed by a newline
+                |"((\\[^\n]|[^"\n])*)"         # Strings: matches " ... " including escaped quotes
+                """;
 
-            public static Regex AttributeRegex { get; } = new(@"(?x) # IgnorePatternWhitespace
-\[\s*assembly\s*:\s*                  # The [assembly: part
-(System\s*\.\s*Reflection\s*\.\s*)?   # The System.Reflection. part (optional)
-Assembly(File|Informational)?Version  # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
-\s*\(\s*\)\s*\]                       # End brackets ()]",
-                RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string AttributeRegexPattern =
+                """
+                (?x)                                  # IgnorePatternWhitespace
+                \[\s*assembly\s*:\s*                  # The [assembly: part
+                (System\s*\.\s*Reflection\s*\.\s*)?   # The System.Reflection. part (optional)
+                Assembly(File|Informational)?Version  # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
+                \s*\(\s*\)\s*\]                       # End brackets ()]
+                """;
+
+            public static Regex TriviaRegex { get; } = new(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            public static Regex AttributeRegex { get; } = new(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options);
         }
 
         internal static class FSharp
         {
-            public static Regex TriviaRegex { get; } = new(@"
-    /\*(.*?)\*/                       # Block comments: matches /* ... */
-    |//(.*?)\r?\n                     # Line comments: matches // ... followed by a newline
-    |""((\\[^\n]|[^""\n])*)""         # Strings: matches "" ... "" including escaped quotes",
-                RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string TriviaRegexPattern =
+                """
+                /\*(.*?)\*/                     # Block comments: matches /* ... */
+                |//(.*?)\r?\n                   # Line comments: matches // ... followed by a newline
+                |"((\\[^\n]|[^"\n])*)"          # Strings: matches " ... " including escaped quotes
+                """;
 
-            public static Regex AttributeRegex { get; } = new(@"(?x) # IgnorePatternWhitespace
-\[\s*<\s*assembly\s*:\s*              # The [<assembly: part
-(System\s*\.\s*Reflection\s*\.\s*)?   # The System.Reflection. part (optional)
-Assembly(File|Informational)?Version  # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
-\s*\(\s*\)\s*>\s*\]                   # End brackets ()>]",
-                RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string AttributeRegexPattern =
+                """
+                (?x)                                    # IgnorePatternWhitespace
+                \[\s*<\s*assembly\s*:\s*                # The [<assembly: part
+                (System\s*\.\s*Reflection\s*\.\s*)?     # The System.Reflection. part (optional)
+                Assembly(File|Informational)?Version    # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
+                \s*\(\s*\)\s*>\s*\]                     # End brackets ()>]
+                """;
+
+            public static Regex TriviaRegex { get; } = new(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            public static Regex AttributeRegex { get; } = new(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options);
         }
 
         internal static class VisualBasic
         {
-            public static Regex TriviaRegex { get; } = new(@"
-    '(.*?)\r?\n                       # Line comments: matches // ... followed by a newline
-    |""((\\[^\n]|[^""\n])*)""         # Strings: matches "" ... "" including escaped quotes",
-                RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string TriviaRegexPattern =
+                """
+                '(.*?)\r?\n                     # Line comments: matches // ... followed by a newline
+                |"((\\[^\n]|[^"\n])*)"          # Strings: matches " ... " including escaped quotes
+                """;
 
-            public static Regex AttributeRegex { get; } = new(@"(?x) # IgnorePatternWhitespace
-\<\s*Assembly\s*:\s*                  # The <Assembly: part
-(System\s*\.\s*Reflection\s*\.\s*)?   # The System.Reflection. part (optional)
-Assembly(File|Informational)?Version  # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
-\s*\(\s*\)\s*\>                       # End brackets ()>",
-                RegexOptions.IgnorePatternWhitespace | Options);
+            [StringSyntax(StringSyntaxAttribute.Regex)]
+            private const string AttributeRegexPattern =
+                """
+                (?x) # IgnorePatternWhitespace
+                \<\s*Assembly\s*:\s*                  # The <Assembly: part
+                (System\s*\.\s*Reflection\s*\.\s*)?   # The System.Reflection. part (optional)
+                Assembly(File|Informational)?Version  # The attribute AssemblyVersion, AssemblyFileVersion, or AssemblyInformationalVersion
+                \s*\(\s*\)\s*\>                       # End brackets ()>
+                """;
+
+            public static Regex TriviaRegex { get; } = new(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options);
+            public static Regex AttributeRegex { get; } = new(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options);
         }
     }
 }

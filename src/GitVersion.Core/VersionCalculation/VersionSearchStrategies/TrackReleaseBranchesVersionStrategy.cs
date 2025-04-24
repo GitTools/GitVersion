@@ -29,14 +29,12 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrackReleaseBranches))
             yield break;
 
-        if (configuration.Value.TracksReleaseBranches)
+        if (!configuration.Value.TracksReleaseBranches) yield break;
+        foreach (var releaseBranch in this.branchRepository.GetReleaseBranches(Context.Configuration))
         {
-            foreach (var releaseBranche in branchRepository.GetReleaseBranches(Context.Configuration))
+            if (TryGetBaseVersion(releaseBranch, configuration, out var baseVersion))
             {
-                if (TryGetBaseVersion(releaseBranche, configuration, out var baseVersion))
-                {
-                    yield return baseVersion;
-                }
+                yield return baseVersion;
             }
         }
     }
@@ -47,31 +45,29 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         result = null;
 
         var releaseBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
-        if (this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion))
+        if (!this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion)) return result is not null;
+        // Find the commit where the child branch was created.
+        var baseVersionSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var increment = this.incrementStrategyFinder.DetermineIncrementedField(
+            currentCommit: Context.CurrentCommit,
+            baseVersionSource: baseVersionSource,
+            shouldIncrement: true,
+            configuration: configuration.Value,
+            label: label
+        );
+
+        result = new BaseVersion(
+            "Release branch exists -> " + baseVersion.Source, baseVersion.SemanticVersion, baseVersionSource)
         {
-            // Find the commit where the child branch was created.
-            var baseVersionSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-            var increment = incrementStrategyFinder.DetermineIncrementedField(
-                currentCommit: Context.CurrentCommit,
-                baseVersionSource: baseVersionSource,
-                shouldIncrement: true,
-                configuration: configuration.Value,
-                label: label
-            );
-
-            result = new BaseVersion(
-                "Release branch exists -> " + baseVersion.Source, baseVersion.SemanticVersion, baseVersionSource)
+            Operator = new BaseVersionOperator
             {
-                Operator = new BaseVersionOperator
-                {
-                    Increment = increment,
-                    ForceIncrement = false,
-                    Label = label
-                }
-            };
-        }
+                Increment = increment,
+                ForceIncrement = false,
+                Label = label
+            }
+        };
 
-        return result is not null;
+        return true;
     }
 }

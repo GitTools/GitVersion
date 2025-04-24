@@ -25,11 +25,15 @@ public class ExecCmdLineArgumentTest
         fixture.MakeATaggedCommit("1.2.3");
         fixture.MakeACommit();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, @" /l ""/tmp/path""", false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath,
+            """ /l "/tmp/path" """, false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldNotBeNull();
-        result.Output.ShouldContain(@"""MajorMinorPatch"": ""1.2.4""");
+        result.Output.ShouldContain(
+            """
+                    "MajorMinorPatch": "1.2.4"
+                    """);
     }
 
     [Theory]
@@ -42,7 +46,8 @@ public class ExecCmdLineArgumentTest
         fixture.MakeATaggedCommit("1.2.3");
         fixture.MakeACommit();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, $@" {verbosityArg} -output buildserver /l ""/tmp/path""", false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath,
+            $""" {verbosityArg} -output buildserver /l "/tmp/path" """, false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldNotBeNull();

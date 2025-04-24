@@ -31,42 +31,46 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
 
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.MergeMessage)
                 || !configuration.Value.TrackMergeMessage)
+        {
             yield break;
+        }
 
         foreach (var commit in configuration.Value.Ignore.Filter(Context.CurrentBranchCommits.ToArray()))
         {
-            if (MergeMessage.TryParse(commit, Context.Configuration, out var mergeMessage)
-                && mergeMessage.Version is not null
-                && Context.Configuration.IsReleaseBranch(mergeMessage.MergedBranch!))
+            if (!MergeMessage.TryParse(commit, Context.Configuration, out var mergeMessage)
+                || mergeMessage.Version is null
+                || !Context.Configuration.IsReleaseBranch(mergeMessage.MergedBranch!))
             {
-                this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
-
-                var baseVersionSource = commit;
-                if (commit.IsMergeCommit())
-                {
-                    baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
-                }
-
-                var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-                var increment = configuration.Value.PreventIncrementOfMergedBranch
-                    ? VersionField.None : incrementStrategyFinder.DetermineIncrementedField(
-                        currentCommit: Context.CurrentCommit,
-                        baseVersionSource: baseVersionSource,
-                        shouldIncrement: true,
-                        configuration: configuration.Value,
-                        label: label
-                    );
-
-                yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version)
-                {
-                    Operator = new()
-                    {
-                        Increment = increment,
-                        ForceIncrement = false,
-                        Label = label
-                    }
-                };
+                continue;
             }
+
+            this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
+
+            var baseVersionSource = commit;
+            if (commit.IsMergeCommit())
+            {
+                baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
+            }
+
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+            var increment = configuration.Value.PreventIncrementOfMergedBranch
+                ? VersionField.None : this.incrementStrategyFinder.DetermineIncrementedField(
+                    currentCommit: Context.CurrentCommit,
+                    baseVersionSource: baseVersionSource,
+                    shouldIncrement: true,
+                    configuration: configuration.Value,
+                    label: label
+                );
+
+            yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version)
+            {
+                Operator = new()
+                {
+                    Increment = increment,
+                    ForceIncrement = false,
+                    Label = label
+                }
+            };
         }
     }
 }

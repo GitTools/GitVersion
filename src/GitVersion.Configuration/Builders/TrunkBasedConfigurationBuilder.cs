@@ -117,7 +117,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             [
                 this.MainBranch.Name,
                 this.FeatureBranch.Name,
-                this.HotfixBranch.Name,
+                this.HotfixBranch.Name
             ],
             TrackMergeMessage = true,
             PreReleaseWeight = 30000

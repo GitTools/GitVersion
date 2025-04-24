@@ -7,10 +7,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.AssemblyInfo;
 
-internal interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
-{
-    bool CanUpdateProjectFile(XElement xmlRoot);
-}
+internal interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>;
 
 internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IProjectFileUpdater
 {
@@ -125,13 +122,9 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         }
 
         var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
-        if (lastGenerateAssemblyInfoElement != null && !(bool)lastGenerateAssemblyInfoElement)
-        {
-            log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
-            return false;
-        }
-
-        return true;
+        if (lastGenerateAssemblyInfoElement == null || (bool)lastGenerateAssemblyInfoElement) return true;
+        log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
+        return false;
     }
 
     internal static void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)

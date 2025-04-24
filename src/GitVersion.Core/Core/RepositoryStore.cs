@@ -148,24 +148,20 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
         {
-            bool referenceMatchFound = false;
+            var referenceMatchFound = false;
             var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
 
             foreach (var item in branchGrouping)
             {
-                if (referenceNames.Contains(item.Name))
-                {
-                    if (returnedBranches.Add(item)) yield return item;
-                    referenceMatchFound = true;
-                }
+                if (!referenceNames.Contains(item.Name)) continue;
+                if (returnedBranches.Add(item)) yield return item;
+                referenceMatchFound = true;
             }
 
-            if (!referenceMatchFound)
+            if (referenceMatchFound) continue;
+            foreach (var item in branchGrouping)
             {
-                foreach (var item in branchGrouping)
-                {
-                    if (returnedBranches.Add(item)) yield return item;
-                }
+                if (returnedBranches.Add(item)) yield return item;
             }
         }
     }
@@ -220,7 +216,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         };
 
         var commits = FilterCommits(filter).ToArray();
-        return ignore.Filter(commits).ToList();
+        return [.. ignore.Filter(commits)];
     }
 
     public IReadOnlyList<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore)
@@ -232,7 +228,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         };
 
         var commits = FilterCommits(filter).ToArray();
-        return ignore.Filter(commits).ToList();
+        return [.. ignore.Filter(commits)];
     }
 
     public IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
@@ -240,7 +236,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         var filter = new CommitFilter { IncludeReachableFrom = branch };
 
         var commits = FilterCommits(filter);
-        return commits.Where(c => c.Sha == commit.Sha).ToList();
+        return [.. commits.Where(c => c.Sha == commit.Sha)];
     }
 
     public ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
@@ -268,18 +264,14 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
     private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    private IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
+    private List<BranchCommit> FindCommitBranchesBranchedFrom(
         IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {
-            if (branch.Tip == null)
-            {
-                this.log.Warning($"{branch} has no tip.");
-                return [];
-            }
-
-            return new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch).ToList();
+            if (branch.Tip != null) return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch)];
+            this.log.Warning($"{branch} has no tip.");
+            return [];
         }
     }
 }

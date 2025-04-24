@@ -11,15 +11,16 @@ internal static class RepositoryFixtureExtensions
             .GetField("diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
             ?.GetValue(fixture.SequenceDiagram);
 
-        string? GetParticipant(string participant) =>
-            (string?)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
-                ?.Invoke(fixture.SequenceDiagram,
-                [
-                    participant
-                ]);
-
         var participant = GetParticipant(fixture.Repository.Head.FriendlyName);
         if (participant != null)
             diagramBuilder?.AppendLineFormat("{0} -> {0}: Commit '{1}'", participant, commitMsg);
+        return;
+
+        string? GetParticipant(string participantName) =>
+            (string?)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.Invoke(fixture.SequenceDiagram,
+                [
+                    participantName
+                ]);
     }
 }

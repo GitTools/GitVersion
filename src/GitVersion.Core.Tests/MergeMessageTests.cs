@@ -146,11 +146,13 @@ public class MergeMessageTests : TestBase
 
     private static readonly object[] BitBucketPullMergeMessages_v7 =
     [
-        new object[] { $@"Pull request #68: Release/2.2.0
+        new object[] { $"""
+                        Pull request #68: Release/2.2.0
 
-Merge in aaa/777 from release/2.2.0 to {MainBranch}
+                        Merge in aaa/777 from release/2.2.0 to {MainBranch}
 
-* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2.0", MainBranch, new SemanticVersion(2, 2), 68 }
+                        * commit '750aa37753dec1a85b22cc16db851187649d9e97':
+                        """, "release/2.2.0", MainBranch, new SemanticVersion(2, 2), 68 }
     ];
 
     [TestCaseSource(nameof(BitBucketPullMergeMessages_v7))]
@@ -176,11 +178,13 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
 
     private static readonly object?[] BitBucketCloudPullMergeMessages =
     [
-        new object?[] { @"Merged in release/2.301.0 (pull request #1789)
+        new object?[] { """
+                        Merged in release/2.301.0 (pull request #1789)
 
-Release/2.301.0
+                        Release/2.301.0
 
-Approved-by: John Doe", "release/2.301.0", null, new SemanticVersion(2, 301), 1789 }
+                        Approved-by: John Doe
+                        """, "release/2.301.0", null, new SemanticVersion(2, 301), 1789 }
     ];
 
     [TestCaseSource(nameof(BitBucketCloudPullMergeMessages))]
@@ -349,15 +353,14 @@ Approved-by: John Doe", "release/2.301.0", null, new SemanticVersion(2, 301), 17
             [definition] = format
         });
         const int pr = 1234;
-        const string target = MainBranch;
         const string source = "feature/2.0.0/example";
 
         // Act
-        var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", this.configurationBuilder.Build());
+        var sut = new MergeMessage($"Merged PR #{pr} into {MainBranch} from {source}", this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe(definition);
-        sut.TargetBranch.ShouldBe(target);
+        sut.TargetBranch.ShouldBe(MainBranch);
         sut.MergedBranch.ShouldNotBeNull();
         sut.MergedBranch.Friendly.ShouldBe(source);
         sut.IsMergedPullRequest.ShouldBeTrue();

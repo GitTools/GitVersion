@@ -204,10 +204,11 @@ internal class GitPreparer(
             return;
 
         // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
-        throw new BugException($@"
-GitVersion has a bug, your HEAD has moved after repo normalisation after step '{occasion}'
-To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
-Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
+        throw new BugException($"""
+                                GitVersion has a bug, your HEAD has moved after repo normalisation after step '{occasion}'
+                                To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
+                                Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion
+                                """);
     }
 
     private void EnsureHeadIsAttachedToBranch(string? currentBranchName, AuthenticationInfo authentication)
@@ -372,7 +373,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
         if (currentBranch.IsNullOrEmpty()) return;
 
-        var referencePrefix = "refs/";
+        const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
         var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
             ? ReferenceName.LocalBranchPrefix + currentBranch

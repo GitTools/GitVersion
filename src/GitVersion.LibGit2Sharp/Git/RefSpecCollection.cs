@@ -9,7 +9,7 @@ internal sealed class RefSpecCollection : IRefSpecCollection
     internal RefSpecCollection(LibGit2Sharp.RefSpecCollection collection)
     {
         collection = collection.NotNull();
-        this.refSpecs = new Lazy<IReadOnlyCollection<IRefSpec>>(() => collection.Select(tag => new RefSpec(tag)).ToArray());
+        this.refSpecs = new Lazy<IReadOnlyCollection<IRefSpec>>(() => [.. collection.Select(tag => new RefSpec(tag))]);
     }
 
     public IEnumerator<IRefSpec> GetEnumerator() => this.refSpecs.Value.GetEnumerator();

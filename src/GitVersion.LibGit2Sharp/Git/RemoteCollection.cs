@@ -11,7 +11,7 @@ internal sealed class RemoteCollection : IRemoteCollection
 
     public IEnumerator<IRemote> GetEnumerator()
     {
-        this.remotes ??= this.innerCollection.Select(reference => new Remote(reference)).ToArray();
+        this.remotes ??= [.. this.innerCollection.Select(reference => new Remote(reference))];
         return this.remotes.GetEnumerator();
     }
 

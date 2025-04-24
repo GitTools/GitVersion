@@ -49,7 +49,7 @@ public sealed class ProgramFixture
 
     public Task<ExecutionResults> Run(string arg)
     {
-        var args = arg.Split([' '], StringSplitOptions.RemoveEmptyEntries).ToArray();
+        var args = arg.Split([' '], StringSplitOptions.RemoveEmptyEntries);
         return Run(args);
     }
 

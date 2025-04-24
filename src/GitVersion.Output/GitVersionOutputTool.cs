@@ -54,12 +54,10 @@ internal class GitVersionOutputTool(
 
     public void UpdateWixVersionFile(GitVersionVariables variables)
     {
-        if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
+        if (!this.gitVersionOptions.WixInfo.UpdateWixVersionFile) return;
+        using (this.wixVersionFileUpdater)
         {
-            using (this.wixVersionFileUpdater)
-            {
-                this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
-            }
+            this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(this.gitVersionOptions.WorkingDirectory));
         }
     }
 
@@ -67,7 +65,7 @@ internal class GitVersionOutputTool(
     {
         using (this.gitVersionInfoGenerator)
         {
-            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension, targetNamespace));
+            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, targetNamespace));
         }
     }
 }

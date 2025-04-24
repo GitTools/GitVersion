@@ -12,64 +12,69 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
     {
         if (commit.ChildIteration is null) throw new InvalidOperationException("The commit child iteration is null.");
 
-        var baseVersion = MainlineVersionStrategy.DetermineBaseVersionRecursive(
-           iteration: commit.ChildIteration!,
-           targetLabel: context.TargetLabel,
-           incrementStrategyFinder: context.IncrementStrategyFinder,
-           configuration: context.Configuration
-       );
+        return GetIncrementsInternal();
 
-        context.Label ??= baseVersion.Operator?.Label;
-
-        var increment = VersionField.None;
-
-        if (!commit.GetEffectiveConfiguration(context.Configuration).PreventIncrementOfMergedBranch)
+        IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            increment = increment.Consolidate(context.Increment);
-        }
+            var baseVersion = MainlineVersionStrategy.DetermineBaseVersionRecursive(
+                   iteration: commit.ChildIteration!,
+                   targetLabel: context.TargetLabel,
+                   incrementStrategyFinder: context.IncrementStrategyFinder,
+                   configuration: context.Configuration
+               );
 
-        if (!commit.ChildIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
-        {
-            increment = increment.Consolidate(baseVersion.Operator?.Increment);
-        }
+            context.Label ??= baseVersion.Operator?.Label;
 
-        if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
-        {
-            increment = increment.Consolidate(commit.Increment);
-        }
-        context.Increment = increment;
+            var increment = VersionField.None;
 
-        if (baseVersion.BaseVersionSource is not null)
-        {
-            context.BaseVersionSource = baseVersion.BaseVersionSource;
-            context.SemanticVersion = baseVersion.SemanticVersion;
-            context.ForceIncrement = baseVersion.Operator?.ForceIncrement ?? false;
-        }
-        else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
-        {
-            context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
-        }
+            if (!commit.GetEffectiveConfiguration(context.Configuration).PreventIncrementOfMergedBranch)
+            {
+                increment = increment.Consolidate(context.Increment);
+            }
 
-        if (context.SemanticVersion is not null)
-        {
-            yield return new BaseVersionOperand
+            if (!commit.ChildIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
+            {
+                increment = increment.Consolidate(baseVersion.Operator?.Increment);
+            }
+
+            if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+            {
+                increment = increment.Consolidate(commit.Increment);
+            }
+            context.Increment = increment;
+
+            if (baseVersion.BaseVersionSource is not null)
+            {
+                context.BaseVersionSource = baseVersion.BaseVersionSource;
+                context.SemanticVersion = baseVersion.SemanticVersion;
+                context.ForceIncrement = baseVersion.Operator?.ForceIncrement ?? false;
+            }
+            else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
+            {
+                context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
+            }
+
+            if (context.SemanticVersion is not null)
+            {
+                yield return new BaseVersionOperand
+                {
+                    Source = GetType().Name,
+                    BaseVersionSource = context.BaseVersionSource,
+                    SemanticVersion = context.SemanticVersion.NotNull()
+                };
+            }
+
+            yield return new BaseVersionOperator
             {
                 Source = GetType().Name,
                 BaseVersionSource = context.BaseVersionSource,
-                SemanticVersion = context.SemanticVersion.NotNull()
+                Increment = context.Increment,
+                ForceIncrement = context.ForceIncrement,
+                Label = context.Label,
+                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
             };
+
+            context.BaseVersionSource = commit.Value;
         }
-
-        yield return new BaseVersionOperator
-        {
-            Source = GetType().Name,
-            BaseVersionSource = context.BaseVersionSource,
-            Increment = context.Increment,
-            ForceIncrement = context.ForceIncrement,
-            Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
-        };
-
-        context.BaseVersionSource = commit.Value;
     }
 }

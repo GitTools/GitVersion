@@ -39,8 +39,8 @@ internal sealed class OutputGenerator(
             List<string> dotEnvEntries = [];
             foreach (var (key, value) in variables.OrderBy(x => x.Key))
             {
-                string prefixedKey = "GitVersion_" + key;
-                string environmentValue = "";
+                var prefixedKey = "GitVersion_" + key;
+                var environmentValue = "";
                 if (!value.IsNullOrEmpty())
                 {
                     environmentValue = value;

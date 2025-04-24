@@ -24,20 +24,18 @@ internal sealed class CommitOnNonTrunk : IIncrementer
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
 
-        if (commit.Successor is null)
+        if (commit.Successor is not null) yield break;
+        yield return new BaseVersionOperator
         {
-            yield return new BaseVersionOperator
-            {
-                Source = GetType().Name,
-                BaseVersionSource = context.BaseVersionSource,
-                Increment = context.Increment,
-                ForceIncrement = context.ForceIncrement,
-                Label = context.Label,
-                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
-            };
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            Increment = context.Increment,
+            ForceIncrement = context.ForceIncrement,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
 
-            context.BaseVersionSource = commit.Value;
-            context.ForceIncrement = false;
-        }
+        context.BaseVersionSource = commit.Value;
+        context.ForceIncrement = false;
     }
 }

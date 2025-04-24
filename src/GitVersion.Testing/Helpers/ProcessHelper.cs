@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GitVersion.Testing;
 
-public static class ProcessHelper
+public static partial class ProcessHelper
 {
     private static readonly object LockObject = new();
 
@@ -36,6 +36,8 @@ public static class ProcessHelper
                         case NativeErrorCode.PathNotFound:
                             throw new DirectoryNotFoundException($"The path to the executable file '{startInfo.FileName}' could not be found.",
                                 exception);
+                        default:
+                            throw new ArgumentOutOfRangeException($"The error code '{exception.NativeErrorCode}' is not supported.", nameof(exception));
                     }
 
                     throw;
@@ -172,7 +174,7 @@ public static class ProcessHelper
         NoOpenFileErrorBox = 0x8000
     }
 
-    private readonly struct ChangeErrorMode : IDisposable
+    private readonly partial struct ChangeErrorMode : IDisposable
     {
         private readonly int oldMode;
 
@@ -200,7 +202,7 @@ public static class ProcessHelper
             }
         }
 
-        [DllImport("kernel32.dll")]
-        private static extern int SetErrorMode(int newMode);
+        [LibraryImport("kernel32.dll")]
+        private static partial int SetErrorMode(int newMode);
     }
 }

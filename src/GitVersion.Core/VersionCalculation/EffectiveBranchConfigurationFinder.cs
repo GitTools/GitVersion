@@ -34,7 +34,7 @@ internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositorySt
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if source branches are available.
-            sourceBranches = this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches).ToArray();
+            sourceBranches = [.. this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches)];
 
             if (sourceBranches.Length == 0)
             {

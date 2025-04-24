@@ -11,7 +11,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
 
     public IEnumerator<IReference> GetEnumerator()
     {
-        this.references ??= this.innerCollection.Select(reference => new Reference(reference)).ToArray();
+        this.references ??= [.. this.innerCollection.Select(reference => new Reference(reference))];
         return this.references.GetEnumerator();
     }
 

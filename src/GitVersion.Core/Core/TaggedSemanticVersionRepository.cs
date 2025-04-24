@@ -25,7 +25,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         branch.NotNull();
         tagPrefix ??= string.Empty;
 
-        bool isCached = true;
+        var isCached = true;
         var result = taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
@@ -66,11 +66,11 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         branch.NotNull();
         tagPrefix ??= string.Empty;
 
-        bool isCached = true;
+        var isCached = true;
         var result = taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            return GetElements().Distinct().OrderByDescending(element => element.Key.When).ToList();
+            return [.. GetElements().Distinct().OrderByDescending(element => element.Key.When)];
         });
 
         if (isCached)
@@ -106,11 +106,11 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
     {
         tagPrefix ??= string.Empty;
 
-        bool isCached = true;
+        var isCached = true;
         var result = taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
         {
             isCached = false;
-            return GetElements().OrderByDescending(element => element.Tag.Commit.When).ToList();
+            return [.. GetElements().OrderByDescending(element => element.Tag.Commit.When)];
         });
 
         if (isCached)

@@ -30,12 +30,6 @@ public interface IRepositoryStore
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
 
-    /// <summary>
-    /// Find the commit where the given branch was branched from another branch.
-    /// If there are multiple such commits and branches, tries to guess based on commit histories.
-    /// </summary>
-    BranchCommit FindCommitBranchBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
-
     IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
     IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);

@@ -9,7 +9,7 @@ internal static class EffectiveConfigurationExtensions
     {
         effectiveConfiguration.NotNull();
 
-        TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+        var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
 
         if (effectiveConfiguration.TrackMergeTarget)
         {
@@ -21,7 +21,7 @@ internal static class EffectiveConfigurationExtensions
             taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
         }
 
-        if (!effectiveConfiguration.IsMainBranch && !effectiveConfiguration.IsReleaseBranch)
+        if (effectiveConfiguration is { IsMainBranch: false, IsReleaseBranch: false })
         {
             taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
         }

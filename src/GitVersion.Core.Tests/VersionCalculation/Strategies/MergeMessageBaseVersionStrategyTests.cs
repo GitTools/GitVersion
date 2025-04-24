@@ -116,14 +116,18 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         AssertMergeMessage(message + "\n ", null, parents);
     }
 
-    [TestCase(@"Merge pull request #1 in FOO/bar from feature/ISSUE-1 to develop
-* commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
-  Updated jQuery to v2.1.3")]
-    [TestCase(@"Merge pull request #45 in BRIKKS/brikks from feature/NOX-68 to develop
-* commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
-  Another commit message
-  Commit message including a IP-number https://10.50.1.1
-  A commit message")]
+    [TestCase("""
+              Merge pull request #1 in FOO/bar from feature/ISSUE-1 to develop
+              * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
+                Updated jQuery to v2.1.3
+              """)]
+    [TestCase("""
+              Merge pull request #45 in BRIKKS/brikks from feature/NOX-68 to develop
+              * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
+                Another commit message
+                Commit message including a IP-number https://10.50.1.1
+                A commit message
+              """)]
     [TestCase("Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
     [TestCase("Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
     [TestCase("Merge branch " + MainBranch + " of http://172.16.3.10:8082/r/asu_tk/p_sd")]

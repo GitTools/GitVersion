@@ -28,7 +28,7 @@ internal class MyGet(IEnvironment environment, ILog log, IFileSystem fileSystem)
         return [.. messages];
     }
 
-    public override string? SetBuildNumber(GitVersionVariables variables) =>
+    public override string SetBuildNumber(GitVersionVariables variables) =>
         $"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
 
     public override bool PreventFetch() => false;

@@ -30,10 +30,7 @@ internal sealed class FirstCommitOnRelease : IIncrementer
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        if (commit.BranchName.TryGetSemanticVersion(out var element, effectiveConfiguration))
-        {
-            context.AlternativeSemanticVersions.Add(element.Value);
-            yield break;
-        }
+        if (!commit.BranchName.TryGetSemanticVersion(out var element, effectiveConfiguration)) yield break;
+        context.AlternativeSemanticVersions.Add(element.Value);
     }
 }

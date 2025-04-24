@@ -62,7 +62,7 @@ internal static class GitVersionTasks
         gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent.PreventFetch();
     }
 
-    private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
+    private static ServiceProvider BuildServiceProvider(GitVersionTaskBase task)
     {
         var services = new ServiceCollection();
 

@@ -84,7 +84,7 @@ public class GitVersionContextBuilder : IDisposable
         return mockRepository;
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
+    private static ServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

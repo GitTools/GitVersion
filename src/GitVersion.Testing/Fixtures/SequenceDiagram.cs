@@ -56,9 +56,11 @@ public class SequenceDiagram
     /// </summary>
     public void NoteOver(string noteText, string startParticipant, string? endParticipant = null, string? prefix = null, string? color = null) =>
         this.diagramBuilder.AppendLineFormat(
-            prefix + @"note over {0}{1}{2}
-  {3}
-end note",
+            prefix + """
+                     note over {0}{1}{2}
+                       {3}
+                     end note
+                     """,
             GetParticipant(startParticipant),
             endParticipant == null ? null : ", " + GetParticipant(endParticipant),
             color == null ? null : " " + color,

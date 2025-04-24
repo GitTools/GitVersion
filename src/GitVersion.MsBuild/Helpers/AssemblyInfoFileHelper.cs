@@ -59,7 +59,7 @@ internal static class AssemblyInfoFileHelper
         var allText = fileSystem.File.ReadAllText(combine);
         allText += FileSystemHelper.Path.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line.
 
-        var noCommentsOrStrings = triviaRegex.Replace(allText, me => me.Value.StartsWith("//") || me.Value.StartsWith("'") ? FileSystemHelper.Path.NewLine : string.Empty);
+        var noCommentsOrStrings = triviaRegex.Replace(allText, me => me.Value.StartsWith("//") || me.Value.StartsWith('\'') ? FileSystemHelper.Path.NewLine : string.Empty);
         return attributeRegex.IsMatch(noCommentsOrStrings);
     }
 

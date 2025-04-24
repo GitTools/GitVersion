@@ -81,11 +81,11 @@ public class VersionBumpingScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             // For future debugging of this regex: https://regex101.com/r/CRoBol/2
-            .WithMajorVersionBumpMessage("^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)")
+            .WithMajorVersionBumpMessage(@"^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([\w\s-]*\))?(!:|:.*\n\n((.+\n)+\n)?BREAKING CHANGE:\s.+)")
             // For future debugging of this regex: https://regex101.com/r/9ccNam/3
-            .WithMinorVersionBumpMessage("^(feat)(\\([\\w\\s-]*\\))?:")
+            .WithMinorVersionBumpMessage(@"^(feat)(\([\w\s-]*\))?:")
             // For future debugging of this regex: https://regex101.com/r/oFpqxA/2
-            .WithPatchVersionBumpMessage("^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:")
+            .WithPatchVersionBumpMessage(@"^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\([\w\s-]*\))?:")
             .WithVersionStrategy(VersionStrategies.Mainline)
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDeployment))
             .Build();

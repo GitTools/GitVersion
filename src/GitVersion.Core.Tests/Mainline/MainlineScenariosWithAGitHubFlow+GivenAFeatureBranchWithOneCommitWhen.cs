@@ -50,7 +50,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
         [TestCase(IncrementStrategy.Major, "bar", ExpectedResult = "1.0.0-bar.1+1")]
         public string GetVersion(IncrementStrategy increment, string? label)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 

@@ -11,7 +11,7 @@ internal sealed class CommitCollection : ICommitCollection
     internal CommitCollection(ICommitLog collection)
     {
         this.innerCollection = collection.NotNull();
-        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => this.innerCollection.Select(commit => new Commit(commit)).ToArray());
+        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => new Commit(commit))]);
     }
 
     public IEnumerator<ICommit> GetEnumerator()

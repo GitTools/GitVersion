@@ -16,7 +16,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetTemplateFor(string? fileExtension)
     {
-        ArgumentNullException.ThrowIfNull(fileExtension);
+        ArgumentNullException.ThrowIfNull(fileExtension, nameof(fileExtension));
 
         string? result = null;
 
@@ -30,7 +30,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetAddFormatFor(string? fileExtension)
     {
-        ArgumentNullException.ThrowIfNull(fileExtension);
+        ArgumentNullException.ThrowIfNull(fileExtension, nameof(fileExtension));
 
         string? result = null;
 
@@ -55,15 +55,13 @@ internal class TemplateManager(TemplateType templateType)
 
         foreach (var name in assembly.GetManifestResourceNames())
         {
-            if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
+            if (!name.Contains(templateType.ToString()) || !name.Contains(templateCategory)) continue;
+            var extension = FileSystemHelper.Path.GetExtension(name);
+            if (string.IsNullOrWhiteSpace(extension))
             {
-                var extension = FileSystemHelper.Path.GetExtension(name);
-                if (string.IsNullOrWhiteSpace(extension))
-                {
-                    continue;
-                }
-                yield return (ext: extension, name);
+                continue;
             }
+            yield return (ext: extension, name);
         }
     }
 }

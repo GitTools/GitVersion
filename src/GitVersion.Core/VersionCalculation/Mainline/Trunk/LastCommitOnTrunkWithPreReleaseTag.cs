@@ -18,23 +18,21 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             yield return item;
         }
 
-        if (iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch) yield break;
+        context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
+
+        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
+        context.ForceIncrement = false;
+
+        yield return new BaseVersionOperator
         {
-            context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
-
-            var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-            context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
-            context.ForceIncrement = false;
-
-            yield return new BaseVersionOperator
-            {
-                Source = GetType().Name,
-                BaseVersionSource = context.BaseVersionSource,
-                Increment = context.Increment,
-                ForceIncrement = context.ForceIncrement,
-                Label = context.Label,
-                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
-            };
-        }
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            Increment = context.Increment,
+            ForceIncrement = context.ForceIncrement,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
     }
 }

@@ -6,8 +6,8 @@ namespace GitVersion.App.Tests;
 
 public class ExecutionResults(int exitCode, string? output, string? logContents = null)
 {
-    public int ExitCode { get; init; } = exitCode;
-    public string? Output { get; init; } = output;
+    public int ExitCode { get; } = exitCode;
+    public string? Output { get; } = output;
     public string? Log { get; init; } = logContents;
 
     public GitVersionVariables? OutputVariables

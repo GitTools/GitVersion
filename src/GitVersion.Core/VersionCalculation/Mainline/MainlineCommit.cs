@@ -60,9 +60,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     {
         if (effectiveConfiguration is not null) return effectiveConfiguration;
 
-        IBranchConfiguration branchConfiguration = Configuration;
+        var branchConfiguration = Configuration;
 
-        IBranchConfiguration last = Configuration;
+        var last = Configuration;
         for (var i = this; i is not null; i = i.Predecessor)
         {
             if (branchConfiguration.Increment != IncrementStrategy.Inherit) break;
@@ -75,11 +75,11 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
             last = i.Configuration;
         }
 
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit && HasParentIteration)
-        {
-            var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
-            branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
-        }
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
+            return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+
+        var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
+        branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
 
         return effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
     }

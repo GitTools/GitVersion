@@ -165,7 +165,7 @@ public static class GitRepositoryTestingExtensions
         return gitRepository;
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)
+    private static ServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

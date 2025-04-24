@@ -24,28 +24,19 @@ internal class Drone(IEnvironment environment, ILog log, IFileSystem fileSystem)
         // https://discourse.drone.io/t/getting-the-branch-a-pull-request-is-created-from/670
         // Unfortunately, DRONE_REFSPEC isn't populated, however CI_COMMIT_REFSPEC can be used instead of.
         var pullRequestNumber = Environment.GetEnvironmentVariable("DRONE_PULL_REQUEST");
-        if (!pullRequestNumber.IsNullOrWhiteSpace())
-        {
-            // DRONE_SOURCE_BRANCH is available in Drone 1.x.x version
-            var sourceBranch = Environment.GetEnvironmentVariable("DRONE_SOURCE_BRANCH");
-            if (!sourceBranch.IsNullOrWhiteSpace())
-                return sourceBranch;
+        if (pullRequestNumber.IsNullOrWhiteSpace()) return this.Environment.GetEnvironmentVariable("DRONE_BRANCH");
+        // DRONE_SOURCE_BRANCH is available in Drone 1.x.x version
+        var sourceBranch = this.Environment.GetEnvironmentVariable("DRONE_SOURCE_BRANCH");
+        if (!sourceBranch.IsNullOrWhiteSpace())
+            return sourceBranch;
 
-            // In drone lower than 1.x.x source branch can be parsed from CI_COMMIT_REFSPEC
-            // CI_COMMIT_REFSPEC - {sourceBranch}:{destinationBranch}
-            // https://github.com/drone/drone/issues/2222
-            var ciCommitRefSpec = Environment.GetEnvironmentVariable("CI_COMMIT_REFSPEC");
-            if (!ciCommitRefSpec.IsNullOrWhiteSpace())
-            {
-                var colonIndex = ciCommitRefSpec.IndexOf(':');
-                if (colonIndex > 0)
-                {
-                    return ciCommitRefSpec.Substring(0, colonIndex);
-                }
-            }
-        }
-
-        return Environment.GetEnvironmentVariable("DRONE_BRANCH");
+        // In drone lower than 1.x.x source branch can be parsed from CI_COMMIT_REFSPEC
+        // CI_COMMIT_REFSPEC - {sourceBranch}:{destinationBranch}
+        // https://github.com/drone/drone/issues/2222
+        var ciCommitRefSpec = this.Environment.GetEnvironmentVariable("CI_COMMIT_REFSPEC");
+        if (ciCommitRefSpec.IsNullOrWhiteSpace()) return this.Environment.GetEnvironmentVariable("DRONE_BRANCH");
+        var colonIndex = ciCommitRefSpec.IndexOf(':');
+        return colonIndex > 0 ? ciCommitRefSpec[..colonIndex] : this.Environment.GetEnvironmentVariable("DRONE_BRANCH");
     }
 
     public override bool PreventFetch() => false;

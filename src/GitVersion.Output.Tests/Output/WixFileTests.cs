@@ -42,7 +42,6 @@ internal class WixFileTests : TestBase
         };
 
         var stringBuilder = new StringBuilder();
-        void Action(string s) => stringBuilder.AppendLine(s);
 
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
@@ -61,6 +60,9 @@ internal class WixFileTests : TestBase
         fileSystem
             .File.ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
+        return;
+
+        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [Test]
@@ -81,7 +83,6 @@ internal class WixFileTests : TestBase
         };
 
         var stringBuilder = new StringBuilder();
-        void Action(string s) => stringBuilder.AppendLine(s);
 
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
@@ -107,5 +108,8 @@ internal class WixFileTests : TestBase
         fileSystem
             .File.ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
+        return;
+
+        void Action(string s) => stringBuilder.AppendLine(s);
     }
 }

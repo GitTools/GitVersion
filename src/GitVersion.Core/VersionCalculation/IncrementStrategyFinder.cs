@@ -85,7 +85,7 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
         }
 
         return GetIncrementForCommits(configuration,
-            commits: commits.ToArray()
+            commits: [.. commits]
         );
     }
 
@@ -94,16 +94,15 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
             ? defaultRegex
             : RegexPatterns.Cache.GetOrAdd(messageRegex);
 
-    private IReadOnlyCollection<ICommit> GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
+    private Dictionary<string, ICommit>.ValueCollection GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)
     {
         var targetShas = new Lazy<HashSet<string>>(() =>
-            taggedSemanticVersionRepository
+            [.. taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
                 .SelectMany(versionWithTags => versionWithTags)
                 .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))
-                .Select(versionWithTag => versionWithTag.Tag.TargetSha)
-                .ToHashSet()
+                .Select(versionWithTag => versionWithTag.Tag.TargetSha)]
         );
 
         var intermediateCommits = this.repositoryStore.GetCommitLog(baseVersionSource, currentCommit, ignore);
@@ -111,21 +110,16 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
 
         foreach (var intermediateCommit in intermediateCommits.Reverse())
         {
-            if (targetShas.Value.Contains(intermediateCommit.Sha) && commitLog.Remove(intermediateCommit.Sha))
+            if (!targetShas.Value.Contains(intermediateCommit.Sha) || !commitLog.Remove(intermediateCommit.Sha)) continue;
+            var parentCommits = intermediateCommit.Parents.ToList();
+            while (parentCommits.Count != 0)
             {
-                var parentCommits = intermediateCommit.Parents.ToList();
-                while (parentCommits.Count != 0)
+                List<ICommit> temporaryList = [];
+                foreach (var parentCommit in parentCommits.Where(parentCommit => commitLog.Remove(parentCommit.Sha)))
                 {
-                    List<ICommit> temporaryList = [];
-                    foreach (var parentCommit in parentCommits)
-                    {
-                        if (commitLog.Remove(parentCommit.Sha))
-                        {
-                            temporaryList.AddRange(parentCommit.Parents);
-                        }
-                    }
-                    parentCommits = temporaryList;
+                    temporaryList.AddRange(parentCommit.Parents);
                 }
+                parentCommits = temporaryList;
             }
         }
 
@@ -136,7 +130,7 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
     /// Get the sequence of commits in a repository between a <paramref name="baseCommit"/> (exclusive)
     /// and a particular <paramref name="headCommit"/> (inclusive)
     /// </summary>
-    private IEnumerable<ICommit> GetIntermediateCommits(ICommit? baseCommit, ICommit headCommit, IIgnoreConfiguration ignore)
+    private ArraySegment<ICommit> GetIntermediateCommits(ICommit? baseCommit, ICommit headCommit, IIgnoreConfiguration ignore)
     {
         var map = GetHeadCommitsMap(headCommit, ignore);
 
@@ -191,11 +185,11 @@ internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITagged
             throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
         }
 
-        ICommit baseCommit = mergeCommit.Parents[0];
-        ICommit mergedCommit = GetMergedHead(mergeCommit);
+        var baseCommit = mergeCommit.Parents[0];
+        var mergedCommit = GetMergedHead(mergeCommit);
         if (index == 0) (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
 
-        ICommit findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
+        var findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
             ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
         return GetIntermediateCommits(findMergeBase, mergedCommit, ignore);
     }

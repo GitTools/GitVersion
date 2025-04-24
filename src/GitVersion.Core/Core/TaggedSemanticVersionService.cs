@@ -21,6 +21,10 @@ internal sealed class TaggedSemanticVersionService(
          DateTimeOffset? notOlderThan,
          TaggedSemanticVersions taggedSemanticVersion)
     {
+        return GetElements().SelectMany(elements => elements).Distinct()
+            .OrderByDescending(element => element.Commit.When)
+            .ToLookup(element => element.Commit, element => element.SemanticVersion);
+
         IEnumerable<IEnumerable<CommitSemanticVersion>> GetElements()
         {
             if (taggedSemanticVersion.HasFlag(TaggedSemanticVersions.OfBranch))
@@ -51,8 +55,8 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfMainBranchesInternal(
                     configuration: configuration,
-                    label: label,
                     notOlderThan: notOlderThan,
+                    label: label,
                     excludeBranches: branch
                 );
             }
@@ -61,16 +65,12 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfReleaseBranchesInternal(
                     configuration: configuration,
-                    label: label,
                     notOlderThan: notOlderThan,
+                    label: label,
                     excludeBranches: branch
                 );
             }
         }
-
-        return GetElements().SelectMany(elements => elements).Distinct()
-            .OrderByDescending(element => element.Commit.When)
-            .ToLookup(element => element.Commit, element => element.SemanticVersion);
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(

@@ -84,7 +84,7 @@ internal sealed class MainlineVersionStrategy(
 
         var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits.ToArray());
 
-        TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+        var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
         if (branchConfiguration.TrackMergeTarget == true) taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
         if (branchConfiguration.TracksReleaseBranches == true)
         {
@@ -133,14 +133,15 @@ internal sealed class MainlineVersionStrategy(
     {
         traversedCommits ??= [];
 
-        bool returnTrueWhenTheIncrementIsKnown = false;
+        var returnTrueWhenTheIncrementIsKnown = false;
 
         var configuration = iteration.Configuration;
         var branchName = iteration.BranchName;
         var branch = repositoryStore.FindBranch(branchName);
 
+        var currentBranch = branch;
         Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy = new(
-            () => branch is null ? new Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>() : GetCommitsWasBranchedFrom(branch)
+            () => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch)
         );
 
         foreach (var item in commitsInReverseOrder)
@@ -165,12 +166,13 @@ internal sealed class MainlineVersionStrategy(
 
                     branch = repositoryStore.FindBranch(branchName);
 
+                    var branchPointer = branch;
                     commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Configuration)>>>
-                        (() => branch is null ? new Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>()
-                            : GetCommitsWasBranchedFrom(branch, excludeBranch is null ? [] : [excludeBranch])
+                        (() => branchPointer is null ? []
+                            : GetCommitsWasBranchedFrom(branchPointer, excludeBranch is null ? [] : [excludeBranch])
                     );
 
-                    TaggedSemanticVersions taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+                    var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
                     if ((configuration.TrackMergeTarget ?? Context.Configuration.TrackMergeTarget) == true)
                     {
                         taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
@@ -205,15 +207,13 @@ internal sealed class MainlineVersionStrategy(
 
             foreach (var semanticVersion in semanticVersions)
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                if (!semanticVersion.Value.IsMatchForBranchSpecificLabel(label)) continue;
+                if (configuration.Increment != IncrementStrategy.Inherit)
                 {
-                    if (configuration.Increment != IncrementStrategy.Inherit)
-                    {
-                        return true;
-                    }
-
-                    returnTrueWhenTheIncrementIsKnown = true;
+                    return true;
                 }
+
+                returnTrueWhenTheIncrementIsKnown = true;
             }
 
             if (returnTrueWhenTheIncrementIsKnown && configuration.Increment != IncrementStrategy.Inherit)
@@ -221,58 +221,58 @@ internal sealed class MainlineVersionStrategy(
                 return true;
             }
 
-            if (item.IsMergeCommit())
+            if (!item.IsMergeCommit()) continue;
+            Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
+                () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
+            );
+
+            if ((configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
+                || !MergeMessage.TryParse(item, Context.Configuration, out var mergeMessage))
             {
-                Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-                    () => incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse().ToList()
+                continue;
+            }
+
+            if (mergeMessage.MergedBranch is not null)
+            {
+                var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
+                var childBranchName = mergeMessage.MergedBranch;
+
+                if (childConfiguration.IsMainBranch == true)
+                {
+                    if (configuration.IsMainBranch == true) throw new NotImplementedException();
+
+                    mergedCommitsInReverseOrderLazy = new(
+                        () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
+                    );
+                    childConfiguration = configuration;
+                    childBranchName = iteration.BranchName;
+                }
+
+                var childIteration = CreateIteration(
+                    branchName: childBranchName,
+                    configuration: childConfiguration,
+                    parentIteration: iteration,
+                    parentCommit: commit
                 );
 
-                if ((configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) == true
-                    && MergeMessage.TryParse(item, Context.Configuration, out var mergeMessage))
-                {
-                    if (mergeMessage.MergedBranch is not null)
-                    {
-                        var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
-                        var childBranchName = mergeMessage.MergedBranch;
+                var done = IterateOverCommitsRecursive(
+                    commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
+                    iteration: childIteration,
+                    targetBranch: targetBranch,
+                    targetLabel: targetLabel,
+                    taggedSemanticVersions: taggedSemanticVersions,
+                    traversedCommits: traversedCommits);
 
-                        if (childConfiguration.IsMainBranch == true)
-                        {
-                            if (configuration.IsMainBranch == true) throw new NotImplementedException();
-
-                            mergedCommitsInReverseOrderLazy = new(
-                                () => [.. incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
-                            );
-                            childConfiguration = configuration;
-                            childBranchName = iteration.BranchName;
-                        }
-
-                        var childIteration = CreateIteration(
-                            branchName: childBranchName,
-                            configuration: childConfiguration,
-                            parentIteration: iteration,
-                            parentCommit: commit
-                        );
-
-                        var done = IterateOverCommitsRecursive(
-                            commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
-                            iteration: childIteration,
-                            targetBranch: targetBranch,
-                            targetLabel: targetLabel,
-                            taggedSemanticVersions: taggedSemanticVersions,
-                            traversedCommits: traversedCommits);
-
-                        commit.AddChildIteration(childIteration);
-                        if (done) return true;
-                    }
-
-                    traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
-                }
+                commit.AddChildIteration(childIteration);
+                if (done) return true;
             }
+
+            traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
         }
         return false;
     }
 
-    private IReadOnlyDictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
+    private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
         IBranch branch, params IBranch[] excludedBranches)
     {
         Dictionary<ICommit, List<(IBranch, IBranchConfiguration Configuration)>> result = [];
@@ -296,12 +296,10 @@ internal sealed class MainlineVersionStrategy(
                     throw new InvalidOperationException();
                 }
 
-                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) != true) continue;
+                foreach (var _ in value.ToArray())
                 {
-                    foreach (var _ in value.ToArray())
-                    {
-                        value.Add(new(item, branchConfiguration));
-                    }
+                    value.Add(new(item, branchConfiguration));
                 }
             }
             else
@@ -375,7 +373,7 @@ internal sealed class MainlineVersionStrategy(
 
             foreach (var item in TrunkContextPostEnricherCollection)
             {
-                item.Enrich(iteration, commit, context);
+                item.Enrich(commit, context);
             }
         }
     }

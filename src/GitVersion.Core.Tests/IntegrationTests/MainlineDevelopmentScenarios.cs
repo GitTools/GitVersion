@@ -542,9 +542,9 @@ public class MainlineDevelopmentScenarios : TestBase
     {
         // Same configuration as found here: https://gitversion.net/docs/reference/version-increments#conventional-commit-messages
         var conventionalCommitsConfig = GetConfigurationBuilder()
-            .WithMajorVersionBumpMessage("^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)")
-            .WithMinorVersionBumpMessage("^(feat)(\\([\\w\\s-]*\\))?:")
-            .WithPatchVersionBumpMessage("^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:")
+            .WithMajorVersionBumpMessage(@"^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([\w\s-]*\))?(!:|:.*\n\n((.+\n)+\n)?BREAKING CHANGE:\s.+)")
+            .WithMinorVersionBumpMessage(@"^(feat)(\([\w\s-]*\))?:")
+            .WithPatchVersionBumpMessage(@"^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\([\w\s-]*\))?:")
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();

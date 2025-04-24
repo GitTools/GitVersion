@@ -153,9 +153,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -191,9 +191,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -211,9 +211,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -231,9 +231,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -251,12 +251,12 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
-                !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
-                !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
-                s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                !s.Contains("""AssemblyVersionAttribute("1.0.0.0")""") &&
+                !s.Contains("""AssemblyInformationalVersionAttribute("1.0.0.0")""") &&
+                !s.Contains("""AssemblyFileVersionAttribute("1.0.0.0")""") &&
+                s.Contains("""AssemblyVersion("2.3.1.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -274,9 +274,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -294,9 +294,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -314,9 +314,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.1.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -334,9 +334,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 
@@ -354,9 +354,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             assemblyInfoFileUpdater.Execute(variables, new(workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
-                s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                s.Contains("""AssemblyVersion("2.3.0.0")""") &&
+                s.Contains("""AssemblyInformationalVersion("2.3.1+3.Branch.foo.Sha.hash")""") &&
+                s.Contains("""AssemblyFileVersion("2.3.1.0")""")));
         });
     }
 

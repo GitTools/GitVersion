@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
+// ReSharper disable ConvertIfStatementToConditionalTernaryExpression
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 

@@ -34,13 +34,14 @@ public class ConfigurationProviderTests : TestBase
     public void OverwritesDefaultsWithProvidedConfig()
     {
         var defaultConfiguration = this.configurationProvider.ProvideForDirectory(this.repoPath);
-        const string text = @"
-next-version: 2.0.0
-branches:
-    develop:
-        increment: Major
-        mode: ContinuousDelivery
-        label: dev";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                develop:
+                                    increment: Major
+                                    mode: ContinuousDelivery
+                                    label: dev
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -72,11 +73,13 @@ branches:
     [Test]
     public void CanRemoveLabel()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    release:
-        label: """"";
+        const string text =
+            """
+            next-version: 2.0.0
+            branches:
+                release:
+                    label: ""
+            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -87,11 +90,12 @@ branches:
     [Test]
     public void RegexIsRequired()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    bug:
-        label: bugfix";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                bug:
+                                    label: bugfix
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{FileSystemHelper.Path.NewLine}" +
@@ -101,12 +105,13 @@ branches:
     [Test(Description = "This test proves the configuration validation will fail early with a helpful message when a branch listed in source-branches has no configuration.")]
     public void SourceBranchesValidationShouldFailWhenMatchingBranchConfigurationIsMissing()
     {
-        const string text = @"
-branches:
-    bug:
-        regex: 'bug[\/-]'
-        label: bugfix
-        source-branches: [notconfigured]";
+        const string text = """
+                            branches:
+                                bug:
+                                    regex: 'bug[\/-]'
+                                    label: bugfix
+                                    source-branches: [notconfigured]
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{FileSystemHelper.Path.NewLine}" +
@@ -118,12 +123,13 @@ branches:
     [TestCase(ConfigurationConstants.DevelopBranchKey)]
     public void SourceBranchesValidationShouldSucceedForWellKnownBranches(string wellKnownBranchKey)
     {
-        var text = $@"
-branches:
-    bug:
-        regex: 'bug[\/-]'
-        label: bugfix
-        source-branches: [{wellKnownBranchKey}]";
+        var text = $"""
+                    branches:
+                        bug:
+                            regex: 'bug[\/-]'
+                            label: bugfix
+                            source-branches: [{wellKnownBranchKey}]
+                    """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -133,13 +139,14 @@ branches:
     [Test]
     public void CanProvideConfigForNewBranch()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    bug:
-        regex: 'bug[\/-]'
-        label: bugfix
-        source-branches: []";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                bug:
+                                    regex: 'bug[\/-]'
+                                    label: bugfix
+                                    source-branches: []
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -189,10 +196,11 @@ branches:
     [Test]
     public void CanUpdateAssemblyInformationalVersioningScheme()
     {
-        const string text = @"
-assembly-versioning-scheme: MajorMinor
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-informational-format: '{NugetVersion}'";
+        const string text = """
+                            assembly-versioning-scheme: MajorMinor
+                            assembly-file-versioning-scheme: MajorMinorPatch
+                            assembly-informational-format: '{NugetVersion}'
+                            """;
 
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
@@ -205,10 +213,11 @@ assembly-informational-format: '{NugetVersion}'";
     [Test]
     public void CanUpdateAssemblyInformationalVersioningSchemeWithMultipleVariables()
     {
-        const string text = @"
-assembly-versioning-scheme: MajorMinor
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-informational-format: '{Major}.{Minor}.{Patch}'";
+        const string text = """
+                            assembly-versioning-scheme: MajorMinor
+                            assembly-file-versioning-scheme: MajorMinorPatch
+                            assembly-informational-format: '{Major}.{Minor}.{Patch}'
+                            """;
 
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
@@ -221,12 +230,14 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
     [Test]
     public void CanUpdateAssemblyInformationalVersioningSchemeWithFullSemVer()
     {
-        const string text = @"assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-informational-format: '{FullSemVer}'
-mode: ContinuousDelivery
-next-version: 5.3.0
-branches: {}";
+        const string text = """
+                            assembly-versioning-scheme: MajorMinorPatch
+                            assembly-file-versioning-scheme: MajorMinorPatch
+                            assembly-informational-format: '{FullSemVer}'
+                            mode: ContinuousDelivery
+                            next-version: 5.3.0
+                            branches: {}
+                            """;
 
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
@@ -271,7 +282,6 @@ branches: {}";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
         var stringLogger = string.Empty;
-        void Action(string info) => stringLogger = info;
 
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
@@ -288,18 +298,22 @@ branches: {}";
 
         var filePath = FileSystemHelper.Path.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
         stringLogger.ShouldContain($"Using configuration file '{filePath}'");
+        return;
+
+        void Action(string info) => stringLogger = info;
     }
 
     [Test]
     public void ShouldUseSpecifiedSourceBranchesForDevelop()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    develop:
-        mode: ContinuousDeployment
-        source-branches: ['develop']
-        label: dev";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                develop:
+                                    mode: ContinuousDeployment
+                                    source-branches: ['develop']
+                                    label: dev
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -309,12 +323,13 @@ branches:
     [Test]
     public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForDevelop()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    develop:
-        mode: ContinuousDeployment
-        label: dev";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                develop:
+                                    mode: ContinuousDeployment
+                                    label: dev
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -324,13 +339,14 @@ branches:
     [Test]
     public void ShouldUseSpecifiedSourceBranchesForFeature()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    feature:
-        mode: ContinuousDeployment
-        source-branches: ['develop', 'release']
-        label: dev";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                feature:
+                                    mode: ContinuousDeployment
+                                    source-branches: ['develop', 'release']
+                                    label: dev
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -340,12 +356,13 @@ branches:
     [Test]
     public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForFeature()
     {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    feature:
-        mode: ContinuousDeployment
-        label: dev";
+        const string text = """
+                            next-version: 2.0.0
+                            branches:
+                                feature:
+                                    mode: ContinuousDeployment
+                                    label: dev
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -356,9 +373,10 @@ branches:
     [Test]
     public void ShouldNotOverrideAnythingWhenOverrideConfigIsEmpty()
     {
-        const string text = @"
-next-version: 1.2.3
-tag-prefix: custom-tag-prefix-from-yml";
+        const string text = """
+                            next-version: 1.2.3
+                            tag-prefix: custom-tag-prefix-from-yml
+                            """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
         var expectedConfig = GitFlowConfigurationBuilder.New

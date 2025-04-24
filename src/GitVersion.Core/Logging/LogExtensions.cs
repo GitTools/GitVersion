@@ -65,8 +65,10 @@ public static class LogExtensions
             return;
         }
 
-        void ActionEntry(string format, object[] args) => log.Write(verbosity, level, format, args);
         logAction(ActionEntry);
+        return;
+
+        void ActionEntry(string format, object[] args) => log.Write(verbosity, level, format, args);
     }
 
     private static void Write(this ILog log, LogLevel level, LogAction? logAction)
@@ -80,8 +82,10 @@ public static class LogExtensions
             return;
         }
 
-        void ActionEntry(string format, object[] args) => log.Write(verbosity, level, format, args);
         logAction(ActionEntry);
+        return;
+
+        void ActionEntry(string format, object[] args) => log.Write(verbosity, level, format, args);
     }
 
     public static IDisposable QuietVerbosity(this ILog log) => log.WithVerbosity(Verbosity.Quiet);
@@ -104,7 +108,7 @@ public static class LogExtensions
 
     private static Verbosity GetVerbosityForLevel(LogLevel level) => VerbosityMaps[level];
 
-    private static readonly IDictionary<LogLevel, Verbosity> VerbosityMaps = new Dictionary<LogLevel, Verbosity>
+    private static readonly Dictionary<LogLevel, Verbosity> VerbosityMaps = new()
     {
         { LogLevel.Verbose, Verbosity.Verbose },
         { LogLevel.Debug, Verbosity.Diagnostic },

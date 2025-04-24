@@ -36,7 +36,7 @@ internal class GitVersionContextFactory(
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        bool isCurrentCommitTagged = this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(
+        var isCurrentCommitTagged = this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(
             tagPrefix: configuration.TagPrefixPattern,
             format: configuration.SemanticVersionFormat,
             ignore: configuration.Ignore
