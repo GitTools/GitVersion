@@ -1,0 +1,34 @@
+name: Qodana
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'fix/*'
+      - 'feature/*'
+jobs:
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      -
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      -
+        name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      -
+        name: 'Qodana Scan'
+        uses: jetbrains/qodana-action@v2024.3.4
+        with:
+          cache-default-branch-only: true
+          pr-mode: true
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}

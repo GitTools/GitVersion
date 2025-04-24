@@ -28,6 +28,7 @@
     <File Path="../.gitignore" />
     <File Path="../.remarkrc.yaml" />
     <File Path="../global.json" />
+    <File Path="../qodana.yaml" />
     <File Path="../package.json" />
     <File Path="../src/mark-shipped.ps1" />
     <File Path="Directory.Build.props" />
@@ -44,6 +45,7 @@
     <File Path="../.github/workflows/release.yml" />
     <File Path="../.github/workflows/stale.yml" />
     <File Path="../.github/workflows/winget.yml" />
+    <File Path="../.github/workflows/qodana_code_quality.yml" />
   </Folder>
   <Folder Name="/workflows/_/">
     <File Path="../.github/workflows/_artifacts_linux.yml" />
