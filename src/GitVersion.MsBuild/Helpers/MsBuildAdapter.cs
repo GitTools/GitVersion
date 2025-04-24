@@ -12,8 +12,6 @@ internal class MsBuildAdapter(TaskLoggingHelper taskLog) : IConsole
         WriteLine();
     }
 
-    public void WriteLine() => taskLog.LogMessage("\n");
-
     public void Write(string? msg) => taskLog.LogMessage(msg);
 
     public string? ReadLine() => Console.ReadLine();
@@ -25,4 +23,6 @@ internal class MsBuildAdapter(TaskLoggingHelper taskLog) : IConsole
 
         return Disposable.Create(() => Console.ForegroundColor = old);
     }
+
+    private void WriteLine() => taskLog.LogMessage("\n");
 }

@@ -30,7 +30,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.2.4.0")""");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -47,7 +47,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.0.1.0")""");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -70,7 +70,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.2.4.0")""");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -93,7 +93,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.0.1.0")""");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -110,7 +110,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.2.4.0")""");
         FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
@@ -128,7 +128,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Task.AssemblyInfoTempFilePath.ShouldMatch($@"AssemblyInfo.*\.g\.{extension}");
 
         var fileContent = this.FileSystem.File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.0.1.0")""");
         FileSystemHelper.Directory.DeleteDirectory(task.IntermediateOutputPath);
     }
 
@@ -156,7 +156,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.2.4.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.2.4.0")""");
     }
 
     [TestCaseSource(nameof(Languages))]
@@ -183,7 +183,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = this.FileSystem.File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain(@"assembly: AssemblyVersion(""1.0.1.0"")");
+        fileContent.ShouldContain("""assembly: AssemblyVersion("1.0.1.0")""");
     }
 
     private static void AddUpdateAssemblyInfoTask(ProjectCreator project, string targetToRun, string taskName,

@@ -19,7 +19,7 @@ public class ProjectFileUpdaterTests : TestBase
     private IVariableProvider variableProvider;
     private ILog log;
     private IFileSystem fileSystem;
-    private IProjectFileUpdater projectFileUpdater;
+    private ProjectFileUpdater projectFileUpdater;
     private List<string> logMessages;
 
     [SetUp]
@@ -182,15 +182,15 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var projectFileContent = $"""
-                                  <Project Sdk="Microsoft.NET.Sdk">
-                                    <PropertyGroup>
-                                      <OutputType>Exe</OutputType>
-                                      <TargetFramework>{TargetFramework}</TargetFramework>
-                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
-                                    </PropertyGroup>
-                                  </Project>
-                                  """;
+        const string projectFileContent = $"""
+                                           <Project Sdk="Microsoft.NET.Sdk">
+                                             <PropertyGroup>
+                                               <OutputType>Exe</OutputType>
+                                               <TargetFramework>{TargetFramework}</TargetFramework>
+                                               <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                             </PropertyGroup>
+                                           </Project>
+                                           """;
         var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
@@ -215,18 +215,18 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var projectFileContent = $"""
-                                  <Project Sdk="Microsoft.NET.Sdk">
-                                    <PropertyGroup>
-                                      <OutputType>Exe</OutputType>
-                                      <TargetFramework>{TargetFramework}</TargetFramework>
-                                      <AssemblyVersion>1.0.0.0</AssemblyVersion>
-                                    </PropertyGroup>
-                                    <PropertyGroup>
-                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
-                                    </PropertyGroup>
-                                  </Project>
-                                  """;
+        const string projectFileContent = $"""
+                                           <Project Sdk="Microsoft.NET.Sdk">
+                                             <PropertyGroup>
+                                               <OutputType>Exe</OutputType>
+                                               <TargetFramework>{TargetFramework}</TargetFramework>
+                                               <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                                             </PropertyGroup>
+                                             <PropertyGroup>
+                                               <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                             </PropertyGroup>
+                                           </Project>
+                                           """;
         var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
@@ -249,16 +249,16 @@ public class ProjectFileUpdaterTests : TestBase
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
-        var projectFileContent = $"""
-                                  <Project Sdk="Microsoft.NET.Sdk">
-                                    <PropertyGroup>
-                                      <OutputType>Exe</OutputType>
-                                      <TargetFramework>{TargetFramework}</TargetFramework>
-                                      <AssemblyVersion>1.0.0.0</AssemblyVersion>
-                                      <AssemblyVersion>2.0.0.0</AssemblyVersion>
-                                    </PropertyGroup>
-                                  </Project>
-                                  """;
+        const string projectFileContent = $"""
+                                           <Project Sdk="Microsoft.NET.Sdk">
+                                             <PropertyGroup>
+                                               <OutputType>Exe</OutputType>
+                                               <TargetFramework>{TargetFramework}</TargetFramework>
+                                               <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                                               <AssemblyVersion>2.0.0.0</AssemblyVersion>
+                                             </PropertyGroup>
+                                           </Project>
+                                           """;
         var expectedXml = XElement.Parse(projectFileContent);
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }

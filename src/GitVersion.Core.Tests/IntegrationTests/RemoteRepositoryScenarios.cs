@@ -123,17 +123,15 @@ public class RemoteRepositoryScenarios : TestBase
         local.AssertFullSemver("1.0.2-bug-hotfix.1+1");
     }
 
-    private static void CopyRemoteBranchesToHeads(IRepository repository)
+    private static void CopyRemoteBranchesToHeads(Repository repository)
     {
         foreach (var branch in repository.Branches)
         {
-            if (branch.IsRemote)
+            if (!branch.IsRemote) continue;
+            var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
+            if (repository.Branches[localName] == null)
             {
-                var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
-                if (repository.Branches[localName] == null)
-                {
-                    repository.CreateBranch(localName, branch.FriendlyName);
-                }
+                repository.CreateBranch(localName, branch.FriendlyName);
             }
         }
     }

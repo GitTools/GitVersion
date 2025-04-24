@@ -35,28 +35,26 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
 
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value))
+            if (!branch.Name.TryGetSemanticVersion(out var result, configuration.Value)) continue;
+            string? branchNameOverride = null;
+            if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+                                                 || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
             {
-                string? branchNameOverride = null;
-                if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
-                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
-                {
-                    branchNameOverride = result.Name;
-                }
-
-                var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
-
-                baseVersion = new BaseVersion("Version in branch name", result.Value)
-                {
-                    Operator = new BaseVersionOperator
-                    {
-                        Increment = VersionField.None,
-                        ForceIncrement = false,
-                        Label = label
-                    }
-                };
-                return true;
+                branchNameOverride = result.Name;
             }
+
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
+
+            baseVersion = new BaseVersion("Version in branch name", result.Value)
+            {
+                Operator = new BaseVersionOperator
+                {
+                    Increment = VersionField.None,
+                    ForceIncrement = false,
+                    Label = label
+                }
+            };
+            return true;
         }
 
         return false;

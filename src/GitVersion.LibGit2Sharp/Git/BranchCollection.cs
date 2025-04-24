@@ -11,7 +11,7 @@ internal sealed class BranchCollection : IBranchCollection
     internal BranchCollection(LibGit2Sharp.BranchCollection collection)
     {
         this.innerCollection = collection.NotNull();
-        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => this.innerCollection.Select(branch => new Branch(branch)).ToArray());
+        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => [.. this.innerCollection.Select(branch => new Branch(branch))]);
     }
 
     public IEnumerator<IBranch> GetEnumerator()
@@ -31,7 +31,7 @@ internal sealed class BranchCollection : IBranchCollection
 
     public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude)
     {
-        var toExclude = branchesToExclude as IBranch[] ?? branchesToExclude.ToArray();
+        var toExclude = branchesToExclude as IBranch[] ?? [.. branchesToExclude];
 
         return this.Where(BranchIsNotExcluded);
 

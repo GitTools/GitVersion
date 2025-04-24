@@ -23,7 +23,6 @@ GitVersion.Common.IRepositoryStore
 GitVersion.Common.IRepositoryStore.Branches.get -> GitVersion.Git.IBranchCollection!
 GitVersion.Common.IRepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>! branchesToExclude) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
 GitVersion.Common.IRepositoryStore.FindBranch(GitVersion.Git.ReferenceName! branchName) -> GitVersion.Git.IBranch?
-GitVersion.Common.IRepositoryStore.FindCommitBranchBranchedFrom(GitVersion.Git.IBranch? branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> GitVersion.Git.BranchCommit
 GitVersion.Common.IRepositoryStore.FindCommitBranchesBranchedFrom(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.BranchCommit>!
 GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.IBranch? branch, GitVersion.Git.IBranch? otherBranch) -> GitVersion.Git.ICommit?
 GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.ICommit! commit, GitVersion.Git.ICommit! mainlineTip) -> GitVersion.Git.ICommit?
@@ -268,7 +267,6 @@ GitVersion.Git.IRemote
 GitVersion.Git.IRemote.FetchRefSpecs.get -> System.Collections.Generic.IEnumerable<GitVersion.Git.IRefSpec!>!
 GitVersion.Git.IRemote.Name.get -> string!
 GitVersion.Git.IRemote.PushRefSpecs.get -> System.Collections.Generic.IEnumerable<GitVersion.Git.IRefSpec!>!
-GitVersion.Git.IRemote.RefSpecs.get -> System.Collections.Generic.IEnumerable<GitVersion.Git.IRefSpec!>!
 GitVersion.Git.IRemote.Url.get -> string!
 GitVersion.Git.IRemoteCollection
 GitVersion.Git.IRemoteCollection.Remove(string! remoteName) -> void
@@ -379,7 +377,6 @@ GitVersion.Logging.IConsole
 GitVersion.Logging.IConsole.ReadLine() -> string?
 GitVersion.Logging.IConsole.UseColor(System.ConsoleColor consoleColor) -> System.IDisposable!
 GitVersion.Logging.IConsole.Write(string? msg) -> void
-GitVersion.Logging.IConsole.WriteLine() -> void
 GitVersion.Logging.IConsole.WriteLine(string? msg) -> void
 GitVersion.Logging.ILog
 GitVersion.Logging.ILog.AddLogAppender(GitVersion.Logging.ILogAppender! logAppender) -> void

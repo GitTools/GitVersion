@@ -58,7 +58,7 @@ internal partial class MainlineScenariosWithAGitFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, ExpectedResult = "2.0.0-alpha.1+2")]
         public string GetVersionWithNoLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(null))
                 .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();
@@ -87,7 +87,7 @@ internal partial class MainlineScenariosWithAGitFlow
         [TestCase(IncrementStrategy.Major, IncrementStrategy.Major, ExpectedResult = "2.0.0-1+2")]
         public string GetVersionWithEmptyLabelOnMain(IncrementStrategy incrementOnMain, IncrementStrategy increment)
         {
-            IGitVersionConfiguration mainline = MainlineBuilder
+            var mainline = MainlineBuilder
                 .WithBranch("main", b => b.WithIncrement(incrementOnMain).WithLabel(string.Empty))
                 .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();

@@ -35,7 +35,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.ShowVariable), "/showvariable" },
             { nameof(Arguments.Format), "/format" }
         };
-        string helpText = string.Empty;
+        var helpText = string.Empty;
 
         this.helpWriter.WriteTo(s => helpText = s);
 
@@ -51,7 +51,7 @@ public class HelpWriterTests : TestBase
             .ShouldBeEmpty();
     }
 
-    private static bool IsNotInHelp(IReadOnlyDictionary<string, string> lookup, string propertyName, string helpText)
+    private static bool IsNotInHelp(Dictionary<string, string> lookup, string propertyName, string helpText)
     {
         if (lookup.TryGetValue(propertyName, out var value))
             return !helpText.Contains(value);

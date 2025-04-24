@@ -22,18 +22,14 @@ internal class GitLabCi : BuildAgentBase
         $"GitVersion_{name}={value}"
     ];
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos)
-    {
-        // CI_COMMIT_REF_NAME can contain either the branch or the tag
-        // See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-
-        // CI_COMMIT_TAG is only available in tag pipelines,
-        // so we can exit if CI_COMMIT_REF_NAME would return the tag
-        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CI_COMMIT_TAG")))
-            return null;
-
-        return Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
-    }
+    // CI_COMMIT_REF_NAME can contain either the branch or the tag
+    // See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+    // CI_COMMIT_TAG is only available in tag pipelines,
+    // so we can exit if CI_COMMIT_REF_NAME would return the tag
+    public override string? GetCurrentBranch(bool usingDynamicRepos) =>
+        string.IsNullOrEmpty(this.Environment.GetEnvironmentVariable("CI_COMMIT_TAG"))
+            ? this.Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME")
+            : null;
 
     public override bool PreventFetch() => true;
 

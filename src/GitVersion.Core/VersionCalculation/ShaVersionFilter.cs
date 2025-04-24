@@ -15,7 +15,9 @@ internal class ShaVersionFilter(IEnumerable<string> shaList) : IVersionFilter
 
         if (baseVersion.BaseVersionSource == null
             || !this.shaList.Any(sha => baseVersion.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
+        {
             return false;
+        }
 
         reason = $"Sha {baseVersion.BaseVersionSource} was ignored due to commit having been excluded by configuration";
         return true;

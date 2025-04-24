@@ -34,7 +34,7 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
         private static IEnumerable<Regex> GetSourceBranchRegexes(INamedReference branch, IGitVersionConfiguration configuration)
         {
             var currentBranchConfig = configuration.GetBranchConfiguration(branch.Name);
-            if (currentBranchConfig.SourceBranches == null)
+            if (currentBranchConfig is { SourceBranches: null })
             {
                 yield return RegexPatterns.Cache.GetOrAdd(".*");
             }

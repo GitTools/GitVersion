@@ -157,7 +157,7 @@ public static class ConfigurationFileLocatorTests
         public void ReturnConfigurationFilePathIfCustomConfigurationIsSet()
         {
             this.workingPath = this.repoPath;
-            string configurationFilePath = FileSystemHelper.Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
+            var configurationFilePath = FileSystemHelper.Path.Combine(this.workingPath, "Configuration", "CustomConfig.yaml");
 
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configurationFilePath } };
 
@@ -208,7 +208,6 @@ public static class ConfigurationFileLocatorTests
         public void NoWarnOnCustomYmlFile()
         {
             var stringLogger = string.Empty;
-            void Action(string info) => stringLogger = info;
 
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
@@ -223,13 +222,15 @@ public static class ConfigurationFileLocatorTests
 
             configurationProvider.ProvideForDirectory(this.repoPath);
             stringLogger.ShouldMatch("No configuration file found, using default configuration");
+            return;
+
+            void Action(string info) => stringLogger = info;
         }
 
         [Test]
         public void NoWarnOnCustomYmlFileOutsideRepoPath()
         {
             var stringLogger = string.Empty;
-            void Action(string info) => stringLogger = info;
 
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
@@ -238,13 +239,16 @@ public static class ConfigurationFileLocatorTests
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            string path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
+            var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
             using var _ = this.fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
             configurationProvider.ProvideForDirectory(this.repoPath);
             stringLogger.ShouldMatch("No configuration file found, using default configuration");
+            return;
+
+            void Action(string info) => stringLogger = info;
         }
 
         [Test]

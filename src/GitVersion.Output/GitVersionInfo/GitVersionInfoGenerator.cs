@@ -39,7 +39,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
         var indentation = GetIndentation(fileExtension);
         string? closeBracket = null;
         string? openBracket = null;
-        string indent = "";
+        var indent = "";
 
         if (!string.IsNullOrWhiteSpace(targetNamespace) && fileExtension == ".cs")
         {
@@ -66,7 +66,7 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
             ".vb" => context.TargetNamespace ?? "Global",
             ".cs" => context.TargetNamespace != null ? $"{FileSystemHelper.Path.NewLine}namespace {context.TargetNamespace}" : "",
             ".fs" => context.TargetNamespace ?? "global",
-            _ => targetNamespaceSentinelValue,
+            _ => targetNamespaceSentinelValue
         };
     }
 

@@ -7,21 +7,14 @@ namespace GitVersion.Agents;
 
 internal class EnvRun(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
 {
-    public const string EnvironmentVariableName = "ENVRUN_DATABASE";
+    private const string EnvironmentVariableName = "ENVRUN_DATABASE";
     protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext()
     {
         var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
-        if (!envRunDatabasePath.IsNullOrEmpty())
-        {
-            if (!this.FileSystem.File.Exists(envRunDatabasePath))
-            {
-                this.Log.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
-                return false;
-            }
-
-            return true;
-        }
+        if (envRunDatabasePath.IsNullOrEmpty()) return false;
+        if (this.FileSystem.File.Exists(envRunDatabasePath)) return true;
+        this.Log.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
 
         return false;
     }

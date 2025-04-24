@@ -130,7 +130,6 @@ public class GitVersionExecutorTests : TestBase
         """;
 
         var stringBuilder = new StringBuilder();
-        void Action(string s) => stringBuilder.AppendLine(s);
 
         var logAppender = new TestLogAppender(Action);
         this.log = new Log(logAppender);
@@ -156,6 +155,9 @@ public class GitVersionExecutorTests : TestBase
         var logsMessages = stringBuilder.ToString();
 
         logsMessages.ShouldContain("Loading version variables from disk cache file", Case.Insensitive, logsMessages);
+        return;
+
+        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [Test]
@@ -225,7 +227,6 @@ public class GitVersionExecutorTests : TestBase
     public void CacheFileIsMissing()
     {
         var stringBuilder = new StringBuilder();
-        void Action(string s) => stringBuilder.AppendLine(s);
 
         var logAppender = new TestLogAppender(Action);
         this.log = new Log(logAppender);
@@ -241,6 +242,9 @@ public class GitVersionExecutorTests : TestBase
 
         var logsMessages = stringBuilder.ToString();
         logsMessages.ShouldMatch("(?s).*Cache file.*(?-s) not found.*");
+        return;
+
+        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [TestCase(ConfigurationFileLocator.DefaultFileName)]

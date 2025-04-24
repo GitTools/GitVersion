@@ -49,18 +49,16 @@ internal static class ConfigurationExtensions
     private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
     {
         IBranchConfiguration? unknownBranchConfiguration = null;
-        foreach ((string key, IBranchConfiguration branchConfiguration) in configuration.Branches)
+        foreach (var (key, branchConfiguration) in configuration.Branches)
         {
-            if (branchConfiguration.IsMatch(branchName))
+            if (!branchConfiguration.IsMatch(branchName)) continue;
+            if (key == "unknown")
             {
-                if (key == "unknown")
-                {
-                    unknownBranchConfiguration = branchConfiguration;
-                }
-                else
-                {
-                    yield return branchConfiguration;
-                }
+                unknownBranchConfiguration = branchConfiguration;
+            }
+            else
+            {
+                yield return branchConfiguration;
             }
         }
 
@@ -91,25 +89,21 @@ internal static class ConfigurationExtensions
         }
 
         var effectiveBranchName = branchNameOverride ?? branchName;
-        if (!configuration.RegularExpression.IsNullOrWhiteSpace() && !effectiveBranchName.IsNullOrEmpty())
+        if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty()) return label;
+        var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
+        var match = regex.Match(effectiveBranchName);
+        if (!match.Success) return label;
+        foreach (var groupName in regex.GetGroupNames())
         {
-            var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
-            var match = regex.Match(effectiveBranchName);
-            if (match.Success)
+            var groupValue = match.Groups[groupName].Value;
+            Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharacters(groupValue));
+            var placeholder = $"{{{groupName}}}";
+            int index, startIndex = 0;
+            while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
             {
-                foreach (var groupName in regex.GetGroupNames())
-                {
-                    var groupValue = match.Groups[groupName].Value;
-                    Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharacters(groupValue));
-                    var placeholder = $"{{{groupName}}}";
-                    int index, startIndex = 0;
-                    while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
-                    {
-                        var escapedGroupValue = escapedGroupValueLazy.Value;
-                        label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
-                        startIndex = index + escapedGroupValue.Length;
-                    }
-                }
+                var escapedGroupValue = escapedGroupValueLazy.Value;
+                label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
+                startIndex = index + escapedGroupValue.Length;
             }
         }
         return label;
@@ -119,7 +113,7 @@ internal static class ConfigurationExtensions
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
     {
-        string? startingDir = path;
+        var startingDir = path;
         while (startingDir is not null)
         {
             var dirOrFilePath = FileSystemHelper.Path.Combine(startingDir, ".git");
@@ -130,7 +124,7 @@ internal static class ConfigurationExtensions
 
             if (fileSystem.File.Exists(dirOrFilePath))
             {
-                string? relativeGitDirPath = ReadGitDirFromFile(fileSystem, dirOrFilePath);
+                var relativeGitDirPath = ReadGitDirFromFile(fileSystem, dirOrFilePath);
                 if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
                 {
                     var fullGitDirPath = FileSystemHelper.Path.GetFullPath(FileSystemHelper.Path.Combine(startingDir, relativeGitDirPath));

@@ -100,232 +100,230 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme? value)
+    public TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme? value)
     {
         this.assemblyVersioningScheme = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme? value)
+    public TConfigurationBuilder WithAssemblyFileVersioningScheme(AssemblyFileVersioningScheme? value)
     {
         this.assemblyFileVersioningScheme = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyInformationalFormat(string? value)
+    public TConfigurationBuilder WithAssemblyInformationalFormat(string? value)
     {
         this.assemblyInformationalFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyVersioningFormat(string? value)
+    public TConfigurationBuilder WithAssemblyVersioningFormat(string? value)
     {
         this.assemblyVersioningFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithAssemblyFileVersioningFormat(string? value)
+    public TConfigurationBuilder WithAssemblyFileVersioningFormat(string? value)
     {
         this.assemblyFileVersioningFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTagPrefixPattern(string? value)
+    public TConfigurationBuilder WithTagPrefixPattern(string? value)
     {
         this.tagPrefix = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithVersionInBranchPattern(string? value)
+    public TConfigurationBuilder WithVersionInBranchPattern(string? value)
     {
         this.versionInBranchPattern = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithNextVersion(string? value)
+    public TConfigurationBuilder WithNextVersion(string? value)
     {
         this.nextVersion = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithMajorVersionBumpMessage(string? value)
+    public TConfigurationBuilder WithMajorVersionBumpMessage(string? value)
     {
         this.majorVersionBumpMessage = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithMinorVersionBumpMessage(string? value)
+    public TConfigurationBuilder WithMinorVersionBumpMessage(string? value)
     {
         this.minorVersionBumpMessage = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPatchVersionBumpMessage(string? value)
+    public TConfigurationBuilder WithPatchVersionBumpMessage(string? value)
     {
         this.patchVersionBumpMessage = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithNoBumpMessage(string? value)
+    public TConfigurationBuilder WithNoBumpMessage(string? value)
     {
         this.noBumpMessage = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTagPreReleaseWeight(int? value)
+    public TConfigurationBuilder WithTagPreReleaseWeight(int? value)
     {
         this.tagPreReleaseWeight = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIgnoreConfiguration(IIgnoreConfiguration value)
+    public TConfigurationBuilder WithIgnoreConfiguration(IIgnoreConfiguration value)
     {
         this.ignore = (IgnoreConfiguration)value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithCommitDateFormat(string? value)
+    public TConfigurationBuilder WithCommitDateFormat(string? value)
     {
         this.commitDateFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithUpdateBuildNumber(bool value)
+    public TConfigurationBuilder WithUpdateBuildNumber(bool value)
     {
         this.updateBuildNumber = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithSemanticVersionFormat(SemanticVersionFormat value)
+    public TConfigurationBuilder WithSemanticVersionFormat(SemanticVersionFormat value)
     {
         this.semanticVersionFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
+    public TConfigurationBuilder WithVersionStrategy(VersionStrategies value)
     {
-        this.versionStrategies = Enum.GetValues<VersionStrategies>()
-            .Where(element => element != VersionStrategies.None && value.HasFlag(element))
-            .ToArray();
+        this.versionStrategies = [.. Enum.GetValues<VersionStrategies>().Where(element => element != VersionStrategies.None && value.HasFlag(element))];
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
+    public TConfigurationBuilder WithVersionStrategies(params VersionStrategies[] values)
     {
         this.versionStrategies = values;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithMergeMessageFormats(IReadOnlyDictionary<string, string> value)
+    public TConfigurationBuilder WithMergeMessageFormats(IReadOnlyDictionary<string, string> value)
     {
         this.mergeMessageFormats = new(value);
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithoutBranches()
+    public TConfigurationBuilder WithoutBranches()
     {
         this.branchConfigurationBuilders.Clear();
         return (TConfigurationBuilder)this;
     }
 
-    public virtual BranchConfigurationBuilder WithBranch(string value)
+    public BranchConfigurationBuilder WithBranch(string value)
         => this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
 
-    public virtual BranchConfigurationBuilder WithBranch(string value, BranchConfigurationBuilder builder)
+    public BranchConfigurationBuilder WithBranch(string value, BranchConfigurationBuilder builder)
         => this.branchConfigurationBuilders.GetOrAdd(value, () => builder);
 
-    public virtual TConfigurationBuilder WithBranch(string value, Action<BranchConfigurationBuilder> action)
+    public TConfigurationBuilder WithBranch(string value, Action<BranchConfigurationBuilder> action)
     {
         var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
         action(result);
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithDeploymentMode(DeploymentMode? value)
+    public TConfigurationBuilder WithDeploymentMode(DeploymentMode? value)
     {
         this.versioningMode = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithLabel(string? value)
+    public TConfigurationBuilder WithLabel(string? value)
     {
         this.label = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIncrement(IncrementStrategy value)
+    public TConfigurationBuilder WithIncrement(IncrementStrategy value)
     {
         this.increment = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreventIncrementOfMergedBranch(bool? value)
+    public TConfigurationBuilder WithPreventIncrementOfMergedBranch(bool? value)
     {
         this.preventIncrementOfMergedBranch = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreventIncrementWhenBranchMerged(bool? value)
+    public TConfigurationBuilder WithPreventIncrementWhenBranchMerged(bool? value)
     {
         this.preventIncrementWhenBranchMerged = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreventIncrementWhenCurrentCommitTagged(bool? value)
+    public TConfigurationBuilder WithPreventIncrementWhenCurrentCommitTagged(bool? value)
     {
         this.preventIncrementWhenCurrentCommitTagged = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTrackMergeTarget(bool? value)
+    public TConfigurationBuilder WithTrackMergeTarget(bool? value)
     {
         this.trackMergeTarget = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTrackMergeMessage(bool? value)
+    public TConfigurationBuilder WithTrackMergeMessage(bool? value)
     {
         this.trackMergeMessage = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
+    public TConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
     {
         this.commitMessageIncrementing = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithRegularExpression(string? value)
+    public TConfigurationBuilder WithRegularExpression(string? value)
     {
         this.regularExpression = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTracksReleaseBranches(bool? value)
+    public TConfigurationBuilder WithTracksReleaseBranches(bool? value)
     {
         this.tracksReleaseBranches = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIsReleaseBranch(bool? value)
+    public TConfigurationBuilder WithIsReleaseBranch(bool? value)
     {
         this.isReleaseBranch = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIsMainBranch(bool? value)
+    public TConfigurationBuilder WithIsMainBranch(bool? value)
     {
         this.isMainBranch = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithPreReleaseWeight(int? value)
+    public TConfigurationBuilder WithPreReleaseWeight(int? value)
     {
         this.preReleaseWeight = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithConfiguration(IGitVersionConfiguration value)
+    public TConfigurationBuilder WithConfiguration(IGitVersionConfiguration value)
     {
         WithAssemblyVersioningScheme(value.AssemblyVersioningScheme);
         WithAssemblyFileVersioningScheme(value.AssemblyFileVersioningScheme);
@@ -419,7 +417,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             {
                 OfMergedBranch = this.preventIncrementOfMergedBranch,
                 WhenBranchMerged = this.preventIncrementWhenBranchMerged,
-                WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged,
+                WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged
             },
             PreReleaseWeight = this.preReleaseWeight
         };

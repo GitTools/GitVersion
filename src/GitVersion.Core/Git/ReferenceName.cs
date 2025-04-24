@@ -37,12 +37,12 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public static ReferenceName Parse(string canonicalName)
     {
-        if (TryParse(out ReferenceName? value, canonicalName)) return value;
+        if (TryParse(out var value, canonicalName)) return value;
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
 
     public static ReferenceName FromBranchName(string branchName)
-        => TryParse(out ReferenceName? value, branchName)
+        => TryParse(out var value, branchName)
             ? value
             : Parse(LocalBranchPrefix + branchName);
 
@@ -92,10 +92,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         if (IsRemoteBranch)
             return Canonical[RemoteTrackingBranchPrefix.Length..];
 
-        if (IsTag)
-            return Canonical[TagPrefix.Length..];
-
-        return Canonical;
+        return IsTag ? Canonical[TagPrefix.Length..] : Canonical;
     }
 
     private string RemoveOrigin()

@@ -22,31 +22,27 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
             yield break;
 
         var nextVersion = Context.Configuration.NextVersion;
-        if (!nextVersion.IsNullOrEmpty())
+        if (nextVersion.IsNullOrEmpty()) yield break;
+        var semanticVersion = SemanticVersion.Parse(
+            nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
+        );
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+
+        if (!semanticVersion.IsMatchForBranchSpecificLabel(label)) yield break;
+        BaseVersionOperator? operation = null;
+        if (!semanticVersion.IsPreRelease || (label is not null && semanticVersion.PreReleaseTag.Name != label))
         {
-            var semanticVersion = SemanticVersion.Parse(
-                nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
-            );
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
-
-            if (semanticVersion.IsMatchForBranchSpecificLabel(label))
+            operation = new BaseVersionOperator
             {
-                BaseVersionOperator? operation = null;
-                if (!semanticVersion.IsPreRelease || label is not null && semanticVersion.PreReleaseTag.Name != label)
-                {
-                    operation = new BaseVersionOperator
-                    {
-                        Increment = VersionField.None,
-                        ForceIncrement = false,
-                        Label = label
-                    };
-                }
-
-                yield return new BaseVersion("NextVersion in GitVersion configuration file", semanticVersion)
-                {
-                    Operator = operation
-                };
-            }
+                Increment = VersionField.None,
+                ForceIncrement = false,
+                Label = label
+            };
         }
+
+        yield return new BaseVersion("NextVersion in GitVersion configuration file", semanticVersion)
+        {
+            Operator = operation
+        };
     }
 }

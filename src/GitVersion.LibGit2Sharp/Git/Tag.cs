@@ -24,7 +24,7 @@ internal sealed class Tag : ITag
     public string TargetSha => this.innerTag.Target.Sha;
     public ICommit Commit => this.commitLazy.Value.NotNull();
 
-    private ICommit? PeeledTargetCommit()
+    private Commit? PeeledTargetCommit()
     {
         var target = this.innerTag.Target;
 

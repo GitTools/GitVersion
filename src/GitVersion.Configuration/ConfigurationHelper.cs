@@ -14,11 +14,9 @@ internal class ConfigurationHelper
     {
         get
         {
-            if (this.dictionary == null)
-            {
-                this.yaml ??= Serializer.Serialize(this.configuration!);
-                this.dictionary = Serializer.Deserialize<Dictionary<object, object?>>(this.yaml);
-            }
+            if (this.dictionary != null) return this.dictionary;
+            this.yaml ??= Serializer.Serialize(this.configuration!);
+            this.dictionary = Serializer.Deserialize<Dictionary<object, object?>>(this.yaml);
             return this.dictionary;
         }
     }
@@ -37,53 +35,63 @@ internal class ConfigurationHelper
     {
         value.NotNull();
 
-        if (value.Any())
-        {
-            var map = Dictionary.ToDictionary(element => element.Key, element => element.Value);
-            Merge(map, value);
-            this.dictionary = map;
-            this.yaml = null;
-            this.configuration = null;
-        }
+        if (!value.Any()) return;
+        var map = Dictionary.ToDictionary(element => element.Key, element => element.Value);
+        Merge(map, value);
+        this.dictionary = map;
+        this.yaml = null;
+        this.configuration = null;
     }
 
     private static void Merge(IDictionary<object, object?> dictionary, IReadOnlyDictionary<object, object?> anotherDictionary)
     {
         foreach (var item in dictionary)
         {
-            if (item.Value is IDictionary<object, object?> anotherDictionaryValue)
+            switch (item.Value)
             {
-                if (anotherDictionary.TryGetValue(item.Key, out var value) && value is IReadOnlyDictionary<object, object?> dictionaryValue)
-                {
-                    Merge(anotherDictionaryValue, dictionaryValue);
-                }
-            }
-            else if (item.Value is null or string or IList<object>)
-            {
-                if (anotherDictionary.TryGetValue(item.Key, out var value))
-                {
-                    dictionary[item.Key] = value;
-                }
+                case IDictionary<object, object?> anotherDictionaryValue:
+                    {
+                        if (anotherDictionary.TryGetValue(item.Key, out var value) && value is IReadOnlyDictionary<object, object?> dictionaryValue)
+                        {
+                            Merge(anotherDictionaryValue, dictionaryValue);
+                        }
+
+                        break;
+                    }
+                case null or string or IList<object>:
+                    {
+                        if (anotherDictionary.TryGetValue(item.Key, out var value))
+                        {
+                            dictionary[item.Key] = value;
+                        }
+
+                        break;
+                    }
             }
         }
 
         foreach (var item in anotherDictionary)
         {
-            if (item.Value is IReadOnlyDictionary<object, object?> dictionaryValue)
+            switch (item.Value)
             {
-                if (!dictionary.ContainsKey(item.Key))
-                {
-                    Dictionary<object, object?> anotherDictionaryValue = [];
-                    Merge(anotherDictionaryValue, dictionaryValue);
-                    dictionary.Add(item.Key, anotherDictionaryValue);
-                }
-            }
-            else if (item.Value is null or string or IList<object>)
-            {
-                if (!dictionary.ContainsKey(item.Key))
-                {
-                    dictionary.Add(item.Key, item.Value);
-                }
+                case IReadOnlyDictionary<object, object?> when dictionary.ContainsKey(item.Key):
+                    continue;
+                case IReadOnlyDictionary<object, object?> dictionaryValue:
+                    {
+                        Dictionary<object, object?> anotherDictionaryValue = [];
+                        Merge(anotherDictionaryValue, dictionaryValue);
+                        dictionary.Add(item.Key, anotherDictionaryValue);
+                        break;
+                    }
+                case null or string or IList<object>:
+                    {
+                        if (!dictionary.ContainsKey(item.Key))
+                        {
+                            dictionary.Add(item.Key, item.Value);
+                        }
+
+                        break;
+                    }
             }
         }
     }

@@ -9,7 +9,7 @@ internal sealed class TagCollection : ITagCollection
     internal TagCollection(LibGit2Sharp.TagCollection collection)
     {
         collection = collection.NotNull();
-        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => collection.Select(tag => new Tag(tag)).ToArray());
+        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => new Tag(tag))]);
     }
 
     public IEnumerator<ITag> GetEnumerator()

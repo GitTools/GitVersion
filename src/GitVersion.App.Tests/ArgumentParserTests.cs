@@ -361,7 +361,7 @@ public class ArgumentParserTests : TestBase
         var targetPath = FileSystemHelper.Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
         this.fileSystem.Directory.CreateDirectory(targetPath);
 
-        var arguments = this.argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+        var arguments = this.argumentParser.ParseArguments($@"-targetpath {targetPath} -updateAssemblyInfo ..\..\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
@@ -604,7 +604,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void DynamicRepoLocation()
     {
-        var arguments = this.argumentParser.ParseArguments(@"-dynamicRepoLocation /tmp/foo");
+        var arguments = this.argumentParser.ParseArguments("-dynamicRepoLocation /tmp/foo");
         arguments.ClonePath.ShouldBe("/tmp/foo");
     }
 

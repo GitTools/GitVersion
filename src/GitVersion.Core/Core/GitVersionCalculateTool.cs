@@ -38,7 +38,7 @@ internal class GitVersionCalculateTool(
 
         var versionVariables = !gitVersionOptions.Settings.NoCache
             ? this.gitVersionCacheProvider.LoadVersionVariablesFromDiskCache()
-            : default;
+            : null;
 
         if (versionVariables != null) return versionVariables;
 

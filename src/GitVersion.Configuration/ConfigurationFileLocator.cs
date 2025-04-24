@@ -40,7 +40,7 @@ internal class ConfigurationFileLocator(
 
     public string? GetConfigurationFile(string? directoryPath)
     {
-        string? customConfigurationFile = GetCustomConfigurationFilePathIfEligable(directoryPath);
+        var customConfigurationFile = GetCustomConfigurationFilePathIfEligable(directoryPath);
         if (!string.IsNullOrWhiteSpace(customConfigurationFile))
         {
             this.log.Info($"Found configuration file at '{customConfigurationFile}'");
@@ -52,16 +52,14 @@ internal class ConfigurationFileLocator(
             return null;
         }
 
-        string[] files = fileSystem.Directory.GetFiles(directoryPath);
+        var files = fileSystem.Directory.GetFiles(directoryPath);
         foreach (var fileName in this.SupportedConfigFileNames)
         {
             this.log.Debug($"Trying to find configuration file {fileName} at '{directoryPath}'");
-            string? matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
-            if (matchingFile != null)
-            {
-                this.log.Info($"Found configuration file at '{matchingFile}'");
-                return matchingFile;
-            }
+            var matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
+            if (matchingFile == null) continue;
+            this.log.Info($"Found configuration file at '{matchingFile}'");
+            return matchingFile;
         }
 
         return null;
@@ -69,21 +67,14 @@ internal class ConfigurationFileLocator(
 
     private string? GetCustomConfigurationFilePathIfEligable(string? directoryPath)
     {
-        if (!string.IsNullOrWhiteSpace(this.ConfigurationFile))
+        if (string.IsNullOrWhiteSpace(this.ConfigurationFile)) return null;
+        var configurationFilePath = this.ConfigurationFile;
+        if (!string.IsNullOrWhiteSpace(directoryPath))
         {
-            string configurationFilePath = this.ConfigurationFile;
-            if (!string.IsNullOrWhiteSpace(directoryPath))
-            {
-                configurationFilePath = FileSystemHelper.Path.Combine(directoryPath, this.ConfigurationFile);
-            }
-
-            if (fileSystem.File.Exists(configurationFilePath))
-            {
-                return configurationFilePath;
-            }
+            configurationFilePath = FileSystemHelper.Path.Combine(directoryPath, this.ConfigurationFile);
         }
 
-        return null;
+        return this.fileSystem.File.Exists(configurationFilePath) ? configurationFilePath : null;
     }
 
     private void WarnAboutAmbiguousConfigFileSelection(string? workingDirectory, string? projectRootDirectory)

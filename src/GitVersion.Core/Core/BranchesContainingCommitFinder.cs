@@ -28,7 +28,7 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
             var directBranchHasBeenFound = false;
             log.Info("Trying to find direct branches.");
             // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
-            List<IBranch> branchList = branches.ToList();
+            var branchList = branches.ToList();
             foreach (var branch in branchList.Where(branch => BranchTipIsNullOrCommit(branch, commit) && !IncludeTrackedBranches(branch, onlyTrackedBranches)))
             {
                 directBranchHasBeenFound = true;
@@ -42,7 +42,7 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
             }
 
             log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-            foreach (IBranch branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
+            foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
             {
                 log.Info($"Searching for commits reachable from '{branch}'.");
 

@@ -3,7 +3,7 @@ namespace GitVersion.Logging;
 internal class ConsoleAppender : ILogAppender
 {
     private readonly object locker = new();
-    private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes = CreatePalette();
+    private readonly Dictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes = CreatePalette();
 
     public void WriteTo(LogLevel level, string message)
     {
@@ -40,7 +40,7 @@ internal class ConsoleAppender : ILogAppender
         }
     }
 
-    private static IDictionary<LogLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
+    private static Dictionary<LogLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
     {
         var background = Console.BackgroundColor;
         var palette = new Dictionary<LogLevel, (ConsoleColor, ConsoleColor)>

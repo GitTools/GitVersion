@@ -16,19 +16,17 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
-        {
-            context.ForceIncrement = true;
+        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch) yield break;
+        context.ForceIncrement = true;
 
-            yield return new BaseVersionOperator
-            {
-                Source = GetType().Name,
-                BaseVersionSource = context.BaseVersionSource,
-                Increment = context.Increment,
-                ForceIncrement = context.ForceIncrement,
-                Label = context.Label,
-                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
-            };
-        }
+        yield return new BaseVersionOperator
+        {
+            Source = GetType().Name,
+            BaseVersionSource = context.BaseVersionSource,
+            Increment = context.Increment,
+            ForceIncrement = context.ForceIncrement,
+            Label = context.Label,
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+        };
     }
 }

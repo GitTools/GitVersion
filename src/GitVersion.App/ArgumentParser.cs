@@ -177,24 +177,22 @@ internal class ArgumentParser(IEnvironment environment,
         var couldNotParseMessage = $"Could not parse command line parameter '{name}'.";
 
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
-        if (parseEnded)
+        if (!parseEnded) throw new WarningException(couldNotParseMessage);
+        if (name?.StartsWith('/') == true)
         {
-            if (name?.StartsWith('/') == true)
-            {
-                if (FileSystemHelper.Path.DirectorySeparatorChar == '/' && name.IsValidPath())
-                {
-                    arguments.TargetPath = name;
-                    return;
-                }
-            }
-            else if (!name.IsSwitchArgument())
+            if (FileSystemHelper.Path.DirectorySeparatorChar == '/' && name.IsValidPath())
             {
                 arguments.TargetPath = name;
                 return;
             }
-
-            couldNotParseMessage += " If it is the target path, make sure it exists.";
         }
+        else if (!name.IsSwitchArgument())
+        {
+            arguments.TargetPath = name;
+            return;
+        }
+
+        couldNotParseMessage += " If it is the target path, make sure it exists.";
 
         throw new WarningException(couldNotParseMessage);
     }
@@ -289,13 +287,9 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (name.IsSwitch("updatewixversionfile"))
-        {
-            arguments.UpdateWixVersionFile = true;
-            return true;
-        }
-
-        return false;
+        if (!name.IsSwitch("updatewixversionfile")) return false;
+        arguments.UpdateWixVersionFile = true;
+        return true;
     }
 
     private static bool ParseConfigArguments(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
@@ -357,14 +351,10 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (name.IsSwitch("b"))
-        {
-            EnsureArgumentValueCount(values);
-            arguments.TargetBranch = value;
-            return true;
-        }
-
-        return false;
+        if (!name.IsSwitch("b")) return false;
+        EnsureArgumentValueCount(values);
+        arguments.TargetBranch = value;
+        return true;
     }
 
     private static void ParseShowVariable(Arguments arguments, string? value, string? name)
@@ -379,7 +369,7 @@ internal class ArgumentParser(IEnvironment environment,
         if (versionVariable == null)
         {
             var message = $"{name} requires a valid version variable. Available variables are:{FileSystemHelper.Path.NewLine}" +
-                          string.Join(", ", availableVariables.Select(x => string.Concat("'", x, "'")));
+                          string.Join(", ", availableVariables.Select(x => $"'{x}'"));
             throw new WarningException(message);
         }
 
@@ -562,14 +552,14 @@ internal class ArgumentParser(IEnvironment environment,
         }
     }
 
-    private static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
+    private static NameValueCollection CollectSwitchesAndValuesFromArguments(string[] namedArguments, out bool firstArgumentIsSwitch)
     {
         firstArgumentIsSwitch = true;
         var switchesAndValues = new NameValueCollection();
         string? currentKey = null;
         var argumentRequiresValue = false;
 
-        for (var i = 0; i < namedArguments.Count; ++i)
+        for (var i = 0; i < namedArguments.Length; ++i)
         {
             var arg = namedArguments[i];
 

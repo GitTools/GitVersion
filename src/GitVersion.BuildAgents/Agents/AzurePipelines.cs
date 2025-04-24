@@ -28,12 +28,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
         // https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         // BUILD_SOURCEBRANCH must be used only for "real" branches, not for tags.
         // Azure Pipelines sets BUILD_SOURCEBRANCH to refs/tags/<tag> when the pipeline is triggered for a tag.
-        if (sourceBranch?.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) == true)
-        {
-            return null;
-        }
-
-        return sourceBranch;
+        return sourceBranch?.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) == true ? null : sourceBranch;
     }
 
     public override bool PreventFetch() => true;
@@ -49,16 +44,12 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
         var newBuildNumber = variables.OrderBy(x => x.Key).Aggregate(buildNumberEnv, ReplaceVariables);
 
         // If no variable substitution has happened, use FullSemVer
-        if (buildNumberEnv == newBuildNumber)
-        {
-            var buildNumber = variables.FullSemVer.EndsWith("+0")
-                ? variables.FullSemVer[..^2]
-                : variables.FullSemVer;
+        if (buildNumberEnv != newBuildNumber) return $"##vso[build.updatebuildnumber]{newBuildNumber}";
+        var buildNumber = variables.FullSemVer.EndsWith("+0")
+            ? variables.FullSemVer[..^2]
+            : variables.FullSemVer;
 
-            return $"##vso[build.updatebuildnumber]{buildNumber}";
-        }
-
-        return $"##vso[build.updatebuildnumber]{newBuildNumber}";
+        return $"##vso[build.updatebuildnumber]{buildNumber}";
     }
 
     private static string ReplaceVariables(string buildNumberEnv, KeyValuePair<string, string?> variable)

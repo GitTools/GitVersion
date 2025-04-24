@@ -15,6 +15,7 @@
     <File Path="../.gitversion.yml" />
     <File Path="../GitReleaseManager.yml" />
     <File Path="../global.json" />
+    <File Path="../qodana.yaml" />
   </Folder>
   <Folder Name="/root/readme/">
     <File Path="../BREAKING_CHANGES.md" />

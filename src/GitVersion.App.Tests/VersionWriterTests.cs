@@ -22,7 +22,7 @@ public class VersionWriterTests : TestBase
     {
         var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
-        string? version = string.Empty;
+        var version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
         Assert.Multiple(() =>
         {
@@ -36,7 +36,7 @@ public class VersionWriterTests : TestBase
     {
         var asm = GenerateAssembly(new Version(1, 0, 0), "-beta4");
 
-        string? version = string.Empty;
+        var version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
         Assert.Multiple(() =>
         {
@@ -48,7 +48,7 @@ public class VersionWriterTests : TestBase
     private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
     {
         var attribute = typeof(AssemblyInformationalVersionAttribute);
-        var csharpCode = $@"[assembly: {attribute.FullName}(""{fileVersion + prereleaseInfo}"")]";
+        var csharpCode = $"""[assembly: {attribute.FullName}("{fileVersion + prereleaseInfo}")]""";
         var compilation = CSharpCompilation.Create("test-asm")
             .WithOptions(new(OutputKind.DynamicallyLinkedLibrary))
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))

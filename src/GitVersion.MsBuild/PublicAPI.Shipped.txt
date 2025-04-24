@@ -19,15 +19,10 @@ GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInforma
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFilePath.get -> string!
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFilePath.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.IntermediateOutputPath.get -> string!
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.IntermediateOutputPath.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.Language.get -> string!
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.Language.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.ProjectFile.get -> string!
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.ProjectFile.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string!
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.set -> void
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.UseProjectNamespaceForGitVersionInformation.get -> string?
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.UseProjectNamespaceForGitVersionInformation.set -> void
 GitVersion.MsBuild.Tasks.GetVersion
 GitVersion.MsBuild.Tasks.GetVersion.AssemblySemFileVer.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.AssemblySemFileVer.set -> void
@@ -84,13 +79,9 @@ GitVersion.MsBuild.Tasks.UpdateAssemblyInfo
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.AssemblyInfoTempFilePath.get -> string!
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.AssemblyInfoTempFilePath.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.CompileFiles.get -> Microsoft.Build.Framework.ITaskItem![]!
-GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.CompileFiles.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.IntermediateOutputPath.get -> string!
-GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.IntermediateOutputPath.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.Language.get -> string!
-GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.Language.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.get -> string!
-GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.UpdateAssemblyInfo() -> void
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.WriteVersionInfoToBuildLog() -> void

@@ -17,20 +17,7 @@ public class LambdaEqualityHelper<T>(params Func<T, object?>[] equalityContribut
             return true;
         }
 
-        if (instance.GetType() != other.GetType())
-        {
-            return false;
-        }
-
-        foreach (var accessor in equalityContributorAccessors)
-        {
-            if (!Equals(accessor(instance), accessor(other)))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return instance.GetType() == other.GetType() && equalityContributorAccessors.All(accessor => Equals(accessor(instance), accessor(other)));
     }
 
     public int GetHashCode(T instance)

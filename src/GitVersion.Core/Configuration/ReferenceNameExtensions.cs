@@ -20,7 +20,7 @@ public static class ReferenceNameExtensions
         var versionPatternRegex = RegexPatterns.Cache.GetOrAdd(GetVersionInBranchPattern(versionPatternPattern));
         result = default;
 
-        int length = 0;
+        var length = 0;
         foreach (var branchPart in referenceName.WithoutOrigin.Split(GetBranchSeparator()))
         {
             if (string.IsNullOrEmpty(branchPart)) return false;

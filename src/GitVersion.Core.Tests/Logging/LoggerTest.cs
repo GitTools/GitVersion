@@ -15,22 +15,21 @@ public class LoggerTest : TestBase
         const string password = "password";
         var s = string.Empty;
 
-        void Action(string info) => s = info;
-
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
 
         log.Info($"{protocol}://{username}:{password}@workspace.visualstudio.com/DefaultCollection/_git/CAS");
 
         s.Contains(password).ShouldBe(false);
+        return;
+
+        void Action(string info) => s = info;
     }
 
     [Test]
     public void UsernameWithoutPassword()
     {
         var s = string.Empty;
-
-        void Action(string info) => s = info;
 
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
@@ -40,5 +39,8 @@ public class LoggerTest : TestBase
         log.Info(repoUrl);
 
         s.Contains(repoUrl).ShouldBe(true);
+        return;
+
+        void Action(string info) => s = info;
     }
 }
