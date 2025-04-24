@@ -28,6 +28,7 @@ jobs:
         name: 'Qodana Scan'
         uses: jetbrains/qodana-action@v2024.3.4
         with:
+          args: --baseline,qodana.sarif.json
           cache-default-branch-only: true
           pr-mode: true
         env:
