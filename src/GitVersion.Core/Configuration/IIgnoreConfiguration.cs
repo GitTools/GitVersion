@@ -6,5 +6,5 @@ public interface IIgnoreConfiguration
 
     IReadOnlySet<string> Shas { get; }
 
-    bool IsEmpty => Before == null && Shas.Count == 0;
+    bool IsEmpty { get; }
 }

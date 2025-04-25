@@ -22,4 +22,7 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     [JsonPropertyName("sha")]
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
     public HashSet<string> Shas { get; init; } = [];
+
+    [JsonIgnore]
+    public bool IsEmpty => Before == null && Shas.Count == 0;
 }

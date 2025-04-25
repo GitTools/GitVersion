@@ -46,7 +46,7 @@ public class FormatArgumentTests : TestBase
         var fixture = CreateTestRepository();
         var consoleBuilder = new StringBuilder();
         IConsole console = new TestConsoleAdapter(consoleBuilder);
-        IEnvironment environment = new TestEnvironment();
+        var environment = new TestEnvironment();
         environment.SetEnvironmentVariable("CustomVar", "foo");
 
         var sp = ConfigureServices(services =>
@@ -57,7 +57,7 @@ public class FormatArgumentTests : TestBase
             services.AddSingleton(options);
             services.AddSingleton(repository);
             services.AddSingleton(console);
-            services.AddSingleton(environment);
+            services.AddSingleton<IEnvironment>(environment);
         });
 
         var versionVariables = sp.GetRequiredService<IGitVersionCalculateTool>().CalculateVersionVariables();

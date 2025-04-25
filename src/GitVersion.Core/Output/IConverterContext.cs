@@ -1,6 +1,3 @@
 namespace GitVersion;
 
-public interface IConverterContext
-{
-    string WorkingDirectory { get; }
-}
+public interface IConverterContext;

@@ -7,7 +7,7 @@ namespace GitVersion.App.Tests;
 
 public sealed class ProgramFixture
 {
-    private readonly IEnvironment environment;
+    private readonly TestEnvironment environment;
     private List<Action<IServiceCollection>> Overrides { get; } = [];
     private readonly Lazy<string> logger;
     private readonly Lazy<string?> output;
@@ -30,7 +30,7 @@ public sealed class ProgramFixture
         {
             services.AddSingleton(log);
             services.AddSingleton<IConsole>(consoleAdapter);
-            services.AddSingleton(this.environment);
+            services.AddSingleton<IEnvironment>(this.environment);
         });
 
         this.logger = new(() => logBuilder.ToString());

@@ -75,7 +75,7 @@ public class IgnoreConfigurationTests : TestBase
     [Test]
     public void NewInstanceShouldBeEmpty()
     {
-        IIgnoreConfiguration ignoreConfig = new IgnoreConfiguration();
+        var ignoreConfig = new IgnoreConfiguration();
 
         ignoreConfig.IsEmpty.ShouldBeTrue();
     }
