@@ -4,6 +4,7 @@
         <AssemblyName>schema</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="JsonSchema.Net" />
         <PackageReference Include="JsonSchema.Net.Generation" />
         <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
         <PackageReference Include="System.Text.Json" />

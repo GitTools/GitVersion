@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- common packages -->
+    <PackageVersion Include="JsonSchema.Net" Version="7.3.4" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
@@ -19,7 +20,7 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.13.1" />
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="7.1.0" />
-    <PackageVersion Include="JsonSchema.Net.Generation" Version="5.0.0" />
+    <PackageVersion Include="JsonSchema.Net.Generation" Version="5.0.1" />
     <PackageVersion Include="JunitXml.TestLogger" Version="6.1.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="14.0.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
