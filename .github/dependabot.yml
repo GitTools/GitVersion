@@ -4,7 +4,7 @@ updates:
     labels:
       - "dependencies"
     commit-message:
-      prefix: "(deps)"
+      prefix: "(sdk)"
     directory: "/"
     schedule:
       interval: daily
