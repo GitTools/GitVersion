@@ -39,412 +39,6 @@ var searchModule = function() {
     a(
         {
             id:0,
-            title:"GitVersionBuildAgentsModule",
-            content:"GitVersionBuildAgentsModule",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Agents/GitVersionBuildAgentsModule',
-            title:"GitVersionBuildAgentsModule",
-            description:""
-        }
-    );
-    a(
-        {
-            id:1,
-            title:"ServiceMessageEscapeHelper",
-            content:"ServiceMessageEscapeHelper",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Helpers/ServiceMessageEscapeHelper',
-            title:"ServiceMessageEscapeHelper",
-            description:""
-        }
-    );
-    a(
-        {
-            id:2,
-            title:"IIgnoreConfiguration",
-            content:"IIgnoreConfiguration",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration/IIgnoreConfiguration',
-            title:"IIgnoreConfiguration",
-            description:""
-        }
-    );
-    a(
-        {
-            id:3,
-            title:"LambdaEqualityHelper",
-            content:"LambdaEqualityHelper",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Helpers/LambdaEqualityHelper_1',
-            title:"LambdaEqualityHelper<T>",
-            description:""
-        }
-    );
-    a(
-        {
-            id:4,
-            title:"MergeMessage",
-            content:"MergeMessage",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/MergeMessage',
-            title:"MergeMessage",
-            description:""
-        }
-    );
-    a(
-        {
-            id:5,
-            title:"IReference",
-            content:"IReference",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IReference',
-            title:"IReference",
-            description:""
-        }
-    );
-    a(
-        {
-            id:6,
-            title:"ICurrentBuildAgent",
-            content:"ICurrentBuildAgent",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Agents/ICurrentBuildAgent',
-            title:"ICurrentBuildAgent",
-            description:""
-        }
-    );
-    a(
-        {
-            id:7,
-            title:"VersionStrategies",
-            content:"VersionStrategies",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/VersionStrategies',
-            title:"VersionStrategies",
-            description:""
-        }
-    );
-    a(
-        {
-            id:8,
-            title:"AssemblyFileVersioningScheme",
-            content:"AssemblyFileVersioningScheme",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration/AssemblyFileVersioningScheme',
-            title:"AssemblyFileVersioningScheme",
-            description:""
-        }
-    );
-    a(
-        {
-            id:9,
-            title:"ReferenceNameExtensions",
-            content:"ReferenceNameExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration/ReferenceNameExtensions',
-            title:"ReferenceNameExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:10,
-            title:"Format",
-            content:"Format",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/global/Format',
-            title:"Format",
-            description:""
-        }
-    );
-    a(
-        {
-            id:11,
-            title:"WriteVersionInfoToBuildLog",
-            content:"WriteVersionInfoToBuildLog",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog',
-            title:"WriteVersionInfoToBuildLog",
-            description:""
-        }
-    );
-    a(
-        {
-            id:12,
-            title:"JsonPropertyDescriptionAttribute",
-            content:"JsonPropertyDescriptionAttribute",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/global/JsonPropertyDescriptionAttribute',
-            title:"JsonPropertyDescriptionAttribute",
-            description:""
-        }
-    );
-    a(
-        {
-            id:13,
-            title:"IReferenceCollection",
-            content:"IReferenceCollection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IReferenceCollection',
-            title:"IReferenceCollection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:14,
-            title:"IBranchCollection",
-            content:"IBranchCollection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IBranchCollection',
-            title:"IBranchCollection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:15,
-            title:"IGitVersionCacheProvider",
-            content:"IGitVersionCacheProvider",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation.Caching/IGitVersionCacheProvider',
-            title:"IGitVersionCacheProvider",
-            description:""
-        }
-    );
-    a(
-        {
-            id:16,
-            title:"IGitVersionOutputTool",
-            content:"IGitVersionOutputTool",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/IGitVersionOutputTool',
-            title:"IGitVersionOutputTool",
-            description:""
-        }
-    );
-    a(
-        {
-            id:17,
-            title:"RepositoryFixtureBase",
-            content:"RepositoryFixtureBase",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/RepositoryFixtureBase',
-            title:"RepositoryFixtureBase",
-            description:""
-        }
-    );
-    a(
-        {
-            id:18,
-            title:"AssemblyVersionsGeneratorExtensions",
-            content:"AssemblyVersionsGeneratorExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions',
-            title:"AssemblyVersionsGeneratorExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:19,
-            title:"IGitVersionModule",
-            content:"IGitVersionModule",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/IGitVersionModule',
-            title:"IGitVersionModule",
-            description:""
-        }
-    );
-    a(
-        {
-            id:20,
-            title:"LocalRepositoryFixture",
-            content:"LocalRepositoryFixture",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/LocalRepositoryFixture',
-            title:"LocalRepositoryFixture",
-            description:""
-        }
-    );
-    a(
-        {
-            id:21,
-            title:"WarningException",
-            content:"WarningException",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/WarningException',
-            title:"WarningException",
-            description:""
-        }
-    );
-    a(
-        {
-            id:22,
-            title:"RetryAction",
-            content:"RetryAction",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Helpers/RetryAction_1',
-            title:"RetryAction<T>",
-            description:""
-        }
-    );
-    a(
-        {
-            id:23,
-            title:"JsonPropertyDefaultAttribute",
-            content:"JsonPropertyDefaultAttribute",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration.Attributes/JsonPropertyDefaultAttribute',
-            title:"JsonPropertyDefaultAttribute",
-            description:""
-        }
-    );
-    a(
-        {
-            id:24,
-            title:"IConverterContext",
-            content:"IConverterContext",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/IConverterContext',
-            title:"IConverterContext",
-            description:""
-        }
-    );
-    a(
-        {
-            id:25,
-            title:"VersionField",
-            content:"VersionField",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/VersionField',
-            title:"VersionField",
-            description:""
-        }
-    );
-    a(
-        {
-            id:26,
-            title:"IPreventIncrementConfiguration",
-            content:"IPreventIncrementConfiguration",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration/IPreventIncrementConfiguration',
-            title:"IPreventIncrementConfiguration",
-            description:""
-        }
-    );
-    a(
-        {
-            id:27,
-            title:"ICommitCollection",
-            content:"ICommitCollection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/ICommitCollection',
-            title:"ICommitCollection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:28,
-            title:"ITag",
-            content:"ITag",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/ITag',
-            title:"ITag",
-            description:""
-        }
-    );
-    a(
-        {
-            id:29,
             title:"ReferenceName",
             content:"ReferenceName",
             description:'',
@@ -458,385 +52,63 @@ var searchModule = function() {
     );
     a(
         {
-            id:30,
-            title:"BugException",
-            content:"BugException",
+            id:1,
+            title:"CommitExtensions",
+            content:"CommitExtensions",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/BugException',
-            title:"BugException",
+            url:'/api/GitVersion.Git/CommitExtensions',
+            title:"CommitExtensions",
             description:""
         }
     );
     a(
         {
-            id:31,
-            title:"IMutatingGitRepository",
-            content:"IMutatingGitRepository",
+            id:2,
+            title:"IReferenceCollection",
+            content:"IReferenceCollection",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/IMutatingGitRepository',
-            title:"IMutatingGitRepository",
+            url:'/api/GitVersion.Git/IReferenceCollection',
+            title:"IReferenceCollection",
             description:""
         }
     );
     a(
         {
-            id:32,
-            title:"IGitVersionCalculateTool",
-            content:"IGitVersionCalculateTool",
+            id:3,
+            title:"IReference",
+            content:"IReference",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/IGitVersionCalculateTool',
-            title:"IGitVersionCalculateTool",
+            url:'/api/GitVersion.Git/IReference',
+            title:"IReference",
             description:""
         }
     );
     a(
         {
-            id:33,
-            title:"IBaseVersion",
-            content:"IBaseVersion",
+            id:4,
+            title:"IIgnoreConfiguration",
+            content:"IIgnoreConfiguration",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/IBaseVersion',
-            title:"IBaseVersion",
+            url:'/api/GitVersion.Configuration/IIgnoreConfiguration',
+            title:"IIgnoreConfiguration",
             description:""
         }
     );
     a(
         {
-            id:34,
-            title:"IVersionStrategy",
-            content:"IVersionStrategy",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/IVersionStrategy',
-            title:"IVersionStrategy",
-            description:""
-        }
-    );
-    a(
-        {
-            id:35,
-            title:"IRemote",
-            content:"IRemote",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IRemote',
-            title:"IRemote",
-            description:""
-        }
-    );
-    a(
-        {
-            id:36,
-            title:"ProcessHelper",
-            content:"ProcessHelper",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/ProcessHelper',
-            title:"ProcessHelper",
-            description:""
-        }
-    );
-    a(
-        {
-            id:37,
-            title:"BranchCommit",
-            content:"BranchCommit",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/BranchCommit',
-            title:"BranchCommit",
-            description:""
-        }
-    );
-    a(
-        {
-            id:38,
-            title:"IGitObject",
-            content:"IGitObject",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IGitObject',
-            title:"IGitObject",
-            description:""
-        }
-    );
-    a(
-        {
-            id:39,
-            title:"GitExtensions",
-            content:"GitExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/GitExtensions',
-            title:"GitExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:40,
-            title:"ICommit",
-            content:"ICommit",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/ICommit',
-            title:"ICommit",
-            description:""
-        }
-    );
-    a(
-        {
-            id:41,
-            title:"IDisposable",
-            content:"IDisposable",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/global/IDisposable_1',
-            title:"IDisposable<T>",
-            description:""
-        }
-    );
-    a(
-        {
-            id:42,
-            title:"FileSystemExtensions",
-            content:"FileSystemExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/FileSystemExtensions',
-            title:"FileSystemExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:43,
-            title:"ILog",
-            content:"ILog",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Logging/ILog',
-            title:"ILog",
-            description:""
-        }
-    );
-    a(
-        {
-            id:44,
-            title:"Disposable",
-            content:"Disposable",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Helpers/Disposable',
-            title:"Disposable",
-            description:""
-        }
-    );
-    a(
-        {
-            id:45,
-            title:"UpdateAssemblyInfo",
-            content:"UpdateAssemblyInfo",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo',
-            title:"UpdateAssemblyInfo",
-            description:""
-        }
-    );
-    a(
-        {
-            id:46,
-            title:"CommonExtensions",
-            content:"CommonExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/CommonExtensions',
-            title:"CommonExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:47,
-            title:"SequenceDiagram",
-            content:"SequenceDiagram",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/SequenceDiagram',
-            title:"SequenceDiagram",
-            description:""
-        }
-    );
-    a(
-        {
-            id:48,
-            title:"IGitRepository",
-            content:"IGitRepository",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IGitRepository',
-            title:"IGitRepository",
-            description:""
-        }
-    );
-    a(
-        {
-            id:49,
-            title:"EmptyRepositoryFixture",
-            content:"EmptyRepositoryFixture",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/EmptyRepositoryFixture',
-            title:"EmptyRepositoryFixture",
-            description:""
-        }
-    );
-    a(
-        {
-            id:50,
-            title:"ITagCollection",
-            content:"ITagCollection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/ITagCollection',
-            title:"ITagCollection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:51,
-            title:"IRemoteCollection",
-            content:"IRemoteCollection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IRemoteCollection',
-            title:"IRemoteCollection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:52,
-            title:"VirtualTime",
-            content:"VirtualTime",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/VirtualTime',
-            title:"VirtualTime",
-            description:""
-        }
-    );
-    a(
-        {
-            id:53,
-            title:"SemanticVersionBuildMetaData",
-            content:"SemanticVersionBuildMetaData",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/SemanticVersionBuildMetaData',
-            title:"SemanticVersionBuildMetaData",
-            description:""
-        }
-    );
-    a(
-        {
-            id:54,
-            title:"SemanticVersionFormat",
-            content:"SemanticVersionFormat",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/SemanticVersionFormat',
-            title:"SemanticVersionFormat",
-            description:""
-        }
-    );
-    a(
-        {
-            id:55,
-            title:"AssemblySettingsInfo",
-            content:"AssemblySettingsInfo",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/AssemblySettingsInfo',
-            title:"AssemblySettingsInfo",
-            description:""
-        }
-    );
-    a(
-        {
-            id:56,
-            title:"IDeploymentModeCalculator",
-            content:"IDeploymentModeCalculator",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/IDeploymentModeCalculator',
-            title:"IDeploymentModeCalculator",
-            description:""
-        }
-    );
-    a(
-        {
-            id:57,
+            id:5,
             title:"IRepositoryStore",
             content:"IRepositoryStore",
             description:'',
@@ -850,203 +122,189 @@ var searchModule = function() {
     );
     a(
         {
-            id:58,
-            title:"Verbosity",
-            content:"Verbosity",
+            id:6,
+            title:"LogAction",
+            content:"LogAction",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Logging/Verbosity',
-            title:"Verbosity",
+            url:'/api/GitVersion.Logging/LogAction',
+            title:"LogAction",
             description:""
         }
     );
     a(
         {
-            id:59,
-            title:"ObjectExtensions",
-            content:"ObjectExtensions",
+            id:7,
+            title:"ProcessHelper",
+            content:"ProcessHelper",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Testing.Internal/ObjectExtensions',
-            title:"ObjectExtensions",
+            url:'/api/GitVersion.Testing/ProcessHelper',
+            title:"ProcessHelper",
             description:""
         }
     );
     a(
         {
-            id:60,
-            title:"INamedReference",
-            content:"INamedReference",
+            id:8,
+            title:"GitVersionException",
+            content:"GitVersionException",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/INamedReference',
-            title:"INamedReference",
+            url:'/api/GitVersion/GitVersionException',
+            title:"GitVersionException",
             description:""
         }
     );
     a(
         {
-            id:61,
-            title:"IVersionConverter",
-            content:"IVersionConverter",
+            id:9,
+            title:"IDisposable",
+            content:"IDisposable",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/IVersionConverter_1',
-            title:"IVersionConverter<T>",
+            url:'/api/global/IDisposable_1',
+            title:"IDisposable<T>",
             description:""
         }
     );
     a(
         {
-            id:62,
-            title:"IGitRepositoryInfo",
-            content:"IGitRepositoryInfo",
+            id:10,
+            title:"IConverterContext",
+            content:"IConverterContext",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/IGitRepositoryInfo',
-            title:"IGitRepositoryInfo",
+            url:'/api/GitVersion/IConverterContext',
+            title:"IConverterContext",
             description:""
         }
     );
     a(
         {
-            id:63,
-            title:"GitVersionConfigurationModule",
-            content:"GitVersionConfigurationModule",
+            id:11,
+            title:"IConfigurationBuilder",
+            content:"IConfigurationBuilder",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/GitVersionConfigurationModule',
-            title:"GitVersionConfigurationModule",
+            url:'/api/GitVersion.Configuration/IConfigurationBuilder',
+            title:"IConfigurationBuilder",
             description:""
         }
     );
     a(
         {
-            id:64,
-            title:"StringExtensions",
-            content:"StringExtensions",
+            id:12,
+            title:"GitVersionTaskBase",
+            content:"GitVersionTaskBase",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Extensions/StringExtensions',
-            title:"StringExtensions",
+            url:'/api/GitVersion.MsBuild/GitVersionTaskBase',
+            title:"GitVersionTaskBase",
             description:""
         }
     );
     a(
         {
-            id:65,
-            title:"JsonPropertyFormatAttribute",
-            content:"JsonPropertyFormatAttribute",
+            id:13,
+            title:"IBuildAgent",
+            content:"IBuildAgent",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration.Attributes/JsonPropertyFormatAttribute',
-            title:"JsonPropertyFormatAttribute",
+            url:'/api/GitVersion.Agents/IBuildAgent',
+            title:"IBuildAgent",
             description:""
         }
     );
     a(
         {
-            id:66,
-            title:"IGitVersionConfiguration",
-            content:"IGitVersionConfiguration",
+            id:14,
+            title:"IBaseVersion",
+            content:"IBaseVersion",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/IGitVersionConfiguration',
-            title:"IGitVersionConfiguration",
+            url:'/api/GitVersion.VersionCalculation/IBaseVersion',
+            title:"IBaseVersion",
             description:""
         }
     );
     a(
         {
-            id:67,
-            title:"DeploymentMode",
-            content:"DeploymentMode",
+            id:15,
+            title:"IBranchCollection",
+            content:"IBranchCollection",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/DeploymentMode',
-            title:"DeploymentMode",
+            url:'/api/GitVersion.Git/IBranchCollection',
+            title:"IBranchCollection",
             description:""
         }
     );
     a(
         {
-            id:68,
-            title:"IRefSpecCollection",
-            content:"IRefSpecCollection",
+            id:16,
+            title:"LogExtensions",
+            content:"LogExtensions",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/IRefSpecCollection',
-            title:"IRefSpecCollection",
+            url:'/api/GitVersion.Logging/LogExtensions',
+            title:"LogExtensions",
             description:""
         }
     );
     a(
         {
-            id:69,
-            title:"LogLevel",
-            content:"LogLevel",
+            id:17,
+            title:"IIncrementStrategyFinder",
+            content:"IIncrementStrategyFinder",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Logging/LogLevel',
-            title:"LogLevel",
+            url:'/api/GitVersion.VersionCalculation/IIncrementStrategyFinder',
+            title:"IIncrementStrategyFinder",
             description:""
         }
     );
     a(
         {
-            id:70,
-            title:"ConfigurationException",
-            content:"ConfigurationException",
+            id:18,
+            title:"RepositoryFixtureBase",
+            content:"RepositoryFixtureBase",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/ConfigurationException',
-            title:"ConfigurationException",
+            url:'/api/GitVersion.Testing/RepositoryFixtureBase',
+            title:"RepositoryFixtureBase",
             description:""
         }
     );
     a(
         {
-            id:71,
-            title:"IObjectId",
-            content:"IObjectId",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/IObjectId',
-            title:"IObjectId",
-            description:""
-        }
-    );
-    a(
-        {
-            id:72,
+            id:19,
             title:"GitVersionCommonModule",
             content:"GitVersionCommonModule",
             description:'',
@@ -1060,63 +318,21 @@ var searchModule = function() {
     );
     a(
         {
-            id:73,
-            title:"AssemblyVersioningScheme",
-            content:"AssemblyVersioningScheme",
+            id:20,
+            title:"IGitVersionCalculateTool",
+            content:"IGitVersionCalculateTool",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/AssemblyVersioningScheme',
-            title:"AssemblyVersioningScheme",
+            url:'/api/GitVersion/IGitVersionCalculateTool',
+            title:"IGitVersionCalculateTool",
             description:""
         }
     );
     a(
         {
-            id:74,
-            title:"IBaseVersionIncrement",
-            content:"IBaseVersionIncrement",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/IBaseVersionIncrement',
-            title:"IBaseVersionIncrement",
-            description:""
-        }
-    );
-    a(
-        {
-            id:75,
-            title:"GitVersionOptions",
-            content:"GitVersionOptions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/GitVersionOptions',
-            title:"GitVersionOptions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:76,
-            title:"INextVersionCalculator",
-            content:"INextVersionCalculator",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/INextVersionCalculator',
-            title:"INextVersionCalculator",
-            description:""
-        }
-    );
-    a(
-        {
-            id:77,
+            id:21,
             title:"IVariableProvider",
             content:"IVariableProvider",
             description:'',
@@ -1130,189 +346,189 @@ var searchModule = function() {
     );
     a(
         {
-            id:78,
-            title:"GitTestExtensions",
-            content:"GitTestExtensions",
+            id:22,
+            title:"LambdaKeyComparer",
+            content:"LambdaKeyComparer",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Testing/GitTestExtensions',
-            title:"GitTestExtensions",
+            url:'/api/GitVersion.Helpers/LambdaKeyComparer_2',
+            title:"LambdaKeyComparer<TSource, TKey>",
             description:""
         }
     );
     a(
         {
-            id:79,
-            title:"SemanticVersionPreReleaseTag",
-            content:"SemanticVersionPreReleaseTag",
+            id:23,
+            title:"ReferenceNameExtensions",
+            content:"ReferenceNameExtensions",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/SemanticVersionPreReleaseTag',
-            title:"SemanticVersionPreReleaseTag",
+            url:'/api/GitVersion.Configuration/ReferenceNameExtensions',
+            title:"ReferenceNameExtensions",
             description:""
         }
     );
     a(
         {
-            id:80,
-            title:"IRefSpec",
-            content:"IRefSpec",
+            id:24,
+            title:"RetryAction",
+            content:"RetryAction",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/IRefSpec',
-            title:"IRefSpec",
+            url:'/api/GitVersion.Helpers/RetryAction_1',
+            title:"RetryAction<T>",
             description:""
         }
     );
     a(
         {
-            id:81,
-            title:"GetVersion",
-            content:"GetVersion",
+            id:25,
+            title:"AssemblyFileVersioningScheme",
+            content:"AssemblyFileVersioningScheme",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.MsBuild.Tasks/GetVersion',
-            title:"GetVersion",
+            url:'/api/GitVersion.Configuration/AssemblyFileVersioningScheme',
+            title:"AssemblyFileVersioningScheme",
             description:""
         }
     );
     a(
         {
-            id:82,
-            title:"IVersionFilter",
-            content:"IVersionFilter",
+            id:26,
+            title:"ICommit",
+            content:"ICommit",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/IVersionFilter',
-            title:"IVersionFilter",
+            url:'/api/GitVersion.Git/ICommit',
+            title:"ICommit",
             description:""
         }
     );
     a(
         {
-            id:83,
-            title:"IEffectiveBranchConfigurationFinder",
-            content:"IEffectiveBranchConfigurationFinder",
+            id:27,
+            title:"StringExtensions",
+            content:"StringExtensions",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder',
-            title:"IEffectiveBranchConfigurationFinder",
+            url:'/api/GitVersion.Extensions/StringExtensions',
+            title:"StringExtensions",
             description:""
         }
     );
     a(
         {
-            id:84,
-            title:"GenerateGitVersionInformation",
-            content:"GenerateGitVersionInformation",
+            id:28,
+            title:"EnumerableExtensions",
+            content:"EnumerableExtensions",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation',
-            title:"GenerateGitVersionInformation",
+            url:'/api/GitVersion.Extensions/EnumerableExtensions',
+            title:"EnumerableExtensions",
             description:""
         }
     );
     a(
         {
-            id:85,
-            title:"Generate",
-            content:"Generate",
+            id:29,
+            title:"IBaseVersionIncrement",
+            content:"IBaseVersionIncrement",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Testing/Generate',
-            title:"Generate",
+            url:'/api/GitVersion.VersionCalculation/IBaseVersionIncrement',
+            title:"IBaseVersionIncrement",
             description:""
         }
     );
     a(
         {
-            id:86,
-            title:"SemanticVersion IncrementMode",
-            content:"SemanticVersion IncrementMode",
+            id:30,
+            title:"BranchCommit",
+            content:"BranchCommit",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/IncrementMode',
-            title:"SemanticVersion.IncrementMode",
+            url:'/api/GitVersion.Git/BranchCommit',
+            title:"BranchCommit",
             description:""
         }
     );
     a(
         {
-            id:87,
-            title:"OutputType",
-            content:"OutputType",
+            id:31,
+            title:"NextVersion",
+            content:"NextVersion",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/OutputType',
-            title:"OutputType",
+            url:'/api/GitVersion.VersionCalculation/NextVersion',
+            title:"NextVersion",
             description:""
         }
     );
     a(
         {
-            id:88,
-            title:"SemanticVersionFormatValues",
-            content:"SemanticVersionFormatValues",
+            id:32,
+            title:"IGitVersionModule",
+            content:"IGitVersionModule",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/SemanticVersionFormatValues',
-            title:"SemanticVersionFormatValues",
+            url:'/api/GitVersion/IGitVersionModule',
+            title:"IGitVersionModule",
             description:""
         }
     );
     a(
         {
-            id:89,
-            title:"IConfigurationProvider",
-            content:"IConfigurationProvider",
+            id:33,
+            title:"GitVersionConfigurationModule",
+            content:"GitVersionConfigurationModule",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/IConfigurationProvider',
-            title:"IConfigurationProvider",
+            url:'/api/GitVersion.Configuration/GitVersionConfigurationModule',
+            title:"GitVersionConfigurationModule",
             description:""
         }
     );
     a(
         {
-            id:90,
-            title:"GitVersionMsBuildModule",
-            content:"GitVersionMsBuildModule",
+            id:34,
+            title:"IRefSpecCollection",
+            content:"IRefSpecCollection",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.MsBuild/GitVersionMsBuildModule',
-            title:"GitVersionMsBuildModule",
+            url:'/api/GitVersion.Git/IRefSpecCollection',
+            title:"IRefSpecCollection",
             description:""
         }
     );
     a(
         {
-            id:91,
+            id:35,
             title:"VersionStrategyModule",
             content:"VersionStrategyModule",
             description:'',
@@ -1326,7 +542,7 @@ var searchModule = function() {
     );
     a(
         {
-            id:92,
+            id:36,
             title:"GitVersionLibGit SharpModule",
             content:"GitVersionLibGit SharpModule",
             description:'',
@@ -1340,21 +556,385 @@ var searchModule = function() {
     );
     a(
         {
-            id:93,
-            title:"DictionaryExtensions",
-            content:"DictionaryExtensions",
+            id:37,
+            title:"SemanticVersionFormat",
+            content:"SemanticVersionFormat",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Extensions/DictionaryExtensions',
-            title:"DictionaryExtensions",
+            url:'/api/GitVersion/SemanticVersionFormat',
+            title:"SemanticVersionFormat",
             description:""
         }
     );
     a(
         {
-            id:94,
+            id:38,
+            title:"IBranchConfiguration",
+            content:"IBranchConfiguration",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration/IBranchConfiguration',
+            title:"IBranchConfiguration",
+            description:""
+        }
+    );
+    a(
+        {
+            id:39,
+            title:"BugException",
+            content:"BugException",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/BugException',
+            title:"BugException",
+            description:""
+        }
+    );
+    a(
+        {
+            id:40,
+            title:"LogActionEntry",
+            content:"LogActionEntry",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Logging/LogActionEntry',
+            title:"LogActionEntry",
+            description:""
+        }
+    );
+    a(
+        {
+            id:41,
+            title:"INextVersionCalculator",
+            content:"INextVersionCalculator",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/INextVersionCalculator',
+            title:"INextVersionCalculator",
+            description:""
+        }
+    );
+    a(
+        {
+            id:42,
+            title:"ServiceMessageEscapeHelper",
+            content:"ServiceMessageEscapeHelper",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Helpers/ServiceMessageEscapeHelper',
+            title:"ServiceMessageEscapeHelper",
+            description:""
+        }
+    );
+    a(
+        {
+            id:43,
+            title:"FileSystemExtensions",
+            content:"FileSystemExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/FileSystemExtensions',
+            title:"FileSystemExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:44,
+            title:"IPreventIncrementConfiguration",
+            content:"IPreventIncrementConfiguration",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration/IPreventIncrementConfiguration',
+            title:"IPreventIncrementConfiguration",
+            description:""
+        }
+    );
+    a(
+        {
+            id:45,
+            title:"GitVersionOutputModule",
+            content:"GitVersionOutputModule",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Output/GitVersionOutputModule',
+            title:"GitVersionOutputModule",
+            description:""
+        }
+    );
+    a(
+        {
+            id:46,
+            title:"IRemoteCollection",
+            content:"IRemoteCollection",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IRemoteCollection',
+            title:"IRemoteCollection",
+            description:""
+        }
+    );
+    a(
+        {
+            id:47,
+            title:"LambdaEqualityHelper",
+            content:"LambdaEqualityHelper",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Helpers/LambdaEqualityHelper_1',
+            title:"LambdaEqualityHelper<T>",
+            description:""
+        }
+    );
+    a(
+        {
+            id:48,
+            title:"IncrementStrategyExtensions",
+            content:"IncrementStrategyExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/IncrementStrategyExtensions',
+            title:"IncrementStrategyExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:49,
+            title:"GitVersionMsBuildModule",
+            content:"GitVersionMsBuildModule",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.MsBuild/GitVersionMsBuildModule',
+            title:"GitVersionMsBuildModule",
+            description:""
+        }
+    );
+    a(
+        {
+            id:50,
+            title:"EmptyRepositoryFixture",
+            content:"EmptyRepositoryFixture",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/EmptyRepositoryFixture',
+            title:"EmptyRepositoryFixture",
+            description:""
+        }
+    );
+    a(
+        {
+            id:51,
+            title:"UpdateAssemblyInfo",
+            content:"UpdateAssemblyInfo",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo',
+            title:"UpdateAssemblyInfo",
+            description:""
+        }
+    );
+    a(
+        {
+            id:52,
+            title:"VersionField",
+            content:"VersionField",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/VersionField',
+            title:"VersionField",
+            description:""
+        }
+    );
+    a(
+        {
+            id:53,
+            title:"CommitSortStrategies",
+            content:"CommitSortStrategies",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/global/CommitSortStrategies',
+            title:"CommitSortStrategies",
+            description:""
+        }
+    );
+    a(
+        {
+            id:54,
+            title:"JsonPropertyFormatAttribute",
+            content:"JsonPropertyFormatAttribute",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration.Attributes/JsonPropertyFormatAttribute',
+            title:"JsonPropertyFormatAttribute",
+            description:""
+        }
+    );
+    a(
+        {
+            id:55,
+            title:"JsonPropertyDescriptionAttribute",
+            content:"JsonPropertyDescriptionAttribute",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/global/JsonPropertyDescriptionAttribute',
+            title:"JsonPropertyDescriptionAttribute",
+            description:""
+        }
+    );
+    a(
+        {
+            id:56,
+            title:"BaseGitFlowRepositoryFixture",
+            content:"BaseGitFlowRepositoryFixture",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/BaseGitFlowRepositoryFixture',
+            title:"BaseGitFlowRepositoryFixture",
+            description:""
+        }
+    );
+    a(
+        {
+            id:57,
+            title:"IncrementStrategy",
+            content:"IncrementStrategy",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IncrementStrategy',
+            title:"IncrementStrategy",
+            description:""
+        }
+    );
+    a(
+        {
+            id:58,
+            title:"IBranch",
+            content:"IBranch",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IBranch',
+            title:"IBranch",
+            description:""
+        }
+    );
+    a(
+        {
+            id:59,
+            title:"Generate",
+            content:"Generate",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/Generate',
+            title:"Generate",
+            description:""
+        }
+    );
+    a(
+        {
+            id:60,
+            title:"Format",
+            content:"Format",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/global/Format',
+            title:"Format",
+            description:""
+        }
+    );
+    a(
+        {
+            id:61,
+            title:"ServiceCollectionExtensions",
+            content:"ServiceCollectionExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/ServiceCollectionExtensions',
+            title:"ServiceCollectionExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:62,
+            title:"IGitRepository",
+            content:"IGitRepository",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IGitRepository',
+            title:"IGitRepository",
+            description:""
+        }
+    );
+    a(
+        {
+            id:63,
+            title:"VirtualTime",
+            content:"VirtualTime",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/VirtualTime',
+            title:"VirtualTime",
+            description:""
+        }
+    );
+    a(
+        {
+            id:64,
             title:"IConfigurationFileLocator",
             content:"IConfigurationFileLocator",
             description:'',
@@ -1363,6 +943,426 @@ var searchModule = function() {
         {
             url:'/api/GitVersion.Configuration/IConfigurationFileLocator',
             title:"IConfigurationFileLocator",
+            description:""
+        }
+    );
+    a(
+        {
+            id:65,
+            title:"IVersionFilter",
+            content:"IVersionFilter",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/IVersionFilter',
+            title:"IVersionFilter",
+            description:""
+        }
+    );
+    a(
+        {
+            id:66,
+            title:"AssemblyVersionsGeneratorExtensions",
+            content:"AssemblyVersionsGeneratorExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions',
+            title:"AssemblyVersionsGeneratorExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:67,
+            title:"IConfigurationProvider",
+            content:"IConfigurationProvider",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration/IConfigurationProvider',
+            title:"IConfigurationProvider",
+            description:""
+        }
+    );
+    a(
+        {
+            id:68,
+            title:"ICommitCollection",
+            content:"ICommitCollection",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/ICommitCollection',
+            title:"ICommitCollection",
+            description:""
+        }
+    );
+    a(
+        {
+            id:69,
+            title:"IGitVersionContextFactory",
+            content:"IGitVersionContextFactory",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IGitVersionContextFactory',
+            title:"IGitVersionContextFactory",
+            description:""
+        }
+    );
+    a(
+        {
+            id:70,
+            title:"GitVersionOptions",
+            content:"GitVersionOptions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/GitVersionOptions',
+            title:"GitVersionOptions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:71,
+            title:"LocalRepositoryFixture",
+            content:"LocalRepositoryFixture",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/LocalRepositoryFixture',
+            title:"LocalRepositoryFixture",
+            description:""
+        }
+    );
+    a(
+        {
+            id:72,
+            title:"Disposable",
+            content:"Disposable",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Helpers/Disposable',
+            title:"Disposable",
+            description:""
+        }
+    );
+    a(
+        {
+            id:73,
+            title:"GitTestExtensions",
+            content:"GitTestExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/GitTestExtensions',
+            title:"GitTestExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:74,
+            title:"MergeMessage",
+            content:"MergeMessage",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/MergeMessage',
+            title:"MergeMessage",
+            description:""
+        }
+    );
+    a(
+        {
+            id:75,
+            title:"Verbosity",
+            content:"Verbosity",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Logging/Verbosity',
+            title:"Verbosity",
+            description:""
+        }
+    );
+    a(
+        {
+            id:76,
+            title:"IRefSpec",
+            content:"IRefSpec",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IRefSpec',
+            title:"IRefSpec",
+            description:""
+        }
+    );
+    a(
+        {
+            id:77,
+            title:"DeploymentMode",
+            content:"DeploymentMode",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/DeploymentMode',
+            title:"DeploymentMode",
+            description:""
+        }
+    );
+    a(
+        {
+            id:78,
+            title:"JsonPropertyDefaultAttribute",
+            content:"JsonPropertyDefaultAttribute",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration.Attributes/JsonPropertyDefaultAttribute',
+            title:"JsonPropertyDefaultAttribute",
+            description:""
+        }
+    );
+    a(
+        {
+            id:79,
+            title:"GitVersionContext",
+            content:"GitVersionContext",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/GitVersionContext',
+            title:"GitVersionContext",
+            description:""
+        }
+    );
+    a(
+        {
+            id:80,
+            title:"SemanticVersion IncrementMode",
+            content:"SemanticVersion IncrementMode",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IncrementMode',
+            title:"SemanticVersion.IncrementMode",
+            description:""
+        }
+    );
+    a(
+        {
+            id:81,
+            title:"ConfigurationException",
+            content:"ConfigurationException",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Configuration/ConfigurationException',
+            title:"ConfigurationException",
+            description:""
+        }
+    );
+    a(
+        {
+            id:82,
+            title:"VersionStrategies",
+            content:"VersionStrategies",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/VersionStrategies',
+            title:"VersionStrategies",
+            description:""
+        }
+    );
+    a(
+        {
+            id:83,
+            title:"GenerateGitVersionInformation",
+            content:"GenerateGitVersionInformation",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation',
+            title:"GenerateGitVersionInformation",
+            description:""
+        }
+    );
+    a(
+        {
+            id:84,
+            title:"AssemblySettingsInfo",
+            content:"AssemblySettingsInfo",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/AssemblySettingsInfo',
+            title:"AssemblySettingsInfo",
+            description:""
+        }
+    );
+    a(
+        {
+            id:85,
+            title:"WarningException",
+            content:"WarningException",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/WarningException',
+            title:"WarningException",
+            description:""
+        }
+    );
+    a(
+        {
+            id:86,
+            title:"IEnvironment",
+            content:"IEnvironment",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IEnvironment',
+            title:"IEnvironment",
+            description:""
+        }
+    );
+    a(
+        {
+            id:87,
+            title:"VersionCalculationModule",
+            content:"VersionCalculationModule",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/VersionCalculationModule',
+            title:"VersionCalculationModule",
+            description:""
+        }
+    );
+    a(
+        {
+            id:88,
+            title:"GitVersionCoreModule",
+            content:"GitVersionCoreModule",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/GitVersionCoreModule',
+            title:"GitVersionCoreModule",
+            description:""
+        }
+    );
+    a(
+        {
+            id:89,
+            title:"IDeploymentModeCalculator",
+            content:"IDeploymentModeCalculator",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/IDeploymentModeCalculator',
+            title:"IDeploymentModeCalculator",
+            description:""
+        }
+    );
+    a(
+        {
+            id:90,
+            title:"IRemote",
+            content:"IRemote",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IRemote',
+            title:"IRemote",
+            description:""
+        }
+    );
+    a(
+        {
+            id:91,
+            title:"GitExtensions",
+            content:"GitExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/GitExtensions',
+            title:"GitExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:92,
+            title:"RefSpecDirection",
+            content:"RefSpecDirection",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/RefSpecDirection',
+            title:"RefSpecDirection",
+            description:""
+        }
+    );
+    a(
+        {
+            id:93,
+            title:"SequenceDiagram",
+            content:"SequenceDiagram",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Testing/SequenceDiagram',
+            title:"SequenceDiagram",
+            description:""
+        }
+    );
+    a(
+        {
+            id:94,
+            title:"SemanticVersionPreReleaseTag",
+            content:"SemanticVersionPreReleaseTag",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/SemanticVersionPreReleaseTag',
+            title:"SemanticVersionPreReleaseTag",
             description:""
         }
     );
@@ -1383,104 +1383,188 @@ var searchModule = function() {
     a(
         {
             id:96,
-            title:"IBranchConfiguration",
-            content:"IBranchConfiguration",
+            title:"INamedReference",
+            content:"INamedReference",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Configuration/IBranchConfiguration',
-            title:"IBranchConfiguration",
+            url:'/api/GitVersion.Git/INamedReference',
+            title:"INamedReference",
             description:""
         }
     );
     a(
         {
             id:97,
-            title:"IEnvironment",
-            content:"IEnvironment",
+            title:"ILog",
+            content:"ILog",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/IEnvironment',
-            title:"IEnvironment",
+            url:'/api/GitVersion.Logging/ILog',
+            title:"ILog",
             description:""
         }
     );
     a(
         {
             id:98,
-            title:"NextVersion",
-            content:"NextVersion",
+            title:"ITag",
+            content:"ITag",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/NextVersion',
-            title:"NextVersion",
+            url:'/api/GitVersion.Git/ITag',
+            title:"ITag",
             description:""
         }
     );
     a(
         {
             id:99,
-            title:"SemanticVersion",
-            content:"SemanticVersion",
+            title:"GetVersion",
+            content:"GetVersion",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/SemanticVersion',
-            title:"SemanticVersion",
+            url:'/api/GitVersion.MsBuild.Tasks/GetVersion',
+            title:"GetVersion",
             description:""
         }
     );
     a(
         {
             id:100,
-            title:"GitVersionException",
-            content:"GitVersionException",
+            title:"IMutatingGitRepository",
+            content:"IMutatingGitRepository",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/GitVersionException',
-            title:"GitVersionException",
+            url:'/api/GitVersion.Git/IMutatingGitRepository',
+            title:"IMutatingGitRepository",
             description:""
         }
     );
     a(
         {
             id:101,
-            title:"IIncrementStrategyFinder",
-            content:"IIncrementStrategyFinder",
+            title:"AssemblyVersioningScheme",
+            content:"AssemblyVersioningScheme",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.VersionCalculation/IIncrementStrategyFinder',
-            title:"IIncrementStrategyFinder",
+            url:'/api/GitVersion.Configuration/AssemblyVersioningScheme',
+            title:"AssemblyVersioningScheme",
             description:""
         }
     );
     a(
         {
             id:102,
-            title:"LogExtensions",
-            content:"LogExtensions",
+            title:"IGitVersionOutputTool",
+            content:"IGitVersionOutputTool",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Logging/LogExtensions',
-            title:"LogExtensions",
+            url:'/api/GitVersion/IGitVersionOutputTool',
+            title:"IGitVersionOutputTool",
             description:""
         }
     );
     a(
         {
             id:103,
+            title:"OutputType",
+            content:"OutputType",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/OutputType',
+            title:"OutputType",
+            description:""
+        }
+    );
+    a(
+        {
+            id:104,
+            title:"WriteVersionInfoToBuildLog",
+            content:"WriteVersionInfoToBuildLog",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog',
+            title:"WriteVersionInfoToBuildLog",
+            description:""
+        }
+    );
+    a(
+        {
+            id:105,
+            title:"ILogAppender",
+            content:"ILogAppender",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Logging/ILogAppender',
+            title:"ILogAppender",
+            description:""
+        }
+    );
+    a(
+        {
+            id:106,
+            title:"IGitRepositoryInfo",
+            content:"IGitRepositoryInfo",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/IGitRepositoryInfo',
+            title:"IGitRepositoryInfo",
+            description:""
+        }
+    );
+    a(
+        {
+            id:107,
+            title:"IGitVersionCacheProvider",
+            content:"IGitVersionCacheProvider",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation.Caching/IGitVersionCacheProvider',
+            title:"IGitVersionCacheProvider",
+            description:""
+        }
+    );
+    a(
+        {
+            id:108,
+            title:"ITagCollection",
+            content:"ITagCollection",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Git/ITagCollection',
+            title:"ITagCollection",
+            description:""
+        }
+    );
+    a(
+        {
+            id:109,
             title:"RemoteRepositoryFixture",
             content:"RemoteRepositoryFixture",
             description:'',
@@ -1489,90 +1573,6 @@ var searchModule = function() {
         {
             url:'/api/GitVersion.Testing/RemoteRepositoryFixture',
             title:"RemoteRepositoryFixture",
-            description:""
-        }
-    );
-    a(
-        {
-            id:104,
-            title:"EnumerableExtensions",
-            content:"EnumerableExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/EnumerableExtensions',
-            title:"EnumerableExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:105,
-            title:"GitVersionOutputModule",
-            content:"GitVersionOutputModule",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Output/GitVersionOutputModule',
-            title:"GitVersionOutputModule",
-            description:""
-        }
-    );
-    a(
-        {
-            id:106,
-            title:"CommitSortStrategies",
-            content:"CommitSortStrategies",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/global/CommitSortStrategies',
-            title:"CommitSortStrategies",
-            description:""
-        }
-    );
-    a(
-        {
-            id:107,
-            title:"GitVersionTaskBase",
-            content:"GitVersionTaskBase",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.MsBuild/GitVersionTaskBase',
-            title:"GitVersionTaskBase",
-            description:""
-        }
-    );
-    a(
-        {
-            id:108,
-            title:"BaseGitFlowRepositoryFixture",
-            content:"BaseGitFlowRepositoryFixture",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Testing/BaseGitFlowRepositoryFixture',
-            title:"BaseGitFlowRepositoryFixture",
-            description:""
-        }
-    );
-    a(
-        {
-            id:109,
-            title:"IGitPreparer",
-            content:"IGitPreparer",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/IGitPreparer',
-            title:"IGitPreparer",
             description:""
         }
     );
@@ -1593,174 +1593,20 @@ var searchModule = function() {
     a(
         {
             id:111,
-            title:"LogActionEntry",
-            content:"LogActionEntry",
+            title:"IGitObject",
+            content:"IGitObject",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Logging/LogActionEntry',
-            title:"LogActionEntry",
+            url:'/api/GitVersion.Git/IGitObject',
+            title:"IGitObject",
             description:""
         }
     );
     a(
         {
             id:112,
-            title:"ReadEmbeddedResourceExtensions",
-            content:"ReadEmbeddedResourceExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/ReadEmbeddedResourceExtensions',
-            title:"ReadEmbeddedResourceExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:113,
-            title:"CommitMessageIncrementMode",
-            content:"CommitMessageIncrementMode",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/CommitMessageIncrementMode',
-            title:"CommitMessageIncrementMode",
-            description:""
-        }
-    );
-    a(
-        {
-            id:114,
-            title:"CommitExtensions",
-            content:"CommitExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/CommitExtensions',
-            title:"CommitExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:115,
-            title:"IConsole",
-            content:"IConsole",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Logging/IConsole',
-            title:"IConsole",
-            description:""
-        }
-    );
-    a(
-        {
-            id:116,
-            title:"GitVersionCoreModule",
-            content:"GitVersionCoreModule",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/GitVersionCoreModule',
-            title:"GitVersionCoreModule",
-            description:""
-        }
-    );
-    a(
-        {
-            id:117,
-            title:"RefSpecDirection",
-            content:"RefSpecDirection",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Git/RefSpecDirection',
-            title:"RefSpecDirection",
-            description:""
-        }
-    );
-    a(
-        {
-            id:118,
-            title:"IConfigurationBuilder",
-            content:"IConfigurationBuilder",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Configuration/IConfigurationBuilder',
-            title:"IConfigurationBuilder",
-            description:""
-        }
-    );
-    a(
-        {
-            id:119,
-            title:"ServiceCollectionExtensions",
-            content:"ServiceCollectionExtensions",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Extensions/ServiceCollectionExtensions',
-            title:"ServiceCollectionExtensions",
-            description:""
-        }
-    );
-    a(
-        {
-            id:120,
-            title:"ILogAppender",
-            content:"ILogAppender",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Logging/ILogAppender',
-            title:"ILogAppender",
-            description:""
-        }
-    );
-    a(
-        {
-            id:121,
-            title:"IncrementStrategy",
-            content:"IncrementStrategy",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion/IncrementStrategy',
-            title:"IncrementStrategy",
-            description:""
-        }
-    );
-    a(
-        {
-            id:122,
-            title:"LambdaKeyComparer",
-            content:"LambdaKeyComparer",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.Helpers/LambdaKeyComparer_2',
-            title:"LambdaKeyComparer<TSource, TKey>",
-            description:""
-        }
-    );
-    a(
-        {
-            id:123,
             title:"IVersionVariableSerializer",
             content:"IVersionVariableSerializer",
             description:'',
@@ -1774,99 +1620,239 @@ var searchModule = function() {
     );
     a(
         {
-            id:124,
-            title:"LogAction",
-            content:"LogAction",
+            id:113,
+            title:"ICurrentBuildAgent",
+            content:"ICurrentBuildAgent",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Logging/LogAction',
-            title:"LogAction",
+            url:'/api/GitVersion.Agents/ICurrentBuildAgent',
+            title:"ICurrentBuildAgent",
+            description:""
+        }
+    );
+    a(
+        {
+            id:114,
+            title:"IGitPreparer",
+            content:"IGitPreparer",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IGitPreparer',
+            title:"IGitPreparer",
+            description:""
+        }
+    );
+    a(
+        {
+            id:115,
+            title:"ReadEmbeddedResourceExtensions",
+            content:"ReadEmbeddedResourceExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/ReadEmbeddedResourceExtensions',
+            title:"ReadEmbeddedResourceExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:116,
+            title:"SemanticVersionBuildMetaData",
+            content:"SemanticVersionBuildMetaData",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/SemanticVersionBuildMetaData',
+            title:"SemanticVersionBuildMetaData",
+            description:""
+        }
+    );
+    a(
+        {
+            id:117,
+            title:"CommonExtensions",
+            content:"CommonExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/CommonExtensions',
+            title:"CommonExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:118,
+            title:"DictionaryExtensions",
+            content:"DictionaryExtensions",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Extensions/DictionaryExtensions',
+            title:"DictionaryExtensions",
+            description:""
+        }
+    );
+    a(
+        {
+            id:119,
+            title:"LogLevel",
+            content:"LogLevel",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Logging/LogLevel',
+            title:"LogLevel",
+            description:""
+        }
+    );
+    a(
+        {
+            id:120,
+            title:"IVersionConverter",
+            content:"IVersionConverter",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/IVersionConverter_1',
+            title:"IVersionConverter<T>",
+            description:""
+        }
+    );
+    a(
+        {
+            id:121,
+            title:"IConsole",
+            content:"IConsole",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.Logging/IConsole',
+            title:"IConsole",
+            description:""
+        }
+    );
+    a(
+        {
+            id:122,
+            title:"SemanticVersion",
+            content:"SemanticVersion",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion/SemanticVersion',
+            title:"SemanticVersion",
+            description:""
+        }
+    );
+    a(
+        {
+            id:123,
+            title:"IVersionStrategy",
+            content:"IVersionStrategy",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/IVersionStrategy',
+            title:"IVersionStrategy",
+            description:""
+        }
+    );
+    a(
+        {
+            id:124,
+            title:"CommitMessageIncrementMode",
+            content:"CommitMessageIncrementMode",
+            description:'',
+            tags:''
+        },
+        {
+            url:'/api/GitVersion.VersionCalculation/CommitMessageIncrementMode',
+            title:"CommitMessageIncrementMode",
             description:""
         }
     );
     a(
         {
             id:125,
-            title:"IncrementStrategyExtensions",
-            content:"IncrementStrategyExtensions",
+            title:"IGitVersionConfiguration",
+            content:"IGitVersionConfiguration",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Extensions/IncrementStrategyExtensions',
-            title:"IncrementStrategyExtensions",
+            url:'/api/GitVersion.Configuration/IGitVersionConfiguration',
+            title:"IGitVersionConfiguration",
             description:""
         }
     );
     a(
         {
             id:126,
-            title:"IBuildAgent",
-            content:"IBuildAgent",
+            title:"SemanticVersionFormatValues",
+            content:"SemanticVersionFormatValues",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Agents/IBuildAgent',
-            title:"IBuildAgent",
+            url:'/api/GitVersion/SemanticVersionFormatValues',
+            title:"SemanticVersionFormatValues",
             description:""
         }
     );
     a(
         {
             id:127,
-            title:"GitVersionContext",
-            content:"GitVersionContext",
+            title:"GitVersionBuildAgentsModule",
+            content:"GitVersionBuildAgentsModule",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/GitVersionContext',
-            title:"GitVersionContext",
+            url:'/api/GitVersion.Agents/GitVersionBuildAgentsModule',
+            title:"GitVersionBuildAgentsModule",
             description:""
         }
     );
     a(
         {
             id:128,
-            title:"IGitVersionContextFactory",
-            content:"IGitVersionContextFactory",
+            title:"IEffectiveBranchConfigurationFinder",
+            content:"IEffectiveBranchConfigurationFinder",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion/IGitVersionContextFactory',
-            title:"IGitVersionContextFactory",
+            url:'/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder',
+            title:"IEffectiveBranchConfigurationFinder",
             description:""
         }
     );
     a(
         {
             id:129,
-            title:"IBranch",
-            content:"IBranch",
+            title:"IObjectId",
+            content:"IObjectId",
             description:'',
             tags:''
         },
         {
-            url:'/api/GitVersion.Git/IBranch',
-            title:"IBranch",
-            description:""
-        }
-    );
-    a(
-        {
-            id:130,
-            title:"VersionCalculationModule",
-            content:"VersionCalculationModule",
-            description:'',
-            tags:''
-        },
-        {
-            url:'/api/GitVersion.VersionCalculation/VersionCalculationModule',
-            title:"VersionCalculationModule",
+            url:'/api/GitVersion.Git/IObjectId',
+            title:"IObjectId",
             description:""
         }
     );
