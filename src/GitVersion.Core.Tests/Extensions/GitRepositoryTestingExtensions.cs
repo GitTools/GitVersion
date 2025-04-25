@@ -65,6 +65,21 @@ public static class GitRepositoryTestingExtensions
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
         => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
+    public static void RenameRemote(this LibGit2Sharp.RemoteCollection remotes, string oldName, string newName)
+    {
+        if (oldName.IsEquivalentTo(newName)) return;
+        if (remotes.Any(remote => remote.Name == newName))
+        {
+            throw new InvalidOperationException($"A remote with the name '{newName}' already exists.");
+        }
+        if (!remotes.Any(remote => remote.Name == oldName))
+        {
+            throw new InvalidOperationException($"A remote with the name '{oldName}' does not exist.");
+        }
+        remotes.Add(newName, remotes[oldName].Url);
+        remotes.Remove(oldName);
+    }
+
     public static GitVersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
         IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {

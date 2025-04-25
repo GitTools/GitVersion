@@ -98,14 +98,10 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     [TestCase("origin", "release/3.0.0", "3.0.0")]
     public void CanTakeVersionFromNameOfRemoteReleaseBranch(string origin, string branchName, string expectedBaseVersion)
     {
-        if (SysEnv.OSVersion.Platform == PlatformID.Win32NT)
-        {
-            Assert.Ignore("Test ignored on Windows - LibGitSharp 0.31.0 fails");
-        }
         using var fixture = new RemoteRepositoryFixture();
 
         fixture.CreateBranch(branchName);
-        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", origin);
+        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
         fixture.LocalRepositoryFixture.Fetch(origin);
 
         var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();

@@ -142,17 +142,12 @@ public class RemoteRepositoryScenarios : TestBase
     [TestCase("custom", "release/3.0.0", "0.1.0-alpha.5")]
     public void EnsureRemoteReleaseBranchesAreTracked(string origin, string branchName, string expectedVersion)
     {
-        if (SysEnv.OSVersion.Platform == PlatformID.Win32NT)
-        {
-            Assert.Ignore("Test ignored on Windows - LibGitSharp 0.31.0 fails");
-        }
-
         using var fixture = new RemoteRepositoryFixture("develop");
 
         fixture.CreateBranch(branchName);
         fixture.MakeACommit();
 
-        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", origin);
+        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
         fixture.LocalRepositoryFixture.Fetch(origin);
         fixture.LocalRepositoryFixture.Checkout("develop");
 
