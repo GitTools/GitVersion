@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Testing;
 
 namespace GitVersion.Cli.Generator.Tests;
 
-public class CommandImplGeneratorTests
+public class SystemCommandlineGeneratorTests
 {
     /*language=cs*/
     private const string TestCommandSourceCode =
@@ -140,8 +140,8 @@ public class RootCommandImpl : RootCommand
     [Test]
     public async Task ValidateGeneratedCommandImplementation()
     {
-        var generatorType = typeof(CommandImplGenerator);
-        var sourceGeneratorTest = new CSharpSourceGeneratorTest<CommandImplGenerator, DefaultVerifier>
+        var generatorType = typeof(SystemCommandlineGenerator);
+        var sourceGeneratorTest = new CSharpSourceGeneratorTest<SystemCommandlineGenerator, DefaultVerifier>
         {
             TestState =
             {
