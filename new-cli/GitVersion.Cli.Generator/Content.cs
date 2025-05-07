@@ -20,8 +20,6 @@ public static class Content
 {{{GeneratedHeader}}}
 using System.CommandLine;
 using System.CommandLine.Binding;
-using System.Threading;
-using System.Threading.Tasks;
 
 using {{Model.CommandTypeNamespace}};
 {{- if Model.SettingsTypeNamespace != Model.CommandTypeNamespace }}
@@ -78,9 +76,7 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
     /*language=cs*/
     public const string RootCommandImplContent = $$$"""
 {{{GeneratedHeader}}}
-using System.Collections.Generic;
 using System.CommandLine;
-using System.Linq;
 
 using {{InfraNamespaceName}};
 namespace {{Namespace}};
