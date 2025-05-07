@@ -1,4 +1,4 @@
-using System.CommandLine;
+﻿using System.CommandLine;
 using GitVersion.Infrastructure;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -69,7 +69,7 @@ public class TestCommandImpl : Command, ICommandImpl
     {
         OutputFileOption = new Option<string>("--output-file", [])
         {
-            Required = false,
+            Required = true,
             Description = "The output file",
         };
         Add(OutputFileOption);
@@ -81,7 +81,7 @@ public class TestCommandImpl : Command, ICommandImpl
         {
             var settings = new TestCommandSettings
             {
-                OutputFile = parseResult.GetValue(OutputFileOption),
+                OutputFile = parseResult.GetValue(OutputFileOption)!,
             };
             return command.InvokeAsync(settings, cancellationToken);
         }
@@ -174,6 +174,24 @@ public class RootCommandImpl : RootCommand
             }
         };
 
+        sourceGeneratorTest.SolutionTransforms.Add(
+            // make sure the ImplicitUsage is enabled
+            (solution, projectId) =>
+            {
+                var project = solution.GetProject(projectId)!;
+
+                // Enable ImplicitUsings
+                var parseOptions = (CSharpParseOptions)project.ParseOptions!;
+                var compilationOptions = (CSharpCompilationOptions)project.CompilationOptions!;
+
+                // Enable implicit usings (same as `<ImplicitUsings>enable</ImplicitUsings>` in .csproj)
+                compilationOptions = compilationOptions.WithNullableContextOptions(NullableContextOptions.Enable);
+
+                return project
+                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.Latest))
+                    .WithCompilationOptions(compilationOptions)
+                    .Solution;
+            });
         await sourceGeneratorTest.RunAsync();
     }
 }
