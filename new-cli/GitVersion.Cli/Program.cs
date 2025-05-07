@@ -8,7 +8,7 @@ var modules = new IGitVersionModule[]
 {
     new CoreModule(),
     new LibGit2SharpCoreModule(),
-    new CommandsImplModule()
+    new CommandsModule()
 };
 
 var cts = new CancellationTokenSource();

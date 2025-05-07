@@ -118,7 +118,7 @@ public class CommandImplGenerator : IIncrementalGenerator
             CommandDescription = description,
             SettingsTypeName = settingsType.Name,
             SettingsTypeNamespace = settingsType.ContainingNamespace.ToDisplayString(),
-            SettingsProperties = settingsPropertyInfos.ToArray()
+            SettingsProperties = [.. settingsPropertyInfos]
         };
         return commandInfo;
     }
@@ -132,7 +132,7 @@ public class CommandImplGenerator : IIncrementalGenerator
         name.NotNull();
         description.NotNull();
 
-        string alias = string.Empty;
+        var alias = string.Empty;
         if (ctorArguments.Length == 3)
         {
             var aliasesArgs = ctorArguments[2];
