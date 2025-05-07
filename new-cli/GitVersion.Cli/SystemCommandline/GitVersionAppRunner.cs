@@ -3,10 +3,10 @@ using GitVersion.Generated;
 using GitVersion.Infrastructure;
 using Serilog.Events;
 
-namespace GitVersion;
+namespace GitVersion.SystemCommandline;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class GitVersionApp(RootCommandImpl rootCommand)
+internal class GitVersionAppRunner(RootCommandImpl rootCommand) : IGitVersionAppRunner
 {
     private readonly RootCommandImpl _rootCommand = rootCommand.NotNull();
 
