@@ -27,6 +27,7 @@
     <File Path="Directory.Packages.props" />
     <File Path="nuget.config" />
   </Folder>
+  <Project Path="GitVersion.Cli.Generator.Tests/GitVersion.Cli.Generator.Tests.csproj" />
   <Project Path="GitVersion.Cli.Generator/GitVersion.Cli.Generator.csproj" />
   <Project Path="GitVersion.Cli/GitVersion.Cli.csproj" />
   <Project Path="GitVersion.Common.Command/GitVersion.Common.Command.csproj" />
