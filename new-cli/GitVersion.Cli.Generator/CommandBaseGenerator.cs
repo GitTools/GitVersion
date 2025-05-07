@@ -103,7 +103,7 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
             alias = string.Join(", ", aliases);
         }
 
-        var isRequired = propertySymbol.Type.NullableAnnotation == NullableAnnotation.NotAnnotated;
+        var isRequired = propertySymbol.IsRequired;
         return new()
         {
             Name = propertySymbol.Name,
