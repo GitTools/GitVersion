@@ -11,10 +11,10 @@ public class SystemCommandlineGeneratorTests
 {
     /*language=cs*/
     private const string TestCommandSourceCode =
-"""
-using GitVersion.Infrastructure;
+$$"""
+using {{Content.DependencyInjectionNamespaceName}};
 
-namespace GitVersion.Commands;
+namespace {{Content.CommandNamespaceName}};
 
 public record TestCommandSettings
 {
@@ -53,9 +53,9 @@ $$"""
 using System.CommandLine;
 using System.CommandLine.Binding;
 
-using GitVersion.Commands;
+using {{Content.CommandNamespaceName}};
 
-namespace GitVersion.Generated;
+namespace {{Content.GeneratedNamespaceName}};
 
 public class TestCommandImpl : Command, ICommandImpl
 {
@@ -94,11 +94,11 @@ public class TestCommandImpl : Command, ICommandImpl
 $$"""
 {{Content.GeneratedHeader}}
 using System.CommandLine;
-using GitVersion.Infrastructure;
-using GitVersion.Commands;
-using GitVersion;
+using {{Content.DependencyInjectionNamespaceName}};
+using {{Content.CommandNamespaceName}};
+using {{Content.InfraNamespaceName}};
 
-namespace GitVersion.Generated;
+namespace {{Content.GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {
@@ -117,8 +117,8 @@ $$"""
 {{Content.GeneratedHeader}}
 using System.CommandLine;
 
-using GitVersion;
-namespace GitVersion.Generated;
+using {{Content.InfraNamespaceName}};
+namespace {{Content.GeneratedNamespaceName}};
 
 public class RootCommandImpl : RootCommand
 {

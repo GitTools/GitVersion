@@ -3,11 +3,6 @@ namespace GitVersion;
 [Generator(LanguageNames.CSharp)]
 public class SystemCommandlineGenerator : CommandBaseGenerator
 {
-    private const string GeneratedNamespaceName = "GitVersion.Generated";
-    private const string InfraNamespaceName = "GitVersion";
-    private const string DependencyInjectionNamespaceName = "GitVersion.Infrastructure";
-    private const string CommandNamespaceName = "GitVersion.Commands";
-
     internal override void GenerateSourceCode(SourceProductionContext context, ImmutableArray<CommandInfo?> commandInfos)
     {
         foreach (var commandInfo in commandInfos)
@@ -20,7 +15,7 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
             var commandHandlerSource = commandHandlerTemplate.Render(new
             {
                 Model = commandInfo,
-                Namespace = GeneratedNamespaceName
+                Namespace = Content.GeneratedNamespaceName
             }, member => member.Name);
 
             context.AddSource($"{commandInfo.CommandTypeName}Impl.g.cs", string.Join("\n", commandHandlerSource));
@@ -30,18 +25,17 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         var commandHandlersModuleSource = commandHandlersModuleTemplate.Render(new
         {
             Model = commandInfos,
-            Namespace = GeneratedNamespaceName,
-            InfraNamespaceName,
-            DependencyInjectionNamespaceName,
-            CommandNamespaceName
+            Namespace = Content.GeneratedNamespaceName,
+            Content.InfraNamespaceName,
+            Content.DependencyInjectionNamespaceName,
+            Content.CommandNamespaceName
         }, member => member.Name);
         context.AddSource("CommandsModule.g.cs", string.Join("\n", commandHandlersModuleSource));
 
         var rootCommandHandlerTemplate = Template.Parse(Content.RootCommandImplContent);
         var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
         {
-            Namespace = GeneratedNamespaceName,
-            InfraNamespaceName
+            Namespace = Content.GeneratedNamespaceName, Content.InfraNamespaceName
         }, member => member.Name);
         context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
     }
