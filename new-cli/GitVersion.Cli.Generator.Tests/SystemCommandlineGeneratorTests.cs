@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Cli.Generator.Tests;
 
@@ -13,7 +14,8 @@ public class SystemCommandlineGeneratorTests
     /*language=cs*/
     private const string TestCommandSourceCode =
 $$"""
-using {{Content.DependencyInjectionNamespaceName}};
+using {{Content.InfrastructureNamespaceName}};
+using Microsoft.Extensions.Logging;
 
 namespace {{Content.CommandNamespaceName}};
 
@@ -95,9 +97,9 @@ public class TestCommandImpl : Command, ICommandImpl
 $$"""
 {{Content.GeneratedHeader}}
 using System.CommandLine;
-using {{Content.DependencyInjectionNamespaceName}};
+using {{Content.InfrastructureNamespaceName}};
 using {{Content.CommandNamespaceName}};
-using {{Content.InfraNamespaceName}};
+using {{Content.CommonNamespaceName}};
 using Microsoft.Extensions.DependencyInjection;
 
 namespace {{Content.GeneratedNamespaceName}};
@@ -119,7 +121,7 @@ $$"""
 {{Content.GeneratedHeader}}
 using System.CommandLine;
 
-using {{Content.InfraNamespaceName}};
+using {{Content.CommonNamespaceName}};
 namespace {{Content.GeneratedNamespaceName}};
 
 public class RootCommandImpl : RootCommand
@@ -173,6 +175,7 @@ public class RootCommandImpl : RootCommand
                     MetadataReference.CreateFromFile(typeof(IServiceCollection).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(RootCommand).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(CommandAttribute).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(IGitVersionModule).Assembly.Location),
                 }
             }
         };

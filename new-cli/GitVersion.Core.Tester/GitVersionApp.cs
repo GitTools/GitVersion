@@ -1,18 +1,10 @@
 using GitVersion.Git;
-using GitVersion.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace GitVersion;
 
-public class GitVersionApp
+public class GitVersionApp(ILogger logger, IGitRepository repository)
 {
-    private readonly ILogger logger;
-    private readonly IGitRepository repository;
-    public GitVersionApp(ILogger logger, IGitRepository repository)
-    {
-        this.logger = logger;
-        this.repository = repository;
-    }
-
 #pragma warning disable IDE0060
     public Task<int> RunAsync(string[] args)
 #pragma warning restore IDE0060

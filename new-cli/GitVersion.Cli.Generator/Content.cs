@@ -3,8 +3,8 @@ namespace GitVersion;
 public static class Content
 {
     internal const string GeneratedNamespaceName = "GitVersion.Generated";
-    internal const string InfraNamespaceName = "GitVersion";
-    internal const string DependencyInjectionNamespaceName = "GitVersion.Infrastructure";
+    internal const string CommonNamespaceName = "GitVersion";
+    internal const string InfrastructureNamespaceName = "GitVersion.Infrastructure";
     internal const string CommandNamespaceName = "GitVersion.Commands";
 
     /*language=cs*/
@@ -30,7 +30,7 @@ using {{Model.CommandTypeNamespace}};
 {{- if Model.SettingsTypeNamespace != Model.CommandTypeNamespace }}
 using {{Model.SettingsTypeNamespace}};{{ end }}
 
-namespace {{Namespace}};
+namespace {{GeneratedNamespaceName}};
 
 public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 {
@@ -83,8 +83,8 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 {{{GeneratedHeader}}}
 using System.CommandLine;
 
-using {{InfraNamespaceName}};
-namespace {{Namespace}};
+using {{CommonNamespaceName}};
+namespace {{GeneratedNamespaceName}};
 
 public class RootCommandImpl : RootCommand
 {
@@ -115,12 +115,12 @@ public class RootCommandImpl : RootCommand
     public const string CommandsModuleContent = $$$"""
 {{{GeneratedHeader}}}
 using System.CommandLine;
-using {{DependencyInjectionNamespaceName}};
+using {{InfrastructureNamespaceName}};
 using {{CommandNamespaceName}};
-using {{InfraNamespaceName}};
+using {{CommonNamespaceName}};
 using Microsoft.Extensions.DependencyInjection;
 
-namespace {{Namespace}};
+namespace {{GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {

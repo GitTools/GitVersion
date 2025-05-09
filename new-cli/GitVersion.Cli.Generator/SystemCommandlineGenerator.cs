@@ -15,7 +15,7 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
             var commandHandlerSource = commandHandlerTemplate.Render(new
             {
                 Model = commandInfo,
-                Namespace = Content.GeneratedNamespaceName
+                Content.GeneratedNamespaceName
             }, member => member.Name);
 
             context.AddSource($"{commandInfo.CommandTypeName}Impl.g.cs", string.Join("\n", commandHandlerSource));
@@ -25,9 +25,9 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         var commandHandlersModuleSource = commandHandlersModuleTemplate.Render(new
         {
             Model = commandInfos,
-            Namespace = Content.GeneratedNamespaceName,
-            Content.InfraNamespaceName,
-            Content.DependencyInjectionNamespaceName,
+            Content.GeneratedNamespaceName,
+            Content.CommonNamespaceName,
+            Content.InfrastructureNamespaceName,
             Content.CommandNamespaceName
         }, member => member.Name);
         context.AddSource("CommandsModule.g.cs", string.Join("\n", commandHandlersModuleSource));
@@ -35,8 +35,8 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         var rootCommandHandlerTemplate = Template.Parse(Content.RootCommandImplContent);
         var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
         {
-            Namespace = Content.GeneratedNamespaceName,
-            Content.InfraNamespaceName
+            Content.GeneratedNamespaceName,
+            Content.CommonNamespaceName
         }, member => member.Name);
         context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
     }

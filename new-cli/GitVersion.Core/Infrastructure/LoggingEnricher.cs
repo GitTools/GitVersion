@@ -16,13 +16,13 @@ public class LoggingEnricher : ILogEventEnricher
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        // the settings might not have a path, or we might not be within a command in which case
-        // we won't have the setting so a default value for the log file will be required
+        // the settings might not have a path, or we might not be within a command, in which case
+        // we won't have the setting, so a default value for the log file will be required
         LogEventProperty logFilePathProperty;
 
         if (this._cachedLogFilePathProperty != null && Path.Equals(this._cachedLogFilePath))
         {
-            // Path hasn't changed, so let's use the cached property
+            // The Path hasn't changed, so let's use the cached property
             logFilePathProperty = this._cachedLogFilePathProperty;
         }
         else

@@ -1,5 +1,5 @@
 using GitVersion.Extensions;
-using GitVersion.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 

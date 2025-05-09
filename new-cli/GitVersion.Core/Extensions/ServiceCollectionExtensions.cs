@@ -2,7 +2,6 @@ using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using ILogger = GitVersion.Infrastructure.ILogger;
 
 namespace GitVersion.Extensions;
 
@@ -24,7 +23,6 @@ public static class ServiceCollectionExtensions
             var logger = CreateLogger();
             builder.AddSerilog(logger, dispose: true);
         });
-        services.AddSingleton<ILogger>(provider => new Logger(provider.GetRequiredService<ILogger<Logger>>()));
         return services;
     }
 
