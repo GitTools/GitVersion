@@ -2,6 +2,7 @@ using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace GitVersion.Extensions;
 
@@ -23,6 +24,7 @@ public static class ServiceCollectionExtensions
             var logger = CreateLogger();
             builder.AddSerilog(logger, dispose: true);
         });
+
         return services;
     }
 
@@ -37,9 +39,9 @@ public static class ServiceCollectionExtensions
             // serilog.sinks.map will defer the configuration of the sink to be on demand,
             // allowing us to look at the properties set by the enricher to set the path appropriately
             .WriteTo.Console()
-            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, wt) =>
+            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, sinkConfiguration) =>
             {
-                if (!string.IsNullOrEmpty(logFilePath)) wt.File(logFilePath);
+                if (!string.IsNullOrEmpty(logFilePath)) sinkConfiguration.File(logFilePath);
             }, 1)
             .CreateLogger();
         return logger;

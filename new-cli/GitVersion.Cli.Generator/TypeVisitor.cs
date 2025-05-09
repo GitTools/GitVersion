@@ -5,7 +5,7 @@ internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, Cancellatio
 {
     private readonly HashSet<INamedTypeSymbol> _exportedTypes = new(SymbolEqualityComparer.Default);
 
-    public ImmutableArray<INamedTypeSymbol> GetResults() => [.. this._exportedTypes];
+    public ImmutableArray<INamedTypeSymbol> GetResults() => [.. _exportedTypes];
 
     public override void VisitAssembly(IAssemblySymbol symbol)
     {
@@ -28,7 +28,7 @@ internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, Cancellatio
 
         if (searchQuery(type))
         {
-            this._exportedTypes.Add(type);
+            _exportedTypes.Add(type);
         }
     }
 }

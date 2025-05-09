@@ -23,7 +23,7 @@ internal class GitVersionAppRunner(RootCommandImpl rootCommand) : IGitVersionApp
         return parseResult.InvokeAsync(cancellationToken: cancellationToken);
     }
 
-    // Note: there are 2 locations to watch for dotnet-suggest
+    // Note: there are 2 locations to watch for the dotnet-suggest tool
     // - sentinel file: $env:TEMP\system-commandline-sentinel-files\ and
     // - registration file: $env:LOCALAPPDATA\.dotnet-suggest-registration.txt or $HOME/.dotnet-suggest-registration.txt
 
