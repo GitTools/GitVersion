@@ -6,7 +6,7 @@ namespace GitVersion.Commands;
 public record ConfigShowSettings : ConfigSettings;
 
 [Command<ConfigCommand>("show", "Shows the effective configuration.")]
-public class ConfigShowCommand(ILogger logger, IService service) : ICommand<ConfigShowSettings>
+public class ConfigShowCommand(ILogger<ConfigShowCommand> logger, IService service) : ICommand<ConfigShowSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();

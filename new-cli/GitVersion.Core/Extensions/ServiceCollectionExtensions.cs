@@ -1,8 +1,6 @@
 using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using ILogger = Serilog.ILogger;
 
 namespace GitVersion.Extensions;
 

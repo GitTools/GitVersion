@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace GitVersion.Commands;
 
 [Command("output", "Outputs the version object.")]
-public class OutputCommand(ILogger logger, IService service) : ICommand<OutputSettings>
+public class OutputCommand(ILogger<OutputCommand> logger, IService service) : ICommand<OutputSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();

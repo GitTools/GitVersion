@@ -6,7 +6,7 @@ namespace GitVersion.Commands;
 public record ConfigSettings : GitVersionSettings;
 
 [Command("config", "Manages the GitVersion configuration file.")]
-public class ConfigCommand(ILogger logger, IService service) : ICommand<ConfigSettings>
+public class ConfigCommand(ILogger<ConfigCommand> logger, IService service) : ICommand<ConfigSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();

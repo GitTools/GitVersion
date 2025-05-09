@@ -6,7 +6,7 @@ namespace GitVersion.Commands;
 public record NormalizeSettings : GitVersionSettings;
 
 [Command("normalize", "Normalizes the git repository for GitVersion calculations.")]
-public class NormalizeCommand(ILogger logger, IService service) : ICommand<NormalizeSettings>
+public class NormalizeCommand(ILogger<NormalizeCommand> logger, IService service) : ICommand<NormalizeSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();

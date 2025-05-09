@@ -6,7 +6,7 @@ namespace GitVersion.Commands;
 public record ConfigInitSettings : ConfigSettings;
 
 [Command<ConfigCommand>("init", "Inits the configuration for current repository.")]
-public class ConfigInitCommand(ILogger logger, IService service) : ICommand<ConfigInitSettings>
+public class ConfigInitCommand(ILogger<ConfigInitCommand> logger, IService service) : ICommand<ConfigInitSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();

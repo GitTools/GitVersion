@@ -7,7 +7,7 @@ namespace GitVersion.Commands;
 public record CalculateSettings : GitVersionSettings;
 
 [Command("calculate", "Calculates the version object from the git history.")]
-public class CalculateCommand(ILogger logger, IService service, IGitRepository repository) : ICommand<CalculateSettings>
+public class CalculateCommand(ILogger<CalculateCommand> logger, IService service, IGitRepository repository) : ICommand<CalculateSettings>
 {
     private readonly ILogger _logger = logger.NotNull();
     private readonly IService _service = service.NotNull();
