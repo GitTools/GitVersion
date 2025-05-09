@@ -35,7 +35,8 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         var rootCommandHandlerTemplate = Template.Parse(Content.RootCommandImplContent);
         var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
         {
-            Namespace = Content.GeneratedNamespaceName, Content.InfraNamespaceName
+            Namespace = Content.GeneratedNamespaceName,
+            Content.InfraNamespaceName
         }, member => member.Name);
         context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
     }

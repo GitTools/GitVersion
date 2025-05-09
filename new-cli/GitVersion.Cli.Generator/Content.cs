@@ -118,12 +118,13 @@ using System.CommandLine;
 using {{DependencyInjectionNamespaceName}};
 using {{CommandNamespaceName}};
 using {{InfraNamespaceName}};
+using Microsoft.Extensions.DependencyInjection;
 
 namespace {{Namespace}};
 
 public class CommandsModule : IGitVersionModule
 {
-    public void RegisterTypes(IContainerRegistrar services)
+    public void RegisterTypes(IServiceCollection services)
     {
         {{- $commands = Model | array.sort "CommandTypeName" }}
         services.AddSingleton<RootCommandImpl>();

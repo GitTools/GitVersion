@@ -1,7 +1,7 @@
 namespace GitVersion;
 
 [Command("test", "Test command.")]
-public class TestCommand: ICommand<TestCommandSettings>
+public class TestCommand : ICommand<TestCommandSettings>
 {
     public Task<int> InvokeAsync(TestCommandSettings settings, CancellationToken cancellationToken = default)
     {

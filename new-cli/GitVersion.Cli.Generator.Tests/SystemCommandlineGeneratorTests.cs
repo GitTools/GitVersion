@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Cli.Generator.Tests;
 
@@ -97,12 +98,13 @@ using System.CommandLine;
 using {{Content.DependencyInjectionNamespaceName}};
 using {{Content.CommandNamespaceName}};
 using {{Content.InfraNamespaceName}};
+using Microsoft.Extensions.DependencyInjection;
 
 namespace {{Content.GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {
-    public void RegisterTypes(IContainerRegistrar services)
+    public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<RootCommandImpl>();
         services.AddSingleton<TestCommand>();
@@ -168,6 +170,7 @@ public class RootCommandImpl : RootCommand
                 AdditionalReferences =
                 {
                     MetadataReference.CreateFromFile(typeof(ILogger).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(IServiceCollection).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(RootCommand).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(CommandAttribute).Assembly.Location),
                 }

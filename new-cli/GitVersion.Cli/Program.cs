@@ -3,6 +3,7 @@ using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Infrastructure;
 using GitVersion.SystemCommandline;
+using Microsoft.Extensions.DependencyInjection;
 
 var modules = new IGitVersionModule[]
 {
@@ -14,19 +15,19 @@ var modules = new IGitVersionModule[]
 var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, _) => cts.Cancel();
 
-using var serviceProvider = RegisterModules(modules);
+await using var serviceProvider = RegisterModules(modules);
 var app = serviceProvider.GetRequiredService<IGitVersionAppRunner>();
 
 var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
 if (!Console.IsInputRedirected) Console.ReadKey();
 return result;
 
-static IContainer RegisterModules(IEnumerable<IGitVersionModule> gitVersionModules)
+static ServiceProvider RegisterModules(IEnumerable<IGitVersionModule> gitVersionModules)
 {
-    var serviceProvider = new ContainerRegistrar()
+    var serviceProvider = new ServiceCollection()
         .RegisterModules(gitVersionModules)
-        .AddLogging()
-        .Build();
+        .RegisterLogging()
+        .BuildServiceProvider();
 
     return serviceProvider;
 }
