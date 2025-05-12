@@ -1,4 +1,6 @@
-namespace GitVersion;
+using GitVersion.Commands.Test.Settings;
+
+namespace GitVersion.Commands.Test;
 
 [Command("test", "Test command.")]
 public class TestCommand : ICommand<TestCommandSettings>
@@ -8,10 +10,4 @@ public class TestCommand : ICommand<TestCommandSettings>
         Console.WriteLine("Input file: {0}", settings.InputFile);
         return Task.FromResult(0);
     }
-}
-
-public record TestCommandSettings : GitVersionSettings
-{
-    [Option("--input-file", "The input version file")]
-    public required string InputFile { get; init; }
 }

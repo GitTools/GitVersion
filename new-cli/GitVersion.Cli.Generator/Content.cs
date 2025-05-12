@@ -27,8 +27,6 @@ using System.CommandLine;
 using System.CommandLine.Binding;
 
 using {{Model.CommandTypeNamespace}};
-{{- if Model.SettingsTypeNamespace != Model.CommandTypeNamespace }}
-using {{Model.SettingsTypeNamespace}};{{ end }}
 
 namespace {{GeneratedNamespaceName}};
 
@@ -66,7 +64,7 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 
         Task<int> Run(ParseResult parseResult, CancellationToken cancellationToken)
         {
-            var settings = new {{Model.SettingsTypeName}}
+            var settings = new {{ if Model.SettingsTypeNamespace != Model.CommandTypeNamespace }}{{Model.SettingsTypeNamespace}}.{{ end }}{{Model.SettingsTypeName}}
             {
                 {{~ for $prop in $settingsProperties ~}}
                 {{$prop.Name}} = parseResult.GetValue({{$prop.Name}}Option){{ if $prop.Required }}!{{ end}},
@@ -129,7 +127,7 @@ public class CommandsModule : IGitVersionModule
         {{- $commands = Model | array.sort "CommandTypeName" }}
         services.AddSingleton<RootCommandImpl>();
         {{~ for $command in $commands ~}}
-        services.AddSingleton<{{$command.CommandTypeName}}>();
+        services.AddSingleton<{{ if $command.CommandTypeNamespace != CommandNamespaceName }}{{$command.CommandTypeNamespace}}.{{ end }}{{$command.CommandTypeName}}>();
         services.AddSingleton<ICommandImpl, {{$command.CommandTypeName}}Impl>();
         {{~ end ~}}
     }
