@@ -36,7 +36,8 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
         {
             Constants.GeneratedNamespaceName,
-            Constants.CommonNamespaceName
+            Constants.CommonNamespaceName,
+            Constants.ExtensionsNamespaceName
         }, member => member.Name);
         context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
 
@@ -45,7 +46,8 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         {
             Constants.GeneratedNamespaceName,
             Constants.InfrastructureNamespaceName,
-            Constants.CommonNamespaceName
+            Constants.CommonNamespaceName,
+            Constants.ExtensionsNamespaceName
         }, member => member.Name);
         context.AddSource("CliAppImpl.g.cs", string.Join("\n", cliAppSource));
     }

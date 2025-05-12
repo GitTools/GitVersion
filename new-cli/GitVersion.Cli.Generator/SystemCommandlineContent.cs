@@ -64,7 +64,7 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 using System.CommandLine;
 
 using {{CommonNamespaceName}};
-using GitVersion.Extensions;
+using {{ExtensionsNamespaceName}};
 
 namespace {{GeneratedNamespaceName}};
 
@@ -114,6 +114,7 @@ public class CommandsModule : IGitVersionModule
         {{- $commands = Model | array.sort "CommandTypeName" }}
         services.AddSingleton<RootCommandImpl>();
         services.AddSingleton<ICliApp, CliAppImpl>();
+
         {{~ for $command in $commands ~}}
         services.AddSingleton<{{ if $command.CommandTypeNamespace != CommandNamespaceName }}{{$command.CommandTypeNamespace}}.{{ end }}{{$command.CommandTypeName}}>();
         services.AddSingleton<ICommandImpl, {{$command.CommandTypeName}}Impl>();
@@ -126,7 +127,7 @@ public class CommandsModule : IGitVersionModule
     public const string CliAppContent = $$$"""
 {{{Constants.GeneratedHeader}}}
 using System.CommandLine;
-using GitVersion.Extensions;
+using {{ExtensionsNamespaceName}};
 using {{InfrastructureNamespaceName}};
 
 namespace {{GeneratedNamespaceName}};

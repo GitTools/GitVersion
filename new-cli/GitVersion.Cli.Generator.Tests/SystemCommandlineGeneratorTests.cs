@@ -85,6 +85,7 @@ public class CommandsModule : IGitVersionModule
     {
         services.AddSingleton<RootCommandImpl>();
         services.AddSingleton<ICliApp, CliAppImpl>();
+
         services.AddSingleton<TestCommand>();
         services.AddSingleton<ICommandImpl, TestCommandImpl>();
     }
@@ -98,7 +99,7 @@ $$"""
 using System.CommandLine;
 
 using {{Constants.CommonNamespaceName}};
-using GitVersion.Extensions;
+using {{Constants.ExtensionsNamespaceName}};
 
 namespace {{Constants.GeneratedNamespaceName}};
 
@@ -135,7 +136,7 @@ public class RootCommandImpl(IEnumerable<ICommandImpl> commands) : RootCommand
 $$"""
 {{Constants.GeneratedHeader}}
 using System.CommandLine;
-using GitVersion.Extensions;
+using {{Constants.ExtensionsNamespaceName}};
 using {{Constants.InfrastructureNamespaceName}};
 
 namespace {{Constants.GeneratedNamespaceName}};
