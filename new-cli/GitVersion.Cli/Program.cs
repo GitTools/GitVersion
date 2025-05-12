@@ -1,6 +1,5 @@
 using GitVersion;
 using GitVersion.Extensions;
-using GitVersion.Generated;
 using GitVersion.Git;
 using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +8,7 @@ var modules = new IGitVersionModule[]
 {
     new CoreModule(),
     new LibGit2SharpCoreModule(),
-    new CommandsModule()
+    new GitVersion.Generated.CommandsModule()
 };
 
 var cts = new CancellationTokenSource();
