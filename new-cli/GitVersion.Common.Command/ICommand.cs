@@ -7,6 +7,6 @@ public interface ICommand<in T>
 
 public interface ICommandImpl
 {
-    string CommandName { get; }
-    string ParentCommandName { get; }
+    string CommandImplName { get; }
+    string ParentCommandImplName { get; }
 }

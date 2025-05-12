@@ -1,6 +1,6 @@
-namespace GitVersion;
+namespace GitVersion.Infrastructure;
 
-internal interface IGitVersionAppRunner
+public interface ICliApp
 {
     Task<int> RunAsync(string[] args, CancellationToken cancellationToken);
 }

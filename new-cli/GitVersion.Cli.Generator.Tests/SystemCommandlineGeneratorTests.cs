@@ -37,8 +37,8 @@ namespace {{Constants.GeneratedNamespaceName}};
 
 public class TestCommandImpl : Command, ICommandImpl
 {
-    public string CommandName => nameof(TestCommandImpl);
-    public string ParentCommandName => string.Empty;
+    public string CommandImplName => nameof(TestCommandImpl);
+    public string ParentCommandImplName => string.Empty;
     // Options list
     protected readonly Option<string> OutputFileOption;
 
@@ -84,6 +84,7 @@ public class CommandsModule : IGitVersionModule
     public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<RootCommandImpl>();
+        services.AddSingleton<ICliApp, CliAppImpl>();
         services.AddSingleton<TestCommand>();
         services.AddSingleton<ICommandImpl, TestCommandImpl>();
     }
@@ -97,29 +98,74 @@ $$"""
 using System.CommandLine;
 
 using {{Constants.CommonNamespaceName}};
+using GitVersion.Extensions;
+
 namespace {{Constants.GeneratedNamespaceName}};
 
-public class RootCommandImpl : RootCommand
+public class RootCommandImpl(IEnumerable<ICommandImpl> commands) : RootCommand
 {
-    public RootCommandImpl(IEnumerable<ICommandImpl> commands)
+    private readonly IEnumerable<ICommandImpl> _commands = commands.NotNull();
+
+    public void Configure()
     {
-        var map = commands.ToDictionary(c => c.CommandName);
+        var map = _commands.ToDictionary(c => c.CommandImplName);
         foreach (var command in map.Values)
         {
             AddCommand(command, map);
         }
     }
-    private void AddCommand(ICommandImpl command, IDictionary<string, ICommandImpl> map)
+
+    private void AddCommand(ICommandImpl command, Dictionary<string, ICommandImpl> map)
     {
-        if (!string.IsNullOrWhiteSpace(command.ParentCommandName))
+        if (!string.IsNullOrWhiteSpace(command.ParentCommandImplName))
         {
-            var parent = map[command.ParentCommandName] as Command;
+            var parent = map[command.ParentCommandImplName] as Command;
             parent?.Add((Command)command);
         }
         else
         {
             Add((Command)command);
         }
+    }
+}
+""";
+
+    /*language=cs*/
+    private const string ExpectedCliAppImplText =
+$$"""
+{{Constants.GeneratedHeader}}
+using System.CommandLine;
+using GitVersion.Extensions;
+using {{Constants.InfrastructureNamespaceName}};
+
+namespace {{Constants.GeneratedNamespaceName}};
+
+internal class CliAppImpl : ICliApp
+{
+    private readonly RootCommandImpl _rootCommand;
+
+    public CliAppImpl(RootCommandImpl rootCommand)
+    {
+        _rootCommand = rootCommand.NotNull();
+        _rootCommand.Configure();
+    }
+
+    public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
+    {
+        // Note: there are 2 locations to watch for the dotnet-suggest tool
+        // - sentinel file:
+        //  $env:TEMP\system-commandline-sentinel-files\ and
+        // - registration file:
+        //  $env:LOCALAPPDATA\.dotnet-suggest-registration.txt or $HOME/.dotnet-suggest-registration.txt
+
+        var parseResult = _rootCommand.Parse(args);
+
+        var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
+        var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
+
+        // LoggingEnricher.Configure(logFile?.FullName, verbosity);
+
+        return parseResult.InvokeAsync(cancellationToken: cancellationToken);
     }
 }
 """;
@@ -178,6 +224,7 @@ public record TestCommandSettings
                     (generatorType,"TestCommandImpl.g.cs", ExpectedCommandImplText),
                     (generatorType,"CommandsModule.g.cs", ExpectedCommandsModuleText),
                     (generatorType,"RootCommandImpl.g.cs", ExpectedRootCommandImplText),
+                    (generatorType,"CliAppImpl.g.cs", ExpectedCliAppImplText),
                 },
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
                 AdditionalReferences =

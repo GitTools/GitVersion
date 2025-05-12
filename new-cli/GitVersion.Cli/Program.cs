@@ -1,22 +1,22 @@
 using GitVersion;
 using GitVersion.Extensions;
+using GitVersion.Generated;
 using GitVersion.Git;
 using GitVersion.Infrastructure;
-using GitVersion.SystemCommandline;
 using Microsoft.Extensions.DependencyInjection;
 
 var modules = new IGitVersionModule[]
 {
     new CoreModule(),
     new LibGit2SharpCoreModule(),
-    new CliModule()
+    new CommandsModule()
 };
 
 var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, _) => cts.Cancel();
 
 await using var serviceProvider = RegisterModules(modules);
-var app = serviceProvider.GetRequiredService<IGitVersionAppRunner>();
+var app = serviceProvider.GetRequiredService<ICliApp>();
 
 var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
 if (!Console.IsInputRedirected) Console.ReadKey();

@@ -14,11 +14,11 @@ namespace {{GeneratedNamespaceName}};
 
 public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 {
-    public string CommandName => nameof({{Model.CommandTypeName}}Impl);
+    public string CommandImplName => nameof({{Model.CommandTypeName}}Impl);
     {{- if (Model.ParentCommand | string.empty) }}
-    public string ParentCommandName => string.Empty;
+    public string ParentCommandImplName => string.Empty;
     {{- else }}
-    public string ParentCommandName => nameof({{Model.ParentCommand}}Impl);
+    public string ParentCommandImplName => nameof({{Model.ParentCommand}}Impl);
     {{ end }}
     {{- $settingsProperties = Model.SettingsProperties | array.sort "Name" }}
     // Options list
@@ -64,23 +64,28 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 using System.CommandLine;
 
 using {{CommonNamespaceName}};
+using GitVersion.Extensions;
+
 namespace {{GeneratedNamespaceName}};
 
-public class RootCommandImpl : RootCommand
+public class RootCommandImpl(IEnumerable<ICommandImpl> commands) : RootCommand
 {
-    public RootCommandImpl(IEnumerable<ICommandImpl> commands)
+    private readonly IEnumerable<ICommandImpl> _commands = commands.NotNull();
+
+    public void Configure()
     {
-        var map = commands.ToDictionary(c => c.CommandName);
+        var map = _commands.ToDictionary(c => c.CommandImplName);
         foreach (var command in map.Values)
         {
             AddCommand(command, map);
         }
     }
-    private void AddCommand(ICommandImpl command, IDictionary<string, ICommandImpl> map)
+
+    private void AddCommand(ICommandImpl command, Dictionary<string, ICommandImpl> map)
     {
-        if (!string.IsNullOrWhiteSpace(command.ParentCommandName))
+        if (!string.IsNullOrWhiteSpace(command.ParentCommandImplName))
         {
-            var parent = map[command.ParentCommandName] as Command;
+            var parent = map[command.ParentCommandImplName] as Command;
             parent?.Add((Command)command);
         }
         else
@@ -108,10 +113,50 @@ public class CommandsModule : IGitVersionModule
     {
         {{- $commands = Model | array.sort "CommandTypeName" }}
         services.AddSingleton<RootCommandImpl>();
+        services.AddSingleton<ICliApp, CliAppImpl>();
         {{~ for $command in $commands ~}}
         services.AddSingleton<{{ if $command.CommandTypeNamespace != CommandNamespaceName }}{{$command.CommandTypeNamespace}}.{{ end }}{{$command.CommandTypeName}}>();
         services.AddSingleton<ICommandImpl, {{$command.CommandTypeName}}Impl>();
         {{~ end ~}}
+    }
+}
+""";
+
+    /*language=cs*/
+    public const string CliAppContent = $$$"""
+{{{Constants.GeneratedHeader}}}
+using System.CommandLine;
+using GitVersion.Extensions;
+using {{InfrastructureNamespaceName}};
+
+namespace {{GeneratedNamespaceName}};
+
+internal class CliAppImpl : ICliApp
+{
+    private readonly RootCommandImpl _rootCommand;
+
+    public CliAppImpl(RootCommandImpl rootCommand)
+    {
+        _rootCommand = rootCommand.NotNull();
+        _rootCommand.Configure();
+    }
+
+    public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
+    {
+        // Note: there are 2 locations to watch for the dotnet-suggest tool
+        // - sentinel file:
+        //  $env:TEMP\system-commandline-sentinel-files\ and
+        // - registration file:
+        //  $env:LOCALAPPDATA\.dotnet-suggest-registration.txt or $HOME/.dotnet-suggest-registration.txt
+
+        var parseResult = _rootCommand.Parse(args);
+
+        var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
+        var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
+
+        // LoggingEnricher.Configure(logFile?.FullName, verbosity);
+
+        return parseResult.InvokeAsync(cancellationToken: cancellationToken);
     }
 }
 """;
