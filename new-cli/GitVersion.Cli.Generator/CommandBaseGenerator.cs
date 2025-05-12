@@ -4,10 +4,10 @@ namespace GitVersion;
 
 public abstract class CommandBaseGenerator : IIncrementalGenerator
 {
-    private const string CommandInterfaceFullName = $"{Content.CommonNamespaceName}.ICommand<T>";
-    private const string CommandAttributeFullName = $"{Content.CommonNamespaceName}.CommandAttribute";
-    private const string CommandAttributeGenericFullName = $"{Content.CommonNamespaceName}.CommandAttribute<T>";
-    private const string OptionAttributeFullName = $"{Content.CommonNamespaceName}.OptionAttribute";
+    private const string CommandInterfaceFullName = $"{Constants.CommonNamespaceName}.ICommand<T>";
+    private const string CommandAttributeFullName = $"{Constants.CommonNamespaceName}.CommandAttribute";
+    private const string CommandAttributeGenericFullName = $"{Constants.CommonNamespaceName}.CommandAttribute<T>";
+    private const string OptionAttributeFullName = $"{Constants.CommonNamespaceName}.OptionAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

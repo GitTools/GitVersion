@@ -27,13 +27,13 @@ global using global::System.Threading.Tasks;
     /*language=cs*/
     private const string ExpectedCommandImplText =
 $$"""
-{{Content.GeneratedHeader}}
+{{Constants.GeneratedHeader}}
 using System.CommandLine;
 using System.CommandLine.Binding;
 
-using {{Content.CommandNamespaceName}};
+using {{Constants.CommandNamespaceName}};
 
-namespace {{Content.GeneratedNamespaceName}};
+namespace {{Constants.GeneratedNamespaceName}};
 
 public class TestCommandImpl : Command, ICommandImpl
 {
@@ -70,14 +70,14 @@ public class TestCommandImpl : Command, ICommandImpl
     /*language=cs*/
     private const string ExpectedCommandsModuleText =
 $$"""
-{{Content.GeneratedHeader}}
+{{Constants.GeneratedHeader}}
 using System.CommandLine;
-using {{Content.InfrastructureNamespaceName}};
-using {{Content.CommandNamespaceName}};
-using {{Content.CommonNamespaceName}};
+using {{Constants.InfrastructureNamespaceName}};
+using {{Constants.CommandNamespaceName}};
+using {{Constants.CommonNamespaceName}};
 using Microsoft.Extensions.DependencyInjection;
 
-namespace {{Content.GeneratedNamespaceName}};
+namespace {{Constants.GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {
@@ -93,11 +93,11 @@ public class CommandsModule : IGitVersionModule
     /*language=cs*/
     private const string ExpectedRootCommandImplText =
 $$"""
-{{Content.GeneratedHeader}}
+{{Constants.GeneratedHeader}}
 using System.CommandLine;
 
-using {{Content.CommonNamespaceName}};
-namespace {{Content.GeneratedNamespaceName}};
+using {{Constants.CommonNamespaceName}};
+namespace {{Constants.GeneratedNamespaceName}};
 
 public class RootCommandImpl : RootCommand
 {
@@ -127,10 +127,10 @@ public class RootCommandImpl : RootCommand
     /*language=cs*/
     private const string TestCommandSourceCode =
 $$"""
-using {{Content.InfrastructureNamespaceName}};
+using {{Constants.InfrastructureNamespaceName}};
 using Microsoft.Extensions.Logging;
 
-namespace {{Content.CommandNamespaceName}};
+namespace {{Constants.CommandNamespaceName}};
 
 [CommandAttribute("test", "Test description.")]
 public class TestCommand(ILogger logger): ICommand<TestCommandSettings>
@@ -146,10 +146,10 @@ public class TestCommand(ILogger logger): ICommand<TestCommandSettings>
     /*language=cs*/
     private const string TestCommandSettingsSourceCode =
 $$"""
-using {{Content.InfrastructureNamespaceName}};
+using {{Constants.InfrastructureNamespaceName}};
 using Microsoft.Extensions.Logging;
 
-namespace {{Content.CommandNamespaceName}};
+namespace {{Constants.CommandNamespaceName}};
 
 public record TestCommandSettings
 {

@@ -10,33 +10,33 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
             if (commandInfo == null)
                 continue;
 
-            var commandHandlerTemplate = Template.Parse(Content.CommandImplContent);
+            var commandHandlerTemplate = Template.Parse(SystemCommandlineContent.CommandImplContent);
 
             var commandHandlerSource = commandHandlerTemplate.Render(new
             {
                 Model = commandInfo,
-                Content.GeneratedNamespaceName
+                Constants.GeneratedNamespaceName
             }, member => member.Name);
 
             context.AddSource($"{commandInfo.CommandTypeName}Impl.g.cs", string.Join("\n", commandHandlerSource));
         }
 
-        var commandHandlersModuleTemplate = Template.Parse(Content.CommandsModuleContent);
+        var commandHandlersModuleTemplate = Template.Parse(SystemCommandlineContent.CommandsModuleContent);
         var commandHandlersModuleSource = commandHandlersModuleTemplate.Render(new
         {
             Model = commandInfos,
-            Content.GeneratedNamespaceName,
-            Content.CommonNamespaceName,
-            Content.InfrastructureNamespaceName,
-            Content.CommandNamespaceName
+            Constants.GeneratedNamespaceName,
+            Constants.CommonNamespaceName,
+            Constants.InfrastructureNamespaceName,
+            Constants.CommandNamespaceName
         }, member => member.Name);
         context.AddSource("CommandsModule.g.cs", string.Join("\n", commandHandlersModuleSource));
 
-        var rootCommandHandlerTemplate = Template.Parse(Content.RootCommandImplContent);
+        var rootCommandHandlerTemplate = Template.Parse(SystemCommandlineContent.RootCommandImplContent);
         var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
         {
-            Content.GeneratedNamespaceName,
-            Content.CommonNamespaceName
+            Constants.GeneratedNamespaceName,
+            Constants.CommonNamespaceName
         }, member => member.Name);
         context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
     }
