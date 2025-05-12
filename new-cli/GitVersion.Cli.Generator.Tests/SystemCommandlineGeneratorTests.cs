@@ -40,17 +40,38 @@ public class TestCommandImpl : Command, ICommandImpl
     public string CommandImplName => nameof(TestCommandImpl);
     public string ParentCommandImplName => string.Empty;
     // Options list
+    protected readonly Option<System.IO.FileInfo?> LogFileOption;
     protected readonly Option<string> OutputFileOption;
+    protected readonly Option<GitVersion.Infrastructure.Verbosity?> VerbosityOption;
+    protected readonly Option<System.IO.DirectoryInfo?> WorkDirOption;
 
     public TestCommandImpl(TestCommand command)
         : base("test", "Test description.")
     {
-        OutputFileOption = new Option<string>("--output-file", [])
+        LogFileOption = new Option<System.IO.FileInfo?>("--log-file", "-l")
+        {
+            Required = false,
+            Description = "The log file",
+        };
+        OutputFileOption = new Option<string>("--output-file")
         {
             Required = true,
             Description = "The output file",
         };
+        VerbosityOption = new Option<GitVersion.Infrastructure.Verbosity?>("--verbosity")
+        {
+            Required = false,
+            Description = "The verbosity of the logging information",
+        };
+        WorkDirOption = new Option<System.IO.DirectoryInfo?>("--work-dir")
+        {
+            Required = false,
+            Description = "The working directory with the git repository",
+        };
+        Add(LogFileOption);
         Add(OutputFileOption);
+        Add(VerbosityOption);
+        Add(WorkDirOption);
 
         this.SetAction(Run);
         return;
@@ -59,7 +80,10 @@ public class TestCommandImpl : Command, ICommandImpl
         {
             var settings = new TestCommandSettings
             {
+                LogFile = parseResult.GetValue(LogFileOption),
                 OutputFile = parseResult.GetValue(OutputFileOption)!,
+                Verbosity = parseResult.GetValue(VerbosityOption),
+                WorkDir = parseResult.GetValue(WorkDirOption),
             };
             return command.InvokeAsync(settings, cancellationToken);
         }
@@ -198,7 +222,7 @@ using Microsoft.Extensions.Logging;
 
 namespace {{Constants.CommandNamespaceName}};
 
-public record TestCommandSettings
+public record TestCommandSettings : GitVersionSettings
 {
   [Option("--output-file", "The output file")]
   public required string OutputFile { get; init; }

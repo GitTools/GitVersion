@@ -30,7 +30,7 @@ public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
         : base("{{Model.CommandName}}", "{{Model.CommandDescription}}")
     {
         {{~ for $prop in $settingsProperties ~}}
-        {{$prop.Name}}Option = new Option<{{$prop.TypeName}}>("{{$prop.OptionName}}", [{{$prop.Aliases}}])
+        {{$prop.Name}}Option = new Option<{{$prop.TypeName}}>("{{$prop.OptionName}}"{{if $prop.Aliases.size == 0}}{{else}}, {{for $alias in $prop.Aliases}}"{{$alias}}"{{if !for.last}}, {{end}}{{end}}{{end}})
         {
             Required = {{$prop.Required}},
             Description = "{{$prop.Description}}",

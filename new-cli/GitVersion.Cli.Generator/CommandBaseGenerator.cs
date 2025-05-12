@@ -92,14 +92,13 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
         name.NotNull();
         description.NotNull();
 
-        var alias = string.Empty;
+        string[] aliases = [];
         if (ctorArguments.Length == 3)
         {
             var aliasesArgs = ctorArguments[2];
-            var aliases = (aliasesArgs.Kind == TypedConstantKind.Array
+            aliases = (aliasesArgs.Kind == TypedConstantKind.Array
                 ? aliasesArgs.Values.Select(x => Convert.ToString(x.Value)).ToArray()
-                : [Convert.ToString(aliasesArgs.Value)]).Select(x => $@"""{x?.Trim()}""");
-            alias = string.Join(", ", aliases);
+                : [Convert.ToString(aliasesArgs.Value)]);
         }
 
         var isRequired = propertySymbol.IsRequired;
@@ -108,7 +107,7 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
             Name = propertySymbol.Name,
             TypeName = propertySymbol.Type.ToDisplayString(),
             OptionName = name,
-            Aliases = alias,
+            Aliases = aliases,
             Description = description,
             Required = isRequired
         };
