@@ -7,7 +7,8 @@ updates:
       prefix: "(sdk)"
     directory: "/"
     schedule:
-      interval: daily
+      interval: cron
+      cronjob: "0 12 * * *"
   - package-ecosystem: nuget
     labels:
       - "dependencies"
@@ -38,7 +39,8 @@ updates:
       - "/new-cli"
       - "/src"
     schedule:
-      interval: daily
+      interval: cron
+      cronjob: "0 12 * * *"
     open-pull-requests-limit: 10
 
   - package-ecosystem: github-actions
@@ -52,7 +54,8 @@ updates:
           - "actions/*"
     directory: "/"
     schedule:
-      interval: daily
+      interval: cron
+      cronjob: "0 12 * * *"
 
   - package-ecosystem: npm
     labels:
@@ -65,4 +68,5 @@ updates:
           - "remark*"
     directory: "/"
     schedule:
-      interval: monthly
+      interval: cron
+      cronjob: "0 12 1,15 * *"
