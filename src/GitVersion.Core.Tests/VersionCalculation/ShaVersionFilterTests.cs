@@ -12,7 +12,7 @@ public class ShaVersionFilterTests : TestBase
         var commit = GitRepositoryTestingExtensions.CreateMockCommit();
         var sut = new ShaVersionFilter([commit.Sha]);
 
-        Should.Throw<ArgumentNullException>(() => sut.Exclude(null!, out _));
+        Should.Throw<ArgumentNullException>(() => sut.Exclude((IBaseVersion)null!, out _));
     }
 
     [Test]
