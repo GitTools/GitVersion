@@ -25,7 +25,7 @@
     <PackageVersion Include="MSBuild.ProjectCreation" Version="14.0.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Build" Version="17.12.6" />
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.7" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
