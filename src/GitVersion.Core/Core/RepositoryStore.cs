@@ -116,52 +116,67 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
 
         var ignore = new HashSet<BranchCommit>();
-        foreach (var commitBranch in commitBranches)
+        using (this.log.IndentLog($"Finding ignore branches"))
         {
-            foreach (var commit in branch.Commits.Where(element => element.When > commitBranch.Commit.When))
-            {
-                var parents = commit.Parents.ToArray();
-                if (parents.Length > 1 && parents.Any(element => element.Equals(commitBranch.Commit)))
-                {
-                    ignore.Add(commitBranch);
-                }
-            }
-        }
-
-        foreach (var item in commitBranches.Skip(1).Reverse())
-        {
-            if (ignore.Contains(item)) continue;
-
             foreach (var commitBranch in commitBranches)
             {
-                if (item.Commit.Equals(commitBranch.Commit)) break;
-
-                foreach (var commit in commitBranch.Branch.Commits.Where(element => element.When >= item.Commit.When))
+                foreach (var commit in branch.Commits.Where(element => element.When > commitBranch.Commit.When))
                 {
-                    if (commit.Equals(item.Commit))
+                    var parents = commit.Parents.ToArray();
+                    if (parents.Length > 1 && parents.Any(element => element.Equals(commitBranch.Commit)))
                     {
-                        commitBranches.Remove(item);
+                        ignore.Add(commitBranch);
                     }
                 }
             }
         }
 
-        foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
+        using (this.log.IndentLog($"Filtering out branches"))
         {
-            var referenceMatchFound = false;
-            var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
-
-            foreach (var item in branchGrouping)
+            IEnumerable<BranchCommit> commitBranchesReversed = new List<BranchCommit>();
+            using (this.log.IndentLog($"Reverse commit branches"))
             {
-                if (!referenceNames.Contains(item.Name)) continue;
-                if (returnedBranches.Add(item)) yield return item;
-                referenceMatchFound = true;
+                commitBranchesReversed = commitBranches.Skip(1).Reverse();
             }
 
-            if (referenceMatchFound) continue;
-            foreach (var item in branchGrouping)
+            foreach (var item in commitBranchesReversed)
             {
-                if (returnedBranches.Add(item)) yield return item;
+                if (ignore.Contains(item)) continue;
+
+                foreach (var commitBranch in commitBranches)
+                {
+                    if (item.Commit.Equals(commitBranch.Commit)) break;
+
+                    foreach (var commit in commitBranch.Branch.Commits.Where(element => element.When >= item.Commit.When))
+                    {
+                        if (commit.Equals(item.Commit))
+                        {
+                            commitBranches.Remove(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        using (this.log.IndentLog($"Iterate grouped branches by commit"))
+        {
+            foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
+            {
+                var referenceMatchFound = false;
+                var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
+
+                foreach (var item in branchGrouping)
+                {
+                    if (!referenceNames.Contains(item.Name)) continue;
+                    if (returnedBranches.Add(item)) yield return item;
+                    referenceMatchFound = true;
+                }
+
+                if (referenceMatchFound) continue;
+                foreach (var item in branchGrouping)
+                {
+                    if (returnedBranches.Add(item)) yield return item;
+                }
             }
         }
     }

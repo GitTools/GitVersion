@@ -21,13 +21,56 @@ internal sealed partial class GitRepository
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
-    public IBranch Head => new Branch(RepositoryInstance.Head);
 
-    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
-    public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
-    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
-    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
-    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
+    private IBranch _head = null;
+    public IBranch Head {
+        get {
+            _head ??= new Branch(RepositoryInstance.Head);
+            return _head;
+        }
+    }
+
+    private ITagCollection _tags = null;
+    public ITagCollection Tags {
+        get {
+            _tags ??= new TagCollection(RepositoryInstance.Tags);
+            return _tags;
+        }
+    }
+
+    private IReferenceCollection _refs = null;
+    public IReferenceCollection Refs {
+        get {
+            _refs ??= new ReferenceCollection(RepositoryInstance.Refs);
+            return _refs;
+        }
+    }
+
+    private IBranchCollection _branches = null;
+    public IBranchCollection Branches {
+        get {
+            _branches ??= new BranchCollection(RepositoryInstance.Branches);
+            return _branches;
+        }
+    }
+
+    private ICommitCollection _commits = null;
+    public ICommitCollection Commits
+    {
+        get
+        {
+            _commits ??= new CommitCollection(RepositoryInstance.Commits);
+            return _commits;
+        }
+    }
+
+    public IRemoteCollection _remotes = null;
+    public IRemoteCollection Remotes {
+        get {
+            _remotes ??= new RemoteCollection(RepositoryInstance.Network.Remotes);
+            return _remotes;
+        }
+    }
 
     public void DiscoverRepository(string? gitDirectory)
     {
