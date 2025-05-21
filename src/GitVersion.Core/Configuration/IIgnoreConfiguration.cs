@@ -8,5 +8,5 @@ public interface IIgnoreConfiguration
 
     IReadOnlyCollection<string> Paths { get; }
 
-    bool IsEmpty => Before == null && Shas.Count == 0 && Paths.Count == 0;
+    bool IsEmpty { get; }
 }
