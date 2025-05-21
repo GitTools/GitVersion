@@ -1,13 +1,14 @@
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal class PathFilter( IEnumerable<string> paths) : IVersionFilter
+internal class PathFilter(IReadOnlyList<string> paths) : IVersionFilter
 {
-    private readonly List<Regex> pathsRegexes = paths.Select(path => new Regex(path, RegexOptions.IgnoreCase | RegexOptions.Compiled)).ToList();
-    private readonly Dictionary<string, bool> pathMatchCache = [];
+    private readonly List<Regex> pathsRegexes = [.. paths.Select(path => new Regex(path, RegexOptions.IgnoreCase | RegexOptions.Compiled))];
+    private readonly ConcurrentDictionary<string, bool> pathMatchCache = [];
 
     public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
     {
@@ -27,21 +28,18 @@ internal class PathFilter( IEnumerable<string> paths) : IVersionFilter
         {
             var patchPaths = commit.DiffPaths;
 
-            if (patchPaths != null)
+            foreach (var path in patchPaths)
             {
-                foreach (var path in patchPaths)
+                if (!pathMatchCache.TryGetValue(path, out var isMatch))
                 {
-                    if (!pathMatchCache.TryGetValue(path, out var isMatch))
-                    {
-                        isMatch = this.pathsRegexes.Any(regex => regex.IsMatch(path));
-                        pathMatchCache[path] = isMatch;
-                    }
+                    isMatch = this.pathsRegexes.Any(regex => regex.IsMatch(path));
+                    pathMatchCache[path] = isMatch;
+                }
 
-                    if (isMatch)
-                    {
-                        reason = "Source was ignored due to commit path matching ignore regex";
-                        return true;
-                    }
+                if (isMatch)
+                {
+                    reason = "Source was ignored due to commit path matching ignore regex";
+                    return true;
                 }
             }
         }

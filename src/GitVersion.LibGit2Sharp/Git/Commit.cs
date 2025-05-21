@@ -28,19 +28,21 @@ internal sealed class Commit : GitObject, ICommit
     public DateTimeOffset When { get; }
     public string Message => this.innerCommit.Message;
     // TODO implement tag prefix filtering before returning the paths.
-    public IEnumerable<string> DiffPaths
+    public IReadOnlyList<string> DiffPaths
     {
         get
         {
-            if (pathsCache.TryGetValue(this.Sha, out var paths))
-                return paths;
-            else
-                return this.CommitChanges?.Paths ?? [];
+            if (!pathsCache.TryGetValue(this.Sha, out var paths))
+            {
+                paths = this.CommitChanges?.Paths ?? [];
+                pathsCache[this.Sha] = paths;
+            }
+            return paths;
         }
     }
     public override bool Equals(object? obj) => Equals(obj as ICommit);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => $"'{Id.ToString(7)}' - {this.innerCommit.MessageShort}";
     public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
-    private ITreeChanges CommitChanges => new TreeChanges(this.repoDiff.Compare<LibGit2Sharp.TreeChanges>(this.innerCommit.Tree, this.innerCommit.Parents.FirstOrDefault()?.Tree));
+    private TreeChanges CommitChanges => new TreeChanges(this.repoDiff.Compare<LibGit2Sharp.TreeChanges>(this.innerCommit.Tree, this.innerCommit.Parents.FirstOrDefault()?.Tree));
 }
