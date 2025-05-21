@@ -7,7 +7,9 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal class IncrementStrategyFinder(IRepositoryStore repositoryStore, ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+internal class IncrementStrategyFinder(
+    IRepositoryStore repositoryStore,
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     : IIncrementStrategyFinder
 {
     private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
