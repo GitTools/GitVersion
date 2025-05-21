@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -8,7 +7,6 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
-    private readonly ConcurrentDictionary<string, IReadOnlyList<string>?> patchPathsCache = new();
 
     private IRepository RepositoryInstance
     {
