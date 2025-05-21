@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -7,6 +8,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
+    private readonly ConcurrentDictionary<string, IReadOnlyList<string>?> patchPathsCache = new();
 
     private IRepository RepositoryInstance
     {
@@ -16,17 +18,16 @@ internal sealed partial class GitRepository
             return lazy.Value;
         }
     }
-
     public string Path => RepositoryInstance.Info.Path;
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
-    public IBranch Head => new Branch(RepositoryInstance.Head);
+    public IBranch Head => new Branch(RepositoryInstance.Head, RepositoryInstance.Diff);
 
-    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
+    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff);
     public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
-    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
-    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
+    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff);
+    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff);
     public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
 
     public void DiscoverRepository(string? gitDirectory)
@@ -49,7 +50,7 @@ internal sealed partial class GitRepository
             var first = (Commit)commit;
             var second = (Commit)otherCommit;
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
-            return mergeBase == null ? null : new Commit(mergeBase);
+            return mergeBase == null ? null : new Commit(mergeBase, RepositoryInstance.Diff);
         });
     }
 
@@ -88,7 +89,7 @@ internal sealed partial class GitRepository
         }
 
         // gets all changes of the last commit vs Staging area and WT
-        var changes = RepositoryInstance.Diff.Compare<TreeChanges>(RepositoryInstance.Head.Tip.Tree,
+        var changes = RepositoryInstance.Diff.Compare<LibGit2Sharp.TreeChanges>(RepositoryInstance.Head.Tip.Tree,
             DiffTargets.Index | DiffTargets.WorkingDirectory);
 
         return changes.Count;
