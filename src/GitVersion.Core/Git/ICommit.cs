@@ -7,4 +7,5 @@ public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>, IGitObjec
     DateTimeOffset When { get; }
 
     string Message { get; }
+    IEnumerable<string> DiffPaths { get; }
 }

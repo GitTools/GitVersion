@@ -22,5 +22,5 @@ internal static class IgnoreConfigurationExtensions
     }
 
     private static bool ShouldBeIgnored(ICommit commit, IIgnoreConfiguration ignore)
-        => !(commit.When <= ignore.Before) && !ignore.Shas.Contains(commit.Sha);
+        => !ignore.ToFilters().Any(filter => filter.Exclude(commit, out var _));
 }
