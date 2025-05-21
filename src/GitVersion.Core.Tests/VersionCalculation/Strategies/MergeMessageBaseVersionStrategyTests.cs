@@ -204,7 +204,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         public IObjectId Id => throw new NotImplementedException();
         public string Sha => throw new NotImplementedException();
         public IReadOnlyList<ICommit> Parents => throw new NotImplementedException();
-        public IEnumerable<string> DiffPaths => throw new NotImplementedException();
+        public IReadOnlyList<string> DiffPaths => throw new NotImplementedException();
         public DateTimeOffset When => throw new NotImplementedException();
         public string Message => throw new NotImplementedException();
     }
