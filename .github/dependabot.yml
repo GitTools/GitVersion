@@ -15,13 +15,13 @@ updates:
     commit-message:
       prefix: "(deps)"
     groups:
-      Microsoft_CodeAnalysis:
-        patterns:
-          - "Microsoft.CodeAnalysis.*"
       microsoft:
         patterns:
           - "Microsoft.*"
           - "System.*"
+      Microsoft_CodeAnalysis:
+        patterns:
+          - "Microsoft.CodeAnalysis.*"
       analyzers:
         patterns:
           - "*Analyzers"
