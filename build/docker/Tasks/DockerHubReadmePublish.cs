@@ -46,7 +46,7 @@ public class DockerHubReadmePublishInternal : AsyncFrostingTask<BuildContext>
             var token = context.ParseJson(response).Value<string>("token");
             settings
                 .SetContentType("application/json")
-                .SetAuthorization("JWT", token)
+                .SetAuthorization("JWT", token!)
                 .SetJsonRequestBody(new { full_description = readme });
         });
         context.Information("README.md updated on DockerHub");
