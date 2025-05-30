@@ -6,4 +6,5 @@ public record Settings
     public bool NoCache;
     public bool NoNormalize;
     public bool OnlyTrackedBranches = false;
+    public bool AllowShallow = false;
 }
