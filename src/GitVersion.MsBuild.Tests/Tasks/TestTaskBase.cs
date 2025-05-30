@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.MsBuild.Tests.Tasks;
 
-public class TestTaskBase : TestBase
+public abstract class TestTaskBase : TestBase
 {
     protected IFileSystem FileSystem;
 
