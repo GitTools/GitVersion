@@ -18,8 +18,8 @@ version information that is compiled into the resulting artifact.
 Since version 6.0 only MSBuild running on .NET Core (`dotnet msbuild`) is supported.
 
 Unfortunately, up until at least Visual Studio 2022 17.11, Visual Studio runs all builds
-using the .NET Framework version of MSBuild, and therefore **Visual Studio is not supported**. 
-For more information see [this discussion](https://github.com/GitTools/GitVersion/discussions/4130).  
+using the .NET Framework version of MSBuild, and therefore **Visual Studio is not supported**.
+For more information see [this discussion](https://github.com/GitTools/GitVersion/discussions/4130).
 
 ## TL;DR
 
@@ -261,7 +261,9 @@ There are properties that correspond to certain
 In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch`
 during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables
 normalize step on a build server, setting `GitVersion_NoCacheEnabled` to `true`
-makes GetVersion ignore cache. All the rest command line arguments can be passed via
+makes GetVersion ignore cache, setting `GitVersion_AllowShallowEnabled` to `true`
+does not mandate a full clone of the repository to determine the version.
+All the rest command line arguments can be passed via
 `GitVersion_CommandLineArguments` variable.
 
 ## My Git repository requires authentication. What should I do?

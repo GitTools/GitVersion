@@ -14,8 +14,9 @@ build server, needs to adhere to the below requirements.
 
 ### Unshallow
 
-The repository needs to be an [unshallow][git-unshallow] clone. This means
-that the `fetch-depth` in GitHub Actions needs to be set to `0`, for instance.
+The repository should be an [unshallow][git-unshallow] clone. This means
+that the `fetch-depth` in GitHub Actions should set to `0`, unless
+the `allowshallow` flag is used.
 Check with your [build server][build-servers] to see how it can be configured
 appropriately.
 
