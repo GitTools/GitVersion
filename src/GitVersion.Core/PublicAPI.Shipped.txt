@@ -595,6 +595,7 @@ GitVersion.Settings.NoCache -> bool
 GitVersion.Settings.NoFetch -> bool
 GitVersion.Settings.NoNormalize -> bool
 GitVersion.Settings.OnlyTrackedBranches -> bool
+GitVersion.Settings.AllowShallow -> bool
 GitVersion.VersionCalculation.BaseVersion
 GitVersion.VersionCalculation.BaseVersion.BaseVersion() -> void
 GitVersion.VersionCalculation.BaseVersion.BaseVersion(GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void

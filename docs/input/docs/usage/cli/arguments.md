@@ -50,6 +50,10 @@ GitVersion [path]
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
+    /allowshallow   Allows GitVersion to run on a shallow clone.
+                    This is not recommended, but can be used if you are sure
+                    that the shallow clone contains all the information needed
+                    to calculate the version.
     /verbosity      Specifies the amount of information to be displayed.
                     (Quiet, Minimal, Normal, Verbose, Diagnostic)
                     Default is Normal

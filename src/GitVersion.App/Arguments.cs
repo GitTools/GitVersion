@@ -25,6 +25,7 @@ internal class Arguments
     public bool NoFetch;
     public bool NoCache;
     public bool NoNormalize;
+    public bool AllowShallow;
 
     public string? LogFilePath;
     public string? ShowVariable;
@@ -77,7 +78,8 @@ internal class Arguments
             {
                 NoFetch = NoFetch,
                 NoCache = NoCache,
-                NoNormalize = NoNormalize
+                NoNormalize = NoNormalize,
+                AllowShallow = AllowShallow,
             },
 
             WixInfo =

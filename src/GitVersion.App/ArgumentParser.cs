@@ -281,6 +281,12 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
+        if (name.IsSwitch("allowshallow"))
+        {
+            arguments.AllowShallow = true;
+            return true;
+        }
+
         if (name.IsSwitch("verbosity"))
         {
             ParseVerbosity(arguments, value);
