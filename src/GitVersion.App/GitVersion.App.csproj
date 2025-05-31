@@ -6,6 +6,8 @@
         <AssemblyName>gitversion</AssemblyName>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishSingleFile>true</PublishSingleFile>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
