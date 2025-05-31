@@ -13,8 +13,6 @@ internal class Arguments
 
     public string? TargetPath;
 
-    public bool UpdateWixVersionFile;
-
     public string? TargetUrl;
     public string? TargetBranch;
     public string? CommitId;
@@ -35,6 +33,7 @@ internal class Arguments
     public ISet<OutputType> Output = new HashSet<OutputType>();
     public Verbosity Verbosity = Verbosity.Normal;
 
+    public bool UpdateWixVersionFile;
     public bool UpdateProjectFiles;
     public bool UpdateAssemblyInfo;
     public bool EnsureAssemblyInfo;
