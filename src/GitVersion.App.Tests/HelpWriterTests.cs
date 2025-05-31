@@ -19,21 +19,33 @@ public class HelpWriterTests : TestBase
     {
         var lookup = new Dictionary<string, string>
         {
-            { nameof(Arguments.TargetUrl), "/url" },
-            { nameof(Arguments.TargetBranch), "/b" },
-            { nameof(Arguments.LogFilePath) , "/l" },
-            { nameof(Arguments.OutputFile) , "/outputfile" },
-            { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
             { nameof(Arguments.IsHelp), "/?" },
             { nameof(Arguments.IsVersion), "/version" },
-            { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
-            { nameof(Arguments.ConfigurationFile), "/config" },
-            { nameof(Arguments.Verbosity), "/verbosity" },
+
+            { nameof(Arguments.TargetUrl), "/url" },
+            { nameof(Arguments.TargetBranch), "/b" },
+            { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
             { nameof(Arguments.CommitId), "/c" },
+
+            { nameof(Arguments.LogFilePath) , "/l" },
+            { nameof(Arguments.Verbosity), "/verbosity" },
+            { nameof(Arguments.Output) , "/output" },
+            { nameof(Arguments.OutputFile) , "/outputfile" },
+            { nameof(Arguments.ShowVariable), "/showvariable" },
+            { nameof(Arguments.Format), "/format" },
+
+            { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
+            { nameof(Arguments.UpdateProjectFiles), "/updateprojectfiles" },
+            { nameof(Arguments.UpdateAssemblyInfo), "/updateassemblyinfo" },
+            { nameof(Arguments.EnsureAssemblyInfo), "/ensureassemblyinfo" },
+
+            { nameof(Arguments.ConfigurationFile), "/config" },
             { nameof(Arguments.ShowConfiguration), "/showconfig" },
             { nameof(Arguments.OverrideConfiguration), "/overrideconfig" },
-            { nameof(Arguments.ShowVariable), "/showvariable" },
-            { nameof(Arguments.Format), "/format" }
+
+            { nameof(Arguments.NoCache), "/nocache" },
+            { nameof(Arguments.NoFetch), "/nofetch" },
+            { nameof(Arguments.NoNormalize), "/nonormalize" },
         };
         var helpText = string.Empty;
 
@@ -42,7 +54,7 @@ public class HelpWriterTests : TestBase
         var ignored = new[]
         {
             nameof(Arguments.Authentication),
-            nameof(Arguments.UpdateAssemblyInfoFileName)
+            nameof(Arguments.UpdateAssemblyInfoFileName),
         };
         typeof(Arguments).GetFields()
             .Select(p => p.Name)
