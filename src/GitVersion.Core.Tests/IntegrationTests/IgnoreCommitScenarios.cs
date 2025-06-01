@@ -135,8 +135,9 @@ public class IgnoreCommitScenarios : TestBase
         fixture.ApplyTag("1.0.0");
         fixture.MakeACommit("D");
 
+        var before = commitC.Committer.When.AddSeconds(1);
         var configuration = TrunkBasedConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = commitC.Committer.When })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = before })
             .Build();
 
         // ✅ succeeds as expected
@@ -285,8 +286,9 @@ public class IgnoreCommitScenarios : TestBase
         fixture.ApplyTag("1.0.0");
         fixture.MakeACommit("D");
 
+        var before = commitC.Committer.When.AddSeconds(1);
         var configuration = GitHubFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = commitC.Committer.When })
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Before = before })
             .Build();
 
         // ✅ succeeds as expected
@@ -330,5 +332,105 @@ public class IgnoreCommitScenarios : TestBase
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver(semanticVersion, configuration, commitId: commitA.Sha);
+    }
+
+    [Test]
+    public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForPathThenVersionShouldBeCorrect()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+
+        var commitA = fixture.Repository.MakeACommit("A");
+        var commitB = fixture.Repository.MakeACommit("B");
+        fixture.MakeACommit("C");
+        fixture.MakeACommit("D");
+
+        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+
+        var configuration = TrunkBasedConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
+            .Build();
+
+        // commitB should be ignored, so version should be as if B didn't exist
+        fixture.AssertFullSemver("0.0.3", configuration);
+    }
+
+    [Test]
+    public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForPathAndCommitParameterCThenVersionShouldBeCorrect()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+
+        var commitA = fixture.Repository.MakeACommit("A");
+        fixture.MakeACommit("B");
+        var commitC = fixture.Repository.MakeACommit("C");
+        fixture.MakeACommit("D");
+
+        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitC.Tree).Select(element => element.Path).First();
+
+        var configuration = TrunkBasedConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
+            .Build();
+
+        // commitC should be ignored, so version should be as if C didn't exist
+        fixture.AssertFullSemver("0.0.2", configuration, commitId: commitC.Sha);
+    }
+
+    [Test]
+    public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForPathThenVersionShouldBeCorrect()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+
+        var commitA = fixture.Repository.MakeACommit("A");
+        var commitB = fixture.Repository.MakeACommit("B");
+        fixture.MakeACommit("C");
+        fixture.MakeACommit("D");
+
+        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
+            .Build();
+
+        // commitB should be ignored, so version should be as if B didn't exist
+        fixture.AssertFullSemver("0.0.1-3", configuration);
+    }
+
+    [Test]
+    public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForTaggedCommitPathThenTagShouldBeIgnored()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+
+        var commitA = fixture.Repository.MakeACommit("A");
+        var commitB = fixture.Repository.MakeACommit("B");
+        fixture.ApplyTag("1.0.0");
+        fixture.MakeACommit("C");
+
+        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+
+        var configuration = TrunkBasedConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
+            .Build();
+
+        // commitB should be ignored, so version should be as if B didn't exist
+        fixture.AssertFullSemver("0.0.2", configuration);
+    }
+
+    [Test]
+    public void GivenGitHubFlowWorkflowWithIgnoreConfigurationForTaggedCommitPathThenTagShouldBeIgnored()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+
+        var commitA = fixture.Repository.MakeACommit("A");
+        var commitB = fixture.Repository.MakeACommit("B");
+        fixture.ApplyTag("1.0.0");
+        fixture.MakeACommit("C");
+
+        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
+            .Build();
+
+        // commitB should be ignored, so version should be as if B didn't exist
+        fixture.AssertFullSemver("0.0.1-2", configuration);
     }
 }

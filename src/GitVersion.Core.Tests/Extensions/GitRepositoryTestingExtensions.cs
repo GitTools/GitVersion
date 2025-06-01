@@ -32,6 +32,13 @@ public static class GitRepositoryTestingExtensions
         return commit;
     }
 
+    public static ICommit CreateMockCommit(List<string> diffPaths)
+    {
+        var commit = CreateMockCommit();
+        commit.DiffPaths.Returns(diffPaths);
+        return commit;
+    }
+
     public static IBranch CreateMockBranch(string name, params ICommit[] commits)
     {
         var branch = Substitute.For<IBranch>();

@@ -7,16 +7,12 @@ namespace GitVersion.VersionCalculation;
 
 internal class PathFilter(IReadOnlyList<string> paths) : IVersionFilter
 {
-    private readonly List<Regex> pathsRegexes = [.. paths.Select(path => new Regex(path, RegexOptions.IgnoreCase | RegexOptions.Compiled))];
+    private readonly List<Regex> pathsRegexes = [.. paths.Select(path => new Regex(path, RegexOptions.Compiled))];
     private readonly ConcurrentDictionary<string, bool> pathMatchCache = [];
 
     public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
     {
         ArgumentNullException.ThrowIfNull(baseVersion);
-
-        reason = null;
-        if (baseVersion.Source.StartsWith("Fallback") || baseVersion.Source.StartsWith("Git tag") || baseVersion.Source.StartsWith("NextVersion")) return false;
-
         return Exclude(baseVersion.BaseVersionSource, out reason);
     }
 
@@ -26,9 +22,7 @@ internal class PathFilter(IReadOnlyList<string> paths) : IVersionFilter
 
         if (commit != null)
         {
-            var patchPaths = commit.DiffPaths;
-
-            foreach (var path in patchPaths)
+            foreach (var path in commit.DiffPaths)
             {
                 if (!pathMatchCache.TryGetValue(path, out var isMatch))
                 {
