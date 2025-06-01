@@ -46,6 +46,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.NoCache), "/nocache" },
             { nameof(Arguments.NoFetch), "/nofetch" },
             { nameof(Arguments.NoNormalize), "/nonormalize" },
+            { nameof(Arguments.AllowShallow), "/allowshallow" },
         };
         var helpText = string.Empty;
 
