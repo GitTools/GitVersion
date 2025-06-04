@@ -27,7 +27,6 @@ internal sealed class Commit : GitObject, ICommit
     public IReadOnlyList<ICommit> Parents => this.parentsLazy.Value;
     public DateTimeOffset When { get; }
     public string Message => this.innerCommit.Message;
-    // TODO implement tag prefix filtering before returning the paths.
     public IReadOnlyList<string> DiffPaths
     {
         get
