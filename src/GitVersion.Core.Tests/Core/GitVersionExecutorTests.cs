@@ -597,6 +597,79 @@ public class GitVersionExecutorTests : TestBase
         exception?.Message.ShouldBe("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
     }
 
+    [Test]
+    public void CalculateVersionVariables_ShallowFetch_WithAllowShallow_ShouldNotThrowException()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.LocalRepositoryFixture.MakeShallow();
+
+        using var worktreeFixture = new LocalRepositoryFixture(new(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions
+        {
+            WorkingDirectory = worktreeFixture.RepositoryPath,
+            Settings = { AllowShallow = true }
+        };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        sp.DiscoverRepository();
+
+        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+
+        // Execute
+        var version = sut.CalculateVersionVariables();
+
+        // Verify
+        version.ShouldNotBeNull();
+        var commits = worktreeFixture.Repository.Head.Commits;
+        version.Sha.ShouldBe(commits.First().Sha);
+    }
+
+    [Test]
+    public void CalculateVersionVariables_WithLimitedCloneDepth_AndAllowShallowTrue_ShouldCalculateVersionCorrectly()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.LocalRepositoryFixture.MakeShallow();
+
+        fixture.LocalRepositoryFixture.Repository.MakeACommit("Initial commit");
+        fixture.LocalRepositoryFixture.Repository.MakeATaggedCommit("1.0.0");
+        var latestCommit = fixture.LocalRepositoryFixture.Repository.MakeACommit("+semver:major");
+
+        using var worktreeFixture = new LocalRepositoryFixture(new(fixture.LocalRepositoryFixture.RepositoryPath));
+
+        var gitVersionOptions = new GitVersionOptions
+        {
+            WorkingDirectory = worktreeFixture.RepositoryPath,
+            Settings = { AllowShallow = true }
+        };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+        sp.DiscoverRepository();
+        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+
+        // Execute
+        var version = sut.CalculateVersionVariables();
+
+        // Verify
+        version.ShouldNotBeNull();
+
+        // Verify that the correct commit is used
+        version.Sha.ShouldBe(latestCommit.Sha);
+        version.MajorMinorPatch.ShouldBe("2.0.0");
+
+        // Verify repository is still recognized as shallow
+        var repository = this.sp.GetRequiredService<IGitRepository>();
+        repository.IsShallow.ShouldBeTrue("Repository should still be shallow after version calculation");
+    }
+
     private string GetWorktreePath(EmptyRepositoryFixture fixture)
     {
         var worktreePath = FileSystemHelper.Path.Combine(this.fileSystem.Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());

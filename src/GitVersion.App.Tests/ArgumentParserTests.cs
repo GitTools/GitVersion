@@ -630,6 +630,13 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
+    public void AllowshallowTrueWhenDefined()
+    {
+        var arguments = this.argumentParser.ParseArguments("-allowshallow");
+        arguments.AllowShallow.ShouldBe(true);
+    }
+
+    [Test]
     public void OtherArgumentsCanBeParsedBeforeNofetch()
     {
         var arguments = this.argumentParser.ParseArguments("targetpath -nofetch ");
@@ -653,18 +660,45 @@ public class ArgumentParserTests : TestBase
         arguments.NoCache.ShouldBe(true);
     }
 
-    [TestCase("-nofetch -nonormalize -nocache")]
-    [TestCase("-nofetch -nocache -nonormalize")]
-    [TestCase("-nocache -nofetch -nonormalize")]
-    [TestCase("-nocache -nonormalize -nofetch")]
-    [TestCase("-nonormalize -nocache -nofetch")]
-    [TestCase("-nonormalize -nofetch -nocache")]
+    [Test]
+    public void OtherArgumentsCanBeParsedBeforeAllowshallow()
+    {
+        var arguments = this.argumentParser.ParseArguments("targetpath -allowshallow");
+        arguments.TargetPath.ShouldBe("targetpath");
+        arguments.AllowShallow.ShouldBe(true);
+    }
+
+    [TestCase("-nofetch -nonormalize -nocache -allowshallow")]
+    [TestCase("-nofetch -nonormalize -allowshallow -nocache")]
+    [TestCase("-nofetch -nocache -nonormalize -allowshallow")]
+    [TestCase("-nofetch -nocache -allowshallow -nonormalize")]
+    [TestCase("-nofetch -allowshallow -nonormalize -nocache")]
+    [TestCase("-nofetch -allowshallow -nocache -nonormalize")]
+    [TestCase("-nonormalize -nofetch -nocache -allowshallow")]
+    [TestCase("-nonormalize -nofetch -allowshallow -nocache")]
+    [TestCase("-nonormalize -nocache -nofetch -allowshallow")]
+    [TestCase("-nonormalize -nocache -allowshallow -nofetch")]
+    [TestCase("-nonormalize -allowshallow -nofetch -nocache")]
+    [TestCase("-nonormalize -allowshallow -nocache -nofetch")]
+    [TestCase("-nocache -nofetch -nonormalize -allowshallow")]
+    [TestCase("-nocache -nofetch -allowshallow -nonormalize")]
+    [TestCase("-nocache -nonormalize -nofetch -allowshallow")]
+    [TestCase("-nocache -nonormalize -allowshallow -nofetch")]
+    [TestCase("-nocache -allowshallow -nofetch -nonormalize")]
+    [TestCase("-nocache -allowshallow -nonormalize -nofetch")]
+    [TestCase("-allowshallow -nofetch -nonormalize -nocache")]
+    [TestCase("-allowshallow -nofetch -nocache -nonormalize")]
+    [TestCase("-allowshallow -nonormalize -nofetch -nocache")]
+    [TestCase("-allowshallow -nonormalize -nocache -nofetch")]
+    [TestCase("-allowshallow -nocache -nofetch -nonormalize")]
+    [TestCase("-allowshallow -nocache -nonormalize -nofetch")]
     public void SeveralSwitchesCanBeParsed(string commandLineArgs)
     {
         var arguments = this.argumentParser.ParseArguments(commandLineArgs);
         arguments.NoCache.ShouldBe(true);
         arguments.NoNormalize.ShouldBe(true);
         arguments.NoFetch.ShouldBe(true);
+        arguments.AllowShallow.ShouldBe(true);
     }
 
     [Test]
