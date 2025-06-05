@@ -5,13 +5,31 @@ namespace GitVersion.Git;
 
 internal sealed class CommitCollection : ICommitCollection
 {
+    public static Dictionary<LibGit2Sharp.Commit, ICommit> s_commits = new Dictionary<LibGit2Sharp.Commit, ICommit>();
+
     private readonly ICommitLog innerCollection;
     private readonly Lazy<IReadOnlyCollection<ICommit>> commits;
 
     internal CommitCollection(ICommitLog collection)
     {
         this.innerCollection = collection.NotNull();
-        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => new Commit(commit))]);
+        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => {
+            List<ICommit> commits = new List<ICommit>();
+            foreach (var c in this.innerCollection) {
+                ICommit gvCommit;
+                if (s_commits.TryGetValue(c, out gvCommit))
+                {
+                    commits.Add(gvCommit);
+                }
+                else
+                {
+                    gvCommit = new Commit(c);
+                    commits.Add(gvCommit);
+                    s_commits[c] = gvCommit;
+                }
+            }
+            return commits;
+        });
     }
 
     public IEnumerator<ICommit> GetEnumerator()

@@ -1,5 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
+using LibGit2Sharp;
 
 namespace GitVersion.Git;
 
@@ -14,7 +15,16 @@ internal sealed class Commit : GitObject, ICommit
     internal Commit(LibGit2Sharp.Commit innerCommit) : base(innerCommit)
     {
         this.innerCommit = innerCommit.NotNull();
-        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => new Commit(parent)).ToList());
+        this.parentsLazy = new Lazy<IReadOnlyList<ICommit>>(() => innerCommit.Parents.Select(parent =>
+            {
+                ICommit gvCommit;
+                if (!CommitCollection.s_commits.TryGetValue(parent, out gvCommit))
+                {
+                    gvCommit = new Commit(parent);
+                    CommitCollection.s_commits.Add(parent, gvCommit);
+                }
+                return gvCommit;
+            }).ToList());
         When = innerCommit.Committer.When;
     }
 
