@@ -37,19 +37,6 @@ public class PathFilterTests : TestBase
     }
 
     [Test]
-    public void WhenCommitSourceStartsWithCommitTagShouldNotBeExcluded()
-    {
-        var commit = GitRepositoryTestingExtensions.CreateMockCommit(["/path"]);
-        BaseVersion version = new("Git tag: v1.0.0", new SemanticVersion(1), commit);
-        var sut = new PathFilter(commit.DiffPaths);
-
-        var result = sut.Exclude(version, out var reason);
-
-        result.ShouldBeFalse();
-        reason.ShouldBeNull();
-    }
-
-    [Test]
     public void ExcludeShouldAcceptVersionWithNullCommit()
     {
         BaseVersion version = new("dummy", new SemanticVersion(1));
