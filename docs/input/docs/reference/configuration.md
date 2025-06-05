@@ -624,24 +624,6 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
-#### paths
-A sequence of regular expressions that represent paths in the repository. Commits that modify these paths will be excluded from version calculations. For example, to filter out commits that belong to `docs`:
-```yaml
-ignore:
-  paths:
-    - ^docs\/
-```
-This ignore config can also be used to filter only those commits that belong to a specific project in a monorepo. For GitVersion to consider only commits that are part of subdirectory called `projectA`, use a regex that matches all paths except those starting with `ProjectA`:
-```yaml
-ignore:
-  paths:
-    - ^(?!ProjectA).*$
-```
-
-::: {.alert .alert-warning}
-A commit is ignored by the `ignore.paths` configuration only if **all paths** changed in that commit match one of the specified regular expressions. If any file in the commit does not match an ignore pattern, the commit will be included in version calculations.
-:::
-
 ### merge-message-formats
 
 Custom merge message formats to enable identification of merge messages that do not
