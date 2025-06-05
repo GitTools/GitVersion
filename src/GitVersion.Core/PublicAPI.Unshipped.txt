@@ -1,1 +1,148 @@
 #nullable enable
+GitVersion.Configuration.EffectiveBranchConfiguration.Deconstruct(out GitVersion.Configuration.EffectiveConfiguration! Value, out GitVersion.Git.IBranch! Branch) -> void
+GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.Configuration.EffectiveBranchConfiguration! original) -> void
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.EffectiveConfiguration! original) -> void
+GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
+GitVersion.ConfigurationInfo.ConfigurationInfo(GitVersion.ConfigurationInfo! original) -> void
+GitVersion.FileWriteInfo.<Clone>$() -> GitVersion.FileWriteInfo!
+GitVersion.FileWriteInfo.Deconstruct(out string! WorkingDirectory, out string! FileName, out string! FileExtension) -> void
+GitVersion.FileWriteInfo.Equals(GitVersion.FileWriteInfo? other) -> bool
+GitVersion.Git.AuthenticationInfo.AuthenticationInfo() -> void
+GitVersion.Git.AuthenticationInfo.AuthenticationInfo(GitVersion.Git.AuthenticationInfo! original) -> void
+GitVersion.Git.CommitFilter.CommitFilter() -> void
+GitVersion.Git.CommitFilter.CommitFilter(GitVersion.Git.CommitFilter! original) -> void
+GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string! Major, out string! Minor, out string! Patch, out string? BuildMetaData, out string? FullBuildMetaData, out string? BranchName, out string? EscapedBranchName, out string? Sha, out string? ShortSha, out string! MajorMinorPatch, out string! SemVer, out string! FullSemVer, out string? AssemblySemVer, out string? AssemblySemFileVer, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string! WeightedPreReleaseNumber, out string? InformationalVersion, out string? CommitDate, out string? VersionSourceSha, out string? CommitsSinceVersionSource, out string? UncommittedChanges) -> void
+GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(GitVersion.OutputVariables.GitVersionVariables! original) -> void
+GitVersion.RepositoryInfo.RepositoryInfo() -> void
+GitVersion.RepositoryInfo.RepositoryInfo(GitVersion.RepositoryInfo! original) -> void
+GitVersion.SemanticVersionWithTag.<Clone>$() -> GitVersion.SemanticVersionWithTag!
+GitVersion.SemanticVersionWithTag.Deconstruct(out GitVersion.SemanticVersion! Value, out GitVersion.Git.ITag! Tag) -> void
+GitVersion.SemanticVersionWithTag.Equals(GitVersion.SemanticVersionWithTag? other) -> bool
+GitVersion.Settings.Settings() -> void
+GitVersion.Settings.Settings(GitVersion.Settings! original) -> void
+GitVersion.VersionCalculation.BaseVersion.<Clone>$() -> GitVersion.VersionCalculation.BaseVersion!
+GitVersion.VersionCalculation.BaseVersion.Deconstruct(out GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void
+GitVersion.VersionCalculation.BaseVersion.Equals(GitVersion.VersionCalculation.BaseVersion? other) -> bool
+GitVersion.VersionCalculation.BaseVersionOperand.<Clone>$() -> GitVersion.VersionCalculation.BaseVersionOperand!
+GitVersion.VersionCalculation.BaseVersionOperand.Deconstruct(out string! Source, out GitVersion.SemanticVersion! SemanticVersion, out GitVersion.Git.ICommit? BaseVersionSource) -> void
+GitVersion.VersionCalculation.BaseVersionOperand.Equals(GitVersion.VersionCalculation.BaseVersionOperand? other) -> bool
+GitVersion.VersionCalculation.BaseVersionOperator.<Clone>$() -> GitVersion.VersionCalculation.BaseVersionOperator!
+GitVersion.VersionCalculation.BaseVersionOperator.BaseVersionOperator() -> void
+GitVersion.VersionCalculation.BaseVersionOperator.Equals(GitVersion.VersionCalculation.BaseVersionOperator? other) -> bool
+GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Deconstruct(out string! Value) -> void
+GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GitVersionCacheKey(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! original) -> void
+GitVersion.WixInfo.WixInfo() -> void
+GitVersion.WixInfo.WixInfo(GitVersion.WixInfo! original) -> void
+override GitVersion.Configuration.EffectiveBranchConfiguration.Equals(object? obj) -> bool
+override GitVersion.Configuration.EffectiveBranchConfiguration.GetHashCode() -> int
+override GitVersion.Configuration.EffectiveBranchConfiguration.ToString() -> string!
+override GitVersion.Configuration.EffectiveConfiguration.Equals(object? obj) -> bool
+override GitVersion.Configuration.EffectiveConfiguration.GetHashCode() -> int
+override GitVersion.Configuration.EffectiveConfiguration.ToString() -> string!
+override GitVersion.ConfigurationInfo.Equals(object? obj) -> bool
+override GitVersion.ConfigurationInfo.GetHashCode() -> int
+override GitVersion.ConfigurationInfo.ToString() -> string!
+override GitVersion.FileWriteInfo.Equals(object? obj) -> bool
+override GitVersion.FileWriteInfo.GetHashCode() -> int
+override GitVersion.FileWriteInfo.ToString() -> string!
+override GitVersion.Git.AuthenticationInfo.Equals(object? obj) -> bool
+override GitVersion.Git.AuthenticationInfo.GetHashCode() -> int
+override GitVersion.Git.AuthenticationInfo.ToString() -> string!
+override GitVersion.Git.CommitFilter.Equals(object? obj) -> bool
+override GitVersion.Git.CommitFilter.GetHashCode() -> int
+override GitVersion.Git.CommitFilter.ToString() -> string!
+override GitVersion.OutputVariables.GitVersionVariables.Equals(object? obj) -> bool
+override GitVersion.OutputVariables.GitVersionVariables.GetHashCode() -> int
+override GitVersion.OutputVariables.GitVersionVariables.ToString() -> string!
+override GitVersion.RepositoryInfo.Equals(object? obj) -> bool
+override GitVersion.RepositoryInfo.GetHashCode() -> int
+override GitVersion.RepositoryInfo.ToString() -> string!
+override GitVersion.SemanticVersionWithTag.Equals(object? obj) -> bool
+override GitVersion.SemanticVersionWithTag.GetHashCode() -> int
+override GitVersion.Settings.Equals(object? obj) -> bool
+override GitVersion.Settings.GetHashCode() -> int
+override GitVersion.Settings.ToString() -> string!
+override GitVersion.VersionCalculation.BaseVersion.Equals(object? obj) -> bool
+override GitVersion.VersionCalculation.BaseVersion.GetHashCode() -> int
+override GitVersion.VersionCalculation.BaseVersionOperand.Equals(object? obj) -> bool
+override GitVersion.VersionCalculation.BaseVersionOperand.GetHashCode() -> int
+override GitVersion.VersionCalculation.BaseVersionOperator.Equals(object? obj) -> bool
+override GitVersion.VersionCalculation.BaseVersionOperator.GetHashCode() -> int
+override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Equals(object? obj) -> bool
+override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GetHashCode() -> int
+override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.ToString() -> string!
+override GitVersion.WixInfo.Equals(object? obj) -> bool
+override GitVersion.WixInfo.GetHashCode() -> int
+override GitVersion.WixInfo.ToString() -> string!
+static GitVersion.Configuration.EffectiveBranchConfiguration.operator !=(GitVersion.Configuration.EffectiveBranchConfiguration? left, GitVersion.Configuration.EffectiveBranchConfiguration? right) -> bool
+static GitVersion.Configuration.EffectiveBranchConfiguration.operator ==(GitVersion.Configuration.EffectiveBranchConfiguration? left, GitVersion.Configuration.EffectiveBranchConfiguration? right) -> bool
+static GitVersion.Configuration.EffectiveConfiguration.operator !=(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
+static GitVersion.Configuration.EffectiveConfiguration.operator ==(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
+static GitVersion.ConfigurationInfo.operator !=(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
+static GitVersion.ConfigurationInfo.operator ==(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
+static GitVersion.FileWriteInfo.operator !=(GitVersion.FileWriteInfo? left, GitVersion.FileWriteInfo? right) -> bool
+static GitVersion.FileWriteInfo.operator ==(GitVersion.FileWriteInfo? left, GitVersion.FileWriteInfo? right) -> bool
+static GitVersion.Git.AuthenticationInfo.operator !=(GitVersion.Git.AuthenticationInfo? left, GitVersion.Git.AuthenticationInfo? right) -> bool
+static GitVersion.Git.AuthenticationInfo.operator ==(GitVersion.Git.AuthenticationInfo? left, GitVersion.Git.AuthenticationInfo? right) -> bool
+static GitVersion.Git.CommitFilter.operator !=(GitVersion.Git.CommitFilter? left, GitVersion.Git.CommitFilter? right) -> bool
+static GitVersion.Git.CommitFilter.operator ==(GitVersion.Git.CommitFilter? left, GitVersion.Git.CommitFilter? right) -> bool
+static GitVersion.OutputVariables.GitVersionVariables.operator !=(GitVersion.OutputVariables.GitVersionVariables? left, GitVersion.OutputVariables.GitVersionVariables? right) -> bool
+static GitVersion.OutputVariables.GitVersionVariables.operator ==(GitVersion.OutputVariables.GitVersionVariables? left, GitVersion.OutputVariables.GitVersionVariables? right) -> bool
+static GitVersion.RepositoryInfo.operator !=(GitVersion.RepositoryInfo? left, GitVersion.RepositoryInfo? right) -> bool
+static GitVersion.RepositoryInfo.operator ==(GitVersion.RepositoryInfo? left, GitVersion.RepositoryInfo? right) -> bool
+static GitVersion.SemanticVersionWithTag.operator !=(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
+static GitVersion.SemanticVersionWithTag.operator ==(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
+static GitVersion.Settings.operator !=(GitVersion.Settings? left, GitVersion.Settings? right) -> bool
+static GitVersion.Settings.operator ==(GitVersion.Settings? left, GitVersion.Settings? right) -> bool
+static GitVersion.VersionCalculation.BaseVersion.operator !=(GitVersion.VersionCalculation.BaseVersion? left, GitVersion.VersionCalculation.BaseVersion? right) -> bool
+static GitVersion.VersionCalculation.BaseVersion.operator ==(GitVersion.VersionCalculation.BaseVersion? left, GitVersion.VersionCalculation.BaseVersion? right) -> bool
+static GitVersion.VersionCalculation.BaseVersionOperand.operator !=(GitVersion.VersionCalculation.BaseVersionOperand? left, GitVersion.VersionCalculation.BaseVersionOperand? right) -> bool
+static GitVersion.VersionCalculation.BaseVersionOperand.operator ==(GitVersion.VersionCalculation.BaseVersionOperand? left, GitVersion.VersionCalculation.BaseVersionOperand? right) -> bool
+static GitVersion.VersionCalculation.BaseVersionOperator.operator !=(GitVersion.VersionCalculation.BaseVersionOperator? left, GitVersion.VersionCalculation.BaseVersionOperator? right) -> bool
+static GitVersion.VersionCalculation.BaseVersionOperator.operator ==(GitVersion.VersionCalculation.BaseVersionOperator? left, GitVersion.VersionCalculation.BaseVersionOperator? right) -> bool
+static GitVersion.VersionCalculation.Caching.GitVersionCacheKey.operator !=(GitVersion.VersionCalculation.Caching.GitVersionCacheKey? left, GitVersion.VersionCalculation.Caching.GitVersionCacheKey? right) -> bool
+static GitVersion.VersionCalculation.Caching.GitVersionCacheKey.operator ==(GitVersion.VersionCalculation.Caching.GitVersionCacheKey? left, GitVersion.VersionCalculation.Caching.GitVersionCacheKey? right) -> bool
+static GitVersion.WixInfo.operator !=(GitVersion.WixInfo? left, GitVersion.WixInfo? right) -> bool
+static GitVersion.WixInfo.operator ==(GitVersion.WixInfo? left, GitVersion.WixInfo? right) -> bool
+virtual GitVersion.Configuration.EffectiveBranchConfiguration.<Clone>$() -> GitVersion.Configuration.EffectiveBranchConfiguration!
+virtual GitVersion.Configuration.EffectiveBranchConfiguration.EqualityContract.get -> System.Type!
+virtual GitVersion.Configuration.EffectiveBranchConfiguration.Equals(GitVersion.Configuration.EffectiveBranchConfiguration? other) -> bool
+virtual GitVersion.Configuration.EffectiveBranchConfiguration.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.Configuration.EffectiveConfiguration.<Clone>$() -> GitVersion.Configuration.EffectiveConfiguration!
+virtual GitVersion.Configuration.EffectiveConfiguration.EqualityContract.get -> System.Type!
+virtual GitVersion.Configuration.EffectiveConfiguration.Equals(GitVersion.Configuration.EffectiveConfiguration? other) -> bool
+virtual GitVersion.Configuration.EffectiveConfiguration.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.ConfigurationInfo.<Clone>$() -> GitVersion.ConfigurationInfo!
+virtual GitVersion.ConfigurationInfo.EqualityContract.get -> System.Type!
+virtual GitVersion.ConfigurationInfo.Equals(GitVersion.ConfigurationInfo? other) -> bool
+virtual GitVersion.ConfigurationInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.Git.AuthenticationInfo.<Clone>$() -> GitVersion.Git.AuthenticationInfo!
+virtual GitVersion.Git.AuthenticationInfo.EqualityContract.get -> System.Type!
+virtual GitVersion.Git.AuthenticationInfo.Equals(GitVersion.Git.AuthenticationInfo? other) -> bool
+virtual GitVersion.Git.AuthenticationInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.Git.CommitFilter.<Clone>$() -> GitVersion.Git.CommitFilter!
+virtual GitVersion.Git.CommitFilter.EqualityContract.get -> System.Type!
+virtual GitVersion.Git.CommitFilter.Equals(GitVersion.Git.CommitFilter? other) -> bool
+virtual GitVersion.Git.CommitFilter.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.Logging.LogAction.Invoke(GitVersion.Logging.LogActionEntry! actionEntry) -> void
+virtual GitVersion.Logging.LogActionEntry.Invoke(string! format, params object![]! args) -> void
+virtual GitVersion.OutputVariables.GitVersionVariables.<Clone>$() -> GitVersion.OutputVariables.GitVersionVariables!
+virtual GitVersion.OutputVariables.GitVersionVariables.EqualityContract.get -> System.Type!
+virtual GitVersion.OutputVariables.GitVersionVariables.Equals(GitVersion.OutputVariables.GitVersionVariables? other) -> bool
+virtual GitVersion.OutputVariables.GitVersionVariables.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.RepositoryInfo.<Clone>$() -> GitVersion.RepositoryInfo!
+virtual GitVersion.RepositoryInfo.EqualityContract.get -> System.Type!
+virtual GitVersion.RepositoryInfo.Equals(GitVersion.RepositoryInfo? other) -> bool
+virtual GitVersion.RepositoryInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.Settings.<Clone>$() -> GitVersion.Settings!
+virtual GitVersion.Settings.EqualityContract.get -> System.Type!
+virtual GitVersion.Settings.Equals(GitVersion.Settings? other) -> bool
+virtual GitVersion.Settings.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.VersionCalculation.Caching.GitVersionCacheKey.<Clone>$() -> GitVersion.VersionCalculation.Caching.GitVersionCacheKey!
+virtual GitVersion.VersionCalculation.Caching.GitVersionCacheKey.EqualityContract.get -> System.Type!
+virtual GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Equals(GitVersion.VersionCalculation.Caching.GitVersionCacheKey? other) -> bool
+virtual GitVersion.VersionCalculation.Caching.GitVersionCacheKey.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual GitVersion.WixInfo.<Clone>$() -> GitVersion.WixInfo!
+virtual GitVersion.WixInfo.EqualityContract.get -> System.Type!
+virtual GitVersion.WixInfo.Equals(GitVersion.WixInfo? other) -> bool
+virtual GitVersion.WixInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
