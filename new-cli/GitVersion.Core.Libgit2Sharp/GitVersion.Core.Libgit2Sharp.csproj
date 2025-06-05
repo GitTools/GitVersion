@@ -57,6 +57,9 @@
       <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\TagCollection.cs">
         <Link>Git\TagCollection.cs</Link>
       </Compile>
+	  <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\TreeChanges.cs">
+        <Link>Git\TreeChanges.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>
