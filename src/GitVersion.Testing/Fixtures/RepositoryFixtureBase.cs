@@ -10,19 +10,20 @@ namespace GitVersion.Testing;
 public abstract class RepositoryFixtureBase : IDisposable
 {
     public const string MainBranch = "master";
-    public const bool DeleteOnDispose = true;
+    private readonly bool deleteOnDispose;
 
-    protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
-        : this(repositoryBuilder(FileSystemHelper.Path.GetRepositoryTempPath()))
+    protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder, bool deleteOnDispose = true)
+        : this(repositoryBuilder(FileSystemHelper.Path.GetRepositoryTempPath()), deleteOnDispose)
     {
     }
 
-    protected RepositoryFixtureBase(Repository repository)
+    protected RepositoryFixtureBase(Repository repository, bool deleteOnDispose = true)
     {
         SequenceDiagram = new();
         Repository = repository.ShouldNotBeNull();
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
+        this.deleteOnDispose = deleteOnDispose;
     }
 
     public Repository Repository { get; }
@@ -50,7 +51,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         Repository.Dispose();
         var directoryPath = FileSystemHelper.Path.GetFileName(RepositoryPath);
 
-        if (DeleteOnDispose)
+        if (deleteOnDispose)
         {
             try
             {

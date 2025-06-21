@@ -38,9 +38,9 @@ public static class GitTestExtensions
             Generate.SignatureNow(), Generate.SignatureNow());
     }
 
-    public static Tag MakeATaggedCommit(this IRepository repository, string tag)
+    public static Tag MakeATaggedCommit(this IRepository repository, string tag, string? commitMessage = null)
     {
-        var commit = repository.MakeACommit();
+        var commit = repository.MakeACommit(commitMessage);
         var existingTag = repository.Tags.SingleOrDefault(t => t.FriendlyName == tag);
         return existingTag ?? repository.Tags.Add(tag, commit);
     }

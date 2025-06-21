@@ -1,3 +1,3 @@
 namespace GitVersion.Testing;
 
-public class EmptyRepositoryFixture(string branchName = RepositoryFixtureBase.MainBranch) : RepositoryFixtureBase(path => CreateNewRepository(path, branchName));
+public class EmptyRepositoryFixture(string branchName = RepositoryFixtureBase.MainBranch, bool deleteOnDispose = true) : RepositoryFixtureBase(path => CreateNewRepository(path, branchName), deleteOnDispose);
