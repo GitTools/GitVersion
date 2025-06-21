@@ -31,9 +31,8 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-        <IsUnitTestProject>false</IsUnitTestProject>
         <DisableApiAnalyzers>false</DisableApiAnalyzers>
-        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
+        <IsUnitTestProject Condition="'$(MSBuildProjectName)' != '' and ($([System.String]::Copy($(MSBuildProjectName)).EndsWith('.Tests')) Or  $([System.String]::Copy($(MSBuildProjectName)).EndsWith('.Testing')))">true</IsUnitTestProject>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
@@ -50,7 +49,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false' and '$(DisableApiAnalyzers)' == 'false'">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and '$(MSBuildProjectName)' != '' and $([System.String]::Copy($(MSBuildProjectName)).EndsWith('.Schema')) == 'false' and '$(DisableApiAnalyzers)' == 'false'">
         <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -76,7 +75,7 @@
         </PackageReference>
 
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $([System.String]::Copy($(MSBuildProjectName)).EndsWith('.Tests'))">
         <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj"/>
 
         <Using Include="GitVersion.Testing"/>
