@@ -9,6 +9,9 @@ namespace GitVersion.Testing;
 /// </summary>
 public abstract class RepositoryFixtureBase : IDisposable
 {
+    public const string MainBranch = "master";
+    public const bool DeleteOnDispose = true;
+
     protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
         : this(repositoryBuilder(FileSystemHelper.Path.GetRepositoryTempPath()))
     {
@@ -47,16 +50,23 @@ public abstract class RepositoryFixtureBase : IDisposable
         Repository.Dispose();
         var directoryPath = FileSystemHelper.Path.GetFileName(RepositoryPath);
 
-        try
+        if (DeleteOnDispose)
         {
-            Console.WriteLine("Cleaning up repository path at {0}", directoryPath);
-            FileSystemHelper.Directory.DeleteDirectory(RepositoryPath);
-            Console.WriteLine("Cleaned up repository path at {0}", directoryPath);
+            try
+            {
+                Console.WriteLine("Cleaning up repository path at {0}", directoryPath);
+                FileSystemHelper.Directory.DeleteDirectory(RepositoryPath);
+                Console.WriteLine("Cleaned up repository path at {0}", directoryPath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", directoryPath, e.Message);
+                // throw;
+            }
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", directoryPath, e.Message);
-            // throw;
+            Console.WriteLine("Leaving repository path at {0} intact", directoryPath);
         }
 
         this.SequenceDiagram.End();
@@ -73,7 +83,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         SequenceDiagram.Destroy(branch);
     }
 
-    public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}", ".");
+    public static void Init(string path, string branchName = MainBranch) => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}", ".");
 
     public string MakeATaggedCommit(string tag)
     {
