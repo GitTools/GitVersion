@@ -9,7 +9,7 @@ namespace GitVersion.Testing;
 /// </summary>
 public abstract class RepositoryFixtureBase : IDisposable
 {
-    public const string MainBranch = "master";
+    public const string MainBranch = "main";
     private readonly bool deleteOnDispose;
 
     protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder, bool deleteOnDispose = true)
