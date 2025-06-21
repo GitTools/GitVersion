@@ -12,7 +12,7 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     /// <para>Creates a repo with a develop branch off main which is a single commit ahead of main branch</para>
     /// <para>Main will be tagged with the initial version before branching develop</para>
     /// </summary>
-    public BaseGitFlowRepositoryFixture(string initialVersion, string branchName = "main") :
+    public BaseGitFlowRepositoryFixture(string initialVersion, string branchName = MainBranch) :
         this(r => r.MakeATaggedCommit(initialVersion), branchName)
     {
     }
@@ -21,7 +21,7 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     /// <para>Creates a repo with a develop branch off main which is a single commit ahead of main</para>
     /// <para>The initial setup actions will be performed before branching develop</para>
     /// </summary>
-    public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction, string branchName = "main") :
+    public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction, string branchName = MainBranch) :
         base(branchName) => SetupRepo(initialMainAction);
 
     private void SetupRepo(Action<IRepository> initialMainAction)

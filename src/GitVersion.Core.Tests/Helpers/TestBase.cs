@@ -7,7 +7,7 @@ namespace GitVersion.Core.Tests.Helpers;
 
 public class TestBase
 {
-    public const string MainBranch = "main";
+    public const string MainBranch = RepositoryFixtureBase.MainBranch;
 
     protected static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
