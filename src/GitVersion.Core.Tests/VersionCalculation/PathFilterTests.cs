@@ -4,36 +4,33 @@ using GitVersion.VersionCalculation;
 namespace GitVersion.Core.Tests;
 
 [TestFixture]
-public class MinDateVersionFilterTests : TestBase
+public class PathFilterTests : TestBase
 {
     [Test]
     public void VerifyNullGuard()
     {
-        var dummy = DateTimeOffset.UtcNow.AddSeconds(1.0);
-        var sut = new MinDateVersionFilter(dummy);
+        var sut = new PathFilter([]);
 
         Should.Throw<ArgumentNullException>(() => sut.Exclude((IBaseVersion)null!, out _));
     }
 
     [Test]
-    public void WhenCommitShouldExcludeWithReason()
+    public void WhenPathMatchShouldExcludeWithReason()
     {
-        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit(["/path"]);
         BaseVersion version = new("dummy", new SemanticVersion(1), commit);
-        var futureDate = DateTimeOffset.UtcNow.AddYears(1);
-        var sut = new MinDateVersionFilter(futureDate);
+        var sut = new PathFilter(commit.DiffPaths);
 
         sut.Exclude(version, out var reason).ShouldBeTrue();
         reason.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Test]
-    public void WhenShaMismatchShouldNotExclude()
+    public void WhenPathMismatchShouldNotExclude()
     {
-        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit(["/path"]);
         BaseVersion version = new("dummy", new SemanticVersion(1), commit);
-        var pastDate = DateTimeOffset.UtcNow.AddYears(-1);
-        var sut = new MinDateVersionFilter(pastDate);
+        var sut = new PathFilter(["/another_path"]);
 
         sut.Exclude(version, out var reason).ShouldBeFalse();
         reason.ShouldBeNull();
@@ -43,8 +40,7 @@ public class MinDateVersionFilterTests : TestBase
     public void ExcludeShouldAcceptVersionWithNullCommit()
     {
         BaseVersion version = new("dummy", new SemanticVersion(1));
-        var futureDate = DateTimeOffset.UtcNow.AddYears(1);
-        var sut = new MinDateVersionFilter(futureDate);
+        var sut = new PathFilter(["/path"]);
 
         sut.Exclude(version, out var reason).ShouldBeFalse();
         reason.ShouldBeNull();

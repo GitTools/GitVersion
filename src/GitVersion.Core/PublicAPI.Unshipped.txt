@@ -146,3 +146,8 @@ virtual GitVersion.WixInfo.<Clone>$() -> GitVersion.WixInfo!
 virtual GitVersion.WixInfo.EqualityContract.get -> System.Type!
 virtual GitVersion.WixInfo.Equals(GitVersion.WixInfo? other) -> bool
 virtual GitVersion.WixInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
+GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Git.ICommit.DiffPaths.get -> System.Collections.Generic.IReadOnlyList<string!>!
+GitVersion.Git.ITreeChanges
+GitVersion.Git.ITreeChanges.Paths.get -> System.Collections.Generic.IReadOnlyList<string!>!
+GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.Git.ICommit! commit, out string? reason) -> bool
