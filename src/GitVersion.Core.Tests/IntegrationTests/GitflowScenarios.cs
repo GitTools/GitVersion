@@ -72,7 +72,10 @@ public class GitflowScenarios : TestBase
         fixture.AssertFullSemver("1.2.0", configuration);
         fixture.Checkout(developBranch);
         fixture.MergeNoFF(release2Branch);
-        if (!keepBranches) fixture.Repository.Branches.Remove(fixture.Repository.Branches[release2Branch]);
+        if (!keepBranches)
+        {
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches[release2Branch]);
+        }
         fixture.AssertFullSemver("1.3.0-alpha.1", configuration);
 
         // Hotfix
@@ -88,7 +91,10 @@ public class GitflowScenarios : TestBase
         fixture.AssertFullSemver("1.2.1", configuration);
         fixture.Checkout(developBranch);
         fixture.MergeNoFF(hotfixBranch);
-        if (!keepBranches) fixture.Repository.Branches.Remove(fixture.Repository.Branches[hotfixBranch]);
+        if (!keepBranches)
+        {
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches[hotfixBranch]);
+        }
         fixture.AssertFullSemver("1.3.0-alpha.2", configuration);
 
         fixture.Checkout(feature2Branch);
