@@ -34,6 +34,7 @@
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Testing" />
     </ItemGroup>
 
 </Project>

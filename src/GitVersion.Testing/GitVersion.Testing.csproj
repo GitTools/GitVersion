@@ -19,4 +19,7 @@
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+    </ItemGroup>
 </Project>

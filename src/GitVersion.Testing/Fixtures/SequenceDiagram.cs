@@ -1,3 +1,4 @@
+using GitVersion.Testing.Helpers;
 using GitVersion.Testing.Internal;
 
 namespace GitVersion.Testing;
@@ -39,11 +40,12 @@ public class SequenceDiagram
     /// </summary>
     public void Participant(string participant, string? @as = null)
     {
-        this.participants.Add(participant, @as ?? participant);
-        if (@as == null)
+        var cleanParticipant = ParticipantSanitizer.SanitizeParticipant(@as ?? participant);
+        this.participants.Add(participant, cleanParticipant);
+        if (participant == cleanParticipant)
             this.diagramBuilder.AppendLineFormat("participant {0}", participant);
         else
-            this.diagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, @as);
+            this.diagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, cleanParticipant);
     }
 
     /// <summary>
