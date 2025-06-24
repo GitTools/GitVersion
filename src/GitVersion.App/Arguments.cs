@@ -79,7 +79,7 @@ internal class Arguments
                 NoFetch = NoFetch,
                 NoCache = NoCache,
                 NoNormalize = NoNormalize,
-                AllowShallow = AllowShallow,
+                AllowShallow = AllowShallow
             },
 
             WixInfo =

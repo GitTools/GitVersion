@@ -188,16 +188,14 @@ internal class GitPreparer(
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
 
-        if (this.repository.IsShallow)
+        if (!this.repository.IsShallow) return;
+        if (this.options.Value.Settings.AllowShallow)
         {
-            if (this.options.Value.Settings.AllowShallow)
-            {
-                this.log.Info("Repository is a shallow clone. GitVersion will continue, but it is recommended to use a full clone for accurate versioning.");
-            }
-            else
-            {
-                throw new WarningException("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
-            }
+            this.log.Info("Repository is a shallow clone. GitVersion will continue, but it is recommended to use a full clone for accurate versioning.");
+        }
+        else
+        {
+            throw new WarningException("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
         }
     }
 

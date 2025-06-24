@@ -46,7 +46,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.NoCache), "/nocache" },
             { nameof(Arguments.NoFetch), "/nofetch" },
             { nameof(Arguments.NoNormalize), "/nonormalize" },
-            { nameof(Arguments.AllowShallow), "/allowshallow" },
+            { nameof(Arguments.AllowShallow), "/allowshallow" }
         };
         var helpText = string.Empty;
 
@@ -55,7 +55,7 @@ public class HelpWriterTests : TestBase
         var ignored = new[]
         {
             nameof(Arguments.Authentication),
-            nameof(Arguments.UpdateAssemblyInfoFileName),
+            nameof(Arguments.UpdateAssemblyInfoFileName)
         };
         typeof(Arguments).GetFields()
             .Select(p => p.Name)
