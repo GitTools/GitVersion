@@ -17,9 +17,9 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
     private readonly Dictionary<string, Regex> assemblyAttributeRegexes = new()
     {
-        [".cs"] = RegexPatterns.Output.CsharpAssemblyAttributeRegex,
-        [".fs"] = RegexPatterns.Output.FsharpAssemblyAttributeRegex,
-        [".vb"] = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex
+        [".cs"] = RegexPatterns.Output.CsharpAssemblyAttributeRegex(),
+        [".fs"] = RegexPatterns.Output.FsharpAssemblyAttributeRegex(),
+        [".vb"] = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex()
     };
 
     private const string NewLine = "\r\n";
@@ -65,17 +65,17 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
             if (!assemblyVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex(), fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (!assemblyFileVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex(), fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (!assemblyInfoVersion.IsNullOrWhiteSpace())
             {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex(), fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
             }
 
             if (appendedAttributes)

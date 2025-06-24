@@ -40,7 +40,7 @@ internal static class ArgumentParserExtensions
 
     public static bool IsSwitchArgument(this string? value)
     {
-        var patternRegex = RegexPatterns.Common.SwitchArgumentRegex;
+        var patternRegex = RegexPatterns.Common.SwitchArgumentRegex();
         return value != null
                && (value.StartsWith('-') || value.StartsWith('/'))
                && !patternRegex.Match(value).Success;

@@ -11,14 +11,14 @@ public class MergeMessage
 {
     private static readonly IList<(string Name, Regex Pattern)> DefaultFormats =
     [
-        new("Default", RegexPatterns.MergeMessage.DefaultMergeMessageRegex),
-        new("SmartGit", RegexPatterns.MergeMessage.SmartGitMergeMessageRegex),
-        new("BitBucketPull", RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex),
-        new("BitBucketPullv7", RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex),
-        new("BitBucketCloudPull", RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex),
-        new("GitHubPull", RegexPatterns.MergeMessage.GitHubPullMergeMessageRegex),
-        new("RemoteTracking", RegexPatterns.MergeMessage.RemoteTrackingMergeMessageRegex),
-        new("AzureDevOpsPull", RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex)
+        new("Default", RegexPatterns.MergeMessage.DefaultMergeMessageRegex()),
+        new("SmartGit", RegexPatterns.MergeMessage.SmartGitMergeMessageRegex()),
+        new("BitBucketPull", RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex()),
+        new("BitBucketPullv7", RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex()),
+        new("BitBucketCloudPull", RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex()),
+        new("GitHubPull", RegexPatterns.MergeMessage.GitHubPullMergeMessageRegex()),
+        new("RemoteTracking", RegexPatterns.MergeMessage.RemoteTrackingMergeMessageRegex()),
+        new("AzureDevOpsPull", RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex())
     ];
 
     public MergeMessage(string mergeMessage, IGitVersionConfiguration configuration)

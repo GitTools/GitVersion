@@ -1,5 +1,4 @@
 using GitVersion.Core;
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;

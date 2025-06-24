@@ -149,7 +149,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     private static bool TryParseStrict(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
     {
-        var parsed = RegexPatterns.SemanticVersion.ParseStrictRegex.Match(version);
+        var parsed = RegexPatterns.SemanticVersion.ParseStrictRegex().Match(version);
 
         if (!parsed.Success)
         {
@@ -171,7 +171,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     private static bool TryParseLoose(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
     {
-        var parsed = RegexPatterns.SemanticVersion.ParseLooseRegex.Match(version);
+        var parsed = RegexPatterns.SemanticVersion.ParseLooseRegex().Match(version);
 
         if (!parsed.Success)
         {
