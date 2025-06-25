@@ -86,10 +86,10 @@ internal static class RegexPatterns
     internal static class Configuration
     {
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultTagPrefixPattern = "[vV]?";
+        public const string DefaultTagPrefixRegexPattern = "[vV]?";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
+        public const string DefaultVersionInBranchRegexPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
         public const string MainBranchRegexPattern = "^master$|^main$";
@@ -115,8 +115,8 @@ internal static class RegexPatterns
         [StringSyntax(StringSyntaxAttribute.Regex)]
         public const string UnknownBranchRegexPattern = "(?<BranchName>.+)";
 
-        public static Regex DefaultTagPrefixRegex { get; } = new(DefaultTagPrefixPattern, Options);
-        public static Regex DefaultVersionInBranchRegex { get; } = new(DefaultVersionInBranchPattern, Options);
+        public static Regex DefaultTagPrefixRegex { get; } = new(DefaultTagPrefixRegexPattern, Options);
+        public static Regex DefaultVersionInBranchRegex { get; } = new(DefaultVersionInBranchRegexPattern, Options);
         public static Regex MainBranchRegex { get; } = new(MainBranchRegexPattern, Options);
         public static Regex DevelopBranchRegex { get; } = new(DevelopBranchRegexPattern, Options);
         public static Regex ReleaseBranchRegex { get; } = new(ReleaseBranchRegexPattern, Options);
@@ -194,21 +194,21 @@ internal static class RegexPatterns
     internal static class VersionCalculation
     {
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
+        public const string DefaultMajorRegexPattern = @"\+semver:\s?(breaking|major)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
+        public const string DefaultMinorRegexPattern = @"\+semver:\s?(feature|minor)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
+        public const string DefaultPatchRegexPattern = @"\+semver:\s?(fix|patch)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
+        public const string DefaultNoBumpRegexPattern = @"\+semver:\s?(none|skip)";
 
-        public static Regex DefaultMajorRegex { get; } = new(DefaultMajorPattern, Options);
-        public static Regex DefaultMinorRegex { get; } = new(DefaultMinorPattern, Options);
-        public static Regex DefaultPatchRegex { get; } = new(DefaultPatchPattern, Options);
-        public static Regex DefaultNoBumpRegex { get; } = new(DefaultNoBumpPattern, Options);
+        public static Regex DefaultMajorRegex { get; } = new(DefaultMajorRegexPattern, Options);
+        public static Regex DefaultMinorRegex { get; } = new(DefaultMinorRegexPattern, Options);
+        public static Regex DefaultPatchRegex { get; } = new(DefaultPatchRegexPattern, Options);
+        public static Regex DefaultNoBumpRegex { get; } = new(DefaultNoBumpRegexPattern, Options);
     }
 
     internal static class SemanticVersion

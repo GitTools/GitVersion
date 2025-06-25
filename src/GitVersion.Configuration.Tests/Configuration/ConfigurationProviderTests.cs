@@ -258,7 +258,7 @@ public class ConfigurationProviderTests : TestBase
         configuration.AssemblyInformationalFormat.ShouldBe(null);
         configuration.Branches["develop"].Label.ShouldBe("alpha");
         configuration.Branches["release"].Label.ShouldBe("beta");
-        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
+        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern);
         configuration.NextVersion.ShouldBe(null);
     }
 
@@ -418,7 +418,7 @@ public class ConfigurationProviderTests : TestBase
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
+        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern);
     }
 
     [Test]
@@ -457,7 +457,7 @@ public class ConfigurationProviderTests : TestBase
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixPattern);
+        configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern);
     }
 
     [Test]

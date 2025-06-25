@@ -47,7 +47,7 @@ public static class ReferenceNameExtensions
 
         static string GetVersionInBranchPattern(string? versionInBranchPattern)
         {
-            if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchPattern;
+            if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern;
             return $"^{versionInBranchPattern.TrimStart('^')}";
         }
     }

@@ -36,14 +36,14 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? AssemblyFileVersioningFormat { get; internal init; }
 
     [JsonPropertyName("tag-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixPattern)]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? TagPrefixPattern { get; internal init; }
 
     [JsonPropertyName("version-in-branch-pattern")]
-    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchPattern}'.")]
-    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultVersionInBranchPattern)]
+    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern}'.")]
+    [JsonPropertyDefault(RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? VersionInBranchPattern { get; internal init; }
 
@@ -60,26 +60,26 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string? nextVersion;
 
     [JsonPropertyName("major-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMajorPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMajorPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMajorRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMajorRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MajorVersionBumpMessage { get; internal init; }
 
     [JsonPropertyName("minor-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMinorPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMinorPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMinorRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMinorRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MinorVersionBumpMessage { get; internal init; }
 
     [JsonPropertyName("patch-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultPatchPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultPatchPattern)]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultPatchRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultPatchRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? PatchVersionBumpMessage { get; internal init; }
 
     [JsonPropertyName("no-bump-message")]
-    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{RegexPatterns.VersionCalculation.DefaultNoBumpPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultNoBumpPattern)]
+    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? NoBumpMessage { get; internal init; }
 
