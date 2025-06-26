@@ -13,15 +13,14 @@ internal static partial class RegexPatterns
     {
         private static readonly ConcurrentDictionary<string, Regex> cache = new();
 
-        public static Regex GetOrAdd(string pattern) =>
-            GetOrAdd(pattern, () => new Regex(pattern, Options));
-
-        public static Regex GetOrAdd(string pattern, Func<Regex> fallbackFactory)
+        public static Regex GetOrAdd([StringSyntax(StringSyntaxAttribute.Regex)] string pattern)
         {
             ArgumentNullException.ThrowIfNull(pattern);
-            ArgumentNullException.ThrowIfNull(fallbackFactory);
 
-            return cache.GetOrAdd(pattern, _ => Resolve(pattern, fallbackFactory));
+            return cache.GetOrAdd(pattern, key =>
+                KnownRegexes.TryGetValue(key, out var factory)
+                    ? factory()
+                    : new Regex(key, Options));
         }
 
         private static readonly ImmutableDictionary<string, Func<Regex>> KnownRegexes =
@@ -71,16 +70,6 @@ internal static partial class RegexPatterns
                 [AssemblyVersion.VisualBasic.TriviaRegexPattern] = AssemblyVersion.VisualBasic.TriviaRegex,
                 [AssemblyVersion.VisualBasic.AttributeRegexPattern] = AssemblyVersion.VisualBasic.AttributeRegex
             }.ToImmutableDictionary();
-
-        private static Regex Resolve(string pattern, Func<Regex> fallbackFactory)
-        {
-            if (KnownRegexes.TryGetValue(pattern, out var factory))
-            {
-                return factory();
-            }
-
-            return fallbackFactory();
-        }
     }
 
     internal static partial class Common

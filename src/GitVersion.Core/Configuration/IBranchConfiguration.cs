@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Core;
 using GitVersion.VersionCalculation;
 
@@ -19,6 +20,7 @@ public interface IBranchConfiguration
 
     CommitMessageIncrementMode? CommitMessageIncrementing { get; }
 
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     string? RegularExpression { get; }
 
     bool IsMatch(string branchName)
