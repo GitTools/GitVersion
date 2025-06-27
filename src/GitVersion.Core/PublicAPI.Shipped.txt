@@ -154,7 +154,6 @@ GitVersion.ConfigurationInfo.OverrideConfiguration -> System.Collections.Generic
 GitVersion.ConfigurationInfo.ShowConfiguration -> bool
 GitVersion.Extensions.AssemblyVersionsGeneratorExtensions
 GitVersion.Extensions.CommonExtensions
-GitVersion.Extensions.DictionaryExtensions
 GitVersion.Extensions.EnumerableExtensions
 GitVersion.Extensions.FileSystemExtensions
 GitVersion.Extensions.GitExtensions
@@ -730,8 +729,6 @@ static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyVers
 static GitVersion.Extensions.CommonExtensions.NotNull<T>(this T? value, string! name = "") -> T!
 static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
-static GitVersion.Extensions.DictionaryExtensions.GetOrAdd(this System.Collections.Concurrent.ConcurrentDictionary<string!, System.Text.RegularExpressions.Regex!>! dict, string! pattern) -> System.Text.RegularExpressions.Regex!
-static GitVersion.Extensions.DictionaryExtensions.GetOrAdd<TKey, TValue>(this System.Collections.Generic.Dictionary<TKey, TValue>! dict, TKey key, System.Func<TValue>! getValue) -> TValue
 static GitVersion.Extensions.EnumerableExtensions.AddRange<T>(this System.Collections.Generic.ICollection<T>! source, System.Collections.Generic.IEnumerable<T>! items) -> void
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T

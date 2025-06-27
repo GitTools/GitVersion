@@ -111,7 +111,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         if (buildMetaData.IsNullOrEmpty())
             return Empty;
 
-        var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(buildMetaData);
+        var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex().Match(buildMetaData);
 
         long? buildMetaDataCommitsSinceTag = null;
         long? buildMetaDataCommitsSinceVersionSource = null;
@@ -147,7 +147,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static string FormatMetaDataPart(string value)
     {
         if (!value.IsNullOrEmpty())
-            value = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex.Replace(value, "-");
+            value = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex().Replace(value, "-");
         return value;
     }
 }

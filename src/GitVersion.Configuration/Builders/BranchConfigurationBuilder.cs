@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -81,7 +82,7 @@ internal class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithRegularExpression(string? value)
+    public virtual BranchConfigurationBuilder WithRegularExpression([StringSyntax(StringSyntaxAttribute.Regex)] string? value)
     {
         this.regularExpression = value;
         return this;

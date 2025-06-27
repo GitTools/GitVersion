@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -100,6 +101,7 @@ public record EffectiveConfiguration
 
     public IncrementStrategy Increment { get; }
 
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     public string? RegularExpression { get; }
 
     public bool PreventIncrementOfMergedBranch { get; }

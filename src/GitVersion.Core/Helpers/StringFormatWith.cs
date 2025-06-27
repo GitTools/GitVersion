@@ -33,7 +33,7 @@ internal static class StringFormatWithExtension
         ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(source);
 
-        foreach (var match in RegexPatterns.Common.ExpandTokensRegex.Matches(template).Cast<Match>())
+        foreach (var match in RegexPatterns.Common.ExpandTokensRegex().Matches(template).Cast<Match>())
         {
             string propertyValue;
             var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
