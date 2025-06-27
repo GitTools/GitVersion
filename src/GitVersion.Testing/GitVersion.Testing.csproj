@@ -9,14 +9,14 @@
         <PackageReference Include="System.Reflection.Metadata" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\GitVersion.Core\Helpers\FileSystemHelper.cs" Link="Helpers\FileSystemHelper.cs" />
-    </ItemGroup>
-    <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
         <InternalsVisibleTo Include="GitVersion.Configuration.Tests" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 </Project>
