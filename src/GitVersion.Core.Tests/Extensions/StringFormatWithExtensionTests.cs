@@ -244,4 +244,29 @@ public class StringFormatWithExtensionTests
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
     }
+
+    [Test]
+    public void FormatAssemblyInformationalVersionWithSemanticVersionCustomFormattedCommitsSinceVersionSource()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = new SemanticVersionPreReleaseTag(string.Empty, 9, true),
+            BuildMetaData = new SemanticVersionBuildMetaData("Branch.main")
+            {
+                Branch = "main",
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitsSinceVersionSource = 42,
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
+        };
+        const string target = "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}";
+        const string expected = "1.2.3-0042";
+        var actual = target.FormatWith(semanticVersion, this.environment);
+        Assert.That(actual, Is.EqualTo(expected));
+    }
 }

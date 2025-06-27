@@ -30,4 +30,24 @@ public static class StringExtensions
 
     public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
         => string.IsNullOrEmpty(value) ? value : prefix + value;
+
+    internal static string PascalCase(this string input)
+    {
+        var sb = new StringBuilder(input.Length);
+        var capitalizeNext = true;
+
+        foreach (var c in input)
+        {
+            if (!char.IsLetterOrDigit(c))
+            {
+                capitalizeNext = true;
+                continue;
+            }
+
+            sb.Append(capitalizeNext ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c));
+            capitalizeNext = false;
+        }
+
+        return sb.ToString();
+    }
 }
