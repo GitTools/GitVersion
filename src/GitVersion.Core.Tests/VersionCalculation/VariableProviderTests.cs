@@ -284,4 +284,34 @@ public class VariableProviderTests : TestBase
 
         variables.ToJson().ShouldMatchApproved(x => x.SubFolder("Approved"));
     }
+
+    [Test]
+    public void Format_Allows_CSharp_FormatStrings()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = new(string.Empty, 9, true),
+            BuildMetaData = new("Branch.main")
+            {
+                Branch = "main",
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitsSinceVersionSource = 42,
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
+        };
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithTagPreReleaseWeight(0)
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}")
+            .Build();
+        var preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
+
+        variables.InformationalVersion.ShouldBe("1.2.3-0042");
+    }
 }

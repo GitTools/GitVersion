@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using GitVersion.Core;
 
@@ -6,6 +5,12 @@ namespace GitVersion.Helpers;
 
 internal static class StringFormatWithExtension
 {
+    internal static IExpressionCompiler ExpressionCompiler { get; set; } = new ExpressionCompiler();
+
+    internal static IInputSanitizer InputSanitizer { get; set; } = new InputSanitizer();
+
+    internal static IMemberResolver MemberResolver { get; set; } = new MemberResolver();
+
     /// <summary>
     /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces
     /// with the corresponding property from the <paramref name="source"/> or <paramref name="environment"/>.
@@ -33,38 +38,67 @@ internal static class StringFormatWithExtension
         ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(source);
 
+        var result = new StringBuilder();
+        var lastIndex = 0;
+
         foreach (var match in RegexPatterns.Common.ExpandTokensRegex().Matches(template).Cast<Match>())
         {
-            string propertyValue;
-            var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
-
-            if (match.Groups["envvar"].Success)
-            {
-                var envVar = match.Groups["envvar"].Value;
-                propertyValue = environment.GetEnvironmentVariable(envVar) ?? fallback
-                    ?? throw new ArgumentException($"Environment variable {envVar} not found and no fallback string provided");
-            }
-            else
-            {
-                var objType = source.GetType();
-                var memberAccessExpression = match.Groups["member"].Value;
-                var expression = CompileDataBinder(objType, memberAccessExpression);
-                // It would be better to throw if the expression and fallback produce null, but provide an empty string for back compat.
-                propertyValue = expression(source)?.ToString() ?? fallback ?? "";
-            }
-
-            template = template.Replace(match.Value, propertyValue);
+            var replacement = EvaluateMatch(match, source, environment);
+            result.Append(template, lastIndex, match.Index - lastIndex);
+            result.Append(replacement);
+            lastIndex = match.Index + match.Length;
         }
 
-        return template;
+        result.Append(template, lastIndex, template.Length - lastIndex);
+        return result.ToString();
     }
 
-    private static Func<object?, object?> CompileDataBinder(Type type, string expr)
+    private static string EvaluateMatch<T>(Match match, T source, IEnvironment environment)
     {
-        var param = Expression.Parameter(typeof(object));
-        Expression body = Expression.Convert(param, type);
-        body = expr.Split('.').Aggregate(body, Expression.PropertyOrField);
-        body = Expression.Convert(body, typeof(object)); // Convert result in case the body produces a Nullable value type.
-        return Expression.Lambda<Func<object?, object?>>(body, param).Compile();
+        var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
+
+        if (match.Groups["envvar"].Success)
+        {
+            return EvaluateEnvVar(match.Groups["envvar"].Value, fallback, environment);
+        }
+
+        if (match.Groups["member"].Success)
+        {
+            var format = match.Groups["format"].Success ? match.Groups["format"].Value : null;
+            return EvaluateMember(source, match.Groups["member"].Value, format, fallback);
+        }
+
+        throw new ArgumentException($"Invalid token format: '{match.Value}'");
+    }
+
+    private static string EvaluateEnvVar(string name, string? fallback, IEnvironment env)
+    {
+        var safeName = InputSanitizer.SanitizeEnvVarName(name);
+        return env.GetEnvironmentVariable(safeName)
+            ?? fallback
+            ?? throw new ArgumentException($"Environment variable {safeName} not found and no fallback provided");
+    }
+
+    private static string EvaluateMember<T>(T source, string member, string? format, string? fallback)
+    {
+        var safeMember = InputSanitizer.SanitizeMemberName(member);
+        var memberPath = MemberResolver.ResolveMemberPath(source!.GetType(), safeMember);
+        var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
+        var value = getter(source);
+
+        if (value is null)
+        {
+            return fallback ?? string.Empty;
+        }
+
+        if (format is not null && ValueFormatter.TryFormat(
+            value,
+            InputSanitizer.SanitizeFormat(format),
+            out var formatted))
+        {
+            return formatted;
+        }
+
+        return value.ToString() ?? fallback ?? string.Empty;
     }
 }
