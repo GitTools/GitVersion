@@ -12,7 +12,7 @@ internal sealed class BranchCollection : IBranchCollection
     internal BranchCollection(LibGit2Sharp.BranchCollection collection, LibGit2Sharp.Diff diff)
     {
         this.innerCollection = collection.NotNull();
-this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => [.. this.innerCollection.Select(branch => new Branch(branch, diff))]);
+        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => [.. this.innerCollection.Select(branch => new Branch(branch, diff))]);
         this.diff = diff.NotNull();
     }
 
