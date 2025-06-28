@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
@@ -79,7 +80,8 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         {
             try
             {
-                formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
+                formattedString = formatString.FormatWith(source, this.environment)
+                                              .RegexReplace(RegexPatterns.Output.SanitizeAssemblyInfoRegexPattern, "-");
             }
             catch (ArgumentException exception)
             {

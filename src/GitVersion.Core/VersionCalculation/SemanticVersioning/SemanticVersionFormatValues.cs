@@ -1,5 +1,6 @@
 using System.Globalization;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion;
@@ -41,7 +42,7 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string? BranchName => semver.BuildMetaData.Branch;
 
-    public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace("[^a-zA-Z0-9-]", "-");
+    public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
 
     public string? Sha => semver.BuildMetaData.Sha;
 

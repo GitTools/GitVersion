@@ -29,6 +29,7 @@ internal static partial class RegexPatterns
                 [Common.SwitchArgumentRegexPattern] = Common.SwitchArgumentRegex,
                 [Common.ObscurePasswordRegexPattern] = Common.ObscurePasswordRegex,
                 [Common.ExpandTokensRegexPattern] = Common.ExpandTokensRegex,
+                [Common.SanitizeNameRegexPattern] = Common.SanitizeNameRegex,
                 [Configuration.DefaultTagPrefixRegexPattern] = Configuration.DefaultTagPrefixRegex,
                 [Configuration.DefaultVersionInBranchRegexPattern] = Configuration.DefaultVersionInBranchRegex,
                 [Configuration.MainBranchRegexPattern] = Configuration.MainBranchRegex,
@@ -50,6 +51,7 @@ internal static partial class RegexPatterns
                 [Output.AssemblyVersionRegexPattern] = Output.AssemblyVersionRegex,
                 [Output.AssemblyInfoVersionRegexPattern] = Output.AssemblyInfoVersionRegex,
                 [Output.AssemblyFileVersionRegexPattern] = Output.AssemblyFileVersionRegex,
+                [Output.SanitizeAssemblyInfoRegexPattern] = Output.SanitizeAssemblyInfoRegex,
                 [Output.CsharpAssemblyAttributeRegexPattern] = Output.CsharpAssemblyAttributeRegex,
                 [Output.FsharpAssemblyAttributeRegexPattern] = Output.FsharpAssemblyAttributeRegex,
                 [Output.VisualBasicAssemblyAttributeRegexPattern] = Output.VisualBasicAssemblyAttributeRegex,
@@ -84,6 +86,9 @@ internal static partial class RegexPatterns
         [StringSyntax(StringSyntaxAttribute.Regex)]
         internal const string ExpandTokensRegexPattern = """{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|"(?<fallback>.*)"))??}""";
 
+        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+        internal const string SanitizeNameRegexPattern = "[^a-zA-Z0-9-]";
+
         [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
         public static partial Regex SwitchArgumentRegex();
 
@@ -92,6 +97,9 @@ internal static partial class RegexPatterns
 
         [GeneratedRegex(ExpandTokensRegexPattern, Options)]
         public static partial Regex ExpandTokensRegex();
+
+        [GeneratedRegex(SanitizeNameRegexPattern, Options)]
+        public static partial Regex SanitizeNameRegex();
     }
 
     internal static partial class Configuration
@@ -231,6 +239,9 @@ internal static partial class RegexPatterns
         [StringSyntax(StringSyntaxAttribute.Regex)]
         internal const string SanitizeParticipantRegexPattern = "[^a-zA-Z0-9]";
 
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string SanitizeAssemblyInfoRegexPattern = "[^0-9A-Za-z-.+]";
+
         [GeneratedRegex(AssemblyVersionRegexPattern, Options)]
         public static partial Regex AssemblyVersionRegex();
 
@@ -251,6 +262,9 @@ internal static partial class RegexPatterns
 
         [GeneratedRegex(SanitizeParticipantRegexPattern, Options)]
         public static partial Regex SanitizeParticipantRegex();
+
+        [GeneratedRegex(SanitizeAssemblyInfoRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
+        public static partial Regex SanitizeAssemblyInfoRegex();
     }
 
     internal static partial class VersionCalculation

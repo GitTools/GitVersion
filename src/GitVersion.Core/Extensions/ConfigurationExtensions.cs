@@ -110,7 +110,7 @@ internal static class ConfigurationExtensions
         return label;
     }
 
-    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace("[^a-zA-Z0-9-]", "-");
+    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
     {
