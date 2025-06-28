@@ -191,6 +191,7 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -208,7 +209,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L166' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -315,6 +316,7 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -332,7 +334,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L115' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -424,6 +426,7 @@ branches:
     pre-release-weight: 30000
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -441,7 +444,7 @@ tracks-release-branches: false
 is-release-branch: false
 is-main-branch: false
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L100' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -620,6 +623,44 @@ ignore:
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
+
+#### paths
+A sequence of regular expressions that represent paths in the repository. Commits that modify these paths will be excluded from version calculations. For example, to filter out commits that belong to `docs`:
+```yaml
+ignore:
+  paths:
+    - ^docs\/
+```
+##### *Monorepo*
+This ignore config can be used to filter only those commits that belong to a specific project in a monorepo. 
+As an example, consider a monorepo consisting of subdirectories for `ProjectA`, `ProjectB` and a shared `LibraryC`. For GitVersion to consider only commits that are part of `projectA` and shared library `LibraryC`, a regex that matches all paths except those starting with `ProjectA` or `LibraryC` can be used. Either one of the following configs would filter out `ProjectB`.
+* Specific match on `/ProjectB/*`:
+```yaml
+ignore:
+  paths:
+    - `^\/ProductB\/.*`
+```
+* Negative lookahead on anything other than `/ProjectA/*` and `/LibraryC/*`:
+```yaml
+ignore:
+  paths:
+    - `^(?!\/ProductA\/|\/LibraryC\/).*`
+```
+A commit having changes only in `/ProjectB/*` path would be ignored. A commit having changes in the following paths wouldn't be ignored:
+* `/ProductA/*`
+* `/LibraryC/*`
+* `/ProductA/*` and  `/LibraryC/*`
+* `/ProductA/*` and `/ProductB/*`
+* `/LibraryC/*` and `/ProductB/*`
+* `/ProductA/*` and `/ProductB/*` and `/LibraryC/*`
+
+:::
+Note: The `ignore.paths` configuration is case-sensitive. This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`. 
+:::
+
+::: {.alert .alert-warning}
+A commit is ignored by the `ignore.paths` configuration only if **all paths** changed in that commit match one or more of the specified regular expressions. If a path in a commit does not match any one of the ignore patterns, that commit will be included in version calculations.
+:::
 
 ### merge-message-formats
 
