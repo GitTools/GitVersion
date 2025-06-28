@@ -18,7 +18,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
     {
         configuration.NotNull();
 
-        if (!this.Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
+        if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.ConfiguredNextVersion))
             yield break;
 
         var nextVersion = Context.Configuration.NextVersion;

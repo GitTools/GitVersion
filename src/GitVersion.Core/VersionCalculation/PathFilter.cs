@@ -35,21 +35,22 @@ internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = Pat
     public bool Exclude(ICommit? commit, [NotNullWhen(true)] out string? reason)
     {
         reason = null;
-
-        if (commit != null)
+        if (commit == null)
         {
-            switch (mode)
-            {
-                case PathFilterMode.Inclusive:
+            return false;
+        }
+
+        switch (mode)
+        {
+            case PathFilterMode.Inclusive:
+                {
+                    if (commit.DiffPaths.All(this.IsMatch))
                     {
-                        if (commit.DiffPaths.All(this.IsMatch))
-                        {
-                            reason = "Source was ignored due to all commit paths matching ignore regex";
-                            return true;
-                        }
-                        break;
+                        reason = "Source was ignored due to all commit paths matching ignore regex";
+                        return true;
                     }
-            }
+                    break;
+                }
         }
 
         return false;
