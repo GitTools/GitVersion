@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
+      <EmbeddedResource Include="Agents\4534.yml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
