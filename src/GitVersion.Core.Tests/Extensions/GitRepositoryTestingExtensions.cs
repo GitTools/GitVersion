@@ -144,12 +144,12 @@ public static class GitRepositoryTestingExtensions
     }
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
-        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null, string? customMessage = null)
     {
         repository ??= fixture.Repository;
 
         var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
-        variables.FullSemVer.ShouldBe(fullSemver);
+        variables.FullSemVer.ShouldBe(fullSemver, customMessage);
         if (commitId == null)
         {
             fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
