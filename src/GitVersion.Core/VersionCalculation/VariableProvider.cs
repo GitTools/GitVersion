@@ -63,6 +63,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             semverFormatValues.CommitDate,
             semverFormatValues.VersionSourceSha,
             semverFormatValues.CommitsSinceVersionSource,
+            semverFormatValues.CommitsSinceVersionSourceList,
             semverFormatValues.UncommittedChanges
         );
     }

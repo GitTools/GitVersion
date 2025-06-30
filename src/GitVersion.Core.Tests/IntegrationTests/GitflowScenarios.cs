@@ -89,6 +89,7 @@ public class GitflowScenarios : TestBase
         fixture.AssertFullSemver("1.2.1-2", configuration);
         fixture.ApplyTag("1.2.1");
         fixture.AssertFullSemver("1.2.1", configuration);
+        fixture.AssertCommitsSinceVersionSource(2, configuration);
         fixture.Checkout(developBranch);
         fixture.MergeNoFF(hotfixBranch);
         if (!keepBranches)

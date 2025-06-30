@@ -55,5 +55,7 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string CommitsSinceVersionSource => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture);
 
+    public string? CommitsSinceVersionSourceList => string.Join(", ", semver.BuildMetaData.CommitsSinceVersionSourceList ?? []).ToString(CultureInfo.InvariantCulture);
+
     public string UncommittedChanges => semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 }

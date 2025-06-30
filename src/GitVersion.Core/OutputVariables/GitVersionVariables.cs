@@ -24,6 +24,7 @@ public record GitVersionVariables(string Major,
                                   string? CommitDate,
                                   string? VersionSourceSha,
                                   string? CommitsSinceVersionSource,
+                                  string? CommitsSinceVersionSourceList,
                                   string? UncommittedChanges) : IEnumerable<KeyValuePair<string, string?>>
 {
     internal static readonly List<string> AvailableVariables =
@@ -52,6 +53,7 @@ public record GitVersionVariables(string Major,
         nameof(CommitDate),
         nameof(VersionSourceSha),
         nameof(CommitsSinceVersionSource),
+        nameof(CommitsSinceVersionSourceList),
         nameof(UncommittedChanges)
     ];
 
@@ -81,6 +83,7 @@ public record GitVersionVariables(string Major,
         { nameof(CommitDate), CommitDate },
         { nameof(VersionSourceSha), VersionSourceSha },
         { nameof(CommitsSinceVersionSource), CommitsSinceVersionSource },
+        { nameof(CommitsSinceVersionSourceList), CommitsSinceVersionSourceList },
         { nameof(UncommittedChanges), UncommittedChanges }
     };
 

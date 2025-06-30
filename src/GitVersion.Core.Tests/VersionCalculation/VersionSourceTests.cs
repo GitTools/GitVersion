@@ -24,6 +24,7 @@ public class VersionSourceTests : TestBase
         var semanticVersion = nextVersionCalculator.FindVersion();
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        semanticVersion.BuildMetaData.CommitsSinceVersionSourceList.Length.ShouldBe((int)semanticVersion.BuildMetaData.CommitsSinceVersionSource);
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
     }
 
@@ -39,6 +40,7 @@ public class VersionSourceTests : TestBase
         var semanticVersion = nextVersionCalculator.FindVersion();
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        semanticVersion.BuildMetaData.CommitsSinceVersionSourceList.Length.ShouldBe((int)semanticVersion.BuildMetaData.CommitsSinceVersionSource);
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
@@ -58,6 +60,9 @@ public class VersionSourceTests : TestBase
         var semanticVersion = nextVersionCalculator.FindVersion();
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommitSha);
+#if DEBUG
+        semanticVersion.BuildMetaData.CommitsSinceVersionSourceList.Length.ShouldBe((int)semanticVersion.BuildMetaData.CommitsSinceVersionSource);
+#endif
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 

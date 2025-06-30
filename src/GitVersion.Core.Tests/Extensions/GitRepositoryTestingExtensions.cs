@@ -156,6 +156,29 @@ public static class GitRepositoryTestingExtensions
         }
     }
 
+    public static void AssertCommitsSinceVersionSource(this RepositoryFixtureBase fixture, int commitsSinceVersionSourceExpected,
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null, string? customMessage = null)
+    {
+        repository ??= fixture.Repository;
+
+        var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+        variables.CommitsSinceVersionSource.ShouldBe(commitsSinceVersionSourceExpected.ToString(), customMessage);
+        if (commitId == null)
+        {
+            var message = new StringBuilder($"CommitsSinceVersionSource:{commitsSinceVersionSourceExpected}");
+            if (variables.CommitsSinceVersionSourceList != null)
+            {
+                foreach (var sha in variables.CommitsSinceVersionSourceList)
+                {
+                    message.Append(System.Environment.NewLine);
+                    message.Append($"- {sha}");
+                }
+            }
+
+            fixture.SequenceDiagram.NoteOver(message.ToString(), repository.Head.FriendlyName, color: "#D3D3D3");
+        }
+    }
+
     /// <summary>
     /// Simulates running on build server
     /// </summary>
