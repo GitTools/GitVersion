@@ -86,33 +86,56 @@ public class RepositoryStoreTests : TestBase
         //*91bf945 58 minutes ago(main)
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial");
+        fixture.AssertFullSemver("0.0.1-1");
+        fixture.AssertCommitsSinceVersionSource(1);
         fixture.BranchTo("develop");
+        fixture.AssertFullSemver("0.1.0-alpha.1");
         var fixtureRepository = fixture.Repository.ToGitRepository();
         var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
+        fixture.SequenceDiagram.NoteOver(string.Join(System.Environment.NewLine, ("Expected Release Merge Base" + System.Environment.NewLine + System.Environment.NewLine +
+            "This is the first common ancestor of both develop and release, from release's perspective.").SplitIntoLines(30)), "main", "develop");
 
         // Create release from develop
         fixture.BranchTo("release-2.0.0");
+        fixture.AssertFullSemver("2.0.0-beta.1+1");
 
         // Make some commits on release
         fixture.MakeACommit("release 1");
+        fixture.AssertCommitsSinceVersionSource(2);
+        fixture.AssertFullSemver("2.0.0-beta.1+2");
         fixture.MakeACommit("release 2");
+        fixture.AssertCommitsSinceVersionSource(3);
+        fixture.AssertFullSemver("2.0.0-beta.1+3");
+        fixture.SequenceDiagram.NoteOver(string.Join(System.Environment.NewLine, ("Expected Develop Merge Base" + System.Environment.NewLine + System.Environment.NewLine +
+            "This is a common ancestor from develop's perspective because it is aware of the merge from release." + System.Environment.NewLine +
+            "It is NOT an common ancestor from release's perspective because release is NOT aware of the merge to develop.").SplitIntoLines(30)), "release-2.0.0");
         var expectedDevelopMergeBase = fixtureRepository.Head.Tip;
 
         // First forward merge release to develop
         fixture.Checkout("develop");
         fixture.MergeNoFF("release-2.0.0");
+        fixture.AssertFullSemver("2.1.0-alpha.3");
+        fixture.AssertCommitsSinceVersionSource(3);
 
         // Make some new commit on release
         fixture.Checkout("release-2.0.0");
         fixture.MakeACommit("release 3 - after first merge");
+        fixture.AssertFullSemver("2.0.0-beta.1+4");
+        fixture.AssertCommitsSinceVersionSource(4);
 
         // Make new commit on develop
         fixture.Checkout("develop");
+        fixture.AssertFullSemver("2.1.0-alpha.3");
         // Checkout to release (no new commits)
         fixture.MakeACommit("develop after merge");
+        fixture.AssertFullSemver("2.1.0-alpha.4");
+        fixture.AssertCommitsSinceVersionSource(4);
 
         // Checkout to release (no new commits)
         fixture.Checkout("release-2.0.0");
+        fixture.SequenceDiagram.NoteOver("Checkout release-2.0.0 again", "release-2.0.0");
+        fixture.AssertFullSemver("2.0.0-beta.1+4");
+        fixture.AssertCommitsSinceVersionSource(4);
 
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");

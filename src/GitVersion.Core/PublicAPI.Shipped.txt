@@ -426,6 +426,8 @@ GitVersion.OutputVariables.GitVersionVariables.CommitDate.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CommitDate.init -> void
 GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSource.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSource.init -> void
+GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSourceList.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSourceList.init -> void
 GitVersion.OutputVariables.GitVersionVariables.EscapedBranchName.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.EscapedBranchName.init -> void
 GitVersion.OutputVariables.GitVersionVariables.FullBuildMetaData.get -> string?
@@ -433,7 +435,7 @@ GitVersion.OutputVariables.GitVersionVariables.FullBuildMetaData.init -> void
 GitVersion.OutputVariables.GitVersionVariables.FullSemVer.get -> string!
 GitVersion.OutputVariables.GitVersionVariables.FullSemVer.init -> void
 GitVersion.OutputVariables.GitVersionVariables.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, string?>>!
-GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string! Major, string! Minor, string! Patch, string? BuildMetaData, string? FullBuildMetaData, string? BranchName, string? EscapedBranchName, string? Sha, string? ShortSha, string! MajorMinorPatch, string! SemVer, string! FullSemVer, string? AssemblySemVer, string? AssemblySemFileVer, string? PreReleaseTag, string? PreReleaseTagWithDash, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string! WeightedPreReleaseNumber, string? InformationalVersion, string? CommitDate, string? VersionSourceSha, string? CommitsSinceVersionSource, string? UncommittedChanges) -> void
+GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string! Major, string! Minor, string! Patch, string? BuildMetaData, string? FullBuildMetaData, string? BranchName, string? EscapedBranchName, string? Sha, string? ShortSha, string! MajorMinorPatch, string! SemVer, string! FullSemVer, string? AssemblySemVer, string? AssemblySemFileVer, string? PreReleaseTag, string? PreReleaseTagWithDash, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string! WeightedPreReleaseNumber, string? InformationalVersion, string? CommitDate, string? VersionSourceSha, string? CommitsSinceVersionSource, string? CommitsSinceVersionSourceList, string? UncommittedChanges) -> void
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.init -> void
 GitVersion.OutputVariables.GitVersionVariables.Major.get -> string!
@@ -520,6 +522,8 @@ GitVersion.SemanticVersionBuildMetaData.CommitsSinceTag.get -> long?
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceTag.init -> void
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSource.get -> long
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSource.init -> void
+GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSourceList.get -> string[]
+GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSourceList.init -> void
 GitVersion.SemanticVersionBuildMetaData.Equals(GitVersion.SemanticVersionBuildMetaData? other) -> bool
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.get -> string?
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.init -> void

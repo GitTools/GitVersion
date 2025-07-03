@@ -10,6 +10,7 @@ public class SequenceDiagram
 {
     private readonly Dictionary<string, string> participants = [];
     private readonly StringBuilder diagramBuilder;
+    private readonly CommitLabelGenerator commitLabelGenerator = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:SequenceDiagram"/> class.
@@ -125,4 +126,8 @@ public class SequenceDiagram
     /// returns the plantUML representation of the Sequence Diagram
     /// </summary>
     public string GetDiagram() => this.diagramBuilder.ToString();
+
+    public string GetOrAddLabel(string? key) => commitLabelGenerator.GetOrAdd(key ?? "N/A");
+
+    public string GetOrAddSourceLabel(string? key) => commitLabelGenerator.GetOrAddRoot(key ?? "N/A");
 }

@@ -33,7 +33,9 @@ internal abstract class VersionCalculatorBase(
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: shortSha,
             commitDate: Context.CurrentCommit.When,
-            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
+            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
+            otherMetadata: null,
+            commitSinceTagList: [.. commitLogs.Select(c => c.Sha)]
         );
     }
 }

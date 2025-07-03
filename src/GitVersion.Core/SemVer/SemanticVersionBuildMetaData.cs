@@ -26,7 +26,17 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public string? VersionSourceSha { get; init; }
 
-    public long CommitsSinceVersionSource { get; init; }
+    public long CommitsSinceVersionSource
+    {
+        get;
+        init;
+    }
+
+    public string[] CommitsSinceVersionSourceList
+    {
+        get;
+        init;
+    }
 
     public long UncommittedChanges { get; init; }
 
@@ -34,8 +44,28 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     {
     }
 
-    public SemanticVersionBuildMetaData(string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha,
-        string? commitShortSha, DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(
+        string? versionSourceSha,
+        long? commitsSinceTag,
+        string? branch,
+        string? commitSha,
+        string? commitShortSha,
+        DateTimeOffset? commitDate,
+        long numberOfUnCommittedChanges,
+        string? otherMetadata = null)
+        : this(versionSourceSha, commitsSinceTag, branch, commitSha, commitShortSha, commitDate, numberOfUnCommittedChanges, otherMetadata, [])
+    { }
+
+    internal SemanticVersionBuildMetaData(
+        string? versionSourceSha,
+        long? commitsSinceTag,
+        string? branch,
+        string? commitSha,
+        string? commitShortSha,
+        DateTimeOffset? commitDate,
+        long numberOfUnCommittedChanges,
+        string? otherMetadata,
+        string[]? commitSinceTagList)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -45,6 +75,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.OtherMetaData = otherMetadata;
         this.VersionSourceSha = versionSourceSha;
         this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
+        this.CommitsSinceVersionSourceList = commitsSinceTag == null ? [] : commitSinceTagList ?? [];
         this.UncommittedChanges = numberOfUnCommittedChanges;
     }
 
