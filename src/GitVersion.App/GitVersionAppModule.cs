@@ -7,7 +7,7 @@ internal class GitVersionAppModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<IArgumentParser, ArgumentParser>();
+        services.AddSingleton<IArgumentParser, SpectreArgumentParser>();
         services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
 
         services.AddSingleton<IHelpWriter, HelpWriter>();
