@@ -9,10 +9,5 @@ namespace GitVersion;
 [Description("Generate version information based on Git repository")]
 internal class GitVersionCommand : Command<GitVersionSettings>
 {
-    public override int Execute(CommandContext context, GitVersionSettings settings)
-    {
-        // The actual logic is handled by the interceptor
-        // This just returns success to continue normal flow
-        return 0;
-    }
+    public override int Execute(CommandContext context, GitVersionSettings settings) => 0;
 }

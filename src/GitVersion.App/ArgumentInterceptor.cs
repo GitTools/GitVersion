@@ -80,7 +80,7 @@ internal class ArgumentInterceptor : ICommandInterceptor
         // Process assembly info files
         if (!arguments.EnsureAssemblyInfo)
         {
-            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
+            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath ?? SysEnv.CurrentDirectory, arguments.UpdateAssemblyInfoFileName).ToHashSet();
         }
     }
 
@@ -134,41 +134,41 @@ internal class ArgumentInterceptor : ICommandInterceptor
         var arguments = new Arguments();
 
         // Set target path - prioritize explicit targetpath option over positional argument
-        arguments.TargetPath = settings.TargetPathOption?.TrimEnd('/', '\\') 
-                              ?? settings.TargetPath?.TrimEnd('/', '\\') 
+        arguments.TargetPath = settings.TargetPathOption?.TrimEnd('/', '\\')
+                              ?? settings.TargetPath?.TrimEnd('/', '\\')
                               ?? SysEnv.CurrentDirectory;
 
         // Configuration options
         arguments.ConfigurationFile = settings.ConfigurationFile;
         arguments.ShowConfiguration = settings.ShowConfiguration;
-        
+
         // Handle override configuration
         if (settings.OverrideConfiguration != null && settings.OverrideConfiguration.Any())
         {
             var parser = new OverrideConfigurationOptionParser();
-            
+
             foreach (var kvp in settings.OverrideConfiguration)
             {
                 // Validate the key format - Spectre.Console.Cli should have already parsed key=value correctly
                 // but we still need to validate against supported properties
                 var keyValueOption = $"{kvp.Key}={kvp.Value}";
-                
+
                 var optionKey = kvp.Key.ToLowerInvariant();
                 if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
                 {
                     throw new WarningException($"Could not parse --override-config option: {keyValueOption}. Unsupported 'key'.");
                 }
-                
+
                 parser.SetValue(optionKey, kvp.Value);
             }
-            
+
             arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
         }
         else
         {
             arguments.OverrideConfiguration = new Dictionary<object, object?>();
         }
-        
+
         // Output options
         if (settings.Output != null && settings.Output.Any())
         {

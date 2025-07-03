@@ -29,7 +29,7 @@ internal class GitVersionSettings : CommandSettings
     public string[]? Output { get; set; }
 
     [CommandOption("--output-file")]
-    [Description("Output file when using file output")]  
+    [Description("Output file when using file output")]
     public string? OutputFile { get; set; }
 
     [CommandOption("-f|--format")]

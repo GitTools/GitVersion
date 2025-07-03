@@ -72,15 +72,17 @@ internal class SpectreArgumentParser : IArgumentParser
         });
 
         var resultStorage = new ParseResultStorage();
-        
+
         try
         {
             // Parse the arguments
             var interceptor = new ArgumentInterceptor(resultStorage, this.environment, this.fileSystem, this.buildAgent, this.console, this.globbingResolver);
+#pragma warning disable CS0618 // Type or member is obsolete
             app.Configure(config => config.Settings.Interceptor = interceptor);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             var parseResult = app.Run(commandLineArguments);
-            
+
             var result = resultStorage.GetResult();
             if (result != null)
             {
@@ -92,7 +94,7 @@ internal class SpectreArgumentParser : IArgumentParser
             // If parsing fails, return default arguments
             return CreateDefaultArguments();
         }
-        
+
         return CreateDefaultArguments();
     }
 
