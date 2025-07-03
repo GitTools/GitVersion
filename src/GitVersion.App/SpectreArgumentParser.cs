@@ -405,7 +405,7 @@ internal class GitVersionSettings : CommandSettings
     [Description("Format string for version output")]
     public string? Format { get; set; }
 
-    [CommandOption("-v|--show-variable")]
+    [CommandOption("--show-variable")]
     [Description("Show a specific GitVersion variable")]
     public string? ShowVariable { get; set; }
 
@@ -481,7 +481,7 @@ internal class GitVersionSettings : CommandSettings
     [Description("Path to log file")]
     public string? LogFilePath { get; set; }
 
-    [CommandOption("--verbosity")]
+    [CommandOption("-v|--verbosity")]
     [Description("Logging verbosity (quiet, minimal, normal, verbose, diagnostic)")]
     public string? Verbosity { get; set; }
 }
