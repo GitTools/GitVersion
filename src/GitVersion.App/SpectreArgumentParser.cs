@@ -90,161 +90,8 @@ internal class SpectreArgumentParser : IArgumentParser
         }
         catch (Exception)
         {
-            // If parsing fails, try to handle legacy forward slash syntax
-            return HandleLegacySyntax(commandLineArguments);
-        }
-        
-        return CreateDefaultArguments();
-    }
-
-    private Arguments HandleLegacySyntax(string[] commandLineArguments)
-    {
-        // Convert legacy forward slash syntax to hyphen syntax for Spectre.Console.Cli
-        var convertedArgs = new List<string>();
-        
-        for (int i = 0; i < commandLineArguments.Length; i++)
-        {
-            var arg = commandLineArguments[i];
-            
-            // Handle legacy forward slash options
-            if (arg.StartsWith('/'))
-            {
-                var option = arg.Substring(1).ToLowerInvariant();
-                switch (option)
-                {
-                    case "output":
-                        convertedArgs.Add("--output");
-                        break;
-                    case "outputfile":
-                        convertedArgs.Add("--output-file");
-                        break;
-                    case "showvariable":
-                        convertedArgs.Add("--show-variable");
-                        break;
-                    case "format":
-                        convertedArgs.Add("--format");
-                        break;
-                    case "l":
-                        convertedArgs.Add("--log-file");
-                        break;
-                    case "config":
-                        convertedArgs.Add("--config");
-                        break;
-                    case "showconfig":
-                        convertedArgs.Add("--show-config");
-                        break;
-                    case "overrideconfig":
-                        convertedArgs.Add("--override-config");
-                        // Handle the key=value format for override config
-                        if (i + 1 < commandLineArguments.Length)
-                        {
-                            var nextArg = commandLineArguments[i + 1];
-                            if (nextArg.Contains('=') && !nextArg.StartsWith('/') && !nextArg.StartsWith('-'))
-                            {
-                                // This is the key=value pair for override config
-                                convertedArgs.Add(nextArg);
-                                i++; // Skip the next argument since we consumed it
-                            }
-                        }
-                        break;
-                    case "nocache":
-                        convertedArgs.Add("--no-cache");
-                        break;
-                    case "nonormalize":
-                        convertedArgs.Add("--no-normalize");
-                        break;
-                    case "allowshallow":
-                        convertedArgs.Add("--allow-shallow");
-                        break;
-                    case "verbosity":
-                        convertedArgs.Add("--verbosity");
-                        break;
-                    case "updateassemblyinfo":
-                        convertedArgs.Add("--update-assembly-info");
-                        break;
-                    case "updateprojectfiles":
-                        convertedArgs.Add("--update-project-files");
-                        break;
-                    case "ensureassemblyinfo":
-                        convertedArgs.Add("--ensure-assembly-info");
-                        break;
-                    case "updatewixversionfile":
-                        convertedArgs.Add("--update-wix-version-file");
-                        break;
-                    case "url":
-                        convertedArgs.Add("--url");
-                        break;
-                    case "b":
-                        convertedArgs.Add("--branch");
-                        break;
-                    case "u":
-                        convertedArgs.Add("--username");
-                        break;
-                    case "p":
-                        convertedArgs.Add("--password");
-                        break;
-                    case "c":
-                        convertedArgs.Add("--commit");
-                        break;
-                    case "dynamicrepolocation":
-                        convertedArgs.Add("--dynamic-repo-location");
-                        break;
-                    case "nofetch":
-                        convertedArgs.Add("--no-fetch");
-                        break;
-                    case "targetpath":
-                        convertedArgs.Add("--target-path");
-                        break;
-                    case "diag":
-                        convertedArgs.Add("--diag");
-                        break;
-                    default:
-                        // Unknown option, keep as is
-                        convertedArgs.Add(arg);
-                        break;
-                }
-            }
-            else if (!arg.StartsWith('-') && i == 0)
-            {
-                // First non-option argument is likely the target path
-                convertedArgs.Add(arg);
-            }
-            else
-            {
-                // Regular argument or already in correct format
-                convertedArgs.Add(arg);
-            }
-        }
-        
-        // Try parsing again with converted arguments
-        try
-        {
-            var app = new CommandApp<GitVersionCommand>();
-            app.Configure(config =>
-            {
-                config.SetApplicationName("gitversion");
-                config.PropagateExceptions();
-            });
-
-            var resultStorage = new ParseResultStorage();
-            var interceptor = new ArgumentInterceptor(resultStorage, this.environment, this.fileSystem, this.buildAgent, this.console, this.globbingResolver);
-            app.Configure(config => config.Settings.Interceptor = interceptor);
-
-            var parseResult = app.Run(convertedArgs.ToArray());
-            
-            var result = resultStorage.GetResult();
-            if (result != null)
-            {
-                return result;
-            }
-        }
-        catch (Exception)
-        {
-            // Final fallback - if it's a single argument and not an option, treat as target path
-            if (commandLineArguments.Length == 1 && !commandLineArguments[0].StartsWith('-') && !commandLineArguments[0].StartsWith('/'))
-            {
-                return CreateArgumentsWithTargetPath(commandLineArguments[0]);
-            }
+            // If parsing fails, return default arguments
+            return CreateDefaultArguments();
         }
         
         return CreateDefaultArguments();
@@ -255,18 +102,6 @@ internal class SpectreArgumentParser : IArgumentParser
         var args = new Arguments
         {
             TargetPath = SysEnv.CurrentDirectory
-        };
-        args.Output.Add(OutputType.Json);
-        AddAuthentication(args);
-        args.NoFetch = this.buildAgent.PreventFetch();
-        return args;
-    }
-
-    private Arguments CreateArgumentsWithTargetPath(string targetPath)
-    {
-        var args = new Arguments
-        {
-            TargetPath = targetPath.TrimEnd('/', '\\')
         };
         args.Output.Add(OutputType.Json);
         AddAuthentication(args);
@@ -437,12 +272,24 @@ internal class ArgumentInterceptor : ICommandInterceptor
         // Handle override configuration
         if (settings.OverrideConfiguration != null && settings.OverrideConfiguration.Any())
         {
-            var overrideConfig = new Dictionary<object, object?>();
+            var parser = new OverrideConfigurationOptionParser();
+            
             foreach (var kvp in settings.OverrideConfiguration)
             {
-                overrideConfig[kvp.Key] = kvp.Value;
+                // Validate the key format - Spectre.Console.Cli should have already parsed key=value correctly
+                // but we still need to validate against supported properties
+                var keyValueOption = $"{kvp.Key}={kvp.Value}";
+                
+                var optionKey = kvp.Key.ToLowerInvariant();
+                if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
+                {
+                    throw new WarningException($"Could not parse --override-config option: {keyValueOption}. Unsupported 'key'.");
+                }
+                
+                parser.SetValue(optionKey, kvp.Value);
             }
-            arguments.OverrideConfiguration = overrideConfig;
+            
+            arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
         }
         else
         {

@@ -220,7 +220,7 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCase("targetDirectoryPath -x logFilePath")]
-    [TestCase("/invalid-argument")]
+    [TestCase("--invalid-argument")]
     public void UnknownArgumentsShouldThrow(string arguments)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(arguments));
@@ -370,14 +370,14 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OverrideconfigWithNoOptions()
     {
-        var arguments = this.argumentParser.ParseArguments("/overrideconfig");
+        var arguments = this.argumentParser.ParseArguments("--override-config");
         arguments.OverrideConfiguration.ShouldBeNull();
     }
 
     [TestCaseSource(nameof(OverrideconfigWithInvalidOptionTestData))]
     public string OverrideconfigWithInvalidOption(string options)
     {
-        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments($"/overrideconfig {options}"));
+        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments($"--override-config {options}"));
         exception.ShouldNotBeNull();
         return exception.Message;
     }
@@ -386,18 +386,18 @@ public class ArgumentParserTests : TestBase
     {
         yield return new TestCaseData("tag-prefix=sample=asdf")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
+            ExpectedResult = "Could not parse --override-config option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
         };
         yield return new TestCaseData("unknown-option=25")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported 'key'."
+            ExpectedResult = "Could not parse --override-config option: unknown-option=25. Unsupported 'key'."
         };
     }
 
     [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
     public void OverrideConfigWithSingleOptions(string options, IGitVersionConfiguration expected)
     {
-        var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
+        var arguments = this.argumentParser.ParseArguments($"--override-config {options}");
 
         ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
@@ -551,7 +551,7 @@ public class ArgumentParserTests : TestBase
     private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()
     {
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -559,7 +559,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -567,7 +567,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig tag-pre-release-weight=4",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" --override-config update-build-number=true --override-config assembly-versioning-scheme=MajorMinorPatchTag --override-config mode=ContinuousDelivery --override-config tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -711,7 +711,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void BooleanArgumentHandling()
     {
-        var arguments = this.argumentParser.ParseArguments("/nofetch /updateassemblyinfo true");
+        var arguments = this.argumentParser.ParseArguments("--no-fetch --update-assembly-info true");
         arguments.NoFetch.ShouldBe(true);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
