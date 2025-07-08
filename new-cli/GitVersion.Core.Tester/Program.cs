@@ -14,9 +14,9 @@ var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, _) => cts.Cancel();
 
 await using var serviceProvider = RegisterModules(modules);
-var app = serviceProvider.GetRequiredService<GitVersionApp>();
-var result = await app.RunAsync(args);
+var app = serviceProvider.GetRequiredService<ICliApp>();
 
+var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
 if (!Console.IsInputRedirected) Console.ReadKey();
 
 return result;
@@ -25,7 +25,7 @@ static ServiceProvider RegisterModules(IEnumerable<IGitVersionModule> gitVersion
 {
     var serviceProvider = new ServiceCollection()
         .RegisterModules(gitVersionModules)
-        .AddSingleton<GitVersionApp>()
+        .AddSingleton<ICliApp, GitVersionApp>()
         .RegisterLogging()
         .BuildServiceProvider();
 

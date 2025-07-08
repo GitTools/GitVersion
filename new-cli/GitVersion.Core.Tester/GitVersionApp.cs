@@ -1,13 +1,12 @@
 using GitVersion.Git;
+using GitVersion.Infrastructure;
 using Microsoft.Extensions.Logging;
 
 namespace GitVersion;
 
-public class GitVersionApp(ILogger logger, IGitRepository repository)
+public class GitVersionApp(ILogger<GitVersionApp> logger, IGitRepository repository) : ICliApp
 {
-#pragma warning disable IDE0060
-    public Task<int> RunAsync(string[] args)
-#pragma warning restore IDE0060
+    public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
     {
         repository.DiscoverRepository(Directory.GetCurrentDirectory());
         var branches = repository.Branches.ToList();
