@@ -109,7 +109,7 @@ namespace {{GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {
-    public void RegisterTypes(IServiceCollection services)
+    public IServiceCollection RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<ICliApp, CliAppImpl>();
         services.AddSingleton<RootCommandImpl>();
@@ -120,6 +120,7 @@ public class CommandsModule : IGitVersionModule
         services.AddSingleton<{{ if $command.CommandTypeNamespace != CommandNamespaceName }}{{$command.CommandTypeNamespace}}.{{ end }}{{$command.CommandTypeName}}>();
         services.AddSingleton<ICommandImpl, {{$command.CommandTypeName}}Impl>();
         {{~ end ~}}
+        return services;
     }
 }
 """;

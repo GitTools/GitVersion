@@ -105,13 +105,14 @@ namespace {{Constants.GeneratedNamespaceName}};
 
 public class CommandsModule : IGitVersionModule
 {
-    public void RegisterTypes(IServiceCollection services)
+    public IServiceCollection RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<ICliApp, CliAppImpl>();
         services.AddSingleton<RootCommandImpl>();
 
         services.AddSingleton<TestCommand>();
         services.AddSingleton<ICommandImpl, TestCommandImpl>();
+        return services;
     }
 }
 """;

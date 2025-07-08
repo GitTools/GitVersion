@@ -6,10 +6,11 @@ namespace GitVersion;
 
 public class CoreModule : IGitVersionModule
 {
-    public void RegisterTypes(IServiceCollection services)
+    public IServiceCollection RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, Environment>();
         services.AddSingleton<IService, Service>();
+        return services;
     }
 }

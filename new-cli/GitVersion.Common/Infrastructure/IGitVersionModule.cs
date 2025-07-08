@@ -4,5 +4,5 @@ namespace GitVersion.Infrastructure;
 
 public interface IGitVersionModule
 {
-    void RegisterTypes(IServiceCollection services);
+    IServiceCollection RegisterTypes(IServiceCollection services);
 }

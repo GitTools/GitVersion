@@ -7,13 +7,7 @@ namespace GitVersion.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection RegisterModules(this IServiceCollection services, IEnumerable<IGitVersionModule> gitVersionModules)
-        => gitVersionModules.Aggregate(services, (current, gitVersionModule) => current.RegisterModule(gitVersionModule));
-
-    public static IServiceCollection RegisterModule(this IServiceCollection services, IGitVersionModule gitVersionModule)
-    {
-        gitVersionModule.RegisterTypes(services);
-        return services;
-    }
+        => gitVersionModules.Aggregate(services, (current, gitVersionModule) => gitVersionModule.RegisterTypes(current));
 
     public static IServiceCollection RegisterLogging(this IServiceCollection services)
     {
