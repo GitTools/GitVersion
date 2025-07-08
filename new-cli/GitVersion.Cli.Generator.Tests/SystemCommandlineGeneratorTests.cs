@@ -107,8 +107,8 @@ public class CommandsModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<RootCommandImpl>();
         services.AddSingleton<ICliApp, CliAppImpl>();
+        services.AddSingleton<RootCommandImpl>();
 
         services.AddSingleton<TestCommand>();
         services.AddSingleton<ICommandImpl, TestCommandImpl>();
@@ -188,7 +188,7 @@ internal class CliAppImpl : ICliApp
         var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
         var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
 
-        // LoggingEnricher.Configure(logFile?.FullName, verbosity);
+        LoggingEnricher.Configure(logFile?.FullName, verbosity);
 
         return parseResult.InvokeAsync(cancellationToken: cancellationToken);
     }
@@ -259,6 +259,7 @@ public record TestCommandSettings : GitVersionSettings
                     MetadataReference.CreateFromFile(typeof(RootCommand).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(CommandAttribute).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(IGitVersionModule).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(LoggingEnricher).Assembly.Location),
                 }
             }
         };

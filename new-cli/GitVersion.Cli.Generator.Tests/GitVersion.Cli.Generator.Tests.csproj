@@ -30,6 +30,7 @@
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj" />
         <ProjectReference Include="..\GitVersion.Common.Command\GitVersion.Common.Command.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 
 </Project>

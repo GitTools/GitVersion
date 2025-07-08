@@ -111,9 +111,10 @@ public class CommandsModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        {{- $commands = Model | array.sort "CommandTypeName" }}
-        services.AddSingleton<RootCommandImpl>();
         services.AddSingleton<ICliApp, CliAppImpl>();
+        services.AddSingleton<RootCommandImpl>();
+
+        {{- $commands = Model | array.sort "CommandTypeName" }}
 
         {{~ for $command in $commands ~}}
         services.AddSingleton<{{ if $command.CommandTypeNamespace != CommandNamespaceName }}{{$command.CommandTypeNamespace}}.{{ end }}{{$command.CommandTypeName}}>();
@@ -155,7 +156,7 @@ internal class CliAppImpl : ICliApp
         var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
         var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
 
-        // LoggingEnricher.Configure(logFile?.FullName, verbosity);
+        LoggingEnricher.Configure(logFile?.FullName, verbosity);
 
         return parseResult.InvokeAsync(cancellationToken: cancellationToken);
     }
