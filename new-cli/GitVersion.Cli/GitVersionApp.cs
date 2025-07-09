@@ -9,12 +9,11 @@ namespace GitVersion;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class GitVersionApp(RootCommandImpl rootCommand)
 {
-    private readonly RootCommandImpl rootCommand = rootCommand.NotNull();
+    private readonly RootCommandImpl _rootCommand = rootCommand.NotNull();
 
     public Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
     {
-        var cliConfiguration = new CommandLineConfiguration(rootCommand);
-        var parseResult = cliConfiguration.Parse(args);
+        var parseResult = this._rootCommand.Parse(args);
 
         var logFile = parseResult.GetValue<FileInfo?>(GitVersionSettings.LogFileOption);
         var verbosity = parseResult.GetValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
@@ -22,7 +21,7 @@ internal class GitVersionApp(RootCommandImpl rootCommand)
         if (logFile?.FullName != null) LoggingEnricher.Path = logFile.FullName;
         LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
 
-        return parseResult.InvokeAsync(cancellationToken);
+        return parseResult.InvokeAsync(new InvocationConfiguration(), cancellationToken);
     }
 
     // Note: there are 2 locations to watch for dotnet-suggest
