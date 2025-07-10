@@ -1,19 +1,13 @@
 using GitVersion.Polyfill;
 
-// ReSharper disable InconsistentNaming
 namespace GitVersion;
 
-[Generator(LanguageNames.CSharp)]
-public class CommandImplGenerator : IIncrementalGenerator
+public abstract class CommandBaseGenerator : IIncrementalGenerator
 {
-    private const string GeneratedNamespaceName = "GitVersion.Generated";
-    private const string InfraNamespaceName = "GitVersion";
-    private const string DependencyInjectionNamespaceName = "GitVersion.Infrastructure";
-    private const string CommandNamespaceName = "GitVersion.Commands";
-    private const string CommandInterfaceFullName = $"{InfraNamespaceName}.ICommand<T>";
-    private const string CommandAttributeFullName = $"{InfraNamespaceName}.CommandAttribute";
-    private const string CommandAttributeGenericFullName = $"{InfraNamespaceName}.CommandAttribute<T>";
-    private const string OptionAttributeFullName = $"{InfraNamespaceName}.OptionAttribute";
+    private const string CommandInterfaceFullName = $"{Constants.CommonNamespaceName}.ICommand<T>";
+    private const string CommandAttributeFullName = $"{Constants.CommonNamespaceName}.CommandAttribute";
+    private const string CommandAttributeGenericFullName = $"{Constants.CommonNamespaceName}.CommandAttribute<T>";
+    private const string OptionAttributeFullName = $"{Constants.CommonNamespaceName}.OptionAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -21,6 +15,8 @@ public class CommandImplGenerator : IIncrementalGenerator
 
         context.RegisterImplementationSourceOutput(commandTypes, GenerateSourceCode);
     }
+
+    internal abstract void GenerateSourceCode(SourceProductionContext context, ImmutableArray<CommandInfo?> commandInfos);
 
     private static ImmutableArray<CommandInfo?> SelectCommandTypes(Compilation compilation, CancellationToken ct)
     {
@@ -38,43 +34,7 @@ public class CommandImplGenerator : IIncrementalGenerator
             return attributeData is not null;
         }
     }
-    private static void GenerateSourceCode(SourceProductionContext context, ImmutableArray<CommandInfo?> commandInfos)
-    {
-        foreach (var commandInfo in commandInfos)
-        {
-            if (commandInfo == null)
-                continue;
 
-            var commandHandlerTemplate = Template.Parse(Content.CommandImplContent);
-
-            var commandHandlerSource = commandHandlerTemplate.Render(new
-            {
-                Model = commandInfo,
-                Namespace = GeneratedNamespaceName
-            }, member => member.Name);
-
-            context.AddSource($"{commandInfo.CommandTypeName}Impl.g.cs", string.Join("\n", commandHandlerSource));
-        }
-
-        var commandHandlersModuleTemplate = Template.Parse(Content.CommandsModuleContent);
-        var commandHandlersModuleSource = commandHandlersModuleTemplate.Render(new
-        {
-            Model = commandInfos,
-            Namespace = GeneratedNamespaceName,
-            InfraNamespaceName,
-            DependencyInjectionNamespaceName,
-            CommandNamespaceName
-        }, member => member.Name);
-        context.AddSource("CommandsModule.g.cs", string.Join("\n", commandHandlersModuleSource));
-
-        var rootCommandHandlerTemplate = Template.Parse(Content.RootCommandImplContent);
-        var rootCommandHandlerSource = rootCommandHandlerTemplate.Render(new
-        {
-            Namespace = GeneratedNamespaceName,
-            InfraNamespaceName
-        }, member => member.Name);
-        context.AddSource("RootCommandImpl.g.cs", string.Join("\n", rootCommandHandlerSource));
-    }
     private static CommandInfo? MapToCommandInfo(ITypeSymbol classSymbol, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -118,7 +78,7 @@ public class CommandImplGenerator : IIncrementalGenerator
             CommandDescription = description,
             SettingsTypeName = settingsType.Name,
             SettingsTypeNamespace = settingsType.ContainingNamespace.ToDisplayString(),
-            SettingsProperties = settingsPropertyInfos.ToArray()
+            SettingsProperties = [.. settingsPropertyInfos]
         };
         return commandInfo;
     }
@@ -132,23 +92,22 @@ public class CommandImplGenerator : IIncrementalGenerator
         name.NotNull();
         description.NotNull();
 
-        string alias = string.Empty;
+        string[] aliases = [];
         if (ctorArguments.Length == 3)
         {
             var aliasesArgs = ctorArguments[2];
-            var aliases = (aliasesArgs.Kind == TypedConstantKind.Array
+            aliases = (aliasesArgs.Kind == TypedConstantKind.Array
                 ? aliasesArgs.Values.Select(x => Convert.ToString(x.Value)).ToArray()
-                : [Convert.ToString(aliasesArgs.Value)]).Select(x => $@"""{x?.Trim()}""");
-            alias = string.Join(", ", aliases);
+                : [Convert.ToString(aliasesArgs.Value)]);
         }
 
-        var isRequired = propertySymbol.Type.NullableAnnotation == NullableAnnotation.NotAnnotated;
+        var isRequired = propertySymbol.IsRequired;
         return new()
         {
             Name = propertySymbol.Name,
             TypeName = propertySymbol.Type.ToDisplayString(),
             OptionName = name,
-            Aliases = alias,
+            Aliases = aliases,
             Description = description,
             Required = isRequired
         };

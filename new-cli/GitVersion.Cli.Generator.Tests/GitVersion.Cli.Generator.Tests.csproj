@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>GitVersion.Cli.Generator.Tests</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="System.CommandLine" />
+
+        <PackageReference Include="Microsoft.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NUnit3TestAdapter" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="NUnit.Framework" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj" />
+        <ProjectReference Include="..\GitVersion.Common.Command\GitVersion.Common.Command.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+    </ItemGroup>
+
+</Project>

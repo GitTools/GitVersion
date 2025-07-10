@@ -7,32 +7,49 @@ public class LoggingEnricher : ILogEventEnricher
 {
     public static readonly LoggingLevelSwitch LogLevel = new();
     private string? _cachedLogFilePath;
-    private LogEventProperty? _cachedLogFilePathProperty;
+    private LogEventProperty? _cachedLogFilePathProp;
 
     // this path and level will be set by the LogInterceptor.cs after parsing the settings
-    public static string Path = string.Empty;
+    private static string _path = string.Empty;
 
     public const string LogFilePathPropertyName = "LogFilePath";
 
-    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propFactory)
     {
-        // the settings might not have a path, or we might not be within a command in which case
-        // we won't have the setting so a default value for the log file will be required
-        LogEventProperty logFilePathProperty;
+        // the settings might not have a path, or we might not be within a command, in which case
+        // we won't have the setting, so a default value for the log file will be required
+        LogEventProperty logFilePathProp;
 
-        if (this._cachedLogFilePathProperty != null && Path.Equals(this._cachedLogFilePath))
+        if (_cachedLogFilePathProp != null && _path.Equals(_cachedLogFilePath))
         {
-            // Path hasn't changed, so let's use the cached property
-            logFilePathProperty = this._cachedLogFilePathProperty;
+            // The Path hasn't changed, so let's use the cached property
+            logFilePathProp = _cachedLogFilePathProp;
         }
         else
         {
             // We've got a new path for the log. Let's create a new property
             // and cache it for future log events to use
-            this._cachedLogFilePath = Path;
-            this._cachedLogFilePathProperty = logFilePathProperty = propertyFactory.CreateProperty(LogFilePathPropertyName, Path);
+            _cachedLogFilePath = _path;
+            _cachedLogFilePathProp = logFilePathProp = propFactory.CreateProperty(LogFilePathPropertyName, _path);
         }
 
-        logEvent.AddPropertyIfAbsent(logFilePathProperty);
+        logEvent.AddPropertyIfAbsent(logFilePathProp);
     }
+
+    public static void Configure(string? logFile, Verbosity verbosity)
+    {
+        if (!string.IsNullOrWhiteSpace(logFile)) _path = logFile;
+        LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
+    }
+
+    private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
+
+    private static readonly Dictionary<Verbosity, LogEventLevel> VerbosityMaps = new()
+    {
+        { Verbosity.Verbose, LogEventLevel.Verbose },
+        { Verbosity.Diagnostic, LogEventLevel.Debug },
+        { Verbosity.Normal, LogEventLevel.Information },
+        { Verbosity.Minimal, LogEventLevel.Warning },
+        { Verbosity.Quiet, LogEventLevel.Error },
+    };
 }

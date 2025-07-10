@@ -1,6 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace GitVersion.Infrastructure;
 
 public interface IGitVersionModule
 {
-    void RegisterTypes(IContainerRegistrar services);
+    IServiceCollection RegisterTypes(IServiceCollection services);
 }

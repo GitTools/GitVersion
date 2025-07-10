@@ -1,7 +1,7 @@
+root = true
 # http://editorconfig.org
 
 # top-most EditorConfig file
-root = true
 
 [*]
 indent_style = space
@@ -9,6 +9,12 @@ indent_size = 4
 end_of_line = lf
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+# Microsoft .NET properties
+dotnet_style_qualification_for_event = false:none
+dotnet_style_qualification_for_field = false:none
+dotnet_style_qualification_for_method = false:none
+dotnet_style_qualification_for_property = false:none
 
 [*.yml]
 indent_size = 2
@@ -156,13 +162,13 @@ resharper_csharp_align_multiline_parameter = true
 resharper_csharp_instance_members_qualify_members = field
 
 # IDE0005: Using directive is unnecessary.
-dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.ide0005.severity = warning
 
 # RCS1037: Remove trailing white-space.
-dotnet_diagnostic.RCS1037.severity = error
+dotnet_diagnostic.rcs1037.severity = error
 
 # RCS1036: Remove redundant empty line.
-dotnet_diagnostic.RCS1036.severity = error
+dotnet_diagnostic.rcs1036.severity = error
 
 xml_space_before_self_closing = true
 

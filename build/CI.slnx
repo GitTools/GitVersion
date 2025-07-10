@@ -42,6 +42,7 @@
     <File Path="../.github/workflows/format.yml" />
     <File Path="../.github/workflows/homebrew.yml" />
     <File Path="../.github/workflows/mkdocs.yml" />
+    <File Path="../.github/workflows/new-cli.yml" />
     <File Path="../.github/workflows/release.yml" />
     <File Path="../.github/workflows/stale.yml" />
     <File Path="../.github/workflows/winget.yml" />

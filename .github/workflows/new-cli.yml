@@ -1,4 +1,4 @@
-name: Code Format
+name: Build (new-cli)
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ on:
     - '**'
     - '!docs/**'
     - '!.github/**'
-    - .github/workflows/format.yml
+    - .github/workflows/new-cli.yml
 
   pull_request:
     branches:
@@ -21,7 +21,7 @@ on:
     - '**'
     - '!docs/**'
     - '!.github/**'
-    - .github/workflows/format.yml
+    - .github/workflows/new-cli.yml
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ env:
 jobs:
   format:
     runs-on: ubuntu-24.04
-    name: DotNet Format
+    name: Build & Test (new-cli)
     steps:
       -
         name: Checkout
@@ -46,8 +46,11 @@ jobs:
         with:
           global-json-file: global.json
       -
-        name: Run Format 'ci' solution
-        run: dotnet format ./build/ --verify-no-changes
+        name: Build 'new-cli' solution
+        run: dotnet build ./new-cli
       -
-        name: Run Format 'GitVersion' solution
-        run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes
+        name: Run Format 'new-cli' solution
+        run: dotnet format ./new-cli --exclude ~/.nuget/packages --verify-no-changes
+      -
+        name: Test 'new-cli' solution
+        run: dotnet test ./new-cli --no-build --verbosity normal

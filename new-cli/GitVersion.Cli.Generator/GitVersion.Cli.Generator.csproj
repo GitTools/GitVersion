@@ -15,4 +15,8 @@
         <PackageReference Include="Scriban" IncludeAssets="Build" />
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.Cli.Generator.Tests" />
+    </ItemGroup>
 </Project>
