@@ -1,4 +1,4 @@
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal interface IValueFormatter
 {

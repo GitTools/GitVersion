@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Core;
+using GitVersion.Formatting;
 
 namespace GitVersion.Helpers;
 

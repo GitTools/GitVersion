@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal class NumericFormatter : IValueFormatter
 {
@@ -11,9 +11,7 @@ internal class NumericFormatter : IValueFormatter
         result = string.Empty;
 
         if (value is not string s)
-        {
             return false;
-        }
 
         // Integer formatting
         if (format.All(char.IsDigit) && int.TryParse(s, out var i))
@@ -23,7 +21,7 @@ internal class NumericFormatter : IValueFormatter
         }
 
         // Hexadecimal formatting
-        if ((format.StartsWith('X') || format.StartsWith('x')) && int.TryParse(s, out var hex))
+        if (format.StartsWith("X", StringComparison.OrdinalIgnoreCase) && int.TryParse(s, out var hex))
         {
             result = hex.ToString(format, CultureInfo.InvariantCulture);
             return true;

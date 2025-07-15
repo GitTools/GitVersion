@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal class FormattableFormatter : IValueFormatter
 {

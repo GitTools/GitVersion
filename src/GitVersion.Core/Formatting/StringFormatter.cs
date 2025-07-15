@@ -1,7 +1,7 @@
 using System.Globalization;
 using GitVersion.Extensions;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal class StringFormatter : IValueFormatter
 {
@@ -34,9 +34,7 @@ internal class StringFormatter : IValueFormatter
                 return true;
             case "s":
                 if (stringValue.Length == 1)
-                {
                     result = stringValue.ToUpperInvariant();
-                }
                 else
                 {
                     result = char.ToUpperInvariant(stringValue[0]) + stringValue[1..].ToLowerInvariant();
