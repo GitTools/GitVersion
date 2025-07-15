@@ -1,6 +1,6 @@
-﻿using GitVersion.Helpers;
+﻿using GitVersion.Formatting;
 
-namespace GitVersion.Tests.Helpers;
+namespace GitVersion.Core.Tests.Formatting;
 
 [TestFixture]
 public class NumericFormatterTests
