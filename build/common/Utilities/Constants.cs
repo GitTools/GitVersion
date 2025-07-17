@@ -28,8 +28,7 @@ public static class Constants
     public const string CentosStreamLatest = "centos.stream.9";
     public const string DebianLatest = "debian.12";
     public const string FedoraLatest = "fedora.41";
-    public const string Ubuntu2204 = "ubuntu.22.04";
-    public const string Ubuntu2404 = "ubuntu.24.04";
+    public const string UbuntuLatest = "ubuntu.24.04";
 
     public const string DockerDistroLatest = DebianLatest;
 
@@ -39,8 +38,8 @@ public static class Constants
         CentosStreamLatest,
         DebianLatest,
         FedoraLatest,
-        Ubuntu2204,
-        Ubuntu2404
+        UbuntuLatest,
+        "ubuntu.22.04"
     ];
     public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
     public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
