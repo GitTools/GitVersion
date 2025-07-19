@@ -2,30 +2,26 @@ using System.Globalization;
 
 namespace GitVersion.Formatting;
 
-internal class DateFormatter : IValueFormatter
+internal class DateFormatter : InvariantFormatter, IValueFormatter
 {
     public int Priority => 2;
 
-    public bool TryFormat(object? value, string format, out string result)
+    public override bool TryFormat(object? value, string format, CultureInfo cultureInfo, out string result)
     {
         result = string.Empty;
 
-        if (value is DateTime dt && format.StartsWith("date:"))
+        if (value is DateTime dt)
         {
-            var dateFormat = RemoveDatePrefix(format);
-            result = dt.ToString(dateFormat, CultureInfo.InvariantCulture);
+            result = dt.ToString(format, cultureInfo);
             return true;
         }
 
-        if (value is string dateStr && DateTime.TryParse(dateStr, out var parsedDate) && format.StartsWith("date:"))
+        if (value is string dateStr && DateTime.TryParse(dateStr, out var parsedDate))
         {
-            var dateFormat = format.Substring(5);
-            result = parsedDate.ToString(dateFormat, CultureInfo.InvariantCulture);
+            result = parsedDate.ToString(format, cultureInfo);
             return true;
         }
 
         return false;
     }
-
-    private static string RemoveDatePrefix(string format) => format.Substring(5);
 }

@@ -1,21 +1,31 @@
+using System.Globalization;
+
 namespace GitVersion.Formatting;
 
-internal static class ValueFormatter
+internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
 {
-    private static readonly List<IValueFormatter> formatters =
-    [
-        new StringFormatter(),
-        new FormattableFormatter(),
-        new NumericFormatter(),
-        new DateFormatter()
-    ];
+    private readonly List<IValueFormatter> formatters;
 
-    public static bool TryFormat(object? value, string format, out string result)
+    internal static IValueFormatter Default { get; } = new ValueFormatter();
+
+    public int Priority => 0;
+
+    internal ValueFormatter()
+        => formatters =
+        [
+            new StringFormatter(),
+            new FormattableFormatter(),
+            new NumericFormatter(),
+            new DateFormatter()
+        ];
+
+    public override bool TryFormat(object? value, string format, CultureInfo cultureInfo, out string result)
     {
         result = string.Empty;
-
         if (value is null)
+        {
             return false;
+        }
 
         foreach (var formatter in formatters.OrderBy(f => f.Priority))
         {
@@ -26,7 +36,7 @@ internal static class ValueFormatter
         return false;
     }
 
-    public static void RegisterFormatter(IValueFormatter formatter) => formatters.Add(formatter);
+    void IValueFormatterCombiner.RegisterFormatter(IValueFormatter formatter) => formatters.Add(formatter);
 
-    public static void RemoveFormatter<T>() where T : IValueFormatter => formatters.RemoveAll(f => f is T);
+    void IValueFormatterCombiner.RemoveFormatter<T>() => formatters.RemoveAll(f => f is T);
 }
