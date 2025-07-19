@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using GitVersion.Core;
 
 namespace GitVersion.Extensions;
@@ -31,7 +32,7 @@ public static class StringExtensions
     public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
         => string.IsNullOrEmpty(value) ? value : prefix + value;
 
-    internal static string PascalCase(this string input)
+    internal static string PascalCase(this string input, CultureInfo cultureInfo)
     {
         var sb = new StringBuilder(input.Length);
         var capitalizeNext = true;
@@ -44,7 +45,7 @@ public static class StringExtensions
                 continue;
             }
 
-            sb.Append(capitalizeNext ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c));
+            sb.Append(capitalizeNext ? cultureInfo.TextInfo.ToUpper(c) : cultureInfo.TextInfo.ToLower(c));
             capitalizeNext = false;
         }
 
