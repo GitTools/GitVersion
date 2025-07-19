@@ -1,4 +1,4 @@
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal class MemberResolver : IMemberResolver
 {
@@ -29,15 +29,11 @@ internal class MemberResolver : IMemberResolver
     public static List<MemberInfo>? FindMemberRecursive(Type type, string memberName, HashSet<Type> visited)
     {
         if (!visited.Add(type))
-        {
             return null;
-        }
 
         var member = FindDirectMember(type, memberName);
         if (member != null)
-        {
             return [member];
-        }
 
         foreach (var prop in type.GetProperties())
         {

@@ -1,4 +1,5 @@
-﻿using GitVersion.Formatting;
+﻿using System.Globalization;
+using GitVersion.Formatting;
 
 namespace GitVersion.Core.Tests.Formatting;
 
@@ -12,13 +13,16 @@ public class FormattableFormatterTests
     public void TryFormat_NullValue_ReturnsFalse()
     {
         var sut = new FormattableFormatter();
-        var result = sut.TryFormat(null, "G", out var formatted);
+        var result = sut.TryFormat(null, "G", CultureInfo.InvariantCulture, out var formatted);
         result.ShouldBeFalse();
         formatted.ShouldBeEmpty();
     }
 
     [TestCase(123.456, "F2", "123.46")]
     [TestCase(1234.456, "F2", "1234.46")]
+    [TestCase(123.456, "C", "¤123.46")]
+    [TestCase(123.456, "P", "12,345.60 %")]
+    [TestCase(1234567890, "N0", "1,234,567,890")]
     public void TryFormat_ValidFormats_ReturnsExpectedResult(object input, string format, string expected)
     {
         var sut = new FormattableFormatter();
@@ -27,9 +31,6 @@ public class FormattableFormatterTests
         formatted.ShouldBe(expected);
     }
 
-    [TestCase(123.456, "C", "Format 'C' is not supported in FormattableFormatter")]
-    [TestCase(123.456, "P", "Format 'P' is not supported in FormattableFormatter")]
-    [TestCase(1234567890, "N0", "Format 'N0' is not supported in FormattableFormatter")]
     [TestCase(1234567890, "Z", "Format 'Z' is not supported in FormattableFormatter")]
     public void TryFormat_UnsupportedFormat_ReturnsFalse(object input, string format, string expected)
     {

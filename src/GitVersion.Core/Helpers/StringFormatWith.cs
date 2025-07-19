@@ -92,7 +92,7 @@ internal static class StringFormatWithExtension
             return fallback ?? string.Empty;
         }
 
-        if (format is not null && ValueFormatter.TryFormat(
+        if (format is not null && ValueFormatter.Default.TryFormat(
             value,
             InputSanitizer.SanitizeFormat(format),
             out var formatted))
