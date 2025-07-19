@@ -477,6 +477,9 @@ while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion`
 attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
 `Major`, `None`.
 
+For information on using format strings in these properties, see 
+[Format Strings](/docs/reference/custom-formatting).
+
 ### assembly-file-versioning-scheme
 
 When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion
