@@ -477,6 +477,9 @@ while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion`
 attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
 `Major`, `None`.
 
+For information on using format strings in these properties, see
+[Format Strings](/docs/reference/custom-formatting).
+
 ### assembly-file-versioning-scheme
 
 When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion
@@ -632,7 +635,7 @@ ignore:
     - ^docs\/
 ```
 ##### *Monorepo*
-This ignore config can be used to filter only those commits that belong to a specific project in a monorepo. 
+This ignore config can be used to filter only those commits that belong to a specific project in a monorepo.
 As an example, consider a monorepo consisting of subdirectories for `ProjectA`, `ProjectB` and a shared `LibraryC`. For GitVersion to consider only commits that are part of `projectA` and shared library `LibraryC`, a regex that matches all paths except those starting with `ProjectA` or `LibraryC` can be used. Either one of the following configs would filter out `ProjectB`.
 * Specific match on `/ProjectB/*`:
 ```yaml
@@ -655,7 +658,7 @@ A commit having changes only in `/ProjectB/*` path would be ignored. A commit ha
 * `/ProductA/*` and `/ProductB/*` and `/LibraryC/*`
 
 :::
-Note: The `ignore.paths` configuration is case-sensitive. This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`. 
+Note: The `ignore.paths` configuration is case-sensitive. This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`.
 :::
 
 ::: {.alert .alert-warning}
