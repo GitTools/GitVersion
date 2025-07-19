@@ -3,11 +3,11 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Formatting;
 
-internal class StringFormatter : IValueFormatter
+internal class StringFormatter : InvariantFormatter, IValueFormatter
 {
     public int Priority => 2;
 
-    public bool TryFormat(object? value, string format, out string result)
+    public override bool TryFormat(object? value, string format, CultureInfo cultureInfo, out string result)
     {
         if (value is not string stringValue)
         {
@@ -24,25 +24,25 @@ internal class StringFormatter : IValueFormatter
         switch (format)
         {
             case "u":
-                result = stringValue.ToUpperInvariant();
+                result = cultureInfo.TextInfo.ToUpper(stringValue);
                 return true;
             case "l":
-                result = stringValue.ToLowerInvariant();
+                result = cultureInfo.TextInfo.ToLower(stringValue);
                 return true;
             case "t":
-                result = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(stringValue.ToLowerInvariant());
+                result = cultureInfo.TextInfo.ToTitleCase(cultureInfo.TextInfo.ToLower(stringValue));
                 return true;
             case "s":
                 if (stringValue.Length == 1)
-                    result = stringValue.ToUpperInvariant();
+                    result = cultureInfo.TextInfo.ToUpper(stringValue);
                 else
                 {
-                    result = char.ToUpperInvariant(stringValue[0]) + stringValue[1..].ToLowerInvariant();
+                    result = cultureInfo.TextInfo.ToUpper(stringValue[0]) + cultureInfo.TextInfo.ToLower(stringValue[1..]);
                 }
 
                 return true;
             case "c":
-                result = stringValue.PascalCase();
+                result = stringValue.PascalCase(cultureInfo);
                 return true;
             default:
                 result = string.Empty;

@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal class ExpressionCompiler : IExpressionCompiler
 {
