@@ -19,7 +19,8 @@ internal static class ConfigurationConstants
         VersionStrategies.MergeMessage,
         VersionStrategies.TaggedCommit,
         VersionStrategies.TrackReleaseBranches,
-        VersionStrategies.VersionInBranchName
+        VersionStrategies.VersionInBranchName,
+        VersionStrategies.MergeCommit
     ];
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
     public const string DefaultCommitDateFormat = "yyyy-MM-dd";

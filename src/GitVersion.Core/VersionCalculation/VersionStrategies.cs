@@ -10,5 +10,6 @@ public enum VersionStrategies
     TaggedCommit = 8,
     TrackReleaseBranches = 16,
     VersionInBranchName = 32,
-    Mainline = 64
+    Mainline = 64,
+    MergeCommit = 128
 }
