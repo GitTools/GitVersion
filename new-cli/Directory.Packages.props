@@ -30,7 +30,7 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Serilog.Sinks.Map" Version="2.0.0" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta7.25366.104" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta7.25368.105" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.0.15" />
     <PackageVersion Include="System.Text.Json" Version="9.0.7" />
   </ItemGroup>
