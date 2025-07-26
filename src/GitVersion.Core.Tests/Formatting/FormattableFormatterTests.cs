@@ -39,4 +39,16 @@ public class FormattableFormatterTests
         result.ShouldBeFalse();
         formatted.ShouldBe(expected);
     }
+
+    [TestCase(0, "0000", "0000")]
+    [TestCase(1, "0000", "0001")]
+    [TestCase(0, "-0000;;''", "")]
+    [TestCase(1, "-0000;;''", "-0001")]
+    public void ZeroFormatting(int value, string format, string expected)
+    {
+        var sut = new FormattableFormatter();
+        var result = sut.TryFormat(value, format, out var formatted);
+        result.ShouldBe(true);
+        formatted.ShouldBe(expected);
+    }
 }
