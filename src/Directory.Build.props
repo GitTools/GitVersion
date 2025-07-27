@@ -57,14 +57,14 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
 
-        <PackageReference Include="NSubstitute"/>
+        <PackageReference Include="NSubstitute" />
 
-        <PackageReference Include="NUnit"/>
-        <PackageReference Include="NUnit3TestAdapter"/>
-        <PackageReference Include="JunitXml.TestLogger"/>
-        <PackageReference Include="Shouldly"/>
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="JunitXml.TestLogger" />
+        <PackageReference Include="Shouldly" />
 
         <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>
@@ -77,29 +77,29 @@
 
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
-        <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj"/>
+        <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj" />
 
-        <Using Include="GitVersion.Testing"/>
-        <Using Include="NSubstitute"/>
-        <Using Include="NUnit.Framework"/>
-        <Using Include="Shouldly"/>
+        <Using Include="GitVersion.Testing" />
+        <Using Include="NSubstitute" />
+        <Using Include="NUnit.Framework" />
+        <Using Include="Shouldly" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="System.Collections"/>
-        <Using Include="System.Collections.Specialized"/>
-        <Using Include="System.Diagnostics"/>
-        <Using Include="System.Reflection"/>
-        <Using Include="System.Text"/>
-        <Using Include="System.Text.Json"/>
-        <Using Include="System.Text.Json.Serialization"/>
-        <Using Include="System.Xml"/>
-        <Using Include="System.Environment" Alias="SysEnv"/>
+        <Using Include="System.Collections" />
+        <Using Include="System.Collections.Specialized" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
+        <Using Include="System.Xml" />
+        <Using Include="System.Environment" Alias="SysEnv" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/"/>
-        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
+        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/" />
+        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
     <!-- Workaround to enable .editorconfig based analyzer configuration until dotnet compilers support .editorconfig based configuration -->
