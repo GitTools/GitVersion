@@ -1,8 +1,7 @@
 using System.Text.RegularExpressions;
 using GitVersion.Core;
-using GitVersion.Formatting;
 
-namespace GitVersion.Helpers;
+namespace GitVersion.Formatting;
 
 internal static class StringFormatWithExtension
 {
@@ -59,9 +58,7 @@ internal static class StringFormatWithExtension
         var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
 
         if (match.Groups["envvar"].Success)
-        {
             return EvaluateEnvVar(match.Groups["envvar"].Value, fallback, environment);
-        }
 
         if (match.Groups["member"].Success)
         {
@@ -88,9 +85,7 @@ internal static class StringFormatWithExtension
         var value = getter(source);
 
         if (value is null)
-        {
             return fallback ?? string.Empty;
-        }
 
         if (format is not null && ValueFormatter.Default.TryFormat(
             value,
