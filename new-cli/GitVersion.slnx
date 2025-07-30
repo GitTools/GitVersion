@@ -25,7 +25,6 @@
   <Folder Name="/sln/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
-    <File Path="nuget.config" />
   </Folder>
   <Project Path="GitVersion.Cli.Generator.Tests/GitVersion.Cli.Generator.Tests.csproj" />
   <Project Path="GitVersion.Cli.Generator/GitVersion.Cli.Generator.csproj" />
