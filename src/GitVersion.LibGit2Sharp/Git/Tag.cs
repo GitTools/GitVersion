@@ -9,10 +9,10 @@ internal sealed class Tag : ITag
     private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x.Name.Canonical);
     private static readonly LambdaKeyComparer<ITag, string> comparerHelper = new(x => x.Name.Canonical);
     private readonly LibGit2Sharp.Tag innerTag;
-    private readonly LibGit2Sharp.Diff diff;
+    private readonly Diff diff;
     private readonly Lazy<ICommit?> commitLazy;
 
-    internal Tag(LibGit2Sharp.Tag tag, LibGit2Sharp.Diff diff)
+    internal Tag(LibGit2Sharp.Tag tag, Diff diff)
     {
         this.innerTag = tag.NotNull();
         this.commitLazy = new(PeeledTargetCommit);

@@ -7,9 +7,9 @@ internal sealed class CommitCollection : ICommitCollection
 {
     private readonly ICommitLog innerCollection;
     private readonly Lazy<IReadOnlyCollection<ICommit>> commits;
-    private readonly LibGit2Sharp.Diff diff;
+    private readonly Diff diff;
 
-    internal CommitCollection(ICommitLog collection, LibGit2Sharp.Diff diff)
+    internal CommitCollection(ICommitLog collection, Diff diff)
     {
         this.innerCollection = collection.NotNull();
         this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => new Commit(commit, diff))]);
