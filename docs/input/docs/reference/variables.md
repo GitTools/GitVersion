@@ -74,4 +74,8 @@ within a [supported build server][build-servers]), the above version variables
 may be exposed automatically as **environment variables** in the format
 `GitVersion_FullSemVer`.
 
+## Formatting Variables
+
+GitVersion variables can be formatted using C# format strings. See [Format Strings](/docs/reference/custom-formatting) for details.
+
 [build-servers]: ./build-servers/
