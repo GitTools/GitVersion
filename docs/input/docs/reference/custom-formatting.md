@@ -55,13 +55,13 @@ GitVersion introduces custom format specifiers for string case transformations t
 
 ### Available Case Formats
 
-| Format | Description | Example Input | Example Output |
-|--------|-------------|---------------|----------------|
-| `u` | **Uppercase** - Converts entire string to uppercase | `feature-branch` | `FEATURE-BRANCH` |
-| `l` | **Lowercase** - Converts entire string to lowercase | `Feature-Branch` | `feature-branch` |
-| `t` | **Title Case** - Capitalizes first letter of each word | `feature-branch` | `Feature-Branch` |
-| `s` | **Sentence Case** - Capitalizes only the first letter | `feature-branch` | `Feature-branch` |
-| `c` | **PascalCase** - Removes separators and capitalizes each word | `feature-branch` | `FeatureBranch` |
+| Format | Description                                                   | Example Input    | Example Output   |
+|--------|---------------------------------------------------------------|------------------|------------------|
+| `u`    | **Uppercase** - Converts entire string to uppercase           | `feature-branch` | `FEATURE-BRANCH` |
+| `l`    | **Lowercase** - Converts entire string to lowercase           | `Feature-Branch` | `feature-branch` |
+| `t`    | **Title Case** - Capitalizes first letter of each word        | `feature-branch` | `Feature-Branch` |
+| `s`    | **Sentence Case** - Capitalizes only the first letter         | `feature-branch` | `Feature-branch` |
+| `c`    | **PascalCase** - Removes separators and capitalizes each word | `feature-branch` | `FeatureBranch`  |
 
 ### Usage Examples
 
@@ -70,7 +70,7 @@ GitVersion introduces custom format specifiers for string case transformations t
 branches:
   feature:
     label: "{BranchName:c}"  # Converts to PascalCase
-    
+
 template: "{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{CommitsSinceVersionSource:0000}"
 ```
 
@@ -191,7 +191,7 @@ The formatting system uses `CultureInfo.InvariantCulture` by default through the
 ```csharp
 // All environments produce the same output:
 // {CommitsSinceVersionSource:N0} → "1,234"
-// {CommitDate:MMM dd, yyyy} → "Mar 15, 2024"  
+// {CommitDate:MMM dd, yyyy} → "Mar 15, 2024"
 // {Major:C} → "¤1.00" (generic currency symbol)
 ```
 
@@ -207,8 +207,8 @@ The following examples are verified by actual unit tests in the GitVersion codeb
 assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}"
 ```
 
-**Test**: `VariableProviderTests.Format_Allows_CSharp_FormatStrings()`  
-**Input**: `CommitsSinceVersionSource = 42`  
+**Test**: `VariableProviderTests.Format_Allows_CSharp_FormatStrings()`
+**Input**: `CommitsSinceVersionSource = 42`
 **Output**: `"1.2.3-0042"`
 
 ### String Case Transformations
@@ -216,7 +216,7 @@ assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSour
 ```csharp
 // From StringFormatterTests.cs
 [TestCase("hello world", "c", "HelloWorld")]  // PascalCase
-[TestCase("hello", "u", "HELLO")]             // Uppercase  
+[TestCase("hello", "u", "HELLO")]             // Uppercase
 [TestCase("HELLO", "l", "hello")]             // Lowercase
 [TestCase("hello world", "t", "Hello World")] // Title Case
 [TestCase("hELLO", "s", "Hello")]             // Sentence Case
@@ -225,7 +225,7 @@ assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSour
 ### Numeric Format Specifiers
 
 ```csharp
-// From NumericFormatterTests.cs  
+// From NumericFormatterTests.cs
 [TestCase("1234.5678", "n", "1,234.57")]      // Number format
 [TestCase("1234.5678", "f2", "1234.57")]      // Fixed-point format
 [TestCase("1234.5678", "f0", "1235")]         // No decimals
