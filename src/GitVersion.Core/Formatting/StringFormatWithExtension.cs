@@ -5,11 +5,11 @@ namespace GitVersion.Formatting;
 
 internal static class StringFormatWithExtension
 {
-    internal static IExpressionCompiler ExpressionCompiler { get; set; } = new ExpressionCompiler();
+    private static readonly IExpressionCompiler ExpressionCompiler = new ExpressionCompiler();
 
-    internal static IInputSanitizer InputSanitizer { get; set; } = new InputSanitizer();
+    private static readonly IInputSanitizer InputSanitizer = new InputSanitizer();
 
-    internal static IMemberResolver MemberResolver { get; set; } = new MemberResolver();
+    private static readonly IMemberResolver MemberResolver = new MemberResolver();
 
     /// <summary>
     /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces
