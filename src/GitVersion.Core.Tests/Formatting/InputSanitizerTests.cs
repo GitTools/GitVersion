@@ -1,7 +1,7 @@
 ﻿using GitVersion.Core.Tests.Extensions;
 using GitVersion.Formatting;
 
-namespace GitVersion.Tests.Helpers;
+namespace GitVersion.Tests.Formatting;
 
 [TestFixture]
 public partial class InputSanitizerTests
