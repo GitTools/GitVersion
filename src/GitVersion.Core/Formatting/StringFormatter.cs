@@ -33,16 +33,12 @@ internal class StringFormatter : InvariantFormatter, IValueFormatter
                 result = cultureInfo.TextInfo.ToTitleCase(cultureInfo.TextInfo.ToLower(stringValue));
                 return true;
             case "s":
-                if (stringValue.Length == 1)
-                    result = cultureInfo.TextInfo.ToUpper(stringValue);
-                else
-                {
-                    result = cultureInfo.TextInfo.ToUpper(stringValue[0]) + cultureInfo.TextInfo.ToLower(stringValue[1..]);
-                }
-
+                result = stringValue.Length == 1
+                    ? cultureInfo.TextInfo.ToUpper(stringValue)
+                    : cultureInfo.TextInfo.ToUpper(stringValue[0]) + cultureInfo.TextInfo.ToLower(stringValue[1..]);
                 return true;
             case "c":
-                result = stringValue.PascalCase(cultureInfo);
+                result = cultureInfo.TextInfo.ToPascalCase(stringValue);
                 return true;
             default:
                 result = string.Empty;

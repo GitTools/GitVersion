@@ -32,8 +32,13 @@ public static class StringExtensions
     public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
         => string.IsNullOrEmpty(value) ? value : prefix + value;
 
-    internal static string PascalCase(this string input, CultureInfo cultureInfo)
+    internal static string ToPascalCase(this TextInfo textInfo, string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
         var sb = new StringBuilder(input.Length);
         var capitalizeNext = true;
 
@@ -45,7 +50,7 @@ public static class StringExtensions
                 continue;
             }
 
-            sb.Append(capitalizeNext ? cultureInfo.TextInfo.ToUpper(c) : cultureInfo.TextInfo.ToLower(c));
+            sb.Append(capitalizeNext ? textInfo.ToUpper(c) : textInfo.ToLower(c));
             capitalizeNext = false;
         }
 
