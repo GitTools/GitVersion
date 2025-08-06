@@ -11,7 +11,11 @@ var modules = new IGitVersionModule[]
 };
 
 var cts = new CancellationTokenSource();
-Console.CancelKeyPress += (_, _) => cts.Cancel();
+Console.CancelKeyPress += (_, _) =>
+{
+    cts.Cancel();
+    cts.Dispose();
+};
 
 await using var serviceProvider = RegisterModules(modules);
 var app = serviceProvider.GetRequiredService<ICliApp>();
