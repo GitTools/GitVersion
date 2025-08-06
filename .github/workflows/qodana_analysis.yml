@@ -23,7 +23,9 @@ jobs:
         name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          global-json-file: global.json
+          dotnet-version: |
+            8.0.x
+            9.0.x
       -
         name: 'Qodana Scan'
         uses: jetbrains/qodana-action@v2025.1.1
