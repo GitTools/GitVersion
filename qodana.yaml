@@ -6,6 +6,7 @@ version: "1.0"
 #Specify inspection profile for code analysis
 profile:
   name: qodana.starter
+linter: jetbrains/qodana-cdnet:latest
 include:
   - name: ConvertIfStatementToReturnStatement
   - name: ConvertIfStatementToConditionalTernaryExpression
