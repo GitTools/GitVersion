@@ -7,6 +7,7 @@ public class NumericFormatterTests
 {
     [Test]
     public void Priority_ShouldBe1() => new NumericFormatter().Priority.ShouldBe(1);
+
     [Test]
     public void TryFormat_NullValue_ReturnsFalse()
     {
