@@ -12,6 +12,8 @@ internal interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>;
 internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IProjectFileUpdater
 {
     internal const string AssemblyVersionElement = "AssemblyVersion";
+
+    private const int DefaultMaxRecursionDepth = 255;
     private const string FileVersionElement = "FileVersion";
     private const string InformationalVersionElement = "InformationalVersion";
     private const string VersionElement = "Version";
@@ -190,11 +192,18 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         }
         else
         {
-            foreach (var item in fileSystem.Directory.EnumerateFiles(workingDirectory, "*", SearchOption.AllDirectories).Where(IsSupportedProjectFile))
+            var options = new EnumerationOptions
             {
-                var assemblyInfoFile = fileSystem.FileInfo.New(item);
+                RecurseSubdirectories = true,
+                MaxRecursionDepth = DefaultMaxRecursionDepth
+            };
+            var projectFiles = fileSystem.Directory
+                .EnumerateFiles(workingDirectory, "*proj", options)
+                .Where(IsSupportedProjectFile);
 
-                yield return assemblyInfoFile;
+            foreach (var projectFile in projectFiles)
+            {
+                yield return fileSystem.FileInfo.New(projectFile);
             }
         }
     }
