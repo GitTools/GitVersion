@@ -16,7 +16,7 @@ internal class DateFormatter : InvariantFormatter, IValueFormatter
             return true;
         }
 
-        if (value is string dateStr && DateTime.TryParse(dateStr, out var parsedDate))
+        if (value is string dateStr && DateTime.TryParse(dateStr, cultureInfo, out var parsedDate))
         {
             result = parsedDate.ToString(format, cultureInfo);
             return true;

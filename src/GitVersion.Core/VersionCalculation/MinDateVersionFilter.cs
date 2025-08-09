@@ -19,7 +19,7 @@ internal class MinDateVersionFilter(DateTimeOffset minimum) : IVersionFilter
         return true;
     }
 
-    public bool Exclude(ICommit commit, [NotNullWhen(true)] out string? reason)
+    public bool Exclude(ICommit? commit, [NotNullWhen(true)] out string? reason)
     {
         reason = null;
 

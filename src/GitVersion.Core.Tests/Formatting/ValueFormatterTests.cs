@@ -122,7 +122,7 @@ public class ValueFormatterTests
             return false;
         }
 
-        public bool TryFormat(object? value, string format, CultureInfo cultureInfo, out string result)
+        public bool TryFormat(object? value, string format, CultureInfo _, out string result)
             => TryFormat(value, format, out result);
     }
 }
