@@ -1,3 +1,4 @@
+using System.Globalization;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Formatting;
 
@@ -261,7 +262,7 @@ public class StringFormatWithExtensionTests
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 CommitsSinceVersionSource = 42,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
         const string target = "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}";

@@ -33,7 +33,7 @@ public class ValueFormatterTests
     [Test]
     public void TryFormat_Date_UsesDateFormatter()
     {
-        var date = new DateTime(2023, 12, 25);
+        var date = new DateTime(2023, 12, 25, 0, 0, 0, DateTimeKind.Utc);
         var result = ValueFormatter.Default.TryFormat(date, "yyyy-MM-dd", out var formatted);
         result.ShouldBeTrue();
         formatted.ShouldBe("2023-12-25");
@@ -42,7 +42,7 @@ public class ValueFormatterTests
     [Test]
     public void TryFormat_FormattableObject_UsesFormattableFormatter()
     {
-        var value = 123.456m;
+        const decimal value = 123.456m;
         var result = ValueFormatter.Default.TryFormat(value, "C", out var formatted);
         result.ShouldBeTrue();
         formatted.ShouldBe("¤123.46");
@@ -106,7 +106,7 @@ public class ValueFormatterTests
         formatted.ShouldBe("CUSTOM:test");
     }
 
-    private class TestFormatter : IValueFormatter
+    private sealed class TestFormatter : IValueFormatter
     {
         public int Priority { get; init; }
 

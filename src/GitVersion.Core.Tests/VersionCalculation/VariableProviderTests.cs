@@ -1,3 +1,4 @@
+using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Git;
@@ -301,7 +302,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 CommitsSinceVersionSource = 42,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 

@@ -1,4 +1,5 @@
-﻿using GitVersion.Formatting;
+﻿using System.Globalization;
+using GitVersion.Formatting;
 
 namespace GitVersion.Tests.Formatting;
 
@@ -21,7 +22,7 @@ public class DateFormatterTests
     [TestCase("2021-01-01T12:00:00Z", "yyyy-MM-ddTHH:mm:ssZ", "2021-01-01T12:00:00Z")]
     public void TryFormat_ValidDateFormats_ReturnsExpectedResult(string input, string format, string expected)
     {
-        var date = DateTime.Parse(input);
+        var date = DateTime.Parse(input, CultureInfo.InvariantCulture);
         var sut = new DateFormatter();
         var result = sut.TryFormat(date, format, out var formatted);
         result.ShouldBeTrue();
