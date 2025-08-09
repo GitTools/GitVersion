@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
+using GitVersion.Formatting;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;

@@ -98,6 +98,8 @@ Now, when you build:
   appended to it.
 * `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
+Assembly version formatting can use C# format strings. See [Format Strings](/docs/reference/custom-formatting) for available options.
+
 #### Other injected Variables
 
 All other [variables](/docs/reference/variables) will be injected into an

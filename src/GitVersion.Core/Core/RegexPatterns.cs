@@ -29,6 +29,8 @@ internal static partial class RegexPatterns
                 [Common.SwitchArgumentRegexPattern] = Common.SwitchArgumentRegex,
                 [Common.ObscurePasswordRegexPattern] = Common.ObscurePasswordRegex,
                 [Common.ExpandTokensRegexPattern] = Common.ExpandTokensRegex,
+                [Common.SanitizeEnvVarNameRegexPattern] = Common.SanitizeEnvVarNameRegex,
+                [Common.SanitizeMemberNameRegexPattern] = Common.SanitizeMemberNameRegex,
                 [Common.SanitizeNameRegexPattern] = Common.SanitizeNameRegex,
                 [Configuration.DefaultTagPrefixRegexPattern] = Configuration.DefaultTagPrefixRegex,
                 [Configuration.DefaultVersionInBranchRegexPattern] = Configuration.DefaultVersionInBranchRegex,
@@ -84,7 +86,38 @@ internal static partial class RegexPatterns
         internal const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string ExpandTokensRegexPattern = """{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|"(?<fallback>.*)"))??}""";
+        internal const string ExpandTokensRegexPattern = """
+            \{                              # Opening brace
+                (?:                         # Start of either env or member expression
+                    env:(?!env:)(?<envvar>[A-Za-z_][A-Za-z0-9_]*)       # Only a single env: prefix, not followed by another env:
+                    |                                                   # OR
+                    (?<member>[A-Za-z_][A-Za-z0-9_]*)                   # member/property name
+                    (?:                                                 # Optional format specifier
+                        :(?<format>[A-Za-z0-9\.\-,]+)                   # Colon followed by format string (no spaces, ?, or }), format cannot contain colon
+                    )?                                                  # Format is optional
+                )                                                       # End group for env or member
+                (?:                                                     # Optional fallback group
+                    \s*\?\?\s+                                          # '??' operator with optional whitespace: exactly two question marks for fallback
+                    (?:                                                 # Fallback value alternatives:
+                        (?<fallback>\w+)                                #   A single word fallback
+                        |                                               # OR
+                        "(?<fallback>[^"]*)"                            #   A quoted string fallback
+                    )
+                )?                                                      # Fallback is optional
+            \}
+            """;
+
+        /// <summary>
+        ///   Allow alphanumeric, underscore, colon (for custom format specification), hyphen, and dot
+        /// </summary>
+        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+        internal const string SanitizeEnvVarNameRegexPattern = @"^[A-Za-z0-9_:\-\.]+$";
+
+        /// <summary>
+        ///   Allow alphanumeric, underscore, and dot for property/field access
+        /// </summary>
+        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+        internal const string SanitizeMemberNameRegexPattern = @"^[A-Za-z0-9_\.]+$";
 
         [StringSyntax(StringSyntaxAttribute.Regex, Options)]
         internal const string SanitizeNameRegexPattern = "[^a-zA-Z0-9-]";
@@ -95,8 +128,14 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ObscurePasswordRegexPattern, Options)]
         public static partial Regex ObscurePasswordRegex();
 
-        [GeneratedRegex(ExpandTokensRegexPattern, Options)]
+        [GeneratedRegex(ExpandTokensRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
         public static partial Regex ExpandTokensRegex();
+
+        [GeneratedRegex(SanitizeEnvVarNameRegexPattern, Options)]
+        public static partial Regex SanitizeEnvVarNameRegex();
+
+        [GeneratedRegex(SanitizeMemberNameRegexPattern, Options)]
+        public static partial Regex SanitizeMemberNameRegex();
 
         [GeneratedRegex(SanitizeNameRegexPattern, Options)]
         public static partial Regex SanitizeNameRegex();

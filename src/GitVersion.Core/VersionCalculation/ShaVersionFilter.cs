@@ -24,7 +24,7 @@ internal class ShaVersionFilter(IEnumerable<string> shaList) : IVersionFilter
         return true;
     }
 
-    public bool Exclude(ICommit commit, [NotNullWhen(true)] out string? reason)
+    public bool Exclude(ICommit? commit, [NotNullWhen(true)] out string? reason)
     {
         reason = null;
 

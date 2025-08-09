@@ -38,6 +38,7 @@ GitVersion [path]
                     - will output `1.2.3+beta.4`
     /format         Used in conjunction with /output json, will output a format
                     containing version variables.
+                    Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
                     E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
                          /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.

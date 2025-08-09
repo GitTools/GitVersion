@@ -12,6 +12,7 @@
         <Compile Include="..\..\src\GitVersion.Core\Extensions\DictionaryExtensions.cs" Link="%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
         <Compile Include="..\..\src\GitVersion.Core\Extensions\CommonExtensions.cs" Link="Extensions\CommonExtensions.cs" />
+        <Compile Include="..\..\src\GitVersion.Core\Formatting\*.cs" Link="Formatting\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Helpers\*.cs" Link="Helpers\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Git\*.cs" Link="Git\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\SemVer\*.cs" Link="SemVer\%(Filename)%(Extension)" />

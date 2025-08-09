@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Extensions;
+using GitVersion.Formatting;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;

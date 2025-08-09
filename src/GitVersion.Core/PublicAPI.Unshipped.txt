@@ -31,6 +31,7 @@ GitVersion.VersionCalculation.BaseVersionOperator.BaseVersionOperator() -> void
 GitVersion.VersionCalculation.BaseVersionOperator.Equals(GitVersion.VersionCalculation.BaseVersionOperator? other) -> bool
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Deconstruct(out string! Value) -> void
 GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GitVersionCacheKey(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! original) -> void
+GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.Git.ICommit? commit, out string? reason) -> bool
 GitVersion.WixInfo.WixInfo() -> void
 GitVersion.WixInfo.WixInfo(GitVersion.WixInfo! original) -> void
 override GitVersion.Configuration.EffectiveBranchConfiguration.Equals(object? obj) -> bool
@@ -150,4 +151,3 @@ GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Ge
 GitVersion.Git.ICommit.DiffPaths.get -> System.Collections.Generic.IReadOnlyList<string!>!
 GitVersion.Git.ITreeChanges
 GitVersion.Git.ITreeChanges.Paths.get -> System.Collections.Generic.IReadOnlyList<string!>!
-GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.Git.ICommit! commit, out string? reason) -> bool
