@@ -199,6 +199,9 @@
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a href="/docs/reference/custom-formatting">Format Strings</a>
+                </li>
                 <li class="treeview">
                   <a href="/docs/reference/build-servers">Build Servers</a>
                   <a href="#" class="expand"></a>
@@ -468,6 +471,11 @@
               <code>InformationalVersion</code> variable.
             </li>
           </ul>
+          <p>
+            Assembly version formatting can use C# format strings. See
+            <a href="/docs/reference/custom-formatting">Format Strings</a> for
+            available options.
+          </p>
           <h4 id="other-injected-variables">Other injected Variables</h4>
           <p>
             All other <a href="/docs/reference/variables">variables</a> will be
@@ -681,9 +689,11 @@ else
             <code>git fetch</code> during version calculation, setting
             <code>GitVersion_NoNormalizeEnabled</code> to
             <code>true</code> disables normalize step on a build server, setting
-            <code>GitVersion_NoCacheEnabled</code> to <code>true</code>
-            makes GetVersion ignore cache. All the rest command line arguments
-            can be passed via
+            <code>GitVersion_NoCacheEnabled</code> to <code>true</code> makes
+            GetVersion ignore cache, setting
+            <code>GitVersion_AllowShallowEnabled</code> to <code>true</code>
+            does not mandate a full clone of the repository to determine the
+            version. All the rest command line arguments can be passed via
             <code>GitVersion_CommandLineArguments</code> variable.
           </p>
           <h2 id="my-git-repository-requires-authentication.what-should-i-do">

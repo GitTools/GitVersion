@@ -199,6 +199,9 @@
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a href="/docs/reference/custom-formatting">Format Strings</a>
+                </li>
                 <li class="treeview">
                   <a href="/docs/reference/build-servers">Build Servers</a>
                   <a href="#" class="expand"></a>
@@ -383,6 +386,7 @@ GitVersion [path]
                     - will output `1.2.3+beta.4`
     /format         Used in conjunction with /output json, will output a format
                     containing version variables.
+                    Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
                     E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
                          /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.
@@ -395,6 +399,10 @@ GitVersion [path]
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
+    /allowshallow   Allows GitVersion to run on a shallow clone.
+                    This is not recommended, but can be used if you are sure
+                    that the shallow clone contains all the information needed
+                    to calculate the version.
     /verbosity      Specifies the amount of information to be displayed.
                     (Quiet, Minimal, Normal, Verbose, Diagnostic)
                     Default is Normal

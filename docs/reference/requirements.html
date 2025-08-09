@@ -199,6 +199,9 @@
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a href="/docs/reference/custom-formatting">Format Strings</a>
+                </li>
                 <li class="treeview">
                   <a href="/docs/reference/build-servers">Build Servers</a>
                   <a href="#" class="expand"></a>
@@ -358,15 +361,16 @@
           </p>
           <h3 id="unshallow">Unshallow</h3>
           <p>
-            The repository needs to be an
+            The repository should be an
             <a
               href="https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow"
               >unshallow</a
             >
             clone. This means that the <code>fetch-depth</code> in GitHub
-            Actions needs to be set to <code>0</code>, for instance. Check with
-            your <a href="/docs/reference/build-servers">build server</a> to see
-            how it can be configured appropriately.
+            Actions should set to <code>0</code>, unless the
+            <code>allowshallow</code> flag is used. Check with your
+            <a href="/docs/reference/build-servers">build server</a> to see how
+            it can be configured appropriately.
           </p>
           <h3 id="main-branch">Main branch</h3>
           <p>

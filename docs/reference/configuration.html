@@ -197,6 +197,9 @@
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a href="/docs/reference/custom-formatting">Format Strings</a>
+                </li>
                 <li class="treeview">
                   <a href="/docs/reference/build-servers">Build Servers</a>
                   <a href="#" class="expand"></a>
@@ -537,6 +540,7 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -557,7 +561,7 @@ is-main-branch: false
           <p>
             <sup
               ><a
-                href="/docs/workflows/GitFlow/v1.yml#L1-L166"
+                href="/docs/workflows/GitFlow/v1.yml#L1-L167"
                 title="Snippet source file"
                 >snippet source</a
               >
@@ -677,6 +681,7 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -697,7 +702,7 @@ is-main-branch: false
           <p>
             <sup
               ><a
-                href="/docs/workflows/GitHubFlow/v1.yml#L1-L115"
+                href="/docs/workflows/GitHubFlow/v1.yml#L1-L116"
                 title="Snippet source file"
                 >snippet source</a
               >
@@ -802,6 +807,7 @@ branches:
     pre-release-weight: 30000
 ignore:
   sha: []
+  paths: []
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -822,7 +828,7 @@ is-main-branch: false
           <p>
             <sup
               ><a
-                href="/docs/workflows/TrunkBased/preview1.yml#L1-L100"
+                href="/docs/workflows/TrunkBased/preview1.yml#L1-L101"
                 title="Snippet source file"
                 >snippet source</a
               >
@@ -877,6 +883,10 @@ is-main-branch: false
             <code>AssemblyInformationVersion</code> attributes. Valid values:
             <code>MajorMinorPatchTag</code>, <code>MajorMinorPatch</code>,
             <code>MajorMinor</code>, <code>Major</code>, <code>None</code>.
+          </p>
+          <p>
+            For information on using format strings in these properties, see
+            <a href="/docs/reference/custom-formatting">Format Strings</a>.
           </p>
           <h3 id="assembly-file-versioning-scheme">
             assembly-file-versioning-scheme
@@ -1059,6 +1069,82 @@ assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 4
             exclusion range. Effectively any commit before
             <code>commits-before</code> will be ignored.
           </p>
+          <h4 id="paths">paths</h4>
+          <p>
+            A sequence of regular expressions that represent paths in the
+            repository. Commits that modify these paths will be excluded from
+            version calculations. For example, to filter out commits that belong
+            to <code>docs</code>:
+          </p>
+          <pre><code class="language-yaml">ignore:
+  paths:
+    - ^docs\/
+</code></pre>
+          <h5 id="monorepo"><em>Monorepo</em></h5>
+          <p>
+            This ignore config can be used to filter only those commits that
+            belong to a specific project in a monorepo. As an example, consider
+            a monorepo consisting of subdirectories for <code>ProjectA</code>,
+            <code>ProjectB</code> and a shared <code>LibraryC</code>. For
+            GitVersion to consider only commits that are part of
+            <code>projectA</code> and shared library <code>LibraryC</code>, a
+            regex that matches all paths except those starting with
+            <code>ProjectA</code> or <code>LibraryC</code> can be used. Either
+            one of the following configs would filter out <code>ProjectB</code>.
+          </p>
+          <ul>
+            <li>Specific match on <code>/ProjectB/*</code>:</li>
+          </ul>
+          <pre><code class="language-yaml">ignore:
+  paths:
+    - `^\/ProductB\/.*`
+</code></pre>
+          <ul>
+            <li>
+              Negative lookahead on anything other than
+              <code>/ProjectA/*</code> and <code>/LibraryC/*</code>:
+            </li>
+          </ul>
+          <pre><code class="language-yaml">ignore:
+  paths:
+    - `^(?!\/ProductA\/|\/LibraryC\/).*`
+</code></pre>
+          <p>
+            A commit having changes only in <code>/ProjectB/*</code> path would
+            be ignored. A commit having changes in the following paths wouldn't
+            be ignored:
+          </p>
+          <ul>
+            <li><code>/ProductA/*</code></li>
+            <li><code>/LibraryC/*</code></li>
+            <li><code>/ProductA/*</code> and <code>/LibraryC/*</code></li>
+            <li><code>/ProductA/*</code> and <code>/ProductB/*</code></li>
+            <li><code>/LibraryC/*</code> and <code>/ProductB/*</code></li>
+            <li>
+              <code>/ProductA/*</code> and <code>/ProductB/*</code> and
+              <code>/LibraryC/*</code>
+            </li>
+          </ul>
+          <div>
+            <p>
+              Note: The <code>ignore.paths</code> configuration is
+              case-sensitive. This can lead to unexpected behavior on
+              case-insensitive file systems, such as Windows. To ensure
+              consistent matching regardless of case, you can prefix your
+              regular expressions with the case-insensitive flag
+              <code>(?i)</code>. For example, <code>(?i)^docs\/</code> will
+              match both <code>docs/</code> and <code>Docs/</code>.
+            </p>
+          </div>
+          <div class="alert alert-warning">
+            <p>
+              A commit is ignored by the <code>ignore.paths</code> configuration
+              only if <strong>all paths</strong> changed in that commit match
+              one or more of the specified regular expressions. If a path in a
+              commit does not match any one of the ignore patterns, that commit
+              will be included in version calculations.
+            </p>
+          </div>
           <h3 id="merge-message-formats">merge-message-formats</h3>
           <p>
             Custom merge message formats to enable identification of merge

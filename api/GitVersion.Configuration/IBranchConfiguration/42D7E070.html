@@ -124,6 +124,7 @@
           <div id="infobar-headings">
             <h6>On This Page</h6>
             <p><a href="#Syntax">Syntax</a></p>
+            <p><a href="#Attributes">Attributes</a></p>
             <p><a href="#Value">Value</a></p>
             <hr class="infobar-hidden" />
           </div>
@@ -344,7 +345,28 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>string RegularExpression { get; }</code></pre>
+          <pre><code>[StringSyntax(StringSyntaxAttribute.Regex)]
+string RegularExpression { get; }</code></pre>
+
+          <h1 id="Attributes">Attributes</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>String<wbr />Syntax<wbr />Attribute</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           <h1 id="Value">Value</h1>
           <div class="box">
