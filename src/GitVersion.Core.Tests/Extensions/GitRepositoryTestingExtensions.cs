@@ -4,7 +4,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
@@ -72,7 +71,7 @@ public static class GitRepositoryTestingExtensions
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
         => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static void RenameRemote(this LibGit2Sharp.RemoteCollection remotes, string oldName, string newName)
+    public static void RenameRemote(this RemoteCollection remotes, string oldName, string newName)
     {
         if (oldName.IsEquivalentTo(newName)) return;
         if (remotes.Any(remote => remote.Name == newName))
@@ -178,13 +177,6 @@ public static class GitRepositoryTestingExtensions
 
         var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
-    }
-
-    internal static IGitRepository ToGitRepository(this IRepository repository)
-    {
-        var gitRepository = new GitRepository(new NullLog());
-        gitRepository.DiscoverRepository(repository.Info.Path);
-        return gitRepository;
     }
 
     private static ServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)
