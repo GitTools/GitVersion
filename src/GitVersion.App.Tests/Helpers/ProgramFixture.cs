@@ -55,14 +55,18 @@ public sealed class ProgramFixture
 
     public async Task<ExecutionResults> Run(params string[] args)
     {
-        // Create the application and override registrations.
-        var program = new Program(builder => Overrides.ForEach(action => action(builder)));
-
         if (!this.workingDirectory.IsNullOrWhiteSpace())
         {
             args = ["-targetpath", this.workingDirectory, .. args];
         }
-        await program.RunAsync(args);
+
+        var builder = CliHost.CreateCliHostBuilder(args);
+
+        Overrides.ForEach(action => action(builder.Services));
+
+        var host = builder.Build();
+        var app = host.Services.GetRequiredService<GitVersionApp>();
+        await app.RunAsync(CancellationToken.None);
 
         return new(SysEnv.ExitCode, this.output.Value, this.logger.Value);
     }

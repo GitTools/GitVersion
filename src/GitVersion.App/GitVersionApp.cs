@@ -5,15 +5,18 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-internal class GitVersionApp(ILog log, IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, IOptions<GitVersionOptions> options)
-    : IHostedService
+internal class GitVersionApp(
+    ILog log,
+    IHostApplicationLifetime applicationLifetime,
+    IGitVersionExecutor gitVersionExecutor,
+    IOptions<GitVersionOptions> options)
 {
     private readonly ILog log = log.NotNull();
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public Task RunAsync(CancellationToken _)
     {
         try
         {
@@ -30,6 +33,4 @@ internal class GitVersionApp(ILog log, IHostApplicationLifetime applicationLifet
         this.applicationLifetime.StopApplication();
         return Task.CompletedTask;
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
