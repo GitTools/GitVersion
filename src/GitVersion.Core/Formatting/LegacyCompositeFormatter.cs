@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 
 namespace GitVersion.Formatting;
 
@@ -14,141 +13,113 @@ internal class LegacyCompositeFormatter : IValueFormatter
     {
         result = string.Empty;
 
-        if (!CanFormat(format))
+        if (!HasLegacySyntax(format))
             return false;
 
-        var sections = SplitFormatSections(format);
-        var sectionIndex = GetSectionIndex(value, sections.Length);
+        var sections = ParseSections(format);
+        var index = GetSectionIndex(value, sections.Length);
 
-        if (sectionIndex >= sections.Length)
-        {
-            result = string.Empty;
+        if (index >= sections.Length)
             return true;
-        }
 
-        var section = sections[sectionIndex];
+        var section = sections[index];
+        result = IsQuotedLiteral(section)
+            ? UnquoteString(section)
+            : FormatWithSection(value, section, cultureInfo);
 
-        if (string.IsNullOrEmpty(section) || IsLiteralString(section))
-        {
-            result = UnquoteLiteralString(section);
-            return true;
-        }
-
-        result = FormatValueWithSection(value, section, cultureInfo);
         return true;
     }
 
-    private static bool CanFormat(string format) =>
+    private static bool HasLegacySyntax(string format) =>
         !string.IsNullOrEmpty(format) && format.Contains(';') && !format.Contains("??");
 
-    private static string[] SplitFormatSections(string format)
+    private static string[] ParseSections(string format)
     {
         var sections = new List<string>();
-        var currentSection = new StringBuilder();
+        var current = new StringBuilder();
         var inQuotes = false;
         var quoteChar = '\0';
 
-        for (int i = 0; i < format.Length; i++)
+        foreach (var c in format)
         {
-            var c = format[i];
-
             if (!inQuotes && (c == '\'' || c == '"'))
             {
                 inQuotes = true;
                 quoteChar = c;
-                currentSection.Append(c);
             }
             else if (inQuotes && c == quoteChar)
             {
                 inQuotes = false;
-                currentSection.Append(c);
             }
             else if (!inQuotes && c == ';')
             {
-                sections.Add(currentSection.ToString());
-                currentSection.Clear();
+                sections.Add(current.ToString());
+                current.Clear();
+                continue;
             }
-            else
-            {
-                currentSection.Append(c);
-            }
+
+            current.Append(c);
         }
 
-        sections.Add(currentSection.ToString());
-        return sections.ToArray();
+        sections.Add(current.ToString());
+        return [.. sections];
     }
 
-    private static int GetSectionIndex(object value, int sectionCount)
+    private static int GetSectionIndex(object? value, int sectionCount)
     {
         if (sectionCount == 1) return 0;
         if (value == null) return sectionCount >= 3 ? 2 : 0;
 
-        if (IsNumericType(value))
-        {
-            var numericValue = ConvertToDouble(value);
-            if (numericValue > 0) return 0;
-            if (numericValue < 0) return sectionCount >= 2 ? 1 : 0;
-            return sectionCount >= 3 ? 2 : 0;
-        }
+        if (!IsNumeric(value)) return 0;
 
-        return 0;
+        var num = Convert.ToDouble(value);
+        return num switch
+        {
+            > 0 => 0,
+            < 0 when sectionCount >= 2 => 1,
+            0 when sectionCount >= 3 => 2,
+            _ => 0
+        };
     }
 
-    private static bool IsNumericType(object value) =>
+    private static bool IsNumeric(object value) =>
         value is byte or sbyte or short or ushort or int or uint or long or ulong or float or double or decimal;
 
-    private static double ConvertToDouble(object value) => value switch
-    {
-        byte b => b,
-        sbyte sb => sb,
-        short s => s,
-        ushort us => us,
-        int i => i,
-        uint ui => ui,
-        long l => l,
-        ulong ul => ul,
-        float f => f,
-        double d => d,
-        decimal dec => (double)dec,
-        _ => 0
-    };
-
-    private static bool IsLiteralString(string section)
+    private static bool IsQuotedLiteral(string section)
     {
         if (string.IsNullOrEmpty(section)) return true;
         var trimmed = section.Trim();
-        return (trimmed.StartsWith("'") && trimmed.EndsWith("'")) ||
-               (trimmed.StartsWith("\"") && trimmed.EndsWith("\""));
+        return (trimmed.StartsWith('\'') && trimmed.EndsWith('\'')) ||
+               (trimmed.StartsWith('"') && trimmed.EndsWith('"'));
     }
 
-    private static string UnquoteLiteralString(string section)
+    private static string UnquoteString(string section)
     {
         if (string.IsNullOrEmpty(section)) return string.Empty;
         var trimmed = section.Trim();
 
-        if ((trimmed.StartsWith("'") && trimmed.EndsWith("'")) ||
-            (trimmed.StartsWith("\"") && trimmed.EndsWith("\"")))
-        {
-            return trimmed.Length > 2 ? trimmed.Substring(1, trimmed.Length - 2) : string.Empty;
-        }
+        return IsQuoted(trimmed) && trimmed.Length > 2
+            ? trimmed[1..^1]
+            : trimmed;
 
-        return trimmed;
+        static bool IsQuoted(string s) =>
+            (s.StartsWith('\'') && s.EndsWith('\'')) || (s.StartsWith('"') && s.EndsWith('"'));
     }
 
-    private static string FormatValueWithSection(object value, string section, IFormatProvider formatProvider)
+    private static string FormatWithSection(object? value, string section, IFormatProvider formatProvider)
     {
         if (string.IsNullOrEmpty(section)) return string.Empty;
-        if (IsLiteralString(section)) return UnquoteLiteralString(section);
+        if (IsQuotedLiteral(section)) return UnquoteString(section);
 
         try
         {
-            if (value is IFormattable formattable)
-                return formattable.ToString(section, formatProvider ?? CultureInfo.InvariantCulture);
-
-            if (value != null && IsStandardFormatString(section))
-                return string.Format(formatProvider ?? CultureInfo.InvariantCulture, "{0:" + section + "}", value);
-
-            return value?.ToString() ?? string.Empty;
+            return value switch
+            {
+                IFormattable formattable => formattable.ToString(section, formatProvider),
+                not null when IsValidFormatString(section) =>
+                    string.Format(formatProvider, "{0:" + section + "}", value),
+                _ => value?.ToString() ?? string.Empty
+            };
         }
         catch (FormatException)
         {
@@ -156,11 +127,12 @@ internal class LegacyCompositeFormatter : IValueFormatter
         }
     }
 
-    private static bool IsStandardFormatString(string format)
+    private static bool IsValidFormatString(string format)
     {
         if (string.IsNullOrEmpty(format)) return false;
+
         var firstChar = char.ToUpperInvariant(format[0]);
-        if ("CDEFGNPXR".Contains(firstChar)) return true;
-        return format.All(c => "0123456789.,#".Contains(c));
+        return "CDEFGNPXR".Contains(firstChar) ||
+               format.All(c => "0123456789.,#".Contains(c));
     }
 }

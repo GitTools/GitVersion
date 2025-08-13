@@ -7,6 +7,11 @@ namespace GitVersion.Core.Tests.Issues;
 [TestFixture]
 public class Issue4654Tests
 {
+    private const string TestVersion = "6.13.54";
+    private const string TestVersionWithPreRelease = "6.13.54-gv60002";
+    private const string TestPreReleaseLabel = "gv6";
+    private const string TestPreReleaseLabelWithDash = "-gv6";
+
     [Test]
     [Category("Issue4654")]
     public void Issue4654_ExactReproduction_ShouldFormatCorrectly()
@@ -40,8 +45,8 @@ public class Issue4654Tests
             PreReleaseLabelWithDash = string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name)
                 ? ""
                 : $"-{semanticVersion.PreReleaseTag.Name}",
-            AssemblySemFileVer = "6.13.54.0",
-            AssemblySemVer = "6.13.54.0",
+            AssemblySemFileVer = TestVersion + ".0",
+            AssemblySemVer = TestVersion + ".0",
             BranchName = "feature/gv6",
             EscapedBranchName = "feature-gv6",
             FullSemVer = "6.13.54-gv6.1+2",
@@ -49,7 +54,7 @@ public class Issue4654Tests
         };
 
         const string template = "{MajorMinorPatch}{PreReleaseLabelWithDash}{CommitsSinceVersionSource:0000;;''}";
-        const string expected = "6.13.54-gv60002";
+        const string expected = TestVersionWithPreRelease;
 
         var actual = template.FormatWith(extendedVersion, new TestEnvironment());
 
@@ -62,13 +67,13 @@ public class Issue4654Tests
     {
         var testData = new
         {
-            MajorMinorPatch = "6.13.54",
-            PreReleaseLabelWithDash = "-gv6",
+            MajorMinorPatch = TestVersion,
+            PreReleaseLabelWithDash = TestPreReleaseLabelWithDash,
             CommitsSinceVersionSource = 2
         };
 
         const string template = "{MajorMinorPatch}{PreReleaseLabelWithDash}{CommitsSinceVersionSource:0000}";
-        const string expected = "6.13.54-gv60002";
+        const string expected = TestVersionWithPreRelease;
 
         var actual = template.FormatWith(testData, new TestEnvironment());
 
@@ -82,13 +87,13 @@ public class Issue4654Tests
     {
         var testData = new
         {
-            MajorMinorPatch = "6.13.54",
-            PreReleaseLabelWithDash = "-gv6",
+            MajorMinorPatch = TestVersion,
+            PreReleaseLabelWithDash = TestPreReleaseLabelWithDash,
             CommitsSinceVersionSource = 2
         };
 
         const string template = "{MajorMinorPatch}{PreReleaseLabelWithDash}{CommitsSinceVersionSource:0000;;''}";
-        const string shouldBe = "6.13.54-gv60002";
+        const string shouldBe = TestVersionWithPreRelease;
 
         var actual = template.FormatWith(testData, new TestEnvironment());
 
@@ -110,13 +115,13 @@ public class Issue4654Tests
     {
         var mainBranchData = new
         {
-            MajorMinorPatch = "6.13.54",
+            MajorMinorPatch = TestVersion,
             PreReleaseLabelWithDash = "",
             CommitsSinceVersionSource = 0
         };
 
         const string template = "{MajorMinorPatch}{PreReleaseLabelWithDash}{CommitsSinceVersionSource:0000;;''}";
-        const string expected = "6.13.54";
+        const string expected = TestVersion;
 
         var actual = template.FormatWith(mainBranchData, new TestEnvironment());
 
