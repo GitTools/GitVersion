@@ -13,6 +13,7 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
     internal ValueFormatter()
         => formatters =
         [
+            new LegacyCompositeFormatter(),
             new StringFormatter(),
             new FormattableFormatter(),
             new NumericFormatter(),

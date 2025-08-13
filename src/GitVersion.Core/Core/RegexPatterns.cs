@@ -93,7 +93,7 @@ internal static partial class RegexPatterns
                     |                                                   # OR
                     (?<member>[A-Za-z_][A-Za-z0-9_]*)                   # member/property name
                     (?:                                                 # Optional format specifier
-                        :(?<format>[A-Za-z0-9\.\-,]+)                   # Colon followed by format string (no spaces, ?, or }), format cannot contain colon
+                        :(?<format>[A-Za-z0-9\.\-,;'"\s]+)                   # Colon followed by format string (including semicolons)
                     )?                                                  # Format is optional
                 )                                                       # End group for env or member
                 (?:                                                     # Optional fallback group
