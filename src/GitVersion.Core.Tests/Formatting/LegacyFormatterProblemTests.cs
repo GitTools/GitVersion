@@ -16,6 +16,18 @@ public class LegacyFormatterProblemTests
     // ==========================================
 
     [Test]
+    [Category("Problem2")]
+    public void Problem2_NullValue_ShouldUseZeroSection()
+    {
+        var testObject = new { Value = (int?)null };
+        const string template = "{Value:positive;negative;zero}";
+        const string expected = "zero";
+
+        var actual = template.FormatWith(testObject, environment);
+        actual.ShouldBe(expected, "Null values should use zero section without transformation");
+    }
+
+    [Test]
     [Category("Problem1")]
     public void Problem1_MissingProperty_ShouldFailGracefully()
     {
@@ -113,10 +125,10 @@ public class LegacyFormatterProblemTests
         var positiveResult = template.FormatWith(positiveObject, environment);
         positiveResult.ShouldBe("0042", "First section should format correctly");
 
-        // Second section (negative) currently broken - returns literal instead of formatting
+        // Second section (negative) should return literal when invalid format provided
         var negativeResult = template.FormatWith(negativeObject, environment);
-        // This will currently be "WRONG" but should be "0042" (formatted absolute value)
-        negativeResult.ShouldNotBe("WRONG", "Negative section should format value, not return literal");
+        // Invalid format "WRONG" should return literal to give user feedback about their error
+        negativeResult.ShouldBe("WRONG", "Invalid format should return literal to indicate user error");
     }
 
     // ==========================================

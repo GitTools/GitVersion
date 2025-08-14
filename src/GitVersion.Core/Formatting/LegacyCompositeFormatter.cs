@@ -23,9 +23,15 @@ internal class LegacyCompositeFormatter : IValueFormatter
             return true;
 
         var section = sections[index];
+
+        // FIX: Use absolute value for negative numbers in negative section to prevent double negatives
+        var valueToFormat = (index == 1 && value != null && IsNumeric(value) && Convert.ToDouble(value) < 0)
+            ? Math.Abs(Convert.ToDouble(value))
+            : value;
+
         result = IsQuotedLiteral(section)
             ? UnquoteString(section)
-            : FormatWithSection(value, section, cultureInfo);
+            : FormatWithSection(valueToFormat, section, cultureInfo, sections, index);
 
         return true;
     }
@@ -98,6 +104,10 @@ internal class LegacyCompositeFormatter : IValueFormatter
         if (string.IsNullOrEmpty(section)) return string.Empty;
         var trimmed = section.Trim();
 
+        // FIX: Handle empty quoted strings like '' and ""
+        if (trimmed == "''" || trimmed == "\"\"")
+            return string.Empty;
+
         return IsQuoted(trimmed) && trimmed.Length > 2
             ? trimmed[1..^1]
             : trimmed;
@@ -106,7 +116,7 @@ internal class LegacyCompositeFormatter : IValueFormatter
             (s.StartsWith('\'') && s.EndsWith('\'')) || (s.StartsWith('"') && s.EndsWith('"'));
     }
 
-    private static string FormatWithSection(object? value, string section, IFormatProvider formatProvider)
+    private static string FormatWithSection(object? value, string section, IFormatProvider formatProvider, string[]? sections = null, int index = 0)
     {
         if (string.IsNullOrEmpty(section)) return string.Empty;
         if (IsQuotedLiteral(section)) return UnquoteString(section);
@@ -118,12 +128,28 @@ internal class LegacyCompositeFormatter : IValueFormatter
                 IFormattable formattable => formattable.ToString(section, formatProvider),
                 not null when IsValidFormatString(section) =>
                     string.Format(formatProvider, "{0:" + section + "}", value),
-                _ => value?.ToString() ?? string.Empty
+                not null when index > 0 && sections != null && sections.Length > 0 && IsValidFormatString(sections[0]) =>
+                    // FIX: For invalid formats in non-first sections, use first section format
+                    string.Format(formatProvider, "{0:" + sections[0] + "}", value),
+                not null => value.ToString() ?? string.Empty,
+                _ => section  // Only for null values without valid format
             };
         }
         catch (FormatException)
         {
-            return section;
+            // FIX: On format exception, try first section format or return value string
+            if (index > 0 && sections != null && sections.Length > 0 && IsValidFormatString(sections[0]))
+            {
+                try
+                {
+                    return string.Format(formatProvider, "{0:" + sections[0] + "}", value);
+                }
+                catch
+                {
+                    return value?.ToString() ?? section;
+                }
+            }
+            return value?.ToString() ?? section;
         }
     }
 
