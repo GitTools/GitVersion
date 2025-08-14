@@ -21,7 +21,7 @@ public class Issue4654Tests
             Major = 6,
             Minor = 13,
             Patch = 54,
-            PreReleaseTag = new SemanticVersionPreReleaseTag("gv6", 1, true),
+            PreReleaseTag = new SemanticVersionPreReleaseTag(TestPreReleaseLabel, 1, true),
             BuildMetaData = new SemanticVersionBuildMetaData()
             {
                 Branch = "feature/gv6",
