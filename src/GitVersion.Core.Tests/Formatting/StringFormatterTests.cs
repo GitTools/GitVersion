@@ -1,6 +1,6 @@
 ﻿using GitVersion.Formatting;
 
-namespace GitVersion.Tests.Formatting;
+namespace GitVersion.Core.Tests.Formatting;
 
 [TestFixture]
 public class StringFormatterTests
