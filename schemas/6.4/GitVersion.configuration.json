@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://gitversion.net/schemas/6.3/GitVersion.configuration.json",
-  "title": "GitVersion Configuration (6.3)",
-  "description": "GitVersion configuration schema (6.3)",
+  "$id": "https://gitversion.net/schemas/6.4/GitVersion.configuration.json",
+  "title": "GitVersion Configuration (6.4)",
+  "description": "GitVersion configuration schema (6.4)",
   "type": "object",
   "properties": {
     "assembly-file-versioning-format": {

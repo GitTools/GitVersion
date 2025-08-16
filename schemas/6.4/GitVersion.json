@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://gitversion.net/schemas/6.3/GitVersion.json",
+  "$id": "https://gitversion.net/schemas/6.4/GitVersion.json",
   "title": "GitVersion version variables output",
   "description": "GitVersion output schema",
   "type": "object",
