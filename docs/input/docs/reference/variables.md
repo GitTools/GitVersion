@@ -27,6 +27,7 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "AssemblySemVer": "3.22.11.0",
     "AssemblySemFileVer": "3.22.11.0",
     "InformationalVersion": "3.22.11-beta.99+88.Branch.release/3.022.011.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
+    "CustomVersion": "3.22.11-beta.99",
     "FullSemVer": "3.22.11-beta.99+88",
     "BranchName": "release/3.022.011",
     "EscapedBranchName": "release-3.022.011",
@@ -59,6 +60,7 @@ Each property of the above JSON document is described in the below table.
 |                  `AssemblySemVer` | Suitable for .NET `AssemblyVersion`. Defaults to `Major.Minor.0.0` to allow the assembly to be hotfixed without breaking existing applications that may be referencing it. |
 |              `AssemblySemFileVer` | Suitable for .NET `AssemblyFileVersion`. Defaults to `Major.Minor.Patch.0`.                                                                                                |
 |            `InformationalVersion` | Suitable for .NET `AssemblyInformationalVersion`. Defaults to `FullSemVer` suffixed by `FullBuildMetaData`.                                                                |
+|                   `CustomVersion` | The custom version, suitable for package managers with formatting changes, e.g. NuGet. Defaults to `SemVer`.                                                               |
 |                      `FullSemVer` | The full, SemVer 2.0 compliant version number.                                                                                                                             |
 |                      `BranchName` | The name of the checked out Git branch.                                                                                                                                    |
 |               `EscapedBranchName` | Equal to `BranchName`, but with `/` replaced with `-`.                                                                                                                     |
