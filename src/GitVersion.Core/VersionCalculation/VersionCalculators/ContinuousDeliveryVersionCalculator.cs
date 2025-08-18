@@ -35,6 +35,7 @@ internal sealed class ContinuousDeliveryVersionCalculator(
             BuildMetaData = new SemanticVersionBuildMetaData(buildMetaData)
             {
                 CommitsSinceVersionSource = buildMetaData.CommitsSinceTag!.Value,
+                CommitsSinceVersionSourceList = buildMetaData.CommitsSinceVersionSourceList,
                 CommitsSinceTag = null
             }
         };

@@ -11,10 +11,12 @@ GitVersion.Git.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.Git.AuthenticationInfo.AuthenticationInfo(GitVersion.Git.AuthenticationInfo! original) -> void
 GitVersion.Git.CommitFilter.CommitFilter() -> void
 GitVersion.Git.CommitFilter.CommitFilter(GitVersion.Git.CommitFilter! original) -> void
-GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string! Major, out string! Minor, out string! Patch, out string? BuildMetaData, out string? FullBuildMetaData, out string? BranchName, out string? EscapedBranchName, out string? Sha, out string? ShortSha, out string! MajorMinorPatch, out string! SemVer, out string! FullSemVer, out string? AssemblySemVer, out string? AssemblySemFileVer, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string! WeightedPreReleaseNumber, out string? InformationalVersion, out string? CommitDate, out string? VersionSourceSha, out string? CommitsSinceVersionSource, out string? UncommittedChanges) -> void
+GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string! Major, out string! Minor, out string! Patch, out string? BuildMetaData, out string? FullBuildMetaData, out string? BranchName, out string? EscapedBranchName, out string? Sha, out string? ShortSha, out string! MajorMinorPatch, out string! SemVer, out string! FullSemVer, out string? AssemblySemVer, out string? AssemblySemFileVer, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string! WeightedPreReleaseNumber, out string? InformationalVersion, out string? CommitDate, out string? VersionSourceSha, out string? CommitsSinceVersionSource, out string? CommitsSinceVersionSourceList, out string? UncommittedChanges) -> void
 GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(GitVersion.OutputVariables.GitVersionVariables! original) -> void
 GitVersion.RepositoryInfo.RepositoryInfo() -> void
 GitVersion.RepositoryInfo.RepositoryInfo(GitVersion.RepositoryInfo! original) -> void
+GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSourceList.get -> string![]!
+GitVersion.SemanticVersionFormatValues.CommitsSinceVersionSourceList.get -> string?
 GitVersion.SemanticVersionWithTag.<Clone>$() -> GitVersion.SemanticVersionWithTag!
 GitVersion.SemanticVersionWithTag.Deconstruct(out GitVersion.SemanticVersion! Value, out GitVersion.Git.ITag! Tag) -> void
 GitVersion.SemanticVersionWithTag.Equals(GitVersion.SemanticVersionWithTag? other) -> bool
