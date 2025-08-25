@@ -591,13 +591,6 @@ details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
 Sets the format which will be used to format the `CommitDate` output variable.
 
-### custom-version-format
-
-Specifies the format of `CustomVersion`, allowing for a user-specific output variable
-that can be used, for example, as the NuGet package vesion.
-Default set to `{SemVer}`. 
-Follows the same formatting semantics as `assembly-file-versioning-format`.
-
 ### ignore
 
 The header property for the `ignore` configuration.
