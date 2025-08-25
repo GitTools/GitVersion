@@ -131,7 +131,24 @@ Following options are supported:
 1. `patch-version-bump-message`
 1. `tag-prefix`
 1. `tag-pre-release-weight`
-1. `update-build-number`
+2. `assembly-file-versioning-scheme`
+3. `assembly-informational-format`
+4. `assembly-versioning-format`
+5. `assembly-versioning-scheme`
+6. `commit-date-format`
+7. `commit-message-incrementing`
+8. `custom-version-format`
+9. `label`
+10. `increment`
+11. `major-version-bump-message`
+12. `minor-version-bump-message`
+13. `mode`
+14. `next-version`
+15. `no-bump-message`
+16. `patch-version-bump-message`
+17. `tag-prefix`
+18. `tag-pre-release-weight`
+19. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 
