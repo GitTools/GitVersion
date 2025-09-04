@@ -72,7 +72,7 @@ jobs:
         restore-keys: node-${{ runner.os }}
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     -
