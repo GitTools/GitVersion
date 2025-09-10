@@ -12,8 +12,8 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
     <PackageVersion Include="Microsoft.IO.Redist" Version="6.1.0" />
     <PackageVersion Include="Polly" Version="8.6.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.0" />
@@ -26,10 +26,10 @@
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Build" Version="17.12.6" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.9" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
@@ -37,12 +37,12 @@
     <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.9" />
     <PackageVersion Include="System.Drawing.Common" Version="9.0.7" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.0.15" />
-    <PackageVersion Include="System.Reflection.Metadata" Version="9.0.8" />
+    <PackageVersion Include="System.Reflection.Metadata" Version="9.0.9" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="9.0.7" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.9" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
   </ItemGroup>
