@@ -17,6 +17,8 @@
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Options" VersionOverride="9.0.9" />
+      <PackageReference Include="System.Collections.Immutable" />
       <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 </Project>
