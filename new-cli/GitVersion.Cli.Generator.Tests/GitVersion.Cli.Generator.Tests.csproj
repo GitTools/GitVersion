@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="System.Text.Json" VersionOverride="9.0.9" />
         <ProjectReference Include="..\GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj" />
         <ProjectReference Include="..\GitVersion.Common.Command\GitVersion.Common.Command.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
