@@ -1,5 +1,5 @@
 <Solution>
-  <Folder Name="/Modules/">
+  <Folder Name="/modules/">
     <Project Path="GitVersion.BuildAgents.Tests/GitVersion.BuildAgents.Tests.csproj" />
     <Project Path="GitVersion.BuildAgents/GitVersion.BuildAgents.csproj" />
     <Project Path="GitVersion.Configuration.Tests/GitVersion.Configuration.Tests.csproj" />

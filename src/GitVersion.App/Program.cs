@@ -1,45 +1,16 @@
-using GitVersion.Agents;
-using GitVersion.Configuration;
-using GitVersion.Extensions;
-using GitVersion.Output;
-using Microsoft.Extensions.Configuration;
+using GitVersion;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
-namespace GitVersion;
+var builder = CliHost.CreateCliHostBuilder(args);
 
-internal class Program
+var host = builder.Build();
+var app = host.Services.GetRequiredService<GitVersionApp>();
+
+var cts = new CancellationTokenSource();
+Console.CancelKeyPress += (_, _) =>
 {
-    private readonly Action<IServiceCollection>? overrides;
+    cts.Cancel();
+    cts.Dispose();
+};
 
-    internal Program(Action<IServiceCollection>? overrides = null) => this.overrides = overrides;
-
-    private static async Task Main(string[] args) => await new Program().RunAsync(args);
-
-    internal Task RunAsync(string[] args) => CreateHostBuilder(args).Build().RunAsync();
-
-    private IHostBuilder CreateHostBuilder(string[] args) =>
-        new HostBuilder()
-            .ConfigureAppConfiguration((_, configApp) => configApp.AddCommandLine(args))
-            .ConfigureServices((_, services) =>
-            {
-                services.AddModule(new GitVersionCoreModule());
-                services.AddModule(new GitVersionLibGit2SharpModule());
-                services.AddModule(new GitVersionBuildAgentsModule());
-                services.AddModule(new GitVersionConfigurationModule());
-                services.AddModule(new GitVersionOutputModule());
-                services.AddModule(new GitVersionAppModule());
-
-                services.AddSingleton(sp =>
-                {
-                    var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args);
-                    var gitVersionOptions = arguments.ToOptions();
-                    return Options.Create(gitVersionOptions);
-                });
-
-                this.overrides?.Invoke(services);
-                services.AddHostedService<GitVersionApp>();
-            })
-            .UseConsoleLifetime();
-}
+await app.RunAsync(cts.Token).ConfigureAwait(false);

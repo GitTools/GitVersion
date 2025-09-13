@@ -33,7 +33,7 @@ internal sealed class Commit : GitObject, ICommit
         {
             if (!pathsCache.TryGetValue(this.Sha, out var paths))
             {
-                paths = this.CommitChanges?.Paths ?? [];
+                paths = this.CommitChanges.Paths;
                 pathsCache[this.Sha] = paths;
             }
             return paths;

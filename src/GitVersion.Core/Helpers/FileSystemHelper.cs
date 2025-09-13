@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using System.Runtime.InteropServices;
 
 namespace GitVersion.Helpers;
 
@@ -67,7 +66,7 @@ internal static class FileSystemHelper
         public static char DirectorySeparatorChar => fileSystem.Path.DirectorySeparatorChar;
 
         private static readonly StringComparison OsDependentComparison =
-            RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+            OperatingSystem.IsLinux()
                 ? StringComparison.Ordinal
                 : StringComparison.OrdinalIgnoreCase;
 

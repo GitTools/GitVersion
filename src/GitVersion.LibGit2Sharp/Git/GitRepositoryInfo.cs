@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Git;
 
-internal class GitRepositoryInfo : IGitRepositoryInfo
+public class GitRepositoryInfo : IGitRepositoryInfo
 {
     private readonly IFileSystem fileSystem;
     private readonly GitVersionOptions gitVersionOptions;
