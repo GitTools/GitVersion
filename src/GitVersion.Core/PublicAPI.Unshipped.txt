@@ -2,6 +2,7 @@
 GitVersion.Configuration.EffectiveBranchConfiguration.Deconstruct(out GitVersion.Configuration.EffectiveConfiguration! Value, out GitVersion.Git.IBranch! Branch) -> void
 GitVersion.Configuration.EffectiveBranchConfiguration.EffectiveBranchConfiguration(GitVersion.Configuration.EffectiveBranchConfiguration! original) -> void
 GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.EffectiveConfiguration! original) -> void
+GitVersion.Configuration.IGitVersionConfiguration.CustomVersionFormat.get -> string?
 GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
 GitVersion.ConfigurationInfo.ConfigurationInfo(GitVersion.ConfigurationInfo! original) -> void
 GitVersion.FileWriteInfo.<Clone>$() -> GitVersion.FileWriteInfo!
@@ -11,8 +12,11 @@ GitVersion.Git.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.Git.AuthenticationInfo.AuthenticationInfo(GitVersion.Git.AuthenticationInfo! original) -> void
 GitVersion.Git.CommitFilter.CommitFilter() -> void
 GitVersion.Git.CommitFilter.CommitFilter(GitVersion.Git.CommitFilter! original) -> void
-GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string! Major, out string! Minor, out string! Patch, out string? BuildMetaData, out string? FullBuildMetaData, out string? BranchName, out string? EscapedBranchName, out string? Sha, out string? ShortSha, out string! MajorMinorPatch, out string! SemVer, out string! FullSemVer, out string? AssemblySemVer, out string? AssemblySemFileVer, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string! WeightedPreReleaseNumber, out string? InformationalVersion, out string? CommitDate, out string? VersionSourceSha, out string? CommitsSinceVersionSource, out string? UncommittedChanges) -> void
+GitVersion.OutputVariables.GitVersionVariables.CustomVersion.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.CustomVersion.init -> void
+GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string! Major, out string! Minor, out string! Patch, out string? BuildMetaData, out string? FullBuildMetaData, out string? BranchName, out string? EscapedBranchName, out string? Sha, out string? ShortSha, out string! MajorMinorPatch, out string! SemVer, out string! FullSemVer, out string? AssemblySemVer, out string? AssemblySemFileVer, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string! WeightedPreReleaseNumber, out string? InformationalVersion, out string? CustomVersion, out string? CommitDate, out string? VersionSourceSha, out string? CommitsSinceVersionSource, out string? UncommittedChanges) -> void
 GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(GitVersion.OutputVariables.GitVersionVariables! original) -> void
+GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string! Major, string! Minor, string! Patch, string? BuildMetaData, string? FullBuildMetaData, string? BranchName, string? EscapedBranchName, string? Sha, string? ShortSha, string! MajorMinorPatch, string! SemVer, string! FullSemVer, string? AssemblySemVer, string? AssemblySemFileVer, string? PreReleaseTag, string? PreReleaseTagWithDash, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string! WeightedPreReleaseNumber, string? InformationalVersion, string? CustomVersion, string? CommitDate, string? VersionSourceSha, string? CommitsSinceVersionSource, string? UncommittedChanges) -> void
 GitVersion.RepositoryInfo.RepositoryInfo() -> void
 GitVersion.RepositoryInfo.RepositoryInfo(GitVersion.RepositoryInfo! original) -> void
 GitVersion.SemanticVersionWithTag.<Clone>$() -> GitVersion.SemanticVersionWithTag!
@@ -58,6 +62,7 @@ override GitVersion.OutputVariables.GitVersionVariables.ToString() -> string!
 override GitVersion.RepositoryInfo.Equals(object? obj) -> bool
 override GitVersion.RepositoryInfo.GetHashCode() -> int
 override GitVersion.RepositoryInfo.ToString() -> string!
+GitVersion.SemanticVersionFormatValues.CustomVersion.get -> string!
 override GitVersion.SemanticVersionWithTag.Equals(object? obj) -> bool
 override GitVersion.SemanticVersionWithTag.GetHashCode() -> int
 override GitVersion.Settings.Equals(object? obj) -> bool
