@@ -143,15 +143,52 @@ public static class GitRepositoryTestingExtensions
     }
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
-        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null, string? customMessage = null)
     {
         repository ??= fixture.Repository;
 
         var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
-        variables.FullSemVer.ShouldBe(fullSemver);
+        variables.FullSemVer.ShouldBe(fullSemver, customMessage);
         if (commitId == null)
         {
             fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
+        }
+    }
+
+    public static void AssertCommitsSinceVersionSource(this RepositoryFixtureBase fixture, int commitsSinceVersionSourceExpected,
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null, string? customMessage = null)
+    {
+        repository ??= fixture.Repository;
+
+        var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+        variables.CommitsSinceVersionSource.ShouldBe(commitsSinceVersionSourceExpected.ToString(), customMessage);
+        if (commitId == null)
+        {
+            var message = new StringBuilder();
+            var versionSourceLabel = fixture.SequenceDiagram.GetOrAddSourceLabel(variables.VersionSourceSha);
+            message.AppendLine($"                      Commit: {fixture.SequenceDiagram.GetOrAddLabel(variables.Sha)}");
+            message.Append($"              Version source: {versionSourceLabel}");
+            if (commitsSinceVersionSourceExpected != 0 && variables.CommitsSinceVersionSourceList != null)
+            {
+                bool isFirst = true;
+                foreach (var sha in variables.CommitsSinceVersionSourceList.Split(", ").Reverse())
+                {
+                    if (isFirst)
+                    {
+                        message.Append(System.Environment.NewLine);
+                        message.Append($"Commits since version source: {variables.CommitsSinceVersionSource} - ");
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        message.Append(", ");
+                    }
+
+                    message.Append($"{fixture.SequenceDiagram.GetOrAddLabel(sha)}");
+                }
+            }
+
+            fixture.SequenceDiagram.NoteOver(message.ToString(), repository.Head.FriendlyName, color: "#A9B7C6");
         }
     }
 

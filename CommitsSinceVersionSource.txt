@@ -1,0 +1,207 @@
+
+
+@startuml
+skinparam participantMargin 10
+skinparam noteMargin 10
+skinparam shadowing false
+
+participant main
+participant develop
+participant feature_f1
+participant release_1_1_0
+participant feature_f2
+participant release_1_2_0
+participant hotfix_hf
+
+note right of main #LightBlue
+📝 Commit: A  
+Version Source: A (initial commit)  
+Commits beyond Version Source: none  
+Version: 1.0.0
+end note
+
+main --> develop: 🌿 branch develop from A
+
+note right of develop #LightSkyBlue
+📝 Commit: B  
+Version Source: A (already merged to develop)  
+Commits beyond Version Source: B  
+Version: 1.1.0-alpha.1
+end note
+
+develop --> feature_f1: 🌿 branch feature/f1 from B
+
+note right of feature_f1 #LightGreen
+📝 Commit: C  
+Version Source: B (already merged to develop)  
+Commits beyond Version Source: C  
+Version: 1.1.0-f1.1+2
+end note
+
+feature_f1 --> develop: 🔀 E (merge f1 → develop)
+
+note right of develop #Khaki
+📝 Commit: E  
+Version Source: E (develop tip)  
+Commits beyond Version Source: none  
+Version: 1.1.0-alpha.3
+end note
+
+develop --> release_1_1_0: 🌿 branch release/1.1.0 from E
+
+note right of release_1_1_0 #PaleGreen
+📝 Commit: F  
+Version Source: E (already merged to develop)  
+Commits beyond Version Source: F  
+Version: 1.1.0-beta.1+4
+end note
+
+release_1_1_0 --> main: 🔀 G (merge release/1.1.0 → main)
+
+note right of main #Gold
+📝 Commit: G  
+🏷 Tag: 1.1.0  
+Version Source: G (main tip)  
+Commits beyond Version Source: none  
+Version: 1.1.0-5
+end note
+
+main -> main: 🏷 tag 1.1.0
+
+note right of main #Gold
+Version: 1.1.0
+end note
+
+release_1_1_0 --> develop: 🔀 H (merge release/1.1.0 → develop)
+
+note right of develop #Khaki
+📝 Commit: H  
+Version Source: H (develop tip)  
+Commits beyond Version Source: none  
+Version: 1.2.0-alpha.1
+end note
+
+develop --> feature_f2: 🌿 branch feature/f2 from H
+
+note right of feature_f2 #LightGreen
+📝 Commit: I  
+Version Source: H (already merged to develop)  
+Commits beyond Version Source: I  
+Version: 1.2.0-f2.1+2
+end note
+
+feature_f2 -> feature_f2: Commit 'feature 2 additional commit (J)'
+
+note right of feature_f2 #LightGreen
+📝 Commit: J  
+Version Source: H (already merged to develop)  
+Commits beyond Version Source: J  
+Version: 1.3.0-f2.1+0
+end note
+
+feature_f2 --> develop: 🔀 K (merge f2 → develop)
+
+note right of develop #Khaki
+📝 Commit: K  
+Version Source: K (develop tip)  
+Commits beyond Version Source: none  
+Version: 1.2.0-alpha.3
+end note
+
+develop --> release_1_2_0: 🌿 branch release/1.2.0 from K
+
+note right of release_1_2_0 #PaleGreen
+📝 Commit: L  
+Version Source: K (already merged to develop)  
+Commits beyond Version Source: L  
+Beta parent: B.. E,F,G,H,I,J,K
+Version: 1.2.0-beta.1+8
+end note
+
+release_1_2_0 --> main: 🔀 M (merge release/1.2.0 → main)
+
+note right of main #Gold
+📝 Commit: M  
+🏷 Tag: 1.2.0  
+Version Source: M (main tip)  
+Commits beyond Version Source: none  
+Version: 1.2.0-5
+end note
+
+main -> main: 🏷 tag 1.2.0
+
+note right of main #Gold
+Version: 1.2.0
+end note
+
+release_1_2_0 --> develop: 🔀 N (merge release/1.2.0 → develop)
+
+note right of develop #Khaki
+📝 Commit: N  
+Version Source: N (develop tip)  
+Commits beyond Version Source: none  
+Version: 1.3.0-alpha.1
+end note
+
+main --> hotfix_hf: 🌿 branch hotfix/hf from M
+
+note right of hotfix_hf #LightCoral
+📝 Commit: O  
+Version Source: M (already merged to main)  
+Commits beyond Version Source: O  
+Version: 1.2.1-beta.1+1
+end note
+
+hotfix_hf --> main: 🔀 P (merge hotfix → main)
+
+note right of main #Gold
+📝 Commit: P  
+🏷 Tag: 1.2.1  
+Version Source: P (main tip)  
+Commits beyond Version Source: none  
+Version: 1.2.1-2
+end note
+
+main -> main: 🏷 tag 1.2.1
+
+note right of main #Gold
+Version: 1.2.1
+end note
+
+hotfix_hf --> develop: 🔀 Q (merge hotfix → develop)
+
+note right of develop #Khaki
+📝 Commit: Q  
+Version Source: Q (develop tip)  
+Commits beyond Version Source: none  
+Version: 1.3.0-alpha.2
+end note
+
+note right of feature_f2 #Orange
+⬅ Returned to feature/f2 at Commit J  
+Version Source: J (already merged to develop)  
+Commits beyond Version Source: none  
+Version recalculates to: 1.3.0-f2.1+0
+end note
+
+note right of feature_f2 #LightGreen
+Version: 1.3.0-f2.1+0
+end note
+
+note right of feature_f2 #LightGreen
+📝 Commit: R  
+Version Source: J (already merged to develop)  
+Commits beyond Version Source: R  
+Version: 1.3.0-f2.1+1
+end note
+
+feature_f2 --> develop: --> rebase R onto develop tip Q
+
+note right of feature_f2 #Thistle
+📝 Commit: R′  
+Version Source: Q (develop tip)  
+Commits beyond Version Source: R′  
+Version: 1.3.0-f2.1+1 (after rebase)
+end note
+
+@enduml
