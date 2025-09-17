@@ -30,8 +30,7 @@ function MarkShipped([string]$dir) {
     }
 
     $shipped | Sort-Object -Unique | Where-Object { -not $removed.Contains($_) } | Out-File $shippedFilePath -Encoding Ascii
-    "#nullable enable" | Out-File "PublicAPI.empty.txt" -Encoding Ascii
-    Copy-Item ./PublicAPI.empty.txt $unshippedFilePath
+    "#nullable enable" | Out-File $unshippedFilePath -Encoding Ascii
 }
 
 try {

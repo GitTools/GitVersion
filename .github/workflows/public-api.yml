@@ -1,39 +1,33 @@
-name: Markdown Update
-on:
-  push:
+name: Mark public API as shipped
 
-env:
-  DOTNET_ROLL_FORWARD: "Major"
-  DOTNET_CLI_TELEMETRY_OPTOUT: 1
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  DOTNET_NOLOGO: 1
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ publish-release ]
 
 defaults:
   run:
     shell: pwsh
 
+permissions:
+  contents: read
+
 jobs:
-  docs:
-    name: Update Markdown (embedded snippets)
+  homebrew:
+    permissions:
+      contents: none
+    name: Mark public API as shipped
     runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
         uses: actions/checkout@v5
-        if: github.event_name == 'push'
+        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         with:
           token: ${{ secrets.PUSH_GITHUB_TOKEN }}
       -
-        name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
-        with:
-          global-json-file: global.json
-      -
-        name: Run MarkdownSnippets
-        run: |
-          dotnet tool install --global MarkdownSnippets.Tool
-          mdsnippets --write-header false
-        working-directory: ${{ github.workspace }}/docs/input
+        name: Mark public API as shipped
+        run: ./src/mark-shipped.ps1
       -
         name: Check for changes
         id: status
@@ -45,6 +39,6 @@ jobs:
           git add --verbose .
           git config user.name 'Artur Stolear'
           git config user.email 'artur.stolear@gmail.com'
-          git commit -m 'Docs changes' --allow-empty
+          git commit -m 'Mark public API as shipped' --allow-empty
           git push --force
         if: steps.status.outputs.has_changes == '1'
