@@ -1,9 +1,1 @@
 #nullable enable
-GitVersion.Git.GitRepositoryInfo
-GitVersion.Git.GitRepositoryInfo.DotGitDirectory.get -> string?
-GitVersion.Git.GitRepositoryInfo.DynamicGitRepositoryPath.get -> string?
-GitVersion.Git.GitRepositoryInfo.GitRepositoryInfo(System.IO.Abstractions.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
-GitVersion.Git.GitRepositoryInfo.GitRootPath.get -> string?
-GitVersion.Git.GitRepositoryInfo.ProjectRootDirectory.get -> string?
-GitVersion.LibGit2SharpExtensions
-static GitVersion.LibGit2SharpExtensions.ToGitRepository(this LibGit2Sharp.IRepository! repository) -> GitVersion.Git.IGitRepository!
