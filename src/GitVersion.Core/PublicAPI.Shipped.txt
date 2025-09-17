@@ -433,7 +433,6 @@ GitVersion.OutputVariables.GitVersionVariables.FullBuildMetaData.init -> void
 GitVersion.OutputVariables.GitVersionVariables.FullSemVer.get -> string!
 GitVersion.OutputVariables.GitVersionVariables.FullSemVer.init -> void
 GitVersion.OutputVariables.GitVersionVariables.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, string?>>!
-GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string! Major, string! Minor, string! Patch, string? BuildMetaData, string? FullBuildMetaData, string? BranchName, string? EscapedBranchName, string? Sha, string? ShortSha, string! MajorMinorPatch, string! SemVer, string! FullSemVer, string? AssemblySemVer, string? AssemblySemFileVer, string? PreReleaseTag, string? PreReleaseTagWithDash, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string! WeightedPreReleaseNumber, string? InformationalVersion, string? CommitDate, string? VersionSourceSha, string? CommitsSinceVersionSource, string? UncommittedChanges) -> void
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.init -> void
 GitVersion.OutputVariables.GitVersionVariables.Major.get -> string!
