@@ -6,6 +6,7 @@
   <?define BuildMetaData="5"?>
   <?define CommitDate="2019-02-20"?>
   <?define CommitsSinceVersionSource="5"?>
+  <?define CustomVersion="1.2.3"?>
   <?define EscapedBranchName="develop"?>
   <?define FullBuildMetaData="5.Branch.develop.Sha.commitSha"?>
   <?define FullSemVer="1.2.3+5"?>

@@ -422,6 +422,30 @@ public class ConfigurationProviderTests : TestBase
     }
 
     [Test]
+    public void ShouldUseCustomVersionFormatFromConfigFileWhenProvided()
+    {
+        const string text = "custom-version-format: custom-version-format-from-yml";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        configuration.CustomVersionFormat.ShouldBe("custom-version-format-from-yml");
+    }
+
+    [Test]
+    public void ShouldOverrideCustomVersionFormatWithOverrideConfigValue([Values] bool customVersionFormatSetAtYmlFile)
+    {
+        var text = customVersionFormatSetAtYmlFile ? "custom-version-format: custom-version-format-from-yml" : "";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        var overrideConfiguration = new Dictionary<object, object?>
+        {
+            { "custom-version-format", "custom-version-from-override-configuration" }
+        };
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
+
+        configuration.CustomVersionFormat.ShouldBe("custom-version-from-override-configuration");
+    }
+
+    [Test]
     public void ShouldUseTagPrefixFromConfigFileWhenProvided()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";

@@ -16,6 +16,8 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     string? AssemblyFileVersioningFormat { get; }
 
+    string? CustomVersionFormat { get; }
+
     string? TagPrefixPattern { get; }
 
     string? VersionInBranchPattern { get; }

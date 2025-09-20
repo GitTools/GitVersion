@@ -9,6 +9,7 @@
   "FullBuildMetaData": "Branch.develop.Sha.commitSha",
   "FullSemVer": "1.2.3-ci.5",
   "InformationalVersion": "1.2.3-ci.5+Branch.develop.Sha.commitSha",
+  "CustomVersion": "1.2.3-ci.5",
   "Major": 1,
   "MajorMinorPatch": "1.2.3",
   "Minor": 2,

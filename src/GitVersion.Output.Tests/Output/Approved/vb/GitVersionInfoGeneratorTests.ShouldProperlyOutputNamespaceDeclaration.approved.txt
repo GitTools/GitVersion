@@ -21,6 +21,7 @@ Namespace My.Custom.Namespace
         Public Shared BuildMetaData As String = "5"
         Public Shared CommitDate As String = "2014-03-06"
         Public Shared CommitsSinceVersionSource As String = "5"
+        Public Shared CustomVersion As String = "1.2.3-unstable.4"
         Public Shared EscapedBranchName As String = "feature1"
         Public Shared FullBuildMetaData As String = "5.Branch.feature1.Sha.commitSha"
         Public Shared FullSemVer As String = "1.2.3-unstable.4+5"

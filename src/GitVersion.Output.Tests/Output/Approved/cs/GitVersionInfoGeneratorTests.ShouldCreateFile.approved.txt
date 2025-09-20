@@ -18,6 +18,7 @@ static class GitVersionInformation
     public const string BuildMetaData = "5";
     public const string CommitDate = "2014-03-06";
     public const string CommitsSinceVersionSource = "5";
+    public const string CustomVersion = "1.2.3-unstable.4";
     public const string EscapedBranchName = "feature1";
     public const string FullBuildMetaData = "5.Branch.feature1.Sha.commitSha";
     public const string FullSemVer = "1.2.3-unstable.4+5";
