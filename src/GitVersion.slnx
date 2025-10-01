@@ -32,6 +32,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Project Path="Anonymize/Anonymize.csproj" />
   <Project Path="GitVersion.App.Tests/GitVersion.App.Tests.csproj" />
   <Project Path="GitVersion.App/GitVersion.App.csproj" />
   <Project Path="GitVersion.Core.Tests/GitVersion.Core.Tests.csproj" />
