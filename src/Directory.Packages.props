@@ -16,8 +16,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
     <PackageVersion Include="Microsoft.IO.Redist" Version="6.1.0" />
     <PackageVersion Include="Polly" Version="8.6.0" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.0" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="7.1.0" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="5.0.3" />
