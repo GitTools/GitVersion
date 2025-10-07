@@ -10,16 +10,18 @@ internal sealed class Branch : IBranch
 
     private readonly LibGit2Sharp.Branch innerBranch;
 
-    internal Branch(LibGit2Sharp.Branch branch, LibGit2Sharp.Diff diff)
+    internal Branch(LibGit2Sharp.Branch branch, LibGit2Sharp.Diff diff, GitRepository repo)
     {
+        diff.NotNull();
+        repo.NotNull();
         this.innerBranch = branch.NotNull();
         Name = new(branch.CanonicalName);
 
         var commit = this.innerBranch.Tip;
-        Tip = commit is null ? null : new Commit(commit, diff);
+        Tip = commit is null ? null : repo.GetOrCreate(commit, diff);
 
         var commits = this.innerBranch.Commits;
-        Commits = new CommitCollection(commits, diff);
+        Commits = new CommitCollection(commits, diff, repo);
     }
 
     public ReferenceName Name { get; }

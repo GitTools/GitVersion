@@ -14,10 +14,12 @@ internal sealed class Commit : GitObject, ICommit
     private readonly LibGit2Sharp.Commit innerCommit;
     private readonly LibGit2Sharp.Diff repoDiff;
 
-    internal Commit(LibGit2Sharp.Commit innerCommit, LibGit2Sharp.Diff repoDiff) : base(innerCommit)
+    internal Commit(LibGit2Sharp.Commit innerCommit, LibGit2Sharp.Diff repoDiff, GitRepository repo) : base(innerCommit)
     {
+        repoDiff.NotNull();
+        repo.NotNull();
         this.innerCommit = innerCommit.NotNull();
-        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => new Commit(parent, repoDiff)).ToList());
+        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => repo.GetOrCreate(parent, repoDiff)).ToList());
         When = innerCommit.Committer.When;
         this.repoDiff = repoDiff;
     }

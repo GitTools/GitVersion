@@ -8,12 +8,14 @@ internal sealed class CommitCollection : ICommitCollection
     private readonly ICommitLog innerCollection;
     private readonly Lazy<IReadOnlyCollection<ICommit>> commits;
     private readonly Diff diff;
+    private readonly GitRepository repo;
 
-    internal CommitCollection(ICommitLog collection, Diff diff)
+    internal CommitCollection(ICommitLog collection, Diff diff, GitRepository repo)
     {
         this.innerCollection = collection.NotNull();
-        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => new Commit(commit, diff))]);
+        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => repo.GetOrCreate(commit, diff))]);
         this.diff = diff.NotNull();
+        this.repo = repo.NotNull();
     }
 
     public IEnumerator<ICommit> GetEnumerator()
@@ -36,7 +38,7 @@ internal sealed class CommitCollection : ICommitCollection
             SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy
         };
         var commitLog = ((IQueryableCommitLog)this.innerCollection).QueryBy(filter);
-        return new CommitCollection(commitLog, this.diff);
+        return new CommitCollection(commitLog, this.diff, this.repo);
 
         static object? GetReacheableFrom(object? item) =>
             item switch
