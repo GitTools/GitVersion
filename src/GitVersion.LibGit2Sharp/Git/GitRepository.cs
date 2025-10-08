@@ -25,7 +25,7 @@ internal sealed partial class GitRepository
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
-    public IBranch Head => GetOrCreate(RepositoryInstance.Head, RepositoryInstance.Diff);
+    public IBranch Head => GetOrWrap(RepositoryInstance.Head, RepositoryInstance.Diff);
 
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this);
     public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
@@ -53,7 +53,7 @@ internal sealed partial class GitRepository
             var first = (Commit)commit;
             var second = (Commit)otherCommit;
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
-            return mergeBase == null ? null : GetOrCreate(mergeBase, RepositoryInstance.Diff);
+            return mergeBase == null ? null : GetOrWrap(mergeBase, RepositoryInstance.Diff);
         });
     }
 
@@ -63,7 +63,7 @@ internal sealed partial class GitRepository
         return retryAction.Execute(GetUncommittedChangesCountInternal);
     }
 
-    public Branch GetOrCreate(LibGit2Sharp.Branch innerBranch, Diff repoDiff)
+    public Branch GetOrWrap(LibGit2Sharp.Branch innerBranch, Diff repoDiff)
     {
         if (innerBranch.Tip is null)
         {
@@ -74,10 +74,10 @@ internal sealed partial class GitRepository
         return cachedBranches.GetOrAdd(cacheKey, _ => new Branch(innerBranch, repoDiff, this));
     }
 
-    public Commit GetOrCreate(LibGit2Sharp.Commit innerCommit, Diff repoDiff) =>
+    public Commit GetOrWrap(LibGit2Sharp.Commit innerCommit, Diff repoDiff) =>
         cachedCommits.GetOrAdd(innerCommit.Sha, _ => new Commit(innerCommit, repoDiff, this));
 
-    public Tag GetOrCreate(LibGit2Sharp.Tag innerTag, Diff repoDiff)
+    public Tag GetOrWrap(LibGit2Sharp.Tag innerTag, Diff repoDiff)
     {
         var cacheKey = $"{innerTag.CanonicalName}@{innerTag.Target.Sha}";
         return cachedTags.GetOrAdd(cacheKey, _ => new Tag(innerTag, repoDiff, this));

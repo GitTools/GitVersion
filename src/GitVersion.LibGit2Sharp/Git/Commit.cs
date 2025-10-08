@@ -19,7 +19,7 @@ internal sealed class Commit : GitObject, ICommit
         repoDiff.NotNull();
         repo.NotNull();
         this.innerCommit = innerCommit.NotNull();
-        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => repo.GetOrCreate(parent, repoDiff)).ToList());
+        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => repo.GetOrWrap(parent, repoDiff)).ToList());
         When = innerCommit.Committer.When;
         this.repoDiff = repoDiff;
     }

@@ -18,7 +18,7 @@ internal sealed class Branch : IBranch
         Name = new(branch.CanonicalName);
 
         var commit = this.innerBranch.Tip;
-        Tip = commit is null ? null : repo.GetOrCreate(commit, diff);
+        Tip = commit is null ? null : repo.GetOrWrap(commit, diff);
 
         var commits = this.innerBranch.Commits;
         Commits = new CommitCollection(commits, diff, repo);
