@@ -13,7 +13,7 @@ internal sealed class CommitCollection : ICommitCollection
     internal CommitCollection(ICommitLog collection, Diff diff, GitRepository repo)
     {
         this.innerCollection = collection.NotNull();
-        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => repo.GetOrCreate(commit, diff))]);
+        this.commits = new Lazy<IReadOnlyCollection<ICommit>>(() => [.. this.innerCollection.Select(commit => repo.GetOrWrap(commit, diff))]);
         this.diff = diff.NotNull();
         this.repo = repo.NotNull();
     }
