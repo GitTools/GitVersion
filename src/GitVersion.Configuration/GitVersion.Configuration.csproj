@@ -9,6 +9,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="YamlDotNet" />
     </ItemGroup>
 
