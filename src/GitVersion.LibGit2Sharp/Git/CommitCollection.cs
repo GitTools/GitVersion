@@ -18,8 +18,7 @@ internal sealed class CommitCollection : ICommitCollection
         this.repo = repo.NotNull();
     }
 
-    public IEnumerator<ICommit> GetEnumerator()
-        => this.commits.Value.GetEnumerator();
+    public IEnumerator<ICommit> GetEnumerator() => this.commits.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

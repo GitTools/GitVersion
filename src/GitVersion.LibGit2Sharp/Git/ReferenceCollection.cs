@@ -15,6 +15,8 @@ internal sealed class ReferenceCollection : IReferenceCollection
         return this.references.GetEnumerator();
     }
 
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
     public void Add(string name, string canonicalRefNameOrObject, bool allowOverwrite = false) => this.innerCollection.Add(name, canonicalRefNameOrObject, allowOverwrite);
 
     public void UpdateTarget(IReference directRef, IObjectId targetId)
@@ -22,8 +24,6 @@ internal sealed class ReferenceCollection : IReferenceCollection
         RepositoryExtensions.RunSafe(() => this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId));
         this.references = null;
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public IReference? this[string name]
     {
