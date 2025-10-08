@@ -6,13 +6,15 @@ namespace GitVersion.Configuration;
 
 internal class ConfigurationSerializer : IConfigurationSerializer
 {
-    private static IDeserializer Deserializer => new DeserializerBuilder()
+    private static readonly GitVersionConfigurationStaticContext staticContext = new();
+
+    private static IDeserializer Deserializer => new StaticDeserializerBuilder(staticContext)
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
         .WithTypeConverter(VersionStrategiesConverter.Instance)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .Build();
 
-    private static ISerializer Serializer => new SerializerBuilder()
+    private static ISerializer Serializer => new StaticSerializerBuilder(staticContext)
         .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
