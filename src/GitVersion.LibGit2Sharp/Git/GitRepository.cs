@@ -70,17 +70,17 @@ internal sealed partial class GitRepository
             return new Branch(innerBranch, repoDiff, this);
         }
 
-        var cacheKey = $"{innerBranch.CanonicalName}|{innerBranch.Tip.Sha}|{innerBranch.RemoteName}";
-        return cachedBranches.GetOrAdd(cacheKey, new Branch(innerBranch, repoDiff, this));
+        var cacheKey = $"{innerBranch.RemoteName}/{innerBranch.CanonicalName}@{innerBranch.Tip.Sha}";
+        return cachedBranches.GetOrAdd(cacheKey, _ => new Branch(innerBranch, repoDiff, this));
     }
 
     public Commit GetOrCreate(LibGit2Sharp.Commit innerCommit, Diff repoDiff) =>
-        cachedCommits.GetOrAdd(innerCommit.Sha, new Commit(innerCommit, repoDiff, this));
+        cachedCommits.GetOrAdd(innerCommit.Sha, _ => new Commit(innerCommit, repoDiff, this));
 
     public Tag GetOrCreate(LibGit2Sharp.Tag innerTag, Diff repoDiff)
     {
-        var cacheKey = $"{innerTag.CanonicalName}|{innerTag.Target.Sha}";
-        return cachedTags.GetOrAdd(cacheKey, new Tag(innerTag, repoDiff, this));
+        var cacheKey = $"{innerTag.CanonicalName}@{innerTag.Target.Sha}";
+        return cachedTags.GetOrAdd(cacheKey, _ => new Tag(innerTag, repoDiff, this));
     }
 
     public void Dispose()
