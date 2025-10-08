@@ -18,8 +18,7 @@ internal sealed class BranchCollection : IBranchCollection
         this.repo = repo.NotNull();
     }
 
-    public IEnumerator<IBranch> GetEnumerator()
-        => this.branches.Value.GetEnumerator();
+    public IEnumerator<IBranch> GetEnumerator() => this.branches.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

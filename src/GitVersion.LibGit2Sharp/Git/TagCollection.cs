@@ -14,8 +14,7 @@ internal sealed class TagCollection : ITagCollection
         this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => repo.GetOrCreate(tag, diff))]);
     }
 
-    public IEnumerator<ITag> GetEnumerator()
-        => this.tags.Value.GetEnumerator();
+    public IEnumerator<ITag> GetEnumerator() => this.tags.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
