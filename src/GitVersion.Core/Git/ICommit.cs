@@ -1,8 +1,12 @@
 namespace GitVersion.Git;
 
-public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>, IGitObject
+public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>
 {
     IReadOnlyList<ICommit> Parents { get; }
+
+    IObjectId Id { get; }
+
+    string Sha { get; }
 
     DateTimeOffset When { get; }
 
