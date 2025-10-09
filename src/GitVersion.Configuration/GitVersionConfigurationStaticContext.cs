@@ -7,6 +7,4 @@ namespace GitVersion.Configuration;
 [YamlSerializable(typeof(BranchConfiguration))]
 [YamlSerializable(typeof(IgnoreConfiguration))]
 [YamlSerializable(typeof(PreventIncrementConfiguration))]
-public partial class GitVersionConfigurationStaticContext
-{
-}
+public partial class GitVersionConfigurationStaticContext;
