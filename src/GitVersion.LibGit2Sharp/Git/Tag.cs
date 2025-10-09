@@ -37,7 +37,7 @@ internal sealed class Tag : ITag
             target = annotation.Target;
         }
 
-        return target is LibGit2Sharp.Commit commit ? this.repo.GetOrCreate(commit, this.diff) : null;
+        return target is LibGit2Sharp.Commit commit ? this.repo.GetOrWrap(commit, this.diff) : null;
     }
 
     public override bool Equals(object? obj) => Equals(obj as ITag);

@@ -13,13 +13,12 @@ internal sealed class BranchCollection : IBranchCollection
     internal BranchCollection(LibGit2Sharp.BranchCollection collection, Diff diff, GitRepository repo)
     {
         this.innerCollection = collection.NotNull();
-        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => [.. this.innerCollection.Select(branch => repo.GetOrCreate(branch, diff))]);
+        this.branches = new Lazy<IReadOnlyCollection<IBranch>>(() => [.. this.innerCollection.Select(branch => repo.GetOrWrap(branch, diff))]);
         this.diff = diff.NotNull();
         this.repo = repo.NotNull();
     }
 
-    public IEnumerator<IBranch> GetEnumerator()
-        => this.branches.Value.GetEnumerator();
+    public IEnumerator<IBranch> GetEnumerator() => this.branches.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -29,7 +28,7 @@ internal sealed class BranchCollection : IBranchCollection
         {
             name = name.NotNull();
             var branch = this.innerCollection[name];
-            return branch is null ? null : this.repo.GetOrCreate(branch, this.diff);
+            return branch is null ? null : this.repo.GetOrWrap(branch, this.diff);
         }
     }
 

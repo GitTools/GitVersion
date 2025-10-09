@@ -11,11 +11,10 @@ internal sealed class TagCollection : ITagCollection
         collection.NotNull();
         diff.NotNull();
         repo.NotNull();
-        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => repo.GetOrCreate(tag, diff))]);
+        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => repo.GetOrWrap(tag, diff))]);
     }
 
-    public IEnumerator<ITag> GetEnumerator()
-        => this.tags.Value.GetEnumerator();
+    public IEnumerator<ITag> GetEnumerator() => this.tags.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
