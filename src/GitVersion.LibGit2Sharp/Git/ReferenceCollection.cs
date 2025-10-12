@@ -38,5 +38,5 @@ internal sealed class ReferenceCollection : IReferenceCollection
 
     public IReference? Head => this["HEAD"];
 
-    public IEnumerable<IReference> FromGlob(string prefix) => this.innerCollection.FromGlob(prefix).Select(reference => new Reference(reference));
+    public IEnumerable<IReference> FromGlob(string prefix) => this.innerCollection.FromGlob(prefix).Select(reference => (IReference)new Reference(reference));
 }

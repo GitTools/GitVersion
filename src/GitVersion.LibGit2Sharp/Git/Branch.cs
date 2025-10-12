@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Git;
 
-internal sealed class Branch : IBranch
+internal readonly struct Branch : IBranch
 {
     private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.Name.Canonical);
     private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.Name.Canonical);

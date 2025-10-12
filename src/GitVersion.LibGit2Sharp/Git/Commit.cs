@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Git;
 
-internal sealed class Commit : ICommit
+internal readonly struct Commit : ICommit
 {
     private static readonly ConcurrentDictionary<string, IReadOnlyList<string>> pathsCache = new();
     private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
@@ -19,7 +19,7 @@ internal sealed class Commit : ICommit
         repoDiff.NotNull();
         repo.NotNull();
         this.innerCommit = innerCommit.NotNull();
-        this.parentsLazy = new(() => innerCommit.Parents.Select(parent => repo.GetOrWrap(parent, repoDiff)).ToList());
+        this.parentsLazy = new(() => [.. innerCommit.Parents.Select(parent => repo.GetOrWrap(parent, repoDiff))]);
         Id = new ObjectId(innerCommit.Id);
         Sha = innerCommit.Sha;
         When = innerCommit.Committer.When;

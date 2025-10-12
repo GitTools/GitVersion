@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Git;
 
-internal sealed class Remote : IRemote
+internal readonly struct Remote : IRemote
 {
     private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x.Name);
     private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
