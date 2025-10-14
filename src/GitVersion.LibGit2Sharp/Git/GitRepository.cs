@@ -23,11 +23,19 @@ internal sealed partial class GitRepository
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
     public IBranch Head => this.repositoryCache.GetOrWrap(RepositoryInstance.Head, RepositoryInstance.Diff);
 
-    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this.repositoryCache);
+    private ITagCollection? tags;
+    public ITagCollection Tags => this.tags ??= new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this.repositoryCache);
+
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff, this.repositoryCache);
-    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this.repositoryCache);
-    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes, this.repositoryCache);
-    public IReferenceCollection References => new ReferenceCollection(RepositoryInstance.Refs, this.repositoryCache);
+
+    private ICommitCollection? commits;
+    public ICommitCollection Commits => this.commits ??= new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this.repositoryCache);
+
+    private IRemoteCollection? remotes;
+    public IRemoteCollection Remotes => this.remotes ??= new RemoteCollection(RepositoryInstance.Network.Remotes, this.repositoryCache);
+
+    private IReferenceCollection? references;
+    public IReferenceCollection References => this.references ??= new ReferenceCollection(RepositoryInstance.Refs, this.repositoryCache);
 
     public void DiscoverRepository(string? gitDirectory)
     {
