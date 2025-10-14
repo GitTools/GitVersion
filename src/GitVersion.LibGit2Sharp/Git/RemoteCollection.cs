@@ -5,14 +5,14 @@ namespace GitVersion.Git;
 internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
-    private readonly GitRepository repo;
+    private readonly GitRepositoryCache repositoryCache;
     private readonly Lazy<IReadOnlyCollection<IRemote>> remotes;
 
-    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection, GitRepository repo)
+    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection, GitRepositoryCache repositoryCache)
     {
         this.innerCollection = collection.NotNull();
-        this.repo = repo.NotNull();
-        this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(repo.GetOrWrap)]);
+        this.repositoryCache = repositoryCache.NotNull();
+        this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
     }
 
     public IEnumerator<IRemote> GetEnumerator() => this.remotes.Value.GetEnumerator();
@@ -24,7 +24,7 @@ internal sealed class RemoteCollection : IRemoteCollection
         get
         {
             var remote = this.innerCollection[name];
-            return remote is null ? null : this.repo.GetOrWrap(remote);
+            return remote is null ? null : this.repositoryCache.GetOrWrap(remote);
         }
     }
 

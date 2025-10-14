@@ -5,14 +5,14 @@ namespace GitVersion.Git;
 internal sealed class ReferenceCollection : IReferenceCollection
 {
     private readonly LibGit2Sharp.ReferenceCollection innerCollection;
-    private readonly GitRepository repo;
+    private readonly GitRepositoryCache repositoryCache;
     private readonly Lazy<IReadOnlyCollection<IReference>> references;
 
-    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection, GitRepository repo)
+    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection, GitRepositoryCache repositoryCache)
     {
         this.innerCollection = collection.NotNull();
-        this.repo = repo.NotNull();
-        this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(repo.GetOrWrap)]);
+        this.repositoryCache = repositoryCache.NotNull();
+        this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
     }
 
     public IEnumerator<IReference> GetEnumerator() => this.references.Value.GetEnumerator();
@@ -30,7 +30,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
         get
         {
             var reference = this.innerCollection[name];
-            return reference is null ? null : this.repo.GetOrWrap(reference);
+            return reference is null ? null : this.repositoryCache.GetOrWrap(reference);
         }
     }
 
@@ -38,5 +38,5 @@ internal sealed class ReferenceCollection : IReferenceCollection
 
     public IReference? Head => this["HEAD"];
 
-    public IEnumerable<IReference> FromGlob(string prefix) => this.innerCollection.FromGlob(prefix).Select(reference => (IReference)this.repo.GetOrWrap(reference));
+    public IEnumerable<IReference> FromGlob(string prefix) => this.innerCollection.FromGlob(prefix).Select(reference => (IReference)this.repositoryCache.GetOrWrap(reference));
 }
