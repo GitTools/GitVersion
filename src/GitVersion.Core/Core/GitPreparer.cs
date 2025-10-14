@@ -218,7 +218,7 @@ internal class GitPreparer(
 
     private void EnsureHeadIsAttachedToBranch(string? currentBranchName, AuthenticationInfo authentication)
     {
-        var headSha = this.repository.Refs.Head?.TargetIdentifier;
+        var headSha = this.repository.References.Head?.TargetIdentifier;
         if (!this.repository.IsHeadDetached)
         {
             this.log.Info($"HEAD points at branch '{headSha}'.");
@@ -226,7 +226,7 @@ internal class GitPreparer(
         }
 
         this.log.Info($"HEAD is detached and points at commit '{headSha}'.");
-        var localRefs = this.repository.Refs.FromGlob("*").Select(r => $"{r.Name.Canonical} ({r.TargetIdentifier})");
+        var localRefs = this.repository.References.FromGlob("*").Select(r => $"{r.Name.Canonical} ({r.TargetIdentifier})");
         this.log.Info($"Local Refs:{FileSystemHelper.Path.NewLine}" + string.Join(FileSystemHelper.Path.NewLine, localRefs));
 
         // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
@@ -331,7 +331,7 @@ internal class GitPreparer(
         var prefix = $"refs/remotes/{remoteName}/";
         var remoteHeadCanonicalName = $"{prefix}HEAD";
         var headReferenceName = ReferenceName.Parse(remoteHeadCanonicalName);
-        var remoteTrackingReferences = this.repository.Refs
+        var remoteTrackingReferences = this.repository.References
             .FromGlob(prefix + "*")
             .Where(r => !r.Name.Equals(headReferenceName));
 
@@ -344,7 +344,7 @@ internal class GitPreparer(
             // We do not want to touch our current branch
             if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
 
-            var localRef = this.repository.Refs[localReferenceName];
+            var localRef = this.repository.References[localReferenceName];
             if (localRef != null)
             {
                 if (localRef.TargetIdentifier == remoteTrackingReference.TargetIdentifier)
@@ -356,13 +356,13 @@ internal class GitPreparer(
                 if (remoteRefTipId != null)
                 {
                     this.log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, remoteRefTipId));
+                    this.retryAction.Execute(() => this.repository.References.UpdateTarget(localRef, remoteRefTipId));
                 }
                 continue;
             }
 
             this.log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.Name.Canonical}'.");
-            this.repository.Refs.Add(localReferenceName.Canonical, remoteTrackingReference.TargetIdentifier, true);
+            this.repository.References.Add(localReferenceName.Canonical, remoteTrackingReference.TargetIdentifier, true);
 
             var branch = this.repository.Branches[branchName];
             if (branch != null)
@@ -406,17 +406,17 @@ internal class GitPreparer(
                 this.log.Info(isLocalBranch
                     ? $"Creating local branch {referenceName}"
                     : $"Creating local branch {referenceName} pointing at {repoTipId}");
-                this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
+                this.repository.References.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
                 this.log.Info(isLocalBranch
                     ? $"Updating local branch {referenceName} to point at {repoTipId}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
-                var localRef = this.repository.Refs[localCanonicalName];
+                var localRef = this.repository.References[localCanonicalName];
                 if (localRef != null)
                 {
-                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, repoTipId));
+                    this.retryAction.Execute(() => this.repository.References.UpdateTarget(localRef, repoTipId));
                 }
             }
         }

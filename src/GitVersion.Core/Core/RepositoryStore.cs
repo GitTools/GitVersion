@@ -111,7 +111,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     {
         var returnedBranches = new HashSet<IBranch>();
 
-        var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
+        var referenceLookup = this.repository.References.ToLookup(r => r.TargetIdentifier);
 
         var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
 
