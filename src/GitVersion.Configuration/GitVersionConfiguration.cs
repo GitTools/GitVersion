@@ -35,6 +35,11 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyDescription("Specifies the format of AssemblyFileVersion and overwrites the value of assembly-file-versioning-scheme.")]
     public string? AssemblyFileVersioningFormat { get; internal init; }
 
+    [JsonPropertyName("custom-version-format")]
+    [JsonPropertyDescription($"Specifies the format of CustomVersion. Defaults to '{DefaultCustomVersionFormat}'.")]
+    [JsonPropertyDefault($"'{DefaultCustomVersionFormat}'")]
+    public string? CustomVersionFormat { get; internal init; }
+
     [JsonPropertyName("tag-prefix")]
     [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixRegexPattern}'")]
     [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern)]
