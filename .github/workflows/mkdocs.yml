@@ -24,6 +24,10 @@ jobs:
         with:
           token: ${{ secrets.PUSH_GITHUB_TOKEN }}
       -
+        name: Checkout
+        uses: actions/checkout@v5
+        if: github.event_name == 'pull_request'
+      -
         name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
