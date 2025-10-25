@@ -5,15 +5,17 @@ namespace GitVersion.Git;
 internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
-    private IReadOnlyCollection<IRemote>? remotes;
+    private readonly GitRepositoryCache repositoryCache;
+    private readonly Lazy<IReadOnlyCollection<IRemote>> remotes;
 
-    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection) => this.innerCollection = collection.NotNull();
-
-    public IEnumerator<IRemote> GetEnumerator()
+    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection, GitRepositoryCache repositoryCache)
     {
-        this.remotes ??= [.. this.innerCollection.Select(reference => new Remote(reference))];
-        return this.remotes.GetEnumerator();
+        this.innerCollection = collection.NotNull();
+        this.repositoryCache = repositoryCache.NotNull();
+        this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
     }
+
+    public IEnumerator<IRemote> GetEnumerator() => this.remotes.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -22,19 +24,13 @@ internal sealed class RemoteCollection : IRemoteCollection
         get
         {
             var remote = this.innerCollection[name];
-            return remote is null ? null : new Remote(remote);
+            return remote is null ? null : this.repositoryCache.GetOrWrap(remote);
         }
     }
 
     public void Remove(string remoteName)
-    {
-        this.innerCollection.Remove(remoteName);
-        this.remotes = null;
-    }
+        => this.innerCollection.Remove(remoteName);
 
     public void Update(string remoteName, string refSpec)
-    {
-        this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
-        this.remotes = null;
-    }
+        => this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
 }

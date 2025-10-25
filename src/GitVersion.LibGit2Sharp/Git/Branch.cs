@@ -3,25 +3,25 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Git;
 
-internal sealed class Branch : IBranch
+internal readonly struct Branch : IBranch
 {
     private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.Name.Canonical);
     private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.Name.Canonical);
 
     private readonly LibGit2Sharp.Branch innerBranch;
 
-    internal Branch(LibGit2Sharp.Branch branch, LibGit2Sharp.Diff diff, GitRepository repo)
+    internal Branch(LibGit2Sharp.Branch branch, LibGit2Sharp.Diff diff, GitRepositoryCache repositoryCache)
     {
         diff.NotNull();
-        repo.NotNull();
+        repositoryCache.NotNull();
         this.innerBranch = branch.NotNull();
         Name = new(branch.CanonicalName);
 
         var commit = this.innerBranch.Tip;
-        Tip = commit is null ? null : repo.GetOrCreate(commit, diff);
+        Tip = commit is null ? null : repositoryCache.GetOrWrap(commit, diff);
 
         var commits = this.innerBranch.Commits;
-        Commits = new CommitCollection(commits, diff, repo);
+        Commits = new CommitCollection(commits, diff, repositoryCache);
     }
 
     public ReferenceName Name { get; }

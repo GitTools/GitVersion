@@ -146,27 +146,25 @@ public class PullRequestInBuildAgentTest
         using var fixture = new EmptyRepositoryFixture();
         var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
-        using (var remoteRepository = new Repository(remoteRepositoryPath))
-        {
-            remoteRepository.Config.Set("user.name", "Test");
-            remoteRepository.Config.Set("user.email", "test@email.com");
-            fixture.Repository.Network.Remotes.Add("origin", remoteRepositoryPath);
-            Console.WriteLine("Created git repository at {0}", remoteRepositoryPath);
-            remoteRepository.MakeATaggedCommit("1.0.3");
+        using var remoteRepository = new Repository(remoteRepositoryPath);
+        remoteRepository.Config.Set("user.name", "Test");
+        remoteRepository.Config.Set("user.email", "test@email.com");
+        fixture.Repository.Network.Remotes.Add("origin", remoteRepositoryPath);
+        Console.WriteLine("Created git repository at {0}", remoteRepositoryPath);
+        remoteRepository.MakeATaggedCommit("1.0.3");
 
-            var branch = remoteRepository.CreateBranch("FeatureBranch");
-            Commands.Checkout(remoteRepository, branch);
-            remoteRepository.MakeCommits(2);
-            Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
-            //Emulate merge commit
-            var mergeCommitSha = remoteRepository.MakeACommit().Sha;
-            Commands.Checkout(remoteRepository, TestBase.MainBranch); // HEAD cannot be pointing at the merge commit
-            remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
+        var branch = remoteRepository.CreateBranch("FeatureBranch");
+        Commands.Checkout(remoteRepository, branch);
+        remoteRepository.MakeCommits(2);
+        Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
+        //Emulate merge commit
+        var mergeCommitSha = remoteRepository.MakeACommit().Sha;
+        Commands.Checkout(remoteRepository, TestBase.MainBranch); // HEAD cannot be pointing at the merge commit
+        remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
-            // Checkout PR commit
-            Commands.Fetch(fixture.Repository, "origin", [], new FetchOptions(), null);
-            Commands.Checkout(fixture.Repository, mergeCommitSha);
-        }
+        // Checkout PR commit
+        Commands.Fetch(fixture.Repository, "origin", [], new FetchOptions(), null);
+        Commands.Checkout(fixture.Repository, mergeCommitSha);
 
         var programFixture = new ProgramFixture(fixture.RepositoryPath);
         programFixture.WithOverrides(services =>
@@ -199,12 +197,12 @@ public class PullRequestInBuildAgentTest
     public void VerifyPullRequestInput(string pullRequestRef, string friendly, bool isBranch, bool isPullRequest, bool isRemote)
     {
         var refName = new ReferenceName(pullRequestRef);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(refName.Friendly, Is.EqualTo(friendly));
             Assert.That(refName.IsLocalBranch, Is.EqualTo(isBranch));
             Assert.That(refName.IsPullRequest, Is.EqualTo(isPullRequest));
             Assert.That(refName.IsRemoteBranch, Is.EqualTo(isRemote));
-        });
+        }
     }
 }

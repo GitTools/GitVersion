@@ -43,7 +43,7 @@ public class RepositoryExtensionsTests : TestBase
         references["develop"].Returns(reference);
         references.MockCollectionReturn(reference);
 
-        repository.Refs.Returns(references);
+        repository.References.Returns(references);
         repository.Head.Returns(branch);
         repository.Branches.Returns(branches);
         return remote;

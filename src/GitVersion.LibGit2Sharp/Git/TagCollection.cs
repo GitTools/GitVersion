@@ -6,16 +6,15 @@ internal sealed class TagCollection : ITagCollection
 {
     private readonly Lazy<IReadOnlyCollection<ITag>> tags;
 
-    internal TagCollection(LibGit2Sharp.TagCollection collection, LibGit2Sharp.Diff diff, GitRepository repo)
+    internal TagCollection(LibGit2Sharp.TagCollection collection, LibGit2Sharp.Diff diff, GitRepositoryCache repositoryCache)
     {
         collection.NotNull();
         diff.NotNull();
-        repo.NotNull();
-        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => repo.GetOrCreate(tag, diff))]);
+        repositoryCache.NotNull();
+        this.tags = new Lazy<IReadOnlyCollection<ITag>>(() => [.. collection.Select(tag => repositoryCache.GetOrWrap(tag, diff))]);
     }
 
-    public IEnumerator<ITag> GetEnumerator()
-        => this.tags.Value.GetEnumerator();
+    public IEnumerator<ITag> GetEnumerator() => this.tags.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

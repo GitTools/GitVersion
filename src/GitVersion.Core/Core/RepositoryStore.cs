@@ -111,7 +111,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     {
         var returnedBranches = new HashSet<IBranch>();
 
-        var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
+        var referenceLookup = this.repository.References.ToLookup(r => r.TargetIdentifier);
 
         var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
 
@@ -231,7 +231,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         return [.. ignore.Filter(commits)];
     }
 
-    public IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
+    public IReadOnlyList<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch };
 

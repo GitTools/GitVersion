@@ -1,6 +1,6 @@
 namespace GitVersion.Git;
 
-internal sealed class TreeChanges(LibGit2Sharp.TreeChanges innerTreeChanges) : ITreeChanges
+internal readonly struct TreeChanges(LibGit2Sharp.TreeChanges innerTreeChanges) : ITreeChanges
 {
     private readonly LibGit2Sharp.TreeChanges innerTreeChanges = innerTreeChanges ?? throw new ArgumentNullException(nameof(innerTreeChanges));
 
