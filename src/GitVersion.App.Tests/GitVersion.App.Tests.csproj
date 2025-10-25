@@ -16,6 +16,7 @@
         <Content Include="Approved\**\*.approved.txt" />
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="Polly" VersionOverride="8.6.4" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestConsoleAdapter.cs" Link="Helpers\TestConsoleAdapter.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
