@@ -82,6 +82,30 @@ assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSour
 assembly-informational-format: "{SemVer}-{BranchName:l}"
 ```
 
+## Legacy .NET Composite Format Syntax
+
+GitVersion maintains backward compatibility with legacy .NET composite format syntax using semicolons for positive/negative/zero sections:
+
+```yaml
+# Legacy zero-padded with empty fallback
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000;;''}"
+# Result: "6.13.54-0002" (or "6.13.54" when CommitsSinceVersionSource is 0)
+
+# Three-section format: positive;negative;zero
+assembly-informational-format: "{Value:positive;negative;zero}"
+
+# Two-section format: positive;negative
+assembly-informational-format: "{Value:pos;neg}"
+```
+
+**Format Sections:**
+- **First section**: Used for positive values
+- **Second section**: Used for negative values  
+- **Third section**: Used for zero values (optional)
+- **Empty quotes** (`''` or `""`) create empty output
+
+**Mixed Syntax:** You can combine legacy semicolon syntax with modern `??` fallback syntax in the same template.
+
 ## Examples
 
 Based on actual test cases from the implementation:
