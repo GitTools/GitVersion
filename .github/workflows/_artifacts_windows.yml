@@ -24,7 +24,7 @@ jobs:
       name: Restore State
       uses: ./.github/actions/cache-restore
     -
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       name: Download nuget packages
       with:
         name: nuget
