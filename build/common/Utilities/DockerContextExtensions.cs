@@ -210,7 +210,7 @@ public static class DockerContextExtensions
             $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
         };
 
-        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
+        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.DotnetLtsLatest)
         {
             tags.Add($"{name}:{context.Version.SemVersion}");
 

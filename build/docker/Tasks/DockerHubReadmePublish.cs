@@ -57,7 +57,7 @@ public class DockerHubReadmePublishInternal : AsyncFrostingTask<BuildContext>
         ArgumentNullException.ThrowIfNull(context.Version);
         var version = context.Version.GitVersion.MajorMinorPatch;
         const string distro = Constants.AlpineLatest;
-        const string dotnetVersion = Constants.VersionLatest;
+        const string dotnetVersion = Constants.DotnetLtsLatest;
         var tag = $"{version}-{distro}-{dotnetVersion}";
         // language=markdown
         var readme = $"""

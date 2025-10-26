@@ -51,7 +51,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
         var settings = new DotNetPublishSettings
         {
-            Framework = $"net{Constants.VersionLatest}",
+            Framework = $"net{Constants.DotnetLtsLatest}",
             Runtime = runtime,
             NoRestore = false,
             Configuration = context.MsBuildConfiguration,
