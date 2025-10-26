@@ -24,10 +24,10 @@ public static class Constants
     public const string GitHubContainerRegistry = "ghcr.io";
     public static readonly string[] DockerRegistries = [DockerHub, GitHub];
 
-    public const string AlpineLatest = "alpine.3.21";
-    public const string CentosStreamLatest = "centos.stream.9";
+    public const string AlpineLatest = "alpine.3.22";
+    public const string CentosLatest = "centos.stream.9";
     public const string DebianLatest = "debian.12";
-    public const string FedoraLatest = "fedora.41";
+    public const string FedoraLatest = "fedora.42";
     public const string UbuntuLatest = "ubuntu.24.04";
 
     public const string DockerDistroLatest = DebianLatest;
@@ -35,7 +35,7 @@ public static class Constants
     public static readonly string[] DockerDistros =
     [
         AlpineLatest,
-        CentosStreamLatest,
+        CentosLatest,
         DebianLatest,
         FedoraLatest,
         UbuntuLatest,
