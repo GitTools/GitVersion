@@ -1,12 +1,8 @@
-using Common.Utilities;
+using Common.Context;
 
 namespace Artifacts;
 
-public class BuildContext(ICakeContext context) : BuildContextBase(context)
+public class BuildContext(ICakeContext context) : DockerBuildContext(context)
 {
     public string MsBuildConfiguration { get; } = Constants.DefaultConfiguration;
-
-    public bool IsDockerOnLinux { get; set; }
-
-    public IEnumerable<DockerImage> Images { get; set; } = new List<DockerImage>();
 }
