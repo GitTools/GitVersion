@@ -73,7 +73,7 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
             this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
-            Refs.Add(fakeBranchName, headTipSha);
+            References.Add(fakeBranchName, headTipSha);
 
             this.log.Info($"Checking local branch '{fakeBranchName}' out.");
             Checkout(fakeBranchName);

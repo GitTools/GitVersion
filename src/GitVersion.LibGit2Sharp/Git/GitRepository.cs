@@ -28,10 +28,10 @@ internal sealed partial class GitRepository
     public IBranch Head => GetOrCreate(RepositoryInstance.Head, RepositoryInstance.Diff);
 
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this);
-    public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff, this);
     public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this);
     public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
+    public IReferenceCollection References => new ReferenceCollection(RepositoryInstance.Refs);
 
     public void DiscoverRepository(string? gitDirectory)
     {

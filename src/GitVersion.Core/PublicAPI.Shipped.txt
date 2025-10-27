@@ -235,7 +235,6 @@ GitVersion.Git.IGitRepository.Head.get -> GitVersion.Git.IBranch!
 GitVersion.Git.IGitRepository.IsHeadDetached.get -> bool
 GitVersion.Git.IGitRepository.IsShallow.get -> bool
 GitVersion.Git.IGitRepository.Path.get -> string!
-GitVersion.Git.IGitRepository.Refs.get -> GitVersion.Git.IReferenceCollection!
 GitVersion.Git.IGitRepository.Remotes.get -> GitVersion.Git.IRemoteCollection!
 GitVersion.Git.IGitRepository.Tags.get -> GitVersion.Git.ITagCollection!
 GitVersion.Git.IGitRepository.UncommittedChangesCount() -> int

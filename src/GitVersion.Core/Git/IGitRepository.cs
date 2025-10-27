@@ -10,7 +10,7 @@ public interface IGitRepository : IDisposable
     IBranch Head { get; }
 
     ITagCollection Tags { get; }
-    IReferenceCollection Refs { get; }
+    IReferenceCollection References { get; }
     IBranchCollection Branches { get; }
     ICommitCollection Commits { get; }
     IRemoteCollection Remotes { get; }
