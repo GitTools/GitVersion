@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Git;
 
-internal sealed class Commit : GitObject, ICommit
+internal sealed class Commit : ICommit
 {
     private static readonly ConcurrentDictionary<string, IReadOnlyList<string>> pathsCache = new();
     private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
@@ -14,12 +14,14 @@ internal sealed class Commit : GitObject, ICommit
     private readonly LibGit2Sharp.Commit innerCommit;
     private readonly LibGit2Sharp.Diff repoDiff;
 
-    internal Commit(LibGit2Sharp.Commit innerCommit, LibGit2Sharp.Diff repoDiff, GitRepository repo) : base(innerCommit)
+    internal Commit(LibGit2Sharp.Commit innerCommit, LibGit2Sharp.Diff repoDiff, GitRepository repo)
     {
         repoDiff.NotNull();
         repo.NotNull();
         this.innerCommit = innerCommit.NotNull();
         this.parentsLazy = new(() => innerCommit.Parents.Select(parent => repo.GetOrCreate(parent, repoDiff)).ToList());
+        Id = new ObjectId(innerCommit.Id);
+        Sha = innerCommit.Sha;
         When = innerCommit.Committer.When;
         this.repoDiff = repoDiff;
     }
@@ -27,6 +29,8 @@ internal sealed class Commit : GitObject, ICommit
     public int CompareTo(ICommit? other) => comparerHelper.Compare(this, other);
     public bool Equals(ICommit? other) => equalityHelper.Equals(this, other);
     public IReadOnlyList<ICommit> Parents => this.parentsLazy.Value;
+    public IObjectId Id { get; }
+    public string Sha { get; }
     public DateTimeOffset When { get; }
     public string Message => this.innerCommit.Message;
     public IReadOnlyList<string> DiffPaths

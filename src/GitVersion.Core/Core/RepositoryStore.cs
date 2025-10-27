@@ -231,7 +231,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         return [.. ignore.Filter(commits)];
     }
 
-    public IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
+    public IReadOnlyList<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch };
 

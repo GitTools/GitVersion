@@ -21,7 +21,7 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
         return InnerGetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
-    private IEnumerable<IBranch> InnerGetBranchesContainingCommit(IGitObject commit, IEnumerable<IBranch> branches, bool onlyTrackedBranches)
+    private IEnumerable<IBranch> InnerGetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch> branches, bool onlyTrackedBranches)
     {
         using (log.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
         {
@@ -63,6 +63,6 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
     private static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked)
         => (includeOnlyTracked && branch.IsTracking) || !includeOnlyTracked;
 
-    private static bool BranchTipIsNullOrCommit(IBranch branch, IGitObject commit)
+    private static bool BranchTipIsNullOrCommit(IBranch branch, ICommit commit)
         => branch.Tip == null || branch.Tip.Sha == commit.Sha;
 }

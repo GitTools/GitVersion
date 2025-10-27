@@ -199,8 +199,6 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     {
         public bool Equals(ICommit? other) => throw new NotImplementedException();
         public int CompareTo(ICommit? other) => throw new NotImplementedException();
-        public bool Equals(IGitObject? other) => throw new NotImplementedException();
-        public int CompareTo(IGitObject? other) => throw new NotImplementedException();
         public IObjectId Id => throw new NotImplementedException();
         public string Sha => throw new NotImplementedException();
         public IReadOnlyList<ICommit> Parents => throw new NotImplementedException();

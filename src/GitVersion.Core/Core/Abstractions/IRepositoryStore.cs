@@ -22,7 +22,7 @@ public interface IRepositoryStore
 
     IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore);
     IReadOnlyList<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore);
-    IReadOnlyList<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch);
+    IReadOnlyList<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch);
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(ReferenceName branchName);
