@@ -34,6 +34,9 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("Suitable for .NET AssemblyInformationalVersion. Defaults to FullSemVer suffixed by FullBuildMetaData.")]
     public string? InformationalVersion { get; set; }
 
+    [JsonPropertyDescription("A custom version, suitable for package managers, e.g. NuGet, with appropriate formatting. Defaults to SemVer.")]
+    public string? CustomVersion { get; set; }
+
     [JsonPropertyDescription("The major version. Should be incremented on breaking changes.")]
     public int? Major { get; set; }
 
