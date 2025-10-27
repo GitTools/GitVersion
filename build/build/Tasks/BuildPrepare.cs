@@ -25,7 +25,7 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
                 Verbosity = DotNetVerbosity.Minimal,
                 Configuration = Constants.DefaultConfiguration,
                 OutputDirectory = Paths.Tools.Combine("gitversion"),
-                Framework = $"net{Constants.VersionLatest}",
+                Framework = $"net{Constants.DotnetLtsLatest}",
                 NoRestore = true,
             });
 
@@ -35,7 +35,7 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
                 Verbosity = DotNetVerbosity.Minimal,
                 Configuration = Constants.DefaultConfiguration,
                 OutputDirectory = Paths.Tools.Combine("schema"),
-                Framework = $"net{Constants.VersionLatest}",
+                Framework = $"net{Constants.DotnetLtsLatest}",
                 NoRestore = true,
             });
     }

@@ -1,7 +1,7 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="UnitTest (8.0)" type="DotNetProject" factoryName=".NET Project" folderName="Unit Test">
+  <configuration default="false" name="UnitTest (Lts Latest)" type="DotNetProject" factoryName=".NET Project" folderName="Unit Test">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/build" />
-    <option name="PROGRAM_PARAMETERS" value="--target=UnitTest --dotnet_version=8.0" />
+    <option name="PROGRAM_PARAMETERS" value="--target=UnitTest --dotnet_version=lts-latest" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />

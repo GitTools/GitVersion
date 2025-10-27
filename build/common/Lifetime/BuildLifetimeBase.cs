@@ -32,7 +32,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         }
 
         var gitVersionPath = context.GetGitVersionDotnetToolLocation();
-        if (gitVersionPath is null || context.FileExists(gitVersionPath) is false)
+        if (gitVersionPath is null || !context.FileExists(gitVersionPath))
         {
             throw new FileNotFoundException("Failed to locate the Release build of gitversion.dll in ./tools/gitversion. Try running \"./build.ps1 -Stage build -Target BuildPrepare\"");
         }

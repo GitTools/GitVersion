@@ -20,6 +20,10 @@ public class UnitTest : FrostingTask<BuildContext>
         var frameworks = Constants.DotnetVersions;
         if (!string.IsNullOrWhiteSpace(dotnetVersion))
         {
+            if (string.Equals(dotnetVersion, "lts-latest", StringComparison.OrdinalIgnoreCase))
+            {
+                dotnetVersion = Constants.DotnetLtsLatest;
+            }
             if (!frameworks.Contains(dotnetVersion, StringComparer.OrdinalIgnoreCase))
             {
                 throw new Exception($"Dotnet Target {dotnetVersion} is not supported at the moment");
