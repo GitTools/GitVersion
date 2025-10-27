@@ -88,14 +88,14 @@ internal static class FileSystemHelper
 
         public static string GetDirectoryName(string? path)
         {
-            ArgumentNullException.ThrowIfNull(path, nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             return fileSystem.Path.GetDirectoryName(path)!;
         }
 
         public static string GetFileName(string? path)
         {
-            ArgumentNullException.ThrowIfNull(path, nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             return fileSystem.Path.GetFileName(path);
         }
@@ -116,7 +116,7 @@ internal static class FileSystemHelper
 
         public static string Combine(string? path1)
         {
-            ArgumentNullException.ThrowIfNull(path1, nameof(path1));
+            ArgumentNullException.ThrowIfNull(path1);
 
             return fileSystem.Path.Combine(path1);
         }

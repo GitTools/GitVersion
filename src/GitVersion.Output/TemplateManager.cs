@@ -16,7 +16,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetTemplateFor(string? fileExtension)
     {
-        ArgumentNullException.ThrowIfNull(fileExtension, nameof(fileExtension));
+        ArgumentNullException.ThrowIfNull(fileExtension);
 
         string? result = null;
 
@@ -30,7 +30,7 @@ internal class TemplateManager(TemplateType templateType)
 
     public string? GetAddFormatFor(string? fileExtension)
     {
-        ArgumentNullException.ThrowIfNull(fileExtension, nameof(fileExtension));
+        ArgumentNullException.ThrowIfNull(fileExtension);
 
         string? result = null;
 
