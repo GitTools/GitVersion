@@ -11,14 +11,14 @@ internal sealed class Tag : ITag
     private readonly LibGit2Sharp.Tag innerTag;
     private readonly Diff diff;
     private readonly Lazy<ICommit?> commitLazy;
-    private readonly GitRepository repo;
+    private readonly GitRepositoryCache repositoryCache;
 
-    internal Tag(LibGit2Sharp.Tag tag, Diff diff, GitRepository repo)
+    internal Tag(LibGit2Sharp.Tag tag, Diff diff, GitRepositoryCache repositoryCache)
     {
         this.innerTag = tag.NotNull();
-        this.commitLazy = new(PeeledTargetCommit);
         this.diff = diff.NotNull();
-        this.repo = repo.NotNull();
+        this.repositoryCache = repositoryCache.NotNull();
+        this.commitLazy = new(PeeledTargetCommit);
         Name = new(this.innerTag.CanonicalName);
     }
 
@@ -28,7 +28,7 @@ internal sealed class Tag : ITag
     public string TargetSha => this.innerTag.Target.Sha;
     public ICommit Commit => this.commitLazy.Value.NotNull();
 
-    private Commit? PeeledTargetCommit()
+    private ICommit? PeeledTargetCommit()
     {
         var target = this.innerTag.Target;
 
@@ -37,7 +37,7 @@ internal sealed class Tag : ITag
             target = annotation.Target;
         }
 
-        return target is LibGit2Sharp.Commit commit ? this.repo.GetOrCreate(commit, this.diff) : null;
+        return target is LibGit2Sharp.Commit commit ? this.repositoryCache.GetOrWrap(commit, this.diff) : null;
     }
 
     public override bool Equals(object? obj) => Equals(obj as ITag);

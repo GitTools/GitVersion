@@ -5,13 +5,13 @@ namespace GitVersion.Git;
 internal sealed class ReferenceCollection : IReferenceCollection
 {
     private readonly LibGit2Sharp.ReferenceCollection innerCollection;
-    private readonly GitRepository repo;
+    private readonly GitRepositoryCache repositoryCache;
     private Lazy<IReadOnlyCollection<IReference>> references = null!;
 
-    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection, GitRepository repo)
+    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection, GitRepositoryCache repositoryCache)
     {
         this.innerCollection = collection.NotNull();
-        this.repo = repo.NotNull();
+        this.repositoryCache = repositoryCache.NotNull();
         InitializeReferencesLazy();
     }
 
@@ -24,7 +24,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
         get
         {
             var reference = this.innerCollection[name];
-            return reference is null ? null : this.repo.GetOrCreate(reference);
+            return reference is null ? null : this.repositoryCache.GetOrWrap(reference);
         }
     }
 
@@ -33,7 +33,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
     public IReference? Head => this["HEAD"];
 
     public IEnumerable<IReference> FromGlob(string prefix)
-        => this.innerCollection.FromGlob(prefix).Select(reference => this.repo.GetOrCreate(reference));
+        => this.innerCollection.FromGlob(prefix).Select(reference => this.repositoryCache.GetOrWrap(reference));
 
     public void Add(string name, string canonicalRefNameOrObject, bool allowOverwrite = false) =>
         RepositoryExtensions.RunSafe(() =>
@@ -50,5 +50,5 @@ internal sealed class ReferenceCollection : IReferenceCollection
         });
 
     private void InitializeReferencesLazy()
-        => this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(repo.GetOrCreate)]);
+        => this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
 }

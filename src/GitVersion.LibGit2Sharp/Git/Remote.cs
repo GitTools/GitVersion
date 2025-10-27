@@ -9,12 +9,12 @@ internal sealed class Remote : IRemote
     private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
 
     private readonly LibGit2Sharp.Remote innerRemote;
-    private readonly GitRepository repo;
+    private readonly GitRepositoryCache repositoryCache;
 
-    internal Remote(LibGit2Sharp.Remote remote, GitRepository repo)
+    internal Remote(LibGit2Sharp.Remote remote, GitRepositoryCache repositoryCache)
     {
         this.innerRemote = remote.NotNull();
-        this.repo = repo.NotNull();
+        this.repositoryCache = repositoryCache.NotNull();
     }
 
     public int CompareTo(IRemote? other) => comparerHelper.Compare(this, other);
@@ -29,7 +29,7 @@ internal sealed class Remote : IRemote
             var refSpecs = this.innerRemote.RefSpecs;
             return refSpecs is null
                 ? []
-                : new RefSpecCollection((LibGit2Sharp.RefSpecCollection)refSpecs, repo);
+                : new RefSpecCollection((LibGit2Sharp.RefSpecCollection)refSpecs, this.repositoryCache);
         }
     }
 
