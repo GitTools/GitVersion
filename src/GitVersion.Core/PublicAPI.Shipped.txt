@@ -364,7 +364,6 @@ GitVersion.IGitPreparer.Prepare() -> void
 GitVersion.IGitVersionCalculateTool
 GitVersion.IGitVersionCalculateTool.CalculateVersionVariables() -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.IGitVersionContextFactory
-GitVersion.IGitVersionContextFactory.Create(GitVersion.GitVersionOptions! gitVersionOptions) -> GitVersion.GitVersionContext!
 GitVersion.IGitVersionModule
 GitVersion.IGitVersionModule.FindAllDerivedTypes<T>(System.Reflection.Assembly? assembly) -> System.Collections.Generic.IEnumerable<System.Type!>!
 GitVersion.IGitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

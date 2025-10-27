@@ -695,9 +695,8 @@ public class GitVersionExecutorTests : TestBase
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
             services.AddSingleton(sp =>
             {
-                var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
+                return new Lazy<GitVersionContext>(() => contextFactory.Create());
             });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);

@@ -3,3 +3,4 @@ GitVersion.Common.IRepositoryStore.GetCommitsReacheableFrom(GitVersion.Git.IComm
 GitVersion.Git.ICommit.Id.get -> GitVersion.Git.IObjectId!
 GitVersion.Git.ICommit.Sha.get -> string!
 GitVersion.Git.IGitRepository.References.get -> GitVersion.Git.IReferenceCollection!
+GitVersion.IGitVersionContextFactory.Create() -> GitVersion.GitVersionContext!

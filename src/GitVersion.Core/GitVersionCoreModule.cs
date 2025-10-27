@@ -4,7 +4,6 @@ using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
@@ -25,9 +24,8 @@ public class GitVersionCoreModule : IGitVersionModule
         services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
         services.AddSingleton(sp =>
         {
-            var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
             var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
-            return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
+            return new Lazy<GitVersionContext>(() => contextFactory.Create());
         });
 
         services.AddModule(new GitVersionCommonModule());

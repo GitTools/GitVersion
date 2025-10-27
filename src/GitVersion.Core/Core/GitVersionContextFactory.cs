@@ -18,9 +18,10 @@ internal class GitVersionContextFactory(
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
-    public GitVersionContext Create(GitVersionOptions gitVersionOptions)
+    public GitVersionContext Create()
     {
-        var overrideConfiguration = this.options.Value.ConfigurationInfo.OverrideConfiguration;
+        var gitVersionOptions = this.options.Value;
+        var overrideConfiguration = gitVersionOptions.ConfigurationInfo.OverrideConfiguration;
         var configuration = this.configurationProvider.Provide(overrideConfiguration);
 
         var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch)
