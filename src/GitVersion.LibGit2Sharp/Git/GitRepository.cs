@@ -12,6 +12,9 @@ internal sealed partial class GitRepository
     private readonly ConcurrentDictionary<string, Branch> cachedBranches = new();
     private readonly ConcurrentDictionary<string, Commit> cachedCommits = new();
     private readonly ConcurrentDictionary<string, Tag> cachedTags = new();
+    private readonly ConcurrentDictionary<string, Remote> cachedRemotes = new();
+    private readonly ConcurrentDictionary<string, Reference> cachedReferences = new();
+    private readonly ConcurrentDictionary<string, RefSpec> cachedRefSpecs = new();
 
     private IRepository RepositoryInstance
     {
@@ -30,8 +33,8 @@ internal sealed partial class GitRepository
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this);
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff, this);
     public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this);
-    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
-    public IReferenceCollection References => new ReferenceCollection(RepositoryInstance.Refs);
+    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes, this);
+    public IReferenceCollection References => new ReferenceCollection(RepositoryInstance.Refs, this);
 
     public void DiscoverRepository(string? gitDirectory)
     {
@@ -76,6 +79,15 @@ internal sealed partial class GitRepository
 
     public Tag GetOrCreate(LibGit2Sharp.Tag innerTag, Diff repoDiff)
         => cachedTags.GetOrAdd(innerTag.CanonicalName, _ => new Tag(innerTag, repoDiff, this));
+
+    public Remote GetOrCreate(LibGit2Sharp.Remote innerRemote)
+        => cachedRemotes.GetOrAdd(innerRemote.Name, _ => new Remote(innerRemote, this));
+
+    public Reference GetOrCreate(LibGit2Sharp.Reference innerReference)
+        => cachedReferences.GetOrAdd(innerReference.CanonicalName, _ => new Reference(innerReference));
+
+    public RefSpec GetOrCreate(LibGit2Sharp.RefSpec innerRefSpec)
+        => cachedRefSpecs.GetOrAdd(innerRefSpec.Specification, _ => new RefSpec(innerRefSpec));
 
     public void Dispose()
     {

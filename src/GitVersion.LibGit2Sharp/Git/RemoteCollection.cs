@@ -5,15 +5,17 @@ namespace GitVersion.Git;
 internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
-    private IReadOnlyCollection<IRemote>? remotes;
+    private readonly GitRepository repo;
+    private Lazy<IReadOnlyCollection<IRemote>> remotes = null!;
 
-    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection) => this.innerCollection = collection.NotNull();
-
-    public IEnumerator<IRemote> GetEnumerator()
+    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection, GitRepository repo)
     {
-        this.remotes ??= [.. this.innerCollection.Select(reference => new Remote(reference))];
-        return this.remotes.GetEnumerator();
+        this.innerCollection = collection.NotNull();
+        this.repo = repo.NotNull();
+        InitializeRemotesLazy();
     }
+
+    public IEnumerator<IRemote> GetEnumerator() => this.remotes.Value.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -22,19 +24,24 @@ internal sealed class RemoteCollection : IRemoteCollection
         get
         {
             var remote = this.innerCollection[name];
-            return remote is null ? null : new Remote(remote);
+            return remote is null ? null : this.repo.GetOrCreate(remote);
         }
     }
 
-    public void Remove(string remoteName)
-    {
-        this.innerCollection.Remove(remoteName);
-        this.remotes = null;
-    }
+    public void Remove(string remoteName) =>
+        RepositoryExtensions.RunSafe(() =>
+        {
+            this.innerCollection.Remove(remoteName);
+            InitializeRemotesLazy();
+        });
 
-    public void Update(string remoteName, string refSpec)
-    {
-        this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
-        this.remotes = null;
-    }
+    public void Update(string remoteName, string refSpec) =>
+        RepositoryExtensions.RunSafe(() =>
+        {
+            this.innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
+            InitializeRemotesLazy();
+        });
+
+    private void InitializeRemotesLazy()
+        => this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(repo.GetOrCreate)]);
 }

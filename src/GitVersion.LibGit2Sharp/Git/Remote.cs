@@ -9,22 +9,27 @@ internal sealed class Remote : IRemote
     private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
 
     private readonly LibGit2Sharp.Remote innerRemote;
+    private readonly GitRepository repo;
 
-    internal Remote(LibGit2Sharp.Remote remote) => this.innerRemote = remote.NotNull();
+    internal Remote(LibGit2Sharp.Remote remote, GitRepository repo)
+    {
+        this.innerRemote = remote.NotNull();
+        this.repo = repo.NotNull();
+    }
 
     public int CompareTo(IRemote? other) => comparerHelper.Compare(this, other);
     public bool Equals(IRemote? other) => equalityHelper.Equals(this, other);
     public string Name => this.innerRemote.Name;
     public string Url => this.innerRemote.Url;
 
-    public IEnumerable<IRefSpec> RefSpecs
+    private IEnumerable<IRefSpec> RefSpecs
     {
         get
         {
             var refSpecs = this.innerRemote.RefSpecs;
             return refSpecs is null
                 ? []
-                : new RefSpecCollection((LibGit2Sharp.RefSpecCollection)refSpecs);
+                : new RefSpecCollection((LibGit2Sharp.RefSpecCollection)refSpecs, repo);
         }
     }
 
