@@ -69,7 +69,9 @@ internal sealed partial class GitRepository
 
     public void Dispose()
     {
-        if (this.repositoryLazy is { IsValueCreated: true }) RepositoryInstance.Dispose();
+        if (this.repositoryLazy is not { IsValueCreated: true }) return;
+        RepositoryInstance.Dispose();
+        this.repositoryLazy = null;
     }
 
     private int GetUncommittedChangesCountInternal()

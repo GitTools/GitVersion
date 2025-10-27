@@ -89,7 +89,8 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        return new Repository(gitDirectory).Info.WorkingDirectory;
+        using var repo = new Repository(gitDirectory);
+        return repo.Info.WorkingDirectory;
     }
 
     private string? GetGitRootPath()
@@ -104,7 +105,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
-            var gitRepository = new Repository(possiblePath);
+            using var gitRepository = new Repository(possiblePath);
             return gitRepository.Network.Remotes.Any(r => r.Url == targetUrl);
         }
         catch (Exception)

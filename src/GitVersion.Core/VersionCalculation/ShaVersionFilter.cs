@@ -30,7 +30,9 @@ internal class ShaVersionFilter(IEnumerable<string> shaList) : IVersionFilter
 
         if (commit == null
             || !this.shaList.Any(sha => commit.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
+        {
             return false;
+        }
 
         reason = $"Sha {commit} was ignored due to commit having been excluded by configuration";
         return true;
