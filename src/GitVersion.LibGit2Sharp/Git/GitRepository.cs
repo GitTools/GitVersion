@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -8,10 +7,7 @@ namespace GitVersion.Git;
 internal sealed partial class GitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
-
-    private readonly ConcurrentDictionary<string, Branch> cachedBranches = new();
-    private readonly ConcurrentDictionary<string, Commit> cachedCommits = new();
-    private readonly ConcurrentDictionary<string, Tag> cachedTags = new();
+    private readonly GitRepositoryCache repositoryCache = new();
 
     private IRepository RepositoryInstance
     {
@@ -25,13 +21,21 @@ internal sealed partial class GitRepository
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
     public bool IsShallow => RepositoryInstance.Info.IsShallow;
-    public IBranch Head => GetOrCreate(RepositoryInstance.Head, RepositoryInstance.Diff);
+    public IBranch Head => this.repositoryCache.GetOrWrap(RepositoryInstance.Head, RepositoryInstance.Diff);
 
-    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this);
-    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff, this);
-    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this);
-    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
-    public IReferenceCollection References => new ReferenceCollection(RepositoryInstance.Refs);
+    private ITagCollection? tags;
+    public ITagCollection Tags => this.tags ??= new TagCollection(RepositoryInstance.Tags, RepositoryInstance.Diff, this.repositoryCache);
+
+    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches, RepositoryInstance.Diff, this.repositoryCache);
+
+    private ICommitCollection? commits;
+    public ICommitCollection Commits => this.commits ??= new CommitCollection(RepositoryInstance.Commits, RepositoryInstance.Diff, this.repositoryCache);
+
+    private IRemoteCollection? remotes;
+    public IRemoteCollection Remotes => this.remotes ??= new RemoteCollection(RepositoryInstance.Network.Remotes, this.repositoryCache);
+
+    private IReferenceCollection? references;
+    public IReferenceCollection References => this.references ??= new ReferenceCollection(RepositoryInstance.Refs, this.repositoryCache);
 
     public void DiscoverRepository(string? gitDirectory)
     {
@@ -53,7 +57,7 @@ internal sealed partial class GitRepository
             var first = (Commit)commit;
             var second = (Commit)otherCommit;
             var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
-            return mergeBase == null ? null : GetOrCreate(mergeBase, RepositoryInstance.Diff);
+            return mergeBase == null ? null : this.repositoryCache.GetOrWrap(mergeBase, RepositoryInstance.Diff);
         });
     }
 
@@ -61,26 +65,6 @@ internal sealed partial class GitRepository
     {
         var retryAction = new RetryAction<LibGit2Sharp.LockedFileException, int>();
         return retryAction.Execute(GetUncommittedChangesCountInternal);
-    }
-
-    public Branch GetOrCreate(LibGit2Sharp.Branch innerBranch, Diff repoDiff)
-    {
-        if (innerBranch.Tip is null)
-        {
-            return new Branch(innerBranch, repoDiff, this);
-        }
-
-        var cacheKey = $"{innerBranch.CanonicalName}|{innerBranch.Tip.Sha}|{innerBranch.RemoteName}";
-        return cachedBranches.GetOrAdd(cacheKey, new Branch(innerBranch, repoDiff, this));
-    }
-
-    public Commit GetOrCreate(LibGit2Sharp.Commit innerCommit, Diff repoDiff) =>
-        cachedCommits.GetOrAdd(innerCommit.Sha, new Commit(innerCommit, repoDiff, this));
-
-    public Tag GetOrCreate(LibGit2Sharp.Tag innerTag, Diff repoDiff)
-    {
-        var cacheKey = $"{innerTag.CanonicalName}|{innerTag.Target.Sha}";
-        return cachedTags.GetOrAdd(cacheKey, new Tag(innerTag, repoDiff, this));
     }
 
     public void Dispose()
