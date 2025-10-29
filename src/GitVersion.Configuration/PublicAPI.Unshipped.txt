@@ -1,1 +1,13 @@
 #nullable enable
+GitVersion.Configuration.GitVersionConfigurationStaticContext
+GitVersion.Configuration.GitVersionConfigurationStaticContext.GitVersionConfigurationStaticContext() -> void
+GitVersion.Configuration.StaticTypeInspector
+~GitVersion.Configuration.StaticTypeInspector.GetEnumName(System.Type type, string name) -> string
+~GitVersion.Configuration.StaticTypeInspector.GetEnumValue(object value) -> string
+~GitVersion.Configuration.StaticTypeInspector.GetProperties(System.Type type, object container) -> System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor>
+~GitVersion.Configuration.StaticTypeInspector.GetProperty(System.Type type, object container, string name, bool ignoreUnmatched, bool caseInsensitivePropertyMatching) -> YamlDotNet.Serialization.IPropertyDescriptor
+~GitVersion.Configuration.StaticTypeInspector.StaticTypeInspector(YamlDotNet.Serialization.ITypeResolver typeResolver) -> void
+~override GitVersion.Configuration.GitVersionConfigurationStaticContext.GetFactory() -> YamlDotNet.Serialization.ObjectFactories.StaticObjectFactory
+~override GitVersion.Configuration.GitVersionConfigurationStaticContext.GetTypeInspector() -> YamlDotNet.Serialization.ITypeInspector
+~override GitVersion.Configuration.GitVersionConfigurationStaticContext.GetTypeResolver() -> YamlDotNet.Serialization.ITypeResolver
+~override GitVersion.Configuration.GitVersionConfigurationStaticContext.IsKnownType(System.Type type) -> bool
