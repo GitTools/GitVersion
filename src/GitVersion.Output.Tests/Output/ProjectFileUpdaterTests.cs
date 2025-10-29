@@ -45,6 +45,7 @@ public class ProjectFileUpdaterTests : TestBase
     [TestCase("Microsoft.NET.Sdk.WindowsDesktop")]
     [TestCase("Microsoft.NET.Sdk.Razor")]
     [TestCase("Microsoft.NET.Sdk.BlazorWebAssembly")]
+    [TestCase("Microsoft.Build.Sql")]
     public void CanUpdateProjectFileWithSdkProjectFileXml(string sdk)
     {
         var xml = $"""
@@ -77,7 +78,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
+        logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""
@@ -96,7 +97,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
+        logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""
@@ -263,37 +264,36 @@ public class ProjectFileUpdaterTests : TestBase
         xmlRoot.ToString().ShouldBe(expectedXml.ToString());
     }
 
-    [TestCase("""
-
-              <Project Sdk="Microsoft.NET.Sdk">
-                <PropertyGroup>
-                  <OutputType>Exe</OutputType>
-                  <TargetFramework>net8.0</TargetFramework>
-                </PropertyGroup>
-              </Project>
-              """)]
-    public void UpdateProjectFileAddsVersionToFile(string xml)
+    [TestCase("Microsoft.NET.Sdk", "TestProject.csproj")]
+    [TestCase("Microsoft.Build.Sql", "TestProject.sqlproj")]
+    public void UpdateProjectFileAddsVersionToFile(string sdk, string projectName)
     {
+        var xml = $"""
+                  <Project Sdk="{sdk}">
+                    <PropertyGroup>
+                      <TargetFramework>net8.0</TargetFramework>
+                    </PropertyGroup>
+                  </Project>
+                  """;
         var workingDirectory = FileSystemHelper.Path.GetTempPath();
-        var fileName = FileSystemHelper.Path.Combine(workingDirectory, "TestProject.csproj");
+        var fileName = FileSystemHelper.Path.Combine(workingDirectory, projectName);
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new(workingDirectory, false, fileName));
 
-            const string expectedXml = $"""
-                                        <Project Sdk="Microsoft.NET.Sdk">
-                                          <PropertyGroup>
-                                            <OutputType>Exe</OutputType>
-                                            <TargetFramework>{TargetFramework}</TargetFramework>
-                                            <AssemblyVersion>2.3.1.0</AssemblyVersion>
-                                            <FileVersion>2.3.1.0</FileVersion>
-                                            <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
-                                            <Version>2.3.1</Version>
-                                          </PropertyGroup>
-                                        </Project>
-                                        """;
+            var expectedXml = $"""
+                               <Project Sdk="{sdk}">
+                                 <PropertyGroup>
+                                   <TargetFramework>{TargetFramework}</TargetFramework>
+                                   <AssemblyVersion>2.3.1.0</AssemblyVersion>
+                                   <FileVersion>2.3.1.0</FileVersion>
+                                   <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
+                                   <Version>2.3.1</Version>
+                                 </PropertyGroup>
+                               </Project>
+                               """;
             var transformedXml = fs.File.ReadAllText(fileName);
             transformedXml.ShouldBe(XElement.Parse(expectedXml).ToString());
         });
