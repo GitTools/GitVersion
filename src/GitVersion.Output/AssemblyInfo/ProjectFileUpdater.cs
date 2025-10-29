@@ -110,9 +110,10 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         }
 
         var sdkAttribute = xmlRoot.Attribute("Sdk");
-        if (sdkAttribute?.Value.StartsWith("Microsoft.NET.Sdk") != true)
+        if (sdkAttribute?.Value.StartsWith("Microsoft.NET.Sdk") != true &&
+            sdkAttribute?.Value.StartsWith("Microsoft.Build.Sql") != true)
         {
-            log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
+            log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
             return false;
         }
 
@@ -217,6 +218,7 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
 
         return fileName.EndsWith(".csproj") ||
                fileName.EndsWith(".fsproj") ||
-               fileName.EndsWith(".vbproj");
+               fileName.EndsWith(".vbproj") ||
+               fileName.EndsWith(".sqlproj");
     }
 }
