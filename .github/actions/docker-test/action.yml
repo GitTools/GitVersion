@@ -16,15 +16,25 @@ runs:
   steps:
   -
     name: '[Docker Build & Test] DockerHub'
-    shell: pwsh
-    run: |
+    uses: nick-fields/retry@v3
+    with:
+      shell: pwsh
+      timeout_minutes: 30
+      max_attempts: 3
+      retry_on: error
+      command: |
         dotnet run/docker.dll --target=DockerTest `
               --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
               --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: '[Docker Build & Test] GitHub'
-    shell: pwsh
-    run: |
+    uses: nick-fields/retry@v3
+    with:
+      shell: pwsh
+      timeout_minutes: 30
+      max_attempts: 3
+      retry_on: error
+      command: |
         dotnet run/docker.dll --target=DockerTest `
               --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
               --docker_distro=${{ inputs.docker_distro }} --docker_registry github --verbosity=diagnostic

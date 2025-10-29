@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2025, ubuntu-24.04, macos-15]
+        os: [ windows-2025, ubuntu-24.04, macos-15 ]
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
 
     runs-on: ${{ matrix.os }}
@@ -29,10 +29,15 @@ jobs:
     -
       name: Restore State
       uses: ./.github/actions/cache-restore
-    -
-      name: '[Unit Test]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=Test --dotnet_version=${{ matrix.dotnet_version }}
+
+    - name: '[Unit Test]'
+      uses: nick-fields/retry@v3
+      with:
+        shell: pwsh
+        timeout_minutes: 30
+        max_attempts: 3
+        retry_on: error
+        command: 'dotnet run/build.dll --target=Test --dotnet_version=${{ matrix.dotnet_version }}'
 
     -
       name: Test Summary

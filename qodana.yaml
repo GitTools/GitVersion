@@ -110,7 +110,7 @@ exclude:
       - GitVersion.Core/VersionCalculation/VersionSearchStrategies/TrackReleaseBranchesVersionStrategy.cs
       - GitVersion.Configuration/Builders/IgnoreConfigurationBuilder.cs
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
-bootstrap: dotnet build src/GitVersion.slnx
+bootstrap: curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --jsonfile /data/project/global.json -i /usr/share/dotnet && dotnet build src/GitVersion.slnx
 dotnet:
   frameworks: net8.0;net9.0
   solution: src/GitVersion.slnx
