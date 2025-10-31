@@ -37,8 +37,8 @@ jobs:
         name: Push changes
         run: |
           git add --verbose .
-          git config user.name 'Artur Stolear'
-          git config user.email 'artur.stolear@gmail.com'
+          git config user.name 'gittools-bot'
+          git config user.email 'gittoolsbot@outlook.com'
           git commit -m 'Mark public API as shipped' --allow-empty
           git push --force
         if: steps.status.outputs.has_changes == '1'
