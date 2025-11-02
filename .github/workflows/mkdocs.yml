@@ -1,6 +1,21 @@
 name: Markdown Update
 on:
   push:
+    branches:
+      - main
+      - 'fix/*'
+      - 'feature/*'
+      - 'poc/*'
+      - 'support/*'
+    paths:
+      - 'docs/**'
+
+  pull_request:
+    branches:
+      - main
+      - 'support/*'
+    paths:
+      - 'docs/**'
 
 env:
   DOTNET_ROLL_FORWARD: "Major"

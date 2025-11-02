@@ -19,7 +19,8 @@ jobs:
     name: Bump Homebrew formula
     runs-on: macos-latest
     steps:
-      - name: Get version
+      -
+        name: Get version
         id: get-version
         shell: pwsh
         run: |
@@ -27,7 +28,7 @@ jobs:
           if ($version -eq "") {
             $version = "${{ github.event.inputs.tag-name }}"
           }
-          "version=$version" >> $env:GITHUB_OUTPUT   
+          "version=$version" >> $env:GITHUB_OUTPUT
       -
         uses: mislav/bump-homebrew-formula-action@v3
         name: Bump Homebrew formula
@@ -40,4 +41,4 @@ jobs:
 
             For additional details see https://github.com/GitTools/GitVersion/releases/tag/${{ steps.get-version.outputs.version }}
         env:
-          COMMITTER_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}  
+          COMMITTER_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
