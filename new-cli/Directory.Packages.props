@@ -27,7 +27,7 @@
     <!-- specific packages -->
     <PackageVersion Include="Scriban" Version="6.5.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Serilog.Sinks.Map" Version="2.0.0" />
     <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.2.25502.107" />
