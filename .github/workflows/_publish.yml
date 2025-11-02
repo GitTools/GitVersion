@@ -4,7 +4,7 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
-  
+
 jobs:
   publish:
     name: ${{ matrix.taskName }}
@@ -16,7 +16,6 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
     steps:
     -
@@ -33,7 +32,16 @@ jobs:
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
+
+    -
+      name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: 'gittoolsbot'
     -
       name: '[Publish]'
       shell: pwsh
+      env:
+        NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
