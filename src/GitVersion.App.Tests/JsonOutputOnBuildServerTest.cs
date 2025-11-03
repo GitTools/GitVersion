@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Core.Tests;
 using GitVersion.Helpers;
+using GitVersion.Testing.Extensions;
 
 namespace GitVersion.App.Tests;
 

@@ -1,4 +1,6 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
+using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 using Shouldly;
 
@@ -114,6 +116,22 @@ public abstract class RepositoryFixtureBase : IDisposable
         this.SequenceDiagram.MakeACommit(to);
         var commit = Repository.MakeACommit();
         return commit.Sha;
+    }
+
+    public void MakeACommit(string commitMsg)
+    {
+        Repository.MakeACommit(commitMsg);
+
+        var participant = SequenceDiagram.GetParticipant(Repository.Head.FriendlyName);
+        if (commitMsg.Length < 40)
+        {
+            SequenceDiagram.DiagramBuilder.AppendLineFormat("{0} -> {0}: Commit '{1}'", participant, commitMsg);
+        }
+        else
+        {
+            var formattedCommitMsg = string.Join(SysEnv.NewLine, $"Commit '{commitMsg}'".SplitIntoLines(60));
+            SequenceDiagram.NoteOver(formattedCommitMsg, participant);
+        }
     }
 
     /// <summary>

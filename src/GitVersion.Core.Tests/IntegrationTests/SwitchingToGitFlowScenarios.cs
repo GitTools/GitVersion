@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 
 namespace GitVersion.Core.Tests.IntegrationTests;

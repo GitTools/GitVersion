@@ -4,6 +4,7 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
+using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
 using Microsoft.Extensions.DependencyInjection;

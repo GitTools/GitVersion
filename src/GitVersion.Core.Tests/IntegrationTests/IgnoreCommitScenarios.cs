@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Testing.Extensions;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 

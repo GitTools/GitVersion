@@ -1,6 +1,7 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.Output.OutputGenerator;
+using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

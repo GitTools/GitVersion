@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 

@@ -4,6 +4,7 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
+using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;

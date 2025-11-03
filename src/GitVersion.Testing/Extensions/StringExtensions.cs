@@ -1,4 +1,4 @@
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Testing.Extensions;
 
 public static class StringExtensions
 {

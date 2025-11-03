@@ -2,7 +2,7 @@ using GitVersion.Helpers;
 using GitVersion.Testing.Internal;
 using LibGit2Sharp;
 
-namespace GitVersion.Testing;
+namespace GitVersion.Testing.Extensions;
 
 public static class GitTestExtensions
 {

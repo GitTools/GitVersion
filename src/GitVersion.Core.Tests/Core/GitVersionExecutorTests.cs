@@ -6,6 +6,7 @@ using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation.Caching;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
