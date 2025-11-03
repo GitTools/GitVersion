@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests;
-using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Mainline;
