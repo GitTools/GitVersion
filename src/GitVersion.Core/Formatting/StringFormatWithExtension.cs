@@ -89,7 +89,8 @@ internal static class StringFormatWithExtension
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
         var value = getter(source);
 
-        if (value is null)
+        // Only return early for null if format doesn't use legacy syntax
+        if (value is null && !HasLegacySyntax(format))
             return fallback ?? string.Empty;
 
         if (format is not null && ValueFormatter.Default.TryFormat(
@@ -100,6 +101,9 @@ internal static class StringFormatWithExtension
             return formatted;
         }
 
-        return value.ToString() ?? fallback ?? string.Empty;
+        return value?.ToString() ?? fallback ?? string.Empty;
     }
+
+    private static bool HasLegacySyntax(string? format) =>
+        !string.IsNullOrEmpty(format) && format.Contains(';') && !format.Contains("??");
 }
