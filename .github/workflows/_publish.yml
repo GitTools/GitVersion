@@ -16,6 +16,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
     steps:
     -

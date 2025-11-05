@@ -43,7 +43,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         if (context.IsStableRelease || context.IsTaggedPreRelease)
         {
             context.StartGroup("Publishing to Nuget.org");
-            var apiKey = await GetNugetApiKey(context);
+            var apiKey = context.Credentials?.Nuget?.ApiKey;
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet org API key.");
@@ -52,6 +52,8 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
             PublishToNugetRepo(context, apiKey, Constants.NugetOrgUrl);
             context.EndGroup();
         }
+
+        await Task.CompletedTask;
     }
 
     private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)
