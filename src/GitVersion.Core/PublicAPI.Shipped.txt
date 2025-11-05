@@ -28,6 +28,7 @@ GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.IBranch? branch,
 GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.ICommit! commit, GitVersion.Git.ICommit! mainlineTip) -> GitVersion.Git.ICommit?
 GitVersion.Common.IRepositoryStore.GetBranchesContainingCommit(GitVersion.Git.ICommit! commit, System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.Git.ICommit? baseVersionSource, GitVersion.Git.ICommit! currentCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
+GitVersion.Common.IRepositoryStore.GetCommitsReacheableFrom(GitVersion.Git.ICommit! commit, GitVersion.Git.IBranch! branch) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetCommitsReacheableFromHead(GitVersion.Git.ICommit? headCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.Git.IBranch! currentBranch, string? commitId, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> GitVersion.Git.ICommit?
 GitVersion.Common.IRepositoryStore.GetForwardMerge(GitVersion.Git.ICommit? commitToFindCommonBase, GitVersion.Git.ICommit? findMergeBase) -> GitVersion.Git.ICommit?
@@ -220,8 +221,10 @@ GitVersion.Git.IBranchCollection.this[string! name].get -> GitVersion.Git.IBranc
 GitVersion.Git.IBranchCollection.UpdateTrackedBranch(GitVersion.Git.IBranch! branch, string! remoteTrackingReferenceName) -> void
 GitVersion.Git.ICommit
 GitVersion.Git.ICommit.DiffPaths.get -> System.Collections.Generic.IReadOnlyList<string!>!
+GitVersion.Git.ICommit.Id.get -> GitVersion.Git.IObjectId!
 GitVersion.Git.ICommit.Message.get -> string!
 GitVersion.Git.ICommit.Parents.get -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
+GitVersion.Git.ICommit.Sha.get -> string!
 GitVersion.Git.ICommit.When.get -> System.DateTimeOffset
 GitVersion.Git.ICommitCollection
 GitVersion.Git.ICommitCollection.GetCommitsPriorTo(System.DateTimeOffset olderThan) -> System.Collections.Generic.IEnumerable<GitVersion.Git.ICommit!>!
@@ -235,6 +238,7 @@ GitVersion.Git.IGitRepository.Head.get -> GitVersion.Git.IBranch!
 GitVersion.Git.IGitRepository.IsHeadDetached.get -> bool
 GitVersion.Git.IGitRepository.IsShallow.get -> bool
 GitVersion.Git.IGitRepository.Path.get -> string!
+GitVersion.Git.IGitRepository.References.get -> GitVersion.Git.IReferenceCollection!
 GitVersion.Git.IGitRepository.Remotes.get -> GitVersion.Git.IRemoteCollection!
 GitVersion.Git.IGitRepository.Tags.get -> GitVersion.Git.ITagCollection!
 GitVersion.Git.IGitRepository.UncommittedChangesCount() -> int
@@ -364,6 +368,7 @@ GitVersion.IGitPreparer.Prepare() -> void
 GitVersion.IGitVersionCalculateTool
 GitVersion.IGitVersionCalculateTool.CalculateVersionVariables() -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.IGitVersionContextFactory
+GitVersion.IGitVersionContextFactory.Create() -> GitVersion.GitVersionContext!
 GitVersion.IGitVersionModule
 GitVersion.IGitVersionModule.FindAllDerivedTypes<T>(System.Reflection.Assembly? assembly) -> System.Collections.Generic.IEnumerable<System.Type!>!
 GitVersion.IGitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
