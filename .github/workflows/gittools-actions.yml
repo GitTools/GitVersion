@@ -39,5 +39,5 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           repository: ${{ github.repository_owner }}/actions
-          event-type: gitversion-update-examples
+          event-type: gitversion-release-published
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ steps.get-version.outputs.version }}"}'
