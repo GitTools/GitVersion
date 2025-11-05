@@ -195,6 +195,20 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Class Types</li>
+            <li>
+              <a href="/api/GitVersion.Git/CommitExtensions"
+                >CommitExtensions</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
+            </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
             <li>
@@ -208,7 +222,6 @@
                 >ICommitCollection</a
               >
             </li>
-            <li><a href="/api/GitVersion.Git/IGitObject">IGitObject</a></li>
             <li>
               <a href="/api/GitVersion.Git/IGitRepository">IGitRepository</a>
             </li>
@@ -251,15 +264,6 @@
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
-            <li class="header">Class Types</li>
-            <li>
-              <a href="/api/GitVersion.Git/CommitExtensions"
-                >CommitExtensions</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
-            </li>
             <li class="header">Enum Types</li>
             <li>
               <a href="/api/GitVersion.Git/RefSpecDirection"
@@ -290,13 +294,13 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>
-                          <a href="/api/GitVersion.Git/IBranch">IBranch</a>
-                        </li>
-                        <li><a href="/api/GitVersion.Git/ITag">ITag</a></li>
-                        <li>
                           <a href="/api/GitVersion.Git/IReference"
                             >IReference</a
                           >
+                        </li>
+                        <li><a href="/api/GitVersion.Git/ITag">ITag</a></li>
+                        <li>
+                          <a href="/api/GitVersion.Git/IBranch">IBranch</a>
                         </li>
                       </ul>
                     </dd>
@@ -305,12 +309,12 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type["INamedReference"] class Type type-node
-                    Implementing0["IBranch"]-.-&gt;Type click Implementing0
-                    "/api/GitVersion.Git/IBranch"
+                    Implementing0["IReference"]-.-&gt;Type click Implementing0
+                    "/api/GitVersion.Git/IReference"
                     Implementing1["ITag"]-.-&gt;Type click Implementing1
                     "/api/GitVersion.Git/ITag"
-                    Implementing2["IReference"]-.-&gt;Type click Implementing2
-                    "/api/GitVersion.Git/IReference"
+                    Implementing2["IBranch"]-.-&gt;Type click Implementing2
+                    "/api/GitVersion.Git/IBranch"
                   </div>
                 </div>
               </div>

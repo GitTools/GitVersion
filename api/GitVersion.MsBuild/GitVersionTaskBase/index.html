@@ -241,6 +241,12 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>
+                          <a
+                            href="/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog"
+                            >Write<wbr />Version<wbr />Info<wbr />To<wbr />Build<wbr />Log</a
+                          >
+                        </li>
+                        <li>
                           <a href="/api/GitVersion.MsBuild.Tasks/GetVersion"
                             >GetVersion</a
                           >
@@ -249,12 +255,6 @@
                           <a
                             href="/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation"
                             >Generate<wbr />Git<wbr />Version<wbr />Information</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog"
-                            >Write<wbr />Version<wbr />Info<wbr />To<wbr />Build<wbr />Log</a
                           >
                         </li>
                         <li>
@@ -270,14 +270,15 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type--&gt;Base0["ITask"] Type["GitVersionTaskBase"]
-                    class Type type-node Derived0["GetVersion"]--&gt;Type click
-                    Derived0 "/api/GitVersion.MsBuild.Tasks/GetVersion"
-                    Derived1["GenerateGitVersionInformation"]--&gt;Type click
-                    Derived1
-                    "/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation"
-                    Derived2["WriteVersionInfoToBuildLog"]--&gt;Type click
-                    Derived2
+                    class Type type-node
+                    Derived0["WriteVersionInfoToBuildLog"]--&gt;Type click
+                    Derived0
                     "/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog"
+                    Derived1["GetVersion"]--&gt;Type click Derived1
+                    "/api/GitVersion.MsBuild.Tasks/GetVersion"
+                    Derived2["GenerateGitVersionInformation"]--&gt;Type click
+                    Derived2
+                    "/api/GitVersion.MsBuild.Tasks/GenerateGitVersionInformation"
                     Derived3["UpdateAssemblyInfo"]--&gt;Type click Derived3
                     "/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo"
                   </div>

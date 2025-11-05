@@ -195,6 +195,20 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Class Types</li>
+            <li>
+              <a href="/api/GitVersion.Git/CommitExtensions"
+                >CommitExtensions</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
+            </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
             <li>
@@ -210,7 +224,6 @@
                 >ICommitCollection</a
               >
             </li>
-            <li><a href="/api/GitVersion.Git/IGitObject">IGitObject</a></li>
             <li>
               <a href="/api/GitVersion.Git/IGitRepository">IGitRepository</a>
             </li>
@@ -253,15 +266,6 @@
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
-            <li class="header">Class Types</li>
-            <li>
-              <a href="/api/GitVersion.Git/CommitExtensions"
-                >CommitExtensions</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
-            </li>
             <li class="header">Enum Types</li>
             <li>
               <a href="/api/GitVersion.Git/RefSpecDirection"
@@ -303,23 +307,6 @@
                             >ICommit</a
                           >&gt;<wbr />
                         </li>
-                        <li>
-                          <a href="/api/GitVersion.Git/IGitObject"
-                            >IGitObject</a
-                          >
-                        </li>
-                        <li>
-                          IEquatable<wbr />&lt;<a
-                            href="/api/GitVersion.Git/IGitObject"
-                            >IGitObject</a
-                          >&gt;<wbr />
-                        </li>
-                        <li>
-                          IComparable<wbr />&lt;<a
-                            href="/api/GitVersion.Git/IGitObject"
-                            >IGitObject</a
-                          >&gt;<wbr />
-                        </li>
                       </ul>
                     </dd>
                   </dl>
@@ -328,10 +315,6 @@
                   <div class="mermaid">
                     graph BT Type-.-&gt;Interface0["IEquatable&lt;ICommit&gt;"]
                     Type-.-&gt;Interface1["IComparable&lt;ICommit&gt;"]
-                    Type-.-&gt;Interface2["IGitObject"] click Interface2
-                    "/api/GitVersion.Git/IGitObject"
-                    Type-.-&gt;Interface3["IEquatable&lt;IGitObject&gt;"]
-                    Type-.-&gt;Interface4["IComparable&lt;IGitObject&gt;"]
                     Type["ICommit"] class Type type-node
                   </div>
                 </div>
@@ -340,8 +323,7 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>public interface ICommit : IEquatable&lt;ICommit&gt;, IComparable&lt;ICommit&gt;, IGitObject, 
-    IEquatable&lt;IGitObject&gt;, IComparable&lt;IGitObject&gt;</code></pre>
+          <pre><code>public interface ICommit : IEquatable&lt;ICommit&gt;, IComparable&lt;ICommit&gt;</code></pre>
 
           <h1 id="Properties">Properties</h1>
           <div class="box">
@@ -368,6 +350,17 @@
                   </tr>
                   <tr>
                     <td>
+                      <a href="/api/GitVersion.Git/ICommit/CAF31729">Id</a>
+                    </td>
+                    <td>
+                      <a href="/api/GitVersion.Git/IObjectId">IObjectId</a>
+                    </td>
+                    <td>
+                      <div></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
                       <a href="/api/GitVersion.Git/ICommit/4B3FE10A">Message</a>
                     </td>
                     <td>string</td>
@@ -385,6 +378,15 @@
                         >ICommit</a
                       >&gt;<wbr />
                     </td>
+                    <td>
+                      <div></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/ICommit/B4EB2B2E">Sha</a>
+                    </td>
+                    <td>string</td>
                     <td>
                       <div></div>
                     </td>
