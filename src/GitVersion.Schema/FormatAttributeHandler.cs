@@ -5,6 +5,7 @@ using Format = GitVersion.Configuration.Attributes.Format;
 using FormatAttribute = GitVersion.Configuration.Attributes.JsonPropertyFormatAttribute;
 
 namespace GitVersion.Schema;
+
 internal class FormatAttributeHandler : IAttributeHandler<FormatAttribute>
 {
     void IAttributeHandler.AddConstraints(SchemaGenerationContextBase context, Attribute attribute)
