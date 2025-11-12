@@ -9,7 +9,6 @@ public class GitVersionCommonModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<ILog, Log>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, Environment>();
         services.AddSingleton<IConsole, ConsoleAdapter>();

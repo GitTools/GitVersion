@@ -1,1 +1,7 @@
 #nullable enable
+GitVersion.Logging.LoggerExtensions
+static GitVersion.Logging.LoggerExtensions.IndentLog(this Microsoft.Extensions.Logging.ILogger! logger, string! operationDescription) -> System.IDisposable!
+static GitVersion.Logging.LoggerExtensions.Separator(this Microsoft.Extensions.Logging.ILogger! logger) -> void
+GitVersion.Logging.LoggingModule
+static GitVersion.Logging.LoggingModule.AddLogging(Microsoft.Extensions.DependencyInjection.IServiceCollection! services, GitVersion.Logging.Verbosity verbosity = GitVersion.Logging.Verbosity.Normal, bool addConsole = false, string? logFilePath = null, System.IO.Abstractions.IFileSystem? fileSystem = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static GitVersion.Logging.LoggingModule.CreateLoggerConfiguration(GitVersion.Logging.Verbosity verbosity = GitVersion.Logging.Verbosity.Normal, bool addConsole = false, string? logFilePath = null, System.IO.Abstractions.IFileSystem? fileSystem = null) -> Serilog.LoggerConfiguration!

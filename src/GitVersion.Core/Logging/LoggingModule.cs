@@ -9,10 +9,9 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 namespace GitVersion.Logging;
 
-public class LoggingModule
+public static class LoggingModule
 {
-    public static IServiceCollection AddLogging(
-        IServiceCollection services,
+    public static LoggerConfiguration CreateLoggerConfiguration(
         Verbosity verbosity = Verbosity.Normal,
         bool addConsole = false,
         string? logFilePath = null,
@@ -32,12 +31,24 @@ public class LoggingModule
             loggerConfiguration = AddFileLogger(loggerConfiguration, fileSystem, logFilePath, verbosity);
         }
 
-        Log.Logger = loggerConfiguration.CreateLogger();
+        return loggerConfiguration;
+    }
+
+    public static IServiceCollection AddLogging(
+        IServiceCollection services,
+        Verbosity verbosity = Verbosity.Normal,
+        bool addConsole = false,
+        string? logFilePath = null,
+        IFileSystem? fileSystem = null)
+    {
+        var loggerConfiguration = CreateLoggerConfiguration(verbosity, addConsole, logFilePath, fileSystem);
+
+        Serilog.Log.Logger = loggerConfiguration.CreateLogger();
 
         services.AddLogging(builder =>
         {
             builder.ClearProviders();
-            builder.AddSerilog(Log.Logger, dispose: true);
+            builder.AddSerilog(Serilog.Log.Logger, dispose: true);
             builder.SetMinimumLevel(MapVerbosityToMicrosoftLogLevel(verbosity));
         });
 
