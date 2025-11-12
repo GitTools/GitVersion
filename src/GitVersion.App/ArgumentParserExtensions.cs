@@ -8,75 +8,80 @@ internal static class ArgumentParserExtensions
     private static readonly string[] TrueValues = ["1", "true"];
     private static readonly string[] FalseValues = ["0", "false"];
 
-    public static bool IsTrue(this string? value) => TrueValues.Contains(value, StringComparer.OrdinalIgnoreCase);
-
-    public static bool IsFalse(this string? value) => FalseValues.Contains(value, StringComparer.OrdinalIgnoreCase);
-
-    public static bool IsValidPath(this string? path)
+    extension(string? value)
     {
-        if (path == null)
-            return false;
+        public bool IsTrue() => TrueValues.Contains(value, StringComparer.OrdinalIgnoreCase);
+        public bool IsFalse() => FalseValues.Contains(value, StringComparer.OrdinalIgnoreCase);
 
-        try
+        public bool IsValidPath()
         {
-            _ = FileSystemHelper.Path.GetFullPath(path);
-        }
-        catch
-        {
-            path = FileSystemHelper.Path.Combine(SysEnv.CurrentDirectory, path);
+            if (value == null)
+                return false;
 
             try
             {
-                _ = FileSystemHelper.Path.GetFullPath(path);
+                _ = FileSystemHelper.Path.GetFullPath(value);
             }
             catch
             {
-                return false;
+                value = FileSystemHelper.Path.Combine(SysEnv.CurrentDirectory, value);
+
+                try
+                {
+                    _ = FileSystemHelper.Path.GetFullPath(value);
+                }
+                catch
+                {
+                    return false;
+                }
             }
+
+            return FileSystemHelper.Directory.Exists(value);
         }
 
-        return FileSystemHelper.Directory.Exists(path);
-    }
-
-    public static bool IsSwitchArgument(this string? value)
-    {
-        var patternRegex = RegexPatterns.Common.SwitchArgumentRegex();
-        return value != null
-               && (value.StartsWith('-') || value.StartsWith('/'))
-               && !patternRegex.Match(value).Success;
-        //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
-    }
-
-    public static bool IsSwitch(this string? value, string switchName)
-    {
-        if (value == null)
-            return false;
-
-        if (value.StartsWith('-'))
+        public bool IsSwitchArgument()
         {
-            value = value[1..];
+            var patternRegex = RegexPatterns.Common.SwitchArgumentRegex();
+            return value != null
+                   && (value.StartsWith('-') || value.StartsWith('/'))
+                   && !patternRegex.Match(value).Success;
+            //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 
-        if (value.StartsWith('/'))
+        public bool IsSwitch(string switchName)
         {
-            value = value[1..];
-        }
+            if (value == null)
+                return false;
 
-        return string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase);
+            if (value.StartsWith('-'))
+            {
+                value = value[1..];
+            }
+
+            if (value.StartsWith('/'))
+            {
+                value = value[1..];
+            }
+
+            return string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
-    public static bool IsHelp(this string singleArgument) => (singleArgument == "?") || singleArgument.IsSwitch("h") || singleArgument.IsSwitch("help") || singleArgument.IsSwitch("?");
-
-    public static bool ArgumentRequiresValue(this string argument, int argumentIndex)
+    extension(string singleArgument)
     {
-        var booleanArguments = new[] { "updateassemblyinfo", "ensureassemblyinfo", "nofetch", "nonormalize", "nocache", "allowshallow" };
+        public bool IsHelp() => (singleArgument == "?") || singleArgument.IsSwitch("h") || singleArgument.IsSwitch("help") || singleArgument.IsSwitch("?");
 
-        var argumentMightRequireValue = !booleanArguments.Contains(argument[1..], StringComparer.OrdinalIgnoreCase);
+        public bool ArgumentRequiresValue(int argumentIndex)
+        {
+            var booleanArguments = new[] { "updateassemblyinfo", "ensureassemblyinfo", "nofetch", "nonormalize", "nocache", "allowshallow" };
 
-        // If this is the first argument that might be a target path, the argument starts with slash, and we're on an OS that supports paths with slashes, the argument does not require a value.
-        if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith('/') && FileSystemHelper.Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
-            return false;
+            var argumentMightRequireValue = !booleanArguments.Contains(singleArgument[1..], StringComparer.OrdinalIgnoreCase);
 
-        return argumentMightRequireValue;
+            // If this is the first argument that might be a target path, the argument starts with slash, and we're on an OS that supports paths with slashes, the argument does not require a value.
+            if (argumentMightRequireValue && argumentIndex == 0 && singleArgument.StartsWith('/') && FileSystemHelper.Path.DirectorySeparatorChar == '/' && singleArgument.IsValidPath())
+                return false;
+
+            return argumentMightRequireValue;
+        }
     }
 }

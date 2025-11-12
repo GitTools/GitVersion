@@ -2,21 +2,24 @@ namespace GitVersion.Extensions;
 
 public static class ReadEmbeddedResourceExtensions
 {
-    public static string ReadAsStringFromEmbeddedResource<T>(this string resourceName)
-        => ReadAsStringFromEmbeddedResource(resourceName, typeof(T).Assembly);
-
-    public static string ReadAsStringFromEmbeddedResource(this string resourceName, Assembly assembly)
+    extension(string resourceName)
     {
-        using var stream = resourceName.ReadFromEmbeddedResource(assembly);
-        using var streamReader = new StreamReader(stream);
-        return streamReader.ReadToEnd();
-    }
+        public string ReadAsStringFromEmbeddedResource<T>()
+            => ReadAsStringFromEmbeddedResource(resourceName, typeof(T).Assembly);
 
-    private static Stream ReadFromEmbeddedResource(this string resourceName, Assembly assembly)
-    {
-        assembly.NotNull();
+        public string ReadAsStringFromEmbeddedResource(Assembly assembly)
+        {
+            using var stream = resourceName.ReadFromEmbeddedResource(assembly);
+            using var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd();
+        }
 
-        return assembly.GetManifestResourceStream(resourceName)
-            ?? throw new InvalidOperationException($"Could not find embedded resource {resourceName}");
+        private Stream ReadFromEmbeddedResource(Assembly assembly)
+        {
+            assembly.NotNull();
+
+            return assembly.GetManifestResourceStream(resourceName)
+                   ?? throw new InvalidOperationException($"Could not find embedded resource {resourceName}");
+        }
     }
 }

@@ -17,7 +17,7 @@ internal sealed class Log(params ILogAppender[] appenders) : ILog
 
     public Verbosity Verbosity { get; set; } = Verbosity.Normal;
 
-    public void Write(Verbosity verbosity, LogLevel level, string format, params object[] args)
+    public void Write(Verbosity verbosity, LogLevel level, string format, params object?[] args)
     {
         if (verbosity > Verbosity)
         {

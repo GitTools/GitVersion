@@ -6,10 +6,13 @@ namespace GitVersion;
 
 public static class LibGit2SharpExtensions
 {
-    public static IGitRepository ToGitRepository(this IRepository repository)
+    extension(IRepository repository)
     {
-        var gitRepository = new GitRepository(new NullLog());
-        gitRepository.DiscoverRepository(repository.Info.Path);
-        return gitRepository;
+        public IGitRepository ToGitRepository()
+        {
+            var gitRepository = new GitRepository(new NullLog());
+            gitRepository.DiscoverRepository(repository.Info.Path);
+            return gitRepository;
+        }
     }
 }

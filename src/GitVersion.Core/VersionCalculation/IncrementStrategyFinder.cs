@@ -182,7 +182,7 @@ internal class IncrementStrategyFinder(
     {
         mergeCommit.NotNull();
 
-        if (!mergeCommit.IsMergeCommit())
+        if (!mergeCommit.IsMergeCommit)
         {
             throw new ArgumentException("The parameter is not a merge commit.", nameof(mergeCommit));
         }
