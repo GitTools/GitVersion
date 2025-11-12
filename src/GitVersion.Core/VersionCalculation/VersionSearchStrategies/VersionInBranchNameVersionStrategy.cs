@@ -35,7 +35,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
 
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            if (!branch.Name.TryGetSemanticVersion(out var result, configuration.Value)) continue;
+            if (!branch.Name.TryGetSemanticVersion(configuration.Value, out var result)) continue;
             string? branchNameOverride = null;
             if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
                                                  || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))

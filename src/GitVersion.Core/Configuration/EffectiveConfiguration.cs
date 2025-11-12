@@ -52,7 +52,7 @@ public record EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         DeploymentMode = branchConfiguration.DeploymentMode.Value;
-        TagPrefix = configuration.TagPrefixPattern;
+        TagPrefixPattern = configuration.TagPrefixPattern;
         VersionInBranchPattern = configuration.VersionInBranchPattern;
         Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
@@ -90,7 +90,7 @@ public record EffectiveConfiguration
     public string? AssemblyVersioningFormat { get; }
     public string? AssemblyFileVersioningFormat { get; }
 
-    public string? TagPrefix { get; }
+    public string? TagPrefixPattern { get; }
 
     public string? VersionInBranchPattern { get; }
 

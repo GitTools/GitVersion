@@ -1,4 +1,5 @@
 #nullable enable
+GitVersion.Configuration.EffectiveConfiguration.TagPrefixPattern.get -> string?
 GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!)
 GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!).GetAssemblyFileVersion(GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
 GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!).GetAssemblyVersion(GitVersion.Configuration.AssemblyVersioningScheme scheme) -> string?
@@ -42,6 +43,9 @@ GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(Git
 GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
 GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
 GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(string! format, params object?[]! args) -> void
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! referenceName, string? versionPatternPattern, string? tagPrefix, GitVersion.SemanticVersionFormat format, out (GitVersion.SemanticVersion! Value, string? Name) result) -> bool
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, GitVersion.Configuration.EffectiveConfiguration! configuration, out (GitVersion.SemanticVersion! Value, string? Name) result) -> bool
+static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, GitVersion.Configuration.IGitVersionConfiguration! configuration, out (GitVersion.SemanticVersion! Value, string? Name) result) -> bool
 static GitVersion.Extensions.FileSystemExtensions.FindGitDir(this System.IO.Abstractions.IFileSystem! fileSystem, string? path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void
