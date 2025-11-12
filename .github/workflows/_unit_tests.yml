@@ -42,6 +42,6 @@ jobs:
     -
       name: Test Summary
       uses: test-summary/action@v2.4
-      if: ${{ always() && matrix.dotnet_version == '9.0' }}
+      if: ${{ always() && matrix.dotnet_version == '10.0' }}
       with:
         paths: artifacts/test-results/*.results.xml
