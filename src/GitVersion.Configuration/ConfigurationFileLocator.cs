@@ -1,14 +1,14 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
 internal class ConfigurationFileLocator(
     IFileSystem fileSystem,
-    ILog log,
+    ILogger<ConfigurationFileLocator> logger,
     IOptions<GitVersionOptions> options)
     : IConfigurationFileLocator
 {
@@ -26,7 +26,7 @@ internal class ConfigurationFileLocator(
     ];
 
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<ConfigurationFileLocator> logger = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
     private string? ConfigurationFile => options.Value.ConfigurationInfo.ConfigurationFile;
@@ -43,7 +43,7 @@ internal class ConfigurationFileLocator(
         var customConfigurationFile = GetCustomConfigurationFilePathIfEligable(directoryPath);
         if (!string.IsNullOrWhiteSpace(customConfigurationFile))
         {
-            this.log.Info($"Found configuration file at '{customConfigurationFile}'");
+            this.logger.LogInformation($"Found configuration file at '{customConfigurationFile}'");
             return customConfigurationFile;
         }
 
@@ -55,10 +55,10 @@ internal class ConfigurationFileLocator(
         var files = fileSystem.Directory.GetFiles(directoryPath);
         foreach (var fileName in this.SupportedConfigFileNames)
         {
-            this.log.Debug($"Trying to find configuration file {fileName} at '{directoryPath}'");
+            this.logger.LogDebug($"Trying to find configuration file {fileName} at '{directoryPath}'");
             var matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
             if (matchingFile == null) continue;
-            this.log.Info($"Found configuration file at '{matchingFile}'");
+            this.logger.LogInformation($"Found configuration file at '{matchingFile}'");
             return matchingFile;
         }
 

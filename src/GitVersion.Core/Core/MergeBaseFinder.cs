@@ -1,13 +1,14 @@
 using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Git;
+using Microsoft.Extensions.Logging;
 using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
+internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILogger<MergeBaseFinder> logger)
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<MergeBaseFinder> logger = logger.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = [];
 
@@ -20,11 +21,11 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
 
         if (this.mergeBaseCache.TryGetValue(key, out var mergeBase))
         {
-            this.log.Debug($"Cache hit for merge base between '{first}' and '{second}'.");
+            this.logger.LogDebug($"Cache hit for merge base between '{first}' and '{second}'.");
             return mergeBase;
         }
 
-        using (this.log.IndentLog($"Finding merge base between '{first}' and '{second}'."))
+        using (this.logger.IndentLog($"Finding merge base between '{first}' and '{second}'."))
         {
             // Other branch tip is a forward merge
             var commitToFindCommonBase = second.Tip;
@@ -45,14 +46,14 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
 
             if (findMergeBase == null)
             {
-                this.log.Info($"No merge base of '{first}' and '{second}' could be found.");
+                this.logger.LogInformation($"No merge base of '{first}' and '{second}' could be found.");
                 return null;
             }
 
             // Store in cache.
             this.mergeBaseCache.Add(key, findMergeBase);
 
-            this.log.Info($"Merge base of '{first}' and '{second}' is '{findMergeBase}'");
+            this.logger.LogInformation($"Merge base of '{first}' and '{second}' is '{findMergeBase}'");
             return findMergeBase;
         }
     }
@@ -63,7 +64,7 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
         if (findMergeBase == null)
             return null;
 
-        this.log.Info($"Found merge base of '{findMergeBase}'");
+        this.logger.LogInformation($"Found merge base of '{findMergeBase}'");
 
         // We do not want to include merge base commits which got forward merged into the other branch
         ICommit? forwardMerge;
@@ -77,26 +78,26 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
 
             // TODO Fix the logging up in this section
             var second = forwardMerge.Parents[0];
-            this.log.Debug($"Second {second}");
+            this.logger.LogDebug($"Second {second}");
             var mergeBase = this.repositoryStore.FindMergeBase(commit, second);
             if (mergeBase == null)
             {
-                this.log.Warning("Could not find merge base for " + commit);
+                this.logger.LogWarning("Could not find merge base for " + commit);
             }
             else
             {
-                this.log.Debug($"New Merge base {mergeBase}");
+                this.logger.LogDebug($"New Merge base {mergeBase}");
             }
 
             if (Equals(mergeBase, findMergeBase))
             {
-                this.log.Debug("Breaking");
+                this.logger.LogDebug("Breaking");
                 break;
             }
 
             findMergeBase = mergeBase;
             commitToFindCommonBase = second;
-            this.log.Info($"next merge base --> {findMergeBase}");
+            this.logger.LogInformation($"next merge base --> {findMergeBase}");
         } while (forwardMerge != null);
 
         return findMergeBase;
