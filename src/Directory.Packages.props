@@ -6,6 +6,7 @@
     <!-- common packages -->
     <PackageVersion Include="JsonSchema.Net" Version="7.3.4" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
@@ -39,6 +40,7 @@
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.0" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.0" />
+    <PackageVersion Include="System.Formats.Nrbf" Version="10.0.0" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.0.16" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.0" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.0" />
