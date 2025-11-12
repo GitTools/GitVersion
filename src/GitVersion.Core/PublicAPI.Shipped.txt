@@ -84,7 +84,6 @@ GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenBranchMerged
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenCurrentCommitTagged.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.EffectiveConfiguration.TagPrefix.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.TagPreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
@@ -802,8 +801,6 @@ static GitVersion.Configuration.EffectiveBranchConfiguration.operator !=(GitVers
 static GitVersion.Configuration.EffectiveBranchConfiguration.operator ==(GitVersion.Configuration.EffectiveBranchConfiguration? left, GitVersion.Configuration.EffectiveBranchConfiguration? right) -> bool
 static GitVersion.Configuration.EffectiveConfiguration.operator !=(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
 static GitVersion.Configuration.EffectiveConfiguration.operator ==(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
-static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.EffectiveConfiguration! configuration) -> bool
-static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
 static GitVersion.ConfigurationInfo.operator !=(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
 static GitVersion.ConfigurationInfo.operator ==(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyFileVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
