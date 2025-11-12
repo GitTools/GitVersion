@@ -113,13 +113,13 @@ Double quote character inside of the double quoted `value` has to be be escaped 
 
 Following options are supported:
 
-1. `assembly-file-versioning-format`
-2. `assembly-file-versioning-scheme`
-3. `assembly-informational-format`
-4. `assembly-versioning-format`
-5. `assembly-versioning-scheme`
-6. `commit-date-format`
-7. `commit-message-incrementing`
+1. `assembly-file-versioning-scheme`
+2. `assembly-informational-format`
+3. `assembly-versioning-format`
+4. `assembly-versioning-scheme`
+5. `commit-date-format`
+6. `commit-message-incrementing`
+7. `custom-version-format`
 8. `label`
 9. `increment`
 10. `major-version-bump-message`
