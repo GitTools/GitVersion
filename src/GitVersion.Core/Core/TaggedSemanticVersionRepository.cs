@@ -3,11 +3,12 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
+using Microsoft.Extensions.Logging;
 using GitVersion.Logging;
 
 namespace GitVersion.Core;
 
-internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
+internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVersionRepository> logger, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {
     private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
         taggedSemanticVersionsOfBranchCache = new();
@@ -15,7 +16,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         taggedSemanticVersionsOfMergeTargetCache = new();
     private readonly ConcurrentDictionary<(string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
         taggedSemanticVersionsCache = new();
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<TaggedSemanticVersionRepository> logger = log.NotNull();
 
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
@@ -34,7 +35,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
 
         if (isCached)
         {
-            this.log.Debug(
+            this.logger.LogDebug(
                 $"Returning cached tagged semantic versions on branch '{branch.Name.Canonical}'. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"
             );
@@ -44,7 +45,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
 
         IEnumerable<SemanticVersionWithTag> GetElements()
         {
-            using (this.log.IndentLog($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
+            using (this.logger.IndentLog($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
                                       $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
                 var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format, ignore);
@@ -75,7 +76,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
 
         if (isCached)
         {
-            this.log.Debug(
+            this.logger.LogDebug(
                 $"Returning cached tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
                 $"TagPrefix: {tagPrefix} and Format: {format}"
             );
@@ -85,7 +86,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
 
         IEnumerable<(ICommit Key, SemanticVersionWithTag Value)> GetElements()
         {
-            using (this.log.IndentLog($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
+            using (this.logger.IndentLog($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
                                       $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
                 var shaHashSet = new HashSet<string>(ignore.Filter(branch.Commits.ToArray()).Select(element => element.Id.Sha));
@@ -115,14 +116,14 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
 
         if (isCached)
         {
-            this.log.Debug($"Returning cached tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
+            this.logger.LogDebug($"Returning cached tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
         }
 
         return result.ToLookup(element => element.Tag.Commit, element => element);
 
         IEnumerable<SemanticVersionWithTag> GetElements()
         {
-            this.log.Info($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
+            this.logger.LogInformation($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
 
             foreach (var tag in ignore.Filter(this.repositoryStore.Tags.ToArray()))
             {

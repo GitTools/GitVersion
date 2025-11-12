@@ -2,13 +2,13 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
-using GitVersion.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
+internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranchConfigurationFinder> logger, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<EffectiveBranchConfigurationFinder> logger = logger.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
     public IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, IGitVersionConfiguration configuration)
@@ -41,7 +41,7 @@ internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositorySt
                 // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
                 // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
                 var skipTraversingOfOrphanedBranches = configuration.Increment == IncrementStrategy.Inherit;
-                this.log.Info(
+                this.logger.LogInformation(
                     $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
                 );
                 if (skipTraversingOfOrphanedBranches) yield break;

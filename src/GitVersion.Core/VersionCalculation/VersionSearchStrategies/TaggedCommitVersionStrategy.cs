@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Extensions;
-using GitVersion.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace GitVersion.VersionCalculation;
 
@@ -11,13 +11,13 @@ namespace GitVersion.VersionCalculation;
 /// Increments if the tag is not the current commit.
 /// </summary>
 internal sealed class TaggedCommitVersionStrategy(
-    ILog log,
+    ILogger<TaggedCommitVersionStrategy> logger,
     Lazy<GitVersionContext> contextLazy,
     ITaggedSemanticVersionService taggedSemanticVersionService,
     IIncrementStrategyFinder incrementStrategyFinder)
     : IVersionStrategy
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<TaggedCommitVersionStrategy> logger = log.NotNull();
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
@@ -60,7 +60,7 @@ internal sealed class TaggedCommitVersionStrategy(
             );
             if (highestPossibleSemanticVersion.IsLessThan(semanticVersionTreshold, includePreRelease: false))
             {
-                this.log.Info(
+                this.logger.LogInformation(
                     $"The tag '{semanticVersion.Value}' is skipped because it provides a lower base version than other tags."
                 );
                 alternativeSemanticVersionsWithTag.Clear();

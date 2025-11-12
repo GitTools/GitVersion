@@ -1,16 +1,17 @@
 using GitVersion.Common;
 using GitVersion.Git;
+using Microsoft.Extensions.Logging;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
 internal sealed class ContinuousDeliveryVersionCalculator(
-        ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    : VersionCalculatorBase(log, repositoryStore, versionContext), IDeploymentModeCalculator
+        ILogger<ContinuousDeliveryVersionCalculator> logger, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    : VersionCalculatorBase<ContinuousDeliveryVersionCalculator>(logger, repositoryStore, versionContext), IDeploymentModeCalculator
 {
     public SemanticVersion Calculate(SemanticVersion semanticVersion, ICommit? baseVersionSource)
     {
-        using (this.log.IndentLog("Using continuous delivery workflow to calculate the incremented version."))
+        using (this.logger.IndentLog("Using continuous delivery workflow to calculate the incremented version."))
         {
             var preReleaseTag = semanticVersion.PreReleaseTag;
             if (!preReleaseTag.HasTag() || !preReleaseTag.Number.HasValue)
