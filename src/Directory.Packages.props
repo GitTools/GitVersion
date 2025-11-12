@@ -23,7 +23,7 @@
     <PackageVersion Include="JsonSchema.Net.Generation" Version="5.1.1" />
     <PackageVersion Include="JunitXml.TestLogger" Version="7.0.2" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="16.1.0" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Build" Version="17.14.28" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="10.0.0" />
@@ -38,10 +38,10 @@
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.0" />
-    <PackageVersion Include="System.Drawing.Common" Version="9.0.10" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.0" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.0.16" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.0" />
-    <PackageVersion Include="System.Security.Cryptography.Xml" Version="9.0.10" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.0" />
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
