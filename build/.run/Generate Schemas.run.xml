@@ -7,18 +7,20 @@
     <envs>
       <env name="DOTNET_ROLL_FORWARD" value="Major" />
     </envs>
-    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="ENV_FILE_PATHS" value="" />
+    <option name="REDIRECT_INPUT_PATH" value="" />
+    <option name="MIXED_MODE_DEBUG" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="AUTO_ATTACH_CHILDREN" value="0" />
     <option name="PROJECT_PATH" value="$PROJECT_DIR$/docs/docs.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="0" />
     <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value="net9.0" />
+    <option name="PROJECT_TFM" value="net10.0" />
     <method v="2">
       <option name="Build" />
-      <option name="RunConfigurationTask" enabled="false" run_configuration_name="Build Prepare" run_configuration_type="DotNetProject" />
     </method>
   </configuration>
 </component>
