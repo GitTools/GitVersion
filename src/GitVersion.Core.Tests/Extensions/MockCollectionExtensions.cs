@@ -10,10 +10,13 @@ public static class MockCollectionExtensions
         }
     }
 
-    public static void MockCollectionReturn<T>(this IEnumerable<T> items, params T[] itemsToReturn)
+    extension<T>(IEnumerable<T> items)
     {
-        var enumerator = items.GetEnumerator();
-        enumerator.Returns(_ => GetEnumerator(itemsToReturn));
-        enumerator.Dispose();
+        public void MockCollectionReturn(params T[] itemsToReturn)
+        {
+            var enumerator = items.GetEnumerator();
+            enumerator.Returns(_ => GetEnumerator(itemsToReturn));
+            enumerator.Dispose();
+        }
     }
 }

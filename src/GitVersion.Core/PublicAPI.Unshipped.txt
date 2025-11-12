@@ -1,1 +1,55 @@
 #nullable enable
+GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!)
+GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!).GetAssemblyFileVersion(GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
+GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.extension(GitVersion.SemanticVersion!).GetAssemblyVersion(GitVersion.Configuration.AssemblyVersioningScheme scheme) -> string?
+GitVersion.Extensions.FileSystemExtensions.extension(System.IO.Abstractions.IFileSystem!)
+GitVersion.Extensions.FileSystemExtensions.extension(System.IO.Abstractions.IFileSystem!).FindGitDir(string? path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
+GitVersion.Extensions.FileSystemExtensions.extension(System.IO.Abstractions.IFileSystem!).GetLastDirectoryWrite(string! path) -> long
+GitVersion.Extensions.IncrementStrategyExtensions.extension(GitVersion.IncrementStrategy)
+GitVersion.Extensions.IncrementStrategyExtensions.extension(GitVersion.IncrementStrategy).ToVersionField() -> GitVersion.VersionField
+GitVersion.Extensions.ReadEmbeddedResourceExtensions.extension(string!)
+GitVersion.Extensions.ReadEmbeddedResourceExtensions.extension(string!).ReadAsStringFromEmbeddedResource(System.Reflection.Assembly! assembly) -> string!
+GitVersion.Extensions.ReadEmbeddedResourceExtensions.extension(string!).ReadAsStringFromEmbeddedResource<T>() -> string!
+GitVersion.Extensions.ServiceCollectionExtensions.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!)
+GitVersion.Extensions.ServiceCollectionExtensions.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).AddModule(GitVersion.IGitVersionModule! gitVersionModule) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+GitVersion.Extensions.ServiceCollectionExtensions.extension(System.IServiceProvider!)
+GitVersion.Extensions.ServiceCollectionExtensions.extension(System.IServiceProvider!).GetServiceForType<TService, TType>() -> TService
+GitVersion.Git.ICommit.IsMergeCommit.get -> bool
+GitVersion.Logging.ILog.Write(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogLevel level, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!)
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Debug(GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Debug(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Debug(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Debug(string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).DiagnosticVerbosity() -> System.IDisposable!
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Error(GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Error(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Error(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Error(string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Info(GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Info(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Info(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Info(string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).MinimalVerbosity() -> System.IDisposable!
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).NormalVerbosity() -> System.IDisposable!
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).QuietVerbosity() -> System.IDisposable!
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Verbose(GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Verbose(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Verbose(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Verbose(string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).VerboseVerbosity() -> System.IDisposable!
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+GitVersion.Logging.LogExtensions.extension(GitVersion.Logging.ILog!).Warning(string! format, params object?[]! args) -> void
+static GitVersion.Extensions.FileSystemExtensions.FindGitDir(this System.IO.Abstractions.IFileSystem! fileSystem, string? path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
+static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object?[]! args) -> void
+static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, string! format, params object?[]! args) -> void

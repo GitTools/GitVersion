@@ -55,129 +55,147 @@ public static class GitRepositoryTestingExtensions
         return branch;
     }
 
-    public static void DiscoverRepository(this IServiceProvider sp)
+    extension(IServiceProvider sp)
     {
-        var gitRepository = sp.GetRequiredService<IGitRepository>();
-        var gitRepositoryInfo = sp.GetRequiredService<IGitRepositoryInfo>();
-        gitRepository.DiscoverRepository(gitRepositoryInfo.GitRootPath);
+        public void DiscoverRepository()
+        {
+            var gitRepository = sp.GetRequiredService<IGitRepository>();
+            var gitRepositoryInfo = sp.GetRequiredService<IGitRepositoryInfo>();
+            gitRepository.DiscoverRepository(gitRepositoryInfo.GitRootPath);
+        }
     }
 
-    public static IBranch FindBranch(this IGitRepository repository, string branchName)
-        => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
-           ?? throw new GitVersionException($"Branch {branchName} not found");
-
-    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null)
-        => DumpGraph(repository.Path, writer, maxCommits);
-
-    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
-        => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
-
-    public static void RenameRemote(this RemoteCollection remotes, string oldName, string newName)
+    extension(IGitRepository repository)
     {
-        if (oldName.IsEquivalentTo(newName)) return;
-        if (remotes.Any(remote => remote.Name == newName))
-        {
-            throw new InvalidOperationException($"A remote with the name '{newName}' already exists.");
-        }
-        if (!remotes.Any(remote => remote.Name == oldName))
-        {
-            throw new InvalidOperationException($"A remote with the name '{oldName}' does not exist.");
-        }
-        remotes.Add(newName, remotes[oldName].Url);
-        remotes.Remove(oldName);
+        public IBranch FindBranch(string branchName)
+            => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
+               ?? throw new GitVersionException($"Branch {branchName} not found");
+
+        public void DumpGraph(Action<string>? writer = null, int? maxCommits = null)
+            => DumpGraph(repository.Path, writer, maxCommits);
     }
 
-    public static GitVersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
-        IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    extension(IRepository repository)
     {
-        repository ??= fixture.Repository;
-        configuration ??= GitFlowConfigurationBuilder.New.Build();
+        public void DumpGraph(Action<string>? writer = null, int? maxCommits = null)
+            => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+    }
 
-        var overrideConfiguration = new Dictionary<object, object?>();
-        var options = Options.Create(new GitVersionOptions
+    extension(RemoteCollection remotes)
+    {
+        public void RenameRemote(string oldName, string newName)
         {
-            WorkingDirectory = repository.Info.WorkingDirectory,
-            ConfigurationInfo = { OverrideConfiguration = overrideConfiguration },
-            RepositoryInfo =
+            if (oldName.IsEquivalentTo(newName)) return;
+            if (remotes.Any(remote => remote.Name == newName))
             {
-                TargetBranch = targetBranch,
-                CommitId = commitId
-            },
-            Settings = { OnlyTrackedBranches = onlyTrackedBranches }
-        });
+                throw new InvalidOperationException($"A remote with the name '{newName}' already exists.");
+            }
+            if (remotes.All(remote => remote.Name != oldName))
+            {
+                throw new InvalidOperationException($"A remote with the name '{oldName}' does not exist.");
+            }
+            remotes.Add(newName, remotes[oldName].Url);
+            remotes.Remove(oldName);
+        }
+    }
 
-        try
+    extension(RepositoryFixtureBase fixture)
+    {
+        public GitVersionVariables GetVersion(IGitVersionConfiguration? configuration = null,
+                                              IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
         {
-            var configurationProviderMock = Substitute.For<IConfigurationProvider>();
-            configurationProviderMock.Provide(overrideConfiguration).Returns(configuration);
-            var sp = ConfigureServices(services =>
+            repository ??= fixture.Repository;
+            configuration ??= GitFlowConfigurationBuilder.New.Build();
+
+            var overrideConfiguration = new Dictionary<object, object?>();
+            var options = Options.Create(new GitVersionOptions
             {
-                services.AddSingleton(options);
-                services.AddSingleton(configurationProviderMock);
+                WorkingDirectory = repository.Info.WorkingDirectory,
+                ConfigurationInfo = { OverrideConfiguration = overrideConfiguration },
+                RepositoryInfo =
+                {
+                    TargetBranch = targetBranch,
+                    CommitId = commitId
+                },
+                Settings = { OnlyTrackedBranches = onlyTrackedBranches }
             });
 
-            sp.DiscoverRepository();
+            try
+            {
+                var configurationProviderMock = Substitute.For<IConfigurationProvider>();
+                configurationProviderMock.Provide(overrideConfiguration).Returns(configuration);
+                var sp = ConfigureServices(services =>
+                {
+                    services.AddSingleton(options);
+                    services.AddSingleton(configurationProviderMock);
+                });
 
-            var variableProvider = sp.GetRequiredService<IVariableProvider>();
-            var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
-            var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
+                sp.DiscoverRepository();
 
-            var context = contextOptions.Value;
+                var variableProvider = sp.GetRequiredService<IVariableProvider>();
+                var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
+                var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 
-            var semanticVersion = nextVersionCalculator.FindVersion();
+                var context = contextOptions.Value;
 
-            var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(context.CurrentBranch.Name);
-            return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration.PreReleaseWeight);
+                var semanticVersion = nextVersionCalculator.FindVersion();
+
+                var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(context.CurrentBranch.Name);
+                return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration.PreReleaseWeight);
+            }
+            catch (Exception)
+            {
+                repository.DumpGraph();
+                throw;
+            }
         }
-        catch (Exception)
+
+        public void WriteVersionVariables(string versionFile)
         {
-            repository.DumpGraph();
-            throw;
+            var versionVariables = fixture.GetVersion();
+
+            FileSystemHelper.File.WriteAllText(versionFile, versionVariables.ToJson());
+        }
+
+        public void AssertFullSemver(string fullSemver,
+                                     IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+        {
+            repository ??= fixture.Repository;
+
+            var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+            variables.FullSemVer.ShouldBe(fullSemver);
+            if (commitId == null)
+            {
+                fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
+            }
         }
     }
 
-    public static void WriteVersionVariables(this RepositoryFixtureBase fixture, string versionFile)
+    extension(RemoteRepositoryFixture fixture)
     {
-        var versionVariables = fixture.GetVersion();
-
-        FileSystemHelper.File.WriteAllText(versionFile, versionVariables.ToJson());
-    }
-
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
-        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
-    {
-        repository ??= fixture.Repository;
-
-        var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
-        variables.FullSemVer.ShouldBe(fullSemver);
-        if (commitId == null)
+        /// <summary>
+        /// Simulates running on a build server
+        /// </summary>
+        public void InitializeRepository()
         {
-            fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
+            var gitVersionOptions = new GitVersionOptions
+            {
+                WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath
+            };
+            var options = Options.Create(gitVersionOptions);
+
+            var environment = new TestEnvironment();
+            environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+            var serviceProvider = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(environment);
+            });
+
+            var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
+            gitPreparer.Prepare();
         }
-    }
-
-    /// <summary>
-    /// Simulates running on build server
-    /// </summary>
-    public static void InitializeRepository(this RemoteRepositoryFixture fixture)
-    {
-        var gitVersionOptions = new GitVersionOptions
-        {
-            WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath
-        };
-        var options = Options.Create(gitVersionOptions);
-
-        var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
-
-        var serviceProvider = ConfigureServices(services =>
-        {
-            services.AddSingleton(options);
-            services.AddSingleton(environment);
-        });
-
-        var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
-        gitPreparer.Prepare();
     }
 
     private static ServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)

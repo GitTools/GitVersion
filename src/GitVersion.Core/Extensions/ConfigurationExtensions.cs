@@ -1,9 +1,7 @@
-using System.IO.Abstractions;
 using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Formatting;
 using GitVersion.Git;
-using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -14,124 +12,165 @@ internal static class ConfigurationExtensions
     // FormatWith requires a non-null source, but we don't need any properties from it when only using env: placeholders
     private static readonly object EmptyFormatSource = new { };
 
-    public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(
-        this IGitVersionConfiguration configuration, IBranch branch, EffectiveConfiguration? parentConfiguration = null)
+    extension(IGitVersionConfiguration configuration)
     {
-        var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name, parentConfiguration);
-        return new EffectiveBranchConfiguration(effectiveConfiguration, branch);
-    }
-
-    public static EffectiveConfiguration GetEffectiveConfiguration(
-        this IGitVersionConfiguration configuration, ReferenceName branchName, EffectiveConfiguration? parentConfiguration = null)
-    {
-        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
-        EffectiveConfiguration? fallbackConfiguration = null;
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+        public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
         {
-            fallbackConfiguration = parentConfiguration;
+            var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name, parentConfiguration);
+            return new EffectiveBranchConfiguration(effectiveConfiguration, branch);
         }
-        return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
-    }
 
-    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
-        => GetBranchConfiguration(configuration, branch.NotNull().Name);
-
-    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
-    {
-        var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= configuration.GetEmptyBranchConfiguration();
-        return branchConfiguration;
-    }
-
-    public static IEnumerable<IVersionFilter> ToFilters(this IIgnoreConfiguration source)
-    {
-        source.NotNull();
-
-        if (source.Shas.Count != 0) yield return new ShaVersionFilter(source.Shas);
-        if (source.Before.HasValue) yield return new MinDateVersionFilter(source.Before.Value);
-        if (source.Paths.Count != 0) yield return new PathFilter(source.Paths.ToList());
-    }
-
-    private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
-    {
-        IBranchConfiguration? unknownBranchConfiguration = null;
-        foreach (var (key, branchConfiguration) in configuration.Branches)
+        public EffectiveConfiguration GetEffectiveConfiguration(ReferenceName branchName, EffectiveConfiguration? parentConfiguration = null)
         {
-            if (!branchConfiguration.IsMatch(branchName)) continue;
-            if (key == "unknown")
+            var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+            EffectiveConfiguration? fallbackConfiguration = null;
+            if (branchConfiguration.Increment == IncrementStrategy.Inherit)
             {
-                unknownBranchConfiguration = branchConfiguration;
+                fallbackConfiguration = parentConfiguration;
             }
-            else
+            return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
+        }
+
+        public IBranchConfiguration GetBranchConfiguration(IBranch branch)
+            => GetBranchConfiguration(configuration, branch.NotNull().Name);
+
+        public IBranchConfiguration GetBranchConfiguration(ReferenceName branchName)
+        {
+            var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
+            branchConfiguration ??= configuration.GetEmptyBranchConfiguration();
+            return branchConfiguration;
+
+            static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
             {
-                yield return branchConfiguration;
+                IBranchConfiguration? unknownBranchConfiguration = null;
+                foreach (var (key, branchConfiguration) in configuration.Branches)
+                {
+                    if (!branchConfiguration.IsMatch(branchName)) continue;
+                    if (key == "unknown")
+                    {
+                        unknownBranchConfiguration = branchConfiguration;
+                    }
+                    else
+                    {
+                        yield return branchConfiguration;
+                    }
+                }
+
+                if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
             }
         }
 
-        if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
+        public IBranchConfiguration GetFallbackBranchConfiguration() => configuration;
+
+        public bool IsReleaseBranch(IBranch branch)
+            => IsReleaseBranch(configuration, branch.NotNull().Name);
+
+        public bool IsReleaseBranch(ReferenceName branchName)
+            => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
     }
 
-    public static IBranchConfiguration GetFallbackBranchConfiguration(this IGitVersionConfiguration configuration) => configuration;
-
-    public static bool IsReleaseBranch(this IGitVersionConfiguration configuration, IBranch branch)
-        => IsReleaseBranch(configuration, branch.NotNull().Name);
-
-    public static bool IsReleaseBranch(this IGitVersionConfiguration configuration, ReferenceName branchName)
-        => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
-
-    public static string? GetBranchSpecificLabel(
-            this EffectiveConfiguration configuration, ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
-        => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
-
-    public static string? GetBranchSpecificLabel(
-        this EffectiveConfiguration configuration, string? branchName, string? branchNameOverride, IEnvironment? environment = null)
+    extension(IIgnoreConfiguration ignoreConfig)
     {
-        configuration.NotNull();
-
-        var label = configuration.Label;
-        if (label is null)
+        public IEnumerable<IVersionFilter> ToFilters()
         {
-            return label;
+            ignoreConfig.NotNull();
+
+            if (ignoreConfig.Shas.Count != 0) yield return new ShaVersionFilter(ignoreConfig.Shas);
+            if (ignoreConfig.Before.HasValue) yield return new MinDateVersionFilter(ignoreConfig.Before.Value);
+            if (ignoreConfig.Paths.Count != 0) yield return new PathFilter([.. ignoreConfig.Paths]);
         }
 
-        var effectiveBranchName = branchNameOverride ?? branchName;
-        if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+        public IEnumerable<ITag> Filter(ITag[] source)
         {
-            // Even if regex doesn't match, we should still process environment variables
+            ignoreConfig.NotNull();
+            source.NotNull();
+
+            return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element.Commit, ignoreConfig)) : source;
+        }
+
+        public IEnumerable<ICommit> Filter(ICommit[] source)
+        {
+            ignoreConfig.NotNull();
+            source.NotNull();
+
+            return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element, ignoreConfig)) : source;
+        }
+    }
+
+    private static bool ShouldBeIgnored(ICommit commit, IIgnoreConfiguration ignore)
+        => !ignore.ToFilters().Any(filter => filter.Exclude(commit, out _));
+
+    extension(EffectiveConfiguration configuration)
+    {
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
+
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment? environment = null)
+        {
+            configuration.NotNull();
+
+            var label = configuration.Label;
+            if (label is null)
+            {
+                return label;
+            }
+
+            var effectiveBranchName = branchNameOverride ?? branchName;
+            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+            {
+                label = ProcessEnvironmentVariables(label, environment);
+                return label;
+            }
+
+            var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
+            var match = regex.Match(effectiveBranchName);
+            if (!match.Success)
+            {
+                label = ProcessEnvironmentVariables(label, environment);
+                return label;
+            }
+
+            foreach (var groupName in regex.GetGroupNames())
+            {
+                var groupValue = match.Groups[groupName].Value;
+                Lazy<string> escapedGroupValueLazy = new(() => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-"));
+                var placeholder = $"{{{groupName}}}";
+                int index, startIndex = 0;
+                while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
+                {
+                    var escapedGroupValue = escapedGroupValueLazy.Value;
+                    label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
+                    startIndex = index + escapedGroupValue.Length;
+                }
+            }
+
             label = ProcessEnvironmentVariables(label, environment);
             return label;
         }
 
-        var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
-        var match = regex.Match(effectiveBranchName);
-        if (!match.Success)
+        public TaggedSemanticVersions GetTaggedSemanticVersion()
         {
-            // Even if regex doesn't match, we should still process environment variables
-            label = ProcessEnvironmentVariables(label, environment);
-            return label;
-        }
+            configuration.NotNull();
 
-        foreach (var groupName in regex.GetGroupNames())
-        {
-            var groupValue = match.Groups[groupName].Value;
-            Lazy<string> escapedGroupValueLazy = new(() => EscapeInvalidCharacters(groupValue));
-            var placeholder = $"{{{groupName}}}";
-            int index, startIndex = 0;
-            while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
+            var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
+
+            if (configuration.TrackMergeTarget)
             {
-                var escapedGroupValue = escapedGroupValueLazy.Value;
-                label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
-                startIndex = index + escapedGroupValue.Length;
+                taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
             }
+
+            if (configuration.TracksReleaseBranches)
+            {
+                taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
+            }
+
+            if (configuration is { IsMainBranch: false, IsReleaseBranch: false })
+            {
+                taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
+            }
+            return taggedSemanticVersion;
         }
-
-        // Process environment variable placeholders after regex placeholders
-        label = ProcessEnvironmentVariables(label, environment);
-
-        return label;
     }
-
-    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
 
     private static string ProcessEnvironmentVariables(string label, IEnvironment? environment)
     {
@@ -148,47 +187,5 @@ internal static class ConfigurationExtensions
             }
         }
         return label;
-    }
-
-    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
-    {
-        var startingDir = path;
-        while (startingDir is not null)
-        {
-            var dirOrFilePath = FileSystemHelper.Path.Combine(startingDir, ".git");
-            if (fileSystem.Directory.Exists(dirOrFilePath))
-            {
-                return (dirOrFilePath, FileSystemHelper.Path.GetDirectoryName(dirOrFilePath));
-            }
-
-            if (fileSystem.File.Exists(dirOrFilePath))
-            {
-                var relativeGitDirPath = ReadGitDirFromFile(fileSystem, dirOrFilePath);
-                if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
-                {
-                    var fullGitDirPath = FileSystemHelper.Path.GetFullPath(FileSystemHelper.Path.Combine(startingDir, relativeGitDirPath));
-                    if (fileSystem.Directory.Exists(fullGitDirPath))
-                    {
-                        return (fullGitDirPath, FileSystemHelper.Path.GetDirectoryName(dirOrFilePath));
-                    }
-                }
-            }
-
-            startingDir = FileSystemHelper.Path.GetDirectoryName(startingDir);
-        }
-
-        return null;
-    }
-
-    private static string? ReadGitDirFromFile(IFileSystem fileSystem, string fileName)
-    {
-        const string expectedPrefix = "gitdir: ";
-        var firstLineOfFile = fileSystem.File.ReadLines(fileName).FirstOrDefault();
-        if (firstLineOfFile?.StartsWith(expectedPrefix) ?? false)
-        {
-            return firstLineOfFile[expectedPrefix.Length..]; // strip off the prefix, leaving just the path
-        }
-
-        return null;
     }
 }

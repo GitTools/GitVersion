@@ -2,15 +2,18 @@ namespace GitVersion.Testing.Extensions;
 
 public static class StringExtensions
 {
-    public static IEnumerable<string> SplitIntoLines(this string str, int maxLineLength)
+    extension(string str)
     {
-        if (string.IsNullOrEmpty(str)) yield break;
-
-        foreach (var line in SplitByNewlines(str))
+        public IEnumerable<string> SplitIntoLines(int maxLineLength)
         {
-            foreach (var wrapped in WrapWithWordBoundaries(line, maxLineLength))
+            if (string.IsNullOrEmpty(str)) yield break;
+
+            foreach (var line in SplitByNewlines(str))
             {
-                yield return wrapped;
+                foreach (var wrapped in WrapWithWordBoundaries(line, maxLineLength))
+                {
+                    yield return wrapped;
+                }
             }
         }
     }
@@ -30,7 +33,7 @@ public static class StringExtensions
         while (index < line.Length)
         {
             var wrapAt = GetWrapIndex(line, index, maxLength);
-            yield return line.Substring(index, wrapAt - index).TrimEnd();
+            yield return line[index..wrapAt].TrimEnd();
             index = wrapAt;
         }
     }

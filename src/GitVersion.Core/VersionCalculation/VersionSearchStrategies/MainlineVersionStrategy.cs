@@ -221,7 +221,7 @@ internal sealed class MainlineVersionStrategy(
                 return true;
             }
 
-            if (!item.IsMergeCommit()) continue;
+            if (!item.IsMergeCommit) continue;
             Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
                 () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
             );

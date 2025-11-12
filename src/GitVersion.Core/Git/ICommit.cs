@@ -12,5 +12,7 @@ public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>
 
     string Message { get; }
 
+    bool IsMergeCommit { get; }
+
     IReadOnlyList<string> DiffPaths { get; }
 }

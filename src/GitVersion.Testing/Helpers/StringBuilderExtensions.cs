@@ -4,12 +4,14 @@ namespace GitVersion.Testing.Internal;
 
 internal static class StringBuilderExtensions
 {
-    public static void AppendLineFormat(this StringBuilder stringBuilder,
-                                        [StringSyntax(StringSyntaxAttribute.CompositeFormat)]
-                                        string format,
-                                        params object?[] args)
+    extension(StringBuilder stringBuilder)
     {
-        stringBuilder.AppendFormat(format, args);
-        stringBuilder.AppendLine();
+        public void AppendLineFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                                     string format,
+                                     params object?[] args)
+        {
+            stringBuilder.AppendFormat(format, args);
+            stringBuilder.AppendLine();
+        }
     }
 }

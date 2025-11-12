@@ -33,6 +33,8 @@ internal sealed class Commit : ICommit
     public string Sha { get; }
     public DateTimeOffset When { get; }
     public string Message => this.innerCommit.Message;
+    public bool IsMergeCommit => Parents.Count >= 2;
+
     public IReadOnlyList<string> DiffPaths
     {
         get
