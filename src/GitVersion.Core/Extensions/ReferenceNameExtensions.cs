@@ -6,16 +6,16 @@ namespace GitVersion.Configuration;
 
 public static class ReferenceNameExtensions
 {
-    public static bool TryGetSemanticVersion(this ReferenceName source, out (SemanticVersion Value, string? Name) result, EffectiveConfiguration configuration)
-        => source.TryGetSemanticVersion(out result, configuration.VersionInBranchPattern, configuration.TagPrefix, configuration.SemanticVersionFormat);
+    public static bool TryGetSemanticVersion(this ReferenceName source, EffectiveConfiguration configuration, out (SemanticVersion Value, string? Name) result)
+        => source.TryGetSemanticVersion(configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat, out result);
 
-    public static bool TryGetSemanticVersion(this ReferenceName source, out (SemanticVersion Value, string? Name) result, IGitVersionConfiguration configuration)
-        => source.TryGetSemanticVersion(out result, configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat);
+    public static bool TryGetSemanticVersion(this ReferenceName source, IGitVersionConfiguration configuration, out (SemanticVersion Value, string? Name) result)
+        => source.TryGetSemanticVersion(configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat, out result);
 
-    private static bool TryGetSemanticVersion(this ReferenceName referenceName, out (SemanticVersion Value, string? Name) result,
-                                              string? versionPatternPattern,
-                                              string? tagPrefix,
-                                              SemanticVersionFormat format)
+    private static bool TryGetSemanticVersion(this ReferenceName referenceName,
+                                             string? versionPatternPattern,
+                                             string? tagPrefix,
+                                             SemanticVersionFormat format, out (SemanticVersion Value, string? Name) result)
     {
         var versionPatternRegex = RegexPatterns.Cache.GetOrAdd(GetVersionInBranchPattern(versionPatternPattern));
         result = default;

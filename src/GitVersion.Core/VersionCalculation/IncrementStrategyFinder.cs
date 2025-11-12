@@ -73,7 +73,7 @@ internal class IncrementStrategyFinder(
         }
 
         IEnumerable<ICommit> commits = GetCommitHistory(
-            tagPrefix: configuration.TagPrefix,
+            tagPrefix: configuration.TagPrefixPattern,
             semanticVersionFormat: configuration.SemanticVersionFormat,
             baseVersionSource: baseVersionSource,
             currentCommit: currentCommit,

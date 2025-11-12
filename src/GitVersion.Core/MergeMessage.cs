@@ -53,7 +53,7 @@ public class MergeMessage
                 PullRequestNumber = pullNumber;
             }
 
-            Version = MergedBranch?.TryGetSemanticVersion(out var result, configuration) == true ? result.Value : null;
+            Version = MergedBranch?.TryGetSemanticVersion(configuration, out var result) == true ? result.Value : null;
 
             break;
         }
