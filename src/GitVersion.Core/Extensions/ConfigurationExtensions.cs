@@ -94,18 +94,7 @@ internal static class ConfigurationExtensions
         if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
         {
             // Even if regex doesn't match, we should still process environment variables
-            if (environment is not null)
-            {
-                try
-                {
-                    label = label.FormatWith(new { }, environment);
-                }
-                catch (ArgumentException)
-                {
-                    // If environment variable is missing and no fallback, return label as-is
-                    // This maintains backward compatibility
-                }
-            }
+            label = ProcessEnvironmentVariables(label, environment);
             return label;
         }
 
@@ -114,17 +103,7 @@ internal static class ConfigurationExtensions
         if (!match.Success)
         {
             // Even if regex doesn't match, we should still process environment variables
-            if (environment is not null)
-            {
-                try
-                {
-                    label = label.FormatWith(new { }, environment);
-                }
-                catch (ArgumentException)
-                {
-                    // If environment variable is missing and no fallback, return label as-is
-                }
-            }
+            label = ProcessEnvironmentVariables(label, environment);
             return label;
         }
 
@@ -143,6 +122,15 @@ internal static class ConfigurationExtensions
         }
 
         // Process environment variable placeholders after regex placeholders
+        label = ProcessEnvironmentVariables(label, environment);
+
+        return label;
+    }
+
+    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
+
+    private static string ProcessEnvironmentVariables(string label, IEnvironment? environment)
+    {
         if (environment is not null)
         {
             try
@@ -155,11 +143,8 @@ internal static class ConfigurationExtensions
                 // This maintains backward compatibility
             }
         }
-
         return label;
     }
-
-    private static string EscapeInvalidCharacters(string groupValue) => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
     {
