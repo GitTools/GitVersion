@@ -30,7 +30,7 @@ internal static class ArgumentParserExtensions
                 {
                     _ = FileSystemHelper.Path.GetFullPath(value);
                 }
-                catch
+                catch (Exception)
                 {
                     return false;
                 }
