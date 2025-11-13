@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
+using GitVersion.Core.Tests;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
@@ -120,7 +121,7 @@ public abstract class TestTaskBase : TestBase
         Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, [], new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
-        fixture.InitializeRepo();
+        fixture.InitializeRepository();
         return fixture;
     }
 

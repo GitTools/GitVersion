@@ -6,18 +6,21 @@ namespace GitVersion.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection RegisterModules(this IServiceCollection services, IEnumerable<IGitVersionModule> gitVersionModules)
-        => gitVersionModules.Aggregate(services, (current, gitVersionModule) => gitVersionModule.RegisterTypes(current));
-
-    public static IServiceCollection RegisterLogging(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddLogging(builder =>
-        {
-            var logger = CreateLogger();
-            builder.AddSerilog(logger, dispose: true);
-        });
+        public IServiceCollection RegisterModules(IEnumerable<IGitVersionModule> gitVersionModules)
+            => gitVersionModules.Aggregate(services, (current, gitVersionModule) => gitVersionModule.RegisterTypes(current));
 
-        return services;
+        public IServiceCollection RegisterLogging()
+        {
+            services.AddLogging(builder =>
+            {
+                var logger = CreateLogger();
+                builder.AddSerilog(logger, dispose: true);
+            });
+
+            return services;
+        }
     }
 
     private static Serilog.Core.Logger CreateLogger()

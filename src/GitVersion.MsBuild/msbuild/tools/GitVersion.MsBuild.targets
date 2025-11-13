@@ -11,7 +11,8 @@
         <!-- Validates the target framework and sets the GitVersionTargetFramework property to the target framework that is compatible with the target framework of the project -->
         <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == '' and $([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net8.0')) == 'true'">net8.0</GitVersionTargetFramework>
         <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == '' and $([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0')) == 'true'">net9.0</GitVersionTargetFramework>
-        <!-- Fall back to net8.0 if the target framework is not compatible with net9.0 and net8.0 -->
+        <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == '' and $([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0')) == 'true'">net10.0</GitVersionTargetFramework>
+        <!-- Fall back to net8.0 if the target framework is not compatible with net10.0, net9.0 and net8.0 -->
         <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == ''">net8.0</GitVersionTargetFramework>
         <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(GitVersionTargetFramework)))gitversion.dll&quot;</GitVersionFileExe>
         <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(GitVersionTargetFramework)))GitVersion.MsBuild.dll</GitVersionAssemblyFile>

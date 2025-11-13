@@ -170,6 +170,9 @@ dotnet_diagnostic.rcs1037.severity = error
 # RCS1036: Remove redundant empty line.
 dotnet_diagnostic.rcs1036.severity = error
 
+dotnet_diagnostic.S2325.severity = none
+dotnet_diagnostic.S4136.severity = none
+
 xml_space_before_self_closing = true
 
 resharper_arrange_object_creation_when_type_not_evident_highlighting = none

@@ -1,12 +1,12 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
 
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <NoWarn>8625;2254;IDE0005</NoWarn>
+        <NoWarn>$(NoWarn);CS8625;CS2254;IDE0005</NoWarn>
 
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>

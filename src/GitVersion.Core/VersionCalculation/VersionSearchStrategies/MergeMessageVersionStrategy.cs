@@ -1,7 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Git;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
@@ -47,7 +46,7 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
             this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
 
             var baseVersionSource = commit;
-            if (commit.IsMergeCommit())
+            if (commit.IsMergeCommit)
             {
                 baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
             }
