@@ -10,6 +10,10 @@ namespace GitVersion.Configuration;
 
 internal static class ConfigurationExtensions
 {
+    // Empty object used as source parameter when only processing environment variables in FormatWith
+    // FormatWith requires a non-null source, but we don't need any properties from it when only using env: placeholders
+    private static readonly object EmptyFormatSource = new { };
+
     public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(
         this IGitVersionConfiguration configuration, IBranch branch, EffectiveConfiguration? parentConfiguration = null)
     {
@@ -135,7 +139,7 @@ internal static class ConfigurationExtensions
         {
             try
             {
-                label = label.FormatWith(new { }, environment);
+                label = label.FormatWith(EmptyFormatSource, environment);
             }
             catch (ArgumentException)
             {
