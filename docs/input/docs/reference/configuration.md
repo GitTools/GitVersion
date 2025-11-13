@@ -892,6 +892,32 @@ of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?
 
 Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
 
+You can also use environment variable placeholders with the `{env:VARIABLE_NAME}` syntax. This is particularly useful for CI/CD scenarios, such as using GitHub Actions context variables in pull request labels.
+
+For example, to use the GitHub Actions head ref in a pull request label:
+```yaml
+branches:
+  pull-request:
+    label: 'pr-{env:GITHUB_HEAD_REF}'
+    regex: '^pull[/-]'
+```
+
+You can combine regex placeholders with environment variables:
+```yaml
+branches:
+  feature:
+    label: '{BranchName}-{env:GITHUB_HEAD_REF}'
+    regex: '^features?[\/-](?<BranchName>.+)'
+```
+
+Environment variables support fallback values using the `{env:VARIABLE_NAME ?? "fallback"}` syntax:
+```yaml
+branches:
+  pull-request:
+    label: 'pr-{env:GITHUB_HEAD_REF ?? "unknown"}'
+    regex: '^pull[/-]'
+```
+
 **Note:** To clear a default use an empty string: `label: ''`
 
 ### increment

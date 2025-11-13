@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Formatting;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -75,11 +76,11 @@ internal static class ConfigurationExtensions
         => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
     public static string? GetBranchSpecificLabel(
-            this EffectiveConfiguration configuration, ReferenceName branchName, string? branchNameOverride)
-        => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride);
+            this EffectiveConfiguration configuration, ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
+        => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
 
     public static string? GetBranchSpecificLabel(
-        this EffectiveConfiguration configuration, string? branchName, string? branchNameOverride)
+        this EffectiveConfiguration configuration, string? branchName, string? branchNameOverride, IEnvironment? environment = null)
     {
         configuration.NotNull();
 
@@ -90,10 +91,43 @@ internal static class ConfigurationExtensions
         }
 
         var effectiveBranchName = branchNameOverride ?? branchName;
-        if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty()) return label;
+        if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+        {
+            // Even if regex doesn't match, we should still process environment variables
+            if (environment is not null)
+            {
+                try
+                {
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing and no fallback, return label as-is
+                    // This maintains backward compatibility
+                }
+            }
+            return label;
+        }
+
         var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
         var match = regex.Match(effectiveBranchName);
-        if (!match.Success) return label;
+        if (!match.Success)
+        {
+            // Even if regex doesn't match, we should still process environment variables
+            if (environment is not null)
+            {
+                try
+                {
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing and no fallback, return label as-is
+                }
+            }
+            return label;
+        }
+
         foreach (var groupName in regex.GetGroupNames())
         {
             var groupValue = match.Groups[groupName].Value;
@@ -107,6 +141,21 @@ internal static class ConfigurationExtensions
                 startIndex = index + escapedGroupValue.Length;
             }
         }
+
+        // Process environment variable placeholders after regex placeholders
+        if (environment is not null)
+        {
+            try
+            {
+                label = label.FormatWith(new { }, environment);
+            }
+            catch (ArgumentException)
+            {
+                // If environment variable is missing and no fallback, return label as-is
+                // This maintains backward compatibility
+            }
+        }
+
         return label;
     }
 
