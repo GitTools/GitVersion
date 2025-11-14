@@ -1,40 +1,49 @@
-<!--- Provide a general summary of your changes in the Title above -->
+<!-- Provide a general summary of your changes in the Title above -->
 
 ## Description
 
-<!--- Describe your changes in detail -->
+<!-- Describe your changes in detail -->
 
 ## Related Issue
 
-<!--- This project only accepts pull requests related to open issues -->
+<!--
 
-<!--- If suggesting a new feature or change, please discuss it in an issue first -->
+This project only accepts pull requests related to open issues.
+If suggesting a new feature or change, please discuss it in an issue first.
+If fixing a bug, there should be an issue describing it with steps to reproduce.
+Please replace "XYZ" below with the issue number that is being resolved by this
+pull request.
 
-<!--- If fixing a bug, there should be an issue describing it with steps to reproduce -->
+-->
 
-<!--- Please link to the issue here: -->
+Resolves #XYZ
 
 ## Motivation and Context
 
-<!--- Why is this change required? What problem does it solve? -->
+<!-- Why is this change required? What problem does it solve? -->
 
 ## How Has This Been Tested?
 
-<!--- Please describe in detail how you tested your changes. -->
+<!-- 
 
-<!--- Include details of your testing environment, and the tests you ran to -->
+Include details of your testing environment, and the tests you ran to
+see how your change affects other areas of the code, etc.
+Please describe in detail how you tested your changes.
 
-<!--- see how your change affects other areas of the code, etc. -->
+-->
 
 ## Screenshots (if appropriate):
 
-<!--- Drag and drop screenshots here -->
+<!-- Drag and drop screenshots here -->
 
 ## Checklist:
 
-<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--
 
-<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+Go over all the following points, and put an `x` in all the boxes that apply.
+If you're unsure about any of these, don't hesitate to ask. We're here to help!
+
+-->
 
 * \[ ] My code follows the code style of this project.
 * \[ ] My change requires a change to the documentation.
