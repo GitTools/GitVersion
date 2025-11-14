@@ -35,10 +35,10 @@ public class MergeMessageTests : TestBase
     {
         // Arrange
         const string message = "Updated some code.";
-        var configuration = GitHubFlowConfigurationBuilder.New.WithTagPrefixPattern(prefix).Build();
+        var configBuilder = GitHubFlowConfigurationBuilder.New.WithTagPrefixPattern(prefix);
 
         // Act
-        var sut = new MergeMessage(message, configuration);
+        var sut = new MergeMessage(message, configBuilder.Build());
 
         // Assert
         sut.TargetBranch.ShouldBeNull();

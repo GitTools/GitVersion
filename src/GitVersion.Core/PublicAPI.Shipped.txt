@@ -84,7 +84,6 @@ GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenBranchMerged
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementWhenCurrentCommitTagged.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.RegularExpression.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.EffectiveConfiguration.TagPrefix.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.TagPreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
@@ -192,7 +191,6 @@ GitVersion.Git.BranchCommit.BranchCommit() -> void
 GitVersion.Git.BranchCommit.BranchCommit(GitVersion.Git.ICommit! commit, GitVersion.Git.IBranch! branch) -> void
 GitVersion.Git.BranchCommit.Commit.get -> GitVersion.Git.ICommit!
 GitVersion.Git.BranchCommit.Equals(GitVersion.Git.BranchCommit? other) -> bool
-GitVersion.Git.CommitExtensions
 GitVersion.Git.CommitFilter
 GitVersion.Git.CommitFilter.CommitFilter() -> void
 GitVersion.Git.CommitFilter.CommitFilter(GitVersion.Git.CommitFilter! original) -> void
@@ -396,7 +394,6 @@ GitVersion.Logging.ILog.IndentLog(string! operationDescription) -> System.IDispo
 GitVersion.Logging.ILog.Separator() -> void
 GitVersion.Logging.ILog.Verbosity.get -> GitVersion.Logging.Verbosity
 GitVersion.Logging.ILog.Verbosity.set -> void
-GitVersion.Logging.ILog.Write(GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogLevel level, string! format, params object![]! args) -> void
 GitVersion.Logging.ILogAppender
 GitVersion.Logging.ILogAppender.WriteTo(GitVersion.Logging.LogLevel level, string! message) -> void
 GitVersion.Logging.LogAction
@@ -804,8 +801,6 @@ static GitVersion.Configuration.EffectiveBranchConfiguration.operator !=(GitVers
 static GitVersion.Configuration.EffectiveBranchConfiguration.operator ==(GitVersion.Configuration.EffectiveBranchConfiguration? left, GitVersion.Configuration.EffectiveBranchConfiguration? right) -> bool
 static GitVersion.Configuration.EffectiveConfiguration.operator !=(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
 static GitVersion.Configuration.EffectiveConfiguration.operator ==(GitVersion.Configuration.EffectiveConfiguration? left, GitVersion.Configuration.EffectiveConfiguration? right) -> bool
-static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.EffectiveConfiguration! configuration) -> bool
-static GitVersion.Configuration.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.Git.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> bool
 static GitVersion.ConfigurationInfo.operator !=(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
 static GitVersion.ConfigurationInfo.operator ==(GitVersion.ConfigurationInfo? left, GitVersion.ConfigurationInfo? right) -> bool
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyFileVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
@@ -837,7 +832,6 @@ static GitVersion.Git.AuthenticationInfo.operator !=(GitVersion.Git.Authenticati
 static GitVersion.Git.AuthenticationInfo.operator ==(GitVersion.Git.AuthenticationInfo? left, GitVersion.Git.AuthenticationInfo? right) -> bool
 static GitVersion.Git.BranchCommit.operator !=(GitVersion.Git.BranchCommit left, GitVersion.Git.BranchCommit right) -> bool
 static GitVersion.Git.BranchCommit.operator ==(GitVersion.Git.BranchCommit left, GitVersion.Git.BranchCommit right) -> bool
-static GitVersion.Git.CommitExtensions.IsMergeCommit(this GitVersion.Git.ICommit! source) -> bool
 static GitVersion.Git.CommitFilter.operator !=(GitVersion.Git.CommitFilter? left, GitVersion.Git.CommitFilter? right) -> bool
 static GitVersion.Git.CommitFilter.operator ==(GitVersion.Git.CommitFilter? left, GitVersion.Git.CommitFilter? right) -> bool
 static GitVersion.Git.ReferenceName.FromBranchName(string! branchName) -> GitVersion.Git.ReferenceName!
@@ -849,29 +843,19 @@ static GitVersion.Helpers.Disposable.Create<T>(T value, System.Action! disposer)
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
-static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Debug(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.DiagnosticVerbosity(this GitVersion.Logging.ILog! log) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
-static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Error(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
-static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Info(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.MinimalVerbosity(this GitVersion.Logging.ILog! log) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.NormalVerbosity(this GitVersion.Logging.ILog! log) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.QuietVerbosity(this GitVersion.Logging.ILog! log) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
-static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Verbose(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.Logging.LogExtensions.VerboseVerbosity(this GitVersion.Logging.ILog! log) -> System.IDisposable!
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.LogAction! logAction) -> void
 static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, GitVersion.Logging.LogAction! logAction) -> void
-static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, GitVersion.Logging.Verbosity verbosity, string! format, params object![]! args) -> void
-static GitVersion.Logging.LogExtensions.Warning(this GitVersion.Logging.ILog! log, string! format, params object![]! args) -> void
 static GitVersion.MergeMessage.TryParse(GitVersion.Git.ICommit! mergeCommit, GitVersion.Configuration.IGitVersionConfiguration! configuration, out GitVersion.MergeMessage? mergeMessage) -> bool
 static GitVersion.OutputVariables.GitVersionVariables.operator !=(GitVersion.OutputVariables.GitVersionVariables? left, GitVersion.OutputVariables.GitVersionVariables? right) -> bool
 static GitVersion.OutputVariables.GitVersionVariables.operator ==(GitVersion.OutputVariables.GitVersionVariables? left, GitVersion.OutputVariables.GitVersionVariables? right) -> bool

@@ -2,14 +2,17 @@ namespace GitVersion.Extensions;
 
 internal static class DictionaryExtensions
 {
-    internal static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TValue> getValue) where TKey : notnull
+    extension<TKey, TValue>(Dictionary<TKey, TValue> dict) where TKey : notnull
     {
-        ArgumentNullException.ThrowIfNull(dict);
-        ArgumentNullException.ThrowIfNull(getValue);
+        internal TValue GetOrAdd(TKey key, Func<TValue> getValue)
+        {
+            ArgumentNullException.ThrowIfNull(dict);
+            ArgumentNullException.ThrowIfNull(getValue);
 
-        if (dict.TryGetValue(key, out var value)) return value;
-        value = getValue();
-        dict.Add(key, value);
-        return value;
+            if (dict.TryGetValue(key, out var value)) return value;
+            value = getValue();
+            dict.Add(key, value);
+            return value;
+        }
     }
 }

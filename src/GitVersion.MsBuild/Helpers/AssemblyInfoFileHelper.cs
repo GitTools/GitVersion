@@ -68,22 +68,25 @@ internal static class AssemblyInfoFileHelper
             .Where(compileFile => compileFile.Contains("AssemblyInfo"))
             .Where(filePath => FileContainsVersionAttribute(fileSystem, filePath, projectFile));
 
-    public static FileWriteInfo GetFileWriteInfo(this string? intermediateOutputPath, string language, string projectFile, string outputFileName)
+    extension(string? intermediateOutputPath)
     {
-        var fileExtension = GetFileExtension(language);
-        string workingDirectory, fileName;
-
-        if (intermediateOutputPath == null)
+        public FileWriteInfo GetFileWriteInfo(string language, string projectFile, string outputFileName)
         {
-            fileName = $"{outputFileName}_{FileSystemHelper.Path.GetFileNameWithoutExtension(projectFile)}_{FileSystemHelper.Path.GetRandomFileName()}.g.{fileExtension}";
-            workingDirectory = TempPath;
-        }
-        else
-        {
-            fileName = $"{outputFileName}.g.{fileExtension}";
-            workingDirectory = intermediateOutputPath;
-        }
+            var fileExtension = GetFileExtension(language);
+            string workingDirectory, fileName;
 
-        return new FileWriteInfo(workingDirectory, fileName, fileExtension);
+            if (intermediateOutputPath == null)
+            {
+                fileName = $"{outputFileName}_{FileSystemHelper.Path.GetFileNameWithoutExtension(projectFile)}_{FileSystemHelper.Path.GetRandomFileName()}.g.{fileExtension}";
+                workingDirectory = TempPath;
+            }
+            else
+            {
+                fileName = $"{outputFileName}.g.{fileExtension}";
+                workingDirectory = intermediateOutputPath;
+            }
+
+            return new FileWriteInfo(workingDirectory, fileName, fileExtension);
+        }
     }
 }

@@ -5,12 +5,18 @@ namespace GitVersion.Core.Tests;
 
 public static class GitVersionVariablesExtensions
 {
-    public static string ToJson(this GitVersionVariables gitVersionVariables)
+    extension(GitVersionVariables gitVersionVariables)
     {
-        var serializer = new VersionVariableSerializer(new FileSystem());
-        return serializer.ToJson(gitVersionVariables);
+        public string ToJson()
+        {
+            var serializer = new VersionVariableSerializer(new FileSystem());
+            return serializer.ToJson(gitVersionVariables);
+        }
     }
 
-    public static GitVersionVariables ToGitVersionVariables(this string json)
-        => VersionVariableSerializer.FromJson(json);
+    extension(string json)
+    {
+        public GitVersionVariables ToGitVersionVariables()
+            => VersionVariableSerializer.FromJson(json);
+    }
 }

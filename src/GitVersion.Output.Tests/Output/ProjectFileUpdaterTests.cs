@@ -15,7 +15,7 @@ namespace GitVersion.Core.Tests;
 [Parallelizable(ParallelScope.None)]
 public class ProjectFileUpdaterTests : TestBase
 {
-    private const string TargetFramework = "net8.0";
+    private const string TargetFramework = "net10.0";
     private IVariableProvider variableProvider;
     private ILog log;
     private IFileSystem fileSystem;
@@ -271,7 +271,7 @@ public class ProjectFileUpdaterTests : TestBase
         var xml = $"""
                   <Project Sdk="{sdk}">
                     <PropertyGroup>
-                      <TargetFramework>net8.0</TargetFramework>
+                      <TargetFramework>net10.0</TargetFramework>
                     </PropertyGroup>
                   </Project>
                   """;

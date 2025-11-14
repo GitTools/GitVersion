@@ -6,7 +6,7 @@ internal sealed class NullLog : ILog
 {
     public Verbosity Verbosity { get; set; }
 
-    public void Write(Verbosity verbosity, LogLevel level, string format, params object[] args)
+    public void Write(Verbosity verbosity, LogLevel level, string format, params object?[] args)
     {
     }
 

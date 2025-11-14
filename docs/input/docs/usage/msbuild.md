@@ -239,7 +239,7 @@ If you want to override the target framework that GitVersion uses to determine t
 ```xml
 <PropertyGroup>
   ...
-  <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
+  <GitVersionTargetFramework>net10.0</GitVersionTargetFramework>
   ...
 </PropertyGroup>
 ```

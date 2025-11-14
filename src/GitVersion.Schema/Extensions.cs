@@ -6,14 +6,17 @@ namespace GitVersion.Schema;
 
 internal static class Extensions
 {
-    public static void WriteToFile(this JsonSchema jsonSchema, string outputFileName)
+    extension(JsonSchema jsonSchema)
     {
-        var jsonDocument = jsonSchema.ToJsonDocument();
+        public void WriteToFile(string outputFileName)
+        {
+            var jsonDocument = jsonSchema.ToJsonDocument();
 
-        using var fs = File.Create(outputFileName);
-        using var writer = new Utf8JsonWriter(fs, new() { Indented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-        jsonDocument.WriteTo(writer);
-        writer.Flush();
-        fs.Flush();
+            using var fs = File.Create(outputFileName);
+            using var writer = new Utf8JsonWriter(fs, new() { Indented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+            jsonDocument.WriteTo(writer);
+            writer.Flush();
+            fs.Flush();
+        }
     }
 }

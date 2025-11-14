@@ -38,7 +38,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             CommitMessageIncrementMode.Enabled
                 => context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration),
             CommitMessageIncrementMode.Disabled => VersionField.None,
-            CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit()
+            CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
                 ? context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration) : VersionField.None,
             _ => throw new InvalidEnumArgumentException(
                 nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)

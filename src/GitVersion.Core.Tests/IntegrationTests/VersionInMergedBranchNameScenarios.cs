@@ -84,11 +84,14 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
 internal static class BaseGitFlowRepositoryFixtureExtensions
 {
-    public static void CreateAndMergeBranchIntoDevelop(this BaseGitFlowRepositoryFixture fixture, string branchName)
+    extension(BaseGitFlowRepositoryFixture fixture)
     {
-        fixture.BranchTo(branchName);
-        fixture.MakeACommit();
-        fixture.Checkout("develop");
-        fixture.MergeNoFF(branchName);
+        public void CreateAndMergeBranchIntoDevelop(string branchName)
+        {
+            fixture.BranchTo(branchName);
+            fixture.MakeACommit();
+            fixture.Checkout("develop");
+            fixture.MergeNoFF(branchName);
+        }
     }
 }

@@ -4,12 +4,18 @@ namespace GitVersion.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddModule(this IServiceCollection serviceCollection, IGitVersionModule gitVersionModule)
+    extension(IServiceCollection serviceCollection)
     {
-        gitVersionModule.RegisterTypes(serviceCollection);
-        return serviceCollection;
+        public IServiceCollection AddModule(IGitVersionModule gitVersionModule)
+        {
+            gitVersionModule.RegisterTypes(serviceCollection);
+            return serviceCollection;
+        }
     }
 
-    public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider) =>
-        serviceProvider.GetServices<TService>().Single(t => t?.GetType() == typeof(TType));
+    extension(IServiceProvider serviceProvider)
+    {
+        public TService GetServiceForType<TService, TType>() =>
+            serviceProvider.GetServices<TService>().Single(t => t?.GetType() == typeof(TType));
+    }
 }
