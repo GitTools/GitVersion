@@ -12,8 +12,7 @@ internal static class ConfigurationExtensions
     // FormatWith requires a non-null source, but we don't need any properties from it when only using env: placeholders
     private static readonly object EmptyFormatSource = new { };
 
-    public static EffectiveBranchConfiguration GetEffectiveBranchConfiguration(
-        this IGitVersionConfiguration configuration, IBranch branch, EffectiveConfiguration? parentConfiguration = null)
+    extension(IGitVersionConfiguration configuration)
     {
         public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
         {
@@ -66,12 +65,11 @@ internal static class ConfigurationExtensions
         public bool IsReleaseBranch(IBranch branch)
             => IsReleaseBranch(configuration, branch.NotNull().Name);
 
-    public static string? GetBranchSpecificLabel(
-            this EffectiveConfiguration configuration, ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
-        => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
+        public bool IsReleaseBranch(ReferenceName branchName)
+            => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
+    }
 
-    public static string? GetBranchSpecificLabel(
-        this EffectiveConfiguration configuration, string? branchName, string? branchNameOverride, IEnvironment? environment = null)
+    extension(IIgnoreConfiguration ignoreConfig)
     {
         public IEnumerable<IVersionFilter> ToFilters()
         {
@@ -90,63 +88,24 @@ internal static class ConfigurationExtensions
             return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element.Commit, ignoreConfig)) : source;
         }
 
-        var effectiveBranchName = branchNameOverride ?? branchName;
-        if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
-        {
-            // Even if regex doesn't match, we should still process environment variables
-            label = ProcessEnvironmentVariables(label, environment);
-            return label;
-        }
-
-        var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
-        var match = regex.Match(effectiveBranchName);
-        if (!match.Success)
-        {
-            // Even if regex doesn't match, we should still process environment variables
-            label = ProcessEnvironmentVariables(label, environment);
-            return label;
-        }
-
-        foreach (var groupName in regex.GetGroupNames())
+        public IEnumerable<ICommit> Filter(ICommit[] source)
         {
             ignoreConfig.NotNull();
             source.NotNull();
 
             return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element, ignoreConfig)) : source;
         }
-
-        // Process environment variable placeholders after regex placeholders
-        label = ProcessEnvironmentVariables(label, environment);
-
-        return label;
     }
 
     private static bool ShouldBeIgnored(ICommit commit, IIgnoreConfiguration ignore)
         => !ignore.ToFilters().Any(filter => filter.Exclude(commit, out _));
 
-    private static string ProcessEnvironmentVariables(string label, IEnvironment? environment)
+    extension(EffectiveConfiguration configuration)
     {
-        if (environment is not null)
-        {
-            try
-            {
-                label = label.FormatWith(EmptyFormatSource, environment);
-            }
-            catch (ArgumentException)
-            {
-                // If environment variable is missing and no fallback, return label as-is
-                // This maintains backward compatibility
-            }
-        }
-        return label;
-    }
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
 
-    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this IFileSystem fileSystem, string? path)
-    {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride);
-
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment? environment = null)
         {
             configuration.NotNull();
 
@@ -157,10 +116,43 @@ internal static class ConfigurationExtensions
             }
 
             var effectiveBranchName = branchNameOverride ?? branchName;
-            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty()) return label;
+            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+            {
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                        // This maintains backward compatibility
+                    }
+                }
+                return label;
+            }
+
             var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
             var match = regex.Match(effectiveBranchName);
-            if (!match.Success) return label;
+            if (!match.Success)
+            {
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                    }
+                }
+                return label;
+            }
+
             foreach (var groupName in regex.GetGroupNames())
             {
                 var groupValue = match.Groups[groupName].Value;
@@ -174,6 +166,21 @@ internal static class ConfigurationExtensions
                     startIndex = index + escapedGroupValue.Length;
                 }
             }
+
+            // Process environment variable placeholders after regex placeholders
+            if (environment is not null)
+            {
+                try
+                {
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing and no fallback, return label as-is
+                    // This maintains backward compatibility
+                }
+            }
+
             return label;
         }
 
