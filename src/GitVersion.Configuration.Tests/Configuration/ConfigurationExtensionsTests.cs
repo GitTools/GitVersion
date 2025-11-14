@@ -136,10 +136,13 @@ public class ConfigurationExtensionsTests : TestBase
             .WithBranch("pull-request", builder => builder
                 .WithLabel("pr-{env:GITHUB_HEAD_REF}")
                 .WithRegularExpression(@"^pull[/-]"))
+            .WithBranch("feature", builder => builder
+                .WithLabel("{BranchName}")
+                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
             .Build();
 
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("other-branch"));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("other-branch"), null, environment);
-        actual.ShouldBe("pr-feature-branch");
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/other-branch"));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/other-branch"), null, environment);
+        actual.ShouldBe("other-branch");
     }
 }
