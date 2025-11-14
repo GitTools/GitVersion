@@ -118,7 +118,23 @@ internal static class ConfigurationExtensions
             var effectiveBranchName = branchNameOverride ?? branchName;
             if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
             {
+<<<<<<< HEAD
                 label = ProcessEnvironmentVariables(label, environment);
+=======
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                        // This maintains backward compatibility
+                    }
+                }
+>>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
                 return label;
             }
 
@@ -126,7 +142,22 @@ internal static class ConfigurationExtensions
             var match = regex.Match(effectiveBranchName);
             if (!match.Success)
             {
+<<<<<<< HEAD
                 label = ProcessEnvironmentVariables(label, environment);
+=======
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                    }
+                }
+>>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
                 return label;
             }
 
@@ -144,7 +175,24 @@ internal static class ConfigurationExtensions
                 }
             }
 
+<<<<<<< HEAD
             label = ProcessEnvironmentVariables(label, environment);
+=======
+            // Process environment variable placeholders after regex placeholders
+            if (environment is not null)
+            {
+                try
+                {
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing and no fallback, return label as-is
+                    // This maintains backward compatibility
+                }
+            }
+
+>>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
             return label;
         }
 
