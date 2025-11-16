@@ -12,7 +12,7 @@ public static class ParticipantSanitizer
     {
         GuardAgainstInvalidParticipants(participant);
 
-        return RegexPatterns.Output.SanitizeParticipantRegex().Replace(participant, "_");
+        return RegexPatterns.Output.SanitizeParticipantRegex.Replace(participant, "_");
     }
 
     private static void GuardAgainstInvalidParticipants(string participant)

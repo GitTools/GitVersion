@@ -10,7 +10,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("foo:", false, null)]
         public void SwitchArgumentRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.SwitchArgumentRegex().Match(input);
+            var match = RegexPatterns.Common.SwitchArgumentRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -21,7 +21,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("ftp://user:pass@host", false, null)]
         public void ObscurePasswordRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.ObscurePasswordRegex().Match(input);
+            var match = RegexPatterns.Common.ObscurePasswordRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -34,7 +34,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("env:FOO", false, null)]
         public void ExpandTokensRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.ExpandTokensRegex().Match(input);
+            var match = RegexPatterns.Common.ExpandTokensRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -49,7 +49,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("", true, "")]
         public void DefaultTagPrefixRegex_MatchesExpected(string input, bool expected, string expectedCapture)
         {
-            var match = RegexPatterns.Configuration.DefaultTagPrefixRegex().Match(input);
+            var match = RegexPatterns.Configuration.DefaultTagPrefixRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -60,7 +60,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("main", false, null)]
         public void DefaultVersionInBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.DefaultVersionInBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.DefaultVersionInBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -71,7 +71,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("develop", false, null)]
         public void MainBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.MainBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.MainBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -83,7 +83,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("main", false, null)]
         public void DevelopBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.DevelopBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.DevelopBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -94,7 +94,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("feature/foo", false, null)]
         public void ReleaseBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.ReleaseBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.ReleaseBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -105,7 +105,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("hotfix/1.0", false, null)]
         public void FeatureBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.FeatureBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.FeatureBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -117,7 +117,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("main", false, null)]
         public void PullRequestBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.PullRequestBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.PullRequestBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -128,7 +128,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("support/1.0", false, null)]
         public void HotfixBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.HotfixBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.HotfixBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -139,7 +139,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("main", false, null)]
         public void SupportBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.SupportBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.SupportBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -149,7 +149,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("main", true, "main")]
         public void UnknownBranchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Configuration.UnknownBranchRegex().Match(input);
+            var match = RegexPatterns.Configuration.UnknownBranchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -160,7 +160,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Finish feature/foo", false, null)]
         public void DefaultMergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.DefaultMergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.DefaultMergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -171,7 +171,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Merge branch 'feature/foo'", false, null)]
         public void SmartGitMergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.SmartGitMergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.SmartGitMergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -182,7 +182,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Finish feature/foo", false, null)]
         public void BitBucketPullMergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -193,7 +193,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Merge pull request #123 from repo from feature/foo to develop", false, null)]
         public void BitBucketPullv7MergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -204,7 +204,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Merge pull request #123 from repo from feature/foo to develop", false, null)]
         public void BitBucketCloudPullMergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -214,7 +214,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("Merge pull request #123 from feature/foo into develop", false, null)]
         public void AzureDevOpsPullMergeMessageRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex().Match(input);
+            var match = RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -226,7 +226,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("random text", false, null)]
         public void CsharpAssemblyAttributeRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Output.CsharpAssemblyAttributeRegex().Match(input);
+            var match = RegexPatterns.Output.CsharpAssemblyAttributeRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -238,7 +238,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("random text", false, null)]
         public void FsharpAssemblyAttributeRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Output.FsharpAssemblyAttributeRegex().Match(input);
+            var match = RegexPatterns.Output.FsharpAssemblyAttributeRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -250,7 +250,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("random text", false, null)]
         public void VisualBasicAssemblyAttributeRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex().Match(input);
+            var match = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -261,7 +261,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("+semver: minor", false, null)]
         public void DefaultMajorRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.VersionCalculation.DefaultMajorRegex().Match(input);
+            var match = RegexPatterns.VersionCalculation.DefaultMajorRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -272,7 +272,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("+semver: patch", false, null)]
         public void DefaultMinorRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.VersionCalculation.DefaultMinorRegex().Match(input);
+            var match = RegexPatterns.VersionCalculation.DefaultMinorRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -283,7 +283,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("+semver: none", false, null)]
         public void DefaultPatchRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.VersionCalculation.DefaultPatchRegex().Match(input);
+            var match = RegexPatterns.VersionCalculation.DefaultPatchRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -294,7 +294,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("+semver: patch", false, null)]
         public void DefaultNoBumpRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.VersionCalculation.DefaultNoBumpRegex().Match(input);
+            var match = RegexPatterns.VersionCalculation.DefaultNoBumpRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -305,7 +305,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("1.2", false, null)]
         public void ParseStrictRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.SemanticVersion.ParseStrictRegex().Match(input);
+            var match = RegexPatterns.SemanticVersion.ParseStrictRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -317,7 +317,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("1.2.3.4", true, "1.2.3.4")]
         public void ParseLooseRegex_MatchesExpected(string input, bool expected, string expectedCapture)
         {
-            var match = RegexPatterns.SemanticVersion.ParseLooseRegex().Match(input);
+            var match = RegexPatterns.SemanticVersion.ParseLooseRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -328,7 +328,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("random", true, "random")]
         public void ParseBuildMetaDataRegex_MatchesExpected(string input, bool expected, string expectedCapture)
         {
-            var match = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex().Match(input);
+            var match = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -341,7 +341,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("m@e#t!a", true, new[] { "@", "#", "!" })]
         public void FormatBuildMetaDataRegex_CapturesInvalidCharacters(string input, bool shouldMatch, string[] expectedCaptures)
         {
-            var matches = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex().Matches(input);
+            var matches = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex.Matches(input);
 
             var matched = matches.Count > 0;
             matched.ShouldBe(shouldMatch, $"Expected match: {shouldMatch}, but found {matches.Count} matches.");
@@ -358,7 +358,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("rc.2", true, "rc.2")]
         public void ParsePreReleaseTagRegex_MatchesExpected(string input, bool expected, string expectedCapture)
         {
-            var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex().Match(input);
+            var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -370,7 +370,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("int x = 5;", false, "", "")]
         public void CSharpTriviaRegex_CapturesExpected(string input, bool expectedMatch, string expectedGroup, string expectedGroupValue)
         {
-            var regex = CSharp.TriviaRegex();
+            var regex = CSharp.TriviaRegex;
             var match = regex.Match(input);
             match.Success.ShouldBe(expectedMatch);
 
@@ -395,7 +395,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("[assembly: AssemblyTitle(\"App\")]", false)]
         public void CSharpAttributeRegex_MatchesExpected(string input, bool expectedMatch)
         {
-            var regex = CSharp.AttributeRegex();
+            var regex = CSharp.AttributeRegex;
             var match = regex.Match(input);
             match.Success.ShouldBe(expectedMatch);
         }
@@ -406,7 +406,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("let x = 1", false, "", "")]
         public void FSharpTriviaRegex_CapturesExpected(string input, bool expectedMatch, string expectedGroup, string expectedGroupValue)
         {
-            var regex = FSharp.TriviaRegex();
+            var regex = FSharp.TriviaRegex;
             var match = regex.Match(input);
             match.Success.ShouldBe(expectedMatch);
 
@@ -431,7 +431,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("[assembly: AssemblyVersion()]", false)]
         public void FSharpAttributeRegex_MatchesExpected(string input, bool expectedMatch)
         {
-            var regex = FSharp.AttributeRegex();
+            var regex = FSharp.AttributeRegex;
             var match = regex.Match(input);
             match.Success.ShouldBe(expectedMatch);
         }
