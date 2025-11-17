@@ -42,7 +42,7 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string? BranchName => semver.BuildMetaData.Branch;
 
-    public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
+    public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
 
     public string? Sha => semver.BuildMetaData.Sha;
 

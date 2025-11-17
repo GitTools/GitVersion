@@ -10,7 +10,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("foo:", false, null)]
         public void SwitchArgumentRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.SwitchArgumentRegex.Match(input);
+            var match = RegexPatterns.SwitchArgumentRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -21,7 +21,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("ftp://user:pass@host", false, null)]
         public void ObscurePasswordRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.ObscurePasswordRegex.Match(input);
+            var match = RegexPatterns.ObscurePasswordRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);
@@ -34,7 +34,7 @@ namespace GitVersion.Core.Continuous.Tests
         [TestCase("env:FOO", false, null)]
         public void ExpandTokensRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
         {
-            var match = RegexPatterns.Common.ExpandTokensRegex.Match(input);
+            var match = RegexPatterns.ExpandTokensRegex.Match(input);
             match.Success.ShouldBe(expected);
             if (expected)
                 match.Value.ShouldBe(expectedCapture);

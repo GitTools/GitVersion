@@ -41,7 +41,7 @@ internal static class ArgumentParserExtensions
 
         public bool IsSwitchArgument()
         {
-            var patternRegex = RegexPatterns.Common.SwitchArgumentRegex;
+            var patternRegex = RegexPatterns.SwitchArgumentRegex;
             return value != null
                    && (value.StartsWith('-') || value.StartsWith('/'))
                    && !patternRegex.Match(value).Success;
