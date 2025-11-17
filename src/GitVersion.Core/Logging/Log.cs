@@ -58,7 +58,7 @@ internal sealed class Log(params ILogAppender[] appenders) : ILog
 
     private string FormatMessage(string message, string level)
     {
-        var obscuredMessage = RegexPatterns.Common.ObscurePasswordRegex().Replace(message, "$1$2:*******@");
+        var obscuredMessage = RegexPatterns.ObscurePasswordRegex.Replace(message, "$1$2:*******@");
         var timestamp = $"{DateTime.Now:yy-MM-dd H:mm:ss:ff}";
         return string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2}] {3}", this.currentIndentation, level, timestamp, obscuredMessage);
     }

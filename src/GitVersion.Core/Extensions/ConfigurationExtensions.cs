@@ -118,7 +118,7 @@ internal static class ConfigurationExtensions
             foreach (var groupName in regex.GetGroupNames())
             {
                 var groupValue = match.Groups[groupName].Value;
-                Lazy<string> escapedGroupValueLazy = new(() => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-"));
+                Lazy<string> escapedGroupValueLazy = new(() => groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-"));
                 var placeholder = $"{{{groupName}}}";
                 int index, startIndex = 0;
                 while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)

@@ -70,7 +70,7 @@ public sealed class SemanticVersionPreReleaseTag :
     {
         if (preReleaseTag.IsNullOrEmpty()) return Empty;
 
-        var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex().Match(preReleaseTag);
+        var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(preReleaseTag);
         if (!match.Success)
         {
             // TODO check how to log this

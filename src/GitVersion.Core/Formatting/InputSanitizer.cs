@@ -26,7 +26,7 @@ internal class InputSanitizer : IInputSanitizer
         if (name.Length > 200)
             throw new ArgumentException($"Environment variable name too long: '{name[..20]}...'");
 
-        if (!RegexPatterns.Cache.GetOrAdd(RegexPatterns.Common.SanitizeEnvVarNameRegexPattern).IsMatch(name))
+        if (!RegexPatterns.Cache.GetOrAdd(RegexPatterns.SanitizeEnvVarNameRegexPattern).IsMatch(name))
             throw new ArgumentException($"Environment variable name contains disallowed characters: '{name}'");
 
         return name;
@@ -40,7 +40,7 @@ internal class InputSanitizer : IInputSanitizer
         if (memberName.Length > 100)
             throw new ArgumentException($"Member name too long: '{memberName[..20]}...'");
 
-        if (!RegexPatterns.Cache.GetOrAdd(RegexPatterns.Common.SanitizeMemberNameRegexPattern).IsMatch(memberName))
+        if (!RegexPatterns.Cache.GetOrAdd(RegexPatterns.SanitizeMemberNameRegexPattern).IsMatch(memberName))
             throw new ArgumentException($"Member name contains disallowed characters: '{memberName}'");
 
         return memberName;

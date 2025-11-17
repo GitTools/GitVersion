@@ -45,7 +45,7 @@ internal static class StringFormatWithExtension
             var result = new StringBuilder();
             var lastIndex = 0;
 
-            foreach (var match in RegexPatterns.Common.ExpandTokensRegex().Matches(template).Cast<Match>())
+            foreach (var match in RegexPatterns.ExpandTokensRegex.Matches(template).Cast<Match>())
             {
                 var replacement = EvaluateMatch(match, source, environment);
                 result.Append(template, lastIndex, match.Index - lastIndex);
