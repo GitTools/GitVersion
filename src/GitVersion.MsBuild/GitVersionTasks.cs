@@ -17,21 +17,21 @@ internal static class GitVersionTasks
         var executor = serviceProvider.GetRequiredService<IGitVersionTaskExecutor>();
         return task switch
         {
-            GetVersion getVersion => ExecuteGitVersionTask(getVersion, () => executor.GetVersion(getVersion)),
-            UpdateAssemblyInfo updateAssemblyInfo => ExecuteGitVersionTask(updateAssemblyInfo, () => executor.UpdateAssemblyInfo(updateAssemblyInfo)),
-            GenerateGitVersionInformation generateGitVersionInformation => ExecuteGitVersionTask(generateGitVersionInformation, () => executor.GenerateGitVersionInformation(generateGitVersionInformation)),
-            WriteVersionInfoToBuildLog writeVersionInfoToBuildLog => ExecuteGitVersionTask(writeVersionInfoToBuildLog, () => executor.WriteVersionInfoToBuildLog(writeVersionInfoToBuildLog)),
+            GetVersion getVersion => ExecuteGitVersionTask(getVersion, executor.GetVersion),
+            UpdateAssemblyInfo updateAssemblyInfo => ExecuteGitVersionTask(updateAssemblyInfo, executor.UpdateAssemblyInfo),
+            GenerateGitVersionInformation generateGitVersionInformation => ExecuteGitVersionTask(generateGitVersionInformation, executor.GenerateGitVersionInformation),
+            WriteVersionInfoToBuildLog writeVersionInfoToBuildLog => ExecuteGitVersionTask(writeVersionInfoToBuildLog, executor.WriteVersionInfoToBuildLog),
             _ => throw new NotSupportedException($"Task type {task.GetType().Name} is not supported")
         };
     }
 
-    private static bool ExecuteGitVersionTask<T>(T task, Action action)
+    private static bool ExecuteGitVersionTask<T>(T task, Action<T> action)
         where T : GitVersionTaskBase
     {
         var taskLog = task.Log;
         try
         {
-            action();
+            action(task);
         }
         catch (WarningException errorException)
         {
