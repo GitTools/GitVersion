@@ -136,7 +136,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
         private static partial Regex SwitchArgumentRegexImpl();
 
-        public static Regex SwitchArgumentRegex => SwitchArgumentRegexImpl();
+        public static Regex SwitchArgumentRegex { get; } = SwitchArgumentRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -146,7 +146,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ObscurePasswordRegexPattern, Options)]
         private static partial Regex ObscurePasswordRegexImpl();
 
-        public static Regex ObscurePasswordRegex => ObscurePasswordRegexImpl();
+        public static Regex ObscurePasswordRegex { get; } = ObscurePasswordRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -156,7 +156,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ExpandTokensRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
         private static partial Regex ExpandTokensRegexImpl();
 
-        public static Regex ExpandTokensRegex => ExpandTokensRegexImpl();
+        public static Regex ExpandTokensRegex { get; } = ExpandTokensRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -166,7 +166,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SanitizeEnvVarNameRegexPattern, Options)]
         private static partial Regex SanitizeEnvVarNameRegexImpl();
 
-        public static Regex SanitizeEnvVarNameRegex => SanitizeEnvVarNameRegexImpl();
+        public static Regex SanitizeEnvVarNameRegex { get; } = SanitizeEnvVarNameRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -176,7 +176,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SanitizeMemberNameRegexPattern, Options)]
         private static partial Regex SanitizeMemberNameRegexImpl();
 
-        public static Regex SanitizeMemberNameRegex => SanitizeMemberNameRegexImpl();
+        public static Regex SanitizeMemberNameRegex { get; } = SanitizeMemberNameRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -186,7 +186,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SanitizeNameRegexPattern, Options)]
         private static partial Regex SanitizeNameRegexImpl();
 
-        public static Regex SanitizeNameRegex => SanitizeNameRegexImpl();
+        public static Regex SanitizeNameRegex { get; } = SanitizeNameRegexImpl();
 #endif
     }
 
@@ -229,7 +229,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultTagPrefixRegexPattern, Options)]
         private static partial Regex DefaultTagPrefixRegexImpl();
 
-        public static Regex DefaultTagPrefixRegex => DefaultTagPrefixRegexImpl();
+        public static Regex DefaultTagPrefixRegex { get; } = DefaultTagPrefixRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -239,7 +239,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultVersionInBranchRegexPattern, Options)]
         private static partial Regex DefaultVersionInBranchRegexImpl();
 
-        public static Regex DefaultVersionInBranchRegex => DefaultVersionInBranchRegexImpl();
+        public static Regex DefaultVersionInBranchRegex { get; } = DefaultVersionInBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -249,7 +249,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(MainBranchRegexPattern, Options)]
         private static partial Regex MainBranchRegexImpl();
 
-        public static Regex MainBranchRegex => MainBranchRegexImpl();
+        public static Regex MainBranchRegex { get; } = MainBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -259,7 +259,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DevelopBranchRegexPattern, Options)]
         private static partial Regex DevelopBranchRegexImpl();
 
-        public static Regex DevelopBranchRegex => DevelopBranchRegexImpl();
+        public static Regex DevelopBranchRegex { get; } = DevelopBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -269,7 +269,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ReleaseBranchRegexPattern, Options)]
         private static partial Regex ReleaseBranchRegexImpl();
 
-        public static Regex ReleaseBranchRegex => ReleaseBranchRegexImpl();
+        public static Regex ReleaseBranchRegex { get; } = ReleaseBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -279,7 +279,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(FeatureBranchRegexPattern, Options)]
         private static partial Regex FeatureBranchRegexImpl();
 
-        public static Regex FeatureBranchRegex => FeatureBranchRegexImpl();
+        public static Regex FeatureBranchRegex { get; } = FeatureBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -289,7 +289,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(PullRequestBranchRegexPattern, Options)]
         private static partial Regex PullRequestBranchRegexImpl();
 
-        public static Regex PullRequestBranchRegex => PullRequestBranchRegexImpl();
+        public static Regex PullRequestBranchRegex { get; } = PullRequestBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -299,7 +299,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(HotfixBranchRegexPattern, Options)]
         private static partial Regex HotfixBranchRegexImpl();
 
-        public static Regex HotfixBranchRegex => HotfixBranchRegexImpl();
+        public static Regex HotfixBranchRegex { get; } = HotfixBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -309,7 +309,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SupportBranchRegexPattern, Options)]
         private static partial Regex SupportBranchRegexImpl();
 
-        public static Regex SupportBranchRegex => SupportBranchRegexImpl();
+        public static Regex SupportBranchRegex { get; } = SupportBranchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -319,7 +319,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(UnknownBranchRegexPattern, Options)]
         private static partial Regex UnknownBranchRegexImpl();
 
-        public static Regex UnknownBranchRegex => UnknownBranchRegexImpl();
+        public static Regex UnknownBranchRegex { get; } = UnknownBranchRegexImpl();
 #endif
     }
 
@@ -356,7 +356,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultMergeMessageRegexPattern, Options)]
         private static partial Regex DefaultMergeMessageRegexImpl();
 
-        public static Regex DefaultMergeMessageRegex => DefaultMergeMessageRegexImpl();
+        public static Regex DefaultMergeMessageRegex { get; } = DefaultMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -366,7 +366,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SmartGitMergeMessageRegexPattern, Options)]
         private static partial Regex SmartGitMergeMessageRegexImpl();
 
-        public static Regex SmartGitMergeMessageRegex => SmartGitMergeMessageRegexImpl();
+        public static Regex SmartGitMergeMessageRegex { get; } = SmartGitMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -376,7 +376,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(BitBucketPullMergeMessageRegexPattern, Options)]
         private static partial Regex BitBucketPullMergeMessageRegexImpl();
 
-        public static Regex BitBucketPullMergeMessageRegex => BitBucketPullMergeMessageRegexImpl();
+        public static Regex BitBucketPullMergeMessageRegex { get; } = BitBucketPullMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -386,7 +386,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(BitBucketPullv7MergeMessageRegexPattern, Options)]
         private static partial Regex BitBucketPullv7MergeMessageRegexImpl();
 
-        public static Regex BitBucketPullv7MergeMessageRegex => BitBucketPullv7MergeMessageRegexImpl();
+        public static Regex BitBucketPullv7MergeMessageRegex { get; } = BitBucketPullv7MergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -396,7 +396,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(BitBucketCloudPullMergeMessageRegexPattern, Options)]
         private static partial Regex BitBucketCloudPullMergeMessageRegexImpl();
 
-        public static Regex BitBucketCloudPullMergeMessageRegex => BitBucketCloudPullMergeMessageRegexImpl();
+        public static Regex BitBucketCloudPullMergeMessageRegex { get; } = BitBucketCloudPullMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -406,7 +406,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(GitHubPullMergeMessageRegexPattern, Options)]
         private static partial Regex GitHubPullMergeMessageRegexImpl();
 
-        public static Regex GitHubPullMergeMessageRegex => GitHubPullMergeMessageRegexImpl();
+        public static Regex GitHubPullMergeMessageRegex { get; } = GitHubPullMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -416,7 +416,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(RemoteTrackingMergeMessageRegexPattern, Options)]
         private static partial Regex RemoteTrackingMergeMessageRegexImpl();
 
-        public static Regex RemoteTrackingMergeMessageRegex => RemoteTrackingMergeMessageRegexImpl();
+        public static Regex RemoteTrackingMergeMessageRegex { get; } = RemoteTrackingMergeMessageRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -426,7 +426,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(AzureDevOpsPullMergeMessageRegexPattern, Options)]
         private static partial Regex AzureDevOpsPullMergeMessageRegexImpl();
 
-        public static Regex AzureDevOpsPullMergeMessageRegex => AzureDevOpsPullMergeMessageRegexImpl();
+        public static Regex AzureDevOpsPullMergeMessageRegex { get; } = AzureDevOpsPullMergeMessageRegexImpl();
 #endif
     }
 
@@ -463,7 +463,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(AssemblyVersionRegexPattern, Options)]
         private static partial Regex AssemblyVersionRegexImpl();
 
-        public static Regex AssemblyVersionRegex => AssemblyVersionRegexImpl();
+        public static Regex AssemblyVersionRegex { get; } = AssemblyVersionRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -473,7 +473,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(AssemblyInfoVersionRegexPattern, Options)]
         private static partial Regex AssemblyInfoVersionRegexImpl();
 
-        public static Regex AssemblyInfoVersionRegex => AssemblyInfoVersionRegexImpl();
+        public static Regex AssemblyInfoVersionRegex { get; } = AssemblyInfoVersionRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -483,7 +483,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(AssemblyFileVersionRegexPattern, Options)]
         private static partial Regex AssemblyFileVersionRegexImpl();
 
-        public static Regex AssemblyFileVersionRegex => AssemblyFileVersionRegexImpl();
+        public static Regex AssemblyFileVersionRegex { get; } = AssemblyFileVersionRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -493,7 +493,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(CsharpAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline)]
         private static partial Regex CsharpAssemblyAttributeRegexImpl();
 
-        public static Regex CsharpAssemblyAttributeRegex => CsharpAssemblyAttributeRegexImpl();
+        public static Regex CsharpAssemblyAttributeRegex { get; } = CsharpAssemblyAttributeRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -503,7 +503,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(FsharpAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline)]
         private static partial Regex FsharpAssemblyAttributeRegexImpl();
 
-        public static Regex FsharpAssemblyAttributeRegex => FsharpAssemblyAttributeRegexImpl();
+        public static Regex FsharpAssemblyAttributeRegex { get; } = FsharpAssemblyAttributeRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -513,7 +513,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(VisualBasicAssemblyAttributeRegexPattern, Options | RegexOptions.Multiline)]
         private static partial Regex VisualBasicAssemblyAttributeRegexImpl();
 
-        public static Regex VisualBasicAssemblyAttributeRegex => VisualBasicAssemblyAttributeRegexImpl();
+        public static Regex VisualBasicAssemblyAttributeRegex { get; } = VisualBasicAssemblyAttributeRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -523,7 +523,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SanitizeParticipantRegexPattern, Options)]
         private static partial Regex SanitizeParticipantRegexImpl();
 
-        public static Regex SanitizeParticipantRegex => SanitizeParticipantRegexImpl();
+        public static Regex SanitizeParticipantRegex { get; } = SanitizeParticipantRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -533,7 +533,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(SanitizeAssemblyInfoRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
         private static partial Regex SanitizeAssemblyInfoRegexImpl();
 
-        public static Regex SanitizeAssemblyInfoRegex => SanitizeAssemblyInfoRegexImpl();
+        public static Regex SanitizeAssemblyInfoRegex { get; } = SanitizeAssemblyInfoRegexImpl();
 #endif
     }
 
@@ -558,7 +558,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultMajorRegexPattern, Options)]
         private static partial Regex DefaultMajorRegexImpl();
 
-        public static Regex DefaultMajorRegex => DefaultMajorRegexImpl();
+        public static Regex DefaultMajorRegex { get; } = DefaultMajorRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -568,7 +568,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultMinorRegexPattern, Options)]
         private static partial Regex DefaultMinorRegexImpl();
 
-        public static Regex DefaultMinorRegex => DefaultMinorRegexImpl();
+        public static Regex DefaultMinorRegex { get; } = DefaultMinorRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -578,7 +578,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultPatchRegexPattern, Options)]
         private static partial Regex DefaultPatchRegexImpl();
 
-        public static Regex DefaultPatchRegex => DefaultPatchRegexImpl();
+        public static Regex DefaultPatchRegex { get; } = DefaultPatchRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -588,7 +588,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultNoBumpRegexPattern, Options)]
         private static partial Regex DefaultNoBumpRegexImpl();
 
-        public static Regex DefaultNoBumpRegex => DefaultNoBumpRegexImpl();
+        public static Regex DefaultNoBumpRegex { get; } = DefaultNoBumpRegexImpl();
 #endif
     }
 
@@ -617,7 +617,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ParseStrictRegexPattern, Options)]
         private static partial Regex ParseStrictRegexImpl();
 
-        public static Regex ParseStrictRegex => ParseStrictRegexImpl();
+        public static Regex ParseStrictRegex { get; } = ParseStrictRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -627,7 +627,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ParseLooseRegexPattern, Options)]
         private static partial Regex ParseLooseRegexImpl();
 
-        public static Regex ParseLooseRegex => ParseLooseRegexImpl();
+        public static Regex ParseLooseRegex { get; } = ParseLooseRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -637,7 +637,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ParseBuildMetaDataRegexPattern, Options)]
         private static partial Regex ParseBuildMetaDataRegexImpl();
 
-        public static Regex ParseBuildMetaDataRegex => ParseBuildMetaDataRegexImpl();
+        public static Regex ParseBuildMetaDataRegex { get; } = ParseBuildMetaDataRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -647,7 +647,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(FormatBuildMetaDataRegexPattern, Options)]
         private static partial Regex FormatBuildMetaDataRegexImpl();
 
-        public static Regex FormatBuildMetaDataRegex => FormatBuildMetaDataRegexImpl();
+        public static Regex FormatBuildMetaDataRegex { get; } = FormatBuildMetaDataRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -657,7 +657,7 @@ internal static partial class RegexPatterns
         [GeneratedRegex(ParsePreReleaseTagRegexPattern, Options)]
         private static partial Regex ParsePreReleaseTagRegexImpl();
 
-        public static Regex ParsePreReleaseTagRegex => ParsePreReleaseTagRegexImpl();
+        public static Regex ParsePreReleaseTagRegex { get; } = ParsePreReleaseTagRegexImpl();
 #endif
     }
 
@@ -690,7 +690,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex TriviaRegexImpl();
 
-            public static Regex TriviaRegex => TriviaRegexImpl();
+            public static Regex TriviaRegex { get; } = TriviaRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -700,7 +700,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex AttributeRegexImpl();
 
-            public static Regex AttributeRegex => AttributeRegexImpl();
+            public static Regex AttributeRegex { get; } = AttributeRegexImpl();
 #endif
         }
 
@@ -730,7 +730,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex TriviaRegexImpl();
 
-            public static Regex TriviaRegex => TriviaRegexImpl();
+            public static Regex TriviaRegex { get; } = TriviaRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -740,7 +740,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex AttributeRegexImpl();
 
-            public static Regex AttributeRegex => AttributeRegexImpl();
+            public static Regex AttributeRegex { get; } = AttributeRegexImpl();
 #endif
         }
 
@@ -770,7 +770,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(TriviaRegexPattern, RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex TriviaRegexImpl();
 
-            public static Regex TriviaRegex => TriviaRegexImpl();
+            public static Regex TriviaRegex { get; } = TriviaRegexImpl();
 #endif
 
 #if NET9_0_OR_GREATER
@@ -780,7 +780,7 @@ internal static partial class RegexPatterns
             [GeneratedRegex(AttributeRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
             private static partial Regex AttributeRegexImpl();
 
-            public static Regex AttributeRegex => AttributeRegexImpl();
+            public static Regex AttributeRegex { get; } = AttributeRegexImpl();
 #endif
         }
     }
