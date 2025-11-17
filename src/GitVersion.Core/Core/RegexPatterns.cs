@@ -8,6 +8,7 @@ namespace GitVersion.Core;
 internal static partial class RegexPatterns
 {
     private const RegexOptions Options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(2); // unified timeout for non-GeneratedRegex fallbacks
 
     public static class Cache
     {
@@ -20,61 +21,67 @@ internal static partial class RegexPatterns
             return cache.GetOrAdd(pattern, key =>
                 KnownRegexes.TryGetValue(key, out var regex)
                     ? regex
-                    : new Regex(key, Options));
+                    : new Regex(key, Options, DefaultTimeout)); // now uses timeout for safety
         }
 
+        // Descriptor used to centralize pattern + compiled regex instance. Extendable with options/timeout metadata later.
+        private readonly record struct RegexDescriptor(string Pattern, Regex Regex);
+
+        // Central descriptor list – single source of truth for known patterns. Order not significant.
+        private static readonly RegexDescriptor[] Descriptors =
+        [
+            new(Common.SwitchArgumentRegexPattern, Common.SwitchArgumentRegex),
+            new(Common.ObscurePasswordRegexPattern, Common.ObscurePasswordRegex),
+            new(Common.ExpandTokensRegexPattern, Common.ExpandTokensRegex),
+            new(Common.SanitizeEnvVarNameRegexPattern, Common.SanitizeEnvVarNameRegex),
+            new(Common.SanitizeMemberNameRegexPattern, Common.SanitizeMemberNameRegex),
+            new(Common.SanitizeNameRegexPattern, Common.SanitizeNameRegex),
+            new(Configuration.DefaultTagPrefixRegexPattern, Configuration.DefaultTagPrefixRegex),
+            new(Configuration.DefaultVersionInBranchRegexPattern, Configuration.DefaultVersionInBranchRegex),
+            new(Configuration.MainBranchRegexPattern, Configuration.MainBranchRegex),
+            new(Configuration.DevelopBranchRegexPattern, Configuration.DevelopBranchRegex),
+            new(Configuration.ReleaseBranchRegexPattern, Configuration.ReleaseBranchRegex),
+            new(Configuration.FeatureBranchRegexPattern, Configuration.FeatureBranchRegex),
+            new(Configuration.PullRequestBranchRegexPattern, Configuration.PullRequestBranchRegex),
+            new(Configuration.HotfixBranchRegexPattern, Configuration.HotfixBranchRegex),
+            new(Configuration.SupportBranchRegexPattern, Configuration.SupportBranchRegex),
+            new(Configuration.UnknownBranchRegexPattern, Configuration.UnknownBranchRegex),
+            new(MergeMessage.DefaultMergeMessageRegexPattern, MergeMessage.DefaultMergeMessageRegex),
+            new(MergeMessage.SmartGitMergeMessageRegexPattern, MergeMessage.SmartGitMergeMessageRegex),
+            new(MergeMessage.BitBucketPullMergeMessageRegexPattern, MergeMessage.BitBucketPullMergeMessageRegex),
+            new(MergeMessage.BitBucketPullv7MergeMessageRegexPattern, MergeMessage.BitBucketPullv7MergeMessageRegex),
+            new(MergeMessage.BitBucketCloudPullMergeMessageRegexPattern, MergeMessage.BitBucketCloudPullMergeMessageRegex),
+            new(MergeMessage.GitHubPullMergeMessageRegexPattern, MergeMessage.GitHubPullMergeMessageRegex),
+            new(MergeMessage.RemoteTrackingMergeMessageRegexPattern, MergeMessage.RemoteTrackingMergeMessageRegex),
+            new(MergeMessage.AzureDevOpsPullMergeMessageRegexPattern, MergeMessage.AzureDevOpsPullMergeMessageRegex),
+            new(Output.AssemblyVersionRegexPattern, Output.AssemblyVersionRegex),
+            new(Output.AssemblyInfoVersionRegexPattern, Output.AssemblyInfoVersionRegex),
+            new(Output.AssemblyFileVersionRegexPattern, Output.AssemblyFileVersionRegex),
+            new(Output.SanitizeAssemblyInfoRegexPattern, Output.SanitizeAssemblyInfoRegex),
+            new(Output.CsharpAssemblyAttributeRegexPattern, Output.CsharpAssemblyAttributeRegex),
+            new(Output.FsharpAssemblyAttributeRegexPattern, Output.FsharpAssemblyAttributeRegex),
+            new(Output.VisualBasicAssemblyAttributeRegexPattern, Output.VisualBasicAssemblyAttributeRegex),
+            new(Output.SanitizeParticipantRegexPattern, Output.SanitizeParticipantRegex),
+            new(VersionCalculation.DefaultMajorRegexPattern, VersionCalculation.DefaultMajorRegex),
+            new(VersionCalculation.DefaultMinorRegexPattern, VersionCalculation.DefaultMinorRegex),
+            new(VersionCalculation.DefaultPatchRegexPattern, VersionCalculation.DefaultPatchRegex),
+            new(VersionCalculation.DefaultNoBumpRegexPattern, VersionCalculation.DefaultNoBumpRegex),
+            new(SemanticVersion.ParseStrictRegexPattern, SemanticVersion.ParseStrictRegex),
+            new(SemanticVersion.ParseLooseRegexPattern, SemanticVersion.ParseLooseRegex),
+            new(SemanticVersion.ParseBuildMetaDataRegexPattern, SemanticVersion.ParseBuildMetaDataRegex),
+            new(SemanticVersion.FormatBuildMetaDataRegexPattern, SemanticVersion.FormatBuildMetaDataRegex),
+            new(SemanticVersion.ParsePreReleaseTagRegexPattern, SemanticVersion.ParsePreReleaseTagRegex),
+            // Trivia pattern unified: C# & F# share same underlying pattern; only map once under C# constant.
+            new(AssemblyVersion.CSharp.TriviaRegexPattern, AssemblyVersion.CSharp.TriviaRegex),
+            new(AssemblyVersion.CSharp.AttributeRegexPattern, AssemblyVersion.CSharp.AttributeRegex),
+            // F# Trivia pattern identical – Attribute differs, so include attribute pattern only.
+            new(AssemblyVersion.FSharp.AttributeRegexPattern, AssemblyVersion.FSharp.AttributeRegex),
+            new(AssemblyVersion.VisualBasic.TriviaRegexPattern, AssemblyVersion.VisualBasic.TriviaRegex),
+            new(AssemblyVersion.VisualBasic.AttributeRegexPattern, AssemblyVersion.VisualBasic.AttributeRegex)
+        ];
+
         private static readonly ImmutableDictionary<string, Regex> KnownRegexes =
-            new Dictionary<string, Regex>
-            {
-                [Common.SwitchArgumentRegexPattern] = Common.SwitchArgumentRegex,
-                [Common.ObscurePasswordRegexPattern] = Common.ObscurePasswordRegex,
-                [Common.ExpandTokensRegexPattern] = Common.ExpandTokensRegex,
-                [Common.SanitizeEnvVarNameRegexPattern] = Common.SanitizeEnvVarNameRegex,
-                [Common.SanitizeMemberNameRegexPattern] = Common.SanitizeMemberNameRegex,
-                [Common.SanitizeNameRegexPattern] = Common.SanitizeNameRegex,
-                [Configuration.DefaultTagPrefixRegexPattern] = Configuration.DefaultTagPrefixRegex,
-                [Configuration.DefaultVersionInBranchRegexPattern] = Configuration.DefaultVersionInBranchRegex,
-                [Configuration.MainBranchRegexPattern] = Configuration.MainBranchRegex,
-                [Configuration.DevelopBranchRegexPattern] = Configuration.DevelopBranchRegex,
-                [Configuration.ReleaseBranchRegexPattern] = Configuration.ReleaseBranchRegex,
-                [Configuration.FeatureBranchRegexPattern] = Configuration.FeatureBranchRegex,
-                [Configuration.PullRequestBranchRegexPattern] = Configuration.PullRequestBranchRegex,
-                [Configuration.HotfixBranchRegexPattern] = Configuration.HotfixBranchRegex,
-                [Configuration.SupportBranchRegexPattern] = Configuration.SupportBranchRegex,
-                [Configuration.UnknownBranchRegexPattern] = Configuration.UnknownBranchRegex,
-                [MergeMessage.DefaultMergeMessageRegexPattern] = MergeMessage.DefaultMergeMessageRegex,
-                [MergeMessage.SmartGitMergeMessageRegexPattern] = MergeMessage.SmartGitMergeMessageRegex,
-                [MergeMessage.BitBucketPullMergeMessageRegexPattern] = MergeMessage.BitBucketPullMergeMessageRegex,
-                [MergeMessage.BitBucketPullv7MergeMessageRegexPattern] = MergeMessage.BitBucketPullv7MergeMessageRegex,
-                [MergeMessage.BitBucketCloudPullMergeMessageRegexPattern] = MergeMessage.BitBucketCloudPullMergeMessageRegex,
-                [MergeMessage.GitHubPullMergeMessageRegexPattern] = MergeMessage.GitHubPullMergeMessageRegex,
-                [MergeMessage.RemoteTrackingMergeMessageRegexPattern] = MergeMessage.RemoteTrackingMergeMessageRegex,
-                [MergeMessage.AzureDevOpsPullMergeMessageRegexPattern] = MergeMessage.AzureDevOpsPullMergeMessageRegex,
-                [Output.AssemblyVersionRegexPattern] = Output.AssemblyVersionRegex,
-                [Output.AssemblyInfoVersionRegexPattern] = Output.AssemblyInfoVersionRegex,
-                [Output.AssemblyFileVersionRegexPattern] = Output.AssemblyFileVersionRegex,
-                [Output.SanitizeAssemblyInfoRegexPattern] = Output.SanitizeAssemblyInfoRegex,
-                [Output.CsharpAssemblyAttributeRegexPattern] = Output.CsharpAssemblyAttributeRegex,
-                [Output.FsharpAssemblyAttributeRegexPattern] = Output.FsharpAssemblyAttributeRegex,
-                [Output.VisualBasicAssemblyAttributeRegexPattern] = Output.VisualBasicAssemblyAttributeRegex,
-                [Output.SanitizeParticipantRegexPattern] = Output.SanitizeParticipantRegex,
-                [VersionCalculation.DefaultMajorRegexPattern] = VersionCalculation.DefaultMajorRegex,
-                [VersionCalculation.DefaultMinorRegexPattern] = VersionCalculation.DefaultMinorRegex,
-                [VersionCalculation.DefaultPatchRegexPattern] = VersionCalculation.DefaultPatchRegex,
-                [VersionCalculation.DefaultNoBumpRegexPattern] = VersionCalculation.DefaultNoBumpRegex,
-                [SemanticVersion.ParseStrictRegexPattern] = SemanticVersion.ParseStrictRegex,
-                [SemanticVersion.ParseLooseRegexPattern] = SemanticVersion.ParseLooseRegex,
-                [SemanticVersion.ParseBuildMetaDataRegexPattern] = SemanticVersion.ParseBuildMetaDataRegex,
-                [SemanticVersion.FormatBuildMetaDataRegexPattern] = SemanticVersion.FormatBuildMetaDataRegex,
-                [SemanticVersion.ParsePreReleaseTagRegexPattern] = SemanticVersion.ParsePreReleaseTagRegex,
-                [AssemblyVersion.CSharp.TriviaRegexPattern] = AssemblyVersion.CSharp.TriviaRegex,
-                [AssemblyVersion.CSharp.AttributeRegexPattern] = AssemblyVersion.CSharp.AttributeRegex,
-                [AssemblyVersion.FSharp.TriviaRegexPattern] = AssemblyVersion.FSharp.TriviaRegex,
-                // AssemblyVersion.FSharp.TriviaRegexPattern is same as C# so can't be added to the cache so C# TriviaRegex is used for F# as well.
-                [AssemblyVersion.FSharp.AttributeRegexPattern] = AssemblyVersion.FSharp.AttributeRegex,
-                [AssemblyVersion.VisualBasic.TriviaRegexPattern] = AssemblyVersion.VisualBasic.TriviaRegex,
-                [AssemblyVersion.VisualBasic.AttributeRegexPattern] = AssemblyVersion.VisualBasic.AttributeRegex
-            }.ToImmutableDictionary();
+            Descriptors.ToImmutableDictionary(d => d.Pattern, d => d.Regex);
     }
 
     internal static partial class Common
@@ -700,12 +707,7 @@ internal static partial class RegexPatterns
         internal static partial class FSharp
         {
             [StringSyntax(StringSyntaxAttribute.Regex)]
-            internal const string TriviaRegexPattern =
-                """
-                /\*(.*?)\*/                     # Block comments: matches /* ... */
-                |//(.*?)\r?\n                   # Line comments: matches // ... followed by a newline
-                |"((\\[^\n]|[^"\n])*)"          # Strings: matches " ... " including escaped quotes
-                """;
+            internal const string TriviaRegexPattern = CSharp.TriviaRegexPattern; // unified
 
             [StringSyntax(StringSyntaxAttribute.Regex)]
             internal const string AttributeRegexPattern =
