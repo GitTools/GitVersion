@@ -17,7 +17,9 @@ public static class ReferenceNameExtensions
 
         private bool TryGetSemanticVersion(string? versionPatternPattern,
                                            string? tagPrefix,
-                                           SemanticVersionFormat format, out SemanticVersionResult result)
+                                           SemanticVersionFormat format,
+                                           // ReSharper disable once OutParameterValueIsAlwaysDiscarded.Local
+                                           out SemanticVersionResult result)
         {
             var versionPatternRegex = RegexPatterns.Cache.GetOrAdd(GetVersionInBranchPattern(versionPatternPattern));
             result = default;

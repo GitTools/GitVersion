@@ -18,10 +18,15 @@
         <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(MSBuildThisFileDirectory)$(GitVersionTargetFramework)))GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
-    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
-    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" TaskFactory="TaskHostFactory" Condition=" '$(MSBuildRuntimeType)' == 'Full' " />
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" TaskFactory="TaskHostFactory" Condition=" '$(MSBuildRuntimeType)' == 'Full' " />
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" TaskFactory="TaskHostFactory" Condition=" '$(MSBuildRuntimeType)' == 'Full' " />
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" TaskFactory="TaskHostFactory" Condition=" '$(MSBuildRuntimeType)' == 'Full' " />
+
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
 
     <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
         <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />

@@ -21,11 +21,11 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <!-- The GitVersion task is explicitly disabled when running on the .NET Framework because it's no longer supported.
-        If a project that uses GitVersion.MsBuild is opened in Visual Studio,
+        <!-- The GitVersion task is explicitly disabled when running on the .NET Framework with MSBuild version lower than 18
+        or in Visual Studio 2022 or earlier (which uses MSBuild version 17 and below). In these scenarios,
         the task will be turned off because Visual Studio operates on the .NET Framework's version of MSBuild.
-        However, you can still execute GitVersion.MsBuild as part of the `dotnet build` or `dotnet msbuild` commands. -->
-        <DisableGitVersionTask Condition=" '$(MSBuildRuntimeType)' != 'Core' ">true</DisableGitVersionTask>
+        However, it is supported from msbuild version 18 or Visual Studio 2026, or using the .NET version `dotnet build` -->
+        <DisableGitVersionTask Condition=" '$(MSBuildRuntimeType)' == 'Full' AND $([System.Version]::Parse('$(MSBuildVersion)').Major) &lt; 18 ">true</DisableGitVersionTask>
 
         <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
 
