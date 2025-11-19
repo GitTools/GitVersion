@@ -8,10 +8,10 @@
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.14.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.0.0-1.25277.114" />
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
