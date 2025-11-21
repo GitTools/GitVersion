@@ -252,7 +252,7 @@ public record TestCommandSettings : GitVersionSettings
                     (generatorType,"RootCommandImpl.g.cs", ExpectedRootCommandImplText),
                     (generatorType,"CliAppImpl.g.cs", ExpectedCliAppImplText),
                 },
-                ReferenceAssemblies = ReferenceAssemblies.Net10,
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
                 AdditionalReferences =
                 {
                     MetadataReference.CreateFromFile(typeof(ILogger).Assembly.Location),
