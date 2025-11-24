@@ -41,7 +41,7 @@
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.0" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.0" />
     <PackageVersion Include="System.Formats.Nrbf" Version="10.0.0" />
-    <PackageVersion Include="System.IO.Abstractions" Version="22.0.16" />
+    <PackageVersion Include="System.IO.Abstractions" Version="22.1.0" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.0" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.0" />
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
