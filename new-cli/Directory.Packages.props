@@ -21,7 +21,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
-    <PackageVersion Include="Polly" Version="8.6.4" />
+    <PackageVersion Include="Polly" Version="8.6.5" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
     <!-- specific packages -->
