@@ -637,6 +637,21 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
+    public void DiagTrueWhenDefined()
+    {
+        var arguments = this.argumentParser.ParseArguments("-diag");
+        arguments.Diag.ShouldBe(true);
+    }
+
+    [Test]
+    public void DiagAndLogToConsoleIsNotIgnored()
+    {
+        var arguments = this.argumentParser.ParseArguments("-diag -l console");
+        arguments.Diag.ShouldBe(true);
+        arguments.LogFilePath.ShouldBe("console");
+    }
+
+    [Test]
     public void OtherArgumentsCanBeParsedBeforeNofetch()
     {
         var arguments = this.argumentParser.ParseArguments("targetpath -nofetch ");
