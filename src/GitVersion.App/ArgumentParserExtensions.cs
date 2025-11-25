@@ -73,7 +73,7 @@ internal static class ArgumentParserExtensions
 
         public bool ArgumentRequiresValue(int argumentIndex)
         {
-            var booleanArguments = new[] { "updateassemblyinfo", "ensureassemblyinfo", "nofetch", "nonormalize", "nocache", "allowshallow" };
+            var booleanArguments = new[] { "updateassemblyinfo", "ensureassemblyinfo", "nofetch", "nonormalize", "nocache", "allowshallow", "diag" };
 
             var argumentMightRequireValue = !booleanArguments.Contains(singleArgument[1..], StringComparer.OrdinalIgnoreCase);
 
