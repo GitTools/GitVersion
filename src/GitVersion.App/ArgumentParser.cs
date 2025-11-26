@@ -212,11 +212,7 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (name.IsSwitch("diag"))
         {
-            if (value?.IsTrue() != false)
-            {
-                arguments.Diag = true;
-            }
-
+            arguments.Diag = true;
             return true;
         }
 
