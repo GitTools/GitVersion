@@ -372,7 +372,8 @@ GitVersion [path]
     path            The directory containing .git. If not defined current
                     directory is used. (Must be first argument)
     /version        Displays the version of GitVersion
-    /diag           Runs GitVersion with additional diagnostic information
+    /diag           Runs GitVersion with additional diagnostic information;
+                    also needs the '/l' argument to specify a logfile or stdout
                     (requires git.exe to be installed)
     /h or /?        Shows Help
 
@@ -389,7 +390,7 @@ GitVersion [path]
                     Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
                     E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
                          /output json /format {Major}.{Minor} - will output `1.2`
-    /l              Path to logfile.
+    /l              Path to logfile; specify 'console' to emit to stdout.
     /config         Path to config file (defaults to GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml)
     /showconfig     Outputs the effective GitVersion config (defaults + custom
                     from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format
