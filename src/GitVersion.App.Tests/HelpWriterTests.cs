@@ -27,6 +27,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
             { nameof(Arguments.CommitId), "/c" },
 
+            { nameof(Arguments.Diag) , "/diag" },
             { nameof(Arguments.LogFilePath) , "/l" },
             { nameof(Arguments.Verbosity), "/verbosity" },
             { nameof(Arguments.Output) , "/output" },
