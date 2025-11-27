@@ -1,3 +1,1 @@
 #nullable enable
-GitVersion.LibGit2SharpExtensions.extension(LibGit2Sharp.IRepository!)
-GitVersion.LibGit2SharpExtensions.extension(LibGit2Sharp.IRepository!).ToGitRepository() -> GitVersion.Git.IGitRepository!
