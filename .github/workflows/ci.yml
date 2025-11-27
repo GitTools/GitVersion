@@ -21,7 +21,7 @@ on:
       - '!docs/**'
   merge_group:
     types: [checks_requested]
-    
+
   repository_dispatch:
     types: [ ci-release ]
 
@@ -43,7 +43,7 @@ jobs:
   prepare:
     name: Prepare
     uses: ./.github/workflows/_prepare.yml
-  
+
   build:
     name: Build & Package
     needs: [ prepare ]
@@ -135,11 +135,11 @@ jobs:
       uses: ./.github/actions/artifacts-restore
     -
       name: Attetstation
-      if: ${{ github.event_name == 'repository_dispatch' }}
+      if: github.event_name == 'repository_dispatch'
       uses: ./.github/actions/artifacts-attest
     -
       name: DockerHub Publish Readme
-      if: ${{ github.event_name == 'repository_dispatch' }}
+      if: github.event_name == 'repository_dispatch'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerHubReadmePublish
       env:
@@ -151,10 +151,10 @@ jobs:
       run: dotnet run/release.dll --target=PublishRelease
     -
       name: '[Publish Release]'
-      if: ${{ github.event_name == 'repository_dispatch' }}
+      if: github.event_name == 'repository_dispatch'
       uses: peter-evans/repository-dispatch@v4
       with:
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         repository: ${{ github.repository }}
         event-type: publish-release
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ github.event.client_payload.tag }}"}' 
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ github.event.client_payload.tag }}"}'
