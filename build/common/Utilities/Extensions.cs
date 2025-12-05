@@ -5,43 +5,47 @@ public static class Extensions
     private static readonly char[] CharsThatRequireQuoting = [' ', '"'];
     private static readonly char[] CharsThatRequireEscaping = ['\\', '"'];
 
-    public static IEnumerable<Type> FindAllDerivedTypes(this Assembly assembly, Type baseType) =>
-        from type in assembly.GetExportedTypes()
-        let info = type.GetTypeInfo()
-        where baseType.IsAssignableFrom(type) && info.IsClass && !info.IsAbstract
-        select type;
-
-    public static string GetTaskDescription(this Type task)
+    extension(Assembly assembly)
     {
-        ArgumentNullException.ThrowIfNull(task);
-
-        var attribute = task.GetCustomAttribute<TaskDescriptionAttribute>();
-        return attribute != null ? attribute.Description : string.Empty;
+        public IEnumerable<Type> FindAllDerivedTypes(Type baseType) =>
+            from type in assembly.GetExportedTypes()
+            let info = type.GetTypeInfo()
+            where baseType.IsAssignableFrom(type) && info.IsClass && !info.IsAbstract
+            select type;
     }
 
-    public static string GetTaskName(this Type task)
+    extension(Type task)
     {
-        ArgumentNullException.ThrowIfNull(task);
-
-        var attribute = task.GetCustomAttribute<TaskNameAttribute>();
-        return attribute != null ? attribute.Name : task.Name;
-    }
-
-    public static string GetTaskArguments(this Type task)
-    {
-        ArgumentNullException.ThrowIfNull(task);
-
-        var attributes = task.GetCustomAttributes<TaskArgumentAttribute>().ToArray();
-        if (attributes.Length != 0)
+        public string GetTaskDescription()
         {
-            var arguments = attributes.Select(attribute => $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]");
-            return string.Join(" ", arguments);
+            ArgumentNullException.ThrowIfNull(task);
+
+            var attribute = task.GetCustomAttribute<TaskDescriptionAttribute>();
+            return attribute != null ? attribute.Description : string.Empty;
         }
-        return string.Empty;
+
+        public string GetTaskName()
+        {
+            ArgumentNullException.ThrowIfNull(task);
+
+            var attribute = task.GetCustomAttribute<TaskNameAttribute>();
+            return attribute != null ? attribute.Name : task.Name;
+        }
+
+        public string GetTaskArguments()
+        {
+            ArgumentNullException.ThrowIfNull(task);
+
+            var attributes = task.GetCustomAttributes<TaskArgumentAttribute>().ToArray();
+            if (attributes.Length != 0)
+            {
+                var arguments = attributes.Select(attribute => $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]");
+                return string.Join(" ", arguments);
+            }
+            return string.Empty;
+        }
     }
 
-    public static DirectoryPath Combine(this string path, string segment) => DirectoryPath.FromString(path).Combine(segment);
-    public static FilePath CombineWithFilePath(this string path, string segment) => DirectoryPath.FromString(path).CombineWithFilePath(segment);
     public static DirectoryPath GetRootDirectory()
     {
         var currentPath = DirectoryPath.FromString(Directory.GetCurrentDirectory());
@@ -53,55 +57,61 @@ public static class Extensions
         return currentPath;
     }
 
-    public static string ToSuffix(this Architecture arch) => arch.ToString().ToLower();
-
-    /// <summary>
-    /// Escapes arbitrary values so that the process receives the exact string you intend and injection is impossible.
-    /// Spec: https://msdn.microsoft.com/en-us/library/bb776391.aspx
-    /// </summary>
-    public static string EscapeProcessArgument(this string literalValue, bool alwaysQuote = false)
+    extension(Architecture arch)
     {
-        if (string.IsNullOrEmpty(literalValue)) return "\"\"";
+        public string ToSuffix() => arch.ToString().ToLower();
+    }
 
-        if (literalValue.IndexOfAny(CharsThatRequireQuoting) == -1) // Happy path
+    extension(string literalValue)
+    {
+        /// <summary>
+        /// Escapes arbitrary values so that the process receives the exact string you intend and injection is impossible.
+        /// Spec: https://msdn.microsoft.com/en-us/library/bb776391.aspx
+        /// </summary>
+        public string EscapeProcessArgument(bool alwaysQuote = false)
         {
-            if (!alwaysQuote) return literalValue;
-            if (literalValue[^1] != '\\') return "\"" + literalValue + "\"";
-        }
+            if (string.IsNullOrEmpty(literalValue)) return "\"\"";
 
-        var sb = new StringBuilder(literalValue.Length + 8).Append('"');
-
-        var nextPosition = 0;
-        while (true)
-        {
-            var nextEscapeChar = literalValue.IndexOfAny(CharsThatRequireEscaping, nextPosition);
-            if (nextEscapeChar == -1) break;
-
-            sb.Append(literalValue, nextPosition, nextEscapeChar - nextPosition);
-            nextPosition = nextEscapeChar + 1;
-
-            switch (literalValue[nextEscapeChar])
+            if (literalValue.IndexOfAny(CharsThatRequireQuoting) == -1) // Happy path
             {
-                case '"':
-                    sb.Append("\\\"");
-                    break;
-                case '\\':
-                    var numBackslashes = 1;
-                    while (nextPosition < literalValue.Length && literalValue[nextPosition] == '\\')
-                    {
-                        numBackslashes++;
-                        nextPosition++;
-                    }
-                    if (nextPosition == literalValue.Length || literalValue[nextPosition] == '"')
-                        numBackslashes <<= 1;
-
-                    for (; numBackslashes != 0; numBackslashes--)
-                        sb.Append('\\');
-                    break;
+                if (!alwaysQuote) return literalValue;
+                if (literalValue[^1] != '\\') return "\"" + literalValue + "\"";
             }
-        }
 
-        sb.Append(literalValue, nextPosition, literalValue.Length - nextPosition).Append('"');
-        return sb.ToString();
+            var sb = new StringBuilder(literalValue.Length + 8).Append('"');
+
+            var nextPosition = 0;
+            while (true)
+            {
+                var nextEscapeChar = literalValue.IndexOfAny(CharsThatRequireEscaping, nextPosition);
+                if (nextEscapeChar == -1) break;
+
+                sb.Append(literalValue, nextPosition, nextEscapeChar - nextPosition);
+                nextPosition = nextEscapeChar + 1;
+
+                switch (literalValue[nextEscapeChar])
+                {
+                    case '"':
+                        sb.Append("\\\"");
+                        break;
+                    case '\\':
+                        var numBackslashes = 1;
+                        while (nextPosition < literalValue.Length && literalValue[nextPosition] == '\\')
+                        {
+                            numBackslashes++;
+                            nextPosition++;
+                        }
+                        if (nextPosition == literalValue.Length || literalValue[nextPosition] == '"')
+                            numBackslashes <<= 1;
+
+                        for (; numBackslashes != 0; numBackslashes--)
+                            sb.Append('\\');
+                        break;
+                }
+            }
+
+            sb.Append(literalValue, nextPosition, literalValue.Length - nextPosition).Append('"');
+            return sb.ToString();
+        }
     }
 }
