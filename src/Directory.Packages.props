@@ -21,7 +21,7 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="7.1.0" />
-    <PackageVersion Include="JsonSchema.Net.Generation" Version="5.1.1" />
+    <PackageVersion Include="JsonSchema.Net.Generation" Version="6.0.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="7.0.2" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="16.1.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
