@@ -20,8 +20,8 @@ internal class NumericFormatter : InvariantFormatter, IValueFormatter
             return true;
         }
 
-        // Hexadecimal formatting
-        if (format.StartsWith("X", StringComparison.OrdinalIgnoreCase) && int.TryParse(s, NumberStyles.Integer, cultureInfo, out var hex))
+        // Integer formatting with precision specifier
+        if ("BDX".Contains(char.ToUpperInvariant(format[0])) && int.TryParse(s, NumberStyles.Integer, cultureInfo, out var hex))
         {
             result = hex.ToString(format, cultureInfo);
             return true;
