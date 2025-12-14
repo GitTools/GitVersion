@@ -29,21 +29,21 @@ jobs:
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-2025'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-2025'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.zip
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: matrix.os != 'windows-2025'
       with:
         name: native-${{ runner.os }}
