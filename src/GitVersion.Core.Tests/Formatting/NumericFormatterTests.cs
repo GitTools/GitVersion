@@ -1,4 +1,4 @@
-﻿using GitVersion.Formatting;
+using GitVersion.Formatting;
 
 namespace GitVersion.Tests.Formatting;
 
@@ -21,6 +21,9 @@ public class NumericFormatterTests
     [TestCase("1234.5678", "f2", "1234.57")]
     [TestCase("1234.5678", "f0", "1235")]
     [TestCase("1234.5678", "g", "1234.5678")]
+    [TestCase("1234", "d8", "00001234")]
+    [TestCase("1234", "x8", "000004d2")]
+    [TestCase("12", "b8", "00001100")]
     public void TryFormat_ValidFormats_ReturnsExpectedResult(string input, string format, string expected)
     {
         var sut = new NumericFormatter();
