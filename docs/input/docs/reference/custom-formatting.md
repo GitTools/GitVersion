@@ -32,6 +32,7 @@ assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabel}"
 - `C` or `c` (Currency): `{Major:C}` → `"¤1.00"`
 - `P` or `p` (Percent): `{CommitsSinceVersionSource:P}` → `"12,345.60 %"`
 - `D` or `d` (Decimal): `{Major:D4}` → `"0001"`
+- `B` or `b` (Binary): `{Minor:B4}` → `"0101"`
 - `X` or `x` (Hexadecimal): `{Patch:X}` → `"FF"`
 
 ### Date and Time Formatting
