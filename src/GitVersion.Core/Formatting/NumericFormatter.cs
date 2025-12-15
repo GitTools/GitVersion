@@ -21,9 +21,9 @@ internal class NumericFormatter : InvariantFormatter, IValueFormatter
         }
 
         // Integer formatting with precision specifier
-        if ("BDX".Contains(char.ToUpperInvariant(format[0])) && int.TryParse(s, NumberStyles.Integer, cultureInfo, out var hex))
+        if ("BDX".Contains(char.ToUpperInvariant(format[0])) && int.TryParse(s, NumberStyles.Integer, cultureInfo, out var n))
         {
-            result = hex.ToString(format, cultureInfo);
+            result = n.ToString(format, cultureInfo);
             return true;
         }
 
