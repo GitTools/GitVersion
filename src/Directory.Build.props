@@ -34,11 +34,16 @@
 
         <IsUnitTestProject>false</IsUnitTestProject>
         <DisableApiAnalyzers>false</DisableApiAnalyzers>
-        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
+        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests'))">true</IsUnitTestProject>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+        <OutputType>Exe</OutputType>
+        <EnableNUnitRunner>true</EnableNUnitRunner>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,7 +56,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false' and '$(DisableApiAnalyzers)' == 'false'">
+    <ItemGroup Condition=" '$(DisableApiAnalyzers)' == 'false' and '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false' and $(MSBuildProjectName.EndsWith('.Testing')) == 'false' ">
         <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -64,7 +69,7 @@
 
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="JunitXml.TestLogger" />
+<!--        <PackageReference Include="JunitXml.TestLogger" />-->
         <PackageReference Include="Shouldly" />
 
         <PackageReference Include="coverlet.msbuild">
@@ -77,13 +82,13 @@
         </PackageReference>
 
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
         <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj" />
 
-        <Using Include="GitVersion.Testing" />
         <Using Include="NSubstitute" />
         <Using Include="NUnit.Framework" />
         <Using Include="Shouldly" />
+        <Using Include="GitVersion.Testing" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,10 +1,13 @@
 {
-  "projects": [
-    "build",
-    "new-cli",
-    "src"
-  ],
-  "sdk": {
-    "version": "10.0.101"
-  }
+    "projects": [
+        "build",
+        "new-cli",
+        "src"
+    ],
+    "sdk": {
+        "version": "10.0.101"
+    },
+    "test": {
+        "runner": "Microsoft.Testing.Platform"
+    }
 }
