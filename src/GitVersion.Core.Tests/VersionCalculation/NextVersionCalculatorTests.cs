@@ -120,7 +120,7 @@ public class NextVersionCalculatorTests : TestBase
     }
 
     [Test]
-    public void MergeSelfeIntoMainline()
+    public void MergeSelfIntoMainline()
     {
         var configuration = TrunkBasedConfigurationBuilder.New.Build();
 
