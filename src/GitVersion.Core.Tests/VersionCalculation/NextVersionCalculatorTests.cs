@@ -120,6 +120,22 @@ public class NextVersionCalculatorTests : TestBase
     }
 
     [Test]
+    public void MergeSelfeIntoMainline()
+    {
+        var configuration = TrunkBasedConfigurationBuilder.New.Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        fixture.CreateBranch("foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("foo");
+        fixture.Checkout(MainBranch);
+        fixture.Repository.Merge("foo", Generate.SignatureNow());
+
+        fixture.AssertFullSemver("0.0.3", configuration);
+    }
+
+    [Test]
     public void MergeFeatureIntoMainline()
     {
         var configuration = TrunkBasedConfigurationBuilder.New.Build();
