@@ -53,4 +53,4 @@ jobs:
         run: dotnet format ./new-cli --exclude ~/.nuget/packages --verify-no-changes
       -
         name: Test 'new-cli' solution
-        run: dotnet test ./new-cli --no-build --verbosity normal
+        run: dotnet test --solution ./new-cli/GitVersion.slnx --no-build --verbosity normal
