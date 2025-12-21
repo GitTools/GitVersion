@@ -6,13 +6,17 @@ namespace GitVersion.Configuration;
 
 internal class ConfigurationSerializer : IConfigurationSerializer
 {
-    private static IDeserializer Deserializer => new DeserializerBuilder()
+    // Static context is defined for future AOT support but not currently used
+    // due to limitations with custom type inspectors and init properties
+    private static readonly GitVersionConfigurationStaticContext staticContext = new();
+
+    private static IDeserializer Deserializer => new StaticDeserializerBuilder(staticContext)
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
         .WithTypeConverter(VersionStrategiesConverter.Instance)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .Build();
 
-    private static ISerializer Serializer => new SerializerBuilder()
+    private static ISerializer Serializer => new StaticSerializerBuilder(staticContext)
         .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
