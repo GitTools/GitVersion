@@ -554,4 +554,27 @@ public class DevelopScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0", configurationBuilder.Build());
     }
+
+    /// <summary>
+    /// "track-merge-target: false" reads tag from other branch #4795
+    /// (see https://github.com/GitTools/GitVersion/issues/4795)
+    /// </summary>
+    [Test]
+    public void TaggedVersionFromTheMainBranchShouldBeConsideredEvenIfItIsNewer()
+    {
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
+
+        fixture.MakeATaggedCommit("1.1.1");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.MergeNoFF("main");
+        fixture.ApplyTag("9.9.9");
+        fixture.Checkout("develop");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("9.10.0-alpha.1", configurationBuilder.Build());
+    }
 }
