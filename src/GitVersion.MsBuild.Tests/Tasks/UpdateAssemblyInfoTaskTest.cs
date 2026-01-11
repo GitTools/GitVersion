@@ -192,7 +192,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     {
         var assemblyFileLocation = typeof(GitVersionTaskBase).Assembly.Location;
         project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
-            .Property("ManagePackageVersionsCentrally", "false")
             .Property("GenerateAssemblyInfo", "false")
             .Property("Language", language)
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")

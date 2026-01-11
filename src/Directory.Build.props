@@ -33,15 +33,19 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
         <IsUnitTestProject>false</IsUnitTestProject>
-        <DisableApiAnalyzers>false</DisableApiAnalyzers>
         <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
+
+        <DisableAnalyzers>false</DisableAnalyzers>
+        <DisableApiAnalyzers>false</DisableApiAnalyzers>
+        <DisableApiAnalyzers Condition=" '$(IsUnitTestProject)' == 'true' ">true</DisableApiAnalyzers>
+        <DisableApiAnalyzers Condition="$(MSBuildProjectName.EndsWith('.Schema')) == 'true'">true</DisableApiAnalyzers>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition=" '$(DisableAnalyzers)' == 'false' ">
         <PackageReference Include="Roslynator.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -51,7 +55,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false' and '$(DisableApiAnalyzers)' == 'false'">
+    <ItemGroup Condition=" '$(DisableApiAnalyzers)' == 'false' ">
         <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
