@@ -8,9 +8,3 @@ runs:
             uses: docker/setup-docker-action@v4
             with:
                 daemon-config: '{ "features": { "containerd-snapshotter": true } }'
-        -   name: Setup Docker Buildx
-            uses: docker/setup-buildx-action@v3
-            with:
-                version: 'latest'
-                driver-opts: 'image=moby/buildkit:buildx-stable-1'
-                install: true

@@ -1,23 +1,4 @@
 <Solution>
-  <Folder Name="/actions/" />
-  <Folder Name="/actions/artifacts-attest/">
-    <File Path="../.github/actions/artifacts-attest/action.yml" />
-  </Folder>
-  <Folder Name="/actions/artifacts-restore/">
-    <File Path="../.github/actions/artifacts-restore/action.yml" />
-  </Folder>
-  <Folder Name="/actions/cache-restore/">
-    <File Path="../.github/actions/cache-restore/action.yml" />
-  </Folder>
-  <Folder Name="/actions/docker-manifests/">
-    <File Path="../.github/actions/docker-manifests/action.yml" />
-  </Folder>
-  <Folder Name="/actions/docker-publish/">
-    <File Path="../.github/actions/docker-publish/action.yml" />
-  </Folder>
-  <Folder Name="/actions/docker-test/">
-    <File Path="../.github/actions/docker-test/action.yml" />
-  </Folder>
   <Folder Name="/scripts/">
     <File Path="../tests/scripts/test-global-tool.sh" />
     <File Path="../tests/scripts/test-msbuild-task.sh" />
@@ -33,32 +14,6 @@
     <File Path="../src/mark-shipped.ps1" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
-  </Folder>
-  <Folder Name="/workflows/">
-    <File Path="../.github/dependabot.yml" />
-    <File Path="../.github/workflows/ci.yml" />
-    <File Path="../.github/workflows/codeql-analysis.yml" />
-    <File Path="../.github/workflows/docs.yml" />
-    <File Path="../.github/workflows/format.yml" />
-    <File Path="../.github/workflows/gittools-actions.yml" />
-    <File Path="../.github/workflows/homebrew.yml" />
-    <File Path="../.github/workflows/mkdocs.yml" />
-    <File Path="../.github/workflows/new-cli.yml" />
-    <File Path="../.github/workflows/public-api.yml" />
-    <File Path="../.github/workflows/release.yml" />
-    <File Path="../.github/workflows/stale.yml" />
-    <File Path="../.github/workflows/winget.yml" />
-    <File Path="../.github/workflows/qodana_analysis.yml" />
-  </Folder>
-  <Folder Name="/workflows/_/">
-    <File Path="../.github/workflows/_artifacts_linux.yml" />
-    <File Path="../.github/workflows/_artifacts_windows.yml" />
-    <File Path="../.github/workflows/_build.yml" />
-    <File Path="../.github/workflows/_docker.yml" />
-    <File Path="../.github/workflows/_docker_manifests.yml" />
-    <File Path="../.github/workflows/_prepare.yml" />
-    <File Path="../.github/workflows/_publish.yml" />
-    <File Path="../.github/workflows/_unit_tests.yml" />
   </Folder>
   <Project Path="artifacts/artifacts.csproj" />
   <Project Path="build/build.csproj" />
