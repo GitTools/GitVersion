@@ -22,7 +22,7 @@
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="7.1.0" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="6.0.0" />
-    <PackageVersion Include="JunitXml.TestLogger" Version="7.1.0" />
+    <PackageVersion Include="JunitXml.TestLogger" Version="8.0.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="16.1.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Build" Version="18.0.2" />
