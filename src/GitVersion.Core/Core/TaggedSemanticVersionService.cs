@@ -55,7 +55,7 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfMainBranchesInternal(
                     configuration: configuration,
-                    notOlderThan: notOlderThan,
+                    notOlderThan: null,
                     label: label,
                     excludeBranches: branch
                 );
@@ -65,7 +65,7 @@ internal sealed class TaggedSemanticVersionService(
             {
                 yield return GetTaggedSemanticVersionsOfReleaseBranchesInternal(
                     configuration: configuration,
-                    notOlderThan: notOlderThan,
+                    notOlderThan: null,
                     label: label,
                     excludeBranches: branch
                 );
