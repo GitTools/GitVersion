@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="YamlDotNet" />
+        <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
