@@ -46,6 +46,9 @@
         <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
 
+        <EnableNUnitRunner>true</EnableNUnitRunner>
+        <EnableMicrosoftTestingPlatformRunner>true</EnableMicrosoftTestingPlatformRunner>
+
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
@@ -79,10 +82,6 @@
         <PackageReference Include="JunitXml.TestLogger" />
         <PackageReference Include="Shouldly" />
 
-        <PackageReference Include="coverlet.msbuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="NUnit.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

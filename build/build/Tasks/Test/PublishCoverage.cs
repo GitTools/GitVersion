@@ -29,6 +29,12 @@ public class PublishCoverage : FrostingTask<BuildContext>
             throw new InvalidOperationException("Could not resolve CodeCov token.");
         }
 
+        if (coverageFiles.Length == 0)
+        {
+            context.Warning("No coverage files found.");
+            return;
+        }
+
         context.Codecov(new CodecovSettings
         {
             Files = coverageFiles,

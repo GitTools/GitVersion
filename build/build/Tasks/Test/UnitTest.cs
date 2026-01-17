@@ -69,25 +69,19 @@ public class UnitTest : FrostingTask<BuildContext>
         var projectName = $"{project.GetFilenameWithoutExtension()}.net{framework}";
         var settings = new DotNetTestSettings
         {
+            PathType = DotNetTestPathType.Project,
             Framework = $"net{framework}",
             NoBuild = true,
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
-            TestAdapterPath = new(".")
         };
 
         var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-        settings.Loggers = [$"junit;LogFilePath={resultsPath}"];
+        settings.WithArgumentCustomization(args => args
+            .Append("--report-spekt-junit")
+            .Append("--report-spekt-junit-filename").AppendQuoted(resultsPath.FullPath)
+        );
 
-        var coverletSettings = new CoverletSettings
-        {
-            CollectCoverage = true,
-            CoverletOutputFormat = CoverletOutputFormat.cobertura,
-            CoverletOutputDirectory = testResultsPath,
-            CoverletOutputName = $"{projectName}.coverage.xml",
-            Exclude = ["[GitVersion*.Tests]*", "[GitTools.Testing]*"]
-        };
-
-        context.DotNetTest(project.FullPath, settings, coverletSettings);
+        context.DotNetTest(project.FullPath, settings);
     }
 }
