@@ -33,12 +33,25 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
         <IsUnitTestProject>false</IsUnitTestProject>
-        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
+        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests'))">true</IsUnitTestProject>
 
         <DisableAnalyzers>false</DisableAnalyzers>
         <DisableApiAnalyzers>false</DisableApiAnalyzers>
         <DisableApiAnalyzers Condition=" '$(IsUnitTestProject)' == 'true' ">true</DisableApiAnalyzers>
         <DisableApiAnalyzers Condition="$(MSBuildProjectName.EndsWith('.Schema')) == 'true'">true</DisableApiAnalyzers>
+        <DisableApiAnalyzers Condition="$(MSBuildProjectName.EndsWith('.Testing')) == 'true'">true</DisableApiAnalyzers>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+        <OutputType>Exe</OutputType>
+        <IsPackable>false</IsPackable>
+
+        <EnableNUnitRunner>true</EnableNUnitRunner>
+        <EnableMicrosoftTestingPlatformRunner>true</EnableMicrosoftTestingPlatformRunner>
+
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
@@ -61,33 +74,27 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' or $(MSBuildProjectName.EndsWith('.Testing')) ">
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-
         <PackageReference Include="NSubstitute" />
-
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="JunitXml.TestLogger" />
         <PackageReference Include="Shouldly" />
 
-        <PackageReference Include="coverlet.msbuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="NUnit.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
         <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj" />
 
-        <Using Include="GitVersion.Testing" />
         <Using Include="NSubstitute" />
         <Using Include="NUnit.Framework" />
         <Using Include="Shouldly" />
+        <Using Include="GitVersion.Testing" />
     </ItemGroup>
 
     <ItemGroup>
