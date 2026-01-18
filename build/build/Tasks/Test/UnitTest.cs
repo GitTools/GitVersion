@@ -71,10 +71,12 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             PathType = DotNetTestPathType.Project,
             Framework = $"net{framework}",
-            NoBuild = true,
-            NoRestore = true,
+            NoBuild = false,
+            NoRestore = false,
             Configuration = context.MsBuildConfiguration,
+            MSBuildSettings = new()
         };
+        settings.MSBuildSettings.SetContinuousIntegrationBuild(false);
 
         var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
         settings.WithArgumentCustomization(args => args
