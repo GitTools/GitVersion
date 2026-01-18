@@ -56,6 +56,9 @@ public class GetVersion : GitVersionTaskBase
     public string InformationalVersion { get; set; }
 
     [Output]
+    public string CustomVersion { get; set; }
+
+    [Output]
     public string BranchName { get; set; }
 
     [Output]
