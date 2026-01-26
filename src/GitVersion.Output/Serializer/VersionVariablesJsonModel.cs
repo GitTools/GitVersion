@@ -31,6 +31,9 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The full, SemVer 2.0 compliant version number.")]
     public string? FullSemVer { get; set; }
 
+    [JsonPropertyDescription("The base semantic version used as the operand for next version calculation.")]
+    public string? BaseSemVer { get; set; }
+
     [JsonPropertyDescription("Suitable for .NET AssemblyInformationalVersion. Defaults to FullSemVer suffixed by FullBuildMetaData.")]
     public string? InformationalVersion { get; set; }
 

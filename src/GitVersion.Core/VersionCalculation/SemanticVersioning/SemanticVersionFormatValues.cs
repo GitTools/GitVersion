@@ -40,6 +40,8 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string FullSemVer => semver.ToString("f");
 
+    public string? BaseSemVer => semver.BuildMetaData.BaseVersion?.ToString() ?? $"{semver.Major}.{semver.Minor}.{semver.Patch}";
+
     public string? BranchName => semver.BuildMetaData.Branch;
 
     public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");

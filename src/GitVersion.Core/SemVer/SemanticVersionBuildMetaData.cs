@@ -30,6 +30,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public long UncommittedChanges { get; init; }
 
+    public SemanticVersion? BaseVersion { get; init; }
+
     public SemanticVersionBuildMetaData()
     {
     }
@@ -61,6 +63,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
         this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
+        this.BaseVersion = buildMetaData.BaseVersion;
     }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionBuildMetaData);

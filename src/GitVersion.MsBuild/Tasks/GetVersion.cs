@@ -53,6 +53,9 @@ public class GetVersion : GitVersionTaskBase
     public string FullSemVer { get; set; }
 
     [Output]
+    public string BaseSemVer { get; set; }
+
+    [Output]
     public string InformationalVersion { get; set; }
 
     [Output]

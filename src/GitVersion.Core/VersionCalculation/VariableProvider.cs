@@ -52,6 +52,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             semverFormatValues.MajorMinorPatch,
             semverFormatValues.SemVer,
             semverFormatValues.FullSemVer,
+            semverFormatValues.BaseSemVer,
             assemblySemVer,
             assemblyFileSemVer,
             semverFormatValues.PreReleaseTag,

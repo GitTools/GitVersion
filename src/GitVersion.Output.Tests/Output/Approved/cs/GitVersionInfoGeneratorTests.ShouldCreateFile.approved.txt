@@ -14,6 +14,7 @@ static class GitVersionInformation
 {
     public const string AssemblySemFileVer = "1.2.3.0";
     public const string AssemblySemVer = "1.2.3.0";
+    public const string BaseSemVer = "1.2.3";
     public const string BranchName = "feature1";
     public const string BuildMetaData = "5";
     public const string CommitDate = "2014-03-06";

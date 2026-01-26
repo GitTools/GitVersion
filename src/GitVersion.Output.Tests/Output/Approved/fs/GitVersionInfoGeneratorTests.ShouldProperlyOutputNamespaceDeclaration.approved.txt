@@ -16,6 +16,7 @@ namespace My.Custom.Namespace
 type GitVersionInformation =
     static member AssemblySemFileVer = "1.2.3.0"
     static member AssemblySemVer = "1.2.3.0"
+    static member BaseSemVer = "1.2.3"
     static member BranchName = "feature1"
     static member BuildMetaData = "5"
     static member CommitDate = "2014-03-06"

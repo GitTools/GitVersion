@@ -98,7 +98,13 @@ internal class NextVersionCalculator(
             };
         }
 
-        return semanticVersion;
+        return new SemanticVersion(semanticVersion)
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
+            {
+                BaseVersion = nextVersion.BaseVersion.SemanticVersion
+            }
+        };
     }
 
     private bool TryGetSemanticVersion(
@@ -121,7 +127,8 @@ internal class NextVersionCalculator(
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
-        );
+        )
+        { BaseVersion = currentCommitTaggedVersion.Value };
 
         var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
         if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)

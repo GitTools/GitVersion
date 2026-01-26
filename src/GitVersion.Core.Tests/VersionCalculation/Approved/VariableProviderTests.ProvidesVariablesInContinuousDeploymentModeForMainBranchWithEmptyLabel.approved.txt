@@ -8,6 +8,7 @@
   "EscapedBranchName": "main",
   "FullBuildMetaData": "Branch.main.Sha.commitSha",
   "FullSemVer": "1.2.3-9",
+  "BaseSemVer": "1.2.3",
   "InformationalVersion": "1.2.3-9+Branch.main.Sha.commitSha",
   "Major": 1,
   "MajorMinorPatch": "1.2.3",

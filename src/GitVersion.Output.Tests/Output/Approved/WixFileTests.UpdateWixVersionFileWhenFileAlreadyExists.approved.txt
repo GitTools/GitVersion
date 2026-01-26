@@ -2,6 +2,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define AssemblySemFileVer="1.2.3.0"?>
   <?define AssemblySemVer="1.2.3.0"?>
+  <?define BaseSemVer="1.2.3"?>
   <?define BranchName="develop"?>
   <?define BuildMetaData="5"?>
   <?define CommitDate="2019-02-20"?>
