@@ -6,6 +6,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
+        <PackageReference Include="Shouldly" />
         <PackageReference Include="System.IO.Abstractions" />
         <PackageReference Include="System.Reflection.Metadata" />
     </ItemGroup>
