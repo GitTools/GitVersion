@@ -74,7 +74,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' or $(MSBuildProjectName.EndsWith('.Testing')) ">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NSubstitute" />
         <PackageReference Include="NUnit" />
