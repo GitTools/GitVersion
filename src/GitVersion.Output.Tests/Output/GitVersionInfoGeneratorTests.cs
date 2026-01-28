@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -27,7 +28,8 @@ public class GitVersionInfoGeneratorTests : TestBase
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new("versionSourceSha", 5,
-                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture), 0)
+            { VersionSourceSemVer = new SemanticVersion(1, 2, 2) }
         };
 
         var sp = ConfigureServices();
@@ -69,45 +71,6 @@ public class GitVersionInfoGeneratorTests : TestBase
             PreReleaseTag = "unstable4",
             BuildMetaData = new("versionSourceSha", 5,
                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
-        };
-
-        var sp = ConfigureServices();
-
-        var fileSystem = sp.GetRequiredService<IFileSystem>();
-
-        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!fileSystem.Directory.Exists(directory))
-            fileSystem.Directory.CreateDirectory(directory);
-        var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = FileSystemHelper.Path.Combine(directory, fileName);
-
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
-        using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
-
-        generator.Execute(variables, new(directory, fileName, targetNamespace));
-
-        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
-
-        FileSystemHelper.Directory.DeleteDirectory(directory);
-    }
-
-    [TestCase("cs")]
-    [TestCase("fs")]
-    [TestCase("vb")]
-    public void ShouldProperlyExposeBaseSemVerAttribute(string fileExtension)
-    {
-        const string targetNamespace = "My.Custom.Namespace";
-
-        var semanticVersion = new SemanticVersion
-        {
-            Major = 1,
-            Minor = 2,
-            Patch = 3,
-            PreReleaseTag = "unstable4",
-            BuildMetaData = new("versionSourceSha", 5,
-                "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
-            { BaseVersion = new SemanticVersion(1, 2, 2) }
         };
 
         var sp = ConfigureServices();

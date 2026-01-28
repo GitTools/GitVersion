@@ -102,7 +102,7 @@ internal class NextVersionCalculator(
         {
             BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
             {
-                BaseVersion = nextVersion.BaseVersion.SemanticVersion
+                VersionSourceSemVer = nextVersion.BaseVersion.SemanticVersion
             }
         };
     }
@@ -128,7 +128,7 @@ internal class NextVersionCalculator(
             commitDate: Context.CurrentCommit.When,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
         )
-        { BaseVersion = currentCommitTaggedVersion.Value };
+        { VersionSourceSemVer = currentCommitTaggedVersion.Value };
 
         var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
         if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)

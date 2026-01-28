@@ -40,8 +40,6 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string FullSemVer => semver.ToString("f");
 
-    public string? BaseSemVer => semver.BuildMetaData.BaseVersion?.ToString() ?? $"{semver.Major}.{semver.Minor}.{semver.Patch}";
-
     public string? BranchName => semver.BuildMetaData.Branch;
 
     public string? EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
@@ -53,6 +51,8 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     public string? CommitDate => semver.BuildMetaData.CommitDate?.UtcDateTime.ToString(configuration.CommitDateFormat, CultureInfo.InvariantCulture);
 
     public string InformationalVersion => semver.ToString("i");
+
+    public string? VersionSourceSemVer => semver.BuildMetaData.VersionSourceSemVer?.ToString() ?? $"{semver.Major}.{semver.Minor}.{semver.Patch}";
 
     public string? VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 

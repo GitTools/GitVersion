@@ -28,11 +28,11 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "AssemblySemFileVer": "3.22.11.0",
     "InformationalVersion": "3.22.11-beta.99+88.Branch.release/3.022.011.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "FullSemVer": "3.22.11-beta.99+88",
-    "BaseSemVer": "3.22.11",
     "BranchName": "release/3.022.011",
     "EscapedBranchName": "release-3.022.011",
     "Sha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "ShortSha": "28c8531",
+    "VersionSourceSemVer": "3.22.11",
     "VersionSourceSha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "CommitsSinceVersionSource": 7,
     "CommitDate": "2021-12-31",
@@ -61,11 +61,11 @@ Each property of the above JSON document is described in the below table.
 |              `AssemblySemFileVer` | Suitable for .NET `AssemblyFileVersion`. Defaults to `Major.Minor.Patch.0`.                                                                                                |
 |            `InformationalVersion` | Suitable for .NET `AssemblyInformationalVersion`. Defaults to `FullSemVer` suffixed by `FullBuildMetaData`.                                                                |
 |                      `FullSemVer` | The full, SemVer 2.0 compliant version number.                                                                                                                             |
-|                      `BaseSemVer` | The base semantic version used as the operand for next version calculation.                                                                                                |
 |                      `BranchName` | The name of the checked out Git branch.                                                                                                                                    |
 |               `EscapedBranchName` | Equal to `BranchName`, but with `/` replaced with `-`.                                                                                                                     |
 |                             `Sha` | The SHA of the Git commit.                                                                                                                                                 |
 |                        `ShortSha` | The `Sha` limited to 7 characters.                                                                                                                                         |
+|             `VersionSourceSemVer` | The semantic version of the commit used as version source.                                                                                                                 |
 |                `VersionSourceSha` | The SHA of the commit used as version source.                                                                                                                              |
 |       `CommitsSinceVersionSource` | The number of commits since the version source.                                                                                                                            |
 |                      `CommitDate` | The ISO-8601 formatted date of the commit identified by `Sha`.                                                                                                             |

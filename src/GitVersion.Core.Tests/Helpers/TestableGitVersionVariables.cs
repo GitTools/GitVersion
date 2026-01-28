@@ -15,7 +15,7 @@ internal record TestableGitVersionVariables() : GitVersionVariables(
     MajorMinorPatch: "",
     SemVer: "",
     FullSemVer: "",
-    BaseSemVer: "",
+    VersionSourceSemVer: "",
     AssemblySemVer: "",
     AssemblySemFileVer: "",
     PreReleaseTag: "",
