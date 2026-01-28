@@ -12,7 +12,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
     {
         PackPrepareNative(context);
 
-        var sourceDir = Paths.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
+        var sourceDir = Paths.Native.Combine(nameof(PlatformFamily.Windows)).Combine("win-x64");
         var sourceFiles = context.GetFiles(sourceDir + "/*.*");
 
         var portableDir = Paths.ArtifactsBinPortable.Combine("tools");
