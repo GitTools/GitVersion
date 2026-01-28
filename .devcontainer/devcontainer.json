@@ -14,7 +14,7 @@
             "userGid": "1000",
             "upgradePackages": "true"
         },
-		"ghcr.io/devcontainers/features/git:1": {
+        "ghcr.io/devcontainers/features/git:1": {
             "version": "os-provided",
             "ppa": "false"
         },
@@ -26,13 +26,20 @@
         },
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "version": "latest"
+        },
+        "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
+            "jqVersion": "latest",
+            "yqVersion": "latest",
+            "xqVersion": "none"
         }
     },
     "customizations": {
         "vscode": {
             "settings": {
                 "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
-                "editor.rulers": [ 90 ],
+                "editor.rulers": [
+                    90
+                ],
                 "cSpell.words": [
                     "commiting",
                     "gittools",
@@ -47,9 +54,7 @@
             ]
         }
     },
-
     "postCreateCommand": "dotnet restore src; dotnet build build",
-
     // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
     "remoteUser": "vscode"
 }
