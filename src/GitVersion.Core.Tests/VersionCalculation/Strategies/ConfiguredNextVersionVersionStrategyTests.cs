@@ -2,7 +2,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests.VersionCalculation.Strategies;
 

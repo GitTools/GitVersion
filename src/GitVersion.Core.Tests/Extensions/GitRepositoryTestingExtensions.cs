@@ -8,8 +8,6 @@ using GitVersion.OutputVariables;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.Core.Tests;
 

@@ -2,7 +2,6 @@ using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.Git;
 

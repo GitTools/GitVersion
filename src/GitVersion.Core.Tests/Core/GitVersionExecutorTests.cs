@@ -9,8 +9,6 @@ using GitVersion.Logging;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation.Caching;
 using LibGit2Sharp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.Core.Tests;
 

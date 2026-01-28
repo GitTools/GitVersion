@@ -8,7 +8,6 @@ using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.MsBuild.Tests.Tasks;
 

@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace GitVersion.Agents;
 
 public class GitVersionBuildAgentsModule : IGitVersionModule

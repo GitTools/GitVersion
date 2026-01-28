@@ -5,7 +5,6 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Output.WixUpdater;
 using GitVersion.VersionCalculation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;
 

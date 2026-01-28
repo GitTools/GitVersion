@@ -1,5 +1,4 @@
 using GitVersion.Core.Tests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Agents.Tests;
 

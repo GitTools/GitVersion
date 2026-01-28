@@ -4,7 +4,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 

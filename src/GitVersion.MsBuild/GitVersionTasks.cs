@@ -4,8 +4,6 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.Output;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 

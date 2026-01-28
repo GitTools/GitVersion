@@ -30,6 +30,11 @@
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
 
+    <ItemGroup Label="MicrosoftExtensionsUsings">
+        <Using Include="Microsoft.Extensions.FileSystemGlobbing" />
+        <Using Include="Microsoft.Extensions.Hosting" />
+    </ItemGroup>
+
     <ItemGroup>
         <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md" />
     </ItemGroup>

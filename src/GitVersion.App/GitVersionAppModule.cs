@@ -1,5 +1,4 @@
 using GitVersion.FileSystemGlobbing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion;
 

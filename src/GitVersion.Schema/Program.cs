@@ -3,7 +3,6 @@ using GitVersion.OutputVariables;
 using GitVersion.Schema;
 using Json.Schema;
 using Json.Schema.Generation;
-using Microsoft.Extensions.Configuration;
 
 var configurationManager = new ConfigurationManager().AddCommandLine(args).Build();
 var schemasDirectory = configurationManager["OutputDirectory"]!;

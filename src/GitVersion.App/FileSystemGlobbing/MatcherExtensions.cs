@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace GitVersion.FileSystemGlobbing;
 

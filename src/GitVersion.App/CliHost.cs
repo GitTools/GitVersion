@@ -2,9 +2,6 @@ using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Output;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 

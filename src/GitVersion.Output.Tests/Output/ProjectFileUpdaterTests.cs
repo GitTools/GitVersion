@@ -7,7 +7,6 @@ using GitVersion.Logging;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;
 

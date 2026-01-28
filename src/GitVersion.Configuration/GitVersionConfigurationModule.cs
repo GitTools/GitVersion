@@ -1,5 +1,4 @@
 using GitVersion.VersionCalculation.Caching;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Configuration;
 

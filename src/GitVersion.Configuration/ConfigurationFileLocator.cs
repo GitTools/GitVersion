@@ -2,7 +2,6 @@ using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 

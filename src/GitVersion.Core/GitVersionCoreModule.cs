@@ -3,7 +3,6 @@ using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion;
 

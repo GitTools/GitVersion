@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace GitVersion.Extensions;
 
 public static class ServiceCollectionExtensions

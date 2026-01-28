@@ -4,7 +4,6 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Caching;
 

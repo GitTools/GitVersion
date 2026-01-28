@@ -2,7 +2,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.App.Tests;
 

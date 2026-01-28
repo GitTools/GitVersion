@@ -13,4 +13,7 @@
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
+    <ItemGroup Label="MicrosoftExtensionsUsings">
+        <Using Include="Microsoft.Extensions.Configuration" />
+    </ItemGroup>
 </Project>

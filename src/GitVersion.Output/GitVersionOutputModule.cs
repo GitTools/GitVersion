@@ -3,7 +3,6 @@ using GitVersion.Output.GitVersionInfo;
 using GitVersion.Output.OutputGenerator;
 using GitVersion.Output.WixUpdater;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Output;
 

@@ -97,7 +97,11 @@
         <Using Include="GitVersion.Testing" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Label="SystemUsings">
+        <Using Include="System" />
+        <Using Include="System.IO" />
+        <Using Include="System.Linq" />
+        <Using Include="System.Collections.Generic" />
         <Using Include="System.Collections" />
         <Using Include="System.Collections.Specialized" />
         <Using Include="System.Diagnostics" />
@@ -107,6 +111,12 @@
         <Using Include="System.Text.Json.Serialization" />
         <Using Include="System.Xml" />
         <Using Include="System.Environment" Alias="SysEnv" />
+    </ItemGroup>
+
+    <ItemGroup Label="MicrosoftExtensionsUsings">
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Options" />
     </ItemGroup>
 
     <ItemGroup>

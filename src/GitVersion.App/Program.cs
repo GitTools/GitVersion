@@ -1,5 +1,4 @@
 using GitVersion;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = CliHost.CreateCliHostBuilder(args);
 

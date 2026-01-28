@@ -2,7 +2,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Git;
 using GitVersion.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;
 

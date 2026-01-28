@@ -5,7 +5,6 @@ using GitVersion.Formatting;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.Output.OutputGenerator;
 

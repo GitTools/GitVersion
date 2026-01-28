@@ -4,7 +4,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Output;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests.Helpers;
 

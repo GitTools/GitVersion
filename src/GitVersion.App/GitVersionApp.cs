@@ -1,7 +1,5 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 

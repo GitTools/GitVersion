@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace GitVersion.MsBuild;
 
 public class GitVersionMsBuildModule : IGitVersionModule

@@ -1,5 +1,4 @@
 using GitVersion.Git;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion;
 
