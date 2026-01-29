@@ -1,7 +1,6 @@
-﻿namespace GitVersion.Formatting
+﻿namespace GitVersion.Formatting;
+
+internal interface IExpressionCompiler
 {
-    internal interface IExpressionCompiler
-    {
-        Func<object, object?> CompileGetter(Type type, MemberInfo[] memberPath);
-    }
+    Func<object, object?> CompileGetter(Type type, MemberInfo[] memberPath);
 }

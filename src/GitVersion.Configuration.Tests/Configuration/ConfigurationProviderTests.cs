@@ -1,13 +1,12 @@
 using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
-using GitVersion.Configuration;
-using GitVersion.Configuration.Tests.Configuration;
+using GitVersion.Core;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
 public class ConfigurationProviderTests : TestBase

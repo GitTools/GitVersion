@@ -1,8 +1,9 @@
 using System.IO.Abstractions;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 
-namespace GitVersion.Agents.Tests;
+namespace GitVersion.BuildAgents.Tests;
 
 [TestFixture]
 public class EnvRunTests : TestBase

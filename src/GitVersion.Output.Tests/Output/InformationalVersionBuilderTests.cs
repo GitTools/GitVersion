@@ -1,6 +1,6 @@
 using GitVersion.Core.Tests.Helpers;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Output.Tests;
 
 [TestFixture]
 public class InformationalVersionBuilderTests : TestBase

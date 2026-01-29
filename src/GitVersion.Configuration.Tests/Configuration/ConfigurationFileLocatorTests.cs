@@ -1,11 +1,9 @@
 using System.IO.Abstractions;
-using GitVersion.Configuration;
-using GitVersion.Configuration.Tests.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
 public static class ConfigurationFileLocatorTests

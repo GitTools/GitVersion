@@ -1,6 +1,7 @@
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 
-namespace GitVersion.Agents.Tests;
+namespace GitVersion.BuildAgents.Tests;
 
 [TestFixture]
 public class BuildKiteTests : TestBase

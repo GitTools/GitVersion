@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 using GitVersion.Output.GitVersionInfo;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Output.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]

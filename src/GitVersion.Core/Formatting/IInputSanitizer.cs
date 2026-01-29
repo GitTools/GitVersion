@@ -1,11 +1,10 @@
-﻿namespace GitVersion.Formatting
+﻿namespace GitVersion.Formatting;
+
+internal interface IInputSanitizer
 {
-    internal interface IInputSanitizer
-    {
-        string SanitizeEnvVarName(string name);
+    string SanitizeEnvVarName(string name);
 
-        string SanitizeFormat(string format);
+    string SanitizeFormat(string format);
 
-        string SanitizeMemberName(string memberName);
-    }
+    string SanitizeMemberName(string memberName);
 }

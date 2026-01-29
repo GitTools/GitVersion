@@ -1,4 +1,4 @@
-namespace GitVersion.Configuration.Tests.Configuration;
+namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
 public class WorkflowsTests

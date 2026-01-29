@@ -4,7 +4,7 @@ using GitVersion.Output.OutputGenerator;
 using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Output.Tests;
 
 [TestFixture]
 public class FormatArgumentTests : TestBase

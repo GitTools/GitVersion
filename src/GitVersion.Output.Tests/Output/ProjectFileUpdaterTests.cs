@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using System.Xml.Linq;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -8,7 +9,7 @@ using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Output.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]

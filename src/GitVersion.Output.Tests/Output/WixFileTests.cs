@@ -6,7 +6,7 @@ using GitVersion.Logging;
 using GitVersion.Output.WixUpdater;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Output.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]

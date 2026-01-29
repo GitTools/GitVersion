@@ -2,7 +2,7 @@ using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
-namespace GitVersion.Configuration.Tests.Configuration;
+namespace GitVersion.Configuration.Tests;
 
 public static class Extensions
 {

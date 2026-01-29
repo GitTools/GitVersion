@@ -1,8 +1,7 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Mainline;
+namespace GitVersion.Core.Tests.Mainline;
 
 internal partial class MainlineScenariosWithAGitFlow
 {

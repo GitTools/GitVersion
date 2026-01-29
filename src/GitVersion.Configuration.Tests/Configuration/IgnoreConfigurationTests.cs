@@ -1,8 +1,7 @@
-using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using YamlDotNet.Core;
 
-namespace GitVersion.Core.Tests.Configuration;
+namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
 public class IgnoreConfigurationTests : TestBase

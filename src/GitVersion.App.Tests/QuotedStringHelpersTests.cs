@@ -1,6 +1,4 @@
-using GitVersion;
-
-namespace GitVersionExe.Tests;
+namespace GitVersion.App.Tests;
 
 [TestFixture]
 public class QuotedStringHelpersTests
