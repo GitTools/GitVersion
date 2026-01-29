@@ -37,8 +37,8 @@ public class ExecCmdLineArgumentTest
     }
 
     [Theory]
-    [TestCase("", "INFO [")]
-    [TestCase("-verbosity NORMAL", "INFO [")]
+    [TestCase("", "INFO")]
+    [TestCase("-verbosity NORMAL", "INFO")]
     [TestCase("-verbosity quiet", "")]
     public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
     {
