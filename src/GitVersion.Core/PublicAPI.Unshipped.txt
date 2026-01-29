@@ -1,1 +1,16 @@
 #nullable enable
+GitVersion.Extensions.CommonExtensions.extension(string?)
+GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrEmpty(string! name = "") -> string!
+GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrWhitespace(string! name = "") -> string!
+GitVersion.Extensions.StringExtensions.extension(string!)
+GitVersion.Extensions.StringExtensions.extension(string!).IsEquivalentTo(string? other) -> bool
+GitVersion.Extensions.StringExtensions.extension(string!).RegexReplace(string! pattern, string! replace) -> string!
+GitVersion.Extensions.StringExtensions.extension(string!).WithPrefixIfNotNullOrEmpty(string! prefix) -> string!
+GitVersion.Extensions.StringExtensions.extension(string?)
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrEmpty() -> bool
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrWhiteSpace() -> bool
+static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! input, string? other) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
+static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! input, string! prefix) -> string!
