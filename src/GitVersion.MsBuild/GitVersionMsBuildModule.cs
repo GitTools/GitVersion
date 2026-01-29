@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace GitVersion.MsBuild;
 
 internal class GitVersionMsBuildModule(GitVersionTaskBase task) : IGitVersionModule

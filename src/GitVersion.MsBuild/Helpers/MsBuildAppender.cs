@@ -1,6 +1,5 @@
 using GitVersion.Helpers;
 using Microsoft.Build.Utilities;
-using Microsoft.Extensions.Logging;
 
 namespace GitVersion.MsBuild;
 
@@ -11,9 +10,13 @@ internal sealed class MsBuildLoggerProvider(TaskLoggingHelper taskLog) : ILogger
 {
     public ILogger CreateLogger(string categoryName) => new MsBuildLogger(taskLog);
 
-    public void Dispose() { }
+    public void Dispose()
+    {
+        // Nothing to dispose
+    }
 }
 
+#pragma warning disable S2325
 internal sealed class MsBuildLogger(TaskLoggingHelper taskLog) : ILogger
 {
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
@@ -51,3 +54,5 @@ internal sealed class MsBuildLogger(TaskLoggingHelper taskLog) : ILogger
         }
     }
 }
+#pragma warning restore S2325
+
