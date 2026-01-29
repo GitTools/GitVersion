@@ -826,8 +826,6 @@ static GitVersion.ConfigurationInfo.operator ==(GitVersion.ConfigurationInfo? le
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyFileVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyFileVersioningScheme scheme) -> string?
 static GitVersion.Extensions.AssemblyVersionsGeneratorExtensions.GetAssemblyVersion(this GitVersion.SemanticVersion! sv, GitVersion.Configuration.AssemblyVersioningScheme scheme) -> string?
 static GitVersion.Extensions.CommonExtensions.NotNull<T>(this T? value, string! name = "") -> T!
-static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
-static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.EnumerableExtensions.AddRange<T>(this System.Collections.Generic.ICollection<T>! source, System.Collections.Generic.IEnumerable<T>! items) -> void
 static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.Collections.Generic.IEnumerable<T>! source) -> T?
 static GitVersion.Extensions.EnumerableExtensions.SingleOfType<T>(this System.Collections.IEnumerable! source) -> T

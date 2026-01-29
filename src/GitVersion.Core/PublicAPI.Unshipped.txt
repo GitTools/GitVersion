@@ -1,7 +1,4 @@
 #nullable enable
-GitVersion.Extensions.CommonExtensions.extension(string?)
-GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrEmpty(string! name = "") -> string!
-GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrWhitespace(string! name = "") -> string!
 GitVersion.Extensions.StringExtensions.extension(string!)
 GitVersion.Extensions.StringExtensions.extension(string!).IsEquivalentTo(string? other) -> bool
 GitVersion.Extensions.StringExtensions.extension(string!).RegexReplace(string! pattern, string! replace) -> string!
@@ -9,6 +6,8 @@ GitVersion.Extensions.StringExtensions.extension(string!).WithPrefixIfNotNullOrE
 GitVersion.Extensions.StringExtensions.extension(string?)
 GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrEmpty() -> bool
 GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrWhiteSpace() -> bool
+GitVersion.Extensions.StringExtensions.extension(string?).NotNullOrEmpty(string! name = "") -> string!
+GitVersion.Extensions.StringExtensions.extension(string?).NotNullOrWhitespace(string! name = "") -> string!
 GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string? AssemblySemFileVer, out string? AssemblySemVer, out string? BranchName, out string? BuildMetaData, out string? CommitDate, out string? CommitsSinceVersionSource, out string? EscapedBranchName, out string? FullBuildMetaData, out string! FullSemVer, out string? InformationalVersion, out string! Major, out string! MajorMinorPatch, out string! Minor, out string! Patch, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string! SemVer, out string? Sha, out string? ShortSha, out string? UncommittedChanges, out string? VersionSourceDistance, out string? VersionSourceIncrement, out string? VersionSourceSemVer, out string? VersionSourceSha, out string! WeightedPreReleaseNumber) -> void
 GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string? AssemblySemFileVer, string? AssemblySemVer, string? BranchName, string? BuildMetaData, string? CommitDate, string? CommitsSinceVersionSource, string? EscapedBranchName, string? FullBuildMetaData, string! FullSemVer, string? InformationalVersion, string! Major, string! MajorMinorPatch, string! Minor, string! Patch, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string? PreReleaseTag, string? PreReleaseTagWithDash, string! SemVer, string? Sha, string? ShortSha, string? UncommittedChanges, string? VersionSourceDistance, string? VersionSourceIncrement, string? VersionSourceSemVer, string? VersionSourceSha, string! WeightedPreReleaseNumber) -> void
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceDistance.get -> string?
@@ -33,5 +32,7 @@ GitVersion.VersionCalculation.IBaseVersion.Increment.get -> GitVersion.VersionFi
 static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! input, string? other) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
+static GitVersion.Extensions.StringExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! input, string! prefix) -> string!
