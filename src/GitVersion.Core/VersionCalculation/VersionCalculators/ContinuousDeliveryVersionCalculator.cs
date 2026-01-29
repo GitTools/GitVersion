@@ -9,7 +9,7 @@ internal sealed class ContinuousDeliveryVersionCalculator(
 {
     public SemanticVersion Calculate(SemanticVersion semanticVersion, IBaseVersion baseVersion)
     {
-        using (this.logger.BeginTimedOperation("Using continuous delivery workflow to calculate the incremented version."))
+        using (this.logger.StartIndentedScope("Using continuous delivery workflow to calculate the incremented version."))
         {
             var preReleaseTag = semanticVersion.PreReleaseTag;
             if (!preReleaseTag.HasTag() || !preReleaseTag.Number.HasValue)
