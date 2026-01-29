@@ -10,7 +10,7 @@ internal sealed class ManualDeploymentVersionCalculator(
 {
     public SemanticVersion Calculate(SemanticVersion semanticVersion, ICommit? baseVersionSource)
     {
-        using (this.logger.BeginTimedOperation("Using manual deployment workflow to calculate the incremented version."))
+        using (this.logger.StartIndentedScope("Using manual deployment workflow to calculate the incremented version."))
         {
             return CalculateInternal(semanticVersion, baseVersionSource);
         }
