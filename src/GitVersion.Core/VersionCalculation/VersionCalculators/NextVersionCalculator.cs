@@ -240,7 +240,7 @@ internal class NextVersionCalculator(
 
     private List<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
-        using (this.logger.BeginTimedOperation("Fetching the base versions for version calculation..."))
+        using (this.logger.StartIndentedScope("Fetching the base versions for version calculation..."))
         {
             if (branch.Tip == null)
             {
@@ -265,7 +265,7 @@ internal class NextVersionCalculator(
 
     private IEnumerable<NextVersion> GetNextVersions(EffectiveBranchConfiguration effectiveBranchConfiguration, IGitVersionConfiguration configuration)
     {
-        using (this.logger.BeginTimedOperation($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
+        using (this.logger.StartIndentedScope($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
         {
             var atLeastOneBaseVersionReturned = false;
             foreach (var versionStrategy in OrderStrategiesWithFallbackLast())
@@ -286,7 +286,7 @@ internal class NextVersionCalculator(
 
     private IEnumerable<NextVersion> GetNextVersions(IVersionStrategy versionStrategy, EffectiveBranchConfiguration effectiveBranchConfiguration, IGitVersionConfiguration configuration)
     {
-        using (this.logger.BeginTimedOperation($"[Using '{versionStrategy.GetType().Name}' strategy]"))
+        using (this.logger.StartIndentedScope($"[Using '{versionStrategy.GetType().Name}' strategy]"))
         {
             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
             {
