@@ -1,6 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 
 namespace GitVersion.App.Tests;
 
@@ -17,8 +16,7 @@ public sealed class ProgramFixture
     {
         this.workingDirectory = workingDirectory;
         var logBuilder = new StringBuilder();
-        var logAppender = new TestLogAppender(m => logBuilder.AppendLine(m));
-        ILog log = new Log(logAppender);
+        var testLoggerFactory = new TestLoggerFactory(m => logBuilder.AppendLine(m));
 
         var consoleBuilder = new StringBuilder();
         var consoleAdapter = new TestConsoleAdapter(consoleBuilder);
@@ -27,7 +25,8 @@ public sealed class ProgramFixture
 
         WithOverrides(services =>
         {
-            services.AddSingleton(log);
+            services.AddSingleton<ILoggerFactory>(testLoggerFactory);
+            services.AddSingleton(typeof(ILogger<>), typeof(TestLogger<>));
             services.AddSingleton<IConsole>(consoleAdapter);
             services.AddSingleton<IEnvironment>(this.environment);
         });
