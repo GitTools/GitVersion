@@ -1,12 +1,11 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class TeamCity(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class TeamCity(IEnvironment environment, ILogger<TeamCity> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
@@ -25,7 +24,7 @@ internal class TeamCity(IEnvironment environment, ILog log, IFileSystem fileSyst
         return base.GetCurrentBranch(usingDynamicRepos);
     }
 
-    private void WriteBranchEnvVariableWarning() => this.Log.Warning("""
+    private void WriteBranchEnvVariableWarning() => this.Logger.LogWarning("""
                                                                      TeamCity doesn't make the current branch available through environmental variables.
                                                                      Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
                                                                      In your TeamCity build configuration, add a parameter called `env.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
