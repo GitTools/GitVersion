@@ -23,7 +23,7 @@ internal class BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILogger<
             catch (Exception ex)
             {
                 var agentName = buildAgent.GetType().Name;
-                this.logger.LogWarning("Failed to check build agent '{AgentName}': {Message}", agentName, ex.Message);
+                this.logger.LogError(ex, "Failed to check build agent '{AgentName}': {Message}", agentName, ex.Message);
             }
         }
 

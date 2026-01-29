@@ -31,7 +31,7 @@ internal sealed class AssemblyInfoFileUpdater(ILogger<AssemblyInfoFileUpdater> l
     {
         var assemblyInfoFiles = GetAssemblyInfoFiles(context).ToList();
         this.logger.LogInformation("Updating assembly info files");
-        this.logger.LogInformation($"Found {assemblyInfoFiles.Count} files");
+        this.logger.LogInformation("Found {Count} files", assemblyInfoFiles.Count);
 
         var assemblyVersion = variables.AssemblySemVer;
         var assemblyVersionString = !assemblyVersion.IsNullOrWhiteSpace() ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
@@ -205,7 +205,7 @@ internal sealed class AssemblyInfoFileUpdater(ILogger<AssemblyInfoFileUpdater> l
             return true;
         }
 
-        this.logger.LogWarning($"No version assembly info template available to create source file '{fullPath}'");
+        this.logger.LogWarning("No version assembly info template available to create source file '{FullPath}'", fullPath);
         return false;
     }
 }

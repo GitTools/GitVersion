@@ -4,6 +4,7 @@ using Serilog;
 
 namespace GitVersion.Extensions;
 
+#pragma warning disable S2325, S1144
 public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection serviceCollection)
@@ -45,7 +46,7 @@ public static class ServiceCollectionExtensions
         var logger = new LoggerConfiguration()
             // Log level is dynamically controlled by LoggingEnricher.LogLevelSwitch
             .MinimumLevel.ControlledBy(LoggingEnricher.LogLevelSwitch)
-            // Add the logging enricher for dynamic log file path
+            // Add the logging enricher for a dynamic log file path
             .Enrich.With<LoggingEnricher>()
             // Add sensitive data masking for URL passwords
             .Enrich.With<SensitiveDataEnricher>()
@@ -60,12 +61,15 @@ public static class ServiceCollectionExtensions
             .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, sinkConfiguration) =>
             {
                 if (!string.IsNullOrEmpty(logFilePath) && !string.Equals(logFilePath, "console", StringComparison.OrdinalIgnoreCase))
+                {
                     sinkConfiguration.File(
                         logFilePath,
                         outputTemplate: outputTemplate,
                         formatProvider: formatProvider);
+                }
             }, 1)
             .CreateLogger();
         return logger;
     }
 }
+#pragma warning restore S2325, S1144

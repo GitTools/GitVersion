@@ -81,11 +81,11 @@ internal class ConfigurationProvider(
 
         if (!this.fileSystem.File.Exists(configFilePath))
         {
-            this.logger.LogInformation($"Configuration file '{configFilePath}' not found");
+            this.logger.LogInformation("Configuration file '{ConfigFilePath}' not found", configFilePath);
             return null;
         }
 
-        this.logger.LogInformation($"Using configuration file '{configFilePath}'");
+        this.logger.LogInformation("Using configuration file '{ConfigFilePath}'", configFilePath);
         var content = fileSystem.File.ReadAllText(configFilePath);
         return configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
     }

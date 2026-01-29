@@ -30,7 +30,7 @@ internal sealed class LoggingEnricher : ILogEventEnricher
     public const string LogFilePathPropertyName = "LogFilePath";
 
     /// <inheritdoc />
-    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propFactory)
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         LogEventProperty logFilePathProp;
 
@@ -41,7 +41,7 @@ internal sealed class LoggingEnricher : ILogEventEnricher
         else
         {
             cachedLogFilePath = logFilePath;
-            cachedLogFilePathProp = logFilePathProp = propFactory.CreateProperty(LogFilePathPropertyName, logFilePath);
+            cachedLogFilePathProp = logFilePathProp = propertyFactory.CreateProperty(LogFilePathPropertyName, logFilePath);
         }
 
         logEvent.AddPropertyIfAbsent(logFilePathProp);
@@ -83,7 +83,7 @@ internal sealed class LoggingEnricher : ILogEventEnricher
         { Verbosity.Diagnostic, LogEventLevel.Debug },
         { Verbosity.Normal, LogEventLevel.Information },
         { Verbosity.Minimal, LogEventLevel.Warning },
-        { Verbosity.Quiet, LogEventLevel.Error },
+        { Verbosity.Quiet, LogEventLevel.Error }
     };
 
     private static LogEventLevel GetLevelForLogLevel(LogLevel logLevel) => logLevel switch
@@ -93,8 +93,7 @@ internal sealed class LoggingEnricher : ILogEventEnricher
         LogLevel.Information => LogEventLevel.Information,
         LogLevel.Warning => LogEventLevel.Warning,
         LogLevel.Error => LogEventLevel.Error,
-        LogLevel.Critical => LogEventLevel.Fatal,
-        LogLevel.None => LogEventLevel.Fatal,
+        LogLevel.Critical or LogLevel.None => LogEventLevel.Fatal,
         _ => LogEventLevel.Information
     };
 }
