@@ -1,15 +1,12 @@
 using GitVersion.Extensions;
-using GitVersion.Logging;
 
 namespace GitVersion;
 
 internal class GitVersionApp(
-    ILog log,
     IHostApplicationLifetime applicationLifetime,
     IGitVersionExecutor gitVersionExecutor,
     IOptions<GitVersionOptions> options)
 {
-    private readonly ILog log = log.NotNull();
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
@@ -19,7 +16,6 @@ internal class GitVersionApp(
         try
         {
             var gitVersionOptions = this.options.Value;
-            this.log.Verbosity = gitVersionOptions.Verbosity;
             SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
         }
         catch (Exception exception)
