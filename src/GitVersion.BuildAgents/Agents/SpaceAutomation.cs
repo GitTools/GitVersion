@@ -1,10 +1,9 @@
 using System.IO.Abstractions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class SpaceAutomation(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class SpaceAutomation(IEnvironment environment, ILogger<SpaceAutomation> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public const string EnvironmentVariableName = "JB_SPACE_PROJECT_KEY";
 
