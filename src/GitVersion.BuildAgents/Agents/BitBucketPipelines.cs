@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -13,7 +12,7 @@ internal class BitBucketPipelines : BuildAgentBase
     private string? propertyFile;
     private string? ps1File;
 
-    public BitBucketPipelines(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem)
+    public BitBucketPipelines(IEnvironment environment, ILogger<BitBucketPipelines> logger, IFileSystem fileSystem) : base(environment, logger, fileSystem)
     {
         WithPropertyFile("gitversion.properties");
         WithPowershellFile("gitversion.ps1");
@@ -73,7 +72,7 @@ internal class BitBucketPipelines : BuildAgentBase
     private string? EvaluateEnvironmentVariable(string variableName)
     {
         var branchName = Environment.GetEnvironmentVariable(variableName);
-        this.Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
+        this.Logger.LogInformation("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
         return branchName;
     }
 }
