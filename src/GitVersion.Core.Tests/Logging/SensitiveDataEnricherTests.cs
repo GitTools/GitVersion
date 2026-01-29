@@ -2,6 +2,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Core.Tests;
 
+#pragma warning disable S2068
 [TestFixture]
 public class SensitiveDataEnricherTests
 {
@@ -53,3 +54,4 @@ public class SensitiveDataEnricherTests
         result.ShouldBe(text);
     }
 }
+#pragma warning restore S2068
