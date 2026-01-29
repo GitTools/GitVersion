@@ -1,4 +1,4 @@
-using GitVersion.Logging;
+using Microsoft.Extensions.Logging;
 using GitVersion.MsBuild.Tasks;
 
 namespace GitVersion.MsBuild;
@@ -12,5 +12,11 @@ internal class GitVersionMsBuildModule(GitVersionTaskBase task) : IGitVersionMod
         services.AddSingleton(Options.Create(gitVersionOptions));
         services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
         services.AddSingleton<IGitVersionTaskExecutor, GitVersionTaskExecutor>();
+        // Configure logging to use MSBuild's TaskLoggingHelper
+        services.AddLogging(builder =>
+        {
+            builder.ClearProviders();
+            builder.AddProvider(new MsBuildLoggerProvider(task.Log));
+        });
     }
 }
