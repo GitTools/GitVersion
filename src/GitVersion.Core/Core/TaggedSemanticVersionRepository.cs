@@ -44,7 +44,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
 
         IEnumerable<SemanticVersionWithTag> GetElements()
         {
-            using (this.logger.BeginTimedOperation($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
+            using (this.logger.StartIndentedScope($"Getting tagged semantic versions on branch '{branch.Name.Canonical}'. " +
                                       $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
                 var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format, ignore);
@@ -86,7 +86,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
 
         IEnumerable<(ICommit Key, SemanticVersionWithTag Value)> GetElements()
         {
-            using (this.logger.BeginTimedOperation($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
+            using (this.logger.StartIndentedScope($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
                                       $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
                 var shaHashSet = new HashSet<string>(ignore.Filter(branch.Commits.ToArray()).Select(element => element.Id.Sha));
