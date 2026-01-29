@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration.Workflows;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using YamlDotNet.Core;
 
 namespace GitVersion.Configuration;
@@ -9,14 +8,14 @@ namespace GitVersion.Configuration;
 internal class ConfigurationProvider(
     IConfigurationFileLocator configFileLocator,
     IFileSystem fileSystem,
-    ILog log,
+    ILogger<ConfigurationProvider> logger,
     IConfigurationSerializer configurationSerializer,
     IOptions<GitVersionOptions> options)
     : IConfigurationProvider
 {
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<ConfigurationProvider> logger = logger.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
@@ -76,17 +75,17 @@ internal class ConfigurationProvider(
     {
         if (configFilePath == null)
         {
-            this.log.Info("No configuration file found, using default configuration");
+            this.logger.LogInformation("No configuration file found, using default configuration");
             return null;
         }
 
         if (!this.fileSystem.File.Exists(configFilePath))
         {
-            this.log.Info($"Configuration file '{configFilePath}' not found");
+            this.logger.LogInformation($"Configuration file '{configFilePath}' not found");
             return null;
         }
 
-        this.log.Info($"Using configuration file '{configFilePath}'");
+        this.logger.LogInformation($"Using configuration file '{configFilePath}'");
         var content = fileSystem.File.ReadAllText(configFilePath);
         return configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
     }
