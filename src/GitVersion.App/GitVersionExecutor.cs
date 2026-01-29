@@ -8,7 +8,7 @@ using GitVersion.Logging;
 namespace GitVersion;
 
 internal class GitVersionExecutor(
-    ILog log,
+    ILogger<GitVersionExecutor> logger,
     IFileSystem fileSystem,
     IConsole console,
     IVersionWriter versionWriter,
@@ -22,7 +22,7 @@ internal class GitVersionExecutor(
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionExecutor
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<GitVersionExecutor> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IConsole console = console.NotNull();
     private readonly IVersionWriter versionWriter = versionWriter.NotNull();
@@ -46,8 +46,12 @@ internal class GitVersionExecutor(
 
         if (exitCode != 0)
         {
-            // Dump log to console if we fail to complete successfully
-            this.console.Write(this.log.ToString());
+            // Inform user where to find detailed logs if a log file was configured
+            var logFilePath = gitVersionOptions.LogFilePath;
+            if (!logFilePath.IsNullOrWhiteSpace() && !logFilePath.Equals("console", StringComparison.OrdinalIgnoreCase))
+            {
+                this.console.WriteLine($"See log file for more details: {logFilePath}");
+            }
         }
 
         return exitCode;
@@ -76,22 +80,22 @@ internal class GitVersionExecutor(
         }
         catch (WarningException exception)
         {
-            var error = $"An error occurred:{FileSystemHelper.Path.NewLine}{exception.Message}";
-            this.log.Warning(error);
+            this.logger.LogWarning("An error occurred: {Message}", exception.Message);
+            this.console.WriteLine($"An error occurred:{FileSystemHelper.Path.NewLine}{exception.Message}");
             return 1;
         }
         catch (Exception exception)
         {
-            var error = $"An unexpected error occurred:{FileSystemHelper.Path.NewLine}{exception}";
-            this.log.Error(error);
+            this.logger.LogError(exception, "An unexpected error occurred");
+            this.console.WriteLine($"An unexpected error occurred:{FileSystemHelper.Path.NewLine}{exception}");
 
             try
             {
-                GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
+                GitExtensions.DumpGraphLog(logMessage => this.logger.LogInformation("{LogMessage}", logMessage));
             }
             catch (Exception dumpGraphException)
             {
-                this.log.Error($"Couldn't dump the git graph due to the following error: {dumpGraphException}");
+                this.logger.LogError(dumpGraphException, "Couldn't dump the git graph");
             }
             return 1;
         }
@@ -125,21 +129,25 @@ internal class GitVersionExecutor(
             gitVersionOptions.Settings.NoCache = true;
         }
 
-        ConfigureLogging(gitVersionOptions, this.log, this.fileSystem);
+        // Configure logging with the specified log file path
+        // Console output is enabled for buildserver output mode or when -l console is specified
+        var enableConsoleOutput = gitVersionOptions.Output.Contains(OutputType.BuildServer) ||
+            string.Equals(gitVersionOptions.LogFilePath, "console", StringComparison.OrdinalIgnoreCase);
+        LoggingEnricher.Configure(gitVersionOptions.LogFilePath, gitVersionOptions.Verbosity, enableConsoleOutput);
 
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
         {
-            GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
+            GitExtensions.DumpGraphLog(logMessage => this.logger.LogInformation(logMessage));
         }
 
         if (!this.fileSystem.Directory.Exists(workingDirectory))
         {
-            this.log.Warning($"The working directory '{workingDirectory}' does not exist.");
+            this.logger.LogWarning("The working directory '{WorkingDirectory}' does not exist.", workingDirectory);
         }
         else
         {
-            this.log.Info("Working directory: " + workingDirectory);
+            this.logger.LogInformation("Working directory: {WorkingDirectory}", workingDirectory);
         }
 
         if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
@@ -157,18 +165,5 @@ internal class GitVersionExecutor(
 
         exitCode = 0;
         return false;
-    }
-
-    private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log, IFileSystem fileSystem)
-    {
-        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console")
-        {
-            log.AddLogAppender(new ConsoleAppender());
-        }
-
-        if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
-        {
-            log.AddLogAppender(new FileAppender(fileSystem, gitVersionOptions.LogFilePath));
-        }
     }
 }

@@ -3,7 +3,6 @@ using GitVersion.Agents;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion;
