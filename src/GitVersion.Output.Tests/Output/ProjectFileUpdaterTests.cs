@@ -4,7 +4,6 @@ using GitVersion.Configuration;
 using GitVersion.Core;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -17,7 +16,7 @@ public class ProjectFileUpdaterTests : TestBase
 {
     private const string TargetFramework = "net10.0";
     private IVariableProvider variableProvider;
-    private ILog log;
+    private ILogger<ProjectFileUpdater> logger;
     private IFileSystem fileSystem;
     private ProjectFileUpdater projectFileUpdater;
     private List<string> logMessages;
@@ -29,11 +28,11 @@ public class ProjectFileUpdaterTests : TestBase
         var sp = ConfigureServices();
 
         this.logMessages = [];
-        this.log = new Log(new TestLogAppender(this.logMessages.Add));
+        this.logger = new TestLogger<ProjectFileUpdater>(this.logMessages.Add);
 
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
-        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
+        this.projectFileUpdater = new ProjectFileUpdater(this.logger, this.fileSystem);
     }
 
     [TearDown]
@@ -280,7 +279,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
-            using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
+            using var projFileUpdater = new ProjectFileUpdater(this.logger, fs);
             projFileUpdater.Execute(variables, new(workingDirectory, false, fileName));
 
             var expectedXml = $"""
