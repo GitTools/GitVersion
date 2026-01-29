@@ -110,7 +110,7 @@ internal class GitPreparer(
 
         var gitDirectory = this.repositoryInfo.DynamicGitRepositoryPath;
 
-        using (this.logger.BeginTimedOperation($"Creating dynamic repository at '{gitDirectory}'"))
+        using (this.logger.StartIndentedScope($"Creating dynamic repository at '{gitDirectory}'"))
         {
             var gitVersionOptions = this.options.Value;
             var authentication = gitVersionOptions.AuthenticationInfo;
@@ -131,7 +131,7 @@ internal class GitPreparer(
 
     private void NormalizeGitDirectory(string? targetBranch, bool isDynamicRepository)
     {
-        using (this.logger.BeginTimedOperation($"Normalizing git directory for branch '{targetBranch}'"))
+        using (this.logger.StartIndentedScope($"Normalizing git directory for branch '{targetBranch}'"))
         {
             // Normalize (download branches) before using the branch
             NormalizeGitDirectory(this.options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
@@ -140,7 +140,7 @@ internal class GitPreparer(
 
     private void CloneRepository(string? repositoryUrl, string? gitDirectory, AuthenticationInfo auth)
     {
-        using (this.logger.BeginTimedOperation($"Cloning repository from url '{repositoryUrl}'"))
+        using (this.logger.StartIndentedScope($"Cloning repository from url '{repositoryUrl}'"))
         {
             this.retryAction.Execute(() => this.repository.Clone(repositoryUrl, gitDirectory, auth));
         }

@@ -41,7 +41,8 @@ public static class ServiceCollectionExtensions
 
     private static Serilog.Core.Logger CreateLogger()
     {
-        const string outputTemplate = "{Level:u4} [{Timestamp:yy-MM-dd HH:mm:ss:ff}] {Message:lj}{NewLine}{Exception}";
+        // Output template includes {Indent} for visual nesting of scoped operations
+        const string outputTemplate = "{Level:u4} [{Timestamp:yy-MM-dd HH:mm:ss:ff}] {Indent}{Message:lj}{NewLine}{Exception}";
         var formatProvider = CultureInfo.InvariantCulture;
         var logger = new LoggerConfiguration()
             // Log level is dynamically controlled by LoggingEnricher.LogLevelSwitch
@@ -50,6 +51,8 @@ public static class ServiceCollectionExtensions
             .Enrich.With<LoggingEnricher>()
             // Add sensitive data masking for URL passwords
             .Enrich.With<SensitiveDataEnricher>()
+            // Add indentation for scoped operations (BeginTimedOperation)
+            .Enrich.With<IndentationEnricher>()
             // Console output with timestamp - controlled by IsConsoleEnabled flag
             .WriteTo.Conditional(
                 _ => LoggingEnricher.IsConsoleEnabled,
