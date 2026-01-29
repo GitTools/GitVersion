@@ -1,13 +1,12 @@
 using GitVersion.Common;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
 internal abstract class VersionCalculatorBase(
-    ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    ILogger logger, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
 {
-    protected readonly ILog log = log.NotNull();
+    protected readonly ILogger logger = logger.NotNull();
     protected readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
 
@@ -22,7 +21,7 @@ internal abstract class VersionCalculatorBase(
         );
 
         var commitsSinceTag = commitLogs.Count;
-        this.log.Info($"{commitsSinceTag} commits found between {baseVersion.BaseVersionSource} and {Context.CurrentCommit}");
+        this.logger.LogInformation("{CommitsSinceTag} commits found between {BaseVersionSource} and {CurrentCommit}", commitsSinceTag, baseVersion.BaseVersionSource, Context.CurrentCommit);
 
         var shortSha = Context.CurrentCommit.Id.ToString(7);
         return new SemanticVersionBuildMetaData(
