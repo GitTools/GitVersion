@@ -2,7 +2,6 @@ using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 
@@ -49,7 +48,7 @@ public class BuildServerBaseTests : TestBase
         writes.ShouldNotContain(x => x != null && x.StartsWith("Set Build Number for "));
     }
 
-    private class BuildAgent(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+    private class BuildAgent(IEnvironment environment, ILogger<BuildAgent> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
     {
         protected override string EnvironmentVariable => throw new NotImplementedException();
 
