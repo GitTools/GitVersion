@@ -1,10 +1,9 @@
 using System.IO.Abstractions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class LocalBuild(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class LocalBuild(IEnvironment environment, ILogger<LocalBuild> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public override bool IsDefault => true;
 

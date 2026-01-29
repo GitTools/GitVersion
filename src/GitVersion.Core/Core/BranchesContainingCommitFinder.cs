@@ -4,10 +4,10 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, ILog log)
+internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, ILogger logger)
 {
-    private readonly ILog log = log.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
+    private readonly ILogger logger = logger.NotNull();
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
@@ -21,15 +21,15 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
 
     private IEnumerable<IBranch> InnerGetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch> branches, bool onlyTrackedBranches)
     {
-        using (this.log.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
+        using (this.logger.BeginTimedOperation($"Getting branches containing the commit '{commit.Id}'."))
         {
             var directBranchHasBeenFound = false;
-            this.log.Info("Trying to find direct branches.");
+            this.logger.LogInformation("Trying to find direct branches.");
             var branchList = branches.ToList();
             foreach (var branch in branchList.Where(branch => BranchTipIsNullOrCommit(branch, commit) && !IncludeTrackedBranches(branch, onlyTrackedBranches)))
             {
                 directBranchHasBeenFound = true;
-                this.log.Info($"Direct branch found: '{branch}'.");
+                this.logger.LogInformation("Direct branch found: '{Branch}'.", branch);
                 yield return branch;
             }
 
@@ -38,20 +38,20 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
                 yield break;
             }
 
-            this.log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
+            this.logger.LogInformation("No direct branches found, searching through {BranchType} branches.", onlyTrackedBranches ? "tracked" : "all");
             foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
             {
-                this.log.Info($"Searching for commits reachable from '{branch}'.");
+                this.logger.LogInformation("Searching for commits reachable from '{Branch}'.", branch);
 
                 var commits = this.repositoryStore.GetCommitsReacheableFrom(commit, branch);
 
                 if (!commits.Any())
                 {
-                    this.log.Info($"The branch '{branch}' has no matching commits.");
+                    this.logger.LogInformation("The branch '{Branch}' has no matching commits.", branch);
                     continue;
                 }
 
-                this.log.Info($"The branch '{branch}' has a matching commit.");
+                this.logger.LogInformation("The branch '{Branch}' has a matching commit.", branch);
                 yield return branch;
             }
         }
