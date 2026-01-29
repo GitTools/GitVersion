@@ -160,7 +160,7 @@ public static class GitRepositoryTestingExtensions
         {
             repository ??= fixture.Repository;
 
-            var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch);
             variables.FullSemVer.ShouldBe(fullSemver);
             if (commitId == null)
             {
