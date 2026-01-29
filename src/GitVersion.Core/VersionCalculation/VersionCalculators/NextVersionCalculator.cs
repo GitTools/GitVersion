@@ -230,7 +230,7 @@ internal class NextVersionCalculator(
 
     private List<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
-        using (this.logger.BeginTimedOperation("Fetching the base versions for version calculation..."))
+        using (this.logger.StartIndentedScope("Fetching the base versions for version calculation..."))
         {
             if (branch.Tip == null)
                 throw new GitVersionException("No commits found on the current branch.");
@@ -243,7 +243,7 @@ internal class NextVersionCalculator(
             var effectiveBranchConfigurations = this.effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration).ToArray();
             foreach (var effectiveBranchConfiguration in effectiveBranchConfigurations)
             {
-                using (this.logger.BeginTimedOperation($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
+                using (this.logger.StartIndentedScope($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
                 {
                     var strategies = this.versionStrategies.ToList();
                     var fallbackVersionStrategy = strategies.Find(element => element is FallbackVersionStrategy);
@@ -258,7 +258,7 @@ internal class NextVersionCalculator(
                     {
                         if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
 
-                        using (this.logger.BeginTimedOperation($"[Using '{versionStrategy.GetType().Name}' strategy]"))
+                        using (this.logger.StartIndentedScope($"[Using '{versionStrategy.GetType().Name}' strategy]"))
                         {
                             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                             {

@@ -24,7 +24,7 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILogger logger)
             return mergeBase;
         }
 
-        using (this.logger.BeginTimedOperation($"Finding merge base between '{first}' and '{second}'."))
+        using (this.logger.StartIndentedScope($"Finding merge base between '{first}' and '{second}'."))
         {
             // Other branch tip is a forward merge
             var commitToFindCommonBase = second.Tip;
