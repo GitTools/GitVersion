@@ -35,7 +35,7 @@ internal class GitVersionCacheProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Unable to write cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, ex.GetType().FullName);
+                this.logger.LogError(ex, "Unable to write cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, ex.GetType().FullName);
             }
         }
     }
@@ -59,15 +59,14 @@ internal class GitVersionCacheProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning("Unable to read cache file {CacheFileName}, deleting it.", cacheFileName);
-                this.logger.LogInformation("{Exception}", ex.ToString());
+                this.logger.LogError(ex, "Unable to read cache file {CacheFileName}, deleting it.", cacheFileName);
                 try
                 {
                     this.fileSystem.File.Delete(cacheFileName);
                 }
                 catch (Exception deleteEx)
                 {
-                    this.logger.LogWarning("Unable to delete corrupted version cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, deleteEx.GetType().FullName);
+                    this.logger.LogError(deleteEx, "Unable to delete corrupted version cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, deleteEx.GetType().FullName);
                 }
 
                 return null;
