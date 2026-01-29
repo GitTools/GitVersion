@@ -59,11 +59,11 @@ internal sealed class ProjectFileUpdater(ILogger<ProjectFileUpdater> logger, IFi
 
         if (!CanUpdateProjectFile(fileXml))
         {
-            this.logger.LogWarning($"Unable to update file: {localProjectFile}");
+            this.logger.LogWarning("Unable to update file: {LocalProjectFile}", localProjectFile);
             return;
         }
 
-        this.logger.LogDebug($"Update file: {localProjectFile}");
+        this.logger.LogDebug("Update file: {LocalProjectFile}", localProjectFile);
 
         var backupProjectFile = localProjectFile + ".bak";
         this.fileSystem.File.Copy(localProjectFile, backupProjectFile, true);
@@ -116,10 +116,18 @@ internal sealed class ProjectFileUpdater(ILogger<ProjectFileUpdater> logger, IFi
         }
 
         var sdkAttribute = xmlRoot.Attribute("Sdk");
-        if (sdkAttribute?.Value.StartsWith("Microsoft.NET.Sdk") != true &&
-            sdkAttribute?.Value.StartsWith("Microsoft.Build.Sql") != true)
+        if (sdkAttribute != null)
         {
-            this.logger.LogWarning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+            var sdkAttributeValue = sdkAttribute.Value;
+            if (!sdkAttributeValue.StartsWith("Microsoft.NET.Sdk") && !sdkAttributeValue.StartsWith("Microsoft.Build.Sql"))
+            {
+                this.logger.LogWarning("Specified project file Sdk ({SdkAttributeValue}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'", sdkAttributeValue);
+                return false;
+            }
+        }
+        else
+        {
+            this.logger.LogWarning("Project file does not specify a Sdk attribute, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
             return false;
         }
 
@@ -197,7 +205,7 @@ internal sealed class ProjectFileUpdater(ILogger<ProjectFileUpdater> logger, IFi
                 }
                 else
                 {
-                    this.logger.LogWarning($"Specified file {fullPath} was not found and will not be updated.");
+                    this.logger.LogWarning("Specified file {FullPath} was not found and will not be updated.", fullPath);
                 }
             }
         }
