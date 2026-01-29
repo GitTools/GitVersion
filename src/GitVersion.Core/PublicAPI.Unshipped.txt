@@ -1,1 +1,37 @@
 #nullable enable
+GitVersion.Extensions.CommonExtensions.extension(string?)
+GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrEmpty(string! name = "") -> string!
+GitVersion.Extensions.CommonExtensions.extension(string?).NotNullOrWhitespace(string! name = "") -> string!
+GitVersion.Extensions.StringExtensions.extension(string!)
+GitVersion.Extensions.StringExtensions.extension(string!).IsEquivalentTo(string? other) -> bool
+GitVersion.Extensions.StringExtensions.extension(string!).RegexReplace(string! pattern, string! replace) -> string!
+GitVersion.Extensions.StringExtensions.extension(string!).WithPrefixIfNotNullOrEmpty(string! prefix) -> string!
+GitVersion.Extensions.StringExtensions.extension(string?)
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrEmpty() -> bool
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrWhiteSpace() -> bool
+GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string? AssemblySemFileVer, out string? AssemblySemVer, out string? BranchName, out string? BuildMetaData, out string? CommitDate, out string? CommitsSinceVersionSource, out string? EscapedBranchName, out string? FullBuildMetaData, out string! FullSemVer, out string? InformationalVersion, out string! Major, out string! MajorMinorPatch, out string! Minor, out string! Patch, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string! SemVer, out string? Sha, out string? ShortSha, out string? UncommittedChanges, out string? VersionSourceDistance, out string? VersionSourceIncrement, out string? VersionSourceSemVer, out string? VersionSourceSha, out string! WeightedPreReleaseNumber) -> void
+GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string? AssemblySemFileVer, string? AssemblySemVer, string? BranchName, string? BuildMetaData, string? CommitDate, string? CommitsSinceVersionSource, string? EscapedBranchName, string? FullBuildMetaData, string! FullSemVer, string? InformationalVersion, string! Major, string! MajorMinorPatch, string! Minor, string! Patch, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string? PreReleaseTag, string? PreReleaseTagWithDash, string! SemVer, string? Sha, string? ShortSha, string? UncommittedChanges, string? VersionSourceDistance, string? VersionSourceIncrement, string? VersionSourceSemVer, string? VersionSourceSha, string! WeightedPreReleaseNumber) -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceDistance.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceDistance.init -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.init -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.init -> void
+GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, System.DateTimeOffset? commitDate, long numberOfUnCommittedChanges, GitVersion.VersionField versionSourceIncrement, string? otherMetadata = null) -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.get -> long
+GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.init -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceIncrement.get -> GitVersion.VersionField
+GitVersion.SemanticVersionBuildMetaData.VersionSourceIncrement.init -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.get -> GitVersion.SemanticVersion?
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.init -> void
+GitVersion.SemanticVersionFormatValues.VersionSourceDistance.get -> string!
+GitVersion.SemanticVersionFormatValues.VersionSourceIncrement.get -> string!
+GitVersion.SemanticVersionFormatValues.VersionSourceSemVer.get -> string?
+GitVersion.VersionCalculation.BaseVersion.Increment.get -> GitVersion.VersionField
+GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion) -> GitVersion.SemanticVersion!
+GitVersion.VersionCalculation.IBaseVersion.Increment.get -> GitVersion.VersionField
+static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! input, string? other) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
+static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! input, string! prefix) -> string!
