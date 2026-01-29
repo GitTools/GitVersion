@@ -23,7 +23,7 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
 
     private IEnumerable<IBranch> InnerGetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch> branches, bool onlyTrackedBranches)
     {
-        using (this.logger.BeginTimedOperation($"Getting branches containing the commit '{commit.Id}'."))
+        using (this.logger.StartIndentedScope($"Getting branches containing the commit '{commit.Id}'."))
         {
             var directBranchHasBeenFound = false;
             this.logger.LogInformation("Trying to find direct branches.");
