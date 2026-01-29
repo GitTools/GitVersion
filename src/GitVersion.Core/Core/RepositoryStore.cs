@@ -174,7 +174,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
     {
         branch = branch.NotNull();
 
-        using (this.logger.BeginTimedOperation($"Finding branch source of '{branch}'"))
+        using (this.logger.StartIndentedScope($"Finding branch source of '{branch}'"))
         {
             if (branch.Tip == null)
             {
@@ -272,7 +272,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
     private List<BranchCommit> FindCommitBranchesBranchedFrom(
         IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
-        using (this.logger.BeginTimedOperation($"Finding branches source of '{branch}'"))
+        using (this.logger.StartIndentedScope($"Finding branches source of '{branch}'"))
         {
             if (branch.Tip != null) return [.. new MergeCommitFinder(this, configuration, excludedBranches, logger).FindMergeCommitsFor(branch)];
             this.logger.LogWarning("Branch {Branch} has no tip.", branch);

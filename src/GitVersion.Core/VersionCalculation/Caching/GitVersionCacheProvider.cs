@@ -27,7 +27,7 @@ internal class GitVersionCacheProvider(
     {
         var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
-        using (this.logger.BeginTimedOperation($"Write version variables to cache file {cacheFileName}"))
+        using (this.logger.StartIndentedScope($"Write version variables to cache file {cacheFileName}"))
         {
             try
             {
@@ -44,7 +44,7 @@ internal class GitVersionCacheProvider(
     {
         var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
-        using (this.logger.BeginTimedOperation($"Loading version variables from disk cache file {cacheFileName}"))
+        using (this.logger.StartIndentedScope($"Loading version variables from disk cache file {cacheFileName}"))
         {
             if (!this.fileSystem.File.Exists(cacheFileName))
             {
