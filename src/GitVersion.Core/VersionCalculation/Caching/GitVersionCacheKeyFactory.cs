@@ -54,7 +54,7 @@ internal class GitVersionCacheKeyFactory(
         var packedRefsPath = FileSystemHelper.Path.Combine(dotGitDirectory, "packed-refs");
         AddFileContents([packedRefsPath], contents);
 
-        return GetHash([.. contents]);
+        return GetHash(contents);
     }
 
     // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
@@ -121,14 +121,9 @@ internal class GitVersionCacheKeyFactory(
         // choice of which exceptions to catch depends entirely on the specific task
         // you are intending to perform and also on how much you know with certainty
         // about the systems on which this code will run.
-        catch (UnauthorizedAccessException e)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException)
         {
-            this.logger.LogError(e, "{Message}", e.Message);
-            return null;
-        }
-        catch (DirectoryNotFoundException e)
-        {
-            this.logger.LogError(e, "{Message}", e.Message);
+            this.logger.LogError(ex, "{Message}", ex.Message);
             return null;
         }
     }
@@ -139,14 +134,9 @@ internal class GitVersionCacheKeyFactory(
         {
             return this.fileSystem.Directory.GetFiles(currentDir);
         }
-        catch (UnauthorizedAccessException e)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException)
         {
-            this.logger.LogError(e, "{Message}", e.Message);
-            return null;
-        }
-        catch (DirectoryNotFoundException e)
-        {
-            this.logger.LogError(e, "{Message}", e.Message);
+            this.logger.LogError(ex, "{Message}", ex.Message);
             return null;
         }
     }
@@ -216,7 +206,7 @@ internal class GitVersionCacheKeyFactory(
         return GetHash(configFileContent);
     }
 
-    private static string GetHash(params string[] textsToHash)
+    private static string GetHash(params IEnumerable<string> textsToHash)
     {
         var textToHash = string.Join(":", textsToHash);
         return GetHash(textToHash);
