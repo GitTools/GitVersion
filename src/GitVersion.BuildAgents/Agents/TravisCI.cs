@@ -1,10 +1,9 @@
 using System.IO.Abstractions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class TravisCi(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class TravisCi(IEnvironment environment, ILogger<TravisCi> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public const string EnvironmentVariableName = "TRAVIS";
     protected override string EnvironmentVariable => EnvironmentVariableName;
