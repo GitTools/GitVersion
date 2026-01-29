@@ -2,6 +2,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Logging;
 
+#pragma warning disable S2325, S1144
 /// <summary>
 /// Extension methods for <see cref="ILogger"/> to provide GitVersion-specific logging functionality.
 /// </summary>
@@ -42,3 +43,5 @@ internal static class LoggerExtensions
         }
     }
 }
+#pragma warning restore S2325, S1144
+

@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 namespace GitVersion.Extensions;
 
 /// <summary>Extension methods on <see cref="string"/> and <see cref="StringBuilder"/> for common string manipulations.</summary>
+#pragma warning disable S2325, S1144, S4136, S1199
 public static class StringExtensions
 {
     /// <summary>Appends a formatted line (format + newline) to the <see cref="StringBuilder"/>.</summary>
@@ -41,6 +42,7 @@ public static class StringExtensions
         public bool IsNullOrWhiteSpace() => string.IsNullOrWhiteSpace(value);
     }
 
+#pragma warning disable S108
     extension([NotNull] string? value)
     {
         /// <summary>Throws <see cref="ArgumentException"/> when <paramref name="value"/> is <see langword="null"/> or empty; otherwise returns the value.</summary>
@@ -65,6 +67,7 @@ public static class StringExtensions
             return value;
         }
     }
+#pragma warning restore S108
 
     internal static string ToPascalCase(this TextInfo textInfo, string input)
     {
@@ -91,3 +94,4 @@ public static class StringExtensions
         return sb.ToString();
     }
 }
+#pragma warning restore S2325, S1144, S4136, S1199

@@ -94,7 +94,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         this.logMessages.ShouldNotBeEmpty();
         this.logMessages.Count.ShouldBe(1);
-        this.logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+        this.logMessages[0].ShouldContain("Project file does not specify a Sdk attribute, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""

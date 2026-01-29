@@ -49,7 +49,7 @@ internal class ConfigurationFileLocator(
         var customConfigurationFile = GetCustomConfigurationFilePathIfEligable(directoryPath);
         if (!string.IsNullOrWhiteSpace(customConfigurationFile))
         {
-            this.logger.LogInformation($"Found configuration file at '{customConfigurationFile}'");
+            this.logger.LogInformation("Found configuration file at '{CustomConfigurationFile}'", customConfigurationFile);
             return customConfigurationFile;
         }
 
@@ -61,14 +61,14 @@ internal class ConfigurationFileLocator(
         var files = this.fileSystem.Directory.GetFiles(directoryPath);
         foreach (var fileName in this.SupportedConfigFileNames)
         {
-            this.logger.LogDebug($"Trying to find configuration file {fileName} at '{directoryPath}'");
+            this.logger.LogDebug("Trying to find configuration file {FileName} at '{DirectoryPath}'", fileName, directoryPath);
             var matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
-if (matchingFile == null)
+            if (matchingFile == null)
             {
                 continue;
             }
 
-            this.logger.LogInformation($"Found configuration file at '{matchingFile}'");
+            this.logger.LogInformation("Found configuration file at '{MatchingFile}'", matchingFile);
             return matchingFile;
         }
 
