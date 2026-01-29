@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.Tests;
@@ -14,7 +13,7 @@ namespace GitVersion.Output.Tests;
 public class AssemblyInfoFileUpdaterTests : TestBase
 {
     private IVariableProvider variableProvider = null!;
-    private ILog log = null!;
+    private ILogger<AssemblyInfoFileUpdater> logger = null!;
     private IFileSystem fileSystem = null!;
     private string workingDir = null!;
 
@@ -31,7 +30,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         var sp = ConfigureServices();
 
-        this.log = sp.GetRequiredService<ILog>();
+        this.logger = sp.GetRequiredService<ILogger<AssemblyInfoFileUpdater>>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
@@ -47,7 +46,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
 
         this.fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
@@ -64,7 +63,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
 
         this.fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
@@ -78,7 +77,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFiles = new HashSet<string> { "AssemblyInfo." + fileExtension, FileSystemHelper.Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension) };
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, [.. assemblyInfoFiles]));
 
         foreach (var item in assemblyInfoFiles)
@@ -99,7 +98,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
         this.fileSystem.File.Exists(fullPath).ShouldBeFalse();
@@ -116,7 +115,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
 
         this.fileSystem.Received(1).File.WriteAllText(fullPath, Arg.Any<string>());
@@ -132,7 +131,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
         );
 
-        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
+        using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, [.. assemblyInfoFiles]));
 
         this.fileSystem.Received(1).Directory.EnumerateFiles(Arg.Is(this.workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
@@ -148,7 +147,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -169,7 +168,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             assemblyFileContent = fs.File.ReadAllText(fileName);
@@ -187,7 +186,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -208,7 +207,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -229,7 +228,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -250,7 +249,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -274,7 +273,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -295,7 +294,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -316,7 +315,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -337,7 +336,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -358,7 +357,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             fs.Received().File.WriteAllText(fileName, Arg.Is<string>(s =>
@@ -379,7 +378,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             assemblyFileContent = fs.File.ReadAllText(fileName);
@@ -397,7 +396,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             assemblyFileContent = fs.File.ReadAllText(fileName);
@@ -415,7 +414,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, (fs, variables) =>
         {
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, fs);
             assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
 
             assemblyFileContent = fs.File.ReadAllText(fileName);
