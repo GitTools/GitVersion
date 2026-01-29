@@ -1,7 +1,6 @@
 using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Tests;
@@ -19,11 +18,8 @@ public class VariableProviderTests : TestBase
 
         this.logMessages = [];
 
-        var sp = ConfigureServices(services =>
-        {
-            var log = new Log(new TestLogAppender(this.logMessages.Add));
-            services.AddSingleton<ILog>(log);
-        });
+        var loggerFactory = new TestLoggerFactory(this.logMessages.Add);
+        var sp = ConfigureServices(services => loggerFactory.RegisterWith(services));
 
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
