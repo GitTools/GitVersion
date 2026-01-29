@@ -1,5 +1,4 @@
 using GitVersion.Agents;
-using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
 
 namespace GitVersion.MsBuild;
@@ -42,13 +41,10 @@ internal static class GitVersionTasks
         return !taskLog.HasLoggedErrors;
     }
 
-    private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
+    private static void Configure(IServiceProvider sp)
     {
-        var log = sp.GetRequiredService<ILog>();
         var buildAgent = sp.GetRequiredService<ICurrentBuildAgent>();
         var gitVersionOptions = sp.GetRequiredService<IOptions<GitVersionOptions>>().Value;
-
-        log.AddLogAppender(new MsBuildAppender(task.Log));
 
         if (buildAgent is not LocalBuild)
         {
@@ -64,7 +60,7 @@ internal static class GitVersionTasks
         MsBuildHost.RegisterGitVersionModules(services, task);
 
         var sp = services.BuildServiceProvider();
-        Configure(sp, task);
+        Configure(sp);
 
         return sp;
     }
