@@ -6,9 +6,9 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositoryStore
+internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository) : IRepositoryStore
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<RepositoryStore> logger = logger.NotNull();
     private readonly IGitRepository repository = repository.NotNull();
 
     public int UncommittedChangesCount => this.repository.UncommittedChangesCount();
@@ -24,7 +24,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     /// </summary>
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
     {
-        var mergeBaseFinder = new MergeBaseFinder(this, this.log);
+        var mergeBaseFinder = new MergeBaseFinder(this, this.logger);
         return mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
     }
 
@@ -38,7 +38,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         ICommit? currentCommit = null;
         if (!commitId.IsNullOrWhiteSpace())
         {
-            this.log.Info($"Searching for specific commit '{commitId}'");
+            this.logger.LogInformation("Searching for specific commit '{CommitId}'", commitId);
 
             var commit = this.repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
             if (commit != null)
@@ -47,7 +47,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             }
             else
             {
-                this.log.Warning($"Commit '{commitId}' specified but not found");
+                this.logger.LogWarning("Commit '{CommitId}' specified but not found", commitId);
             }
         }
 
@@ -58,7 +58,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         }
         else
         {
-            this.log.Info("Using latest commit on specified branch");
+            this.logger.LogInformation("Using latest commit on specified branch");
         }
 
         commits = ignore.Filter(commits.ToArray());
@@ -103,7 +103,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     {
         commit.NotNull();
 
-        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this, this.log);
+        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this, this.logger);
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
@@ -206,16 +206,16 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     {
         branch = branch.NotNull();
 
-        using (this.log.IndentLog($"Finding branch source of '{branch}'"))
+        using (this.logger.BeginTimedOperation($"Finding branch source of '{branch}'"))
         {
             if (branch.Tip == null)
             {
-                this.log.Warning($"{branch} has no tip.");
+                this.logger.LogWarning("Branch {Branch} has no tip.", branch);
                 return BranchCommit.Empty;
             }
 
             var possibleBranches =
-                new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                new MergeCommitFinder(this, configuration, excludedBranches, this.logger)
                     .FindMergeCommitsFor(branch)
                     .ToList();
 
@@ -225,9 +225,11 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             }
 
             var first = possibleBranches[0];
-            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{FileSystemHelper.Path.NewLine}" +
-                          $"This may result in incorrect commit counting.{FileSystemHelper.Path.NewLine}Options were:{FileSystemHelper.Path.NewLine}" +
-                          string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
+            this.logger.LogInformation(
+                "Multiple source branches have been found, picking the first one ({Branch}).{NewLine}" +
+                "This may result in incorrect commit counting.{NewLine}Options were:{NewLine}{Options}",
+                first.Branch, FileSystemHelper.Path.NewLine, FileSystemHelper.Path.NewLine, FileSystemHelper.Path.NewLine,
+                string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
             return first;
         }
     }
@@ -298,14 +300,14 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     private List<BranchCommit> FindCommitBranchesBranchedFrom(
         IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
-        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
+        using (this.logger.BeginTimedOperation($"Finding branches source of '{branch}'"))
         {
             if (branch.Tip != null)
             {
-                return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch)];
+                return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.logger).FindMergeCommitsFor(branch)];
             }
 
-            this.log.Warning($"{branch} has no tip.");
+            this.logger.LogWarning("Branch {Branch} has no tip.", branch);
             return [];
         }
     }
