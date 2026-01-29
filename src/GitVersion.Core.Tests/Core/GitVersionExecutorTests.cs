@@ -5,10 +5,10 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation.Caching;
 using LibGit2Sharp;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace GitVersion.Core.Tests;
 
@@ -17,7 +17,6 @@ namespace GitVersion.Core.Tests;
 public class GitVersionExecutorTests : TestBase
 {
     private IFileSystem fileSystem;
-    private ILog log;
     private GitVersionCacheProvider gitVersionCacheProvider;
     private IServiceProvider sp;
 
@@ -133,15 +132,15 @@ public class GitVersionExecutorTests : TestBase
     {
         var stringBuilder = new StringBuilder();
 
-        var logAppender = new TestLogAppender(Action);
-        this.log = new Log(logAppender);
+        void Action(string s) => stringBuilder.AppendLine(s);
+        var testLoggerFactory = new TestLoggerFactory(Action);
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
-        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
+        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, testLoggerFactory);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
@@ -157,9 +156,6 @@ public class GitVersionExecutorTests : TestBase
         var logsMessages = stringBuilder.ToString();
 
         logsMessages.ShouldContain("Loading version variables from disk cache file", Case.Insensitive, logsMessages);
-        return;
-
-        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [Test]
@@ -169,7 +165,7 @@ public class GitVersionExecutorTests : TestBase
         fixture.Repository.MakeACommit();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
-        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
+        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
@@ -202,23 +198,20 @@ public class GitVersionExecutorTests : TestBase
     {
         var stringBuilder = new StringBuilder();
 
-        var logAppender = new TestLogAppender(Action);
-        this.log = new Log(logAppender);
+        void Action(string s) => stringBuilder.AppendLine(s);
+        var testLoggerFactory = new TestLoggerFactory(Action);
 
         using var fixture = new EmptyRepositoryFixture();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
         fixture.Repository.MakeACommit();
-        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log, fixture.Repository.ToGitRepository());
+        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, testLoggerFactory, fixture.Repository.ToGitRepository());
 
         gitVersionCalculator.CalculateVersionVariables();
 
         var logsMessages = stringBuilder.ToString();
         logsMessages.ShouldMatch("(?s).*Cache file.*(?-s) not found.*");
-        return;
-
-        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [TestCase(ConfigurationFileLocator.DefaultFileName)]
@@ -590,12 +583,11 @@ public class GitVersionExecutorTests : TestBase
         return worktreePath;
     }
 
-    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog? logger = null, IGitRepository? repository = null, IFileSystem? fs = null)
+    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILoggerFactory? loggerFactory = null, IGitRepository? repository = null, IFileSystem? fs = null)
     {
-        this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
+        this.sp = GetServiceProvider(gitVersionOptions, loggerFactory, repository, fs);
 
         this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
-        this.log = this.sp.GetRequiredService<ILog>();
         this.gitVersionCacheProvider = (GitVersionCacheProvider)this.sp.GetRequiredService<IGitVersionCacheProvider>();
 
         sp.DiscoverRepository();
@@ -603,7 +595,7 @@ public class GitVersionExecutorTests : TestBase
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
 
-    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null, IGitRepository? repository = null, IFileSystem? fileSystem = null, IEnvironment? environment = null) =>
+    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILoggerFactory? loggerFactory = null, IGitRepository? repository = null, IFileSystem? fileSystem = null, IEnvironment? environment = null) =>
         ConfigureServices(services =>
         {
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
@@ -612,7 +604,14 @@ public class GitVersionExecutorTests : TestBase
                 var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
                 return new Lazy<GitVersionContext>(() => contextFactory.Create());
             });
-            if (log != null) services.AddSingleton(log);
+            if (loggerFactory != null)
+            {
+                services.RemoveAll<ILoggerFactory>();
+                services.RemoveAll(typeof(ILogger<>));
+                services.AddSingleton(loggerFactory);
+                // Register ILogger<T> to use the factory
+                services.Add(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(LoggerFromFactory<>)));
+            }
             if (fileSystem != null) services.AddSingleton(fileSystem);
             if (repository != null) services.AddSingleton(repository);
             if (environment != null) services.AddSingleton(environment);
@@ -624,4 +623,17 @@ public class GitVersionExecutorTests : TestBase
                 return new GitRepositoryInfo(fs, options);
             });
         });
+
+    /// <summary>
+    /// A wrapper that creates ILogger{T} from ILoggerFactory.
+    /// </summary>
+    private sealed class LoggerFromFactory<T>(ILoggerFactory factory) : ILogger<T>
+    {
+        private readonly ILogger inner = factory.CreateLogger(typeof(T).FullName ?? typeof(T).Name);
+
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => this.inner.BeginScope(state);
+        public bool IsEnabled(LogLevel logLevel) => this.inner.IsEnabled(logLevel);
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            => this.inner.Log(logLevel, eventId, state, exception, formatter);
+    }
 }

@@ -1,5 +1,4 @@
 using GitVersion.Helpers;
-using GitVersion.Logging;
 
 namespace GitVersion.Core.Tests.Helpers;
 
