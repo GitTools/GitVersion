@@ -52,9 +52,9 @@ internal class GitVersionCalculateTool(
         {
             this.gitVersionCacheProvider.WriteVariablesToDiskCache(versionVariables);
         }
-        catch (AggregateException e)
+        catch (AggregateException ex)
         {
-            this.logger.LogWarning("One or more exceptions during cache write:{NewLine}{Exception}", FileSystemHelper.Path.NewLine, e);
+            this.logger.LogError(ex, "One or more exceptions during cache write:{NewLine}", FileSystemHelper.Path.NewLine);
         }
 
         return versionVariables;

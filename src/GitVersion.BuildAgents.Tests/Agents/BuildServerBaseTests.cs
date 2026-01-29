@@ -48,7 +48,7 @@ public class BuildServerBaseTests : TestBase
         writes.ShouldNotContain(x => x != null && x.StartsWith("Set Build Number for "));
     }
 
-    private class BuildAgent(IEnvironment environment, ILogger<BuildAgent> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
+    private sealed class BuildAgent(IEnvironment environment, ILogger<BuildAgent> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
     {
         protected override string EnvironmentVariable => throw new NotImplementedException();
 

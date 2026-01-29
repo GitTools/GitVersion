@@ -14,7 +14,7 @@ internal partial class GitRepository(ILogger<GitRepository> logger) : IMutatingG
         try
         {
             var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-            this.logger.LogInformation($"Returned path after repository clone: {path}");
+            this.logger.LogInformation("Returned path after repository clone: {Path}", path);
         }
         catch (LibGit2Sharp.LockedFileException ex)
         {
@@ -60,21 +60,21 @@ internal partial class GitRepository(ILogger<GitRepository> logger) : IMutatingG
         var reference = GetPullRequestReference(auth, remote, headTipSha);
         var canonicalName = reference.CanonicalName;
         var referenceName = ReferenceName.Parse(reference.CanonicalName);
-        this.logger.LogInformation($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+        this.logger.LogInformation("Found remote tip '{CanonicalName}' pointing at the commit '{HeadTipSha}'.", canonicalName, headTipSha);
 
         if (referenceName.IsTag)
         {
-            this.logger.LogInformation($"Checking out tag '{canonicalName}'");
+            this.logger.LogInformation("Checking out tag '{CanonicalName}'", canonicalName);
             Checkout(reference.Target.Sha);
         }
         else if (referenceName.IsPullRequest)
         {
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-            this.logger.LogInformation($"Creating fake local branch '{fakeBranchName}'.");
+            this.logger.LogInformation("Creating fake local branch '{FakeBranchName}'.", fakeBranchName);
             References.Add(fakeBranchName, headTipSha);
 
-            this.logger.LogInformation($"Checking local branch '{fakeBranchName}' out.");
+            this.logger.LogInformation("Checking local branch '{FakeBranchName}' out.", fakeBranchName);
             Checkout(fakeBranchName);
         }
         else

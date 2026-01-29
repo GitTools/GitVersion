@@ -80,7 +80,7 @@ public class ExecCmdLineArgumentTest
     {
         using var fixture = new EmptyRepositoryFixture();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, null, false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " /l console", false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();

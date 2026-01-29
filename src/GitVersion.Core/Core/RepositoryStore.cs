@@ -2,7 +2,6 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -193,9 +192,13 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
             var first = possibleBranches[0];
             this.logger.LogInformation(
-                "Multiple source branches have been found, picking the first one ({Branch}).{NewLine}" +
-                "This may result in incorrect commit counting.{NewLine}Options were:{NewLine}{Options}",
-                first.Branch, FileSystemHelper.Path.NewLine, FileSystemHelper.Path.NewLine, FileSystemHelper.Path.NewLine,
+                """
+                Multiple source branches have been found, picking the first one ({Branch}).
+                This may result in incorrect commit counting.
+                Options were:
+                {Options}
+                """,
+                first.Branch,
                 string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
             return first;
         }
