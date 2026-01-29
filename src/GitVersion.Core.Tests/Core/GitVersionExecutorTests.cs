@@ -656,11 +656,11 @@ public class GitVersionExecutorTests : TestBase
     /// </summary>
     private sealed class LoggerFromFactory<T>(ILoggerFactory factory) : ILogger<T>
     {
-        private readonly ILogger inner = factory.CreateLogger(typeof(T).FullName ?? typeof(T).Name);
+        private readonly ILogger logger = factory.CreateLogger(typeof(T).FullName ?? typeof(T).Name);
 
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => this.inner.BeginScope(state);
-        public bool IsEnabled(LogLevel logLevel) => this.inner.IsEnabled(logLevel);
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => this.logger.BeginScope(state);
+        public bool IsEnabled(LogLevel logLevel) => this.logger.IsEnabled(logLevel);
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-            => this.inner.Log(logLevel, eventId, state, exception, formatter);
+            => this.logger.Log(logLevel, eventId, state, exception, formatter);
     }
 }

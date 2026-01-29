@@ -5,6 +5,7 @@ using GitVersion.Core;
 
 namespace GitVersion.Extensions;
 
+#pragma warning disable S2325, S1144, S4136, S1199
 public static class StringExtensions
 {
     public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
@@ -37,6 +38,7 @@ public static class StringExtensions
         public bool IsNullOrWhiteSpace() => string.IsNullOrWhiteSpace(value);
     }
 
+#pragma warning disable S108
     extension([NotNull] string? value)
     {
         public string NotNullOrEmpty([CallerArgumentExpression(nameof(value))] string name = "")
@@ -59,6 +61,7 @@ public static class StringExtensions
             return value;
         }
     }
+#pragma warning restore S108
 
     internal static string ToPascalCase(this TextInfo textInfo, string input)
     {
@@ -85,3 +88,4 @@ public static class StringExtensions
         return sb.ToString();
     }
 }
+#pragma warning restore S2325, S1144, S4136, S1199
