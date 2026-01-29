@@ -12,25 +12,29 @@ public static class StringExtensions
         stringBuilder.AppendLine();
     }
 
-    public static string RegexReplace(this string input, string pattern, string replace)
+    extension(string input)
     {
-        var regex = RegexPatterns.Cache.GetOrAdd(pattern);
-        return regex.Replace(input, replace);
+        public string RegexReplace(string pattern, string replace)
+        {
+            var regex = RegexPatterns.Cache.GetOrAdd(pattern);
+            return regex.Replace(input, replace);
+        }
+
+        public bool IsEquivalentTo(string? other) =>
+            string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
+
+        public string WithPrefixIfNotNullOrEmpty(string prefix)
+            => string.IsNullOrEmpty(input) ? input : prefix + input;
     }
 
-    public static bool IsEquivalentTo(this string self, string? other) =>
-        string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
+    extension([NotNullWhen(false)] string? value)
+    {
+        /// <inheritdoc cref="string.IsNullOrEmpty"/>
+        public bool IsNullOrEmpty() => string.IsNullOrEmpty(value);
 
-    /// <inheritdoc cref="string.IsNullOrEmpty"/>
-    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? value) => string.IsNullOrEmpty(value);
-
-    /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
-    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
-
-    public static bool IsEmpty([NotNullWhen(false)] this string? value) => string.Empty.Equals(value);
-
-    public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
-        => string.IsNullOrEmpty(value) ? value : prefix + value;
+        /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
+        public bool IsNullOrWhiteSpace() => string.IsNullOrWhiteSpace(value);
+    }
 
     internal static string ToPascalCase(this TextInfo textInfo, string input)
     {
