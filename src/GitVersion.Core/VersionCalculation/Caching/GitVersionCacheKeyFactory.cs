@@ -5,13 +5,12 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.Caching;
 
 internal class GitVersionCacheKeyFactory(
     IFileSystem fileSystem,
-    ILog log,
+    ILogger<GitVersionCacheKeyFactory> logger,
     IOptions<GitVersionOptions> options,
     IConfigurationFileLocator configFileLocator,
     IConfigurationSerializer configurationSerializer,
@@ -19,8 +18,8 @@ internal class GitVersionCacheKeyFactory(
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
 {
+    private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
@@ -87,12 +86,12 @@ internal class GitVersionCacheKeyFactory(
             // about the systems on which this code will run.
             catch (UnauthorizedAccessException e)
             {
-                this.log.Error(e.Message);
+                this.logger.LogError(e, "{Message}", e.Message);
                 continue;
             }
             catch (DirectoryNotFoundException e)
             {
-                this.log.Error(e.Message);
+                this.logger.LogError(e, "{Message}", e.Message);
                 continue;
             }
 
@@ -103,12 +102,12 @@ internal class GitVersionCacheKeyFactory(
             }
             catch (UnauthorizedAccessException e)
             {
-                this.log.Error(e.Message);
+                this.logger.LogError(e, "{Message}", e.Message);
                 continue;
             }
             catch (DirectoryNotFoundException e)
             {
-                this.log.Error(e.Message);
+                this.logger.LogError(e, "{Message}", e.Message);
                 continue;
             }
 
@@ -122,7 +121,7 @@ internal class GitVersionCacheKeyFactory(
                 }
                 catch (IOException e)
                 {
-                    this.log.Error(e.Message);
+                    this.logger.LogError(e, "{Message}", e.Message);
                 }
             }
 
