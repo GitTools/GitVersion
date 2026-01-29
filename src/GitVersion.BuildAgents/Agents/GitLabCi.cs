@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -9,7 +8,7 @@ internal class GitLabCi : BuildAgentBase
     public const string EnvironmentVariableName = "GITLAB_CI";
     private string? file;
 
-    public GitLabCi(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem) => WithPropertyFile("gitversion.properties");
+    public GitLabCi(IEnvironment environment, ILogger<GitLabCi> logger, IFileSystem fileSystem) : base(environment, logger, fileSystem) => WithPropertyFile("gitversion.properties");
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 

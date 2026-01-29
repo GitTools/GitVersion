@@ -1,11 +1,10 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class GitHubActions(IEnvironment environment, ILogger<GitHubActions> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 
