@@ -77,14 +77,18 @@ internal class GitVersionExecutor(
         }
         catch (WarningException exception)
         {
-            this.logger.LogWarning("An error occurred: {Message}", exception.Message);
-            this.console.WriteLine($"An error occurred:{FileSystemHelper.Path.NewLine}{exception.Message}");
+            this.logger.LogError(exception, """
+                                            An error occurred:
+                                            {Message}
+                                            """, exception.Message);
             return 1;
         }
         catch (Exception exception)
         {
-            this.logger.LogError(exception, "An unexpected error occurred");
-            this.console.WriteLine($"An unexpected error occurred:{FileSystemHelper.Path.NewLine}{exception}");
+            this.logger.LogError(exception, """
+                                            An unexpected error occurred:
+                                            {ExceptionMessage}
+                                            """, exception.Message);
 
             try
             {
@@ -111,11 +115,7 @@ internal class GitVersionExecutor(
             gitVersionOptions.Settings.NoCache = true;
         }
 
-        // Configure logging with the specified log file path
-        // Console output is enabled for buildserver output mode or when -l console is specified
-        var enableConsoleOutput = gitVersionOptions.Output.Contains(OutputType.BuildServer) ||
-            string.Equals(gitVersionOptions.LogFilePath, "console", StringComparison.OrdinalIgnoreCase);
-        LoggingEnricher.Configure(gitVersionOptions.LogFilePath, gitVersionOptions.Verbosity, enableConsoleOutput);
+        ConfigureLogging(gitVersionOptions);
 
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
@@ -145,5 +145,12 @@ internal class GitVersionExecutor(
         var configurationString = this.configurationSerializer.Serialize(configuration);
         this.console.WriteLine(configurationString);
         return true;
+    }
+
+    private static void ConfigureLogging(GitVersionOptions gitVersionOptions)
+    {
+        var enableConsoleOutput = gitVersionOptions.Output.Contains(OutputType.BuildServer)
+                                  || string.Equals(gitVersionOptions.LogFilePath, "console", StringComparison.OrdinalIgnoreCase);
+        LoggingEnricher.Configure(gitVersionOptions.LogFilePath, gitVersionOptions.Verbosity, enableConsoleOutput);
     }
 }

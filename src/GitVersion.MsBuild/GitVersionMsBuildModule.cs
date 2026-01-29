@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using GitVersion.MsBuild.Tasks;
 
 namespace GitVersion.MsBuild;
