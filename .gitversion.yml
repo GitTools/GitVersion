@@ -1,3 +1,4 @@
+# $schema: https://gitversion.net/schemas/6.4/GitVersion.configuration.json
 workflow: GitFlow/v1
 mode: ManualDeployment
 branches:
