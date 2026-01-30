@@ -278,8 +278,8 @@ internal sealed class MainlineVersionStrategy(
     private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
         IBranch branch, params IBranch[] excludedBranches)
     {
-        // Create cache key from branch name and excluded branches
-        var cacheKey = $"{branch.Name}|{string.Join(",", excludedBranches.Select(b => b.Name).OrderBy(n => n))}";
+        // Create cache key from canonical branch name and canonical excluded branch names
+        var cacheKey = $"{branch.Name.Canonical}|{string.Join(",", excludedBranches.Select(b => b.Name.Canonical).OrderBy(n => n))}";
 
         // Return cached result if available
         if (this.commitsWasBranchedFromCache.TryGetValue(cacheKey, out var cachedResult))
