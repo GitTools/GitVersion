@@ -11,22 +11,19 @@ internal static class CliHost
     {
         var builder = Host.CreateApplicationBuilder(args);
 
-        builder.Services.AddModule(new GitVersionCoreModule());
-        builder.Services.AddModule(new GitVersionLibGit2SharpModule());
-        builder.Services.AddModule(new GitVersionBuildAgentsModule());
-        builder.Services.AddModule(new GitVersionConfigurationModule());
-        builder.Services.AddModule(new GitVersionOutputModule());
-        builder.Services.AddModule(new GitVersionAppModule());
-
-        builder.Services.AddSingleton(sp =>
-        {
-            var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args);
-            var gitVersionOptions = arguments.ToOptions();
-            return Options.Create(gitVersionOptions);
-        });
-
-        builder.Services.AddSingleton<GitVersionApp>();
+        RegisterGitVersionModules(builder.Services, args);
 
         return builder;
+    }
+
+    private static void RegisterGitVersionModules(IServiceCollection services, string[] args)
+    {
+        services.AddModule(new GitVersionCoreModule());
+        services.AddModule(new GitVersionBuildAgentsModule());
+        services.AddModule(new GitVersionConfigurationModule());
+        services.AddModule(new GitVersionOutputModule());
+
+        services.AddModule(new GitVersionLibGit2SharpModule());
+        services.AddModule(new GitVersionAppModule(args));
     }
 }

@@ -1,9 +1,6 @@
 using GitVersion.Agents;
-using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
-using GitVersion.Output;
 
 namespace GitVersion.MsBuild;
 
@@ -64,18 +61,7 @@ internal static class GitVersionTasks
     {
         var services = new ServiceCollection();
 
-        var gitVersionOptions = new GitVersionOptions
-        {
-            WorkingDirectory = task.SolutionDirectory
-        };
-
-        services.AddSingleton(Options.Create(gitVersionOptions));
-        services.AddModule(new GitVersionConfigurationModule());
-        services.AddModule(new GitVersionCoreModule());
-        services.AddModule(new GitVersionBuildAgentsModule());
-        services.AddModule(new GitVersionOutputModule());
-        services.AddModule(new GitVersionMsBuildModule());
-        services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
+        MsBuildHost.RegisterGitVersionModules(services, task);
 
         var sp = services.BuildServiceProvider();
         Configure(sp, task);

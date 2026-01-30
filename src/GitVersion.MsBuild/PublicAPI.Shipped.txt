@@ -1,7 +1,4 @@
 #nullable enable
-GitVersion.MsBuild.GitVersionMsBuildModule
-GitVersion.MsBuild.GitVersionMsBuildModule.GitVersionMsBuildModule() -> void
-GitVersion.MsBuild.GitVersionMsBuildModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.MsBuild.GitVersionTaskBase
 GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.get -> Microsoft.Build.Framework.IBuildEngine!
 GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.set -> void
