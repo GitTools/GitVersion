@@ -310,7 +310,7 @@ internal sealed class MainlineVersionStrategy(
 
                 // Fix: Just add the item once instead of duplicating for each existing item
                 // The original logic caused exponential growth: 1→2→4→8→16 with multiple branches
-                if (branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch)
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch).GetValueOrDefault())
                 {
                     value.Add(new(item, branchConfiguration));
                 }
