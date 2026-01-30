@@ -21,6 +21,7 @@ internal sealed class MainlineVersionStrategy(
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -277,6 +278,15 @@ internal sealed class MainlineVersionStrategy(
     private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
         IBranch branch, params IBranch[] excludedBranches)
     {
+        // Create cache key from branch name and excluded branches
+        var cacheKey = $"{branch.Name}|{string.Join(",", excludedBranches.Select(b => b.Name).OrderBy(n => n))}";
+
+        // Return cached result if available
+        if (this.commitsWasBranchedFromCache.TryGetValue(cacheKey, out var cachedResult))
+        {
+            return cachedResult;
+        }
+
         Dictionary<ICommit, List<(IBranch, IBranchConfiguration Configuration)>> result = [];
 
         var branchCommits = repositoryStore.FindCommitBranchesBranchedFrom(
@@ -298,8 +308,9 @@ internal sealed class MainlineVersionStrategy(
                     throw new InvalidOperationException();
                 }
 
-                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) != true) continue;
-                foreach (var _ in value.ToArray())
+                // Fix: Just add the item once instead of duplicating for each existing item
+                // The original logic caused exponential growth: 1→2→4→8→16 with multiple branches
+                if ((branchConfiguration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)
                 {
                     value.Add(new(item, branchConfiguration));
                 }
@@ -315,6 +326,10 @@ internal sealed class MainlineVersionStrategy(
         {
             result[item.Key] = [.. item.Value.OrderByDescending(element => (element.Configuration.IsMainBranch ?? Context.Configuration.IsMainBranch) == true)];
         }
+
+        // Cache the result for future calls
+        this.commitsWasBranchedFromCache[cacheKey] = result;
+
         return result;
     }
 
