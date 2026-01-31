@@ -23,9 +23,6 @@ internal class VersionVariablesJsonModel
     [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
     public int? CommitsSinceVersionSource { get; set; }
 
-    [JsonPropertyDescription("The number of commits since the version source.")]
-    public int? VersionSourceDistance { get; set; }
-
     [JsonPropertyDescription("Equal to BranchName, but with / replaced with -.")]
     public string? EscapedBranchName { get; set; }
 
@@ -76,6 +73,9 @@ internal class VersionVariablesJsonModel
 
     [JsonPropertyDescription("The number of uncommitted changes present in the repository.")]
     public int? UncommittedChanges { get; set; }
+
+    [JsonPropertyDescription("The number of commits since the version source.")]
+    public int? VersionSourceDistance { get; set; }
 
     [JsonPropertyDescription("The SHA of the commit used as version source.")]
     public string? VersionSourceSha { get; set; }

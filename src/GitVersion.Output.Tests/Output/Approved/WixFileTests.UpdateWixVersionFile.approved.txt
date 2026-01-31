@@ -24,5 +24,6 @@
   <?define ShortSha="commitShortSha"?>
   <?define UncommittedChanges="0"?>
   <?define VersionSourceSha="versionSourceSha"?>
+  <?define VersionSourceDistance="5"?>
   <?define WeightedPreReleaseNumber="0"?>
 </Include>
