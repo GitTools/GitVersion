@@ -20,6 +20,7 @@ type GitVersionInformation =
     static member BuildMetaData = "5"
     static member CommitDate = "2014-03-06"
     static member CommitsSinceVersionSource = "5"
+    static member CustomVersion = "1.2.3-unstable.4"
     static member EscapedBranchName = "feature1"
     static member FullBuildMetaData = "5.Branch.feature1.Sha.commitSha"
     static member FullSemVer = "1.2.3-unstable.4+5"

@@ -519,6 +519,12 @@ Specifies the format of `AssemblyInformationalVersion`.
 Follows the same formatting semantics as `assembly-file-versioning-format`.
 The default value is `{InformationalVersion}`.
 
+### custom-version-format
+
+Specifies the format of `CustomVersion`.
+Follows the same formatting semantics as `assembly-file-versioning-format`.
+The default value is `{SemVer}`.
+
 ### mode
 
 Sets the `mode` of how GitVersion should create a new version. Read more at
