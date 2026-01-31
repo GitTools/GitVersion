@@ -73,6 +73,9 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of uncommitted changes present in the repository.")]
     public int? UncommittedChanges { get; set; }
 
+    [JsonPropertyDescription("The semantic version of the commit used as version source.")]
+    public string? VersionSourceSemVer { get; set; }
+
     [JsonPropertyDescription("The SHA of the commit used as version source.")]
     public string? VersionSourceSha { get; set; }
 

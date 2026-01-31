@@ -23,6 +23,7 @@
   <?define Sha="commitSha"?>
   <?define ShortSha="commitShortSha"?>
   <?define UncommittedChanges="0"?>
+  <?define VersionSourceSemVer="1.2.3"?>
   <?define VersionSourceSha="versionSourceSha"?>
   <?define WeightedPreReleaseNumber="0"?>
 </Include>

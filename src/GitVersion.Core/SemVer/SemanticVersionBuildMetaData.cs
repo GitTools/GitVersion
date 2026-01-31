@@ -24,6 +24,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public DateTimeOffset? CommitDate { get; init; }
 
+    public SemanticVersion? VersionSourceSemVer { get; init; }
+
     public string? VersionSourceSha { get; init; }
 
     public long CommitsSinceVersionSource { get; init; }
@@ -61,6 +63,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
         this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
+        this.VersionSourceSemVer = buildMetaData.VersionSourceSemVer;
     }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionBuildMetaData);

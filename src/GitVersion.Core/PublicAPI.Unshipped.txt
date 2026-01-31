@@ -1,1 +1,6 @@
 #nullable enable
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.get -> GitVersion.SemanticVersion?
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.init -> void
+GitVersion.SemanticVersionFormatValues.VersionSourceSemVer.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.init -> void

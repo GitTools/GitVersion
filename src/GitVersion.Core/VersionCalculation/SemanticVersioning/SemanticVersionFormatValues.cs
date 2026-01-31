@@ -52,6 +52,8 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string InformationalVersion => semver.ToString("i");
 
+    public string? VersionSourceSemVer => semver.BuildMetaData.VersionSourceSemVer?.ToString() ?? $"{semver.Major}.{semver.Minor}.{semver.Patch}";
+
     public string? VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 
     public string CommitsSinceVersionSource => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture);

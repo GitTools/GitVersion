@@ -1,1 +1,3 @@
 #nullable enable
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSemVer.set -> void
