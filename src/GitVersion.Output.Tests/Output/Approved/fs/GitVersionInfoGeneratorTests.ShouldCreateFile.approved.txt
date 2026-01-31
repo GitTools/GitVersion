@@ -38,4 +38,5 @@ type GitVersionInformation =
     static member ShortSha = "commitShortSha"
     static member UncommittedChanges = "0"
     static member VersionSourceSha = "versionSourceSha"
+    public const string VersionSourceDistance = "5";
     static member WeightedPreReleaseNumber = "4"
