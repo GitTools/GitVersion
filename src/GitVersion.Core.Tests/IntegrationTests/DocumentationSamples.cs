@@ -382,6 +382,7 @@ public class DocumentationSamples : TestBase
         // test that the CommitsSinceVersionSource should still return commit count
         var version = fixture.GetVersion();
         version.CommitsSinceVersionSource.ShouldBe("0");
+        version.VersionSourceDistance.ShouldBe("0");
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
