@@ -23,7 +23,9 @@ public record GitVersionVariables(string Major,
                                   string? InformationalVersion,
                                   string? CommitDate,
                                   string? VersionSourceSha,
+                                  [property: Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
                                   string? CommitsSinceVersionSource,
+                                  string? VersionSourceDistance,
                                   string? UncommittedChanges) : IEnumerable<KeyValuePair<string, string?>>
 {
     internal static readonly List<string> AvailableVariables =
@@ -52,6 +54,7 @@ public record GitVersionVariables(string Major,
         nameof(CommitDate),
         nameof(VersionSourceSha),
         nameof(CommitsSinceVersionSource),
+        nameof(VersionSourceDistance),
         nameof(UncommittedChanges)
     ];
 
@@ -81,6 +84,7 @@ public record GitVersionVariables(string Major,
         { nameof(CommitDate), CommitDate },
         { nameof(VersionSourceSha), VersionSourceSha },
         { nameof(CommitsSinceVersionSource), CommitsSinceVersionSource },
+        { nameof(VersionSourceDistance), VersionSourceDistance },
         { nameof(UncommittedChanges), UncommittedChanges }
     };
 
