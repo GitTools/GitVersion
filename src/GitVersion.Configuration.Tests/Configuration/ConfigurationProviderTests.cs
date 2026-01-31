@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using GitVersion.Core;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Tests;
@@ -280,14 +279,13 @@ public class ConfigurationProviderTests : TestBase
 
         var stringLogger = string.Empty;
 
-        var logAppender = new TestLogAppender(Action);
-        var log = new Log(logAppender);
+        var loggerFactory = new TestLoggerFactory(message => stringLogger = message);
 
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services =>
         {
             services.AddSingleton(options);
-            services.AddSingleton<ILog>(log);
+            loggerFactory.RegisterWith(services);
         });
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
@@ -295,9 +293,6 @@ public class ConfigurationProviderTests : TestBase
 
         var filePath = FileSystemHelper.Path.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
         stringLogger.ShouldContain($"Using configuration file '{filePath}'");
-        return;
-
-        void Action(string info) => stringLogger = info;
     }
 
     [Test]
