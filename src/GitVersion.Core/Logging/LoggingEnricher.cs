@@ -47,31 +47,16 @@ internal sealed class LoggingEnricher : ILogEventEnricher
         logEvent.AddPropertyIfAbsent(logFilePathProp);
     }
 
-    /// <summary>
-    /// Configures the logging enricher with the specified log file path and verbosity.
-    /// </summary>
-    /// <param name="logFile">The log file path, or null to disable file logging.</param>
-    /// <param name="verbosity">The verbosity level.</param>
-    /// <param name="enableConsoleOutput">Whether to enable console output. When false, console output is suppressed.</param>
-    public static void Configure(string? logFile, Verbosity verbosity, bool enableConsoleOutput = true)
+    public static void Configure(GitVersionOptions gitVersionOptions)
     {
-        if (!string.IsNullOrWhiteSpace(logFile))
-            logFilePath = logFile;
-        LogLevelSwitch.MinimumLevel = GetLevelForVerbosity(verbosity);
-        IsConsoleEnabled = enableConsoleOutput;
-    }
+        var enableConsoleOutput = gitVersionOptions.Output.Contains(OutputType.BuildServer)
+                                  || string.Equals(gitVersionOptions.LogFilePath, "console", StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// Configures the logging enricher with the specified log file path and log level.
-    /// </summary>
-    /// <param name="logFile">The log file path, or null to disable file logging.</param>
-    /// <param name="logLevel">The Microsoft.Extensions.Logging log level.</param>
-    /// <param name="enableConsoleOutput">Whether to enable console output. When false, console output is suppressed.</param>
-    public static void Configure(string? logFile, LogLevel logLevel, bool enableConsoleOutput = true)
-    {
-        if (!string.IsNullOrWhiteSpace(logFile))
-            logFilePath = logFile;
-        LogLevelSwitch.MinimumLevel = GetLevelForLogLevel(logLevel);
+        if (!string.IsNullOrWhiteSpace(gitVersionOptions.LogFilePath))
+        {
+            logFilePath = gitVersionOptions.LogFilePath;
+        }
+        LogLevelSwitch.MinimumLevel = GetLevelForVerbosity(gitVersionOptions.Verbosity);
         IsConsoleEnabled = enableConsoleOutput;
     }
 
@@ -84,16 +69,5 @@ internal sealed class LoggingEnricher : ILogEventEnricher
         { Verbosity.Normal, LogEventLevel.Information },
         { Verbosity.Minimal, LogEventLevel.Warning },
         { Verbosity.Quiet, LogEventLevel.Error }
-    };
-
-    private static LogEventLevel GetLevelForLogLevel(LogLevel logLevel) => logLevel switch
-    {
-        LogLevel.Trace => LogEventLevel.Verbose,
-        LogLevel.Debug => LogEventLevel.Debug,
-        LogLevel.Information => LogEventLevel.Information,
-        LogLevel.Warning => LogEventLevel.Warning,
-        LogLevel.Error => LogEventLevel.Error,
-        LogLevel.Critical or LogLevel.None => LogEventLevel.Fatal,
-        _ => LogEventLevel.Information
     };
 }
