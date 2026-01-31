@@ -24,9 +24,4 @@
         <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
     </ItemGroup>
-    
-    <!-- Override CI build setting to fix Shouldly approval tests - must be after all imports -->
-    <PropertyGroup>
-        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
-    </PropertyGroup>
 </Project>

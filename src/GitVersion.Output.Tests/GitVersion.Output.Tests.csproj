@@ -4,9 +4,4 @@
         <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
-    
-    <!-- Override CI build setting to fix Shouldly approval tests - must be after all imports -->
-    <PropertyGroup>
-        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
-    </PropertyGroup>
 </Project>
