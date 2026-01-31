@@ -3,7 +3,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 
 namespace GitVersion;
 
@@ -133,8 +132,6 @@ internal class GitVersionExecutor(
             gitVersionOptions.Settings.NoCache = true;
         }
 
-        ConfigureLogging(gitVersionOptions);
-
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
         {
@@ -165,12 +162,5 @@ internal class GitVersionExecutor(
 
         exitCode = 0;
         return false;
-    }
-
-    private static void ConfigureLogging(GitVersionOptions gitVersionOptions)
-    {
-        var enableConsoleOutput = gitVersionOptions.Output.Contains(OutputType.BuildServer)
-                                  || string.Equals(gitVersionOptions.LogFilePath, "console", StringComparison.OrdinalIgnoreCase);
-        LoggingEnricher.Configure(gitVersionOptions.LogFilePath, gitVersionOptions.Verbosity, enableConsoleOutput);
     }
 }
