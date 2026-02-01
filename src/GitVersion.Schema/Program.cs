@@ -29,7 +29,8 @@ if (!Directory.Exists(Path.Combine(schemasDirectory, schemaVersion)))
 }
 
 var builder = new JsonSchemaBuilder();
-builder.Schema("http://json-schema.org/draft-07/schema#");
+const string jsonSchemaUri = "https://json-schema.org/draft-07/schema#";
+builder.Schema(jsonSchemaUri);
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.configuration.json");
 builder.Title($"GitVersion Configuration ({schemaVersion})");
 builder.Description($"GitVersion configuration schema ({schemaVersion})");
@@ -42,7 +43,7 @@ schema.WriteToFile(fileName);
 configuration.PropertyNameResolver = PropertyNameResolvers.AsDeclared;
 
 builder = new();
-builder.Schema("http://json-schema.org/draft-07/schema#");
+builder.Schema(jsonSchemaUri);
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.json");
 builder.Title("GitVersion version variables output");
 builder.Description("GitVersion output schema");
