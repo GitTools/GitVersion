@@ -245,3 +245,19 @@ dotnet test --filter "FullyQualifiedName=GitVersion.Core.Tests.MyTest"
 # Build with warnings as errors
 dotnet build ./src/GitVersion.slnx -warnaserror
 ```
+
+## Public API Management
+
+This repository uses [Microsoft.CodeAnalysis.PublicApiAnalyzers](https://github.com/dotnet/roslyn-analyzers/blob/main/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md) to track public API surface.
+
+### Rules
+
+- **`PublicAPI.Unshipped.txt`**: All new or modified public APIs go here
+- **`PublicAPI.Shipped.txt`**: Only deletions are allowed; never add or modify entries directly
+
+### Workflow
+
+1. When adding new public APIs, they automatically get flagged and should be added to `PublicAPI.Unshipped.txt`
+2. When modifying existing APIs, move the old entry from `PublicAPI.Shipped.txt` to `PublicAPI.Unshipped.txt` (marked as removed) and add the new signature to `PublicAPI.Unshipped.txt`
+3. Only remove entries from `PublicAPI.Shipped.txt` when an API is being deleted
+4. During release, unshipped APIs get moved to shipped via the `mark-shipped.ps1` script
