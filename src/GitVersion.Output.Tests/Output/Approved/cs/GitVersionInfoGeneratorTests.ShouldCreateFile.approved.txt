@@ -35,6 +35,7 @@ static class GitVersionInformation
     public const string Sha = "commitSha";
     public const string ShortSha = "commitShortSha";
     public const string UncommittedChanges = "0";
+    public const string VersionSourceDistance = "5";
     public const string VersionSourceSha = "versionSourceSha";
     public const string WeightedPreReleaseNumber = "4";
 }

@@ -74,7 +74,11 @@ public class GetVersion : GitVersionTaskBase
     public string VersionSourceSha { get; set; }
 
     [Output]
+    [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
     public string CommitsSinceVersionSource { get; set; }
+
+    [Output]
+    public string VersionSourceDistance { get; set; }
 
     [Output]
     public string UncommittedChanges { get; set; }

@@ -20,6 +20,7 @@ internal class VersionVariablesJsonModel
     public string? CommitDate { get; set; }
 
     [JsonPropertyDescription("The number of commits since the version source.")]
+    [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
     public int? CommitsSinceVersionSource { get; set; }
 
     [JsonPropertyDescription("Equal to BranchName, but with / replaced with -.")]
@@ -75,6 +76,9 @@ internal class VersionVariablesJsonModel
 
     [JsonPropertyDescription("The SHA of the commit used as version source.")]
     public string? VersionSourceSha { get; set; }
+
+    [JsonPropertyDescription("The number of commits since the version source.")]
+    public int? VersionSourceDistance { get; set; }
 
     [JsonPropertyDescription("A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches.")]
     public int? WeightedPreReleaseNumber { get; set; }
