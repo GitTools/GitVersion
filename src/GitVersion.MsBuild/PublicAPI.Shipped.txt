@@ -70,8 +70,6 @@ GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.set -> void
-GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.get -> string!
-GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.WeightedPreReleaseNumber.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.WeightedPreReleaseNumber.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo

@@ -1,1 +1,3 @@
 #nullable enable
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.set -> void
