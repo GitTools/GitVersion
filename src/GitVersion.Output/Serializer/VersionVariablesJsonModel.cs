@@ -74,11 +74,11 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of uncommitted changes present in the repository.")]
     public int? UncommittedChanges { get; set; }
 
-    [JsonPropertyDescription("The SHA of the commit used as version source.")]
-    public string? VersionSourceSha { get; set; }
-
     [JsonPropertyDescription("The number of commits since the version source.")]
     public int? VersionSourceDistance { get; set; }
+
+    [JsonPropertyDescription("The SHA of the commit used as version source.")]
+    public string? VersionSourceSha { get; set; }
 
     [JsonPropertyDescription("A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches.")]
     public int? WeightedPreReleaseNumber { get; set; }
