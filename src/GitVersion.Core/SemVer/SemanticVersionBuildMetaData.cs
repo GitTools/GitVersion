@@ -28,6 +28,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public long CommitsSinceVersionSource { get; init; }
 
+    public long VersionSourceDistance { get; init; }
+
     public long UncommittedChanges { get; init; }
 
     public SemanticVersionBuildMetaData()
@@ -45,6 +47,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.OtherMetaData = otherMetadata;
         this.VersionSourceSha = versionSourceSha;
         this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
+        this.VersionSourceDistance = commitsSinceTag ?? 0;
         this.UncommittedChanges = numberOfUnCommittedChanges;
     }
 
@@ -60,6 +63,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.OtherMetaData = buildMetaData.OtherMetaData;
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
         this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
+        this.VersionSourceDistance = buildMetaData.VersionSourceDistance;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
     }
 
@@ -138,6 +142,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         {
             CommitsSinceTag = buildMetaDataCommitsSinceTag,
             CommitsSinceVersionSource = buildMetaDataCommitsSinceVersionSource ?? 0,
+            VersionSourceDistance = buildMetaDataCommitsSinceVersionSource ?? 0,
             Branch = buildMetaDataBranch,
             Sha = buildMetaDataSha,
             OtherMetaData = buildMetaDataOtherMetaData

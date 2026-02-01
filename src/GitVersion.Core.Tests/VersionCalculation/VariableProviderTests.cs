@@ -256,6 +256,13 @@ public class VariableProviderTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
+
+        // Test with VersionSourceDistance
+        var configurationWithVersionSourceDistance = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{VersionSourceDistance}.Branch.{BranchName}.Sha.{ShortSha}")
+            .Build();
+        var variablesWithVersionSourceDistance = this.variableProvider.GetVariablesFor(semanticVersion, configurationWithVersionSourceDistance, preReleaseWeight);
+        variablesWithVersionSourceDistance.InformationalVersion.ShouldBe(variables.InformationalVersion);
     }
 
     [Test]
@@ -313,5 +320,13 @@ public class VariableProviderTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.InformationalVersion.ShouldBe("1.2.3-0042");
+
+        // Test with VersionSourceDistance
+        var configurationWithVersionSourceDistance = GitFlowConfigurationBuilder.New
+            .WithTagPreReleaseWeight(0)
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}")
+            .Build();
+        var variablesWithVersionSourceDistance = this.variableProvider.GetVariablesFor(semanticVersion, configurationWithVersionSourceDistance, preReleaseWeight);
+        variablesWithVersionSourceDistance.InformationalVersion.ShouldBe("1.2.3-0042");
     }
 }

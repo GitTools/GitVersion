@@ -262,6 +262,7 @@ public class StringFormatWithExtensionTests
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 CommitsSinceVersionSource = 42,
+                VersionSourceDistance = 42,
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
@@ -269,5 +270,10 @@ public class StringFormatWithExtensionTests
         const string expected = "1.2.3-0042";
         var actual = target.FormatWith(semanticVersion, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
+
+        // Test with VersionSourceDistance
+        const string targetWithVersionSourceDistance = "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}";
+        var actualWithVersionSourceDistance = targetWithVersionSourceDistance.FormatWith(semanticVersion, this.environment);
+        Assert.That(actualWithVersionSourceDistance, Is.EqualTo(expected));
     }
 }
