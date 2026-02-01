@@ -28,7 +28,7 @@ pull_request_rules:
 # 3. Use a Queue to handle the "up-to-date" requirement automatically
 queue_rules:
   - name: default
-    merge_method: squash
+    merge_method: merge
     queue_conditions:
       - check-success=DotNet Format
       - check-success=Release
