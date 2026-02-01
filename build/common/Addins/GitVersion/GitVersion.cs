@@ -96,6 +96,11 @@ public sealed class GitVersion
     public int? CommitsSinceVersionSource { get; set; }
 
     /// <summary>
+    /// Gets or sets the version source distance.
+    /// </summary>
+    public int? VersionSourceDistance { get; set; }
+
+    /// <summary>
     /// Gets or sets the commit date.
     /// </summary>
     public string? CommitDate { get; set; }
