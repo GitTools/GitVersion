@@ -25,7 +25,7 @@ internal sealed class ContinuousDeploymentVersionCalculator(
             PreReleaseTag = SemanticVersionPreReleaseTag.Empty,
             BuildMetaData = new SemanticVersionBuildMetaData(buildMetaData)
             {
-                CommitsSinceVersionSource = buildMetaData.CommitsSinceTag!.Value,
+                VersionSourceDistance = buildMetaData.CommitsSinceTag!.Value,
                 CommitsSinceTag = null
             }
         };

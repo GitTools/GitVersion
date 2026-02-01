@@ -26,7 +26,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public string? VersionSourceSha { get; init; }
 
-    public long CommitsSinceVersionSource { get; init; }
+    public long CommitsSinceVersionSource => VersionSourceDistance;
 
     public long VersionSourceDistance { get; init; }
 
@@ -46,7 +46,6 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.CommitDate = commitDate;
         this.OtherMetaData = otherMetadata;
         this.VersionSourceSha = versionSourceSha;
-        this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
         this.VersionSourceDistance = commitsSinceTag ?? 0;
         this.UncommittedChanges = numberOfUnCommittedChanges;
     }
@@ -62,7 +61,6 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.CommitDate = buildMetaData.CommitDate;
         this.OtherMetaData = buildMetaData.OtherMetaData;
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
-        this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
         this.VersionSourceDistance = buildMetaData.VersionSourceDistance;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
     }
@@ -118,12 +116,12 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(buildMetaData);
 
         long? buildMetaDataCommitsSinceTag = null;
-        long? buildMetaDataCommitsSinceVersionSource = null;
+        long? buildMetaDataVersionSourceDistance = null;
         if (parsed.Groups["BuildNumber"].Success)
         {
             if (long.TryParse(parsed.Groups["BuildNumber"].Value, out var buildNumber))
                 buildMetaDataCommitsSinceTag = buildNumber;
-            buildMetaDataCommitsSinceVersionSource = buildMetaDataCommitsSinceTag ?? 0;
+            buildMetaDataVersionSourceDistance = buildMetaDataCommitsSinceTag ?? 0;
         }
 
         string? buildMetaDataBranch = null;
@@ -141,8 +139,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         return new()
         {
             CommitsSinceTag = buildMetaDataCommitsSinceTag,
-            CommitsSinceVersionSource = buildMetaDataCommitsSinceVersionSource ?? 0,
-            VersionSourceDistance = buildMetaDataCommitsSinceVersionSource ?? 0,
+            VersionSourceDistance = buildMetaDataVersionSourceDistance ?? 0,
             Branch = buildMetaDataBranch,
             Sha = buildMetaDataSha,
             OtherMetaData = buildMetaDataOtherMetaData

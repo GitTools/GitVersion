@@ -580,7 +580,6 @@ GitVersion.SemanticVersionBuildMetaData.CommitDate.init -> void
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceTag.get -> long?
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceTag.init -> void
 GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSource.get -> long
-GitVersion.SemanticVersionBuildMetaData.CommitsSinceVersionSource.init -> void
 GitVersion.SemanticVersionBuildMetaData.Equals(GitVersion.SemanticVersionBuildMetaData? other) -> bool
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.get -> string?
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.init -> void

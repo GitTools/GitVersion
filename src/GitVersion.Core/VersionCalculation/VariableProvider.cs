@@ -63,9 +63,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             informationalVersion,
             semverFormatValues.CommitDate,
             semverFormatValues.VersionSourceSha,
-#pragma warning disable CS0618 // Type or member is obsolete
-            semverFormatValues.CommitsSinceVersionSource,
-#pragma warning restore CS0618 // Type or member is obsolete
+            semverFormatValues.VersionSourceDistance,
             semverFormatValues.VersionSourceDistance,
             semverFormatValues.UncommittedChanges
         );
