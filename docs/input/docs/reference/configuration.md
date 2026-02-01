@@ -907,7 +907,7 @@ When `release-2.0.0` is merged into main, we want main to build `2.0.0`. If
 prevents incrementing after a versioned branch is merged.
 
 In a GitFlow-based repository, setting this option can have implications on the
-`CommitsSinceVersionSource` output variable. It can rule out a potentially
+`VersionSourceDistance` output variable. It can rule out a potentially
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
 
