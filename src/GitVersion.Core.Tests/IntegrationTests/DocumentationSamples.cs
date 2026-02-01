@@ -379,7 +379,7 @@ public class DocumentationSamples : TestBase
         fixture.ApplyTag("2.0.0-beta.1");
         fixture.AssertFullSemver("2.0.0-beta.2+0");
 
-        // test that the CommitsSinceVersionSource should still return commit count
+        // test that the VersionSourceDistance should still return the commit count
         var version = fixture.GetVersion();
         version.CommitsSinceVersionSource.ShouldBe("0");
         version.VersionSourceDistance.ShouldBe("0");

@@ -211,7 +211,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
+    public void VersionSourceDistanceShouldNotGoDownUponGitFlowReleaseFinish()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
@@ -253,7 +253,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
+    public void VersionSourceDistanceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
@@ -302,7 +302,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
+    public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopVersionSourceDistanceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithDeploymentMode(DeploymentMode.ContinuousDelivery))
@@ -347,7 +347,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
+    public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopVersionSourceDistanceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery)
@@ -388,7 +388,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingHotfixToDevelop()
+    public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopVersionSourceDistanceShouldNotGoDownWhenMergingHotfixToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", builder => builder

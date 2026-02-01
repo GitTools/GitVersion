@@ -68,7 +68,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitsSinceVersionSource = 5,
+                VersionSourceDistance = 5,
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }
         };
@@ -118,7 +118,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitsSinceVersionSource = 5,
+                VersionSourceDistance = 5,
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }
         };
@@ -142,7 +142,7 @@ public class VariableProviderTests : TestBase
             {
                 VersionSourceSha = "versionSourceSha",
                 CommitsSinceTag = 5,
-                CommitsSinceVersionSource = 5,
+                VersionSourceDistance = 5,
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
@@ -250,19 +250,20 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}")
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{VersionSourceDistance}.Branch.{BranchName}.Sha.{ShortSha}")
             .Build();
         var preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
 
-        // Test with VersionSourceDistance
-        var configurationWithVersionSourceDistance = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{VersionSourceDistance}.Branch.{BranchName}.Sha.{ShortSha}")
+        configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}")
             .Build();
-        var variablesWithVersionSourceDistance = this.variableProvider.GetVariablesFor(semanticVersion, configurationWithVersionSourceDistance, preReleaseWeight);
-        variablesWithVersionSourceDistance.InformationalVersion.ShouldBe(variables.InformationalVersion);
+        preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
+        variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
+
+        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -280,7 +281,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitsSinceVersionSource = 5,
+                VersionSourceDistance = 5,
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }
         };
@@ -307,26 +308,27 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitsSinceVersionSource = 42,
+                VersionSourceDistance = 42,
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}")
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}")
             .Build();
         var preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.InformationalVersion.ShouldBe("1.2.3-0042");
 
-        // Test with VersionSourceDistance
-        var configurationWithVersionSourceDistance = GitFlowConfigurationBuilder.New
+        configuration = GitFlowConfigurationBuilder.New
             .WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}")
+            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}")
             .Build();
-        var variablesWithVersionSourceDistance = this.variableProvider.GetVariablesFor(semanticVersion, configurationWithVersionSourceDistance, preReleaseWeight);
-        variablesWithVersionSourceDistance.InformationalVersion.ShouldBe("1.2.3-0042");
+        preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
+        variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
+
+        variables.InformationalVersion.ShouldBe("1.2.3-0042");
     }
 }
