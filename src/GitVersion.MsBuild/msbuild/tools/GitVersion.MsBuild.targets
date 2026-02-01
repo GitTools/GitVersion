@@ -63,6 +63,7 @@
             <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
             <Output TaskParameter="VersionSourceSha" PropertyName="GitVersion_VersionSourceSha" />
             <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
+            <Output TaskParameter="VersionSourceDistance" PropertyName="GitVersion_VersionSourceDistance" />
             <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
         </GetVersion>
 
@@ -103,6 +104,7 @@
             <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceSha)' != '' ">GitVersion_VersionSourceSha=$(GitVersion_VersionSourceSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_VersionSourceDistance)' != '' ">GitVersion_VersionSourceDistance=$(GitVersion_VersionSourceDistance);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
         </PropertyGroup>
 
