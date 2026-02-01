@@ -21,6 +21,38 @@ public class GitVersionExecutorTests : TestBase
     private GitVersionCacheProvider gitVersionCacheProvider;
     private IServiceProvider sp;
 
+    private const string versionCacheFileContent =
+        """
+        {
+          "AssemblySemFileVer": "4.10.3.0",
+          "AssemblySemVer": "4.10.3.0",
+          "BranchName": "feature/test",
+          "BuildMetaData": null,
+          "CommitDate": "2015-11-10T00:00:00.000Z",
+          "CommitsSinceVersionSource": 19,
+          "EscapedBranchName": "feature-test",
+          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
+          "FullSemVer": "4.10.3-test.19",
+          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
+          "Major": 4,
+          "MajorMinorPatch": "4.10.3",
+          "Minor": 10,
+          "Patch": 3,
+          "PreReleaseLabel": "test",
+          "PreReleaseLabelWithDash": "-test",
+          "PreReleaseNumber": 19,
+          "PreReleaseTag": "test.19",
+          "PreReleaseTagWithDash": "-test.19",
+          "SemVer": "4.10.3-test.19",
+          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
+          "ShortSha": "dd2a29af",
+          "UncommittedChanges": 0,
+          "VersionSourceDistance": 19,
+          "VersionSourceSha": "4.10.2",
+          "WeightedPreReleaseNumber": 19
+        }
+        """;
+
     [Test]
     public void CacheKeySameAfterReNormalizing()
     {
@@ -66,6 +98,7 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void CacheKeyForWorktree()
     {
+        this.fileSystem = new FileSystem();
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
         var worktreePath = GetWorktreePath(fixture);
@@ -98,36 +131,6 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void CacheFileExistsOnDisk()
     {
-        const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
-        """;
-
         var stringBuilder = new StringBuilder();
 
         var logAppender = new TestLogAppender(Action);
@@ -162,34 +165,6 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void CacheFileExistsOnDiskWhenOverrideConfigIsSpecifiedVersionShouldBeDynamicallyCalculatedWithoutSavingInCache()
     {
-        const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
-        """;
-
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
@@ -252,36 +227,6 @@ public class GitVersionExecutorTests : TestBase
     [TestCase(ConfigurationFileLocator.DefaultAlternativeFileNameDotted)]
     public void ConfigChangeInvalidatesCache(string configFileName)
     {
-        const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
-        """;
-
         using var fixture = new EmptyRepositoryFixture();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
@@ -314,36 +259,6 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void NoCacheBypassesCache()
     {
-        const string versionCacheFileContent = """
-        {
-          "Major": 4,
-          "Minor": 10,
-          "Patch": 3,
-          "PreReleaseTag": "test.19",
-          "PreReleaseTagWithDash": "-test.19",
-          "PreReleaseLabel": "test",
-          "PreReleaseLabelWithDash": "-test",
-          "PreReleaseNumber": 19,
-          "WeightedPreReleaseNumber": 19,
-          "BuildMetaData": null,
-          "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "MajorMinorPatch": "4.10.3",
-          "SemVer": "4.10.3-test.19",
-          "AssemblySemVer": "4.10.3.0",
-          "AssemblySemFileVer": "4.10.3.0",
-          "FullSemVer": "4.10.3-test.19",
-          "InformationalVersion": "4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "BranchName": "feature/test",
-          "EscapedBranchName": "feature-test",
-          "Sha": "dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
-          "ShortSha": "dd2a29af",
-          "VersionSourceSha": "4.10.2",
-          "CommitsSinceVersionSource": 19,
-          "CommitDate": "2015-11-10T00:00:00.000Z",
-          "UncommittedChanges": 0
-        }
-        """;
-
         using var fixture = new EmptyRepositoryFixture();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };

@@ -24,6 +24,7 @@ public class VersionSourceTests : TestBase
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
+        semanticVersion.BuildMetaData.VersionSourceDistance.ShouldBe(3);
     }
 
     [Test]
@@ -39,6 +40,7 @@ public class VersionSourceTests : TestBase
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        semanticVersion.BuildMetaData.VersionSourceDistance.ShouldBe(1);
     }
 
     [Test]
@@ -58,6 +60,7 @@ public class VersionSourceTests : TestBase
 
         semanticVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommitSha);
         semanticVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        semanticVersion.BuildMetaData.VersionSourceDistance.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(IGitRepository repository)

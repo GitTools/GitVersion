@@ -30,7 +30,7 @@ assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabel}"
 - `F` or `f` (Fixed-point): `{Patch:F2}` → `"1.23"`
 - `N` or `n` (Number): `{BuildMetadata:N0}` → `"1,234"`
 - `C` or `c` (Currency): `{Major:C}` → `"¤1.00"`
-- `P` or `p` (Percent): `{CommitsSinceVersionSource:P}` → `"12,345.60 %"`
+- `P` or `p` (Percent): `{VersionSourceDistance:P}` → `"12,345.60 %"`
 - `D` or `d` (Decimal): `{Major:D4}` → `"0001"`
 - `B` or `b` (Binary): `{Minor:B4}` → `"0101"`
 - `X` or `x` (Hexadecimal): `{Patch:X}` → `"FF"`
@@ -72,14 +72,14 @@ branches:
   feature:
     label: "{BranchName:c}"  # Converts to PascalCase
 
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{CommitsSinceVersionSource:0000}"
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{VersionSourceDistance:0000}"
 ```
 
 **Template Usage:**
 
 ```yaml
 # Using format strings in templates
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}"
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
 assembly-informational-format: "{SemVer}-{BranchName:l}"
 ```
 
@@ -91,7 +91,7 @@ Based on actual test cases from the implementation:
 
 ```yaml
 # Zero-padded commit count
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}"
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
 # Result: "1.2.3-0042"
 ```
 
@@ -122,7 +122,7 @@ assembly-informational-format: "Cost-{Major:C}"  # Result: "Cost-¤1.00"
 assembly-informational-format: "Progress-{Minor:P}"  # Result: "Progress-200.00 %"
 
 # Thousands separator
-assembly-informational-format: "Build-{CommitsSinceVersionSource:N0}"  # Result: "Build-1,234"
+assembly-informational-format: "Build-{VersionSourceDistance:N0}"  # Result: "Build-1,234"
 ```
 
 ## Configuration Integration
@@ -133,9 +133,9 @@ The format strings are used in GitVersion configuration files through various fo
 
 ```yaml
 # GitVersion.yml
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}"
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
 assembly-versioning-format: "{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}"
-assembly-file-versioning-format: "{MajorMinorPatch}.{CommitsSinceVersionSource}"
+assembly-file-versioning-format: "{MajorMinorPatch}.{VersionSourceDistance}"
 ```
 
 ### Environment Variable Integration
@@ -152,15 +152,15 @@ Based on the actual test implementation:
 
 ```yaml
 # Example from VariableProviderTests.cs
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}"
-# Result: "1.2.3-0042" when CommitsSinceVersionSource = 42
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
+# Result: "1.2.3-0042" when VersionSourceDistance = 42
 
 # Branch-specific formatting
 branches:
   feature:
     label: "{BranchName:c}"  # PascalCase conversion
   hotfix:
-    label: "hotfix.{CommitsSinceVersionSource:00}"
+    label: "hotfix.{VersionSourceDistance:00}"
 ```
 
 ## Invariant Culture Formatting
@@ -174,7 +174,7 @@ The formatting system uses `CultureInfo.InvariantCulture` by default through the
 
 ```csharp
 // All environments produce the same output:
-// {CommitsSinceVersionSource:N0} → "1,234"
+// {VersionSourceDistance:N0} → "1,234"
 // {CommitDate:MMM dd, yyyy} → "Mar 15, 2024"
 // {Major:C} → "¤1.00" (generic currency symbol)
 ```

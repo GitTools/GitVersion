@@ -26,4 +26,5 @@ internal record TestableGitVersionVariables() : GitVersionVariables("",
     "",
     "",
     "",
+    "",
     "");
