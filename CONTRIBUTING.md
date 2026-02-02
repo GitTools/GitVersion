@@ -21,6 +21,37 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
   on how to improve the documentation and please include documentation updates
   with your PR.
 
+### Git history & pull request updates
+
+We prefer a **linear commit history**.
+
+* Keep your branch **up to date by rebasing on `main`** (not by merging `main` into your branch).
+* Prefer **atomic commits**: each commit should represent one logical change and leave the repo in a working state.
+* **Don’t squash everything into one commit** by default.
+  Squash is fine when it helps you *create atomic commits* (for example, folding “fix tests” into the commit that introduced the tests).
+
+A typical workflow looks like:
+
+```shell
+# update your local main
+git fetch origin
+git checkout main
+git pull --ff-only
+
+# rebase your feature branch onto the latest main
+git checkout my-feature
+git rebase origin/main
+
+# if your branch is already on GitHub, you'll likely need a force push after rebasing
+git push --force-with-lease
+```
+
+If you need to reorganize commits (split/merge/reword) before opening the PR, use an interactive rebase:
+
+```shell
+git rebase -i origin/main
+```
+
 ## How it works
 
 See [how it works](https://gitversion.net/docs/learn/how-it-works) in GitVersion's documentation
