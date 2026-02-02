@@ -92,7 +92,11 @@ internal partial class GitRepository(ILogger<GitRepository> logger) : IMutatingG
                 : network.ListReferences(remote))
             .Select(r => r.ResolveToDirectReference()).ToList();
 
-        this.logger.LogInformation($"Remote Refs:{FileSystemHelper.Path.NewLine}" + string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName)));
+        var remoteRefsList = string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName));
+        this.logger.LogInformation("""
+                                   Remote Refs:
+                                   {RemoteRefsList}
+                                   """, remoteRefsList);
         var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
         switch (refs.Count)

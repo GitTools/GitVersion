@@ -1,5 +1,4 @@
 using GitVersion.Git;
-using GitVersion.Logging;
 
 namespace GitVersion;
 
@@ -32,7 +31,6 @@ internal class Arguments
     public string? Format;
     public string? OutputFile;
     public ISet<OutputType> Output = new HashSet<OutputType>();
-    public Verbosity Verbosity = Verbosity.Normal;
 
     public bool UpdateWixVersionFile;
     public bool UpdateProjectFiles;
@@ -94,7 +92,6 @@ internal class Arguments
             LogFilePath = LogFilePath,
             ShowVariable = ShowVariable,
             Format = Format,
-            Verbosity = Verbosity,
             Output = Output,
             OutputFile = OutputFile
         };

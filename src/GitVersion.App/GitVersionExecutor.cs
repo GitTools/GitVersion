@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
+using Serilog;
 
 namespace GitVersion;
 
@@ -45,12 +46,7 @@ internal class GitVersionExecutor(
 
         if (exitCode != 0)
         {
-            // Inform user where to find detailed logs if a log file was configured
-            var logFilePath = gitVersionOptions.LogFilePath;
-            if (!logFilePath.IsNullOrWhiteSpace() && !logFilePath.Equals("console", StringComparison.OrdinalIgnoreCase))
-            {
-                this.console.WriteLine($"See log file for more details: {logFilePath}");
-            }
+            Log.CloseAndFlush();
         }
 
         return exitCode;
