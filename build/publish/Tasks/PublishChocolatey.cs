@@ -18,7 +18,7 @@ public class PublishChocolateyInternal : AsyncFrostingTask<BuildContext>
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishChocolatey)} works only on GitHub Actions.");
         shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(PublishChocolatey)} works only on windows.");
-        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(PublishChocolatey)} works only for tagged releases.");
+        shouldRun &= context.ShouldRun(context.IsTaggedRelease || context.IsTaggedPreRelease, $"{nameof(PublishChocolatey)} works only for tagged releases.");
 
         return shouldRun;
     }

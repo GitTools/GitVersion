@@ -10,6 +10,7 @@ public class BuildContextBase : FrostingContext
     public string RepositoryName { get; set; } = string.Empty;
     public bool IsMainBranch { get; set; }
     public bool IsSupportBranch { get; set; }
+    public bool IsNextBranch { get; set; }
     public bool IsPullRequest { get; set; }
     public bool IsTagged { get; set; }
     public bool IsLocalBuild { get; set; }
@@ -18,8 +19,8 @@ public class BuildContextBase : FrostingContext
     public bool IsOnWindows { get; set; }
     public bool IsOnLinux { get; set; }
     public bool IsOnMacOS { get; set; }
-    public bool IsReleaseBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && (IsMainBranch || IsSupportBranch) && !IsPullRequest;
-    public bool IsStableRelease => IsReleaseBranchOriginalRepo && IsTagged && Version?.IsPreRelease == false;
+    public bool IsReleaseBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && (IsMainBranch || IsSupportBranch || IsNextBranch) && !IsPullRequest;
+    public bool IsTaggedRelease => IsReleaseBranchOriginalRepo && IsTagged && Version?.IsPreRelease == false;
     public bool IsTaggedPreRelease => IsReleaseBranchOriginalRepo && IsTagged && Version?.IsPreRelease == true;
     public bool IsInternalPreRelease => IsReleaseBranchOriginalRepo && IsGitHubActionsBuild;
 }

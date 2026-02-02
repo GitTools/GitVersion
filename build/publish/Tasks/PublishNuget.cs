@@ -18,7 +18,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishNuget)} works only on GitHub Actions.");
-        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease || context.IsInternalPreRelease, $"{nameof(PublishNuget)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsTaggedRelease || context.IsTaggedPreRelease || context.IsInternalPreRelease, $"{nameof(PublishNuget)} works only for releases.");
 
         return shouldRun;
     }
@@ -40,7 +40,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         }
 
         // publish to nuget.org for tagged releases
-        if (context.IsStableRelease || context.IsTaggedPreRelease)
+        if (context.IsTaggedRelease || context.IsTaggedPreRelease)
         {
             context.StartGroup("Publishing to Nuget.org");
             var apiKey = context.Credentials?.Nuget?.ApiKey;

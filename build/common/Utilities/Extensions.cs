@@ -1,5 +1,6 @@
 namespace Common.Utilities;
 
+#pragma warning disable S1144
 public static class Extensions
 {
     private static readonly char[] CharsThatRequireQuoting = [' ', '"'];
@@ -115,3 +116,4 @@ public static class Extensions
         }
     }
 }
+#pragma warning restore S1144

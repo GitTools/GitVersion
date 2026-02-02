@@ -5,6 +5,7 @@ using ProcessArchitecture = System.Runtime.InteropServices.Architecture;
 
 namespace Common.Utilities;
 
+#pragma warning disable S1144
 public static class ContextExtensions
 {
     extension(ICakeContext context)
@@ -41,14 +42,20 @@ public static class ContextExtensions
 
         public bool IsMainBranch()
         {
-            var repositoryBranch = GetBranchName(context);
+            var repositoryBranch = context.GetBranchName();
             return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals(Constants.DefaultBranch, repositoryBranch);
         }
 
         public bool IsSupportBranch()
         {
-            var repositoryBranch = GetBranchName(context);
+            var repositoryBranch = context.GetBranchName();
             return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("support/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool IsNextBranch()
+        {
+            var repositoryBranch = context.GetBranchName();
+            return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("next/", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool IsTagged()
@@ -192,3 +199,4 @@ public static class ContextExtensions
         private void EndGroup(ICakeContext context) => context.Information("##[endgroup]");
     }
 }
+#pragma warning restore S1144

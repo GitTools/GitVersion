@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - 'support/*'
+    - 'next/*'
     paths:
     - '**'
     - '!docs/**'
@@ -15,6 +16,7 @@ on:
     branches:
     - main
     - 'support/*'
+    - 'next/*'
     paths:
     - '**'
     - '!docs/**'

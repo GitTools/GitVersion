@@ -19,6 +19,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.IsOriginalRepo = context.IsOriginalRepo();
         context.IsMainBranch = context.IsMainBranch();
         context.IsSupportBranch = context.IsSupportBranch();
+        context.IsNextBranch = context.IsNextBranch();
         context.IsTagged = context.IsTagged();
 
         context.IsOnWindows = context.IsRunningOnWindows();
@@ -83,8 +84,9 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.Information($"Branch Name:          {context.BranchName}");
         context.Information($"Main Branch:          {context.IsMainBranch}");
         context.Information($"Support Branch:       {context.IsSupportBranch}");
+        context.Information($"Next Branch:          {context.IsNextBranch}");
         context.Information($"Tagged:               {context.IsTagged}");
-        context.Information($"IsStableRelease:      {context.IsStableRelease}");
+        context.Information($"IsTaggedRelease:      {context.IsTaggedRelease}");
         context.Information($"IsTaggedPreRelease:   {context.IsTaggedPreRelease}");
         context.Information($"IsInternalPreRelease: {context.IsInternalPreRelease}");
     }

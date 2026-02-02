@@ -35,7 +35,7 @@ public class DockerPublishInternal : FrostingTask<BuildContext>
         }
         if (context.DockerRegistry == DockerRegistry.DockerHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(DockerPublish)} to DockerHub works only for tagged releases.");
+            shouldRun &= context.ShouldRun(context.IsTaggedRelease || context.IsTaggedPreRelease, $"{nameof(DockerPublish)} to DockerHub works only for tagged releases.");
         }
 
         return shouldRun;

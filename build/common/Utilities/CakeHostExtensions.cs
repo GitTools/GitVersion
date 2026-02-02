@@ -2,6 +2,7 @@ using Cake.DotNetLocalTools.Module;
 
 namespace Common.Utilities;
 
+#pragma warning disable S1144
 public static class ServicesExtensions
 {
     extension(CakeHost host)
@@ -25,3 +26,4 @@ public static class ServicesExtensions
         }
     }
 }
+#pragma warning restore S1144

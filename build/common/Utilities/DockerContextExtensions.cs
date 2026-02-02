@@ -10,6 +10,7 @@ public enum Architecture
     Amd64
 }
 
+#pragma warning disable S1144
 public static class DockerContextExtensions
 {
     private static readonly string[] Annotations =
@@ -169,7 +170,7 @@ public static class DockerContextExtensions
                                    params string[] args)
         {
             ArgumentNullException.ThrowIfNull(context.Version?.GitVersion.FullSemVer);
-            var settings = GetDockerRunSettings(context, arch);
+            var settings = context.GetDockerRunSettings(arch);
             context.Information($"Testing image: {image}");
             var output = context.DockerRun(settings, image, command, args);
             context.Information("Output : " + output);
@@ -195,7 +196,7 @@ public static class DockerContextExtensions
             {
                 tags.Add($"{name}:{context.Version.SemVersion}");
 
-                if (context.IsStableRelease)
+                if (context.IsTaggedRelease)
                 {
                     tags.AddRange(
                     [
@@ -279,3 +280,4 @@ public static class DockerContextExtensions
         return settings;
     }
 }
+#pragma warning restore S1144
