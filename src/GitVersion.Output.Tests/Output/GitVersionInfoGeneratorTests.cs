@@ -20,36 +20,9 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("vb")]
     public void ShouldCreateFile(string fileExtension)
     {
-        var versionSourceSemVer = new SemanticVersion(1, 2, 2);
-        var semanticVersion = new SemanticVersion
-        {
-            Major = 1,
-            Minor = 2,
-            Patch = 3,
-            PreReleaseTag = "unstable4",
-            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
-                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture), 0)
-        };
+        var fileContents = GenerateGitVersionInformationFile(fileExtension);
 
-        var sp = ConfigureServices();
-
-        var fileSystem = sp.GetRequiredService<IFileSystem>();
-
-        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
-        if (!fileSystem.Directory.Exists(directory))
-            fileSystem.Directory.CreateDirectory(directory);
-        var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = FileSystemHelper.Path.Combine(directory, fileName);
-
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
-        using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
-
-        generator.Execute(variables, new(directory, fileName));
-
-        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
-
-        FileSystemHelper.Directory.DeleteDirectory(directory);
+        fileContents.ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
     }
 
     /// <summary>
@@ -62,35 +35,64 @@ public class GitVersionInfoGeneratorTests : TestBase
     {
         const string targetNamespace = "My.Custom.Namespace";
 
+        var fileContents = GenerateGitVersionInformationFile(fileExtension, targetNamespace);
+
+        fileContents.ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
+    }
+
+    private static SemanticVersion CreateSemanticVersion()
+    {
         var versionSourceSemVer = new SemanticVersion(1, 2, 2);
-        var semanticVersion = new SemanticVersion
+        return new SemanticVersion
         {
             Major = 1,
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
-                "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture), 0)
+            BuildMetaData = new(
+                versionSourceSemVer,
+                "versionSourceSha",
+                5,
+                "feature1",
+                "commitSha",
+                "commitShortSha",
+                DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture),
+                0)
         };
+    }
 
-        var sp = ConfigureServices();
-
-        var fileSystem = sp.GetRequiredService<IFileSystem>();
-
-        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "GitVersionInfoGeneratorTests", Guid.NewGuid().ToString());
+    private static (string Directory, string FileName, string FullPath) CreateTempOutputPath(IFileSystem fileSystem, string fileExtension)
+    {
+        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), nameof(GitVersionInfoGeneratorTests), Guid.NewGuid().ToString());
         if (!fileSystem.Directory.Exists(directory))
             fileSystem.Directory.CreateDirectory(directory);
+
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = FileSystemHelper.Path.Combine(directory, fileName);
+        return (directory, fileName, fullPath);
+    }
 
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
-        using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
+    private string GenerateGitVersionInformationFile(string fileExtension, string? targetNamespace = null)
+    {
+        var semanticVersion = CreateSemanticVersion();
 
-        generator.Execute(variables, new(directory, fileName, targetNamespace));
+        var sp = ConfigureServices();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-        fileSystem.File.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved", fileExtension)));
+        var (directory, fileName, fullPath) = CreateTempOutputPath(fileSystem, fileExtension);
+        try
+        {
+            var variables = sp.GetRequiredService<IVariableProvider>()
+                .GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
 
-        FileSystemHelper.Directory.DeleteDirectory(directory);
+            using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
+            generator.Execute(variables, new(directory, fileName, targetNamespace));
+
+            return fileSystem.File.ReadAllText(fullPath);
+        }
+        finally
+        {
+            FileSystemHelper.Directory.DeleteDirectory(directory);
+        }
     }
 }
