@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -27,7 +28,7 @@ public class GitVersionInfoGeneratorTests : TestBase
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
-                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture), 0)
         };
 
         var sp = ConfigureServices();
@@ -69,7 +70,7 @@ public class GitVersionInfoGeneratorTests : TestBase
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
-                "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+                "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture), 0)
         };
 
         var sp = ConfigureServices();
