@@ -19,13 +19,14 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("vb")]
     public void ShouldCreateFile(string fileExtension)
     {
+        var versionSourceSemVer = new SemanticVersion(1, 2, 2);
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new("versionSourceSha", 5,
+            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
                  "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
@@ -60,13 +61,14 @@ public class GitVersionInfoGeneratorTests : TestBase
     {
         const string targetNamespace = "My.Custom.Namespace";
 
+        var versionSourceSemVer = new SemanticVersion(1, 2, 2);
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new("versionSourceSha", 5,
+            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5,
                 "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 

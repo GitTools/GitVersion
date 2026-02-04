@@ -421,7 +421,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         Action<IFileSystem, GitVersionVariables>? verify = null)
     {
         var file = Substitute.For<IFile>();
-        var version = new SemanticVersion { BuildMetaData = new("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0), Major = 2, Minor = 3, Patch = 1 };
+        var versionSourceSemVer = new SemanticVersion(1, 2, 2);
+        var version = new SemanticVersion { BuildMetaData = new(versionSourceSemVer, "versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0), Major = 2, Minor = 3, Patch = 1 };
 
         file.Exists(fileName).Returns(true);
         file.ReadAllText(fileName).Returns(assemblyFileContent);

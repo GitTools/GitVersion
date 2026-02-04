@@ -13,13 +13,14 @@ public class JsonVersionBuilderTests : TestBase
     [Test]
     public void Json()
     {
+        var versionSourceSemVer = new SemanticVersion(1, 1, 2);
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
             Minor = 2,
             Patch = 0,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
         var serviceProvider = ConfigureServices();

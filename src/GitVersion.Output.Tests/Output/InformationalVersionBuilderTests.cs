@@ -21,13 +21,14 @@ public class InformationalVersionBuilderTests : TestBase
     public void ValidateInformationalVersionBuilder(string branchName, string sha, string shortSha, int major, int minor, int patch,
         string? tag, string? versionSourceSha, int? commitsSinceTag, string versionString)
     {
+        var versionSourceSemVer = new SemanticVersion(1, 1, 1);
         var semanticVersion = new SemanticVersion
         {
             Major = major,
             Minor = minor,
             Patch = patch,
             PreReleaseTag = tag,
-            BuildMetaData = new(versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue, 0)
+            BuildMetaData = new(versionSourceSemVer, versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue, 0)
         };
         var informationalVersion = semanticVersion.ToString("i");
 
