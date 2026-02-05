@@ -4,14 +4,14 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
-  
+
 jobs:
   build:
     name: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2025, ubuntu-24.04, macos-15]
+        os: [windows-2025, ubuntu-24.04, macos-26]
 
     runs-on: ${{ matrix.os }}
     steps:
