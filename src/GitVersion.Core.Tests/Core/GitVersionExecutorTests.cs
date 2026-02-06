@@ -48,6 +48,7 @@ public class GitVersionExecutorTests : TestBase
           "ShortSha": "dd2a29af",
           "UncommittedChanges": 0,
           "VersionSourceDistance": 19,
+          "VersionSourceSemVer": "4.10.2",
           "VersionSourceSha": "4.10.2",
           "WeightedPreReleaseNumber": 19
         }

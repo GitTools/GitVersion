@@ -63,7 +63,11 @@ public class GitVersionInfoGeneratorTests : TestBase
 
     private static (string Directory, string FileName, string FullPath) CreateTempOutputPath(IFileSystem fileSystem, string fileExtension)
     {
-        var directory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), nameof(GitVersionInfoGeneratorTests), Guid.NewGuid().ToString());
+        var directory = FileSystemHelper.Path.Combine(
+            FileSystemHelper.Path.GetTempPath(),
+            nameof(GitVersionInfoGeneratorTests),
+            Guid.NewGuid().ToString());
+
         if (!fileSystem.Directory.Exists(directory))
             fileSystem.Directory.CreateDirectory(directory);
 
@@ -72,7 +76,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         return (directory, fileName, fullPath);
     }
 
-    private string GenerateGitVersionInformationFile(string fileExtension, string? targetNamespace = null)
+    private static string GenerateGitVersionInformationFile(string fileExtension, string? targetNamespace = null)
     {
         var semanticVersion = CreateSemanticVersion();
 
