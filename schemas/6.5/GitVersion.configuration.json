@@ -8,8 +8,8 @@
     "assembly-file-versioning-format": {
       "description": "Specifies the format of AssemblyFileVersion and overwrites the value of assembly-file-versioning-scheme.",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "assembly-file-versioning-scheme": {
@@ -28,15 +28,15 @@
       "description": "Specifies the format of AssemblyInformationalVersion. Defaults to '{InformationalVersion}'.",
       "default": "'{InformationalVersion}'",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "assembly-versioning-format": {
       "description": "Specifies the format of AssemblyVersion and overwrites the value of assembly-versioning-scheme.",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "assembly-versioning-scheme": {
@@ -82,15 +82,15 @@
           "is-main-branch": {
             "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
             "type": [
-              "boolean",
-              "null"
+              "null",
+              "boolean"
             ]
           },
           "is-release-branch": {
             "description": "Indicates this branch configuration represents a release branch in GitFlow.",
             "type": [
-              "boolean",
-              "null"
+              "null",
+              "boolean"
             ]
           },
           "is-source-branch-for": {
@@ -100,15 +100,15 @@
           "label": {
             "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
             "type": [
-              "string",
-              "null"
+              "null",
+              "string"
             ]
           },
           "pre-release-weight": {
             "description": "Provides a way to translate the PreReleaseLabel to a number.",
             "type": [
-              "integer",
-              "null"
+              "null",
+              "integer"
             ]
           },
           "prevent-increment": {
@@ -119,8 +119,8 @@
             "format": "regex",
             "description": "The regular expression pattern to use to match this branch.",
             "type": [
-              "string",
-              "null"
+              "null",
+              "string"
             ]
           },
           "source-branches": {
@@ -130,22 +130,22 @@
           "track-merge-message": {
             "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
             "type": [
-              "boolean",
-              "null"
+              "null",
+              "boolean"
             ]
           },
           "track-merge-target": {
             "description": "Strategy which will look for tagged merge commits directly off the current branch.",
             "type": [
-              "boolean",
-              "null"
+              "null",
+              "boolean"
             ]
           },
           "tracks-release-branches": {
             "description": "Indicates this branch configuration represents develop in GitFlow.",
             "type": [
-              "boolean",
-              "null"
+              "null",
+              "boolean"
             ]
           }
         }
@@ -155,8 +155,8 @@
       "description": "The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'. See [Standard Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings) and [Custom Date and Time Format Strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).",
       "default": "yyyy-MM-dd",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "commit-message-incrementing": {
@@ -185,8 +185,8 @@
           "format": "date-time",
           "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",
           "type": [
-            "string",
-            "null"
+            "null",
+            "string"
           ]
         },
         "paths": {
@@ -209,15 +209,15 @@
     "is-main-branch": {
       "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
       "type": [
-        "boolean",
-        "null"
+        "null",
+        "boolean"
       ]
     },
     "is-release-branch": {
       "description": "Indicates this branch configuration represents a release branch in GitFlow.",
       "type": [
-        "boolean",
-        "null"
+        "null",
+        "boolean"
       ]
     },
     "is-source-branch-for": {
@@ -227,8 +227,8 @@
     "label": {
       "description": "The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "major-version-bump-message": {
@@ -236,8 +236,8 @@
       "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '\\+semver:\\s?(breaking|major)'",
       "default": "\\+semver:\\s?(breaking|major)",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "merge-message-formats": {
@@ -252,15 +252,15 @@
       "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '\\+semver:\\s?(feature|minor)'",
       "default": "\\+semver:\\s?(feature|minor)",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "next-version": {
       "description": "Allows you to bump the next version explicitly. Useful for bumping main or a feature branch with breaking changes",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "no-bump-message": {
@@ -268,8 +268,8 @@
       "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '\\+semver:\\s?(none|skip)'",
       "default": "\\+semver:\\s?(none|skip)",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "patch-version-bump-message": {
@@ -277,15 +277,15 @@
       "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",
       "default": "\\+semver:\\s?(fix|patch)",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "pre-release-weight": {
       "description": "Provides a way to translate the PreReleaseLabel to a number.",
       "type": [
-        "integer",
-        "null"
+        "null",
+        "integer"
       ]
     },
     "prevent-increment": {
@@ -296,8 +296,8 @@
       "format": "regex",
       "description": "The regular expression pattern to use to match this branch.",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "semantic-version-format": {
@@ -317,36 +317,36 @@
       "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
       "default": "[vV]?",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "tag-pre-release-weight": {
       "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
       "type": [
-        "integer",
-        "null"
+        "null",
+        "integer"
       ]
     },
     "track-merge-message": {
       "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
       "type": [
-        "boolean",
-        "null"
+        "null",
+        "boolean"
       ]
     },
     "track-merge-target": {
       "description": "Strategy which will look for tagged merge commits directly off the current branch.",
       "type": [
-        "boolean",
-        "null"
+        "null",
+        "boolean"
       ]
     },
     "tracks-release-branches": {
       "description": "Indicates this branch configuration represents develop in GitFlow.",
       "type": [
-        "boolean",
-        "null"
+        "null",
+        "boolean"
       ]
     },
     "update-build-number": {
@@ -359,8 +359,8 @@
       "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
       "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     "strategies": {
@@ -382,8 +382,8 @@
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     }
   },
@@ -409,22 +409,22 @@
         "of-merged-branch": {
           "description": "Prevent increment when branch merged.",
           "type": [
-            "boolean",
-            "null"
+            "null",
+            "boolean"
           ]
         },
         "when-branch-merged": {
           "description": "Prevent increment when branch merged.",
           "type": [
-            "boolean",
-            "null"
+            "null",
+            "boolean"
           ]
         },
         "when-current-commit-tagged": {
           "description": "This branch related property controls the behavior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.",
           "type": [
-            "boolean",
-            "null"
+            "null",
+            "boolean"
           ]
         }
       }

@@ -403,12 +403,16 @@ assembly-informational-format: &quot;{Major}.{Minor}.{Patch:F2}-{PreReleaseLabel
             </li>
             <li>
               <code>P</code> or <code>p</code> (Percent):
-              <code>{CommitsSinceVersionSource:P}</code> →
+              <code>{VersionSourceDistance:P}</code> →
               <code>&quot;12,345.60 %&quot;</code>
             </li>
             <li>
               <code>D</code> or <code>d</code> (Decimal):
               <code>{Major:D4}</code> → <code>&quot;0001&quot;</code>
+            </li>
+            <li>
+              <code>B</code> or <code>b</code> (Binary):
+              <code>{Minor:B4}</code> → <code>&quot;0101&quot;</code>
             </li>
             <li>
               <code>X</code> or <code>x</code> (Hexadecimal):
@@ -507,11 +511,11 @@ branches:
   feature:
     label: &quot;{BranchName:c}&quot;  # Converts to PascalCase
 
-assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{CommitsSinceVersionSource:0000}&quot;
+assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{VersionSourceDistance:0000}&quot;
 </code></pre>
           <p><strong>Template Usage:</strong></p>
           <pre><code class="language-yaml"># Using format strings in templates
-assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}&quot;
+assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}&quot;
 assembly-informational-format: &quot;{SemVer}-{BranchName:l}&quot;
 </code></pre>
           <h2 id="examples">Examples</h2>
@@ -520,7 +524,7 @@ assembly-informational-format: &quot;{SemVer}-{BranchName:l}&quot;
             Zero-Padded Numeric Formatting
           </h3>
           <pre><code class="language-yaml"># Zero-padded commit count
-assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}&quot;
+assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}&quot;
 # Result: &quot;1.2.3-0042&quot;
 </code></pre>
           <h3 id="string-case-transformations">String Case Transformations</h3>
@@ -542,7 +546,7 @@ assembly-informational-format: &quot;Cost-{Major:C}&quot;  # Result: &quot;Cost-
 assembly-informational-format: &quot;Progress-{Minor:P}&quot;  # Result: &quot;Progress-200.00 %&quot;
 
 # Thousands separator
-assembly-informational-format: &quot;Build-{CommitsSinceVersionSource:N0}&quot;  # Result: &quot;Build-1,234&quot;
+assembly-informational-format: &quot;Build-{VersionSourceDistance:N0}&quot;  # Result: &quot;Build-1,234&quot;
 </code></pre>
           <h2 id="configuration-integration">Configuration Integration</h2>
           <p>
@@ -551,9 +555,9 @@ assembly-informational-format: &quot;Build-{CommitsSinceVersionSource:N0}&quot; 
           </p>
           <h3 id="assembly-version-formatting">Assembly Version Formatting</h3>
           <pre><code class="language-yaml"># GitVersion.yml
-assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}&quot;
+assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}&quot;
 assembly-versioning-format: &quot;{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}&quot;
-assembly-file-versioning-format: &quot;{MajorMinorPatch}.{CommitsSinceVersionSource}&quot;
+assembly-file-versioning-format: &quot;{MajorMinorPatch}.{VersionSourceDistance}&quot;
 </code></pre>
           <h3 id="environment-variable-integration">
             Environment Variable Integration
@@ -567,15 +571,15 @@ assembly-informational-format: &quot;{SemVer}+{env:BUILD_ID ?? 'local'}&quot;
           </h3>
           <p>Based on the actual test implementation:</p>
           <pre><code class="language-yaml"># Example from VariableProviderTests.cs
-assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}&quot;
-# Result: &quot;1.2.3-0042&quot; when CommitsSinceVersionSource = 42
+assembly-informational-format: &quot;{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}&quot;
+# Result: &quot;1.2.3-0042&quot; when VersionSourceDistance = 42
 
 # Branch-specific formatting
 branches:
   feature:
     label: &quot;{BranchName:c}&quot;  # PascalCase conversion
   hotfix:
-    label: &quot;hotfix.{CommitsSinceVersionSource:00}&quot;
+    label: &quot;hotfix.{VersionSourceDistance:00}&quot;
 </code></pre>
           <h2 id="invariant-culture-formatting">
             Invariant Culture Formatting
@@ -605,7 +609,7 @@ branches:
             </li>
           </ul>
           <pre><code class="language-csharp">// All environments produce the same output:
-// {CommitsSinceVersionSource:N0} → &quot;1,234&quot;
+// {VersionSourceDistance:N0} → &quot;1,234&quot;
 // {CommitDate:MMM dd, yyyy} → &quot;Mar 15, 2024&quot;
 // {Major:C} → &quot;¤1.00&quot; (generic currency symbol)
 </code></pre>
