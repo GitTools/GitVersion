@@ -29,7 +29,7 @@ if (!Directory.Exists(Path.Combine(schemasDirectory, schemaVersion)))
 }
 
 var builder = new JsonSchemaBuilder();
-const string jsonSchemaUri = "https://json-schema.org/draft-07/schema#";
+const string jsonSchemaUri = "http://json-schema.org/draft-07/schema#";
 builder.Schema(jsonSchemaUri);
 builder.Id($"https://gitversion.net/schemas/{schemaVersion}/GitVersion.configuration.json");
 builder.Title($"GitVersion Configuration ({schemaVersion})");
