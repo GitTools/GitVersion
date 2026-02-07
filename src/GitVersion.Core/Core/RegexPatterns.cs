@@ -10,52 +10,52 @@ internal static partial class RegexPatterns
     private const RegexOptions Options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(2); // unified timeout for non-GeneratedRegex fallbacks
 
-        [StringSyntax(StringSyntaxAttribute.Regex)]
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     private const string SwitchArgumentRegexPattern = @"/\w+:";
 
-        [StringSyntax(StringSyntaxAttribute.Regex)]
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     private const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)";
 
-        [StringSyntax(StringSyntaxAttribute.Regex)]
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     private const string ExpandTokensRegexPattern =
         """
-            \{                              # Opening brace
-                (?:                         # Start of either env or member expression
-                    env:(?!env:)(?<envvar>[A-Za-z_][A-Za-z0-9_]*)       # Only a single env: prefix, not followed by another env:
-                    |                                                   # OR
-                    (?<member>[A-Za-z_][A-Za-z0-9_]*)                   # member/property name
-                    (?:                                                 # Optional format specifier
-                        :(?<format>[A-Za-z0-9\.\-,;'"]+)                # Colon followed by format string (including semicolons and quotes for legacy composite format)
-                    )?                                                  # Format is optional
-                )                                                       # End group for env or member
-                (?:                                                     # Optional fallback group
-                    \s*\?\?\s+                                          # '??' operator with optional whitespace: exactly two question marks for fallback
-                    (?:                                                 # Fallback value alternatives:
-                        (?<fallback>\w+)                                #   A single word fallback
-                        |                                               # OR
-                        "(?<fallback>[^"]*)"                            #   A quoted string fallback
-                    )
-                )?                                                      # Fallback is optional
-            \}
-            """;
+        \{                              # Opening brace
+            (?:                         # Start of either env or member expression
+                env:(?!env:)(?<envvar>[A-Za-z_][A-Za-z0-9_]*)       # Only a single env: prefix, not followed by another env:
+                |                                                   # OR
+                (?<member>[A-Za-z_][A-Za-z0-9_]*)                   # member/property name
+                (?:                                                 # Optional format specifier
+                    :(?<format>[A-Za-z0-9\.\-,;'"]+)                # Colon followed by format string (including semicolons and quotes for legacy composite format)
+                )?                                                  # Format is optional
+            )                                                       # End group for env or member
+            (?:                                                     # Optional fallback group
+                \s*\?\?\s+                                          # '??' operator with optional whitespace: exactly two question marks for fallback
+                (?:                                                 # Fallback value alternatives:
+                    (?<fallback>\w+)                                #   A single word fallback
+                    |                                               # OR
+                    "(?<fallback>[^"]*)"                            #   A quoted string fallback
+                )
+            )?                                                      # Fallback is optional
+        \}
+        """;
 
-        /// <summary>
-        ///   Allow alphanumeric, underscore, colon (for custom format specification), hyphen, and dot
-        /// </summary>
-        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
-        internal const string SanitizeEnvVarNameRegexPattern = @"^[A-Za-z0-9_:\-\.]+$";
+    /// <summary>
+    ///   Allow alphanumeric, underscore, colon (for custom format specification), hyphen, and dot
+    /// </summary>
+    [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+    internal const string SanitizeEnvVarNameRegexPattern = @"^[A-Za-z0-9_:\-\.]+$";
 
-        /// <summary>
-        ///   Allow alphanumeric, underscore, and dot for property/field access
-        /// </summary>
-        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
-        internal const string SanitizeMemberNameRegexPattern = @"^[A-Za-z0-9_\.]+$";
+    /// <summary>
+    ///   Allow alphanumeric, underscore, and dot for property/field access
+    /// </summary>
+    [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+    internal const string SanitizeMemberNameRegexPattern = @"^[A-Za-z0-9_\.]+$";
 
-        [StringSyntax(StringSyntaxAttribute.Regex, Options)]
-        internal const string SanitizeNameRegexPattern = "[^a-zA-Z0-9-]";
+    [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+    internal const string SanitizeNameRegexPattern = "[^a-zA-Z0-9-]";
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
+    [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
     public static partial Regex SwitchArgumentRegex { get; }
 #else
     [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
@@ -65,7 +65,7 @@ internal static partial class RegexPatterns
 #endif
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(ObscurePasswordRegexPattern, Options)]
+    [GeneratedRegex(ObscurePasswordRegexPattern, Options)]
     public static partial Regex ObscurePasswordRegex { get; }
 #else
     [GeneratedRegex(ObscurePasswordRegexPattern, Options)]
@@ -75,7 +75,7 @@ internal static partial class RegexPatterns
 #endif
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(ExpandTokensRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
+    [GeneratedRegex(ExpandTokensRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
     public static partial Regex ExpandTokensRegex { get; }
 #else
     [GeneratedRegex(ExpandTokensRegexPattern, RegexOptions.IgnorePatternWhitespace | Options)]
@@ -85,7 +85,7 @@ internal static partial class RegexPatterns
 #endif
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(SanitizeEnvVarNameRegexPattern, Options)]
+    [GeneratedRegex(SanitizeEnvVarNameRegexPattern, Options)]
     public static partial Regex SanitizeEnvVarNameRegex { get; }
 #else
     [GeneratedRegex(SanitizeEnvVarNameRegexPattern, Options)]
@@ -95,7 +95,7 @@ internal static partial class RegexPatterns
 #endif
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(SanitizeMemberNameRegexPattern, Options)]
+    [GeneratedRegex(SanitizeMemberNameRegexPattern, Options)]
     public static partial Regex SanitizeMemberNameRegex { get; }
 #else
     [GeneratedRegex(SanitizeMemberNameRegexPattern, Options)]
@@ -105,7 +105,7 @@ internal static partial class RegexPatterns
 #endif
 
 #if NET9_0_OR_GREATER
-        [GeneratedRegex(SanitizeNameRegexPattern, Options)]
+    [GeneratedRegex(SanitizeNameRegexPattern, Options)]
     public static partial Regex SanitizeNameRegex { get; }
 #else
     [GeneratedRegex(SanitizeNameRegexPattern, Options)]
@@ -126,7 +126,7 @@ internal static partial class RegexPatterns
                 KnownRegexes.TryGetValue(key, out var regex)
                     ? regex
                     : new Regex(key, Options, DefaultTimeout)); // now uses timeout for safety
-    }
+        }
 
         // Descriptor used to centralize pattern + compiled regex instance. Extendable with options/timeout metadata later.
         private readonly record struct RegexDescriptor(string Pattern, Regex Regex);
