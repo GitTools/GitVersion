@@ -71,6 +71,9 @@ public class GetVersion : GitVersionTaskBase
     public string CommitDate { get; set; }
 
     [Output]
+    public string VersionSourceSemVer { get; set; }
+
+    [Output]
     public string VersionSourceSha { get; set; }
 
     [Output]

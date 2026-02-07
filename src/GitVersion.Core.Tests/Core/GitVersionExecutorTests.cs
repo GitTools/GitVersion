@@ -48,6 +48,7 @@ public class GitVersionExecutorTests : TestBase
           "ShortSha": "dd2a29af",
           "UncommittedChanges": 0,
           "VersionSourceDistance": 19,
+          "VersionSourceSemVer": "4.10.2",
           "VersionSourceSha": "4.10.2",
           "WeightedPreReleaseNumber": 19
         }
@@ -420,6 +421,7 @@ public class GitVersionExecutorTests : TestBase
 
         // Verify
         version.SemVer.ShouldBe("1.0.0");
+        version.VersionSourceSemVer.ShouldBe("1.0.0");
         var commits = worktreeFixture.Repository.Head.Commits;
         version.Sha.ShouldBe(commits.First().Sha);
     }
@@ -483,6 +485,7 @@ public class GitVersionExecutorTests : TestBase
 
         // Verify
         version.SemVer.ShouldBe("1.0.1");
+        version.VersionSourceSemVer.ShouldBe("1.0.1");
         var commits = worktreeFixture.Repository.Head.Commits;
         version.Sha.ShouldBe(commits.First().Sha);
     }
@@ -578,6 +581,7 @@ public class GitVersionExecutorTests : TestBase
         // Verify that the correct commit is used
         version.Sha.ShouldBe(latestCommit.Sha);
         version.MajorMinorPatch.ShouldBe("2.0.0");
+        version.VersionSourceSemVer.ShouldBe("1.0.0");
 
         // Verify repository is still recognized as shallow
         var repository = this.sp.GetRequiredService<IGitRepository>();

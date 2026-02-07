@@ -52,6 +52,8 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
 
     public string InformationalVersion => semver.ToString("i");
 
+    public string? VersionSourceSemVer => semver.BuildMetaData.VersionSourceSemVer?.ToString();
+
     public string? VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 
     [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]

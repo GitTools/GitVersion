@@ -73,7 +73,7 @@ internal class NextVersionCalculator(
         var semanticVersion = CalculateSemanticVersion(
             deploymentMode: nextVersion.Configuration.DeploymentMode,
             semanticVersion: nextVersion.IncrementedVersion,
-            baseVersionSource: nextVersion.BaseVersion.BaseVersionSource
+            baseVersion: nextVersion.BaseVersion
         );
 
         var ignore = Context.Configuration.Ignore;
@@ -114,6 +114,7 @@ internal class NextVersionCalculator(
 
         if (currentCommitTaggedVersion is null) return result is not null;
         SemanticVersionBuildMetaData semanticVersionBuildMetaData = new(
+            versionSourceSemVer: currentCommitTaggedVersion.Value,
             versionSourceSha: Context.CurrentCommit.Sha,
             commitsSinceTag: null,
             branch: Context.CurrentBranch.Name.Friendly,
@@ -139,7 +140,7 @@ internal class NextVersionCalculator(
     }
 
     private SemanticVersion CalculateSemanticVersion(
-        DeploymentMode deploymentMode, SemanticVersion semanticVersion, ICommit? baseVersionSource)
+        DeploymentMode deploymentMode, SemanticVersion semanticVersion, IBaseVersion baseVersion)
     {
         IDeploymentModeCalculator deploymentModeCalculator = deploymentMode switch
         {
@@ -148,7 +149,7 @@ internal class NextVersionCalculator(
             DeploymentMode.ContinuousDeployment => deploymentModeCalculators.SingleOfType<ContinuousDeploymentVersionCalculator>(),
             _ => throw new InvalidEnumArgumentException(nameof(deploymentMode), (int)deploymentMode, typeof(DeploymentMode))
         };
-        return deploymentModeCalculator.Calculate(semanticVersion, baseVersionSource);
+        return deploymentModeCalculator.Calculate(semanticVersion, baseVersion);
     }
 
     private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)

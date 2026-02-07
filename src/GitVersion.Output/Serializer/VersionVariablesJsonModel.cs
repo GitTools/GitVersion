@@ -77,6 +77,9 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of commits since the version source.")]
     public int? VersionSourceDistance { get; set; }
 
+    [JsonPropertyDescription("The semantic version of the commit used as version source.")]
+    public string? VersionSourceSemVer { get; set; }
+
     [JsonPropertyDescription("The SHA of the commit used as version source.")]
     public string? VersionSourceSha { get; set; }
 

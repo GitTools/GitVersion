@@ -585,7 +585,6 @@ GitVersion.SemanticVersionBuildMetaData.OtherMetaData.get -> string?
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.init -> void
 GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData() -> void
 GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersionBuildMetaData! buildMetaData) -> void
-GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, System.DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null) -> void
 GitVersion.SemanticVersionBuildMetaData.Sha.get -> string?
 GitVersion.SemanticVersionBuildMetaData.Sha.init -> void
 GitVersion.SemanticVersionBuildMetaData.ShortSha.get -> string?
@@ -726,7 +725,6 @@ GitVersion.VersionCalculation.IBaseVersionIncrement
 GitVersion.VersionCalculation.IBaseVersionIncrement.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.IBaseVersionIncrement.Source.get -> string!
 GitVersion.VersionCalculation.IDeploymentModeCalculator
-GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.Git.ICommit? baseVersionSource) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder

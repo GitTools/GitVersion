@@ -38,5 +38,6 @@ type GitVersionInformation =
     static member ShortSha = "commitShortSha"
     static member UncommittedChanges = "0"
     static member VersionSourceDistance = "5"
+    static member VersionSourceSemVer = "1.2.2"
     static member VersionSourceSha = "versionSourceSha"
     static member WeightedPreReleaseNumber = "4"

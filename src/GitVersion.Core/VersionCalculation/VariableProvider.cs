@@ -62,6 +62,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             semverFormatValues.WeightedPreReleaseNumber,
             informationalVersion,
             semverFormatValues.CommitDate,
+            semverFormatValues.VersionSourceSemVer,
             semverFormatValues.VersionSourceSha,
             semverFormatValues.VersionSourceDistance,
             semverFormatValues.VersionSourceDistance,

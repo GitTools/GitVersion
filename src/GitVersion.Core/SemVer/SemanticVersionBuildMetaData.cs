@@ -24,6 +24,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public DateTimeOffset? CommitDate { get; init; }
 
+    public SemanticVersion? VersionSourceSemVer { get; init; }
+
     public string? VersionSourceSha { get; init; }
 
     public long CommitsSinceVersionSource => VersionSourceDistance;
@@ -36,8 +38,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     {
     }
 
-    public SemanticVersionBuildMetaData(string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha,
-        string? commitShortSha, DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch,
+        string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -45,6 +47,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.Branch = branch;
         this.CommitDate = commitDate;
         this.OtherMetaData = otherMetadata;
+        this.VersionSourceSemVer = versionSourceSemVer;
         this.VersionSourceSha = versionSourceSha;
         this.VersionSourceDistance = commitsSinceTag ?? 0;
         this.UncommittedChanges = numberOfUnCommittedChanges;
@@ -60,6 +63,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.Branch = buildMetaData.Branch;
         this.CommitDate = buildMetaData.CommitDate;
         this.OtherMetaData = buildMetaData.OtherMetaData;
+        this.VersionSourceSemVer = buildMetaData.VersionSourceSemVer;
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
         this.VersionSourceDistance = buildMetaData.VersionSourceDistance;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
