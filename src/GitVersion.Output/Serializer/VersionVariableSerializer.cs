@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using System.Text.Encodings.Web;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -9,8 +8,7 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
 {
     public static GitVersionVariables FromJson(string json)
     {
-        var serializeOptions = JsonSerializerOptions();
-        var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
+        var variablePairs = JsonSerializer.Deserialize(json, VersionVariablesJsonContext.Custom.DictionaryStringString);
         return FromDictionary(variablePairs);
     }
 
@@ -25,9 +23,7 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
             propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
         }
 
-        var serializeOptions = JsonSerializerOptions();
-
-        return JsonSerializer.Serialize(variables, serializeOptions);
+        return JsonSerializer.Serialize(variables, VersionVariablesJsonContext.Custom.VersionVariablesJsonModel);
     }
 
     public GitVersionVariables FromFile(string filePath)
@@ -93,8 +89,6 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
         var json = ToJson(gitVersionVariables);
         fileSystem.File.WriteAllText(filePath, json);
     }
-
-    private static JsonSerializerOptions JsonSerializerOptions() => new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
 
     private static object? ChangeType(object? value, Type type)
     {

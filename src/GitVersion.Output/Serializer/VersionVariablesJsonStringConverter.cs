@@ -31,5 +31,11 @@ internal class VersionVariablesJsonStringConverter : JsonConverter<string>
         writer.WriteStringValue(value);
     }
 
+    public override string ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        => reader.GetString() ?? "";
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+        => writer.WritePropertyName(value);
+
     public override bool HandleNull => true;
 }
