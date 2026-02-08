@@ -9,15 +9,15 @@ namespace GitVersion.VersionCalculation.Caching;
 
 internal class GitVersionCacheProvider(
     IFileSystem fileSystem,
-    ILog log,
+    ILogger<GitVersionCacheProvider> logger,
     IOptions<GitVersionOptions> options,
     IVersionVariableSerializer serializer,
     IGitVersionCacheKeyFactory cacheKeyFactory,
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheProvider
 {
+    private readonly ILogger<GitVersionCacheProvider> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IVersionVariableSerializer serializer = serializer.NotNull();
     private readonly IGitVersionCacheKeyFactory cacheKeyFactory = cacheKeyFactory.NotNull();
@@ -27,7 +27,7 @@ internal class GitVersionCacheProvider(
     {
         var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
-        using (this.log.IndentLog($"Write version variables to cache file {cacheFileName}"))
+        using (this.logger.StartIndentedScope($"Write version variables to cache file {cacheFileName}"))
         {
             try
             {
@@ -35,7 +35,7 @@ internal class GitVersionCacheProvider(
             }
             catch (Exception ex)
             {
-                this.log.Error($"Unable to write cache file {cacheFileName}. Got {ex.GetType().FullName} exception.");
+                this.logger.LogError(ex, "Unable to write cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, ex.GetType().FullName);
             }
         }
     }
@@ -44,11 +44,11 @@ internal class GitVersionCacheProvider(
     {
         var cacheKey = GetCacheKey();
         var cacheFileName = GetCacheFileName(cacheKey);
-        using (this.log.IndentLog($"Loading version variables from disk cache file {cacheFileName}"))
+        using (this.logger.StartIndentedScope($"Loading version variables from disk cache file {cacheFileName}"))
         {
             if (!this.fileSystem.File.Exists(cacheFileName))
             {
-                this.log.Info($"Cache file {cacheFileName} not found.");
+                this.logger.LogInformation("Cache file {CacheFileName} not found.", cacheFileName);
                 return null;
             }
 
@@ -59,15 +59,14 @@ internal class GitVersionCacheProvider(
             }
             catch (Exception ex)
             {
-                this.log.Warning($"Unable to read cache file {cacheFileName}, deleting it.");
-                this.log.Info(ex.ToString());
+                this.logger.LogError(ex, "Unable to read cache file {CacheFileName}, deleting it.", cacheFileName);
                 try
                 {
                     this.fileSystem.File.Delete(cacheFileName);
                 }
                 catch (Exception deleteEx)
                 {
-                    this.log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
+                    this.logger.LogError(deleteEx, "Unable to delete corrupted version cache file {CacheFileName}. Got {ExceptionType} exception.", cacheFileName, deleteEx.GetType().FullName);
                 }
 
                 return null;

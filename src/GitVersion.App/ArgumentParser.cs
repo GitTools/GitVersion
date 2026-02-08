@@ -1,28 +1,40 @@
 using System.IO.Abstractions;
-using GitVersion.Agents;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace GitVersion;
 
-internal class ArgumentParser(IEnvironment environment,
-                              IFileSystem fileSystem,
-                              ICurrentBuildAgent buildAgent,
-                              IConsole console,
-                              IGlobbingResolver globbingResolver)
+internal class ArgumentParser(
+    IEnvironment environment,
+    IFileSystem fileSystem,
+    IConsole console,
+    IGlobbingResolver globbingResolver,
+    LoggingLevelSwitch loggingLevelSwitch
+)
     : IArgumentParser
 {
     private readonly IEnvironment environment = environment.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
     private readonly IConsole console = console.NotNull();
     private readonly IGlobbingResolver globbingResolver = globbingResolver.NotNull();
+    private readonly LoggingLevelSwitch loggingLevelSwitch = loggingLevelSwitch.NotNull();
 
     private const string defaultOutputFileName = "GitVersion.json";
     private static readonly IEnumerable<string> availableVariables = GitVersionVariables.AvailableVariables;
+
+    private static readonly Dictionary<Verbosity, LogEventLevel> VerbosityMaps = new()
+    {
+        { Verbosity.Verbose, LogEventLevel.Verbose },
+        { Verbosity.Diagnostic, LogEventLevel.Debug },
+        { Verbosity.Normal, LogEventLevel.Information },
+        { Verbosity.Minimal, LogEventLevel.Warning },
+        { Verbosity.Quiet, LogEventLevel.Error }
+    };
 
     public Arguments ParseArguments(string commandLineArguments)
     {
@@ -44,8 +56,6 @@ internal class ArgumentParser(IEnvironment environment,
 
             AddAuthentication(args);
 
-            args.NoFetch = this.buildAgent.PreventFetch();
-
             return args;
         }
 
@@ -53,18 +63,12 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (firstArgument.IsHelp())
         {
-            return new Arguments
-            {
-                IsHelp = true
-            };
+            return new Arguments { IsHelp = true };
         }
 
         if (firstArgument.IsSwitch("version"))
         {
-            return new Arguments
-            {
-                IsVersion = true
-            };
+            return new Arguments { IsVersion = true };
         }
 
         var arguments = new Arguments();
@@ -97,7 +101,6 @@ internal class ArgumentParser(IEnvironment environment,
         arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
 
         if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
-        arguments.NoFetch = arguments.NoFetch || this.buildAgent.PreventFetch();
 
         ValidateConfigurationFile(arguments);
 
@@ -197,7 +200,7 @@ internal class ArgumentParser(IEnvironment environment,
         throw new WarningException(couldNotParseMessage);
     }
 
-    private static bool ParseSwitches(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
+    private bool ParseSwitches(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
     {
         if (name.IsSwitch("l"))
         {
@@ -285,7 +288,8 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (name.IsSwitch("verbosity"))
         {
-            ParseVerbosity(arguments, value);
+            var verbosity = ParseVerbosity(value);
+            loggingLevelSwitch.MinimumLevel = VerbosityMaps[verbosity];
             return true;
         }
 
@@ -430,12 +434,14 @@ internal class ArgumentParser(IEnvironment environment,
         }
     }
 
-    private static void ParseVerbosity(Arguments arguments, string? value)
+    internal static Verbosity ParseVerbosity(string? value)
     {
-        if (!Enum.TryParse(value, true, out arguments.Verbosity))
+        if (!Enum.TryParse(value, true, out Verbosity verbosity))
         {
             throw new WarningException($"Could not parse Verbosity value '{value}'");
         }
+
+        return verbosity;
     }
 
     private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string>? values)
@@ -459,8 +465,10 @@ internal class ArgumentParser(IEnvironment environment,
             {
                 throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
             }
+
             parser.SetValue(optionKey, keyAndValue[1]);
         }
+
         arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 
@@ -499,6 +507,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             throw new WarningException("Cannot specify both updateprojectfiles and updateassemblyinfo in the same run. Please rerun GitVersion with only one parameter");
         }
+
         if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
         {
             throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
@@ -540,6 +549,7 @@ internal class ArgumentParser(IEnvironment environment,
         {
             throw new WarningException("Cannot specify both updateassemblyinfo and updateprojectfiles in the same run. Please rerun GitVersion with only one parameter");
         }
+
         if (arguments.EnsureAssemblyInfo)
         {
             throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
