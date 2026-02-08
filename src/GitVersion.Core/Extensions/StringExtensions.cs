@@ -1,9 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using GitVersion.Core;
 
 namespace GitVersion.Extensions;
 
+#pragma warning disable S2325, S1144, S4136, S1199
 public static class StringExtensions
 {
     public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
@@ -12,25 +14,54 @@ public static class StringExtensions
         stringBuilder.AppendLine();
     }
 
-    public static string RegexReplace(this string input, string pattern, string replace)
+    extension(string input)
     {
-        var regex = RegexPatterns.Cache.GetOrAdd(pattern);
-        return regex.Replace(input, replace);
+        public string RegexReplace(string pattern, string replace)
+        {
+            var regex = RegexPatterns.Cache.GetOrAdd(pattern);
+            return regex.Replace(input, replace);
+        }
+
+        public bool IsEquivalentTo(string? other) =>
+            string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
+
+        public string WithPrefixIfNotNullOrEmpty(string prefix)
+            => string.IsNullOrEmpty(input) ? input : prefix + input;
     }
 
-    public static bool IsEquivalentTo(this string self, string? other) =>
-        string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
+    extension([NotNullWhen(false)] string? value)
+    {
+        /// <inheritdoc cref="string.IsNullOrEmpty"/>
+        public bool IsNullOrEmpty() => string.IsNullOrEmpty(value);
 
-    /// <inheritdoc cref="string.IsNullOrEmpty"/>
-    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? value) => string.IsNullOrEmpty(value);
+        /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
+        public bool IsNullOrWhiteSpace() => string.IsNullOrWhiteSpace(value);
+    }
 
-    /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
-    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
+#pragma warning disable S108
+    extension([NotNull] string? value)
+    {
+        public string NotNullOrEmpty([CallerArgumentExpression(nameof(value))] string name = "")
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("The parameter is null or empty.", name);
+            }
 
-    public static bool IsEmpty([NotNullWhen(false)] this string? value) => string.Empty.Equals(value);
+            return value;
+        }
 
-    public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
-        => string.IsNullOrEmpty(value) ? value : prefix + value;
+        public string NotNullOrWhitespace([CallerArgumentExpression(nameof(value))] string name = "")
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("The parameter is null or empty or contains only white space.", name);
+            }
+
+            return value;
+        }
+    }
+#pragma warning restore S108
 
     internal static string ToPascalCase(this TextInfo textInfo, string input)
     {
@@ -57,3 +88,4 @@ public static class StringExtensions
         return sb.ToString();
     }
 }
+#pragma warning restore S2325, S1144, S4136, S1199

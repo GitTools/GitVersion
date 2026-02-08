@@ -1,7 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
@@ -9,7 +8,7 @@ using GitVersion.VersionCalculation.Caching;
 namespace GitVersion;
 
 internal class GitVersionCalculateTool(
-    ILog log,
+    ILogger<GitVersionCalculateTool> logger,
     INextVersionCalculator nextVersionCalculator,
     IVariableProvider variableProvider,
     IGitPreparer gitPreparer,
@@ -18,7 +17,7 @@ internal class GitVersionCalculateTool(
     Lazy<GitVersionContext> versionContext)
     : IGitVersionCalculateTool
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<GitVersionCalculateTool> logger = logger.NotNull();
     private readonly IGitVersionCacheProvider gitVersionCacheProvider = gitVersionCacheProvider.NotNull();
     private readonly INextVersionCalculator nextVersionCalculator = nextVersionCalculator.NotNull();
     private readonly IVariableProvider variableProvider = variableProvider.NotNull();
@@ -53,9 +52,9 @@ internal class GitVersionCalculateTool(
         {
             this.gitVersionCacheProvider.WriteVariablesToDiskCache(versionVariables);
         }
-        catch (AggregateException e)
+        catch (AggregateException ex)
         {
-            this.log.Warning($"One or more exceptions during cache write:{FileSystemHelper.Path.NewLine}{e}");
+            this.logger.LogError(ex, "One or more exceptions during cache write:{NewLine}", FileSystemHelper.Path.NewLine);
         }
 
         return versionVariables;

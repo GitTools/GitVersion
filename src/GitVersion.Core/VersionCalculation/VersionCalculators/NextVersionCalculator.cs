@@ -9,7 +9,7 @@ using GitVersion.Logging;
 namespace GitVersion.VersionCalculation;
 
 internal class NextVersionCalculator(
-    ILog log,
+    ILogger<NextVersionCalculator> logger,
     Lazy<GitVersionContext> versionContext,
     IEnumerable<IDeploymentModeCalculator> deploymentModeCalculators,
     IEnumerable<IVersionStrategy> versionStrategies,
@@ -17,7 +17,7 @@ internal class NextVersionCalculator(
     ITaggedSemanticVersionService taggedSemanticVersionService)
     : INextVersionCalculator
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<NextVersionCalculator> logger = logger.NotNull();
     private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
     private readonly IVersionStrategy[] versionStrategies = [.. versionStrategies.NotNull()];
     private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
@@ -26,7 +26,7 @@ internal class NextVersionCalculator(
 
     public virtual SemanticVersion FindVersion()
     {
-        this.log.Info($"Running against branch: {Context.CurrentBranch} ({Context.CurrentCommit.ToString() ?? "-"})");
+        this.logger.LogInformation("Running against branch: {BranchName} ({Commit})", Context.CurrentBranch, Context.CurrentCommit.ToString() ?? "-");
 
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
         EffectiveConfiguration effectiveConfiguration = new(Context.Configuration, branchConfiguration);
@@ -155,7 +155,7 @@ internal class NextVersionCalculator(
     private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {
         var nextVersions = GetNextVersions(branch, configuration);
-        log.Separator();
+        this.logger.LogSeparator();
 
         var maxVersion = nextVersions.Max()
             ?? throw new GitVersionException("No base versions determined on the current branch.");
@@ -172,9 +172,10 @@ internal class NextVersionCalculator(
             var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
             latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;
             maxVersion = latestVersion;
-            log.Info(
-                $"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), " +
-                $"taking latest source for commit counting ({latestVersion.BaseVersion.Source})");
+            this.logger.LogInformation(
+                "Found multiple base versions which will produce the same SemVer ({IncrementedVersion}), " +
+                "taking latest source for commit counting ({Source})",
+                maxVersion.IncrementedVersion, latestVersion.BaseVersion.Source);
         }
         else
         {
@@ -209,8 +210,8 @@ internal class NextVersionCalculator(
             }
         };
 
-        log.Info($"Base version used: {calculatedBase}");
-        log.Separator();
+        this.logger.LogInformation("Base version used: {BaseVersion}", calculatedBase);
+        this.logger.LogSeparator();
 
         return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
@@ -230,7 +231,7 @@ internal class NextVersionCalculator(
 
     private List<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
-        using (log.IndentLog("Fetching the base versions for version calculation..."))
+        using (this.logger.StartIndentedScope("Fetching the base versions for version calculation..."))
         {
             if (branch.Tip == null)
                 throw new GitVersionException("No commits found on the current branch.");
@@ -243,7 +244,7 @@ internal class NextVersionCalculator(
             var effectiveBranchConfigurations = this.effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration).ToArray();
             foreach (var effectiveBranchConfiguration in effectiveBranchConfigurations)
             {
-                using (this.log.IndentLog($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
+                using (this.logger.StartIndentedScope($"Calculating base versions for '{effectiveBranchConfiguration.Branch.Name}'"))
                 {
                     var strategies = this.versionStrategies.ToList();
                     var fallbackVersionStrategy = strategies.Find(element => element is FallbackVersionStrategy);
@@ -258,11 +259,11 @@ internal class NextVersionCalculator(
                     {
                         if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
 
-                        using (this.log.IndentLog($"[Using '{versionStrategy.GetType().Name}' strategy]"))
+                        using (this.logger.StartIndentedScope($"[Using '{versionStrategy.GetType().Name}' strategy]"))
                         {
                             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                             {
-                                log.Info(baseVersion.ToString());
+                                this.logger.LogInformation("{BaseVersion}", baseVersion.ToString());
                                 if (!IncludeVersion(baseVersion, configuration.Ignore)) continue;
                                 atLeastOneBaseVersionReturned = true;
 
@@ -286,7 +287,7 @@ internal class NextVersionCalculator(
             if (!versionFilter.Exclude(baseVersion, out var reason)) continue;
             if (reason != null)
             {
-                this.log.Info(reason);
+                this.logger.LogInformation("{Reason}", reason);
             }
 
             return false;

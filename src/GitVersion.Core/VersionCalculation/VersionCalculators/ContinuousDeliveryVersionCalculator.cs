@@ -4,12 +4,12 @@ using GitVersion.Logging;
 namespace GitVersion.VersionCalculation;
 
 internal sealed class ContinuousDeliveryVersionCalculator(
-        ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    : VersionCalculatorBase(log, repositoryStore, versionContext), IDeploymentModeCalculator
+        ILogger<ContinuousDeliveryVersionCalculator> logger, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+    : VersionCalculatorBase(logger, repositoryStore, versionContext), IDeploymentModeCalculator
 {
     public SemanticVersion Calculate(SemanticVersion semanticVersion, IBaseVersion baseVersion)
     {
-        using (this.log.IndentLog("Using continuous delivery workflow to calculate the incremented version."))
+        using (this.logger.StartIndentedScope("Using continuous delivery workflow to calculate the incremented version."))
         {
             var preReleaseTag = semanticVersion.PreReleaseTag;
             if (!preReleaseTag.HasTag() || !preReleaseTag.Number.HasValue)

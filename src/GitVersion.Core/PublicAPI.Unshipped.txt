@@ -1,1 +1,34 @@
 #nullable enable
+GitVersion.Extensions.StringExtensions.extension(string!)
+GitVersion.Extensions.StringExtensions.extension(string!).IsEquivalentTo(string? other) -> bool
+GitVersion.Extensions.StringExtensions.extension(string!).RegexReplace(string! pattern, string! replace) -> string!
+GitVersion.Extensions.StringExtensions.extension(string!).WithPrefixIfNotNullOrEmpty(string! prefix) -> string!
+GitVersion.Extensions.StringExtensions.extension(string?)
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrEmpty() -> bool
+GitVersion.Extensions.StringExtensions.extension(string?).IsNullOrWhiteSpace() -> bool
+GitVersion.Extensions.StringExtensions.extension(string?).NotNullOrEmpty(string! name = "") -> string!
+GitVersion.Extensions.StringExtensions.extension(string?).NotNullOrWhitespace(string! name = "") -> string!
+GitVersion.GitVersionOptions.Diag.get -> bool
+GitVersion.GitVersionOptions.Diag.init -> void
+GitVersion.GitVersionOptions.Format.get -> string?
+GitVersion.GitVersionOptions.Format.init -> void
+GitVersion.GitVersionOptions.GitVersionOptions() -> void
+GitVersion.GitVersionOptions.IsHelp.get -> bool
+GitVersion.GitVersionOptions.IsHelp.init -> void
+GitVersion.GitVersionOptions.IsVersion.get -> bool
+GitVersion.GitVersionOptions.IsVersion.init -> void
+GitVersion.GitVersionOptions.LogFilePath.get -> string?
+GitVersion.GitVersionOptions.LogFilePath.init -> void
+GitVersion.GitVersionOptions.Output.get -> System.Collections.Generic.ISet<GitVersion.OutputType>!
+GitVersion.GitVersionOptions.Output.init -> void
+GitVersion.GitVersionOptions.OutputFile.get -> string?
+GitVersion.GitVersionOptions.OutputFile.init -> void
+GitVersion.GitVersionOptions.ShowVariable.get -> string?
+GitVersion.GitVersionOptions.ShowVariable.init -> void
+static GitVersion.Extensions.StringExtensions.IsEquivalentTo(this string! input, string? other) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
+static GitVersion.Extensions.StringExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
+static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
+static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! input, string! prefix) -> string!

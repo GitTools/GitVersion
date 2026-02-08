@@ -1,23 +1,22 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.WixUpdater;
 
 internal interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>;
-internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : IWixVersionFileUpdater
+internal sealed class WixVersionFileUpdater(ILogger<WixVersionFileUpdater> logger, IFileSystem fileSystem) : IWixVersionFileUpdater
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<WixVersionFileUpdater> logger = logger.NotNull();
     private string? wixVersionFile;
     public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
     public void Execute(GitVersionVariables variables, WixVersionContext context)
     {
         this.wixVersionFile = FileSystemHelper.Path.Combine(context.WorkingDirectory, WixVersionFileName);
-        this.log.Info("Updating GitVersion_WixVersion.wxi");
+        this.logger.LogInformation("Updating GitVersion_WixVersion.wxi");
 
         var doc = new XmlDocument();
         doc.LoadXml(GetWixFormatFromVersionVariables(variables));

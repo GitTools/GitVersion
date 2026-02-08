@@ -31,6 +31,7 @@ public class ArgumentParserTests : TestBase
         arguments.TargetPath.ShouldBe(SysEnv.CurrentDirectory);
         arguments.LogFilePath.ShouldBe(null);
         arguments.IsHelp.ShouldBe(false);
+        arguments.NoFetch.ShouldBe(false);
     }
 
     [Test]
@@ -737,22 +738,22 @@ public class ArgumentParserTests : TestBase
         arguments.NoCache.ShouldBe(true);
     }
 
-    [TestCase("-verbosity x", true, Verbosity.Normal)]
-    [TestCase("-verbosity diagnostic", false, Verbosity.Diagnostic)]
-    [TestCase("-verbosity Minimal", false, Verbosity.Minimal)]
-    [TestCase("-verbosity NORMAL", false, Verbosity.Normal)]
-    [TestCase("-verbosity quiet", false, Verbosity.Quiet)]
-    [TestCase("-verbosity Verbose", false, Verbosity.Verbose)]
+    [TestCase("x", true, Verbosity.Normal)]
+    [TestCase("diagnostic", false, Verbosity.Diagnostic)]
+    [TestCase("Minimal", false, Verbosity.Minimal)]
+    [TestCase("NORMAL", false, Verbosity.Normal)]
+    [TestCase("quiet", false, Verbosity.Quiet)]
+    [TestCase("Verbose", false, Verbosity.Verbose)]
     public void CheckVerbosityParsing(string command, bool shouldThrow, Verbosity expectedVerbosity)
     {
         if (shouldThrow)
         {
-            Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
+            Assert.Throws<WarningException>(() => ArgumentParser.ParseVerbosity(command));
         }
         else
         {
-            var arguments = this.argumentParser.ParseArguments(command);
-            arguments.Verbosity.ShouldBe(expectedVerbosity);
+            var verbosity = ArgumentParser.ParseVerbosity(command);
+            verbosity.ShouldBe(expectedVerbosity);
         }
     }
 
