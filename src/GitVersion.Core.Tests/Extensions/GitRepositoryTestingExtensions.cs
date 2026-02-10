@@ -160,12 +160,22 @@ public static class GitRepositoryTestingExtensions
         {
             repository ??= fixture.Repository;
 
-            var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch);
             variables.FullSemVer.ShouldBe(fullSemver);
             if (commitId == null)
             {
                 fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
             }
+        }
+
+        public IServiceProvider ConfigureServices(Action<IServiceCollection, RepositoryFixtureBase>? overrideServices = null)
+        {
+            var services = new ServiceCollection()
+                .AddModule(new GitVersionCoreTestModule());
+
+            overrideServices?.Invoke(services, fixture);
+
+            return services.BuildServiceProvider();
         }
     }
 

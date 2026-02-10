@@ -24,7 +24,11 @@ public static class Extensions
 
             fileSystem.File.WriteAllText(fullPath, text);
 
-            return Disposable.Create(fullPath, () => fileSystem.File.Delete(fullPath));
+            return Disposable.Create(fullPath, () =>
+            {
+                fileSystem.File.Delete(fullPath);
+                fileSystem.Directory.Delete(directory, true);
+            });
         }
     }
 }

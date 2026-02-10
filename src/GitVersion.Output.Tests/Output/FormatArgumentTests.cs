@@ -1,3 +1,4 @@
+using GitVersion.Core.Tests;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.Output.OutputGenerator;
@@ -15,15 +16,15 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{PreReleaseTag}", "1.1.0.foo.1")]
     public void ShouldOutputFormatTests(string format, string expectedValue)
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);
@@ -42,16 +43,16 @@ public class FormatArgumentTests : TestBase
     [TestCase("{Major}.{Minor}.{Patch}.{env:CustomVar}", "1.1.0.foo")]
     public void ShouldOutputFormatWithEnvironmentVariablesTests(string format, string expectedValue)
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
         var consoleBuilder = new StringBuilder();
         IConsole console = new TestConsoleAdapter(consoleBuilder);
         var environment = new TestEnvironment();
         environment.SetEnvironmentVariable("CustomVar", "foo");
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Format = format, Output = { OutputType.Json } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);
@@ -76,15 +77,15 @@ public class FormatArgumentTests : TestBase
     [TestCase("FullSemVer", "'1.1.0-foo.1+1'")]
     public void ShouldOutputDotEnvEntries(string variableName, string expectedValue)
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);
@@ -102,15 +103,15 @@ public class FormatArgumentTests : TestBase
     [TestCase]
     public void ShouldOutputAllCalculatedVariablesAsDotEnvEntries()
     {
-        var fixture = CreateTestRepository();
+        using var fixture = CreateTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);
@@ -137,15 +138,15 @@ public class FormatArgumentTests : TestBase
     [TestCase("PreReleaseLabelWithDash", "''")]
     public void ShouldOutputAllDotEnvEntriesEvenForMinimalRepositories(string variableName, string expectedValue)
     {
-        var fixture = CreateMinimalTestRepository();
+        using var fixture = CreateMinimalTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);
@@ -163,15 +164,15 @@ public class FormatArgumentTests : TestBase
     [TestCase]
     public void ShouldOutputAllCalculatedVariablesAsDotEnvEntriesEvenForMinimalRepositories()
     {
-        var fixture = CreateMinimalTestRepository();
+        using var fixture = CreateMinimalTestRepository();
 
         var consoleBuilder = new StringBuilder();
         IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-        var sp = ConfigureServices(services =>
+        var sp = fixture.ConfigureServices((services, testFixture) =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, RepositoryInfo = { TargetBranch = fixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
-            var repository = fixture.Repository.ToGitRepository();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = testFixture.RepositoryPath, RepositoryInfo = { TargetBranch = testFixture.Repository.Head.CanonicalName }, Output = { OutputType.DotEnv } });
+            var repository = testFixture.Repository.ToGitRepository();
 
             services.AddSingleton(options);
             services.AddSingleton(repository);

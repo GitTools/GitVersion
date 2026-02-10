@@ -531,7 +531,7 @@ public class MainlineDevelopmentScenarios : TestBase
         fixture.BranchTo("develop");
         fixture.AssertFullSemver("0.1.0-alpha.0", configuration);
         fixture.Repository.DumpGraph();
-        var local = fixture.CloneRepository();
+        using var local = fixture.CloneRepository();
         fixture.AssertFullSemver("0.1.0-alpha.0", configuration, repository: local.Repository);
         local.Repository.DumpGraph();
     }
