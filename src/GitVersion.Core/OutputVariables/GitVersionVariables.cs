@@ -1,104 +1,101 @@
 namespace GitVersion.OutputVariables;
 
-public record GitVersionVariables(string Major,
-                                  string Minor,
-                                  string Patch,
-                                  string? BuildMetaData,
-                                  string? FullBuildMetaData,
-                                  string? BranchName,
-                                  string? EscapedBranchName,
-                                  string? Sha,
-                                  string? ShortSha,
-                                  string MajorMinorPatch,
-                                  string SemVer,
-                                  string FullSemVer,
-                                  string? AssemblySemVer,
-                                  string? AssemblySemFileVer,
-                                  string? PreReleaseTag,
-                                  string? PreReleaseTagWithDash,
-                                  string? PreReleaseLabel,
-                                  string? PreReleaseLabelWithDash,
-                                  string? PreReleaseNumber,
-                                  string WeightedPreReleaseNumber,
-                                  string? InformationalVersion,
-                                  string? CommitDate,
-                                  string? VersionSourceSemVer,
-                                  string? VersionSourceSha,
-                                  [property: Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
-                                  string? CommitsSinceVersionSource,
-                                  string? VersionSourceDistance,
-                                  string? UncommittedChanges) : IEnumerable<KeyValuePair<string, string?>>
+public record GitVersionVariables(
+    string? AssemblySemFileVer,
+    string? AssemblySemVer,
+    string? BranchName,
+    string? BuildMetaData,
+    string? CommitDate,
+    [property: Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
+    string? CommitsSinceVersionSource,
+    string? EscapedBranchName,
+    string? FullBuildMetaData,
+    string FullSemVer,
+    string? InformationalVersion,
+    string Major,
+    string MajorMinorPatch,
+    string Minor,
+    string Patch,
+    string? PreReleaseLabel,
+    string? PreReleaseLabelWithDash,
+    string? PreReleaseNumber,
+    string? PreReleaseTag,
+    string? PreReleaseTagWithDash,
+    string SemVer,
+    string? Sha,
+    string? ShortSha,
+    string? UncommittedChanges,
+    string? VersionSourceDistance,
+    string? VersionSourceSemVer,
+    string? VersionSourceSha,
+    string WeightedPreReleaseNumber
+) : IEnumerable<KeyValuePair<string, string?>>
 {
     internal static readonly List<string> AvailableVariables =
     [
+        nameof(AssemblySemFileVer),
+        nameof(AssemblySemVer),
+        nameof(BranchName),
+        nameof(BuildMetaData),
+        nameof(CommitDate),
+        nameof(CommitsSinceVersionSource),
+        nameof(EscapedBranchName),
+        nameof(FullBuildMetaData),
+        nameof(FullSemVer),
+        nameof(InformationalVersion),
         nameof(Major),
+        nameof(MajorMinorPatch),
         nameof(Minor),
         nameof(Patch),
-        nameof(BuildMetaData),
-        nameof(FullBuildMetaData),
-        nameof(BranchName),
-        nameof(EscapedBranchName),
-        nameof(Sha),
-        nameof(ShortSha),
-        nameof(MajorMinorPatch),
-        nameof(SemVer),
-        nameof(FullSemVer),
-        nameof(AssemblySemVer),
-        nameof(AssemblySemFileVer),
-        nameof(PreReleaseTag),
-        nameof(PreReleaseTagWithDash),
         nameof(PreReleaseLabel),
         nameof(PreReleaseLabelWithDash),
         nameof(PreReleaseNumber),
-        nameof(WeightedPreReleaseNumber),
-        nameof(InformationalVersion),
-        nameof(CommitDate),
+        nameof(PreReleaseTag),
+        nameof(PreReleaseTagWithDash),
+        nameof(SemVer),
+        nameof(Sha),
+        nameof(ShortSha),
+        nameof(UncommittedChanges),
+        nameof(VersionSourceDistance),
         nameof(VersionSourceSemVer),
         nameof(VersionSourceSha),
-        nameof(CommitsSinceVersionSource),
-        nameof(VersionSourceDistance),
-        nameof(UncommittedChanges)
+        nameof(WeightedPreReleaseNumber)
     ];
 
-    private Dictionary<string, string?> Instance => new()
+    private Dictionary<string, string?> Instance => field ??= new()
     {
+        { nameof(AssemblySemFileVer), AssemblySemFileVer },
+        { nameof(AssemblySemVer), AssemblySemVer },
+        { nameof(BranchName), BranchName },
+        { nameof(BuildMetaData), BuildMetaData },
+        { nameof(CommitDate), CommitDate },
+        { nameof(CommitsSinceVersionSource), CommitsSinceVersionSource },
+        { nameof(EscapedBranchName), EscapedBranchName },
+        { nameof(FullBuildMetaData), FullBuildMetaData },
+        { nameof(FullSemVer), FullSemVer },
+        { nameof(InformationalVersion), InformationalVersion },
         { nameof(Major), Major },
+        { nameof(MajorMinorPatch), MajorMinorPatch },
         { nameof(Minor), Minor },
         { nameof(Patch), Patch },
-        { nameof(BuildMetaData), BuildMetaData },
-        { nameof(FullBuildMetaData), FullBuildMetaData },
-        { nameof(BranchName), BranchName },
-        { nameof(EscapedBranchName), EscapedBranchName },
-        { nameof(Sha), Sha },
-        { nameof(ShortSha), ShortSha },
-        { nameof(MajorMinorPatch), MajorMinorPatch },
-        { nameof(SemVer), SemVer },
-        { nameof(FullSemVer), FullSemVer },
-        { nameof(AssemblySemVer), AssemblySemVer },
-        { nameof(AssemblySemFileVer), AssemblySemFileVer },
-        { nameof(PreReleaseTag), PreReleaseTag },
-        { nameof(PreReleaseTagWithDash), PreReleaseTagWithDash },
         { nameof(PreReleaseLabel), PreReleaseLabel },
         { nameof(PreReleaseLabelWithDash), PreReleaseLabelWithDash },
         { nameof(PreReleaseNumber), PreReleaseNumber },
-        { nameof(WeightedPreReleaseNumber), WeightedPreReleaseNumber },
-        { nameof(InformationalVersion), InformationalVersion },
-        { nameof(CommitDate), CommitDate },
+        { nameof(PreReleaseTag), PreReleaseTag },
+        { nameof(PreReleaseTagWithDash), PreReleaseTagWithDash },
+        { nameof(SemVer), SemVer },
+        { nameof(Sha), Sha },
+        { nameof(ShortSha), ShortSha },
+        { nameof(UncommittedChanges), UncommittedChanges },
+        { nameof(VersionSourceDistance), VersionSourceDistance },
         { nameof(VersionSourceSemVer), VersionSourceSemVer },
         { nameof(VersionSourceSha), VersionSourceSha },
-        { nameof(CommitsSinceVersionSource), CommitsSinceVersionSource },
-        { nameof(VersionSourceDistance), VersionSourceDistance },
-        { nameof(UncommittedChanges), UncommittedChanges }
+        { nameof(WeightedPreReleaseNumber), WeightedPreReleaseNumber }
     };
 
     public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => Instance.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => Instance.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public bool TryGetValue(string variable, out string? variableValue)
-    {
-        if (Instance.TryGetValue(variable, out variableValue)) return true;
-        variableValue = null;
-        return false;
-    }
+    public bool TryGetValue(string variable, out string? variableValue) => Instance.TryGetValue(variable, out variableValue);
 }

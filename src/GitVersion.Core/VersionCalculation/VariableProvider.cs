@@ -40,34 +40,33 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         );
 
         return new(
-            semverFormatValues.Major,
-            semverFormatValues.Minor,
-            semverFormatValues.Patch,
-            semverFormatValues.BuildMetaData,
-            semverFormatValues.FullBuildMetaData,
-            semverFormatValues.BranchName,
-            semverFormatValues.EscapedBranchName,
-            semverFormatValues.Sha,
-            semverFormatValues.ShortSha,
-            semverFormatValues.MajorMinorPatch,
-            semverFormatValues.SemVer,
-            semverFormatValues.FullSemVer,
-            assemblySemVer,
-            assemblyFileSemVer,
-            semverFormatValues.PreReleaseTag,
-            semverFormatValues.PreReleaseTagWithDash,
-            semverFormatValues.PreReleaseLabel,
-            semverFormatValues.PreReleaseLabelWithDash,
-            semverFormatValues.PreReleaseNumber,
-            semverFormatValues.WeightedPreReleaseNumber,
-            informationalVersion,
-            semverFormatValues.CommitDate,
-            semverFormatValues.VersionSourceSemVer,
-            semverFormatValues.VersionSourceSha,
-            semverFormatValues.VersionSourceDistance,
-            semverFormatValues.VersionSourceDistance,
-            semverFormatValues.UncommittedChanges
-        );
+            AssemblySemFileVer: assemblyFileSemVer,
+            AssemblySemVer: assemblySemVer,
+            BranchName: semverFormatValues.BranchName,
+            BuildMetaData: semverFormatValues.BuildMetaData,
+            CommitDate: semverFormatValues.CommitDate,
+            CommitsSinceVersionSource: semverFormatValues.VersionSourceDistance,
+            EscapedBranchName: semverFormatValues.EscapedBranchName,
+            FullBuildMetaData: semverFormatValues.FullBuildMetaData,
+            FullSemVer: semverFormatValues.FullSemVer,
+            InformationalVersion: informationalVersion,
+            Major: semverFormatValues.Major,
+            MajorMinorPatch: semverFormatValues.MajorMinorPatch,
+            Minor: semverFormatValues.Minor,
+            Patch: semverFormatValues.Patch,
+            PreReleaseLabel: semverFormatValues.PreReleaseLabel,
+            PreReleaseLabelWithDash: semverFormatValues.PreReleaseLabelWithDash,
+            PreReleaseNumber: semverFormatValues.PreReleaseNumber,
+            PreReleaseTag: semverFormatValues.PreReleaseTag,
+            PreReleaseTagWithDash: semverFormatValues.PreReleaseTagWithDash,
+            SemVer: semverFormatValues.SemVer,
+            Sha: semverFormatValues.Sha,
+            ShortSha: semverFormatValues.ShortSha,
+            UncommittedChanges: semverFormatValues.UncommittedChanges,
+            VersionSourceDistance: semverFormatValues.VersionSourceDistance,
+            VersionSourceSemVer: semverFormatValues.VersionSourceSemVer,
+            VersionSourceSha: semverFormatValues.VersionSourceSha,
+            WeightedPreReleaseNumber: semverFormatValues.WeightedPreReleaseNumber);
     }
 
     private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
@@ -83,7 +82,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             try
             {
                 formattedString = formatString.FormatWith(source, this.environment)
-                                              .RegexReplace(RegexPatterns.Output.SanitizeAssemblyInfoRegexPattern, "-");
+                    .RegexReplace(RegexPatterns.Output.SanitizeAssemblyInfoRegexPattern, "-");
             }
             catch (ArgumentException exception)
             {

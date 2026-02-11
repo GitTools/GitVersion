@@ -33,7 +33,7 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
             chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseTag?.Replace(".", "-")}";
         }
 
-        if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData))
+        if (gitVersion.BuildMetaData is not null)
         {
             semVersion += $"-{gitVersion.BuildMetaData}";
             chocolateyVersion += $"-{gitVersion.BuildMetaData}";
