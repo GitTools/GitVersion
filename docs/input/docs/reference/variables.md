@@ -35,6 +35,7 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "ShortSha": "28c8531",
     "UncommittedChanges": 0,
     "VersionSourceDistance": 7,
+    "VersionSourceIncrement": "Minor",
     "VersionSourceSemVer": "3.22.11",
     "VersionSourceSha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "WeightedPreReleaseNumber": 1099
@@ -69,6 +70,7 @@ Each property of the above JSON document is described in the below table.
 |                  `ShortSha` | The `Sha` limited to 7 characters.                                                                                                                                         |
 |        `UncommittedChanges` | The number of uncommitted changes present in the repository.                                                                                                               |
 |     `VersionSourceDistance` | The number of commits since the version source.                                                                                                                            |
+|    `VersionSourceIncrement` | The increment strategy used for the version calculation. Possible values: `None`, `Patch`, `Minor`, `Major`.                                                               |
 |       `VersionSourceSemVer` | The semantic version of the commit used as version source.                                                                                                                 |
 |          `VersionSourceSha` | The SHA of the commit used as version source.                                                                                                                              |
 |  `WeightedPreReleaseNumber` | A summation of branch specific `pre-release-weight` and the `PreReleaseNumber`. Can be used to obtain a monotonically increasing version number across the branches.       |

@@ -64,6 +64,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             ShortSha: semverFormatValues.ShortSha,
             UncommittedChanges: semverFormatValues.UncommittedChanges,
             VersionSourceDistance: semverFormatValues.VersionSourceDistance,
+            VersionSourceIncrement: semverFormatValues.VersionSourceIncrement,
             VersionSourceSemVer: semverFormatValues.VersionSourceSemVer,
             VersionSourceSha: semverFormatValues.VersionSourceSha,
             WeightedPreReleaseNumber: semverFormatValues.WeightedPreReleaseNumber);

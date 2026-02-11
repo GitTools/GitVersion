@@ -77,6 +77,9 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of commits since the version source.")]
     public int? VersionSourceDistance { get; set; }
 
+    [JsonPropertyDescription("The increment strategy used for the version calculation. Possible values: None, Patch, Minor, Major.")]
+    public string? VersionSourceIncrement { get; set; }
+
     [JsonPropertyDescription("The semantic version of the commit used as version source.")]
     public string? VersionSourceSemVer { get; set; }
 

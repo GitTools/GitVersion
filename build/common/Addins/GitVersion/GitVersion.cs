@@ -127,6 +127,11 @@ public sealed class GitVersion
     public int? VersionSourceDistance { get; set; }
 
     /// <summary>
+    /// Gets or sets the version source increment. The increment strategy used for the version calculation. Possible values: None, Patch, Minor, Major.
+    /// </summary>
+    public string? VersionSourceIncrement { get; set; }
+
+    /// <summary>
     /// Gets or sets the version source SemVer. The semantic version of the commit used as version source.
     /// </summary>
     public string? VersionSourceSemVer { get; set; }
