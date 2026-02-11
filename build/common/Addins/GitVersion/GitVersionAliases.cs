@@ -3,7 +3,7 @@ namespace Common.Addins.GitVersion;
 /// <summary>
 /// <para>Contains functionality related to <see href="https://github.com/gittools/gitversion">GitVersion</see>.</para>
 /// <para>
-/// In order to use the commands for this alias, include the following in your build.cake file to download and
+/// To use the commands for this alias, include the following in your build.cake file to download and
 /// install from nuget.org, or specify the ToolPath within the <see cref="GitVersionSettings" /> class:
 /// <code>
 /// #tool "nuget:?package=GitVersion.CommandLine"
@@ -58,7 +58,7 @@ public static class GitVersionAliases
         {
             ArgumentNullException.ThrowIfNull(context);
 
-            return GitVersion(context, new GitVersionSettings());
+            return context.GitVersion(new GitVersionSettings());
         }
 
         /// <summary>
