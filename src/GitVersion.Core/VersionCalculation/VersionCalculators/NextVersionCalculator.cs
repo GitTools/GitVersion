@@ -50,7 +50,7 @@ internal class NextVersionCalculator(
             }
         }
 
-        var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
+        var (nextVersion, versionSourceIncrement) = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
 
         if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown
             && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
@@ -98,7 +98,13 @@ internal class NextVersionCalculator(
             };
         }
 
-        return semanticVersion;
+        return new SemanticVersion(semanticVersion)
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
+            {
+                VersionSourceIncrement = versionSourceIncrement
+            }
+        };
     }
 
     private bool TryGetSemanticVersion(
@@ -152,7 +158,7 @@ internal class NextVersionCalculator(
         return deploymentModeCalculator.Calculate(semanticVersion, baseVersion);
     }
 
-    private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
+    private (NextVersion NextVersion, VersionField Increment) CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {
         var nextVersions = GetNextVersions(branch, configuration);
         log.Separator();
@@ -212,7 +218,8 @@ internal class NextVersionCalculator(
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
 
-        return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
+        var increment = (maxVersion.BaseVersion as BaseVersion)?.Operator?.Increment ?? VersionField.None;
+        return (new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration), increment);
     }
 
     private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)

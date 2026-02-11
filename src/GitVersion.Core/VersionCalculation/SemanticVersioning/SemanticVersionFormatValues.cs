@@ -62,4 +62,6 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     public string VersionSourceDistance => semver.BuildMetaData.VersionSourceDistance.ToString(CultureInfo.InvariantCulture);
 
     public string UncommittedChanges => semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
+
+    public string VersionSourceIncrement => semver.BuildMetaData.VersionSourceIncrement.ToString();
 }

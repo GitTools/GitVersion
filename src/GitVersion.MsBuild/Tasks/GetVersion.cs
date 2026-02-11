@@ -78,6 +78,9 @@ public class GetVersion : GitVersionTaskBase
     public string VersionSourceDistance { get; set; }
 
     [Output]
+    public string VersionSourceIncrement { get; set; }
+
+    [Output]
     public string VersionSourceSemVer { get; set; }
 
     [Output]

@@ -27,6 +27,7 @@ internal record TestableGitVersionVariables() : GitVersionVariables(
     ShortSha: "",
     UncommittedChanges: "",
     VersionSourceDistance: "",
+    VersionSourceIncrement: "",
     VersionSourceSemVer: "",
     VersionSourceSha: "",
     WeightedPreReleaseNumber: ""

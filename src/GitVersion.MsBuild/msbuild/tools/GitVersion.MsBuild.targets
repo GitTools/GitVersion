@@ -63,6 +63,7 @@
             <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
             <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
             <Output TaskParameter="VersionSourceDistance" PropertyName="GitVersion_VersionSourceDistance" />
+            <Output TaskParameter="VersionSourceIncrement" PropertyName="GitVersion_VersionSourceIncrement" />
             <Output TaskParameter="VersionSourceSemVer" PropertyName="GitVersion_VersionSourceSemVer" />
             <Output TaskParameter="VersionSourceSha" PropertyName="GitVersion_VersionSourceSha" />
             <Output TaskParameter="WeightedPreReleaseNumber" PropertyName="GitVersion_WeightedPreReleaseNumber" />
@@ -105,6 +106,7 @@
             <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceDistance)' != '' ">GitVersion_VersionSourceDistance=$(GitVersion_VersionSourceDistance);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_VersionSourceIncrement)' != '' ">GitVersion_VersionSourceIncrement=$(GitVersion_VersionSourceIncrement);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceSemVer)' != '' ">GitVersion_VersionSourceSemVer=$(GitVersion_VersionSourceSemVer);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceSha)' != '' ">GitVersion_VersionSourceSha=$(GitVersion_VersionSourceSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_WeightedPreReleaseNumber)' != '' ">GitVersion_WeightedPreReleaseNumber=$(GitVersion_WeightedPreReleaseNumber);$(DefineConstants)</DefineConstants>

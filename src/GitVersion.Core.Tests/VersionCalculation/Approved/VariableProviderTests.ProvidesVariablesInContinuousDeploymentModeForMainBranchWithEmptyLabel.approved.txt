@@ -23,6 +23,7 @@
   "ShortSha": "commitShortSha",
   "UncommittedChanges": 0,
   "VersionSourceDistance": 5,
+  "VersionSourceIncrement": "None",
   "VersionSourceSemVer": "",
   "VersionSourceSha": "versionSourceSha",
   "WeightedPreReleaseNumber": 55009
