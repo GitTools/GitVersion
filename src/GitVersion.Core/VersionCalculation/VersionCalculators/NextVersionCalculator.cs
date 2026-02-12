@@ -44,7 +44,7 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            if (TryGetSemanticVersion(VersionField.None, effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out var value))
+            if (TryGetSemanticVersion(effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
@@ -64,7 +64,7 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            if (TryGetSemanticVersion(nextVersion.Increment, nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out var value))
+            if (TryGetSemanticVersion(nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
@@ -102,7 +102,6 @@ internal class NextVersionCalculator(
     }
 
     private bool TryGetSemanticVersion(
-        VersionField versionIncrement,
         EffectiveConfiguration effectiveConfiguration,
         IReadOnlyCollection<SemanticVersionWithTag> taggedSemanticVersionsOfCurrentCommit,
         [NotNullWhen(true)] out SemanticVersion? result)
@@ -122,7 +121,7 @@ internal class NextVersionCalculator(
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
-            versionSourceIncrement: versionIncrement,
+            versionSourceIncrement: VersionField.None,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
         );
 
