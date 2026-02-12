@@ -121,9 +121,8 @@ internal class NextVersionCalculator(
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
-            versionSourceIncrement: VersionField.None,
-            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
-        );
+            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
+            versionSourceIncrement: VersionField.None);
 
         var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
         if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)
@@ -213,8 +212,7 @@ internal class NextVersionCalculator(
         log.Info($"Base version used: {calculatedBase}");
         log.Separator();
 
-        var increment = (maxVersion.BaseVersion as BaseVersion)?.Operator?.Increment ?? VersionField.None;
-        return new(maxVersion.IncrementedVersion, calculatedBase, increment, maxVersion.BranchConfiguration);
+        return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
 
     private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)
@@ -271,7 +269,6 @@ internal class NextVersionCalculator(
                                 yield return new NextVersion(
                                     incrementedVersion: baseVersion.GetIncrementedVersion(),
                                     baseVersion: baseVersion,
-                                    increment: baseVersion?.Operator?.Increment ?? VersionField.None,
                                     configuration: effectiveBranchConfiguration
                                 );
                             }

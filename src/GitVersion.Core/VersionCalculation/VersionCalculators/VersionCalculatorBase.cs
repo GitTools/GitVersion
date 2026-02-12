@@ -24,8 +24,6 @@ internal abstract class VersionCalculatorBase(
         var commitsSinceTag = commitLogs.Count;
         this.log.Info($"{commitsSinceTag} commits found between {baseVersion.BaseVersionSource} and {Context.CurrentCommit}");
 
-        var increment = (baseVersion as BaseVersion)?.Operator?.Increment ?? VersionField.None;
-
         var shortSha = Context.CurrentCommit.Id.ToString(7);
         return new SemanticVersionBuildMetaData(
             versionSourceSemVer: baseVersion.SemanticVersion,
@@ -36,7 +34,7 @@ internal abstract class VersionCalculatorBase(
             commitShortSha: shortSha,
             commitDate: Context.CurrentCommit.When,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
-            versionSourceIncrement: increment
+            versionSourceIncrement: baseVersion.Increment
         );
     }
 }

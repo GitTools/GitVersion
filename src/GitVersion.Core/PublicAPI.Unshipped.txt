@@ -17,6 +17,6 @@ GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.init -> void
 GitVersion.SemanticVersionFormatValues.VersionSourceDistance.get -> string!
 GitVersion.SemanticVersionFormatValues.VersionSourceIncrement.get -> string!
 GitVersion.SemanticVersionFormatValues.VersionSourceSemVer.get -> string?
+GitVersion.VersionCalculation.BaseVersion.Increment.get -> GitVersion.VersionField
 GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.NextVersion.Increment.get -> GitVersion.VersionField
-GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion, GitVersion.VersionField increment, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void
+GitVersion.VersionCalculation.IBaseVersion.Increment.get -> GitVersion.VersionField

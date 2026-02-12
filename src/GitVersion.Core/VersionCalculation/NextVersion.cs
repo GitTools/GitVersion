@@ -6,7 +6,6 @@ namespace GitVersion.VersionCalculation;
 public class NextVersion(
     SemanticVersion incrementedVersion,
     IBaseVersion baseVersion,
-    VersionField increment,
     EffectiveBranchConfiguration configuration)
     : IComparable<NextVersion>, IEquatable<NextVersion>
 {
@@ -15,8 +14,6 @@ public class NextVersion(
     public SemanticVersion IncrementedVersion { get; } = incrementedVersion.NotNull();
 
     public EffectiveBranchConfiguration BranchConfiguration { get; } = configuration;
-
-    public VersionField Increment { get; } = increment;
 
     public EffectiveConfiguration Configuration => BranchConfiguration.Value;
 
