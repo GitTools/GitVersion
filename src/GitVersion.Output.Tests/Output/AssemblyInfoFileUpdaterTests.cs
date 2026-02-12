@@ -422,7 +422,22 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         var file = Substitute.For<IFile>();
         var versionSourceSemVer = new SemanticVersion(1, 2, 2);
-        var version = new SemanticVersion { BuildMetaData = new(versionSourceSemVer, "versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0), Major = 2, Minor = 3, Patch = 1 };
+        var version = new SemanticVersion
+        {
+            Major = 2,
+            Minor = 3,
+            Patch = 1,
+            BuildMetaData = new(
+            versionSourceSemVer,
+            "versionSourceHash",
+            3,
+            "foo",
+            "hash",
+            "shortHash",
+            DateTimeOffset.Now,
+            0,
+            VersionField.Major)
+        };
 
         file.Exists(fileName).Returns(true);
         file.ReadAllText(fileName).Returns(assemblyFileContent);

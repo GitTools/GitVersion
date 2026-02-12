@@ -44,13 +44,13 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            if (TryGetSemanticVersion(effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out var value))
+            if (TryGetSemanticVersion(VersionField.None, effectiveConfiguration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
         }
 
-        var (nextVersion, versionSourceIncrement) = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
+        var nextVersion = CalculateNextVersion(Context.CurrentBranch, Context.Configuration);
 
         if (Context.IsCurrentCommitTagged && someBranchRelatedPropertiesMightBeNotKnown
             && nextVersion.Configuration.PreventIncrementWhenCurrentCommitTagged)
@@ -64,7 +64,7 @@ internal class NextVersionCalculator(
             );
             var taggedSemanticVersionsOfCurrentCommit = allTaggedSemanticVersions[Context.CurrentCommit].ToList();
 
-            if (TryGetSemanticVersion(nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out var value))
+            if (TryGetSemanticVersion(nextVersion.Increment, nextVersion.Configuration, taggedSemanticVersionsOfCurrentCommit, out var value))
             {
                 return value;
             }
@@ -98,16 +98,11 @@ internal class NextVersionCalculator(
             };
         }
 
-        return new SemanticVersion(semanticVersion)
-        {
-            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
-            {
-                VersionSourceIncrement = versionSourceIncrement
-            }
-        };
+        return semanticVersion;
     }
 
     private bool TryGetSemanticVersion(
+        VersionField versionIncrement,
         EffectiveConfiguration effectiveConfiguration,
         IReadOnlyCollection<SemanticVersionWithTag> taggedSemanticVersionsOfCurrentCommit,
         [NotNullWhen(true)] out SemanticVersion? result)
@@ -127,6 +122,7 @@ internal class NextVersionCalculator(
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
+            versionSourceIncrement: versionIncrement,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
         );
 
@@ -158,7 +154,7 @@ internal class NextVersionCalculator(
         return deploymentModeCalculator.Calculate(semanticVersion, baseVersion);
     }
 
-    private (NextVersion NextVersion, VersionField Increment) CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
+    private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {
         var nextVersions = GetNextVersions(branch, configuration);
         log.Separator();
@@ -219,7 +215,7 @@ internal class NextVersionCalculator(
         log.Separator();
 
         var increment = (maxVersion.BaseVersion as BaseVersion)?.Operator?.Increment ?? VersionField.None;
-        return (new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration), increment);
+        return new(maxVersion.IncrementedVersion, calculatedBase, increment, maxVersion.BranchConfiguration);
     }
 
     private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)
@@ -276,6 +272,7 @@ internal class NextVersionCalculator(
                                 yield return new NextVersion(
                                     incrementedVersion: baseVersion.GetIncrementedVersion(),
                                     baseVersion: baseVersion,
+                                    increment: baseVersion?.Operator?.Increment ?? VersionField.None,
                                     configuration: effectiveBranchConfiguration
                                 );
                             }

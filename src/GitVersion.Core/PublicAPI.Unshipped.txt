@@ -7,7 +7,7 @@ GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.get -> str
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.init -> void
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.init -> void
-GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, System.DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null) -> void
+GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, System.DateTimeOffset? commitDate, long numberOfUnCommittedChanges, GitVersion.VersionField versionSourceIncrement, string? otherMetadata = null) -> void
 GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.get -> long
 GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.init -> void
 GitVersion.SemanticVersionBuildMetaData.VersionSourceIncrement.get -> GitVersion.VersionField
@@ -18,3 +18,5 @@ GitVersion.SemanticVersionFormatValues.VersionSourceDistance.get -> string!
 GitVersion.SemanticVersionFormatValues.VersionSourceIncrement.get -> string!
 GitVersion.SemanticVersionFormatValues.VersionSourceSemVer.get -> string?
 GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion) -> GitVersion.SemanticVersion!
+GitVersion.VersionCalculation.NextVersion.Increment.get -> GitVersion.VersionField
+GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion, GitVersion.VersionField increment, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void

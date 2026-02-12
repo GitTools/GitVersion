@@ -22,7 +22,8 @@ public class CommitDateTests : TestBase
             "3139d4eeb044f46057693473eacc2655b3b27e7d",
             "3139d4eeb",
             new DateTimeOffset(date, TimeSpan.Zero),
-            0);
+            0,
+            VersionField.None);
         var semanticVersion = new SemanticVersion
         {
             BuildMetaData = semanticVersionBuildMetaData // assume time zone is UTC

@@ -57,7 +57,8 @@ public class GitVersionInfoGeneratorTests : TestBase
                 "commitSha",
                 "commitShortSha",
                 DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture),
-                0)
+                0,
+                VersionField.Patch)
         };
     }
 
