@@ -1,3 +1,4 @@
+using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
@@ -27,7 +28,7 @@ public class JsonVersionBuilderTests : TestBase
                 "feature1",
                 "commitSha",
                 "commitShortSha",
-                DateTimeOffset.Parse("2014-03-06 23:59:59Z"),
+                DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture),
                 0,
                 VersionField.Minor)
         };

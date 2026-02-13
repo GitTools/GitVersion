@@ -428,15 +428,16 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             Minor = 3,
             Patch = 1,
             BuildMetaData = new(
-            versionSourceSemVer,
-            "versionSourceHash",
-            3,
-            "foo",
-            "hash",
-            "shortHash",
-            DateTimeOffset.Now,
-            0,
-            VersionField.Major)
+                versionSourceSemVer,
+                "versionSourceHash",
+                3,
+                "foo",
+                "hash",
+                "shortHash",
+                DateTimeOffset.Now,
+                0,
+                VersionField.Major
+            )
         };
 
         file.Exists(fileName).Returns(true);
