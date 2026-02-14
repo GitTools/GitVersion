@@ -121,8 +121,8 @@ internal class NextVersionCalculator(
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
-            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges
-        );
+            numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
+            versionSourceIncrement: VersionField.None);
 
         var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
         if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)

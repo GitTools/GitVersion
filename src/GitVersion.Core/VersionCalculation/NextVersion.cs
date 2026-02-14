@@ -3,7 +3,10 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class NextVersion(SemanticVersion incrementedVersion, IBaseVersion baseVersion, EffectiveBranchConfiguration configuration)
+public class NextVersion(
+    SemanticVersion incrementedVersion,
+    IBaseVersion baseVersion,
+    EffectiveBranchConfiguration configuration)
     : IComparable<NextVersion>, IEquatable<NextVersion>
 {
     public IBaseVersion BaseVersion { get; } = baseVersion.NotNull();

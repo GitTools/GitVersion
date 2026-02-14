@@ -28,7 +28,7 @@ public class InformationalVersionBuilderTests : TestBase
             Minor = minor,
             Patch = patch,
             PreReleaseTag = tag,
-            BuildMetaData = new(versionSourceSemVer, versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue, 0)
+            BuildMetaData = new(versionSourceSemVer, versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue, 0, VersionField.Minor)
         };
         var informationalVersion = semanticVersion.ToString("i");
 

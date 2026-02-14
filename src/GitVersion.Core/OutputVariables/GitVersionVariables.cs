@@ -26,6 +26,7 @@ public record GitVersionVariables(
     string? ShortSha,
     string? UncommittedChanges,
     string? VersionSourceDistance,
+    string? VersionSourceIncrement,
     string? VersionSourceSemVer,
     string? VersionSourceSha,
     string WeightedPreReleaseNumber
@@ -57,6 +58,7 @@ public record GitVersionVariables(
         nameof(ShortSha),
         nameof(UncommittedChanges),
         nameof(VersionSourceDistance),
+        nameof(VersionSourceIncrement),
         nameof(VersionSourceSemVer),
         nameof(VersionSourceSha),
         nameof(WeightedPreReleaseNumber)
@@ -88,6 +90,7 @@ public record GitVersionVariables(
         { nameof(ShortSha), ShortSha },
         { nameof(UncommittedChanges), UncommittedChanges },
         { nameof(VersionSourceDistance), VersionSourceDistance },
+        { nameof(VersionSourceIncrement), VersionSourceIncrement },
         { nameof(VersionSourceSemVer), VersionSourceSemVer },
         { nameof(VersionSourceSha), VersionSourceSha },
         { nameof(WeightedPreReleaseNumber), WeightedPreReleaseNumber }

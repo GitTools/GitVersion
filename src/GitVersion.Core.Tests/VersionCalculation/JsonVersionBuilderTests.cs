@@ -1,3 +1,4 @@
+using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
@@ -20,7 +21,16 @@ public class JsonVersionBuilderTests : TestBase
             Minor = 2,
             Patch = 0,
             PreReleaseTag = "unstable4",
-            BuildMetaData = new(versionSourceSemVer, "versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
+            BuildMetaData = new(
+                versionSourceSemVer,
+                "versionSourceSha",
+                5,
+                "feature1",
+                "commitSha",
+                "commitShortSha",
+                DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture),
+                0,
+                VersionField.Minor)
         };
 
         var serviceProvider = ConfigureServices();

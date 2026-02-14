@@ -34,12 +34,23 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public long UncommittedChanges { get; init; }
 
+    public VersionField VersionSourceIncrement { get; init; }
+
     public SemanticVersionBuildMetaData()
     {
     }
 
-    public SemanticVersionBuildMetaData(SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch,
-        string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, long numberOfUnCommittedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(
+        SemanticVersion? versionSourceSemVer,
+        string? versionSourceSha,
+        long? commitsSinceTag,
+        string? branch,
+        string? commitSha,
+        string? commitShortSha,
+        DateTimeOffset? commitDate,
+        long numberOfUnCommittedChanges,
+        VersionField versionSourceIncrement,
+        string? otherMetadata = null)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -47,6 +58,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.Branch = branch;
         this.CommitDate = commitDate;
         this.OtherMetaData = otherMetadata;
+        this.VersionSourceIncrement = versionSourceIncrement;
         this.VersionSourceSemVer = versionSourceSemVer;
         this.VersionSourceSha = versionSourceSha;
         this.VersionSourceDistance = commitsSinceTag ?? 0;
@@ -67,6 +79,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.VersionSourceSha = buildMetaData.VersionSourceSha;
         this.VersionSourceDistance = buildMetaData.VersionSourceDistance;
         this.UncommittedChanges = buildMetaData.UncommittedChanges;
+        this.VersionSourceIncrement = buildMetaData.VersionSourceIncrement;
     }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionBuildMetaData);

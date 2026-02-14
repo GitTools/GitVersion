@@ -19,6 +19,8 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
 
     public SemanticVersion SemanticVersion => Operand.SemanticVersion;
 
+    public VersionField Increment => Operator?.Increment ?? VersionField.None;
+
     public ICommit? BaseVersionSource => Operator?.BaseVersionSource ?? Operand.BaseVersionSource;
 
     [MemberNotNullWhen(true, nameof(Operator))]

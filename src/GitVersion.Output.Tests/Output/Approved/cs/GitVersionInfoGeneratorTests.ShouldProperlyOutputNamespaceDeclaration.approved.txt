@@ -38,6 +38,7 @@ namespace My.Custom.Namespace
         public const string ShortSha = "commitShortSha";
         public const string UncommittedChanges = "0";
         public const string VersionSourceDistance = "5";
+        public const string VersionSourceIncrement = "Patch";
         public const string VersionSourceSemVer = "1.2.2";
         public const string VersionSourceSha = "versionSourceSha";
         public const string WeightedPreReleaseNumber = "4";
