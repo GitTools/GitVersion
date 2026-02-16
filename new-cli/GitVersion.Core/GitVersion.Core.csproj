@@ -4,6 +4,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Serilog.Extensions.Logging" />
         <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="Serilog.Sinks.File" />
@@ -11,7 +12,6 @@
         <PackageReference Include="System.IO.Abstractions" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" VersionOverride="10.0.2" />
       <Compile Include="..\..\src\GitVersion.Core\Core\Environment.cs">
         <Link>Infrastructure\Environment.cs</Link>
       </Compile>
