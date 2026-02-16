@@ -11,12 +11,6 @@ issue-labels-alias:
 - name:    breaking change
   header:  Breaking change
   plural:  Breaking changes
-- name:    bug
-  header:  Bug
-  plural:  Bugs
-- name:    dependencies
-  header:  Dependencies
-  plural:  Dependencies
 - name:    documentation
   header:  Documentation
   plural:  Documentation
@@ -26,6 +20,12 @@ issue-labels-alias:
 - name:    improvement
   header:  Improvements
   plural:  Improvements
+- name:    bug
+  header:  Bug
+  plural:  Bugs
+- name:    dependencies
+  header:  Dependencies
+  plural:  Dependencies
 create:
   include-sha-section: true
   sha-section-heading: "SHA256 Hashes of the release artifacts"
