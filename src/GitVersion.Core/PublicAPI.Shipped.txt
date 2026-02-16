@@ -485,6 +485,7 @@ GitVersion.OutputVariables.GitVersionVariables.CommitDate.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CommitDate.init -> void
 GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSource.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CommitsSinceVersionSource.init -> void
+GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string? AssemblySemFileVer, out string? AssemblySemVer, out string? BranchName, out string? BuildMetaData, out string? CommitDate, out string? CommitsSinceVersionSource, out string? EscapedBranchName, out string? FullBuildMetaData, out string! FullSemVer, out string? InformationalVersion, out string! Major, out string! MajorMinorPatch, out string! Minor, out string! Patch, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string! SemVer, out string? Sha, out string? ShortSha, out string? UncommittedChanges, out string? VersionSourceDistance, out string? VersionSourceIncrement, out string? VersionSourceSemVer, out string? VersionSourceSha, out string! WeightedPreReleaseNumber) -> void
 GitVersion.OutputVariables.GitVersionVariables.EscapedBranchName.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.EscapedBranchName.init -> void
 GitVersion.OutputVariables.GitVersionVariables.FullBuildMetaData.get -> string?
@@ -493,6 +494,7 @@ GitVersion.OutputVariables.GitVersionVariables.FullSemVer.get -> string!
 GitVersion.OutputVariables.GitVersionVariables.FullSemVer.init -> void
 GitVersion.OutputVariables.GitVersionVariables.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, string?>>!
 GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(GitVersion.OutputVariables.GitVersionVariables! original) -> void
+GitVersion.OutputVariables.GitVersionVariables.GitVersionVariables(string? AssemblySemFileVer, string? AssemblySemVer, string? BranchName, string? BuildMetaData, string? CommitDate, string? CommitsSinceVersionSource, string? EscapedBranchName, string? FullBuildMetaData, string! FullSemVer, string? InformationalVersion, string! Major, string! MajorMinorPatch, string! Minor, string! Patch, string? PreReleaseLabel, string? PreReleaseLabelWithDash, string? PreReleaseNumber, string? PreReleaseTag, string? PreReleaseTagWithDash, string! SemVer, string? Sha, string? ShortSha, string? UncommittedChanges, string? VersionSourceDistance, string? VersionSourceIncrement, string? VersionSourceSemVer, string? VersionSourceSha, string! WeightedPreReleaseNumber) -> void
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.InformationalVersion.init -> void
 GitVersion.OutputVariables.GitVersionVariables.Major.get -> string!
@@ -522,6 +524,12 @@ GitVersion.OutputVariables.GitVersionVariables.ShortSha.init -> void
 GitVersion.OutputVariables.GitVersionVariables.TryGetValue(string! variable, out string? variableValue) -> bool
 GitVersion.OutputVariables.GitVersionVariables.UncommittedChanges.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.UncommittedChanges.init -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceDistance.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceDistance.init -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceIncrement.init -> void
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.VersionSourceSemVer.init -> void
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceSha.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.VersionSourceSha.init -> void
 GitVersion.OutputVariables.GitVersionVariables.WeightedPreReleaseNumber.get -> string!
@@ -584,6 +592,7 @@ GitVersion.SemanticVersionBuildMetaData.Equals(GitVersion.SemanticVersionBuildMe
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.get -> string?
 GitVersion.SemanticVersionBuildMetaData.OtherMetaData.init -> void
 GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData() -> void
+GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersion? versionSourceSemVer, string? versionSourceSha, long? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, System.DateTimeOffset? commitDate, long numberOfUnCommittedChanges, GitVersion.VersionField versionSourceIncrement, string? otherMetadata = null) -> void
 GitVersion.SemanticVersionBuildMetaData.SemanticVersionBuildMetaData(GitVersion.SemanticVersionBuildMetaData! buildMetaData) -> void
 GitVersion.SemanticVersionBuildMetaData.Sha.get -> string?
 GitVersion.SemanticVersionBuildMetaData.Sha.init -> void
@@ -593,6 +602,12 @@ GitVersion.SemanticVersionBuildMetaData.ToString(string! format) -> string!
 GitVersion.SemanticVersionBuildMetaData.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 GitVersion.SemanticVersionBuildMetaData.UncommittedChanges.get -> long
 GitVersion.SemanticVersionBuildMetaData.UncommittedChanges.init -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.get -> long
+GitVersion.SemanticVersionBuildMetaData.VersionSourceDistance.init -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceIncrement.get -> GitVersion.VersionField
+GitVersion.SemanticVersionBuildMetaData.VersionSourceIncrement.init -> void
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.get -> GitVersion.SemanticVersion?
+GitVersion.SemanticVersionBuildMetaData.VersionSourceSemVer.init -> void
 GitVersion.SemanticVersionBuildMetaData.VersionSourceSha.get -> string?
 GitVersion.SemanticVersionBuildMetaData.VersionSourceSha.init -> void
 GitVersion.SemanticVersionFormat
@@ -623,6 +638,9 @@ GitVersion.SemanticVersionFormatValues.SemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.Sha.get -> string?
 GitVersion.SemanticVersionFormatValues.ShortSha.get -> string?
 GitVersion.SemanticVersionFormatValues.UncommittedChanges.get -> string!
+GitVersion.SemanticVersionFormatValues.VersionSourceDistance.get -> string!
+GitVersion.SemanticVersionFormatValues.VersionSourceIncrement.get -> string!
+GitVersion.SemanticVersionFormatValues.VersionSourceSemVer.get -> string?
 GitVersion.SemanticVersionFormatValues.VersionSourceSha.get -> string?
 GitVersion.SemanticVersionFormatValues.WeightedPreReleaseNumber.get -> string!
 GitVersion.SemanticVersionPreReleaseTag
@@ -667,6 +685,7 @@ GitVersion.VersionCalculation.BaseVersion.BaseVersionSource.get -> GitVersion.Gi
 GitVersion.VersionCalculation.BaseVersion.Deconstruct(out GitVersion.VersionCalculation.BaseVersionOperand! Operand) -> void
 GitVersion.VersionCalculation.BaseVersion.Equals(GitVersion.VersionCalculation.BaseVersion? other) -> bool
 GitVersion.VersionCalculation.BaseVersion.GetIncrementedVersion() -> GitVersion.SemanticVersion!
+GitVersion.VersionCalculation.BaseVersion.Increment.get -> GitVersion.VersionField
 GitVersion.VersionCalculation.BaseVersion.Operand.get -> GitVersion.VersionCalculation.BaseVersionOperand!
 GitVersion.VersionCalculation.BaseVersion.Operand.init -> void
 GitVersion.VersionCalculation.BaseVersion.Operator.get -> GitVersion.VersionCalculation.BaseVersionOperator?
@@ -720,11 +739,13 @@ GitVersion.VersionCalculation.DeploymentMode.ContinuousDelivery = 1 -> GitVersio
 GitVersion.VersionCalculation.DeploymentMode.ContinuousDeployment = 2 -> GitVersion.VersionCalculation.DeploymentMode
 GitVersion.VersionCalculation.DeploymentMode.ManualDeployment = 0 -> GitVersion.VersionCalculation.DeploymentMode
 GitVersion.VersionCalculation.IBaseVersion
+GitVersion.VersionCalculation.IBaseVersion.Increment.get -> GitVersion.VersionField
 GitVersion.VersionCalculation.IBaseVersion.SemanticVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IBaseVersionIncrement
 GitVersion.VersionCalculation.IBaseVersionIncrement.BaseVersionSource.get -> GitVersion.Git.ICommit?
 GitVersion.VersionCalculation.IBaseVersionIncrement.Source.get -> string!
 GitVersion.VersionCalculation.IDeploymentModeCalculator
+GitVersion.VersionCalculation.IDeploymentModeCalculator.Calculate(GitVersion.SemanticVersion! semanticVersion, GitVersion.VersionCalculation.IBaseVersion! baseVersion) -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder

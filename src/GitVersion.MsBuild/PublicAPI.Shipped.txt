@@ -68,6 +68,12 @@ GitVersion.MsBuild.Tasks.GetVersion.ShortSha.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.ShortSha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.UncommittedChanges.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceDistance.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceIncrement.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceIncrement.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSemVer.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.VersionSourceSha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.WeightedPreReleaseNumber.get -> string!
