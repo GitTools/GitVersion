@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gitversion.net/schemas/6.6/GitVersion.json",
+  "title": "GitVersion version variables output",
+  "description": "GitVersion output schema",
+  "type": "object",
+  "properties": {
+    "AssemblySemFileVer": {
+      "description": "Suitable for .NET AssemblyFileVersion. Defaults to Major.Minor.Patch.0.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "AssemblySemVer": {
+      "description": "Suitable for .NET AssemblyVersion. Defaults to Major.Minor.0.0",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "BranchName": {
+      "description": "The name of the checked out Git branch.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "BuildMetaData": {
+      "description": "The build metadata, usually representing number of commits since the VersionSourceSha.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "CommitDate": {
+      "description": "The ISO-8601 formatted date of the commit identified by Sha.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "CommitsSinceVersionSource": {
+      "description": "The number of commits since the version source.",
+      "type": [
+        "null",
+        "integer"
+      ],
+      "deprecated": true
+    },
+    "EscapedBranchName": {
+      "description": "Equal to BranchName, but with / replaced with -.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "FullBuildMetaData": {
+      "description": "The BuildMetaData suffixed with BranchName and Sha.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "FullSemVer": {
+      "description": "The full, SemVer 2.0 compliant version number.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "InformationalVersion": {
+      "description": "Suitable for .NET AssemblyInformationalVersion. Defaults to FullSemVer suffixed by FullBuildMetaData.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "Major": {
+      "description": "The major version. Should be incremented on breaking changes.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "MajorMinorPatch": {
+      "description": "Major, Minor and Patch joined together, separated by '.'.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "Minor": {
+      "description": "The minor version. Should be incremented on new features.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "Patch": {
+      "description": "The patch version. Should be incremented on bug fixes.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "PreReleaseLabel": {
+      "description": "The pre-release label is the name of the pre-release.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "PreReleaseLabelWithDash": {
+      "description": "The pre-release label prefixed with a dash.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "PreReleaseNumber": {
+      "description": "The pre-release number is the number of commits since the last version bump.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "PreReleaseTag": {
+      "description": "The pre-release tag is the pre-release label suffixed by the PreReleaseNumber.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "PreReleaseTagWithDash": {
+      "description": "The pre-release tag prefixed with a dash.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "SemVer": {
+      "description": "The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "Sha": {
+      "description": "The SHA of the Git commit.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "ShortSha": {
+      "description": "The Sha limited to 7 characters.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "UncommittedChanges": {
+      "description": "The number of uncommitted changes present in the repository.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "VersionSourceDistance": {
+      "description": "The number of commits since the version source.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "VersionSourceIncrement": {
+      "description": "The increment strategy used for the version calculation. Possible values: None, Patch, Minor, Major.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "VersionSourceSemVer": {
+      "description": "The semantic version of the commit used as version source.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "VersionSourceSha": {
+      "description": "The SHA of the commit used as version source.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "WeightedPreReleaseNumber": {
+      "description": "A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    }
+  }
+}

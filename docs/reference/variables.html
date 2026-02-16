@@ -354,32 +354,34 @@
             <code>release/3.0.0</code> branch of GitVersion it shows:
           </p>
           <pre><code class="language-json">{
+    &quot;AssemblySemFileVer&quot;: &quot;3.22.11.0&quot;,
+    &quot;AssemblySemVer&quot;: &quot;3.22.11.0&quot;,
+    &quot;BranchName&quot;: &quot;release/3.022.011&quot;,
+    &quot;BuildMetaData&quot;: 88,
+    &quot;CommitDate&quot;: &quot;2021-12-31&quot;,
+    &quot;CommitsSinceVersionSource&quot;: 7,
+    &quot;EscapedBranchName&quot;: &quot;release-3.022.011&quot;,
+    &quot;FullBuildMetaData&quot;: &quot;99.Branch.release/3.22.11.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
+    &quot;FullSemVer&quot;: &quot;3.22.11-beta.99+88&quot;,
+    &quot;InformationalVersion&quot;: &quot;3.22.11-beta.99+88.Branch.release/3.022.011.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
     &quot;Major&quot;: 3,
+    &quot;MajorMinorPatch&quot;: &quot;3.22.11&quot;,
     &quot;Minor&quot;: 22,
     &quot;Patch&quot;: 11,
-    &quot;PreReleaseTag&quot;: &quot;beta.99&quot;,
-    &quot;PreReleaseTagWithDash&quot;: &quot;-beta.99&quot;,
     &quot;PreReleaseLabel&quot;: &quot;beta&quot;,
     &quot;PreReleaseLabelWithDash&quot;: &quot;-beta&quot;,
     &quot;PreReleaseNumber&quot;: 99,
-    &quot;WeightedPreReleaseNumber&quot;: 1099,
-    &quot;BuildMetaData&quot;: 88,
-    &quot;FullBuildMetaData&quot;: &quot;99.Branch.release/3.22.11.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
-    &quot;MajorMinorPatch&quot;: &quot;3.22.11&quot;,
+    &quot;PreReleaseTag&quot;: &quot;beta.99&quot;,
+    &quot;PreReleaseTagWithDash&quot;: &quot;-beta.99&quot;,
     &quot;SemVer&quot;: &quot;3.22.11-beta.99&quot;,
-    &quot;AssemblySemVer&quot;: &quot;3.22.11.0&quot;,
-    &quot;AssemblySemFileVer&quot;: &quot;3.22.11.0&quot;,
-    &quot;InformationalVersion&quot;: &quot;3.22.11-beta.99+88.Branch.release/3.022.011.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
-    &quot;FullSemVer&quot;: &quot;3.22.11-beta.99+88&quot;,
-    &quot;BranchName&quot;: &quot;release/3.022.011&quot;,
-    &quot;EscapedBranchName&quot;: &quot;release-3.022.011&quot;,
     &quot;Sha&quot;: &quot;28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
     &quot;ShortSha&quot;: &quot;28c8531&quot;,
-    &quot;VersionSourceSha&quot;: &quot;28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
-    &quot;CommitsSinceVersionSource&quot;: 7,
+    &quot;UncommittedChanges&quot;: 0,
     &quot;VersionSourceDistance&quot;: 7,
-    &quot;CommitDate&quot;: &quot;2021-12-31&quot;,
-    &quot;UncommittedChanges&quot;: 0
+    &quot;VersionSourceIncrement&quot;: &quot;Minor&quot;,
+    &quot;VersionSourceSemVer&quot;: &quot;3.22.11&quot;,
+    &quot;VersionSourceSha&quot;: &quot;28c853159a46b5a87e6cc9c4f6e940c59d6bc68a&quot;,
+    &quot;WeightedPreReleaseNumber&quot;: 1099
 }
 </code></pre>
           <p>
@@ -395,9 +397,99 @@
             </thead>
             <tbody>
               <tr>
+                <td style="text-align: right">
+                  <code>AssemblySemFileVer</code>
+                </td>
+                <td style="text-align: left">
+                  Suitable for .NET <code>AssemblyFileVersion</code>. Defaults
+                  to <code>Major.Minor.Patch.0</code>.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>AssemblySemVer</code></td>
+                <td style="text-align: left">
+                  Suitable for .NET <code>AssemblyVersion</code>. Defaults to
+                  <code>Major.Minor.0.0</code> to allow the assembly to be
+                  hotfixed without breaking existing applications that may be
+                  referencing it.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>BranchName</code></td>
+                <td style="text-align: left">
+                  The name of the checked out Git branch.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>BuildMetaData</code></td>
+                <td style="text-align: left">
+                  The build metadata, usually representing number of commits
+                  since the <code>VersionSourceSha</code>. Despite its name,
+                  will not increment for every build.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>CommitDate</code></td>
+                <td style="text-align: left">
+                  The ISO-8601 formatted date of the commit identified by
+                  <code>Sha</code>.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right">
+                  <code>CommitsSinceVersionSource</code>
+                </td>
+                <td style="text-align: left">
+                  (Deprecated: use <code>VersionSourceDistance</code> instead)
+                  The number of commits since the version source.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right">
+                  <code>EscapedBranchName</code>
+                </td>
+                <td style="text-align: left">
+                  Equal to <code>BranchName</code>, but with
+                  <code>/</code> replaced with <code>-</code>.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right">
+                  <code>FullBuildMetaData</code>
+                </td>
+                <td style="text-align: left">
+                  The <code>BuildMetaData</code> suffixed with
+                  <code>BranchName</code> and <code>Sha</code>.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>FullSemVer</code></td>
+                <td style="text-align: left">
+                  The full, SemVer 2.0 compliant version number.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right">
+                  <code>InformationalVersion</code>
+                </td>
+                <td style="text-align: left">
+                  Suitable for .NET <code>AssemblyInformationalVersion</code>.
+                  Defaults to <code>FullSemVer</code> suffixed by
+                  <code>FullBuildMetaData</code>.
+                </td>
+              </tr>
+              <tr>
                 <td style="text-align: right"><code>Major</code></td>
                 <td style="text-align: left">
                   The major version. Should be incremented on breaking changes.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>MajorMinorPatch</code></td>
+                <td style="text-align: left">
+                  <code>Major</code>, <code>Minor</code> and
+                  <code>Patch</code> joined together, separated by
+                  <code>.</code>.
                 </td>
               </tr>
               <tr>
@@ -410,21 +502,6 @@
                 <td style="text-align: right"><code>Patch</code></td>
                 <td style="text-align: left">
                   The patch version. Should be incremented on bug fixes.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>PreReleaseTag</code></td>
-                <td style="text-align: left">
-                  The pre-release tag is the pre-release label suffixed by the
-                  <code>PreReleaseNumber</code>.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right">
-                  <code>PreReleaseTagWithDash</code>
-                </td>
-                <td style="text-align: left">
-                  The pre-release tag prefixed with a dash.
                 </td>
               </tr>
               <tr>
@@ -444,39 +521,18 @@
                 <td style="text-align: left">The pre-release number.</td>
               </tr>
               <tr>
-                <td style="text-align: right">
-                  <code>WeightedPreReleaseNumber</code>
-                </td>
+                <td style="text-align: right"><code>PreReleaseTag</code></td>
                 <td style="text-align: left">
-                  A summation of branch specific
-                  <code>pre-release-weight</code> and the
-                  <code>PreReleaseNumber</code>. Can be used to obtain a
-                  monotonically increasing version number across the branches.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>BuildMetaData</code></td>
-                <td style="text-align: left">
-                  The build metadata, usually representing number of commits
-                  since the <code>VersionSourceSha</code>. Despite its name,
-                  will not increment for every build.
+                  The pre-release tag is the pre-release label suffixed by the
+                  <code>PreReleaseNumber</code>.
                 </td>
               </tr>
               <tr>
                 <td style="text-align: right">
-                  <code>FullBuildMetaData</code>
+                  <code>PreReleaseTagWithDash</code>
                 </td>
                 <td style="text-align: left">
-                  The <code>BuildMetaData</code> suffixed with
-                  <code>BranchName</code> and <code>Sha</code>.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>MajorMinorPatch</code></td>
-                <td style="text-align: left">
-                  <code>Major</code>, <code>Minor</code> and
-                  <code>Patch</code> joined together, separated by
-                  <code>.</code>.
+                  The pre-release tag prefixed with a dash.
                 </td>
               </tr>
               <tr>
@@ -485,55 +541,6 @@
                   The semantical version number, including
                   <code>PreReleaseTagWithDash</code> for pre-release version
                   numbers.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>AssemblySemVer</code></td>
-                <td style="text-align: left">
-                  Suitable for .NET <code>AssemblyVersion</code>. Defaults to
-                  <code>Major.Minor.0.0</code> to allow the assembly to be
-                  hotfixed without breaking existing applications that may be
-                  referencing it.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right">
-                  <code>AssemblySemFileVer</code>
-                </td>
-                <td style="text-align: left">
-                  Suitable for .NET <code>AssemblyFileVersion</code>. Defaults
-                  to <code>Major.Minor.Patch.0</code>.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right">
-                  <code>InformationalVersion</code>
-                </td>
-                <td style="text-align: left">
-                  Suitable for .NET <code>AssemblyInformationalVersion</code>.
-                  Defaults to <code>FullSemVer</code> suffixed by
-                  <code>FullBuildMetaData</code>.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>FullSemVer</code></td>
-                <td style="text-align: left">
-                  The full, SemVer 2.0 compliant version number.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right"><code>BranchName</code></td>
-                <td style="text-align: left">
-                  The name of the checked out Git branch.
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: right">
-                  <code>EscapedBranchName</code>
-                </td>
-                <td style="text-align: left">
-                  Equal to <code>BranchName</code>, but with
-                  <code>/</code> replaced with <code>-</code>.
                 </td>
               </tr>
               <tr>
@@ -547,18 +554,11 @@
                 </td>
               </tr>
               <tr>
-                <td style="text-align: right"><code>VersionSourceSha</code></td>
-                <td style="text-align: left">
-                  The SHA of the commit used as version source.
-                </td>
-              </tr>
-              <tr>
                 <td style="text-align: right">
-                  <code>CommitsSinceVersionSource</code>
+                  <code>UncommittedChanges</code>
                 </td>
                 <td style="text-align: left">
-                  (Deprecated: use <code>VersionSourceDistance</code> instead)
-                  The number of commits since the version source.
+                  The number of uncommitted changes present in the repository.
                 </td>
               </tr>
               <tr>
@@ -570,18 +570,38 @@
                 </td>
               </tr>
               <tr>
-                <td style="text-align: right"><code>CommitDate</code></td>
+                <td style="text-align: right">
+                  <code>VersionSourceIncrement</code>
+                </td>
                 <td style="text-align: left">
-                  The ISO-8601 formatted date of the commit identified by
-                  <code>Sha</code>.
+                  The increment strategy used for the version calculation.
+                  Possible values: <code>None</code>, <code>Patch</code>,
+                  <code>Minor</code>, <code>Major</code>.
                 </td>
               </tr>
               <tr>
                 <td style="text-align: right">
-                  <code>UncommittedChanges</code>
+                  <code>VersionSourceSemVer</code>
                 </td>
                 <td style="text-align: left">
-                  The number of uncommitted changes present in the repository.
+                  The semantic version of the commit used as version source.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right"><code>VersionSourceSha</code></td>
+                <td style="text-align: left">
+                  The SHA of the commit used as version source.
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right">
+                  <code>WeightedPreReleaseNumber</code>
+                </td>
+                <td style="text-align: left">
+                  A summation of branch specific
+                  <code>pre-release-weight</code> and the
+                  <code>PreReleaseNumber</code>. Can be used to obtain a
+                  monotonically increasing version number across the branches.
                 </td>
               </tr>
             </tbody>

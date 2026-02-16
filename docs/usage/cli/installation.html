@@ -369,13 +369,13 @@
           <div class="alert alert-info">
             <p>
               <strong>Hint:</strong> To install an older version of
-              GitVersion.Tools, use the --version flag of dotnet tool install
+              GitVersion.Tool, use the --version flag of dotnet tool install
             </p>
             <p>
               Example:
               <code
                 >dotnet tool install GitVersion.Tool --global --version
-                5.*</code
+                6.*</code
               >
             </p>
           </div>
@@ -392,6 +392,81 @@
           <p>To run call</p>
           <pre><code class="language-shell">dotnet-gitversion
 </code></pre>
+          <h3 id="net-local-tool">.NET Local Tool</h3>
+          <p>
+            GitVersion can also be installed as a
+            <a
+              href="https://docs.microsoft.com/en-us/dotnet/core/tools/local-tools-how-to-use"
+              >.NET local tool</a
+            >
+            using a tool manifest. This approach is useful for ensuring that all
+            team members use the same version of GitVersion in a project.
+          </p>
+          <p>
+            To install GitVersion as a local tool, execute the following in your
+            project's root directory:
+          </p>
+          <pre><code class="language-shell">dotnet new tool-manifest # if you don't already have a manifest file
+dotnet tool install GitVersion.Tool
+</code></pre>
+          <p>
+            This creates or updates a
+            <code>.config/dotnet-tools.json</code> file in your repository that
+            specifies the version of GitVersion to use. You can commit this file
+            to source control.
+          </p>
+          <div class="alert alert-info">
+            <p>
+              <strong>Hint:</strong> To install a specific version of
+              GitVersion.Tool as a local tool, use the --version flag
+            </p>
+            <p>
+              Example:
+              <code>dotnet tool install GitVersion.Tool --version 6.*</code>
+            </p>
+          </div>
+          <p>
+            To restore tools specified in the manifest (for example, after
+            cloning the repository):
+          </p>
+          <pre><code class="language-shell">dotnet tool restore
+</code></pre>
+          <p>To run the local tool, you have several options:</p>
+          <pre><code class="language-shell">dotnet gitversion
+</code></pre>
+          <p>
+            Alternatively, you can use
+            <a
+              href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-exec"
+              ><code>dotnet tool exec</code></a
+            >
+            (or its shorthand aliases <code>dotnet dnx</code> or just
+            <code>dnx</code>) to explicitly execute the tool:
+          </p>
+          <pre><code class="language-shell">dotnet tool exec GitVersion.Tool
+# or using the shorthand alias
+dotnet dnx GitVersion.Tool
+# or even shorter
+dnx GitVersion.Tool
+</code></pre>
+          <div class="alert alert-info">
+            <p>
+              <strong>Note:</strong> The <code>dotnet tool exec</code>,
+              <code>dotnet dnx</code>, and <code>dnx</code> commands are useful
+              in scripts or CI/CD pipelines where you want to be explicit about
+              executing a local tool from the manifest. When using these
+              commands, you must specify the package name
+              <code>GitVersion.Tool</code> rather than the command name.
+            </p>
+          </div>
+          <p>
+            Note that local tools use <code>dotnet gitversion</code> (without
+            the hyphen), while the global tool uses
+            <code>dotnet-gitversion</code> (with a hyphen).
+          </p>
+          <p>
+            This should work on all operating systems supported by .NET Core.
+          </p>
           <h3 id="homebrew">Homebrew</h3>
           <p>
             To install the
