@@ -17,9 +17,9 @@ dotnet tool install --global GitVersion.Tool
 ```
 
 :::{.alert .alert-info}
-**Hint:** To install an older version of GitVersion.Tools, use the --version flag of dotnet tool install
+**Hint:** To install an older version of GitVersion.Tool, use the --version flag of dotnet tool install
 
-Example: `dotnet tool install GitVersion.Tool --global --version 5.*`
+Example: `dotnet tool install GitVersion.Tool --global --version 6.*`
 :::
 
 If you want to pin to a specific version of GitVersion, you can find the available
@@ -32,6 +32,65 @@ To run call
 ```shell
 dotnet-gitversion
 ```
+
+### .NET Local Tool
+
+GitVersion can also be installed as a [.NET local tool][dotnet-local-tool] using
+a tool manifest. This approach is useful for ensuring that all team members use
+the same version of GitVersion in a project.
+
+To install GitVersion as a local tool, execute the following in your project's
+root directory:
+
+```shell
+dotnet new tool-manifest # if you don't already have a manifest file
+dotnet tool install GitVersion.Tool
+```
+
+This creates or updates a `.config/dotnet-tools.json` file in your repository
+that specifies the version of GitVersion to use. You can commit this file to
+source control.
+
+:::{.alert .alert-info}
+**Hint:** To install a specific version of GitVersion.Tool as a local tool, use the --version flag
+
+Example: `dotnet tool install GitVersion.Tool --version 6.*`
+:::
+
+To restore tools specified in the manifest (for example, after cloning the
+repository):
+
+```shell
+dotnet tool restore
+```
+
+To run the local tool, you have several options:
+
+```shell
+dotnet gitversion
+```
+
+Alternatively, you can use [`dotnet tool exec`][dotnet-tool-exec] (or its
+shorthand aliases `dotnet dnx` or just `dnx`) to explicitly execute the tool:
+
+```shell
+dotnet tool exec GitVersion.Tool
+# or using the shorthand alias
+dotnet dnx GitVersion.Tool
+# or even shorter
+dnx GitVersion.Tool
+```
+
+:::{.alert .alert-info}
+**Note:** The `dotnet tool exec`, `dotnet dnx`, and `dnx` commands are useful in scripts or CI/CD
+pipelines where you want to be explicit about executing a local tool from the manifest.
+When using these commands, you must specify the package name `GitVersion.Tool` rather than the command name.
+:::
+
+Note that local tools use `dotnet gitversion` (without the hyphen), while the
+global tool uses `dotnet-gitversion` (with a hyphen).
+
+This should work on all operating systems supported by .NET Core.
 
 ### Homebrew
 
@@ -89,6 +148,10 @@ This should work on all operating systems supported by Docker (at the time
 of writing: Linux, macOS, Windows).
 
 [dotnet-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool
+
+[dotnet-local-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/local-tools-how-to-use
+
+[dotnet-tool-exec]: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-exec
 
 [tool]: https://www.nuget.org/packages/GitVersion.Tool/
 
