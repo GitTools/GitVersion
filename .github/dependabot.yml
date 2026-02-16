@@ -1,6 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: dotnet-sdk
+    milestone: 82 # Corresponds to 6.x
     labels:
       - "dependencies"
     commit-message:
@@ -10,6 +11,7 @@ updates:
       interval: cron
       cronjob: "0 12 * * *"
   - package-ecosystem: nuget
+    milestone: 82 # Corresponds to 6.x
     labels:
       - "dependencies"
     commit-message:
