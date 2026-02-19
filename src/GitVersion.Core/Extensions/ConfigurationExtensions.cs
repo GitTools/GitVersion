@@ -1,5 +1,6 @@
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Formatting;
 using GitVersion.Git;
 using GitVersion.VersionCalculation;
 
@@ -7,6 +8,10 @@ namespace GitVersion.Configuration;
 
 internal static class ConfigurationExtensions
 {
+    // Empty object used as source parameter when only processing environment variables in FormatWith
+    // FormatWith requires a non-null source, but we don't need any properties from it when only using env: placeholders
+    private static readonly object EmptyFormatSource = new { };
+
     extension(IGitVersionConfiguration configuration)
     {
         public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
@@ -97,10 +102,10 @@ internal static class ConfigurationExtensions
 
     extension(EffectiveConfiguration configuration)
     {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride);
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
 
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment? environment = null)
         {
             configuration.NotNull();
 
@@ -111,10 +116,43 @@ internal static class ConfigurationExtensions
             }
 
             var effectiveBranchName = branchNameOverride ?? branchName;
-            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty()) return label;
+            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+            {
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                        // This maintains backward compatibility
+                    }
+                }
+                return label;
+            }
+
             var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
             var match = regex.Match(effectiveBranchName);
-            if (!match.Success) return label;
+            if (!match.Success)
+            {
+                // Even if regex doesn't match, we should still process environment variables
+                if (environment is not null)
+                {
+                    try
+                    {
+                        label = label.FormatWith(new { }, environment);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If environment variable is missing and no fallback, return label as-is
+                    }
+                }
+                return label;
+            }
+
             foreach (var groupName in regex.GetGroupNames())
             {
                 var groupValue = match.Groups[groupName].Value;
@@ -128,6 +166,21 @@ internal static class ConfigurationExtensions
                     startIndex = index + escapedGroupValue.Length;
                 }
             }
+
+            // Process environment variable placeholders after regex placeholders
+            if (environment is not null)
+            {
+                try
+                {
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing and no fallback, return label as-is
+                    // This maintains backward compatibility
+                }
+            }
+
             return label;
         }
 

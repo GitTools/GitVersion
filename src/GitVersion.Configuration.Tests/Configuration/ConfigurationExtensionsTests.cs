@@ -6,6 +6,7 @@ namespace GitVersion.Configuration.Tests;
 [TestFixture]
 public class ConfigurationExtensionsTests : TestBase
 {
+    private const string PullRequestBranch = "pull-request";
     [TestCase("release/2.0.0",
         "refs/heads/release/2.0.0", "release/2.0.0", "release/2.0.0",
         true, false, false, false, true)]
@@ -53,5 +54,95 @@ public class ConfigurationExtensionsTests : TestBase
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(branchName));
         var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(branchName), null);
         actual.ShouldBe(expectedLabel);
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelProcessesEnvironmentVariables()
+    {
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "feature-branch");
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch(PullRequestBranch, builder => builder
+                .WithLabel("pr-{env:GITHUB_HEAD_REF}")
+                .WithRegularExpression(@"^pull[/-]"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(PullRequestBranch));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(PullRequestBranch), null, environment);
+        actual.ShouldBe("pr-feature-branch");
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelProcessesEnvironmentVariablesWithFallback()
+    {
+        var environment = new TestEnvironment();
+        // Don't set GITHUB_HEAD_REF to test fallback
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch(PullRequestBranch, builder => builder
+                .WithLabel("pr-{env:GITHUB_HEAD_REF ?? \"unknown\"}")
+                .WithRegularExpression(@"^pull[/-]"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(PullRequestBranch));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(PullRequestBranch), null, environment);
+        actual.ShouldBe("pr-unknown");
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelProcessesEnvironmentVariablesAndRegexPlaceholders()
+    {
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "feature-branch");
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch("feature/test-branch", builder => builder
+                .WithLabel("{BranchName}-{env:GITHUB_HEAD_REF}")
+                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/test-branch"));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/test-branch"), null, environment);
+        actual.ShouldBe("test-branch-feature-branch");
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelWorksWithoutEnvironmentWhenNoEnvPlaceholders()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch("feature/test", builder => builder
+                .WithLabel("{BranchName}")
+                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/test"));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/test"), null, null);
+        actual.ShouldBe("test");
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelProcessesEnvironmentVariablesEvenWhenRegexDoesNotMatch()
+    {
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "feature-branch");
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch(PullRequestBranch, builder => builder
+                .WithLabel("pr-{env:GITHUB_HEAD_REF}")
+                .WithRegularExpression(@"^pull[/-]"))
+            .WithBranch("feature", builder => builder
+                .WithLabel("{BranchName}")
+                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/other-branch"));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/other-branch"), null, environment);
+        actual.ShouldBe("other-branch");
     }
 }
