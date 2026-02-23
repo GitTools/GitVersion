@@ -143,6 +143,7 @@ internal static class ConfigurationExtensions
             {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 label = ProcessEnvironmentVariables(label, environment);
 =======
                 // Even if regex doesn't match, we should still process environment variables
@@ -182,13 +183,16 @@ internal static class ConfigurationExtensions
             if (environment is not null)
 =======
                 label = label.FormatWith(dictionary, environment);
+=======
+                label = label.FormatWith((IDictionary<string, object>)dictionary, environment);
+>>>>>>> ad351fec8 (fix: Force the dictionary overload by casting the built dictionary to the interface type)
             }
             else
 >>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
             {
                 try
                 {
-                    label = label.FormatWith(dictionary, environment);
+                    label = label.FormatWith((IDictionary<string, object>)dictionary, environment);
                 }
                 catch (ArgumentException)
                 {
