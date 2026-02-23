@@ -103,7 +103,7 @@ internal sealed class MainlineVersionStrategy(
             notOlderThan: Context.CurrentCommit.When,
             taggedSemanticVersion: taggedSemanticVersion
         );
-        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
         IterateOverCommitsRecursive(
             commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
@@ -205,7 +205,7 @@ internal sealed class MainlineVersionStrategy(
             var label = targetLabel ?? new EffectiveConfiguration(
                 configuration: Context.Configuration,
                 branchConfiguration: configuration
-            ).GetBranchSpecificLabel(branchName, null);
+            ).GetBranchSpecificLabel(branchName, null, this.environment);
 
             foreach (var semanticVersion in semanticVersions)
             {
