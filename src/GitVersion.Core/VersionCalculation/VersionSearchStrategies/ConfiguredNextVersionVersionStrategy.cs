@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -8,9 +9,10 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> contextLazy) : IVersionStrategy
+internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContext> contextLazy, IEnvironment environment) : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -26,7 +28,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
         var semanticVersion = SemanticVersion.Parse(
             nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
         );
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 
         if (!semanticVersion.IsMatchForBranchSpecificLabel(label)) yield break;
         BaseVersionOperator? operation = null;

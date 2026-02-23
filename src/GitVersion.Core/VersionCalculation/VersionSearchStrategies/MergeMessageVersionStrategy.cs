@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
@@ -11,13 +12,15 @@ namespace GitVersion.VersionCalculation;
 /// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
 internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> contextLazy,
-    IRepositoryStore repositoryStore, IIncrementStrategyFinder incrementStrategyFinder)
+    IRepositoryStore repositoryStore, IIncrementStrategyFinder incrementStrategyFinder,
+    IEnvironment environment)
     : IVersionStrategy
 {
     private readonly ILog log = log.NotNull();
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -51,7 +54,7 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
                 baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
             }
 
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
             var increment = configuration.Value.PreventIncrementOfMergedBranch
                 ? VersionField.None : this.incrementStrategyFinder.DetermineIncrementedField(
                     currentCommit: Context.CurrentCommit,

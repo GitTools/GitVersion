@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
+using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -9,9 +10,10 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext> contextLazy) : IVersionStrategy
+internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext> contextLazy, IEnvironment environment) : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -43,7 +45,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
                 branchNameOverride = result.Name;
             }
 
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride);
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride, this.environment);
 
             baseVersion = new BaseVersion("Version in branch name", result.Value)
             {

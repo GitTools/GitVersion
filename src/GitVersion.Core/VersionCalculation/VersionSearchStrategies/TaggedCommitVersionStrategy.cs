@@ -14,13 +14,15 @@ internal sealed class TaggedCommitVersionStrategy(
     ILog log,
     Lazy<GitVersionContext> contextLazy,
     ITaggedSemanticVersionService taggedSemanticVersionService,
-    IIncrementStrategyFinder incrementStrategyFinder)
+    IIncrementStrategyFinder incrementStrategyFinder,
+    IEnvironment environment)
     : IVersionStrategy
 {
     private readonly ILog log = log.NotNull();
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -42,7 +44,7 @@ internal sealed class TaggedCommitVersionStrategy(
             taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
         ).SelectMany(elements => elements).Distinct().ToArray();
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 
         var semanticVersionTreshold = SemanticVersion.Empty;
         List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = [];

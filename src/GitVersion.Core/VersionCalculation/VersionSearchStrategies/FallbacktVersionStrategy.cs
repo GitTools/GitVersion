@@ -12,12 +12,14 @@ namespace GitVersion.VersionCalculation;
 internal sealed class FallbackVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
     IIncrementStrategyFinder incrementStrategyFinder,
-    ITaggedSemanticVersionService taggedSemanticVersionService)
+    ITaggedSemanticVersionService taggedSemanticVersionService,
+    IEnvironment environment)
     : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -31,7 +33,7 @@ internal sealed class FallbackVersionStrategy(
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.Fallback))
             yield break;
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 
         var baseVersionSource = taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,
