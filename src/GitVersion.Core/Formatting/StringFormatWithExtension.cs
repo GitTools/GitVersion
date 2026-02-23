@@ -56,6 +56,34 @@ internal static class StringFormatWithExtension
             result.Append(template, lastIndex, template.Length - lastIndex);
             return result.ToString();
         }
+
+        /// <summary>
+        /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces
+        /// with the corresponding value from the <paramref name="source"/> dictionary or <paramref name="environment"/>.
+        /// </summary>
+        /// <param name="source">Dictionary of placeholder names to values (e.g. regex capture groups). May be empty.</param>
+        /// <param name="environment">Environment for {env:...} placeholders.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="template"/> or <paramref name="environment"/> is null.</exception>
+        /// <exception cref="ArgumentException">An environment variable was null and no fallback was provided.</exception>
+        public string FormatWith(IDictionary<string, object> source, IEnvironment environment)
+        {
+            ArgumentNullException.ThrowIfNull(template);
+            ArgumentNullException.ThrowIfNull(environment);
+
+            var result = new StringBuilder();
+            var lastIndex = 0;
+
+            foreach (var match in RegexPatterns.Common.ExpandTokensRegex().Matches(template).Cast<Match>())
+            {
+                var replacement = EvaluateMatchFromDictionary(match, source, environment);
+                result.Append(template, lastIndex, match.Index - lastIndex);
+                result.Append(replacement);
+                lastIndex = match.Index + match.Length;
+            }
+
+            result.Append(template, lastIndex, template.Length - lastIndex);
+            return result.ToString();
+        }
     }
 
     private static string EvaluateMatch<T>(Match match, T source, IEnvironment environment)
@@ -72,6 +100,42 @@ internal static class StringFormatWithExtension
         }
 
         throw new ArgumentException($"Invalid token format: '{match.Value}'");
+    }
+
+    private static string EvaluateMatchFromDictionary(Match match, IDictionary<string, object> source, IEnvironment environment)
+    {
+        var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
+
+        if (match.Groups["envvar"].Success)
+            return EvaluateEnvVar(match.Groups["envvar"].Value, fallback, environment);
+
+        if (match.Groups["member"].Success)
+        {
+            var format = match.Groups["format"].Success ? match.Groups["format"].Value : null;
+            return EvaluateMemberFromDictionary(source, match.Groups["member"].Value, format, fallback);
+        }
+
+        throw new ArgumentException($"Invalid token format: '{match.Value}'");
+    }
+
+    private static string EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format, string? fallback)
+    {
+        var safeMember = InputSanitizer.SanitizeMemberName(member);
+        if (!source.TryGetValue(safeMember, out var value))
+            return fallback ?? string.Empty;
+
+        if (value is null)
+            return fallback ?? string.Empty;
+
+        if (format is not null && ValueFormatter.Default.TryFormat(
+            value,
+            InputSanitizer.SanitizeFormat(format),
+            out var formatted))
+        {
+            return formatted;
+        }
+
+        return value.ToString() ?? fallback ?? string.Empty;
     }
 
     private static string EvaluateEnvVar(string name, string? fallback, IEnvironment env)
