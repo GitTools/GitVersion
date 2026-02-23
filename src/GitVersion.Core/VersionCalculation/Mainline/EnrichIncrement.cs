@@ -19,7 +19,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
 
         if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
             context.Label = null;
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
 
         if (effectiveConfiguration.IsMainBranch)
             context.BaseVersionSource = commit.Predecessor?.Value;
