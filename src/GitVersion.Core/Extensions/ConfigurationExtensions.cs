@@ -113,95 +113,22 @@ internal static class ConfigurationExtensions
             }
 
             var effectiveBranchName = branchNameOverride ?? branchName;
-<<<<<<< HEAD
-            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
-            {
-<<<<<<< HEAD
-                label = ProcessEnvironmentVariables(label, environment);
-=======
-                // Even if regex doesn't match, we should still process environment variables
-                if (environment is not null)
-                {
-                    try
-                    {
-                        label = label.FormatWith(new { }, environment);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // If environment variable is missing and no fallback, return label as-is
-                        // This maintains backward compatibility
-                    }
-                }
->>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
-                return label;
-            }
-=======
             var dictionary = BuildLabelPlaceholderDictionary(configuration.RegularExpression, effectiveBranchName);
->>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
 
             if (throwIfNotFound)
             {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                label = ProcessEnvironmentVariables(label, environment);
-=======
-                // Even if regex doesn't match, we should still process environment variables
-                if (environment is not null)
-                {
-                    try
-                    {
-                        label = label.FormatWith(new { }, environment);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // If environment variable is missing and no fallback, return label as-is
-                    }
-                }
->>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
+                return label.FormatWith((IDictionary<string, object>)dictionary, environment);
+            }
+
+            try
+            {
+                return label.FormatWith((IDictionary<string, object>)dictionary, environment);
+            }
+            catch (ArgumentException)
+            {
+                // If environment variable is missing and no fallback, return label as-is (backward compatibility)
                 return label;
             }
-
-            foreach (var groupName in regex.GetGroupNames())
-            {
-                var groupValue = match.Groups[groupName].Value;
-                Lazy<string> escapedGroupValueLazy = new(() => groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-"));
-                var placeholder = $"{{{groupName}}}";
-                int index, startIndex = 0;
-                while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
-                {
-                    var escapedGroupValue = escapedGroupValueLazy.Value;
-                    label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
-                    startIndex = index + escapedGroupValue.Length;
-                }
-            }
-
-<<<<<<< HEAD
-            label = ProcessEnvironmentVariables(label, environment);
-=======
-            // Process environment variable placeholders after regex placeholders
-            if (environment is not null)
-=======
-                label = label.FormatWith(dictionary, environment);
-=======
-                label = label.FormatWith((IDictionary<string, object>)dictionary, environment);
->>>>>>> ad351fec8 (fix: Force the dictionary overload by casting the built dictionary to the interface type)
-            }
-            else
->>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
-            {
-                try
-                {
-                    label = label.FormatWith((IDictionary<string, object>)dictionary, environment);
-                }
-                catch (ArgumentException)
-                {
-                    // If environment variable is missing and no fallback, return label as-is (backward compatibility)
-                }
-            }
-
->>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
-            return label;
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()
@@ -228,23 +155,6 @@ internal static class ConfigurationExtensions
         }
     }
 
-<<<<<<< HEAD
-    private static string ProcessEnvironmentVariables(string label, IEnvironment? environment)
-    {
-        if (environment is not null)
-        {
-            try
-            {
-                label = label.FormatWith(EmptyFormatSource, environment);
-            }
-            catch (ArgumentException)
-            {
-                // If environment variable is missing and no fallback, return label as-is
-                // This maintains backward compatibility
-            }
-        }
-        return label;
-=======
     private static Dictionary<string, object> BuildLabelPlaceholderDictionary(string? regularExpression, string? effectiveBranchName)
     {
         var dictionary = new Dictionary<string, object>();
@@ -264,6 +174,5 @@ internal static class ConfigurationExtensions
         }
 
         return dictionary;
->>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
     }
 }
