@@ -8,10 +8,6 @@ namespace GitVersion.Configuration;
 
 internal static class ConfigurationExtensions
 {
-    // Empty object used as source parameter when only processing environment variables in FormatWith
-    // FormatWith requires a non-null source, but we don't need any properties from it when only using env: placeholders
-    private static readonly object EmptyFormatSource = new { };
-
     extension(IGitVersionConfiguration configuration)
     {
         public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
@@ -102,12 +98,13 @@ internal static class ConfigurationExtensions
 
     extension(EffectiveConfiguration configuration)
     {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment? environment = null)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment, throwIfNotFound);
 
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment? environment = null)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
         {
             configuration.NotNull();
+            environment.NotNull();
 
             var label = configuration.Label;
             if (label is null)
@@ -116,6 +113,7 @@ internal static class ConfigurationExtensions
             }
 
             var effectiveBranchName = branchNameOverride ?? branchName;
+<<<<<<< HEAD
             if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
             {
 <<<<<<< HEAD
@@ -137,11 +135,13 @@ internal static class ConfigurationExtensions
 >>>>>>> 2031196b9 (fix(merge): Fix merge mishap on previous commit)
                 return label;
             }
+=======
+            var dictionary = BuildLabelPlaceholderDictionary(configuration.RegularExpression, effectiveBranchName);
+>>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
 
-            var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
-            var match = regex.Match(effectiveBranchName);
-            if (!match.Success)
+            if (throwIfNotFound)
             {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 label = ProcessEnvironmentVariables(label, environment);
 =======
@@ -180,15 +180,19 @@ internal static class ConfigurationExtensions
 =======
             // Process environment variable placeholders after regex placeholders
             if (environment is not null)
+=======
+                label = label.FormatWith(dictionary, environment);
+            }
+            else
+>>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
             {
                 try
                 {
-                    label = label.FormatWith(new { }, environment);
+                    label = label.FormatWith(dictionary, environment);
                 }
                 catch (ArgumentException)
                 {
-                    // If environment variable is missing and no fallback, return label as-is
-                    // This maintains backward compatibility
+                    // If environment variable is missing and no fallback, return label as-is (backward compatibility)
                 }
             }
 
@@ -220,6 +224,7 @@ internal static class ConfigurationExtensions
         }
     }
 
+<<<<<<< HEAD
     private static string ProcessEnvironmentVariables(string label, IEnvironment? environment)
     {
         if (environment is not null)
@@ -235,5 +240,26 @@ internal static class ConfigurationExtensions
             }
         }
         return label;
+=======
+    private static Dictionary<string, object> BuildLabelPlaceholderDictionary(string? regularExpression, string? effectiveBranchName)
+    {
+        var dictionary = new Dictionary<string, object>();
+        if (regularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+            return dictionary;
+
+        var regex = RegexPatterns.Cache.GetOrAdd(regularExpression);
+        var match = regex.Match(effectiveBranchName);
+        if (!match.Success)
+            return dictionary;
+
+        foreach (var groupName in regex.GetGroupNames())
+        {
+            var groupValue = match.Groups[groupName].Value;
+            var sanitized = groupValue.RegexReplace(RegexPatterns.Common.SanitizeNameRegexPattern, "-");
+            dictionary[groupName] = sanitized;
+        }
+
+        return dictionary;
+>>>>>>> 3bb88d5c5 (Refactor GetBranchSpecificLabel to use dictionary and single FormatWith call)
     }
 }
