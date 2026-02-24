@@ -28,7 +28,7 @@
         <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.3" />
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
         <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.3" />
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
         <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
         <PackageVersion Include="NSubstitute" Version="5.3.0" />
         <PackageVersion Include="NUnit" Version="4.4.0" />
