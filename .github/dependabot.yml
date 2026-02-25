@@ -18,25 +18,32 @@ updates:
       prefix: "(deps)"
     groups:
       microsoft:
+        group-by: dependency-name
         patterns:
           - "Microsoft.*"
           - "System.*"
       Microsoft_CodeAnalysis:
+        group-by: dependency-name
         patterns:
           - "Microsoft.CodeAnalysis.*"
       analyzers:
+        group-by: dependency-name
         patterns:
           - "*Analyzers"
       serilog:
+        group-by: dependency-name
         patterns:
           - "Serilog.*"
       nunit:
+        group-by: dependency-name
         patterns:
           - "NUnit.*"
       LibGit2Sharp:
+        group-by: dependency-name
         patterns:
           - "LibGit2Sharp.*"
       JsonSchemaNet:
+        group-by: dependency-name
         patterns:
           - "JsonSchemaNet.*"
     directories:
