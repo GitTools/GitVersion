@@ -3,11 +3,65 @@
     {
         Tuple.Create("Documentation", Context.GetLink("docs")),
         Tuple.Create("API", Context.GetLink("api")),
-        Tuple.Create("<i></i> 5.12.0", "/5.12.0/docs"),
     };
+
+    // Define a list of versions with their respective links and status (e.g., latest, EOL).
+    var VersionList = new List<(string Name, string Link, string Status, bool IsReleased)>
+    {
+        ("5.12", "/5.12.0/docs", "(EOL)", true),
+        ("6.0", "/6.0.0/docs", "", true),
+        ("6.1-6.3", "/", "(latest)", true),
+        ("main branch", "/dev/docs", "(unstable)", false),
+    };
+
+    // determine currently viewed version
+    var CurrentlyViewedVersion = VersionList.Last().Name;
+    @foreach (var version in VersionList)
+    {
+        if (Context.GetLink(Document).StartsWith(version.Link))
+        {
+            CurrentlyViewedVersion = version.Name;
+            break;
+        }
+    }
+
     foreach(Tuple<string, string> p in pages)
     {
         string active = Context.GetLink(Document).StartsWith(p.Item2) ? "active" : null;
         <li class="@active"><a href="@p.Item2">@Html.Raw(p.Item1)</a></li>
     }
+
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">
+            Other Versions - v: @Html.Raw(@CurrentlyViewedVersion)
+            <span class="fa fa-caret-down"></span>
+        </a>
+        <div class="dropdown-content">
+            <dl>
+                <dt>Releases</dt>
+                @foreach (var version in VersionList)
+                {
+                    if (version.IsReleased)
+                    {
+                        <dd>
+                        <a href="@version.Link">@version.Name @version.Status</a>
+                        </dd>
+                    }
+                }
+            </dl>
+            <dl>
+                <dt>In Development</dt>
+                @foreach (var version in VersionList)
+                {
+                    if (!version.IsReleased)
+                    {
+                        <dd>
+                        <a href="@version.Link">@version.Name @version.Status</a>
+                        </dd>
+                    }
+                }
+            </dl>
+
+        </div>
+    </li>
 }
