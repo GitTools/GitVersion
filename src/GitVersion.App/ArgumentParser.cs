@@ -10,7 +10,7 @@ using Serilog.Events;
 
 namespace GitVersion;
 
-internal class SystemCommandLineArgumentParser(
+internal class ArgumentParser(
     IEnvironment environment,
     IFileSystem fileSystem,
     IConsole console,
@@ -100,7 +100,7 @@ internal class SystemCommandLineArgumentParser(
 
         // Detect unknown options that were incorrectly consumed as positional path argument
         var positionalCheck = parseResult.GetValue(options.Path);
-        if (positionalCheck != null && positionalCheck.StartsWith('-'))
+        if (positionalCheck?.StartsWith('-') == true)
         {
             throw new WarningException($"Could not parse command line parameter '{positionalCheck}'.");
         }
@@ -280,7 +280,7 @@ internal class SystemCommandLineArgumentParser(
 
             if (arguments.UpdateProjectFiles)
             {
-                throw new WarningException("Cannot specify both updateprojectfiles and updateassemblyinfo in the same run. Please rerun GitVersion with only one parameter");
+                throw new WarningException("Cannot specify both --update-project-files and --update-assembly-info in the same run. Please rerun GitVersion with only one parameter");
             }
         }
 
@@ -303,12 +303,12 @@ internal class SystemCommandLineArgumentParser(
 
             if (arguments.UpdateAssemblyInfo)
             {
-                throw new WarningException("Cannot specify both updateassemblyinfo and updateprojectfiles in the same run. Please rerun GitVersion with only one parameter");
+                throw new WarningException("Cannot specify both --update-assembly-info and --update-project-files in the same run. Please rerun GitVersion with only one parameter");
             }
 
             if (arguments.EnsureAssemblyInfo)
             {
-                throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+                throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
             }
         }
 
@@ -319,19 +319,19 @@ internal class SystemCommandLineArgumentParser(
 
             if (arguments.UpdateProjectFiles)
             {
-                throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+                throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
             }
 
             if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
-                throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
+                throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
             }
         }
 
         // Check assembly info + ensure assembly info cross-validation
         if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
         {
-            throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
+            throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
         }
 
         // Update wix version file
@@ -682,14 +682,14 @@ internal class SystemCommandLineArgumentParser(
             if (keyAndValue.Length != 2)
             {
                 throw new WarningException(
-                    $"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'.");
+                    $"Could not parse --override-config option: {keyValueOption}. Ensure it is in format 'key=value'.");
             }
 
             var optionKey = keyAndValue[0].ToLowerInvariant();
             if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
             {
                 throw new WarningException(
-                    $"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
+                    $"Could not parse --override-config option: {keyValueOption}. Unsupported 'key'.");
             }
 
             parser.SetValue(optionKey, keyAndValue[1]);
@@ -698,7 +698,7 @@ internal class SystemCommandLineArgumentParser(
         arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 
-    private record CommandOptions(
+    private sealed record CommandOptions(
         Argument<string?> Path,
         Option<bool> Version,
         Option<bool> Diagnose,
