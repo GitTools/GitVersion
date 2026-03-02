@@ -2,21 +2,28 @@ using GitVersion.FileSystemGlobbing;
 
 namespace GitVersion;
 
-internal class GitVersionAppModule(params string[] args) : IGitVersionModule
+internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser = false) : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<IArgumentParser, ArgumentParser>();
-        services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
+        if (useLegacyParser)
+        {
+            services.AddSingleton<IArgumentParser, LegacyArgumentParser>();
+            services.AddSingleton<IHelpWriter, HelpWriter>();
+            services.AddSingleton<IVersionWriter, VersionWriter>();
+        }
+        else
+        {
+            services.AddSingleton<IArgumentParser, SystemCommandLineArgumentParser>();
+        }
 
-        services.AddSingleton<IHelpWriter, HelpWriter>();
-        services.AddSingleton<IVersionWriter, VersionWriter>();
+        services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
         services.AddSingleton<IGitVersionExecutor, GitVersionExecutor>();
         services.AddSingleton<GitVersionApp>();
 
         services.AddSingleton(sp =>
         {
-            var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args);
+            var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []);
             var gitVersionOptions = arguments.ToOptions();
             return Options.Create(gitVersionOptions);
         });
