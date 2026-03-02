@@ -11,8 +11,6 @@ internal class GitVersionExecutor(
     ILog log,
     IFileSystem fileSystem,
     IConsole console,
-    IVersionWriter versionWriter,
-    IHelpWriter helpWriter,
     IConfigurationFileLocator configurationFileLocator,
     IConfigurationProvider configurationProvider,
     IConfigurationSerializer configurationSerializer,
@@ -25,8 +23,6 @@ internal class GitVersionExecutor(
     private readonly ILog log = log.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IConsole console = console.NotNull();
-    private readonly IVersionWriter versionWriter = versionWriter.NotNull();
-    private readonly IHelpWriter helpWriter = helpWriter.NotNull();
 
     private readonly IConfigurationFileLocator configurationFileLocator = configurationFileLocator.NotNull();
     private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
@@ -39,10 +35,8 @@ internal class GitVersionExecutor(
 
     public int Execute(GitVersionOptions gitVersionOptions)
     {
-        if (!HandleNonMainCommand(gitVersionOptions, out var exitCode))
-        {
-            exitCode = RunGitVersionTool(gitVersionOptions);
-        }
+        Initialize(gitVersionOptions);
+        var exitCode = RunGitVersionTool(gitVersionOptions);
 
         if (exitCode != 0)
         {
@@ -103,23 +97,8 @@ internal class GitVersionExecutor(
         return 0;
     }
 
-    private bool HandleNonMainCommand(GitVersionOptions gitVersionOptions, out int exitCode)
+    private void Initialize(GitVersionOptions gitVersionOptions)
     {
-        if (gitVersionOptions.IsVersion)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            this.versionWriter.Write(assembly);
-            exitCode = 0;
-            return true;
-        }
-
-        if (gitVersionOptions.IsHelp)
-        {
-            this.helpWriter.Write();
-            exitCode = 0;
-            return true;
-        }
-
         if (gitVersionOptions.Diag)
         {
             gitVersionOptions.Settings.NoCache = true;
@@ -142,21 +121,15 @@ internal class GitVersionExecutor(
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
-        {
-            if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
-            {
-                this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
-            }
-            var configuration = this.configurationProvider.Provide();
-            var configurationString = configurationSerializer.Serialize(configuration);
-            this.console.WriteLine(configurationString);
-            exitCode = 0;
-            return true;
-        }
+        if (!gitVersionOptions.ConfigurationInfo.ShowConfiguration) return;
 
-        exitCode = 0;
-        return false;
+        if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+        {
+            this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
+        }
+        var configuration = this.configurationProvider.Provide();
+        var configurationString = this.configurationSerializer.Serialize(configuration);
+        this.console.WriteLine(configurationString);
     }
 
     private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log, IFileSystem fileSystem)
