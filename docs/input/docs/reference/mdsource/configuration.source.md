@@ -19,7 +19,7 @@ The `develop` branch is set to `ContinuousDeployment` mode by default as we have
 found that is generally what is needed when using GitFlow.
 
 To see the effective configuration (defaults and overrides), you can run
-`gitversion /showConfig`.
+`gitversion --show-config`.
 
 ## Global configuration
 
