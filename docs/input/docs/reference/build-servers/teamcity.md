@@ -12,7 +12,7 @@ In [TeamCity][teamcity] you can create a build step as follows:
 * **Runner type:** Command Line
 * **Run:** Executable with parameters
 * **Command executable:**  `GitVersion.exe`
-* **Command parameters:** `/output buildserver /updateassemblyinfo true`
+* **Command parameters:** `--output buildserver --update-assembly-info true`
 
 Then in your build parameters simply [add a placeholder](#nuget-in-teamcity) of
 the GitVersion variables you would like to use.
