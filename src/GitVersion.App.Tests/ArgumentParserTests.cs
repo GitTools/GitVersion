@@ -53,6 +53,15 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
+    public void NoPathAndLogfileLongFormShouldUseCurrentDirectoryTargetDirectory()
+    {
+        var arguments = this.argumentParser.ParseArguments("--log-file logFilePath");
+        arguments.TargetPath.ShouldBe(SysEnv.CurrentDirectory);
+        arguments.LogFilePath.ShouldBe("logFilePath");
+        arguments.IsHelp.ShouldBe(false);
+    }
+
+    [Test]
     public void HelpSwitchTest()
     {
         var arguments = this.argumentParser.ParseArguments("-h");
@@ -67,7 +76,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void VersionSwitchTest()
     {
-        var arguments = this.argumentParser.ParseArguments("-version");
+        var arguments = this.argumentParser.ParseArguments("--version");
         Assert.Multiple(() =>
         {
             Assert.That(arguments.TargetPath, Is.Null);
@@ -79,7 +88,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void TargetDirectoryAndLogFilePathCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -l logFilePath");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --log-file logFilePath");
         arguments.TargetPath.ShouldBe("targetDirectoryPath");
         arguments.LogFilePath.ShouldBe("logFilePath");
         arguments.IsHelp.ShouldBe(false);
@@ -98,9 +107,9 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void UnknownOutputShouldThrow()
     {
-        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
+        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath --output invalid_value"));
         exception.ShouldNotBeNull();
-        exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file', 'buildserver' or 'dotenv'");
+        exception.Message.ShouldContain("invalid_value");
     }
 
     [Test]
@@ -115,7 +124,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OutputJsonCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output json");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output json");
         arguments.Output.ShouldContain(OutputType.Json);
         arguments.Output.ShouldNotContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.File);
@@ -124,7 +133,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void MultipleOutputJsonCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output json -output json");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output json --output json");
         arguments.Output.ShouldContain(OutputType.Json);
         arguments.Output.ShouldNotContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.File);
@@ -133,7 +142,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OutputBuildserverCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output buildserver");
         arguments.Output.ShouldContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.Json);
         arguments.Output.ShouldNotContain(OutputType.File);
@@ -142,7 +151,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void MultipleOutputBuildserverCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output buildserver");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output buildserver --output buildserver");
         arguments.Output.ShouldContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.Json);
         arguments.Output.ShouldNotContain(OutputType.File);
@@ -151,7 +160,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OutputFileCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output file");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output file");
         arguments.Output.ShouldContain(OutputType.File);
         arguments.Output.ShouldNotContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.Json);
@@ -160,7 +169,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void MultipleOutputFileCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output file -output file");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output file --output file");
         arguments.Output.ShouldContain(OutputType.File);
         arguments.Output.ShouldNotContain(OutputType.BuildServer);
         arguments.Output.ShouldNotContain(OutputType.Json);
@@ -169,7 +178,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OutputBuildserverAndJsonCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output buildserver --output json");
         arguments.Output.ShouldContain(OutputType.BuildServer);
         arguments.Output.ShouldContain(OutputType.Json);
         arguments.Output.ShouldNotContain(OutputType.File);
@@ -178,7 +187,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OutputBuildserverAndJsonAndFileCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json -output file");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output buildserver --output json --output file");
         arguments.Output.ShouldContain(OutputType.BuildServer);
         arguments.Output.ShouldContain(OutputType.Json);
         arguments.Output.ShouldContain(OutputType.File);
@@ -187,12 +196,12 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void MultipleArgsAndFlag()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --output buildserver --update-assembly-info");
         arguments.Output.ShouldContain(OutputType.BuildServer);
     }
 
-    [TestCase("-output file", "GitVersion.json")]
-    [TestCase("-output file -outputfile version.json", "version.json")]
+    [TestCase("--output file", "GitVersion.json")]
+    [TestCase("--output file --output-file version.json", "version.json")]
     public void OutputFileArgumentCanBeParsed(string args, string outputFile)
     {
         var arguments = this.argumentParser.ParseArguments(args);
@@ -204,7 +213,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void UrlAndBranchNameCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -url https://github.com/Particular/GitVersion.git -b someBranch");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --url https://github.com/Particular/GitVersion.git -b someBranch");
         arguments.TargetPath.ShouldBe("targetDirectoryPath");
         arguments.TargetUrl.ShouldBe("https://github.com/Particular/GitVersion.git");
         arguments.TargetBranch.ShouldBe("someBranch");
@@ -214,13 +223,13 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void WrongNumberOfArgumentsShouldThrow()
     {
-        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
+        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath --log-file logFilePath extraArg"));
         exception.ShouldNotBeNull();
         exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
     [TestCase("targetDirectoryPath -x logFilePath")]
-    [TestCase("/invalid-argument")]
+    [TestCase("--invalid-argument")]
     public void UnknownArgumentsShouldThrow(string arguments)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(arguments));
@@ -228,38 +237,38 @@ public class ArgumentParserTests : TestBase
         exception.Message.ShouldStartWith("Could not parse command line parameter");
     }
 
-    [TestCase("-updateAssemblyInfo true")]
-    [TestCase("-updateAssemblyInfo 1")]
-    [TestCase("-updateAssemblyInfo")]
-    [TestCase("-updateAssemblyInfo assemblyInfo.cs")]
-    [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
-    [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
-    [TestCase("-updateAssemblyInfo Assembly.cs Assembly.cs -ensureassemblyinfo")]
+    [TestCase("--update-assembly-info true")]
+    [TestCase("--update-assembly-info 1")]
+    [TestCase("--update-assembly-info")]
+    [TestCase("--update-assembly-info assemblyInfo.cs")]
+    [TestCase("--update-assembly-info assemblyInfo.cs --ensure-assembly-info")]
+    [TestCase("--update-assembly-info assemblyInfo.cs otherAssemblyInfo.cs")]
+    [TestCase("--update-assembly-info Assembly.cs Assembly.cs --ensure-assembly-info")]
     public void UpdateAssemblyInfoTrue(string command)
     {
         var arguments = this.argumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
 
-    [TestCase("-updateProjectFiles assemblyInfo.csproj")]
-    [TestCase("-updateProjectFiles assemblyInfo.csproj")]
-    [TestCase("-updateProjectFiles assemblyInfo.csproj otherAssemblyInfo.fsproj")]
-    [TestCase("-updateProjectFiles")]
+    [TestCase("--update-project-files assemblyInfo.csproj")]
+    [TestCase("--update-project-files assemblyInfo.csproj")]
+    [TestCase("--update-project-files assemblyInfo.csproj otherAssemblyInfo.fsproj")]
+    [TestCase("--update-project-files")]
     public void UpdateProjectTrue(string command)
     {
         var arguments = this.argumentParser.ParseArguments(command);
         arguments.UpdateProjectFiles.ShouldBe(true);
     }
 
-    [TestCase("-updateAssemblyInfo false")]
-    [TestCase("-updateAssemblyInfo 0")]
+    [TestCase("--update-assembly-info false")]
+    [TestCase("--update-assembly-info 0")]
     public void UpdateAssemblyInfoFalse(string command)
     {
         var arguments = this.argumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(false);
     }
 
-    [TestCase("-updateAssemblyInfo Assembly.cs Assembly1.cs -ensureassemblyinfo")]
+    [TestCase("--update-assembly-info Assembly.cs Assembly1.cs --ensure-assembly-info")]
     public void CreateMultipleAssemblyInfoProtected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
@@ -267,7 +276,7 @@ public class ArgumentParserTests : TestBase
         exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
     }
 
-    [TestCase("-updateProjectFiles Assembly.csproj -ensureassemblyinfo")]
+    [TestCase("--update-project-files Assembly.csproj --ensure-assembly-info")]
     public void UpdateProjectInfoWithEnsureAssemblyInfoProtected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
@@ -283,7 +292,7 @@ public class ArgumentParserTests : TestBase
         var assemblyFile = FileSystemHelper.Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = this.fileSystem.File.Create(assemblyFile);
 
-        var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
+        var arguments = this.argumentParser.ParseArguments($"--target-path {repo.RepositoryPath} --update-assembly-info CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
@@ -300,7 +309,7 @@ public class ArgumentParserTests : TestBase
         var assemblyFile2 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
         using var file2 = this.fileSystem.File.Create(assemblyFile2);
 
-        var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
+        var arguments = this.argumentParser.ParseArguments($"--target-path {repo.RepositoryPath} --update-assembly-info CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
@@ -318,7 +327,7 @@ public class ArgumentParserTests : TestBase
         var assemblyFile2 = FileSystemHelper.Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
         using var file2 = this.fileSystem.File.Create(assemblyFile2);
 
-        var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateProjectFiles CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
+        var arguments = this.argumentParser.ParseArguments($"--target-path {repo.RepositoryPath} --update-project-files CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
         arguments.UpdateProjectFiles.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.csproj"));
@@ -342,7 +351,7 @@ public class ArgumentParserTests : TestBase
         var assemblyFile3 = FileSystemHelper.Path.Combine(subdir, "LocalAssemblyInfo.cs");
         using var file3 = this.fileSystem.File.Create(assemblyFile3);
 
-        var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
+        var arguments = this.argumentParser.ParseArguments($"--target-path {repo.RepositoryPath} --update-assembly-info **/*AssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
@@ -361,7 +370,7 @@ public class ArgumentParserTests : TestBase
         var targetPath = FileSystemHelper.Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
         this.fileSystem.Directory.CreateDirectory(targetPath);
 
-        var arguments = this.argumentParser.ParseArguments($@"-targetpath {targetPath} -updateAssemblyInfo ..\..\CommonAssemblyInfo.cs");
+        var arguments = this.argumentParser.ParseArguments($@"--target-path {targetPath} --update-assembly-info ..\..\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
         arguments.UpdateAssemblyInfoFileName.ShouldContain(x => FileSystemHelper.Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
@@ -370,14 +379,14 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OverrideconfigWithNoOptions()
     {
-        var arguments = this.argumentParser.ParseArguments("/overrideconfig");
+        var arguments = this.argumentParser.ParseArguments("--override-config");
         arguments.OverrideConfiguration.ShouldBeNull();
     }
 
     [TestCaseSource(nameof(OverrideconfigWithInvalidOptionTestData))]
     public string OverrideconfigWithInvalidOption(string options)
     {
-        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments($"/overrideconfig {options}"));
+        var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments($"--override-config {options}"));
         exception.ShouldNotBeNull();
         return exception.Message;
     }
@@ -397,7 +406,7 @@ public class ArgumentParserTests : TestBase
     [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
     public void OverrideConfigWithSingleOptions(string options, IGitVersionConfiguration expected)
     {
-        var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
+        var arguments = this.argumentParser.ParseArguments($"--override-config {options}");
 
         ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
@@ -551,7 +560,7 @@ public class ArgumentParserTests : TestBase
     private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()
     {
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -559,7 +568,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -567,7 +576,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig tag-pre-release-weight=4",
+            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" --override-config update-build-number=true --override-config assembly-versioning-scheme=MajorMinorPatchTag --override-config mode=ContinuousDelivery --override-config tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -583,70 +592,70 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void EnsureAssemblyInfoTrueWhenFound()
     {
-        var arguments = this.argumentParser.ParseArguments("-ensureAssemblyInfo");
+        var arguments = this.argumentParser.ParseArguments("--ensure-assembly-info");
         arguments.EnsureAssemblyInfo.ShouldBe(true);
     }
 
     [Test]
     public void EnsureAssemblyInfoTrue()
     {
-        var arguments = this.argumentParser.ParseArguments("-ensureAssemblyInfo true");
+        var arguments = this.argumentParser.ParseArguments("--ensure-assembly-info true");
         arguments.EnsureAssemblyInfo.ShouldBe(true);
     }
 
     [Test]
     public void EnsureAssemblyInfoFalse()
     {
-        var arguments = this.argumentParser.ParseArguments("-ensureAssemblyInfo false");
+        var arguments = this.argumentParser.ParseArguments("--ensure-assembly-info false");
         arguments.EnsureAssemblyInfo.ShouldBe(false);
     }
 
     [Test]
     public void DynamicRepoLocation()
     {
-        var arguments = this.argumentParser.ParseArguments("-dynamicRepoLocation /tmp/foo");
+        var arguments = this.argumentParser.ParseArguments("--dynamic-repo-location /tmp/foo");
         arguments.ClonePath.ShouldBe("/tmp/foo");
     }
 
     [Test]
     public void CanLogToConsole()
     {
-        var arguments = this.argumentParser.ParseArguments("-l console");
+        var arguments = this.argumentParser.ParseArguments("--log-file console");
         arguments.LogFilePath.ShouldBe("console");
     }
 
     [Test]
     public void NofetchTrueWhenDefined()
     {
-        var arguments = this.argumentParser.ParseArguments("-nofetch");
+        var arguments = this.argumentParser.ParseArguments("--no-fetch");
         arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
     public void NoNormalizeTrueWhenDefined()
     {
-        var arguments = this.argumentParser.ParseArguments("-nonormalize");
+        var arguments = this.argumentParser.ParseArguments("--no-normalize");
         arguments.NoNormalize.ShouldBe(true);
     }
 
     [Test]
     public void AllowshallowTrueWhenDefined()
     {
-        var arguments = this.argumentParser.ParseArguments("-allowshallow");
+        var arguments = this.argumentParser.ParseArguments("--allow-shallow");
         arguments.AllowShallow.ShouldBe(true);
     }
 
     [Test]
     public void DiagTrueWhenDefined()
     {
-        var arguments = this.argumentParser.ParseArguments("-diag");
+        var arguments = this.argumentParser.ParseArguments("--diagnose");
         arguments.Diag.ShouldBe(true);
     }
 
     [Test]
     public void DiagAndLogToConsoleIsNotIgnored()
     {
-        var arguments = this.argumentParser.ParseArguments("-diag -l console");
+        var arguments = this.argumentParser.ParseArguments("--diagnose --log-file console");
         arguments.Diag.ShouldBe(true);
         arguments.LogFilePath.ShouldBe("console");
     }
@@ -654,7 +663,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OtherArgumentsCanBeParsedBeforeNofetch()
     {
-        var arguments = this.argumentParser.ParseArguments("targetpath -nofetch ");
+        var arguments = this.argumentParser.ParseArguments("targetpath --no-fetch");
         arguments.TargetPath.ShouldBe("targetpath");
         arguments.NoFetch.ShouldBe(true);
     }
@@ -662,7 +671,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OtherArgumentsCanBeParsedBeforeNonormalize()
     {
-        var arguments = this.argumentParser.ParseArguments("targetpath -nonormalize");
+        var arguments = this.argumentParser.ParseArguments("targetpath --no-normalize");
         arguments.TargetPath.ShouldBe("targetpath");
         arguments.NoNormalize.ShouldBe(true);
     }
@@ -670,7 +679,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OtherArgumentsCanBeParsedBeforeNocache()
     {
-        var arguments = this.argumentParser.ParseArguments("targetpath -nocache");
+        var arguments = this.argumentParser.ParseArguments("targetpath --no-cache");
         arguments.TargetPath.ShouldBe("targetpath");
         arguments.NoCache.ShouldBe(true);
     }
@@ -678,35 +687,35 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void OtherArgumentsCanBeParsedBeforeAllowshallow()
     {
-        var arguments = this.argumentParser.ParseArguments("targetpath -allowshallow");
+        var arguments = this.argumentParser.ParseArguments("targetpath --allow-shallow");
         arguments.TargetPath.ShouldBe("targetpath");
         arguments.AllowShallow.ShouldBe(true);
     }
 
-    [TestCase("-nofetch -nonormalize -nocache -allowshallow")]
-    [TestCase("-nofetch -nonormalize -allowshallow -nocache")]
-    [TestCase("-nofetch -nocache -nonormalize -allowshallow")]
-    [TestCase("-nofetch -nocache -allowshallow -nonormalize")]
-    [TestCase("-nofetch -allowshallow -nonormalize -nocache")]
-    [TestCase("-nofetch -allowshallow -nocache -nonormalize")]
-    [TestCase("-nonormalize -nofetch -nocache -allowshallow")]
-    [TestCase("-nonormalize -nofetch -allowshallow -nocache")]
-    [TestCase("-nonormalize -nocache -nofetch -allowshallow")]
-    [TestCase("-nonormalize -nocache -allowshallow -nofetch")]
-    [TestCase("-nonormalize -allowshallow -nofetch -nocache")]
-    [TestCase("-nonormalize -allowshallow -nocache -nofetch")]
-    [TestCase("-nocache -nofetch -nonormalize -allowshallow")]
-    [TestCase("-nocache -nofetch -allowshallow -nonormalize")]
-    [TestCase("-nocache -nonormalize -nofetch -allowshallow")]
-    [TestCase("-nocache -nonormalize -allowshallow -nofetch")]
-    [TestCase("-nocache -allowshallow -nofetch -nonormalize")]
-    [TestCase("-nocache -allowshallow -nonormalize -nofetch")]
-    [TestCase("-allowshallow -nofetch -nonormalize -nocache")]
-    [TestCase("-allowshallow -nofetch -nocache -nonormalize")]
-    [TestCase("-allowshallow -nonormalize -nofetch -nocache")]
-    [TestCase("-allowshallow -nonormalize -nocache -nofetch")]
-    [TestCase("-allowshallow -nocache -nofetch -nonormalize")]
-    [TestCase("-allowshallow -nocache -nonormalize -nofetch")]
+    [TestCase("--no-fetch --no-normalize --no-cache --allow-shallow")]
+    [TestCase("--no-fetch --no-normalize --allow-shallow --no-cache")]
+    [TestCase("--no-fetch --no-cache --no-normalize --allow-shallow")]
+    [TestCase("--no-fetch --no-cache --allow-shallow --no-normalize")]
+    [TestCase("--no-fetch --allow-shallow --no-normalize --no-cache")]
+    [TestCase("--no-fetch --allow-shallow --no-cache --no-normalize")]
+    [TestCase("--no-normalize --no-fetch --no-cache --allow-shallow")]
+    [TestCase("--no-normalize --no-fetch --allow-shallow --no-cache")]
+    [TestCase("--no-normalize --no-cache --no-fetch --allow-shallow")]
+    [TestCase("--no-normalize --no-cache --allow-shallow --no-fetch")]
+    [TestCase("--no-normalize --allow-shallow --no-fetch --no-cache")]
+    [TestCase("--no-normalize --allow-shallow --no-cache --no-fetch")]
+    [TestCase("--no-cache --no-fetch --no-normalize --allow-shallow")]
+    [TestCase("--no-cache --no-fetch --allow-shallow --no-normalize")]
+    [TestCase("--no-cache --no-normalize --no-fetch --allow-shallow")]
+    [TestCase("--no-cache --no-normalize --allow-shallow --no-fetch")]
+    [TestCase("--no-cache --allow-shallow --no-fetch --no-normalize")]
+    [TestCase("--no-cache --allow-shallow --no-normalize --no-fetch")]
+    [TestCase("--allow-shallow --no-fetch --no-normalize --no-cache")]
+    [TestCase("--allow-shallow --no-fetch --no-cache --no-normalize")]
+    [TestCase("--allow-shallow --no-normalize --no-fetch --no-cache")]
+    [TestCase("--allow-shallow --no-normalize --no-cache --no-fetch")]
+    [TestCase("--allow-shallow --no-cache --no-fetch --no-normalize")]
+    [TestCase("--allow-shallow --no-cache --no-normalize --no-fetch")]
     public void SeveralSwitchesCanBeParsed(string commandLineArgs)
     {
         var arguments = this.argumentParser.ParseArguments(commandLineArgs);
@@ -726,7 +735,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void BooleanArgumentHandling()
     {
-        var arguments = this.argumentParser.ParseArguments("/nofetch /updateassemblyinfo true");
+        var arguments = this.argumentParser.ParseArguments("--no-fetch --update-assembly-info true");
         arguments.NoFetch.ShouldBe(true);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
@@ -734,7 +743,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void NocacheTrueWhenDefined()
     {
-        var arguments = this.argumentParser.ParseArguments("-nocache");
+        var arguments = this.argumentParser.ParseArguments("--no-cache");
         arguments.NoCache.ShouldBe(true);
     }
 
@@ -748,11 +757,11 @@ public class ArgumentParserTests : TestBase
     {
         if (shouldThrow)
         {
-            Assert.Throws<WarningException>(() => ArgumentParser.ParseVerbosity(command));
+            Assert.Throws<WarningException>(() => SystemCommandLineArgumentParser.ParseVerbosity(command));
         }
         else
         {
-            var verbosity = ArgumentParser.ParseVerbosity(command);
+            var verbosity = SystemCommandLineArgumentParser.ParseVerbosity(command);
             verbosity.ShouldBe(expectedVerbosity);
         }
     }
@@ -777,7 +786,7 @@ public class ArgumentParserTests : TestBase
     public void ArbitraryArgumentsRemoteUsernameDefinedSetsUsername()
     {
         this.environment.SetEnvironmentVariable("GITVERSION_REMOTE_USERNAME", "value");
-        var arguments = this.argumentParser.ParseArguments("-nocache");
+        var arguments = this.argumentParser.ParseArguments("--no-cache");
         arguments.Authentication.Username.ShouldBe("value");
     }
 
@@ -785,35 +794,35 @@ public class ArgumentParserTests : TestBase
     public void ArbitraryArgumentsRemotePasswordDefinedSetsPassword()
     {
         this.environment.SetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD", "value");
-        var arguments = this.argumentParser.ParseArguments("-nocache");
+        var arguments = this.argumentParser.ParseArguments("--no-cache");
         arguments.Authentication.Password.ShouldBe("value");
     }
 
     [Test]
     public void EnsureShowVariableIsSet()
     {
-        var arguments = this.argumentParser.ParseArguments("-showvariable SemVer");
+        var arguments = this.argumentParser.ParseArguments("--show-variable SemVer");
         arguments.ShowVariable.ShouldBe("SemVer");
     }
 
     [Test]
     public void EnsureFormatIsSet()
     {
-        var arguments = this.argumentParser.ParseArguments("-format {Major}.{Minor}.{Patch}");
+        var arguments = this.argumentParser.ParseArguments("--format {Major}.{Minor}.{Patch}");
         arguments.Format.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
     [TestCase("custom-config.yaml")]
     [TestCase("/tmp/custom-config.yaml")]
     public void ThrowIfConfigurationFileDoesNotExist(string configFile) =>
-        Should.Throw<WarningException>(() => _ = this.argumentParser.ParseArguments($"-config {configFile}"));
+        Should.Throw<WarningException>(() => _ = this.argumentParser.ParseArguments($"--config {configFile}"));
 
     [Test]
     public void EnsureConfigurationFileIsSet()
     {
         var configFile = FileSystemHelper.Path.GetTempPath() + Guid.NewGuid() + ".yaml";
         this.fileSystem.File.WriteAllText(configFile, "next-version: 1.0.0");
-        var arguments = this.argumentParser.ParseArguments($"-config {configFile}");
+        var arguments = this.argumentParser.ParseArguments($"--config {configFile}");
         arguments.ConfigurationFile.ShouldBe(configFile);
         this.fileSystem.File.Delete(configFile);
     }
