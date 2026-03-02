@@ -9,7 +9,7 @@ using Serilog.Events;
 
 namespace GitVersion;
 
-internal class ArgumentParser(
+internal class LegacyArgumentParser(
     IEnvironment environment,
     IFileSystem fileSystem,
     IConsole console,
@@ -212,7 +212,7 @@ internal class ArgumentParser(
             throw new WarningException(couldNotParseMessage);
         }
 
-        if (name?.StartsWith('/') == true)
+        if (name is not null && name.StartsWith('/'))
         {
             if (FileSystemHelper.Path.DirectorySeparatorChar == '/' && name.IsValidPath())
             {
@@ -220,7 +220,7 @@ internal class ArgumentParser(
                 return;
             }
         }
-        else if (!name.IsSwitchArgument())
+        else if (name is null || !name.IsSwitchArgument())
         {
             arguments.TargetPath = name;
             return;
