@@ -14,7 +14,7 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
         }
         else
         {
-            services.AddSingleton<IArgumentParser, SystemCommandLineArgumentParser>();
+            services.AddSingleton<IArgumentParser, ArgumentParser>();
         }
 
         services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
