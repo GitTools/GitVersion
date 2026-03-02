@@ -273,7 +273,7 @@ public class ArgumentParserTests : TestBase
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
         exception.ShouldNotBeNull();
-        exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
+        exception.Message.ShouldBe("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
     }
 
     [TestCase("--update-project-files Assembly.csproj --ensure-assembly-info")]
@@ -281,7 +281,7 @@ public class ArgumentParserTests : TestBase
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
         exception.ShouldNotBeNull();
-        exception.Message.ShouldBe("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+        exception.Message.ShouldBe("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
     }
 
     [Test]
@@ -395,11 +395,11 @@ public class ArgumentParserTests : TestBase
     {
         yield return new TestCaseData("tag-prefix=sample=asdf")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
+            ExpectedResult = "Could not parse --override-config option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
         };
         yield return new TestCaseData("unknown-option=25")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported key 'unknown-option'."
+            ExpectedResult = "Could not parse --override-config option: unknown-option=25. Unsupported key 'unknown-option'."
         };
     }
 
@@ -757,11 +757,11 @@ public class ArgumentParserTests : TestBase
     {
         if (shouldThrow)
         {
-            Assert.Throws<WarningException>(() => SystemCommandLineArgumentParser.ParseVerbosity(command));
+            Assert.Throws<WarningException>(() => ArgumentParser.ParseVerbosity(command));
         }
         else
         {
-            var verbosity = SystemCommandLineArgumentParser.ParseVerbosity(command);
+            var verbosity = ArgumentParser.ParseVerbosity(command);
             verbosity.ShouldBe(expectedVerbosity);
         }
     }
