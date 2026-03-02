@@ -11,11 +11,11 @@ public class ExecCmdLineArgumentTest
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " --invalid-argument");
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();
-        result.Output.ShouldContain("Could not parse command line parameter '/invalid-argument'");
+        result.Output.ShouldContain("Could not parse command line parameter '--invalid-argument'");
     }
 
     [Test]
@@ -26,7 +26,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeACommit();
 
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath,
-            """ /l "/tmp/path" """, false);
+            """ --log-file "/tmp/path" """, false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldNotBeNull();
@@ -38,8 +38,8 @@ public class ExecCmdLineArgumentTest
 
     [Theory]
     [TestCase("", "INFO")]
-    [TestCase("-verbosity NORMAL", "INFO")]
-    [TestCase("-verbosity quiet", "")]
+    [TestCase("--verbosity NORMAL", "INFO")]
+    [TestCase("--verbosity quiet", "")]
     public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -47,7 +47,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeACommit();
 
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath,
-            $""" {verbosityArg} -output buildserver /l "/tmp/path" """, false);
+            $""" {verbosityArg} --output buildserver --log-file "/tmp/path" """, false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldNotBeNull();
@@ -65,8 +65,8 @@ public class ExecCmdLineArgumentTest
         result.Output.ShouldContain("Cannot find the .git directory");
     }
 
-    [TestCase(" -help")]
-    [TestCase(" -version")]
+    [TestCase(" --help")]
+    [TestCase(" --version")]
     public void WorkingDirectoryWithoutGitFolderDoesNotFailForVersionAndHelp(string argument)
     {
         var result = GitVersionHelper.ExecuteIn(workingDirectory: null, arguments: argument);
@@ -80,7 +80,7 @@ public class ExecCmdLineArgumentTest
     {
         using var fixture = new EmptyRepositoryFixture();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " /l console", false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " --log-file console", false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();
@@ -94,7 +94,7 @@ public class ExecCmdLineArgumentTest
         var executable = ExecutableHelper.GetDotNetExecutable();
 
         var output = new StringBuilder();
-        var args = ExecutableHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
+        var args = ExecutableHelper.GetExecutableArgs($" --target-path {workingDirectory} ");
 
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s),
