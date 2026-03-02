@@ -6,7 +6,7 @@ Description: |
     assemblies
 ---
 
-`GitVersion.exe /updateassemblyinfo` will recursively search for all
+`GitVersion.exe --update-assembly-info` will recursively search for all
 `AssemblyInfo.cs` or `AssemblyInfo.vb` files in the git repo and update them.
 It will update the following assembly attributes:
 
@@ -20,13 +20,13 @@ Note that contrary to when using the [MSBuild Task][msbuild-task] the
 attributes must already exist in the `AssemblyInfo.cs` or `AssemblyInfo.vb`
 files prior to calling GitVersion.
 
-By adding `/updateassemblyinfo <filenames>` the name of AssemblyInfo file to
+By adding `--update-assembly-info <filenames>` the name of AssemblyInfo file to
 update can be set.  This switch can accept multiple files with the path to the
 file specified relative to the working directory.
 
 GitVersion can generate an assembly info source file for you if it does not
-already exist.  Use the `/ensureassemblyinfo` switch alongside
-`/updateassemblyinfo <filename>`, if the filename specified does not exist it
+already exist.  Use the `--ensure-assembly-info` switch alongside
+`--update-assembly-info <filename>`, if the filename specified does not exist it
 will be generated based on a known template that adds:
 
 * `AssemblyVersion` will be set to the `AssemblySemVer` variable.
@@ -38,45 +38,45 @@ will be generated based on a known template that adds:
 This can be done for \*.cs, \*.vb and \*.fs files.
 
 When requesting that GitVersion generate an assembly info file you are limited
-to only specifying a single `<filename>` within the `/updateassemblyinfo`
+to only specifying a single `<filename>` within the `--update-assembly-info`
 switch, this is to prevent the creation of multiple assembly info files with the
 same assembly version attributes.  If this occurs your build will fail.
 
 ## Example: When AssemblyInfo.cs does not exist
 
-`GitVersion.exe /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo`
+`GitVersion.exe --update-assembly-info AssemblyInfo.cs --ensure-assembly-info`
 
 A file is generated that contains version attributes (`AssemblyVersion`,
 `AssemblyFileVersion`, `AssemblyInformationalVersion`)
 
 ## Example: When AssemblyInfo.cs already exists
 
-`GitVersion.exe /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo`
+`GitVersion.exe --update-assembly-info AssemblyInfo.cs --ensure-assembly-info`
 
 All known attributes (`AssemblyVersion`, `AssemblyFileVersion`,
 `AssemblyInformationalVersion`) will be updated
 
 ## Example: When AssemblyInfo.cs and AssemblyVersionInfo.cs do not exist
 
-`GitVersion.exe /updateassemblyinfo AssemblyInfo.cs AssemblyVersionInfo.cs /ensureassemblyinfo`
+`GitVersion.exe --update-assembly-info AssemblyInfo.cs AssemblyVersionInfo.cs --ensure-assembly-info`
 
 Will result in command line argument error
 
 ## Example: When AssemblyInfo.cs and AssemblyVersionInfo.cs already exist
 
-`GitVersion.exe /updateassemblyinfo AssemblyInfo.cs AssemblyVersionInfo.cs`
+`GitVersion.exe --update-assembly-info AssemblyInfo.cs AssemblyVersionInfo.cs`
 
 Will iterate through each file and update known attributes (`AssemblyVersion`,
 `AssemblyFileVersion`, `AssemblyInformationalVersion`).
 
 ## Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 
-`GitVersion.exe /output json /overrideconfig tag-prefix=custom`
+`GitVersion.exe --output json --override-config tag-prefix=custom`
 
 ## Writing version metadata in WiX format
 
 To support integration with WiX projects, use `GitVersion.exe
-/updatewixversionfile`. All the [variables][variables] are written to
+--update-wix-version-file`. All the [variables][variables] are written to
 `GitVersion_WixVersion.wxi` under the current working directory and can be
 referenced in the WiX project files.
 
