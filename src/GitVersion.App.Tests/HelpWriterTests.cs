@@ -9,7 +9,7 @@ public class HelpWriterTests : TestBase
 
     public HelpWriterTests()
     {
-        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule(useLegacyParser: true)));
         this.helpWriter = sp.GetRequiredService<IHelpWriter>();
     }
 
@@ -18,35 +18,35 @@ public class HelpWriterTests : TestBase
     {
         var lookup = new Dictionary<string, string>
         {
-            { nameof(Arguments.IsHelp), "/?" },
-            { nameof(Arguments.IsVersion), "/version" },
+            { nameof(Arguments.IsHelp), "--help" },
+            { nameof(Arguments.IsVersion), "--version" },
 
-            { nameof(Arguments.TargetUrl), "/url" },
-            { nameof(Arguments.TargetBranch), "/b" },
-            { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
-            { nameof(Arguments.CommitId), "/c" },
+            { nameof(Arguments.TargetUrl), "--url" },
+            { nameof(Arguments.TargetBranch), "--branch" },
+            { nameof(Arguments.ClonePath), "--dynamic-repo-location" },
+            { nameof(Arguments.CommitId), "--commit" },
 
-            { nameof(Arguments.Diag) , "/diag" },
-            { nameof(Arguments.LogFilePath) , "/l" },
-            { "verbosity", "/verbosity" },
-            { nameof(Arguments.Output) , "/output" },
-            { nameof(Arguments.OutputFile) , "/outputfile" },
-            { nameof(Arguments.ShowVariable), "/showvariable" },
-            { nameof(Arguments.Format), "/format" },
+            { nameof(Arguments.Diag), "--diagnose" },
+            { nameof(Arguments.LogFilePath), "--log-file" },
+            { "verbosity", "--verbosity" },
+            { nameof(Arguments.Output), "--output" },
+            { nameof(Arguments.OutputFile), "--output-file" },
+            { nameof(Arguments.ShowVariable), "--show-variable" },
+            { nameof(Arguments.Format), "--format" },
 
-            { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
-            { nameof(Arguments.UpdateProjectFiles), "/updateprojectfiles" },
-            { nameof(Arguments.UpdateAssemblyInfo), "/updateassemblyinfo" },
-            { nameof(Arguments.EnsureAssemblyInfo), "/ensureassemblyinfo" },
+            { nameof(Arguments.UpdateWixVersionFile), "--update-wix-version-file" },
+            { nameof(Arguments.UpdateProjectFiles), "--update-project-files" },
+            { nameof(Arguments.UpdateAssemblyInfo), "--update-assembly-info" },
+            { nameof(Arguments.EnsureAssemblyInfo), "--ensure-assembly-info" },
 
-            { nameof(Arguments.ConfigurationFile), "/config" },
-            { nameof(Arguments.ShowConfiguration), "/showconfig" },
-            { nameof(Arguments.OverrideConfiguration), "/overrideconfig" },
+            { nameof(Arguments.ConfigurationFile), "--config" },
+            { nameof(Arguments.ShowConfiguration), "--show-config" },
+            { nameof(Arguments.OverrideConfiguration), "--override-config" },
 
-            { nameof(Arguments.NoCache), "/nocache" },
-            { nameof(Arguments.NoFetch), "/nofetch" },
-            { nameof(Arguments.NoNormalize), "/nonormalize" },
-            { nameof(Arguments.AllowShallow), "/allowshallow" }
+            { nameof(Arguments.NoCache), "--no-cache" },
+            { nameof(Arguments.NoFetch), "--no-fetch" },
+            { nameof(Arguments.NoNormalize), "--no-normalize" },
+            { nameof(Arguments.AllowShallow), "--allow-shallow" }
         };
         var helpText = string.Empty;
 
@@ -69,6 +69,8 @@ public class HelpWriterTests : TestBase
         if (lookup.TryGetValue(propertyName, out var value))
             return !helpText.Contains(value);
 
-        return !helpText.Contains("/" + propertyName.ToLower());
+        // Fallback: convert PascalCase to kebab-case and check for --option
+        var kebab = System.Text.RegularExpressions.Regex.Replace(propertyName, "(?<!^)([A-Z])", "-$1").ToLower();
+        return !helpText.Contains("--" + kebab);
     }
 }
