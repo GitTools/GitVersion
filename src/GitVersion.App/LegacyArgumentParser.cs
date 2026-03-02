@@ -9,7 +9,7 @@ using Serilog.Events;
 
 namespace GitVersion;
 
-internal class ArgumentParser(
+internal class LegacyArgumentParser(
     IEnvironment environment,
     IFileSystem fileSystem,
     IConsole console,
