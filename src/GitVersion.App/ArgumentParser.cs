@@ -12,6 +12,8 @@ internal class ArgumentParser(IEnvironment environment,
                               IFileSystem fileSystem,
                               ICurrentBuildAgent buildAgent,
                               IConsole console,
+                              IHelpWriter helpWriter,
+                              IVersionWriter versionWriter,
                               IGlobbingResolver globbingResolver)
     : IArgumentParser
 {
@@ -19,6 +21,8 @@ internal class ArgumentParser(IEnvironment environment,
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
     private readonly IConsole console = console.NotNull();
+    private readonly IHelpWriter helpWriter = helpWriter.NotNull();
+    private readonly IVersionWriter versionWriter = versionWriter.NotNull();
     private readonly IGlobbingResolver globbingResolver = globbingResolver.NotNull();
 
     private const string defaultOutputFileName = "GitVersion.json";
@@ -53,6 +57,7 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (firstArgument.IsHelp())
         {
+            this.helpWriter.Write();
             return new Arguments
             {
                 IsHelp = true
@@ -61,6 +66,8 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (firstArgument.IsSwitch("version"))
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            this.versionWriter.Write(assembly);
             return new Arguments
             {
                 IsVersion = true

@@ -19,16 +19,27 @@ internal class GitVersionApp(
         try
         {
             var gitVersionOptions = this.options.Value;
-            this.log.Verbosity = gitVersionOptions.Verbosity;
-            SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+
+            if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
+            {
+                SysEnv.ExitCode = 0;
+            }
+            else
+            {
+                this.log.Verbosity = gitVersionOptions.Verbosity;
+                SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+            }
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception.Message);
             SysEnv.ExitCode = 1;
         }
+        finally
+        {
+            this.applicationLifetime.StopApplication();
+        }
 
-        this.applicationLifetime.StopApplication();
         return Task.CompletedTask;
     }
 }
