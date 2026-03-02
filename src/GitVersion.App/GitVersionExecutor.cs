@@ -36,7 +36,10 @@ internal class GitVersionExecutor(
     public int Execute(GitVersionOptions gitVersionOptions)
     {
         Initialize(gitVersionOptions);
-        var exitCode = RunGitVersionTool(gitVersionOptions);
+
+        var exitCode = !VerifyAndDisplayConfiguration(gitVersionOptions)
+            ? RunGitVersionTool(gitVersionOptions)
+            : 0;
 
         if (exitCode != 0)
         {
@@ -104,7 +107,15 @@ internal class GitVersionExecutor(
             gitVersionOptions.Settings.NoCache = true;
         }
 
-        ConfigureLogging(gitVersionOptions, this.log, this.fileSystem);
+        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console")
+        {
+            this.log.AddLogAppender(new ConsoleAppender());
+        }
+
+        if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
+        {
+            this.log.AddLogAppender(new FileAppender(this.fileSystem, gitVersionOptions.LogFilePath));
+        }
 
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
@@ -120,28 +131,19 @@ internal class GitVersionExecutor(
         {
             this.log.Info("Working directory: " + workingDirectory);
         }
+    }
 
-        if (!gitVersionOptions.ConfigurationInfo.ShowConfiguration) return;
-
+    private bool VerifyAndDisplayConfiguration(GitVersionOptions gitVersionOptions)
+    {
+        if (!gitVersionOptions.ConfigurationInfo.ShowConfiguration) return false;
         if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
-            this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
+            this.configurationFileLocator.Verify(gitVersionOptions.WorkingDirectory, this.repositoryInfo.ProjectRootDirectory);
         }
+
         var configuration = this.configurationProvider.Provide();
         var configurationString = this.configurationSerializer.Serialize(configuration);
         this.console.WriteLine(configurationString);
-    }
-
-    private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log, IFileSystem fileSystem)
-    {
-        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console")
-        {
-            log.AddLogAppender(new ConsoleAppender());
-        }
-
-        if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
-        {
-            log.AddLogAppender(new FileAppender(fileSystem, gitVersionOptions.LogFilePath));
-        }
+        return true;
     }
 }

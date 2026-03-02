@@ -57,7 +57,7 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (firstArgument.IsHelp())
         {
-            helpWriter.Write();
+            this.helpWriter.Write();
             return new Arguments
             {
                 IsHelp = true
@@ -67,7 +67,7 @@ internal class ArgumentParser(IEnvironment environment,
         if (firstArgument.IsSwitch("version"))
         {
             var assembly = Assembly.GetExecutingAssembly();
-            versionWriter.Write(assembly);
+            this.versionWriter.Write(assembly);
             return new Arguments
             {
                 IsVersion = true

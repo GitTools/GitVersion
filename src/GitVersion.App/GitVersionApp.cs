@@ -23,19 +23,23 @@ internal class GitVersionApp(
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
             {
                 SysEnv.ExitCode = 0;
-                return Task.CompletedTask;
             }
-            this.log.Verbosity = gitVersionOptions.Verbosity;
-
-            SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+            else
+            {
+                this.log.Verbosity = gitVersionOptions.Verbosity;
+                SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+            }
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception.Message);
             SysEnv.ExitCode = 1;
         }
+        finally
+        {
+            this.applicationLifetime.StopApplication();
+        }
 
-        this.applicationLifetime.StopApplication();
         return Task.CompletedTask;
     }
 }
