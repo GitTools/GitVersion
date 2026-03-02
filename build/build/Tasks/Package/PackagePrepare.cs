@@ -39,7 +39,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
             {
                 context.Information("Validating native lib:");
                 var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
-                context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
+                context.ValidateOutput(nativeExe.FullPath, "--show-variable FullSemver", context.Version?.GitVersion?.FullSemVer);
             }
         }
     }
