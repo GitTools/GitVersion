@@ -74,7 +74,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 
         if (!string.IsNullOrWhiteSpace(settings.ShowVariable))
         {
-            builder.Append("-showvariable");
+            builder.Append("--show-variable");
             builder.Append(settings.ShowVariable);
         }
 
@@ -90,7 +90,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 
         if (settings.NoFetch)
         {
-            builder.Append("-nofetch");
+            builder.Append("--no-fetch");
         }
 
         AppendVerbosityArguments(builder, settings);
@@ -102,13 +102,13 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
     {
         if (settings.OutputTypes.Contains(GitVersionOutput.Json))
         {
-            builder.Append("-output");
+            builder.Append("--output");
             builder.Append("json");
         }
 
         if (settings.OutputTypes.Contains(GitVersionOutput.BuildServer))
         {
-            builder.Append("-output");
+            builder.Append("--output");
             builder.Append("buildserver");
         }
     }
@@ -134,7 +134,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
             return;
         }
 
-        builder.Append("-updateassemblyinfo");
+        builder.Append("--update-assembly-info");
 
         if (settings.UpdateAssemblyInfoFilePath != null)
         {
@@ -146,7 +146,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
     {
         if (settings.RepositoryPath != null)
         {
-            builder.Append("-targetpath");
+            builder.Append("--target-path");
             builder.AppendQuoted(settings.RepositoryPath.FullPath);
             return;
         }
@@ -156,7 +156,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
             return;
         }
 
-        builder.Append("-url");
+        builder.Append("--url");
         builder.AppendQuoted(settings.Url);
 
         if (!string.IsNullOrWhiteSpace(settings.Branch))
@@ -172,13 +172,13 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 
         if (!string.IsNullOrWhiteSpace(settings.Commit))
         {
-            builder.Append("-c");
+            builder.Append("--commit");
             builder.AppendQuoted(settings.Commit);
         }
 
         if (settings.DynamicRepositoryPath != null)
         {
-            builder.Append("-dynamicRepoLocation");
+            builder.Append("--dynamic-repo-location");
             builder.AppendQuoted(settings.DynamicRepositoryPath.FullPath);
         }
     }
@@ -189,7 +189,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 
         if (verbosity != Verbosity.Normal)
         {
-            builder.Append("-verbosity");
+            builder.Append("--verbosity");
             builder.Append(verbosity.ToString());
         }
     }
