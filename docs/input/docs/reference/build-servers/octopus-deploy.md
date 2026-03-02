@@ -106,7 +106,7 @@ if ($pendingChanges -ne $null)
 & git merge origin/main --ff-only
 
 # Determine version to release
-$output = & $gitversion /output json
+$output = & $gitversion --output json
 $versionInfoJson = $output -join "`n"
 
 $versionInfo = $versionInfoJson | ConvertFrom-Json
@@ -146,7 +146,7 @@ $gitversion = "tools\GitVersion\GitVersion.exe"
 $octo = "tools\Octo\Octo.exe"
 $nuget = "tools\NuGet\NuGet.exe"
 # Calculate version
-$output = & $gitversion /output json /l GitVersion.log /updateAssemblyInfo /nofetch
+$output = & $gitversion --output json --log-file GitVersion.log --update-assembly-info --no-fetch
 if ($LASTEXITCODE -ne 0) {
     Write-Verbose "$output"
     throw "GitVersion Exit Code: $LASTEXITCODE"
