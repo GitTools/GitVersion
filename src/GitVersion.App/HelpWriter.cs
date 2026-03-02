@@ -16,13 +16,13 @@ internal class HelpWriter(IVersionWriter versionWriter, IConsole console) : IHel
         var assembly = Assembly.GetExecutingAssembly();
         this.versionWriter.WriteTo(assembly, v => version = v);
 
-        var args = ArgumentList();
+        var args = LegacyArgumentList();
         var message = $"GitVersion {version}{FileSystemHelper.Path.NewLine}{FileSystemHelper.Path.NewLine}{args}";
 
         writeAction(message);
     }
 
-    private string ArgumentList()
+    private string LegacyArgumentList()
     {
         using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.arguments.md");
         argumentsMarkdownStream.NotNull();
