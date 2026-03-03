@@ -1,3 +1,26 @@
+## Unreleased
+
+### Logging System Replacement
+
+* The custom `ILog` logging abstraction has been replaced with the industry-standard `Microsoft.Extensions.Logging` (M.E.L.) infrastructure using Serilog as the underlying provider.
+
+* **Removed public types** from `GitVersion.Logging` namespace:
+  * `ILog` interface
+  * `ILogAppender` interface
+  * `LogLevel` enum
+  * `LogAction` delegate
+  * `LogActionEntry` delegate
+  * `LogExtensions` class
+
+* **Migration for custom integrations**:
+  * If you were injecting `ILog`, inject `ILogger<T>` instead
+  * If you implemented `ILogAppender`, implement `ILoggerProvider` instead
+  * The `Verbosity` enum is preserved for CLI usage and maps to Serilog log levels internally
+
+* **Preserved types**:
+  * `Verbosity` enum (Quiet/Minimal/Normal/Verbose/Diagnostic) - still used for CLI verbosity control
+  * `IConsole` interface - moved from `GitVersion.Logging` to `GitVersion` namespace
+
 ## v6.2.0
 
 * The configuration property `label-number-pattern` was removed. The functionality can be still used by changing the label and the branch name regular expression for pull-request branches.
