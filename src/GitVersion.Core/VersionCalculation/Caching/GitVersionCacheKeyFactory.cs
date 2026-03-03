@@ -5,13 +5,12 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.Caching;
 
 internal class GitVersionCacheKeyFactory(
     IFileSystem fileSystem,
-    ILog log,
+    ILogger<GitVersionCacheKeyFactory> logger,
     IOptions<GitVersionOptions> options,
     IConfigurationFileLocator configFileLocator,
     IConfigurationSerializer configurationSerializer,
@@ -19,8 +18,8 @@ internal class GitVersionCacheKeyFactory(
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
 {
+    private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly ILog log = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
@@ -45,7 +44,7 @@ internal class GitVersionCacheKeyFactory(
         // traverse the directory and get a list of files, use that for GetHash
         var contents = CalculateDirectoryContents(FileSystemHelper.Path.Combine(dotGitDirectory, "refs"));
 
-        return GetHash([.. contents]);
+        return GetHash(contents);
     }
 
     // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
@@ -85,14 +84,9 @@ internal class GitVersionCacheKeyFactory(
             // choice of which exceptions to catch depends entirely on the specific task
             // you are intending to perform and also on how much you know with certainty
             // about the systems on which this code will run.
-            catch (UnauthorizedAccessException e)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException)
             {
-                this.log.Error(e.Message);
-                continue;
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                this.log.Error(e.Message);
+                this.logger.LogError(ex, "{Message}", ex.Message);
                 continue;
             }
 
@@ -101,14 +95,9 @@ internal class GitVersionCacheKeyFactory(
             {
                 files = this.fileSystem.Directory.GetFiles(currentDir);
             }
-            catch (UnauthorizedAccessException e)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException)
             {
-                this.log.Error(e.Message);
-                continue;
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                this.log.Error(e.Message);
+                this.logger.LogError(ex, "{Message}", ex.Message);
                 continue;
             }
 
@@ -122,7 +111,7 @@ internal class GitVersionCacheKeyFactory(
                 }
                 catch (IOException e)
                 {
-                    this.log.Error(e.Message);
+                    this.logger.LogError(e, "{Message}", e.Message);
                 }
             }
 
@@ -179,7 +168,7 @@ internal class GitVersionCacheKeyFactory(
         return GetHash(configFileContent);
     }
 
-    private static string GetHash(params string[] textsToHash)
+    private static string GetHash(params IEnumerable<string> textsToHash)
     {
         var textToHash = string.Join(":", textsToHash);
         return GetHash(textToHash);

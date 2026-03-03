@@ -1,4 +1,4 @@
-namespace GitVersion.Logging;
+namespace GitVersion;
 
 public interface IConsole
 {

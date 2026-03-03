@@ -1,5 +1,4 @@
 using GitVersion.Git;
-using GitVersion.Logging;
 
 namespace GitVersion;
 
@@ -14,14 +13,13 @@ public class GitVersionOptions
     public WixInfo WixInfo { get; } = new();
     public Settings Settings { get; } = new();
 
-    public bool Diag;
-    public bool IsVersion;
-    public bool IsHelp;
+    public bool Diag { get; init; }
+    public bool IsVersion { get; init; }
+    public bool IsHelp { get; init; }
 
-    public string? LogFilePath;
-    public string? ShowVariable;
-    public string? Format;
-    public string? OutputFile;
-    public ISet<OutputType> Output = new HashSet<OutputType>();
-    public Verbosity Verbosity = Verbosity.Normal;
+    public string? LogFilePath { get; init; }
+    public string? ShowVariable { get; init; }
+    public string? Format { get; init; }
+    public string? OutputFile { get; init; }
+    public ISet<OutputType> Output { get; init; } = new HashSet<OutputType>();
 }
