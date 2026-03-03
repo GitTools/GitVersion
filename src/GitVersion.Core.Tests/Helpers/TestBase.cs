@@ -1,5 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Git;
+using Serilog.Core;
 
 namespace GitVersion.Tests;
 
@@ -14,7 +15,8 @@ public class TestBase
     protected static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()
-            .AddModule(new GitVersionCoreTestModule());
+            .AddModule(new GitVersionCoreTestModule())
+            .AddSingleton(new LoggingLevelSwitch());
 
         overrideServices?.Invoke(services);
 
