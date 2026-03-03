@@ -213,7 +213,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void UrlAndBranchNameCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --url https://github.com/Particular/GitVersion.git -b someBranch");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath --url https://github.com/Particular/GitVersion.git --branch someBranch");
         arguments.TargetPath.ShouldBe("targetDirectoryPath");
         arguments.TargetUrl.ShouldBe("https://github.com/Particular/GitVersion.git");
         arguments.TargetBranch.ShouldBe("someBranch");
@@ -825,5 +825,28 @@ public class ArgumentParserTests : TestBase
         var arguments = this.argumentParser.ParseArguments($"--config {configFile}");
         arguments.ConfigurationFile.ShouldBe(configFile);
         this.fileSystem.File.Delete(configFile);
+    }
+
+    [Test]
+    public void ShortAliasCIsConfigNotCommit()
+    {
+        // -c is aliased to --config, NOT --commit (breaking change from v6)
+        var configFile = FileSystemHelper.Path.GetTempPath() + Guid.NewGuid() + ".yaml";
+        this.fileSystem.File.WriteAllText(configFile, "next-version: 1.0.0");
+
+        var arguments = this.argumentParser.ParseArguments($"-c {configFile}");
+
+        arguments.ConfigurationFile.ShouldBe(configFile);
+        arguments.CommitId.ShouldBeNullOrEmpty();
+
+        this.fileSystem.File.Delete(configFile);
+    }
+
+    [Test]
+    public void CommitLongFormSetsCommitId()
+    {
+        var arguments = this.argumentParser.ParseArguments("--url https://github.com/GitTools/GitVersion.git --branch main --commit abc1234");
+        arguments.CommitId.ShouldBe("abc1234");
+        arguments.ConfigurationFile.ShouldBeNull();
     }
 }
