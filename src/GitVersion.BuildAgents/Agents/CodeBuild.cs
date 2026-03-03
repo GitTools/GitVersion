@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -11,7 +10,7 @@ internal sealed class CodeBuild : BuildAgentBase
     public const string WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";
     public const string SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION";
 
-    public CodeBuild(IEnvironment environment, ILog log, IFileSystem fileSystem) : base(environment, log, fileSystem) => WithPropertyFile("gitversion.properties");
+    public CodeBuild(IEnvironment environment, ILogger<CodeBuild> logger, IFileSystem fileSystem) : base(environment, logger, fileSystem) => WithPropertyFile("gitversion.properties");
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 

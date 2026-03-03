@@ -2,7 +2,6 @@ using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using GitVersion.Output;
 
 namespace GitVersion.Core.Tests.Helpers;
@@ -19,6 +18,11 @@ public class GitVersionCoreTestModule : IGitVersionModule
 
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, TestEnvironment>();
-        services.AddSingleton<ILog, NullLog>();
+
+        // Override logging with NullLogger for tests (replaces the Serilog-based logging from GitVersionCommonModule)
+        services.RemoveAll<ILoggerFactory>();
+        services.RemoveAll(typeof(ILogger<>));
+        services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
+        services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
     }
 }

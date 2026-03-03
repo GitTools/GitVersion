@@ -1,11 +1,10 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class AzurePipelines(IEnvironment environment, ILogger<AzurePipelines> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public const string EnvironmentVariableName = "TF_BUILD";
 

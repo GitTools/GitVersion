@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Tests;
 
@@ -205,10 +204,9 @@ public static class ConfigurationFileLocatorTests
         {
             var stringLogger = string.Empty;
 
-            var logAppender = new TestLogAppender(Action);
-            var log = new Log(logAppender);
+            var loggerFactory = new TestLoggerFactory(message => stringLogger = message);
 
-            var sp = GetServiceProvider(this.gitVersionOptions, log);
+            var sp = GetServiceProvider(this.gitVersionOptions, loggerFactory);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
@@ -218,9 +216,6 @@ public static class ConfigurationFileLocatorTests
 
             configurationProvider.ProvideForDirectory(this.repoPath);
             stringLogger.ShouldMatch("No configuration file found, using default configuration");
-            return;
-
-            void Action(string info) => stringLogger = info;
         }
 
         [Test]
@@ -228,10 +223,9 @@ public static class ConfigurationFileLocatorTests
         {
             var stringLogger = string.Empty;
 
-            var logAppender = new TestLogAppender(Action);
-            var log = new Log(logAppender);
+            var loggerFactory = new TestLoggerFactory(message => stringLogger = message);
 
-            var sp = GetServiceProvider(this.gitVersionOptions, log);
+            var sp = GetServiceProvider(this.gitVersionOptions, loggerFactory);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
@@ -242,9 +236,6 @@ public static class ConfigurationFileLocatorTests
 
             configurationProvider.ProvideForDirectory(this.repoPath);
             stringLogger.ShouldMatch("No configuration file found, using default configuration");
-            return;
-
-            void Action(string info) => stringLogger = info;
         }
 
         [Test]
@@ -262,10 +253,10 @@ public static class ConfigurationFileLocatorTests
             exception.Message.ShouldBe(expectedMessage);
         }
 
-        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null) =>
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, TestLoggerFactory? loggerFactory = null) =>
             ConfigureServices(services =>
             {
-                if (log != null) services.AddSingleton(log);
+                loggerFactory?.RegisterWith(services);
                 services.AddSingleton(Options.Create(gitVersionOptions));
             });
     }
