@@ -21,14 +21,12 @@ public static class ServiceCollectionExtensions
         /// <returns>The service collection for chaining.</returns>
         internal IServiceCollection AddGitVersionLogging()
         {
-            serviceCollection.AddLogging(builder =>
+            serviceCollection.AddSerilog((services, loggerConfig) =>
             {
-                // Clear default providers to ensure only Serilog is used
-                builder.ClearProviders();
-                var logger = CreateLogger();
-                builder.AddSerilog(logger, dispose: true);
-            });
+                var options = services.GetRequiredService<IOptions<GitVersionOptions>>().Value;
 
+                ConfigureLogger(loggerConfig, options);
+            });
             return serviceCollection;
         }
     }
@@ -39,40 +37,35 @@ public static class ServiceCollectionExtensions
             serviceProvider.GetServices<TService>().Single(t => t?.GetType() == typeof(TType));
     }
 
-    private static Serilog.Core.Logger CreateLogger()
+    private static void ConfigureLogger(LoggerConfiguration loggerConfig, GitVersionOptions gitVersionOptions)
     {
-        // Output template includes {Indent} for visual nesting of scoped operations
         const string outputTemplate = "{Level:u4} [{Timestamp:yy-MM-dd HH:mm:ss:ff}] {Indent}{Message:lj}{NewLine}{Exception}";
+        const string logDestination = "console";
         var formatProvider = CultureInfo.InvariantCulture;
-        var logger = new LoggerConfiguration()
-            // Log level is dynamically controlled by LoggingEnricher.LogLevelSwitch
-            .MinimumLevel.ControlledBy(LoggingEnricher.LogLevelSwitch)
-            // Add the logging enricher for a dynamic log file path
-            .Enrich.With<LoggingEnricher>()
-            // Add sensitive data masking for URL passwords
+
+        loggerConfig
             .Enrich.With<SensitiveDataEnricher>()
-            // Add indentation for scoped operations (BeginTimedOperation)
-            .Enrich.With<IndentationEnricher>()
-            // Console output with timestamp - controlled by IsConsoleEnabled flag
-            .WriteTo.Conditional(
-                _ => LoggingEnricher.IsConsoleEnabled,
-                wt => wt.Console(
-                    outputTemplate: outputTemplate,
-                    formatProvider: formatProvider))
-            // Dynamic file output using Serilog.Sinks.Map
-            // Note: "console" is a special value that enables console output instead of file logging
-            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, sinkConfiguration) =>
-            {
-                if (!string.IsNullOrEmpty(logFilePath) && !string.Equals(logFilePath, "console", StringComparison.OrdinalIgnoreCase))
-                {
-                    sinkConfiguration.File(
-                        logFilePath,
-                        outputTemplate: outputTemplate,
-                        formatProvider: formatProvider);
-                }
-            }, 1)
-            .CreateLogger();
-        return logger;
+            .Enrich.With<IndentationEnricher>();
+
+        if (ShouldLogToConsole())
+        {
+            loggerConfig.WriteTo.Console(outputTemplate: outputTemplate, formatProvider: formatProvider);
+        }
+
+        if (ShouldLogToFile())
+        {
+            loggerConfig.WriteTo.File(gitVersionOptions.LogFilePath, outputTemplate: outputTemplate, formatProvider: formatProvider);
+        }
+
+        return;
+
+        bool ShouldLogToConsole() =>
+            gitVersionOptions.Output.Contains(OutputType.BuildServer)
+            || gitVersionOptions.LogFilePath.IsEquivalentTo(logDestination);
+
+        bool ShouldLogToFile() =>
+            !(string.IsNullOrEmpty(gitVersionOptions.LogFilePath)
+              || gitVersionOptions.LogFilePath.IsEquivalentTo(logDestination));
     }
 }
 #pragma warning restore S2325, S1144
