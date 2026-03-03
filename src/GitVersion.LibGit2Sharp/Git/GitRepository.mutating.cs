@@ -1,21 +1,20 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
 namespace GitVersion.Git;
 
-internal partial class GitRepository(ILog log) : IMutatingGitRepository
+internal partial class GitRepository(ILogger<GitRepository> logger) : IMutatingGitRepository
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<GitRepository> logger = logger.NotNull();
 
     public void Clone(string? sourceUrl, string? workdirPath, AuthenticationInfo auth)
     {
         try
         {
             var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-            this.log.Info($"Returned path after repository clone: {path}");
+            this.logger.LogInformation("Returned path after repository clone: {Path}", path);
         }
         catch (LibGit2Sharp.LockedFileException ex)
         {
@@ -50,7 +49,7 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
             Commands.Fetch((Repository)RepositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
     public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) => RepositoryExtensions.RunSafe(() =>
     {
-        this.log.Info("Fetching remote refs to see if there is a pull request ref");
+        this.logger.LogInformation("Fetching remote refs to see if there is a pull request ref");
 
         // FIX ME: What to do when Tip is null?
         if (Head.Tip == null)
@@ -61,21 +60,21 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
         var reference = GetPullRequestReference(auth, remote, headTipSha);
         var canonicalName = reference.CanonicalName;
         var referenceName = ReferenceName.Parse(reference.CanonicalName);
-        this.log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+        this.logger.LogInformation("Found remote tip '{CanonicalName}' pointing at the commit '{HeadTipSha}'.", canonicalName, headTipSha);
 
         if (referenceName.IsTag)
         {
-            this.log.Info($"Checking out tag '{canonicalName}'");
+            this.logger.LogInformation("Checking out tag '{CanonicalName}'", canonicalName);
             Checkout(reference.Target.Sha);
         }
         else if (referenceName.IsPullRequest)
         {
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-            this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
+            this.logger.LogInformation("Creating fake local branch '{FakeBranchName}'.", fakeBranchName);
             References.Add(fakeBranchName, headTipSha);
 
-            this.log.Info($"Checking local branch '{fakeBranchName}' out.");
+            this.logger.LogInformation("Checking local branch '{FakeBranchName}' out.", fakeBranchName);
             Checkout(fakeBranchName);
         }
         else
@@ -93,7 +92,11 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
                 : network.ListReferences(remote))
             .Select(r => r.ResolveToDirectReference()).ToList();
 
-        this.log.Info($"Remote Refs:{FileSystemHelper.Path.NewLine}" + string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName)));
+        var remoteRefsList = string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName));
+        this.logger.LogInformation("""
+                                   Remote Refs:
+                                   {RemoteRefsList}
+                                   """, remoteRefsList);
         var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
         switch (refs.Count)
