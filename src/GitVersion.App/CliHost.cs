@@ -2,6 +2,8 @@ using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Output;
+using Serilog;
+using Serilog.Core;
 
 namespace GitVersion;
 
@@ -9,7 +11,15 @@ internal static class CliHost
 {
     internal static HostApplicationBuilder CreateCliHostBuilder(string[] args)
     {
+        var bootstrapSwitch = new LoggingLevelSwitch();
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(bootstrapSwitch)
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
+
         var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddSingleton(bootstrapSwitch);
 
         RegisterGitVersionModules(builder.Services, args);
 
