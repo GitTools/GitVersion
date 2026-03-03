@@ -56,7 +56,7 @@ internal class ArgumentParser(
         var (rootCommand, options) = commandFactory.Value;
 
         // Let System.CommandLine handle --help output natively
-        if (commandLineArguments.Any(a => a is "--help" or "-h" or "-?" or "/?"))
+        if (commandLineArguments.Any(a => a is "--help" or "-h"))
         {
             PrintBuiltInHelp(rootCommand);
             return new Arguments { IsHelp = true };
@@ -121,7 +121,7 @@ internal class ArgumentParser(
     private static void PrintBuiltInHelp(RootCommand rootCommand)
     {
         rootCommand.SetAction((_, _) => Task.FromResult(0));
-        rootCommand.Parse(["--help"]).InvokeAsync().GetAwaiter().GetResult();
+        rootCommand.Parse(["--help"]).Invoke();
     }
 
     private void PrintBuiltInVersion()
