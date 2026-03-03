@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Help;
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;
@@ -301,38 +302,142 @@ internal class ArgumentParser(
 
     private static (RootCommand Root, CommandOptions Options) BuildCommand()
     {
-        var path = new Argument<string?>("path") { Description = "The directory containing .git. If not defined current directory is used.", Arity = ArgumentArity.ZeroOrOne };
-        var version = new Option<bool>("--version") { Description = "Displays the version of GitVersion" };
-        var diagnose = new Option<bool>("--diagnose", "-d") { Description = "Runs GitVersion with additional diagnostic information" };
-        var logFile = new Option<string?>("--log-file", "-l") { Description = "Path to logfile; specify 'console' to emit to stdout" };
-        var output = new Option<OutputType[]>("--output", "-o") { Description = "Determines the output to the console. Can be 'json', 'file', 'buildserver' or 'dotenv'", AllowMultipleArgumentsPerToken = true, Arity = ArgumentArity.ZeroOrMore };
-        var outputFile = new Option<string?>("--output-file") { Description = "Path to output file. Used in combination with --output 'file'" };
-        var showVariable = new Option<string?>("--show-variable", "-v") { Description = "Output just a particular variable" };
-        var format = new Option<string?>("--format", "-f") { Description = "Output a format containing version variables" };
-        var config = new Option<string?>("--config", "-c") { Description = "Path to config file (defaults to GitVersion.yml)" };
-        var showConfig = new Option<bool>("--show-config") { Description = "Outputs the effective GitVersion config in yaml format" };
-        var overrideConfig = new Option<string[]>("--override-config") { Description = "Overrides GitVersion config values inline (key=value pairs)", AllowMultipleArgumentsPerToken = false, Arity = ArgumentArity.ZeroOrMore };
-        var targetPath = new Option<string?>("--target-path") { Description = "Same as 'path', but not positional" };
-        var noFetch = new Option<bool>("--no-fetch") { Description = "Disables 'git fetch' during version calculation" };
-        var noCache = new Option<bool>("--no-cache") { Description = "Bypasses the cache, result will not be written to the cache" };
-        var noNormalize = new Option<bool>("--no-normalize") { Description = "Disables normalize step on a build server" };
-        var allowShallow = new Option<bool>("--allow-shallow") { Description = "Allows GitVersion to run on a shallow clone" };
-        var verbosity = new Option<string?>("--verbosity") { Description = "Specifies the amount of information to be displayed (Quiet, Minimal, Normal, Verbose, Diagnostic)" };
-        var updateAssemblyInfo = new Option<string[]?>("--update-assembly-info") { Description = "Will recursively search for all 'AssemblyInfo.cs' files and update them", AllowMultipleArgumentsPerToken = true, Arity = ArgumentArity.ZeroOrMore };
-        var updateProjectFiles = new Option<string[]?>("--update-project-files") { Description = "Will recursively search for all project files and update them", AllowMultipleArgumentsPerToken = true, Arity = ArgumentArity.ZeroOrMore };
-        var ensureAssemblyInfo = new Option<bool>("--ensure-assembly-info") { Description = "If the assembly info file specified with --update-assembly-info is not found, it will be created" };
-        var updateWixVersionFile = new Option<bool>("--update-wix-version-file") { Description = "All the GitVersion variables are written to 'GitVersion_WixVersion.wxi'" };
-        var url = new Option<string?>("--url") { Description = "Url to remote git repository" };
-        var branch = new Option<string?>("--branch", "-b") { Description = "Name of the branch to use on the remote repository" };
-        var username = new Option<string?>("--username", "-u") { Description = "Username in case authentication is required" };
-        var password = new Option<string?>("--password", "-p") { Description = "Password in case authentication is required" };
-        var commit = new Option<string?>("--commit") { Description = "The commit id to check" };
-        var dynamicRepoLocation = new Option<string?>("--dynamic-repo-location") { Description = "Override default dynamic repository clone location" };
+        var path = new Argument<string?>("path")
+        {
+            Description = "The directory containing .git. If not defined current directory is used. (Must be first argument)",
+            Arity = ArgumentArity.ZeroOrOne
+        };
+        var diagnose = new Option<bool>("--diagnose", "-d")
+        {
+            Description = """
+                          Runs GitVersion with additional diagnostic information.
+                          Also needs the '--log-file' argument to specify a logfile or stdout (requires git.exe to be installed)
+                          """
+        };
+        var logFile = new Option<string?>("--log-file", "-l")
+        {
+            Description = "Path to logfile; specify 'console' to emit to stdout"
+        };
+        var output = new Option<OutputType[]>("--output", "-o")
+        {
+            Description = "Determines the output to the console. Can be either 'json', 'file', 'buildserver' or 'dotenv', will default to 'json'",
+            AllowMultipleArgumentsPerToken = true,
+            Arity = ArgumentArity.ZeroOrMore
+        };
+        var outputFile = new Option<string?>("--output-file")
+        {
+            Description = "Path to output file. It is used in combination with --output 'file'"
+        };
+        var showVariable = new Option<string?>("--show-variable", "-v")
+        {
+            Description = """
+                          Used in conjunction with --output json, will output just a particular variable.
+                          E.g. --output json --show-variable SemVer - will output `1.2.3+beta.4`
+                          """
+        };
+        var format = new Option<string?>("--format", "-f")
+        {
+            Description = """
+                          Used in conjunction with --output json, will output a format containing version variables.
+                          Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
+                          E.g. --output json --format {SemVer} - will output `1.2.3+beta.4`
+                               --output json --format {Major}.{Minor} - will output `1.2`
+                          """
+        };
+        var config = new Option<string?>("--config", "-c")
+        {
+            Description = "Path to config file (defaults to GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml)"
+        };
+        var showConfig = new Option<bool>("--show-config")
+        {
+            Description = "Outputs the effective GitVersion config (defaults + custom from GitVersion.yml) in yaml format"
+        };
+        var overrideConfig = new Option<string[]>("--override-config")
+        {
+            Description = "Overrides GitVersion config values inline (key=value pairs e.g. --override-config tag-prefix=Foo)",
+            AllowMultipleArgumentsPerToken = false,
+            Arity = ArgumentArity.ZeroOrMore
+        };
+        var targetPath = new Option<string?>("--target-path")
+        {
+            Description = "Same as 'path', but not positional"
+        };
+        var noFetch = new Option<bool>("--no-fetch")
+        {
+            Description = "Disables 'git fetch' during version calculation. Might cause GitVersion to not calculate your version as expected"
+        };
+        var noCache = new Option<bool>("--no-cache")
+        {
+            Description = "Bypasses the cache, result will not be written to the cache"
+        };
+        var noNormalize = new Option<bool>("--no-normalize")
+        {
+            Description = "Disables normalize step on a build server"
+        };
+        var allowShallow = new Option<bool>("--allow-shallow")
+        {
+            Description = """
+                          Allows GitVersion to run on a shallow clone.
+                          This is not recommended, but can be used if you are sure that the shallow clone contains all the information needed to calculate the version.
+                          """
+        };
+        var verbosity = new Option<string?>("--verbosity")
+        {
+            Description = "Specifies the amount of information to be displayed (Quiet, Minimal, Normal, Verbose, Diagnostic). Default is Normal"
+        };
+        var updateAssemblyInfo = new Option<string[]?>("--update-assembly-info")
+        {
+            Description = "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
+            AllowMultipleArgumentsPerToken = true,
+            Arity = ArgumentArity.ZeroOrMore
+        };
+        var updateProjectFiles = new Option<string[]?>("--update-project-files")
+        {
+            Description = """
+                          Will recursively search for all project files (.csproj/.vbproj/.fsproj/.sqlproj) in the git repo and update them (only compatible with Sdk projects)
+                          """,
+            AllowMultipleArgumentsPerToken = true,
+            Arity = ArgumentArity.ZeroOrMore
+        };
+        var ensureAssemblyInfo = new Option<bool>("--ensure-assembly-info")
+        {
+            Description = """
+                          If the assembly info file specified with --update-assembly-info is not found, it will be created with AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion.
+                          Supports C#, F#, VB
+                          """
+        };
+        var updateWixVersionFile = new Option<bool>("--update-wix-version-file")
+        {
+            Description = "All the GitVersion variables are written to 'GitVersion_WixVersion.wxi'"
+        };
+        var url = new Option<string?>("--url")
+        {
+            Description = "Url to remote git repository"
+        };
+        var branch = new Option<string?>("--branch", "-b")
+        {
+            Description = "Name of the branch to use on the remote repository, must be used in combination with --url"
+        };
+        var username = new Option<string?>("--username", "-u")
+        {
+            Description = "Username in case authentication is required"
+        };
+        var password = new Option<string?>("--password", "-p")
+        {
+            Description = "Password in case authentication is required"
+        };
+        var commit = new Option<string?>("--commit")
+        {
+            Description = "The commit id to check. If not specified, the latest available commit on the specified branch will be used"
+        };
+        var dynamicRepoLocation = new Option<string?>("--dynamic-repo-location")
+        {
+            Description = "By default dynamic repositories will be cloned to %tmp%. Use this option to override"
+        };
 
         var rootCommand = new RootCommand("Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.")
         {
             path,
-            version,
             diagnose,
             logFile,
             output,
@@ -360,8 +465,12 @@ internal class ArgumentParser(
             dynamicRepoLocation
         };
 
+        // Configure the built-in help system to wrap at 260 characters to avoid too small help messages
+        var helpOption = rootCommand.Options.SingleOfType<HelpOption>();
+        helpOption.Action = new HelpAction { MaxWidth = 260 };
+
         return (rootCommand, new CommandOptions(
-            Path: path, Version: version, Diagnose: diagnose, LogFile: logFile,
+            Path: path, Diagnose: diagnose, LogFile: logFile,
             Output: output, OutputFile: outputFile, ShowVariable: showVariable, Format: format,
             Config: config, ShowConfig: showConfig, OverrideConfig: overrideConfig, TargetPath: targetPath,
             NoFetch: noFetch, NoCache: noCache, NoNormalize: noNormalize, AllowShallow: allowShallow,
@@ -485,7 +594,6 @@ internal class ArgumentParser(
 
     private sealed record CommandOptions(
         Argument<string?> Path,
-        Option<bool> Version,
         Option<bool> Diagnose,
         Option<string?> LogFile,
         Option<OutputType[]> Output,
