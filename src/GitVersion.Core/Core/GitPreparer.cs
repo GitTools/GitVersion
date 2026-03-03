@@ -146,7 +146,7 @@ internal class GitPreparer(
         using (this.logger.StartIndentedScope($"Normalizing git directory for branch '{targetBranch}'"))
         {
             // Normalize (download branches) before using the branch
-            NormalizeGitDirectory(this.options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
+NormalizeGitDirectory(this.options.Value.Settings.NoFetch || this.buildAgent.PreventFetch(), targetBranch, isDynamicRepository);
         }
     }
 
