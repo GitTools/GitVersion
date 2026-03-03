@@ -1,5 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.MsBuild.Tasks;
+using Serilog;
+using Serilog.Core;
 
 namespace GitVersion.MsBuild;
 
@@ -50,12 +52,20 @@ internal static class GitVersionTasks
         {
             gitVersionOptions.Output.Add(OutputType.BuildServer);
         }
-        gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent.PreventFetch();
+        gitVersionOptions.Settings.NoFetch = buildAgent.PreventFetch();
     }
 
     private static ServiceProvider BuildServiceProvider(GitVersionTaskBase task)
     {
+        var bootstrapSwitch = new LoggingLevelSwitch();
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(bootstrapSwitch)
+            .WriteTo.Console()
+            .CreateLogger();
+
         var services = new ServiceCollection();
+        services.AddSingleton(bootstrapSwitch);
 
         MsBuildHost.RegisterGitVersionModules(services, task);
 
