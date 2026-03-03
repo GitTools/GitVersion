@@ -1,5 +1,4 @@
 using GitVersion.Extensions;
-using GitVersion.Logging;
 
 namespace GitVersion;
 
@@ -17,8 +16,6 @@ internal class GitVersionApp(
         try
         {
             var gitVersionOptions = this.options.Value;
-            LoggingEnricher.Configure(gitVersionOptions);
-
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
             {
                 SysEnv.ExitCode = 0;
