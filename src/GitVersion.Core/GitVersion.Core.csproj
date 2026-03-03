@@ -12,9 +12,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Polly" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Polly" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Hosting" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Serilog.Sinks.Map" />
         <PackageReference Include="System.IO.Abstractions" />
     </ItemGroup>
 
