@@ -37,7 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="arguments.md" />
+        <EmbeddedResource Include="legacy_help.md" />
     </ItemGroup>
 
     <ItemGroup>
