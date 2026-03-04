@@ -27,7 +27,7 @@ internal class HelpWriter(IVersionWriter versionWriter, IConsole console) : IHel
 
     private string LegacyArgumentList()
     {
-        using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.arguments.md");
+        using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.legacy_help.md");
         argumentsMarkdownStream.NotNull();
         using var sr = new StreamReader(argumentsMarkdownStream);
         var argsMarkdown = sr.ReadToEnd();
