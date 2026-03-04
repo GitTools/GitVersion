@@ -49,6 +49,35 @@ internal class ArgumentParser(
         var (rootCommand, options) = commandFactory.Value;
         var parseResult = rootCommand.Parse(commandLineArguments);
 
+        ValidateParsedResult(parseResult, options);
+
+        if (IsOptionExplicitlySet<HelpOption>())
+        {
+            parseResult.Invoke();
+            return new Arguments { IsHelp = true };
+        }
+        if (IsOptionExplicitlySet<VersionOption>())
+        {
+            parseResult.Invoke();
+            return new Arguments { IsVersion = true };
+        }
+
+        var arguments = new Arguments();
+        AddAuthentication(arguments);
+        MapParsedValues(arguments, parseResult, options);
+        ValidateConfigurationFile(arguments);
+
+        return arguments;
+
+        bool IsOptionExplicitlySet<T>() where T : Option
+        {
+            var option = rootCommand.Options.SingleOfType<T>();
+            return parseResult.GetResult(option) is { Implicit: false };
+        }
+    }
+
+    private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options)
+    {
         if (parseResult.Errors.Count > 0)
         {
             var message = parseResult.Errors[0].Message;
@@ -67,49 +96,6 @@ internal class ArgumentParser(
         if (positionalCheck?.StartsWith('-') == true)
         {
             throw new WarningException($"Could not parse command line parameter '{positionalCheck}'.");
-        }
-
-        if (IsOptionExplicitlySet<HelpOption>())
-        {
-            parseResult.Invoke();
-            return new Arguments { IsHelp = true };
-        }
-        if (IsOptionExplicitlySet<VersionOption>())
-        {
-            parseResult.Invoke();
-            return new Arguments { IsVersion = true };
-        }
-
-        var arguments = new Arguments();
-        AddAuthentication(arguments);
-        MapParsedValues(arguments, parseResult, options);
-
-        if (arguments.Output.Count == 0)
-        {
-            arguments.Output.Add(OutputType.Json);
-        }
-
-        if (arguments.Output.Contains(OutputType.File) && arguments.OutputFile == null)
-        {
-            arguments.OutputFile = DefaultOutputFileName;
-        }
-
-        arguments.TargetPath ??= parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory;
-        arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
-
-        if (!arguments.EnsureAssemblyInfo)
-        {
-            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
-        }
-
-        ValidateConfigurationFile(arguments);
-
-        return arguments;
-
-        bool IsOptionExplicitlySet<T>() where T : Option
-        {
-            var option = rootCommand.Options.SingleOfType<T>();
-            return parseResult.GetResult(option) is { Implicit: false };
         }
     }
 
@@ -269,6 +255,24 @@ internal class ArgumentParser(
         if (parseResult.GetValue(options.DynamicRepoLocation) is { } dynRepo)
         {
             arguments.ClonePath = dynRepo;
+        }
+
+        if (arguments.Output.Count == 0)
+        {
+            arguments.Output.Add(OutputType.Json);
+        }
+
+        if (arguments.Output.Contains(OutputType.File) && arguments.OutputFile == null)
+        {
+            arguments.OutputFile = DefaultOutputFileName;
+        }
+
+        arguments.TargetPath ??= parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory;
+        arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
+
+        if (!arguments.EnsureAssemblyInfo)
+        {
+            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
         }
     }
 
@@ -442,7 +446,10 @@ internal class ArgumentParser(
 
         // Configure the built-in help system to wrap at 260 characters to avoid too small help messages
         var helpOption = rootCommand.Options.SingleOfType<HelpOption>();
-        helpOption.Action = new HelpAction { MaxWidth = 260 };
+        if (helpOption.Action is HelpAction helpAction)
+        {
+            helpAction.MaxWidth = 260;
+        }
 
         return (rootCommand, new CommandOptions(
             Path: path, Diagnose: diagnose, LogFile: logFile,
