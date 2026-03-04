@@ -46,30 +46,7 @@ internal class ArgumentParser(
 
     public Arguments ParseArguments(string[] commandLineArguments)
     {
-        if (commandLineArguments.Length == 0)
-        {
-            var args = new Arguments { TargetPath = SysEnv.CurrentDirectory };
-            args.Output.Add(OutputType.Json);
-            AddAuthentication(args);
-            return args;
-        }
-
         var (rootCommand, options) = commandFactory.Value;
-
-        // Let System.CommandLine handle --help output natively
-        if (commandLineArguments.Any(a => a is "--help" or "-h"))
-        {
-            PrintBuiltInHelp(rootCommand);
-            return new Arguments { IsHelp = true };
-        }
-
-        // Handle --version before parsing to avoid System.CommandLine interception
-        if (commandLineArguments.Any(a => a is "--version"))
-        {
-            PrintBuiltInVersion();
-            return new Arguments { IsVersion = true };
-        }
-
         var parseResult = rootCommand.Parse(commandLineArguments);
 
         if (parseResult.Errors.Count > 0)
@@ -90,6 +67,17 @@ internal class ArgumentParser(
         if (positionalCheck?.StartsWith('-') == true)
         {
             throw new WarningException($"Could not parse command line parameter '{positionalCheck}'.");
+        }
+
+        if (IsOptionExplicitlySet<HelpOption>())
+        {
+            parseResult.Invoke();
+            return new Arguments { IsHelp = true };
+        }
+        if (IsOptionExplicitlySet<VersionOption>())
+        {
+            parseResult.Invoke();
+            return new Arguments { IsVersion = true };
         }
 
         var arguments = new Arguments();
@@ -117,24 +105,11 @@ internal class ArgumentParser(
         ValidateConfigurationFile(arguments);
 
         return arguments;
-    }
 
-    private static void PrintBuiltInHelp(RootCommand rootCommand)
-    {
-        rootCommand.SetAction((_, _) => Task.FromResult(0));
-        rootCommand.Parse(["--help"]).Invoke();
-    }
-
-    private void PrintBuiltInVersion()
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var version = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
-            .FirstOrDefault() is AssemblyInformationalVersionAttribute attr
-            ? attr.InformationalVersion
-            : assembly.GetName().Version?.ToString();
-        if (version != null)
+        bool IsOptionExplicitlySet<T>() where T : Option
         {
-            this.console.WriteLine(version);
+            var option = rootCommand.Options.SingleOfType<T>();
+            return parseResult.GetResult(option) is { Implicit: false };
         }
     }
 
