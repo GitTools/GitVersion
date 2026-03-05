@@ -35,7 +35,7 @@ internal static class CliHost
 
         services.AddModule(new GitVersionLibGit2SharpModule());
 
-        var envValue = SysEnv.GetEnvironmentVariable("USE_V6_ARGUMENT_PARSER");
+        var envValue = SysEnv.GetEnvironmentVariable("GITVERSION_USE_V6_ARGUMENT_PARSER");
         var useLegacyParser = string.Equals(envValue, "true", StringComparison.OrdinalIgnoreCase);
         services.AddModule(new GitVersionAppModule(args, useLegacyParser));
     }
