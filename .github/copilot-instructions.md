@@ -73,6 +73,17 @@ Purpose: give an AI coding agent the minimal, repo-specific knowledge needed to 
 
 - **Quick pointers for the agent**:
   - Prefer editing/adding small focused changes under `src/` and run `dotnet test` on the affected test project(s).
+  - Terminal reliability tip (for `gh` and other interactive CLI tools): if foreground terminal output is truncated or switches to an alternate buffer, run the command with `isBackground=true` and then read full output with `get_terminal_output`. Also set `GH_PAGER=cat` and `GH_FORCE_TTY=0` for `gh` commands to reduce pager/TTY issues.
+
+    Example workflow:
+
+    ```text
+    1) run_in_terminal(
+         command: "GH_PAGER=cat GH_FORCE_TTY=0 gh pr view 4840 --json number,title,url",
+         isBackground: true
+       )
+    2) get_terminal_output(<terminal_id>)
+    ```
   - Use the `dotnet` CLI to validate packaging and cross-project integration, for example:
 
     ```bash
