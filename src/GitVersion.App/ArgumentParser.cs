@@ -177,7 +177,7 @@ internal class ArgumentParser(
                 arguments.UpdateAssemblyInfo = true;
                 if (values != null)
                 {
-                    foreach (var file in values.Where(f => !IsBooleanTrue(f)))
+                    foreach (var file in values.Where(f => !f.IsTrue()))
                     {
                         arguments.UpdateAssemblyInfoFileName.Add(file);
                     }
@@ -195,7 +195,7 @@ internal class ArgumentParser(
             arguments.UpdateProjectFiles = true;
             if (parseResult.GetValue(options.UpdateProjectFiles) is { } projectFiles)
             {
-                foreach (var file in projectFiles.Where(f => !IsBooleanTrue(f)))
+                foreach (var file in projectFiles.Where(f => !f.IsTrue()))
                 {
                     arguments.UpdateAssemblyInfoFileName.Add(file);
                 }
@@ -275,9 +275,6 @@ internal class ArgumentParser(
             arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
         }
     }
-
-    private static bool IsBooleanTrue(string value) =>
-        value.Equals("true", StringComparison.OrdinalIgnoreCase) || value.Equals("1", StringComparison.Ordinal);
 
     private static (RootCommand Root, CommandOptions Options) BuildCommand()
     {
