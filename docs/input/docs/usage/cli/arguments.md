@@ -5,9 +5,11 @@ Description: The supported arguments of the GitVersion Command Line Interface
 ---
 
 :::{.alert .alert-info}
-**Note:** GitVersion now uses POSIX-style `--long-name` arguments. Short aliases
+**Note:** GitVersion uses POSIX-style `--long-name` arguments from version 7 and up. Short aliases
 (e.g. `-l`, `-o`, `-b`) are also supported. The legacy `/switch` and `-switch`
-syntax is still available when `USE_V6_ARGUMENT_PARSER=true` is set.
+syntax is still available when `GITVERSION_USE_V6_ARGUMENT_PARSER=true` is set.
+
+See [Migration v6 to v7](/docs/migration/v6-to-v7) for upgrade guidance and the full argument mapping.
 :::
 
 ## Help
