@@ -6,7 +6,7 @@ The command-line interface has been migrated from Windows-style (`/switch` and s
 
 **Old-style arguments are no longer accepted by default.** Update any scripts, CI pipelines, or tooling accordingly.
 
-As a temporary migration aid, set the environment variable `USE_V6_ARGUMENT_PARSER=true` to restore the legacy `/switch` and `-switch` argument handling. This escape hatch will be removed in a future release.
+As a temporary migration aid, set the environment variable `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to restore the legacy `/switch` and `-switch` argument handling. This escape hatch will be removed in a future release.
 
 #### Full argument mapping
 
