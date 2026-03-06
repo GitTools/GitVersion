@@ -1,5 +1,4 @@
 using GitVersion.Extensions;
-using GitVersion.Helpers;
 
 namespace GitVersion;
 
@@ -16,19 +15,23 @@ internal class HelpWriter(IVersionWriter versionWriter, IConsole console) : IHel
         var assembly = Assembly.GetExecutingAssembly();
         this.versionWriter.WriteTo(assembly, v => version = v);
 
-        var args = ArgumentList();
-        var message = $"GitVersion {version}{FileSystemHelper.Path.NewLine}{FileSystemHelper.Path.NewLine}{args}";
+        var args = LegacyArgumentList();
+        var message = $"""
+                       GitVersion {version}
+
+                       {args}
+                       """;
 
         writeAction(message);
     }
 
-    private string ArgumentList()
+    private string LegacyArgumentList()
     {
-        using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.arguments.md");
+        using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.legacy_help.md");
         argumentsMarkdownStream.NotNull();
         using var sr = new StreamReader(argumentsMarkdownStream);
         var argsMarkdown = sr.ReadToEnd();
-        var codeBlockStart = argsMarkdown.IndexOf("```", StringComparison.Ordinal) + 3;
+        var codeBlockStart = argsMarkdown.IndexOf("```bash", StringComparison.Ordinal) + 7;
         var codeBlockEnd = argsMarkdown.LastIndexOf("```", StringComparison.Ordinal) - codeBlockStart;
         return argsMarkdown.Substring(codeBlockStart, codeBlockEnd).Trim();
     }

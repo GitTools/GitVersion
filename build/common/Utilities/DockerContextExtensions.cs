@@ -156,7 +156,7 @@ public static class DockerContextExtensions
             var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
-                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", ["/showvariable", "FullSemver", "/nocache"]);
+                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", ["--show-variable", "FullSemver", "--no-cache"]);
             }
         }
 

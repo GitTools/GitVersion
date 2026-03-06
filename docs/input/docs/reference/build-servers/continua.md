@@ -48,7 +48,7 @@ follow the steps below:
   * Executable path: $Agent.GitVersion.Path$
   * Working directory: %RepositoryPath%
 * In the `Arguments` tab, set the following values:
-  * Arguments: /url %RepositoryUrl% /b %RepositoryBranchName% /c %RepositoryCommitId% /output buildserver
+  * Arguments: --url %RepositoryUrl% --branch %RepositoryBranchName% --commit %RepositoryCommitId% --output buildserver
 * In the `Options` tab, set the following values:
   * Wait for completion: checked
   * Log output: checked

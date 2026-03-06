@@ -101,9 +101,8 @@ enter the following into a terminal:
 brew install gitversion
 ```
 
-Switches are available with `gitversion -h`. Even though the documentation
-uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
-is interpreted as a root path on POSIX based operating systems.
+Arguments are available with `gitversion --help` (short alias `-h` is also supported).
+Long-form arguments are recommended in scripts and documentation.
 
 This should work on all operating systems supported by Homebrew (at the time
 of writing: Linux and macOS).
@@ -139,7 +138,7 @@ The important arguments here are:
 |                     `/repo` | The directory within the Docker container GitVersion should use as its working directory. Don't change this. |
 
 :::{.alert .alert-warning}
-**Caveat:** The `/output buildserver` option doesn't work universally with
+**Caveat:** The `--output buildserver` option doesn't work universally with
 Docker since environment variables defined inside the Docker container will not
 be exposed to the host OS.
 :::

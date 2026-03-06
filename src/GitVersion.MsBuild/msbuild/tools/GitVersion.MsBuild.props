@@ -13,11 +13,11 @@
         <GitVersion_NoCacheEnabled Condition="$(GitVersion_NoCacheEnabled) == ''">false</GitVersion_NoCacheEnabled>
         <GitVersion_AllowShallowEnabled Condition="$(GitVersion_AllowShallowEnabled) == ''">false</GitVersion_AllowShallowEnabled>
 
-        <GitVersion_ToolArgments>$(GitVersion_CommandLineArguments) -output file -outputfile &quot;$(GitVersionOutputFile)&quot;</GitVersion_ToolArgments>
-        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofetch</GitVersion_ToolArgments>
-        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
-        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nocache</GitVersion_ToolArgments>
-        <GitVersion_ToolArgments Condition=" '$(GitVersion_AllowShallowEnabled)' == 'true' ">$(GitVersion_ToolArgments) -allowshallow</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments>$(GitVersion_CommandLineArguments) --output file --output-file &quot;$(GitVersionOutputFile)&quot;</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) --no-fetch</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) --no-normalize</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) --no-cache</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments Condition=" '$(GitVersion_AllowShallowEnabled)' == 'true' ">$(GitVersion_ToolArgments) --allow-shallow</GitVersion_ToolArgments>
     </PropertyGroup>
 
     <PropertyGroup>
