@@ -19,7 +19,7 @@ As a temporary migration aid, set `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to re
 ### What you need to change
 
 1. Replace old argument names with POSIX-style `--long-name` arguments.
-2. Prefer supported short aliases where available (`-o`, `-v`, `-f`, `-c`, `-l`, `-d`, `-b`, `-u`, `-p`).
+2. Prefer `--long-name` arguments for readability and maintainability. Supported short aliases (`-o`, `-v`, `-f`, `-c`, `-l`, `-d`, `-b`, `-u`, `-p`) remain available for interactive use.
 3. Update scripts that used `-c <commit>` to `--commit <commit>`.
 4. Optionally use `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` instead of passing credentials on the command line.
 
