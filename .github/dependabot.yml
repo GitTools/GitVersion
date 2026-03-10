@@ -64,7 +64,9 @@ updates:
       actions:
         patterns:
           - "actions/*"
-    directory: "/"
+    directories:
+      - "/.github/workflows"
+      - "/.github/actions"
     schedule:
       interval: cron
       cronjob: "0 12 * * *"
