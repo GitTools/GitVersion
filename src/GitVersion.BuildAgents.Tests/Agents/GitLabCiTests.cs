@@ -26,7 +26,13 @@ public class GitLabCiTests : TestBase
     }
 
     [TearDown]
-    public void TearDown() => this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, null);
+    public void TearDown()
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, null);
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", null);
+        this.environment.SetEnvironmentVariable("CI_COMMIT_TAG", null);
+        this.environment.SetEnvironmentVariable("CI_MERGE_REQUEST_REF_PATH", null);
+    }
 
     [Test]
     public void ShouldSetBuildNumber()
@@ -90,6 +96,42 @@ public class GitLabCiTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         result.ShouldBe(expectedResult);
+    }
+
+    [TestCase("refs/merge-requests/15/head")]
+    [TestCase("refs/merge-requests/15/merge")]
+    [TestCase("refs/merge-requests/1/head")]
+    public void GetCurrentBranch_WhenMergeRequestRefPathSet_ReturnsMergeRequestRefPath(string mrRefPath)
+    {
+        this.environment.SetEnvironmentVariable("CI_MERGE_REQUEST_REF_PATH", mrRefPath);
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", "some-branch");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe(mrRefPath);
+    }
+
+    [Test]
+    public void GetCurrentBranch_WhenMergeRequestRefPathAndCommitRefNameSet_PrefersMergeRequestRefPath()
+    {
+        this.environment.SetEnvironmentVariable("CI_MERGE_REQUEST_REF_PATH", "refs/merge-requests/42/head");
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", "feature/foo");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe("refs/merge-requests/42/head");
+    }
+
+    [Test]
+    public void GetCurrentBranch_WhenTagSet_ReturnsNull()
+    {
+        this.environment.SetEnvironmentVariable("CI_COMMIT_TAG", "v1.0.0");
+        this.environment.SetEnvironmentVariable("CI_MERGE_REQUEST_REF_PATH", "refs/merge-requests/10/head");
+        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", "main");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBeNull();
     }
 
     [Test]
