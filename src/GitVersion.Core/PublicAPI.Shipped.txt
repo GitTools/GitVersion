@@ -904,7 +904,6 @@ static GitVersion.Git.ReferenceName.FromBranchName(string! branchName) -> GitVer
 static GitVersion.Git.ReferenceName.operator !=(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
 static GitVersion.Git.ReferenceName.operator ==(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
 static GitVersion.Git.ReferenceName.Parse(string! canonicalName) -> GitVersion.Git.ReferenceName!
-static GitVersion.Git.ReferenceName.TryParseGitLabMergeRequestRef(string? canonicalRef, out int iid) -> bool
 static GitVersion.Helpers.Disposable.Create(System.Action! disposer) -> System.IDisposable!
 static GitVersion.Helpers.Disposable.Create<T>(T value, System.Action! disposer) -> GitVersion.Helpers.IDisposable<T>!
 static GitVersion.Helpers.ServiceMessageEscapeHelper.EscapeValue(string? value) -> string?
