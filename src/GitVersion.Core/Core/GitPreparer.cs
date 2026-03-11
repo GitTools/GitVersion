@@ -379,11 +379,15 @@ internal class GitPreparer(
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
-            ? ReferenceName.LocalBranchPrefix + currentBranch
-            : isLocalBranch
-                ? currentBranch
-                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        string localCanonicalName;
+        if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranch, out var gitLabIid))
+            localCanonicalName = ReferenceName.LocalBranchPrefix + $"pull-request/{gitLabIid}";
+        else
+            localCanonicalName = !currentBranch.StartsWith(referencePrefix)
+                ? ReferenceName.LocalBranchPrefix + currentBranch
+                : isLocalBranch
+                    ? currentBranch
+                    : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 

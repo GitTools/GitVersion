@@ -22,14 +22,16 @@ internal class GitLabCi : BuildAgentBase
         $"GitVersion_{name}={value}"
     ];
 
-    // CI_COMMIT_REF_NAME can contain either the branch or the tag
-    // See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-    // CI_COMMIT_TAG is only available in tag pipelines,
-    // so we can exit if CI_COMMIT_REF_NAME would return the tag
-    public override string? GetCurrentBranch(bool usingDynamicRepos) =>
-        string.IsNullOrEmpty(this.Environment.GetEnvironmentVariable("CI_COMMIT_TAG"))
-            ? this.Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME")
-            : null;
+    // CI_COMMIT_REF_NAME = branch/tag name. In MR pipelines, CI_MERGE_REQUEST_REF_PATH = refs/merge-requests/&lt;iid&gt;/head.
+    public override string? GetCurrentBranch(bool usingDynamicRepos)
+    {
+        if (!string.IsNullOrEmpty(this.Environment.GetEnvironmentVariable("CI_COMMIT_TAG")))
+            return null;
+        var mrRef = this.Environment.GetEnvironmentVariable("CI_MERGE_REQUEST_REF_PATH");
+        if (!string.IsNullOrEmpty(mrRef))
+            return mrRef;
+        return this.Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
+    }
 
     public override bool PreventFetch() => true;
 
