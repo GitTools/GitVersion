@@ -9,6 +9,14 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
     public override void Setup(T context, ISetupContext info)
     {
         var buildSystem = context.BuildSystem();
+        var isDebug = context.IsEnabled(EnvVars.ActionsRunnerDebug, false);
+        var isStepDebug = context.IsEnabled(EnvVars.ActionsStepDebug, false);
+        var isDiagnosticsEnabled = context.IsEnabled(EnvVars.EnabledDiagnostics, false);
+        if (isDebug || isStepDebug || isDiagnosticsEnabled)
+        {
+            context.Log.Verbosity = Verbosity.Diagnostic;
+        }
+
         context.IsLocalBuild = buildSystem.IsLocalBuild;
         context.IsAzurePipelineBuild = buildSystem.IsRunningOnAzurePipelines;
         context.IsGitHubActionsBuild = buildSystem.IsRunningOnGitHubActions;

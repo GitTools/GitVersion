@@ -1,6 +1,7 @@
 using Build.Utilities;
 using Common.Lifetime;
 using Common.Utilities;
+using EnvVars = Build.Utilities.EnvVars;
 
 namespace Build;
 
