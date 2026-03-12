@@ -69,4 +69,4 @@ jobs:
           git config user.email 'gittoolsbot@outlook.com'
           git commit -m 'Docs changes' --allow-empty
           git push --force
-        if: steps.status.outputs.has_changes == '1'
+        if: steps.status.outputs.has_changes == '1' && github.event_name == 'push'
