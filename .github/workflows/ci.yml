@@ -34,7 +34,7 @@ env:
   DOTNET_NOLOGO: 1
   TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
 
-  ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
+  ENABLED_DIAGNOSTICS: ${{ vars.ENABLED_DIAGNOSTICS }}
 
 permissions:
   id-token: write
@@ -122,8 +122,14 @@ jobs:
     name: Release
     needs: [ publish, docker_linux_manifests ]
     runs-on: windows-2025
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      attestations: write
+      issues: write
     env:
-      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
     -
       name: Checkout

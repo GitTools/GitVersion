@@ -121,11 +121,14 @@ jobs:
         reporter: ${{ steps.reporter.outputs.value }}
 
   publish:
+    if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
     name: Publish docs
     needs: [ validate ]
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     env:
-      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
       GITHUB_USERNAME: ${{ github.actor }}
     steps:
     -
