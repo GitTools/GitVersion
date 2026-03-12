@@ -127,6 +127,7 @@ jobs:
       packages: write
       id-token: write
       attestations: write
+      issues: write
     env:
       GITHUB_TOKEN: ${{ github.token }}
     steps:
