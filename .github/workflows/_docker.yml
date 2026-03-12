@@ -18,6 +18,9 @@ env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
 
+permissions:
+  packages: write
+
 jobs:
   docker:
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
@@ -64,4 +67,4 @@ jobs:
         docker_registry_username: ${{ secrets.DOCKER_USERNAME }}
         docker_registry_password: ${{ secrets.DOCKER_PASSWORD }}
         github_registry_username: ${{ github.repository_owner }}
-        github_registry_password: ${{ secrets.GITHUB_TOKEN }}
+        github_registry_password: ${{ github.token }}
