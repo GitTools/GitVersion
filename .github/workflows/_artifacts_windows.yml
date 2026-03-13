@@ -4,11 +4,11 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
-  
+
 jobs:
   artifacts:
     name: ${{ matrix.package }}
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     strategy:
       fail-fast: false
       matrix:
