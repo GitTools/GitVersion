@@ -88,7 +88,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         || WithoutOrigin.Equals(name, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Detects GitLab MR ref (refs/merge-requests/<iid>/head or /merge) and extracts IID for pull-requests config.
+    /// Detects GitLab MR ref (refs/merge-requests/&lt;iid&gt;/head or /merge) and extracts IID for pull-requests config.
     /// </summary>
     public static bool TryParseGitLabMergeRequestRef(string? canonicalRef, out int iid)
     {
