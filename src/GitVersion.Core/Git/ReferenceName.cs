@@ -101,7 +101,8 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         var suffix = after[(slash + 1)..];
         if (!suffix.Equals("head", StringComparison.OrdinalIgnoreCase) && !suffix.Equals("merge", StringComparison.OrdinalIgnoreCase))
             return false;
-        return int.TryParse(after.Substring(0, slash), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out iid);
+        return int.TryParse(after.Substring(0, slash), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out iid)
+               && iid > 0;
     }
 
     private string Shorten()
