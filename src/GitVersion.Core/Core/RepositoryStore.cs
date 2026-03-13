@@ -80,6 +80,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                 return prBranch;
         }
 
+        // Handle edge cases where HEAD is not pointing to the desired branch.
+        // It's important to verify that 'desiredBranch' is indeed the desired branch.
         var targetBranch = FindBranch(targetBranchName);
 
         // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well

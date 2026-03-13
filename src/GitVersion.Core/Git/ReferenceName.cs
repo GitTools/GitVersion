@@ -105,6 +105,8 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
                && iid > 0;
     }
 
+    public static string GitLabMergeRequestFriendlyName(int iid) => $"pull-requests/{iid}";
+
     private string Shorten()
     {
         if (IsLocalBranch)
@@ -117,7 +119,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
             return Canonical[TagPrefix.Length..];
 
         if (TryParseGitLabMergeRequestRef(Canonical, out var iid))
-            return $"pull-requests/{iid}";
+            return GitLabMergeRequestFriendlyName(iid);
 
         return Canonical;
     }
