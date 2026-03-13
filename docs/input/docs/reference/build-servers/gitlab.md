@@ -11,7 +11,7 @@ runner's `PATH`.
 
 ### Merge Request pipelines
 
-GitVersion supports GitLab Merge Request refs natively. In MR pipelines, GitLab sets `CI_MERGE_REQUEST_REF_PATH` (e.g. `refs/merge-requests/15/head` or `refs/merge-requests/15/merge`). GitVersion uses this variable when present and treats the ref as a pull-request branch, exposing it as `pull-request/<iid>` so that your `pull-request` configuration in GitVersion.yml applies without any CI workarounds (no need to create synthetic refs under `refs/heads/`).
+GitVersion supports GitLab Merge Request refs natively. In MR pipelines, GitLab sets `CI_MERGE_REQUEST_REF_PATH` (e.g. `refs/merge-requests/15/head` or `refs/merge-requests/15/merge`). GitVersion uses this variable when present and treats the ref as a pull-request branch, exposing it as `pull-requests/<iid>` so that your `pull-request` configuration in GitVersion.yml applies without any CI workarounds (no need to create synthetic refs under `refs/heads/`). The branch name matches the default regex `^(pull-requests|pull|pr)[\/-](?<Number>\d*)`.
 
 A working example of integrating GitVersion with GitLab is maintained in the project [Utterly Automated Versioning][utterly-automated-versioning]
 

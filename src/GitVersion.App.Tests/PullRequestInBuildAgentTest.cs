@@ -192,8 +192,8 @@ public class PullRequestInBuildAgentTest
         new object[] { "refs/pull/5/merge", "refs/pull/5/merge", false, true, false },
         new object[] { "refs/heads/pull/5/head", "pull/5/head", true, false, false },
         new object[] { "refs/remotes/pull/5/merge", "pull/5/merge", false, true, true },
-        new object[] { "refs/merge-requests/15/head", "pull-request/15", false, true, false },
-        new object[] { "refs/merge-requests/15/merge", "pull-request/15", false, true, false }
+        new object[] { "refs/merge-requests/15/head", "pull-requests/15", false, true, false },
+        new object[] { "refs/merge-requests/15/merge", "pull-requests/15", false, true, false }
     ];
 
     [TestCaseSource(nameof(PrMergeRefInputs))]

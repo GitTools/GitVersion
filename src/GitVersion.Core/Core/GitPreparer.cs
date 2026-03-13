@@ -234,7 +234,12 @@ internal class GitPreparer(
         var localBranchesWhereCommitShaIsHead = this.repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
 
         var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
-            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
+            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b =>
+            {
+                if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranchName, out var iid))
+                    return b.Name.Canonical == ReferenceName.LocalBranchPrefix + $"pull-requests/{iid}";
+                return b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/");
+            })
             : null;
         if (matchingCurrentBranch != null)
         {
@@ -381,7 +386,7 @@ internal class GitPreparer(
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
         string localCanonicalName;
         if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranch, out var gitLabIid))
-            localCanonicalName = ReferenceName.LocalBranchPrefix + $"pull-request/{gitLabIid}";
+            localCanonicalName = ReferenceName.LocalBranchPrefix + $"pull-requests/{gitLabIid}";
         else
             localCanonicalName = !currentBranch.StartsWith(referencePrefix)
                 ? ReferenceName.LocalBranchPrefix + currentBranch
