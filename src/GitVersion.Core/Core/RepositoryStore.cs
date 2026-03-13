@@ -75,7 +75,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         if (ReferenceName.TryParseGitLabMergeRequestRef(targetBranchName, out var gitLabIid))
         {
-            var prBranch = FindBranch(ReferenceName.FromBranchName($"pull-requests/{gitLabIid}"));
+            var prBranch = FindBranch(ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid));
             if (prBranch != null)
                 return prBranch;
         }

@@ -71,7 +71,7 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
         else if (referenceName.IsPullRequest)
         {
             var fakeBranchName = ReferenceName.TryParseGitLabMergeRequestRef(canonicalName, out var gitLabIid)
-                ? $"{ReferenceName.LocalBranchPrefix}pull-requests/{gitLabIid}"
+                ? $"{ReferenceName.LocalBranchPrefix}{ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid)}"
                 : canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
             this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
