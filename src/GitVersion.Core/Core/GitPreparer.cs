@@ -386,7 +386,7 @@ internal class GitPreparer(
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
         string localCanonicalName;
         if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranch, out var gitLabIid))
-            localCanonicalName = ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid);
+            localCanonicalName = ReferenceName.LocalBranchPrefix + ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid);
         else
             localCanonicalName = !currentBranch.StartsWith(referencePrefix)
                 ? ReferenceName.LocalBranchPrefix + currentBranch
