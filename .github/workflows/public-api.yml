@@ -10,12 +10,12 @@ defaults:
     shell: pwsh
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   homebrew:
     permissions:
-      contents: none
+      contents: write
     name: Mark public API as shipped
     runs-on: ubuntu-24.04
     steps:
@@ -23,8 +23,6 @@ jobs:
         name: Checkout
         uses: actions/checkout@v6
         if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
-        with:
-          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
       -
         name: Mark public API as shipped
         run: ./src/mark-shipped.ps1

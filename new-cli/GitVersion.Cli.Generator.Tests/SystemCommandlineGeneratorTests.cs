@@ -1,9 +1,10 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using GitVersion.Infrastructure;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -235,22 +236,24 @@ public record TestCommandSettings : GitVersionSettings
     public async Task ValidateGeneratedCommandImplementation()
     {
         var generatorType = typeof(SystemCommandlineGenerator);
+        var encoding = Encoding.UTF8;
+        const SourceHashAlgorithm sourceHash = SourceHashAlgorithm.Sha256;
         var sourceGeneratorTest = new CSharpSourceGeneratorTest<SystemCommandlineGenerator, DefaultVerifier>
         {
             TestState =
             {
                 Sources =
                 {
-                    (generatorType, "GlobalUsings.cs", GlobalUsingsCode),
-                    (generatorType, "TestCommand.cs", TestCommandSourceCode),
-                    (generatorType, "TestCommandSettings.cs", TestCommandSettingsSourceCode)
+                    (generatorType, "GlobalUsings.cs", SourceText.From(GlobalUsingsCode, encoding, sourceHash)),
+                    (generatorType, "TestCommand.cs", SourceText.From(TestCommandSourceCode, encoding, sourceHash)),
+                    (generatorType, "TestCommandSettings.cs", SourceText.From(TestCommandSettingsSourceCode, encoding, sourceHash))
                 },
                 GeneratedSources =
                 {
-                    (generatorType,"TestCommandImpl.g.cs", ExpectedCommandImplText),
-                    (generatorType,"CommandsModule.g.cs", ExpectedCommandsModuleText),
-                    (generatorType,"RootCommandImpl.g.cs", ExpectedRootCommandImplText),
-                    (generatorType,"CliAppImpl.g.cs", ExpectedCliAppImplText),
+                    (generatorType,"TestCommandImpl.g.cs", SourceText.From(ExpectedCommandImplText, encoding, sourceHash)),
+                    (generatorType,"CommandsModule.g.cs", SourceText.From(ExpectedCommandsModuleText, encoding, sourceHash)),
+                    (generatorType,"RootCommandImpl.g.cs", SourceText.From(ExpectedRootCommandImplText, encoding, sourceHash)),
+                    (generatorType,"CliAppImpl.g.cs", SourceText.From(ExpectedCliAppImplText, encoding, sourceHash)),
                 },
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
                 AdditionalReferences =
