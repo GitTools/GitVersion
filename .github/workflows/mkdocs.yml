@@ -1,13 +1,6 @@
 name: Markdown Update
 on:
   push:
-    branches:
-      - main
-      - 'fix/*'
-      - 'feature/*'
-      - 'poc/*'
-      - 'support/*'
-      - 'next/*'
     paths:
       - 'docs/**'
 
@@ -29,11 +22,10 @@ defaults:
   run:
     shell: pwsh
 
-permissions:
-  contents: write
-
 jobs:
   docs:
+    permissions:
+      contents: write
     name: Update Markdown (embedded snippets)
     runs-on: ubuntu-24.04
     steps:

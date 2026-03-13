@@ -9,11 +9,8 @@ defaults:
   run:
     shell: pwsh
 
-permissions:
-  contents: write
-
 jobs:
-  homebrew:
+  public-api:
     permissions:
       contents: write
     name: Mark public API as shipped
