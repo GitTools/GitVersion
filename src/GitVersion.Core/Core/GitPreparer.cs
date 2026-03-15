@@ -234,7 +234,12 @@ internal class GitPreparer(
         var localBranchesWhereCommitShaIsHead = this.repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
 
         var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
-            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
+            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b =>
+            {
+                if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranchName, out var iid))
+                    return b.Name.Canonical == ReferenceName.LocalBranchPrefix + ReferenceName.GitLabMergeRequestFriendlyName(iid);
+                return b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/");
+            })
             : null;
         if (matchingCurrentBranch != null)
         {
@@ -379,11 +384,15 @@ internal class GitPreparer(
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
-            ? ReferenceName.LocalBranchPrefix + currentBranch
-            : isLocalBranch
-                ? currentBranch
-                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        string localCanonicalName;
+        if (ReferenceName.TryParseGitLabMergeRequestRef(currentBranch, out var gitLabIid))
+            localCanonicalName = ReferenceName.LocalBranchPrefix + ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid);
+        else
+            localCanonicalName = !currentBranch.StartsWith(referencePrefix)
+                ? ReferenceName.LocalBranchPrefix + currentBranch
+                : isLocalBranch
+                    ? currentBranch
+                    : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 

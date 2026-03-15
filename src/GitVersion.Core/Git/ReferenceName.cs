@@ -18,9 +18,12 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     [
         "refs/pull/",
         "refs/pull-requests/",
+        "refs/merge-requests/",
         "refs/remotes/pull/",
         "refs/remotes/pull-requests/"
     ];
+
+    private const string GitLabMergeRequestRefPrefix = "refs/merge-requests/";
 
     public ReferenceName(string canonical)
     {
@@ -84,6 +87,26 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
         || WithoutOrigin.Equals(name, StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Detects GitLab MR ref (refs/merge-requests/&lt;iid&gt;/head or /merge) and extracts IID for pull-requests config.
+    /// </summary>
+    public static bool TryParseGitLabMergeRequestRef(string? canonicalRef, out int iid)
+    {
+        iid = 0;
+        if (string.IsNullOrEmpty(canonicalRef) || !canonicalRef.StartsWith(GitLabMergeRequestRefPrefix, StringComparison.Ordinal))
+            return false;
+        var after = canonicalRef.Substring(GitLabMergeRequestRefPrefix.Length);
+        var slash = after.IndexOf('/');
+        if (slash <= 0 || slash >= after.Length - 1) return false;
+        var suffix = after[(slash + 1)..];
+        if (!suffix.Equals("head", StringComparison.OrdinalIgnoreCase) && !suffix.Equals("merge", StringComparison.OrdinalIgnoreCase))
+            return false;
+        return int.TryParse(after.Substring(0, slash), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out iid)
+               && iid > 0;
+    }
+
+    public static string GitLabMergeRequestFriendlyName(int iid) => $"pull-requests/{iid}";
+
     private string Shorten()
     {
         if (IsLocalBranch)
@@ -92,7 +115,13 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         if (IsRemoteBranch)
             return Canonical[RemoteTrackingBranchPrefix.Length..];
 
-        return IsTag ? Canonical[TagPrefix.Length..] : Canonical;
+        if (IsTag)
+            return Canonical[TagPrefix.Length..];
+
+        if (TryParseGitLabMergeRequestRef(Canonical, out var iid))
+            return GitLabMergeRequestFriendlyName(iid);
+
+        return Canonical;
     }
 
     private string RemoveOrigin()

@@ -73,8 +73,15 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         if (targetBranchName.IsNullOrEmpty())
             return desiredBranch;
 
-        // There are some edge cases where HEAD is not pointing to the desired branch.
-        // Therefore, it's important to verify if 'currentBranch' is indeed the desired branch.
+        if (ReferenceName.TryParseGitLabMergeRequestRef(targetBranchName, out var gitLabIid))
+        {
+            var prBranch = FindBranch(ReferenceName.GitLabMergeRequestFriendlyName(gitLabIid));
+            if (prBranch != null)
+                return prBranch;
+        }
+
+        // Handle edge cases where HEAD is not pointing to the desired branch.
+        // It's important to verify that 'desiredBranch' is indeed the desired branch.
         var targetBranch = FindBranch(targetBranchName);
 
         // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well

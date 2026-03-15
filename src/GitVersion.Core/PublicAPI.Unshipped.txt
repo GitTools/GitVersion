@@ -1,1 +1,3 @@
 #nullable enable
+static GitVersion.Git.ReferenceName.GitLabMergeRequestFriendlyName(int iid) -> string!
+static GitVersion.Git.ReferenceName.TryParseGitLabMergeRequestRef(string? canonicalRef, out int iid) -> bool
