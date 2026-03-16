@@ -75,17 +75,17 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+        <PackageReference Include="coverlet.MTP" />
+        <PackageReference Include="JunitXml.TestLogger" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NSubstitute" />
         <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="JunitXml.TestLogger" />
-        <PackageReference Include="Shouldly" />
-
         <PackageReference Include="NUnit.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="Shouldly" />
 
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
