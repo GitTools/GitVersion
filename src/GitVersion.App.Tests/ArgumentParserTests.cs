@@ -389,7 +389,7 @@ public class ArgumentParserTests : TestBase
         };
         yield return new TestCaseData("unknown-option=25")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported 'key'."
+            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported key 'unknown-option'."
         };
     }
 
