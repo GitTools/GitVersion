@@ -8,21 +8,26 @@ jobs:
     name: Trigger ci flow
     runs-on: ubuntu-24.04
     steps:
-      -  
+      -
         name: Checkout
         uses: actions/checkout@v6
-      - 
+      -
         name: Get version
         id: get-version
         shell: pwsh
         run: |
           # Finding the version from release tag
-          $VERSION="${{ github.ref }}".Replace("refs/tags/", "")
-          "version=$VERSION" >> $env:GITHUB_OUTPUT        
-      - 
+          $TAG="${{ github.ref }}".Replace("refs/tags/", "")
+          "tag=$TAG" >> $env:GITHUB_OUTPUT
+      -
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           event-type: ci-release
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ steps.get-version.outputs.version }}"}'
+          client-payload: |
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "tag": "${{ steps.get-version.outputs.tag }}"
+            }
