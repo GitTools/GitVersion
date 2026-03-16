@@ -20,7 +20,7 @@ public class PublishCoverage : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var coverageFiles = context
-            .GetFiles($"{Paths.TestOutput}/*.coverage.*.xml")
+            .GetFiles($"{Paths.Src}/**/coverage.*.xml")
             .Select(file => context.MakeRelative(file).ToString()).ToArray();
 
         var token = context.Credentials?.CodeCov?.Token;

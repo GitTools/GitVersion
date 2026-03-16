@@ -82,6 +82,10 @@ public class UnitTest : FrostingTask<BuildContext>
         settings.WithArgumentCustomization(args => args
             .Append("--report-spekt-junit")
             .Append("--report-spekt-junit-filename").AppendQuoted(resultsPath.FullPath)
+            .Append("--coverlet")
+            .Append("--coverlet-output-format").AppendQuoted("cobertura")
+            .Append("--coverlet-exclude ").AppendQuoted("[GitVersion*.Tests]*")
+            .Append("--coverlet-exclude ").AppendQuoted("[GitTools.Testing]*")
         );
 
         context.DotNetTest(project.FullPath, settings);
