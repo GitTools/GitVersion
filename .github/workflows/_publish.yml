@@ -14,10 +14,6 @@ jobs:
       matrix:
         taskName: [ NuGet, Chocolatey ]
 
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
     steps:
     -
       name: Checkout
@@ -35,6 +31,23 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
 
     -
+      name: Load NuGet credentials
+      id: nuget-creds
+      uses: gittools/cicd/nuget-creds@main
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+    -
+      name: Load Chocolatey credentials
+      id: choco-creds
+      uses: gittools/cicd/choco-creds@main
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+    -
       name: '[Publish]'
       shell: pwsh
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        NUGET_API_KEY: ${{ steps.nuget-creds.outputs.nuget_api_key }}
+        CHOCOLATEY_API_KEY: ${{ steps.choco-creds.outputs.choco_api_key }}
