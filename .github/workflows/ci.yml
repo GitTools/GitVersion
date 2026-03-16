@@ -101,6 +101,7 @@ jobs:
       arch: ${{ matrix.arch }}
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      publish_images: ${{ github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main' }}
     secrets: inherit
 
   docker_linux_manifests:
@@ -110,6 +111,7 @@ jobs:
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      publish_manifests: ${{ github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main' }}
     secrets: inherit
 
   publish:
@@ -130,6 +132,7 @@ jobs:
       issues: write
     env:
       GITHUB_TOKEN: ${{ github.token }}
+      CAN_PUBLISH: ${{ github.event_name == 'repository_dispatch' }}
     steps:
     -
       name: Checkout
@@ -144,16 +147,23 @@ jobs:
       uses: ./.github/actions/artifacts-restore
     -
       name: Attetstation
-      if: github.event_name == 'repository_dispatch'
+      if: env.CAN_PUBLISH == 'true'
       uses: ./.github/actions/artifacts-attest
     -
+      name: Load DockerHub credentials
+      id: dockerhub-creds
+      if: env.CAN_PUBLISH == 'true'
+      uses: gittools/cicd/dockerhub-creds@main
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+    -
       name: DockerHub Publish Readme
-      if: github.event_name == 'repository_dispatch'
+      if: env.CAN_PUBLISH == 'true'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerHubReadmePublish
       env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_USERNAME: ${{ steps.dockerhub-creds.outputs.docker_username }}
+        DOCKER_PASSWORD: ${{ steps.dockerhub-creds.outputs.docker_password }}
     -
       name: '[Release]'
       shell: pwsh
@@ -166,4 +176,10 @@ jobs:
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         repository: ${{ github.repository }}
         event-type: publish-release
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ github.event.client_payload.tag }}"}'
+        client-payload: |
+          {
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "tag": "${{ github.event.client_payload.tag }}"
+          }
+
