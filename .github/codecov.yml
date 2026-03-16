@@ -1,11 +1,46 @@
+comment:
+  layout: "header, diff, flags, components"
+  behavior: default
+  require_changes: false
+component_management:
+  individual_components:
+    - component_id: gitversion-app
+      name: GitVersion.App
+      paths: [ src/GitVersion.App/** ]
+    - component_id: gitversion-buildagents
+      name: GitVersion.BuildAgents
+      paths: [ src/GitVersion.BuildAgents/** ]
+    - component_id: gitversion-configuration
+      name: GitVersion.Configuration
+      paths: [ src/GitVersion.Configuration/** ]
+    - component_id: gitversion-core
+      name: GitVersion.Core
+      paths: [ src/GitVersion.Core/** ]
+    - component_id: gitversion-libgit2sharp
+      name: GitVersion.LibGit2Sharp
+      paths: [ src/GitVersion.LibGit2Sharp/** ]
+    - component_id: gitversion-msbuild
+      name: GitVersion.MsBuild
+      paths: [ src/GitVersion.MsBuild/** ]
+    - component_id: gitversion-output
+      name: GitVersion.Output
+      paths: [ src/GitVersion.Output/** ]
 coverage:
   range: 50..70
   round: down
   precision: 2
   status:
+    project:
+      default:
+        target: auto
+        base: auto
+        paths:
+          - src
+        branches:
+          - main
     patch:
       default:
         # basic
         target: auto
         threshold: 1%
-        base: auto 
+        base: auto

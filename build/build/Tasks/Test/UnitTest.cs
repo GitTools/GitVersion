@@ -1,6 +1,4 @@
-using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.Tools.DotNet.Test;
-using Cake.Coverlet;
 using Cake.Incubator.LoggingExtensions;
 using Common.Utilities;
 
@@ -49,24 +47,10 @@ public class UnitTest : FrostingTask<BuildContext>
         throw exception;
     }
 
-    public override void Finally(BuildContext context)
-    {
-        var testResultsFiles = context.GetFiles($"{Paths.TestOutput}/*.results.xml");
-        if (!context.IsAzurePipelineBuild || testResultsFiles.Count == 0) return;
-
-        var data = new AzurePipelinesPublishTestResultsData
-        {
-            TestResultsFiles = testResultsFiles.ToArray(),
-            Platform = context.Platform.ToString(),
-            TestRunner = AzurePipelinesTestRunnerType.JUnit
-        };
-        context.BuildSystem().AzurePipelines.Commands.PublishTestResults(data);
-    }
-
     private static void TestProjectForTarget(BuildContext context, FilePath project, string framework)
     {
         var testResultsPath = Paths.TestOutput;
-        var projectName = $"{project.GetFilenameWithoutExtension()}.net{framework}";
+        var projectName = $"{project.GetFilenameWithoutExtension()}";
         var settings = new DotNetTestSettings
         {
             PathType = DotNetTestPathType.Project,
@@ -78,14 +62,16 @@ public class UnitTest : FrostingTask<BuildContext>
         };
         settings.MSBuildSettings.SetContinuousIntegrationBuild(false);
 
-        var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
+        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine(projectName));
+
         settings.WithArgumentCustomization(args => args
             .Append("--report-spekt-junit")
-            .Append("--report-spekt-junit-filename").AppendQuoted(resultsPath.FullPath)
+            .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
+            .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath)
             .Append("--coverlet")
             .Append("--coverlet-output-format").AppendQuoted("cobertura")
-            .Append("--coverlet-exclude ").AppendQuoted("[GitVersion*.Tests]*")
-            .Append("--coverlet-exclude ").AppendQuoted("[GitTools.Testing]*")
+            .Append("--coverlet-exclude").AppendQuoted("[GitVersion*.Tests]*")
+            .Append("--coverlet-exclude").AppendQuoted("[GitVersion.Testing]*")
         );
 
         context.DotNetTest(project.FullPath, settings);
