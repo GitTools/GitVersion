@@ -464,7 +464,7 @@ internal class ArgumentParser(IEnvironment environment,
             var optionKey = keyAndValue[0].ToLowerInvariant();
             if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
             {
-                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
+                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported key '{keyAndValue[0]}'.");
             }
             parser.SetValue(optionKey, keyAndValue[1]);
         }
