@@ -6,6 +6,9 @@ on:
       - main
       - 'fix/*'
       - 'feature/*'
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 jobs:
   qodana:
     runs-on: ubuntu-latest
@@ -28,7 +31,7 @@ jobs:
         name: 'Qodana Scan'
         uses: jetbrains/qodana-action@v2025.3.2
         with:
-          args: --baseline,qodana.sarif.json
+          args: --baseline qodana.sarif.json
           cache-default-branch-only: true
           pr-mode: true
         env:
