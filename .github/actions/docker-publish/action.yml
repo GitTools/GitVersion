@@ -22,26 +22,26 @@ inputs:
   github_registry_password:
     description: 'GitHub Registry Password'
     required: true
-    
+
 runs:
   using: 'composite'
   steps:
   -
     name: Login to DockerHub
-    uses: docker/login-action@v3
+    uses: docker/login-action@v4
     with:
       username: ${{ inputs.docker_registry_username }}
       password: ${{ inputs.docker_registry_password }}
   -
     name: '[Docker Publish] DockerHub'
     shell: pwsh
-    run: | 
+    run: |
         dotnet run/docker.dll `
               --target=DockerPublish --arch=${{ inputs.arch }} --dotnet_version=${{ inputs.dotnet_version }} `
               --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub --verbosity=diagnostic
   -
     name: Login to GitHub
-    uses: docker/login-action@v3
+    uses: docker/login-action@v4
     with:
       registry: ghcr.io
       username: ${{ inputs.github_registry_username }}
