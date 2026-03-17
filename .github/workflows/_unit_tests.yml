@@ -4,6 +4,9 @@ on:
       dotnet_versions:
         required: true
         type: string
+      publish_coverage:
+        required: true
+        type: boolean
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
@@ -50,7 +53,7 @@ jobs:
     -
       name: Upload Coverage
       uses: codecov/codecov-action@v5
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main' && matrix.dotnet_version == '10.0'
+      if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
       with:
         files: artifacts/test-results/**/results.xml
         report_type: 'test_results'
@@ -59,7 +62,7 @@ jobs:
     -
       name: Upload Coverage
       uses: codecov/codecov-action@v5
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main' && matrix.dotnet_version == '10.0'
+      if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
       with:
         directory: artifacts/test-results
         report_type: 'coverage'
