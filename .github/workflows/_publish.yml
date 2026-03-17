@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    inputs:
+      publish_packages:
+        required: true
+        type: boolean
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -14,10 +18,6 @@ jobs:
       matrix:
         taskName: [ NuGet, Chocolatey ]
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
     steps:
     -
       name: Checkout
@@ -35,6 +35,26 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
 
     -
+      name: Load NuGet credentials
+      id: nuget-creds
+      if: inputs.publish_packages
+      uses: gittools/cicd/nuget-creds@v1
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+    -
+      name: Load Chocolatey credentials
+      id: choco-creds
+      if: inputs.publish_packages
+      uses: gittools/cicd/choco-creds@v1
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+    -
       name: '[Publish]'
+      if: inputs.publish_packages
       shell: pwsh
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        NUGET_API_KEY: ${{ steps.nuget-creds.outputs.nuget_api_key }}
+        CHOCOLATEY_API_KEY: ${{ steps.choco-creds.outputs.choco_api_key }}

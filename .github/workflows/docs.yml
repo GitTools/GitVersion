@@ -117,7 +117,7 @@ jobs:
       name: '[Remark Lint]'
       uses: reviewdog/action-remark-lint@v5
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ github.token }}
         reporter: ${{ steps.reporter.outputs.value }}
 
   publish:

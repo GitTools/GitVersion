@@ -47,6 +47,18 @@ jobs:
     name: Prepare
     uses: ./.github/workflows/_prepare.yml
 
+  publish_flags:
+    name: Publish Flags
+    runs-on: ubuntu-24.04
+    outputs:
+      can_publish: ${{ steps.flags.outputs.can_publish }}
+    steps:
+    -
+      name: Resolve publish flag
+      id: flags
+      shell: bash
+      run: echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build & Package
     needs: [ prepare ]
@@ -54,10 +66,11 @@ jobs:
 
   unit_test:
     name: Test
-    needs: [ prepare ]
+    needs: [ prepare, publish_flags ]
     uses: ./.github/workflows/_unit_tests.yml
     with:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
     secrets: inherit
 
   artifacts_windows_test:
@@ -84,7 +97,7 @@ jobs:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
 
   docker_linux_images:
-    needs: [ prepare, build ]
+    needs: [ prepare, build, publish_flags ]
     name: Docker Images (${{ matrix.arch }})
     strategy:
       fail-fast: false
@@ -101,21 +114,25 @@ jobs:
       arch: ${{ matrix.arch }}
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      publish_images: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
     secrets: inherit
 
   docker_linux_manifests:
-    needs: [ prepare, docker_linux_images ]
+    needs: [ prepare, docker_linux_images, publish_flags ]
     name: Docker Manifests
     uses: ./.github/workflows/_docker_manifests.yml
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      publish_manifests: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
     secrets: inherit
 
   publish:
     name: Publish
-    needs: [ artifacts_windows_test, artifacts_linux_test ]
+    needs: [ artifacts_windows_test, artifacts_linux_test, publish_flags ]
     uses: ./.github/workflows/_publish.yml
+    with:
+      publish_packages: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
     secrets: inherit
 
   release:
@@ -130,6 +147,7 @@ jobs:
       issues: write
     env:
       GITHUB_TOKEN: ${{ github.token }}
+      CAN_PUBLISH: ${{ github.event_name == 'repository_dispatch' }}
     steps:
     -
       name: Checkout
@@ -143,17 +161,24 @@ jobs:
       name: Restore Artifacts
       uses: ./.github/actions/artifacts-restore
     -
-      name: Attetstation
-      if: github.event_name == 'repository_dispatch'
+      name: Attestation
+      if: env.CAN_PUBLISH == 'true'
       uses: ./.github/actions/artifacts-attest
     -
+      name: Load DockerHub credentials
+      id: dockerhub-creds
+      if: env.CAN_PUBLISH == 'true'
+      uses: gittools/cicd/dockerhub-creds@v1
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+    -
       name: DockerHub Publish Readme
-      if: github.event_name == 'repository_dispatch'
+      if: env.CAN_PUBLISH == 'true'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerHubReadmePublish
       env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_USERNAME: ${{ steps.dockerhub-creds.outputs.docker_username }}
+        DOCKER_PASSWORD: ${{ steps.dockerhub-creds.outputs.docker_password }}
     -
       name: '[Release]'
       shell: pwsh
@@ -163,7 +188,13 @@ jobs:
       if: github.event_name == 'repository_dispatch'
       uses: peter-evans/repository-dispatch@v4
       with:
-        token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        token: ${{ github.token }}
         repository: ${{ github.repository }}
         event-type: publish-release
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag": "${{ github.event.client_payload.tag }}"}'
+        client-payload: |
+          {
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "tag": "${{ github.event.client_payload.tag }}"
+          }
+
