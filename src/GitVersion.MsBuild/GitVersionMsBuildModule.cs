@@ -1,4 +1,5 @@
 using GitVersion.Logging;
+using GitVersion.MsBuild.Tasks;
 
 namespace GitVersion.MsBuild;
 

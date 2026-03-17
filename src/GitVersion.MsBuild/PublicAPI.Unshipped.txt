@@ -1,1 +1,13 @@
 #nullable enable
+GitVersion.MsBuild.Tasks.GitVersionTaskBase
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.BuildEngine.get -> Microsoft.Build.Framework.IBuildEngine!
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.BuildEngine.set -> void
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.Execute() -> bool
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.GitVersionTaskBase() -> void
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.HostObject.get -> Microsoft.Build.Framework.ITaskHost!
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.HostObject.set -> void
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.Log.get -> Microsoft.Build.Utilities.TaskLoggingHelper!
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.SolutionDirectory.get -> string!
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.SolutionDirectory.set -> void
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.VersionFile.get -> string!
+GitVersion.MsBuild.Tasks.GitVersionTaskBase.VersionFile.set -> void

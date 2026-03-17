@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.MsBuild.Tasks;
 using GitVersion.Output;
 
 namespace GitVersion.MsBuild;
