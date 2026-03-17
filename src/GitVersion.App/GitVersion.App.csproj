@@ -20,6 +20,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="System.CommandLine" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,7 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md" />
+        <EmbeddedResource Include="legacy_help.md" />
     </ItemGroup>
 
     <ItemGroup>

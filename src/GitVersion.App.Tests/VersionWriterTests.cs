@@ -12,7 +12,7 @@ public class VersionWriterTests : TestBase
 
     public VersionWriterTests()
     {
-        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule(useLegacyParser: true)));
 
         this.versionWriter = sp.GetRequiredService<IVersionWriter>();
     }
