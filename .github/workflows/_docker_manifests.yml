@@ -41,6 +41,7 @@ jobs:
       uses: ./.github/actions/docker-setup
     -
       name: Load DockerHub credentials
+      if: inputs.publish_manifests
       id: dockerhub-creds
       uses: gittools/cicd/dockerhub-creds@v1
       with:
