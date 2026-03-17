@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="cli (version)" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="cli (new)" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.App/bin/Debug/net10.0/gitversion" />
-    <option name="PROGRAM_PARAMETERS" value="-version" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../.." />
+    <option name="PROGRAM_PARAMETERS" value="--no-cache --log-file console" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.App/bin/Debug/net10.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="ENV_FILE_PATHS" value="" />
     <option name="REDIRECT_INPUT_PATH" value="" />

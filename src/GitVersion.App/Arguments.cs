@@ -99,7 +99,8 @@ internal class Arguments
         var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
         if (workingDirectory != null)
         {
-            gitVersionOptions.WorkingDirectory = workingDirectory;
+            var absolutePath = Path.GetFullPath(workingDirectory);
+            gitVersionOptions.WorkingDirectory = absolutePath;
         }
 
         return gitVersionOptions;
