@@ -9,7 +9,7 @@ public class HelpWriterTests : TestBase
 
     public HelpWriterTests()
     {
-        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule(useLegacyParser: true)));
         this.helpWriter = sp.GetRequiredService<IHelpWriter>();
     }
 

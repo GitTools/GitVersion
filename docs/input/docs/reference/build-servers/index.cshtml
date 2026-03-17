@@ -29,11 +29,11 @@ RedirectFrom:
 
 <p>
     When the <code>gitVersion</code> executable is run with the
-    <code>/output buildserver</code> flag instead of outputting JSON, it will
+    <code>--output buildserver</code> flag instead of outputting JSON, it will
     export its <a href="/docs/reference/variables">version variables</a> to the
     current build server as build-server native variables. For instance if you
     are running in TeamCity after you run
-    <code>gitversion /output buildserver</code> you will have the
+    <code>gitversion --output buildserver</code> you will have the
     <code>%system.GitVersion.SemVer%</code> variable available for you to use
     in the rest of the build configuration.
 </p>
