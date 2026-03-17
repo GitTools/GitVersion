@@ -118,6 +118,8 @@ jobs:
     name: Publish
     needs: [ artifacts_windows_test, artifacts_linux_test ]
     uses: ./.github/workflows/_publish.yml
+    with:
+      publish_packages: ${{ github.event_name != 'pull_request' && github.repository_owner == 'GitTools' && github.ref_name == 'main' }}
     secrets: inherit
 
   release:

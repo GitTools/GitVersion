@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    inputs:
+      publish_packages:
+        required: true
+        type: boolean
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -33,18 +37,21 @@ jobs:
     -
       name: Load NuGet credentials
       id: nuget-creds
+      if: inputs.publish_packages
       uses: gittools/cicd/nuget-creds@main
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     -
       name: Load Chocolatey credentials
       id: choco-creds
+      if: inputs.publish_packages
       uses: gittools/cicd/choco-creds@main
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
     -
       name: '[Publish]'
+      if: inputs.publish_packages
       shell: pwsh
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
       env:
