@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Load GitHub App credentials
       id: gh-app-creds
-      uses: gittools/cicd/gh-app-creds@main
+      uses: gittools/cicd/gh-app-creds@v1
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     - name: Generate GitHub App Token

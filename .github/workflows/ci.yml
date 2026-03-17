@@ -161,14 +161,14 @@ jobs:
       name: Restore Artifacts
       uses: ./.github/actions/artifacts-restore
     -
-      name: Attetstation
+      name: Attestation
       if: env.CAN_PUBLISH == 'true'
       uses: ./.github/actions/artifacts-attest
     -
       name: Load DockerHub credentials
       id: dockerhub-creds
       if: env.CAN_PUBLISH == 'true'
-      uses: gittools/cicd/dockerhub-creds@main
+      uses: gittools/cicd/dockerhub-creds@v1
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     -

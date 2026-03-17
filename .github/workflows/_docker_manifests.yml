@@ -20,7 +20,6 @@ permissions:
 
 jobs:
   manifest:
-    if: inputs.publish_manifests
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
     runs-on: ubuntu-24.04
     strategy:
@@ -43,12 +42,13 @@ jobs:
     -
       name: Load DockerHub credentials
       id: dockerhub-creds
-      uses: gittools/cicd/dockerhub-creds@main
+      uses: gittools/cicd/dockerhub-creds@v1
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     -
       name: Docker Manifests
       uses: ./.github/actions/docker-manifests
+      if: inputs.publish_manifests
       with:
         docker_distro: ${{ matrix.docker_distro }}
         dotnet_version: ${{ matrix.dotnet_version }}
