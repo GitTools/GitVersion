@@ -153,21 +153,16 @@ which replaces long-lived API keys with short-lived, identity-based tokens issue
 2. That token is exchanged with the nuget.org token service for a short-lived API key.
 3. Packages are pushed using that short-lived key — no long-lived secret is stored or rotated.
 
-**One-time setup (per package on nuget.org):**
+**One-time setup on nuget.org:**
 
-Each GitVersion package on nuget.org must have the `GitTools/GitVersion` repository registered as a Trusted
-Publisher. Repeat the following steps for every package listed below:
-
-- [`GitVersion.Tool`](https://www.nuget.org/packages/GitVersion.Tool)
-- [`GitVersion.MsBuild`](https://www.nuget.org/packages/GitVersion.MsBuild)
-- [`GitVersion.Core`](https://www.nuget.org/packages/GitVersion.Core)
-
-Steps to register a Trusted Publisher for a package:
+Trusted Publishing is configured once for the repository and workflow — not per package. A single trusted
+publisher entry covers every package pushed by the same workflow run.
 
 1. Sign in to [nuget.org](https://www.nuget.org) as a package owner.
-2. Navigate to the package page and click **Manage package**.
-3. Open the **Settings** tab and scroll to the **Trusted Publishers** section.
-4. Click **Add trusted publisher** and fill in the following fields:
+2. Go to **Account settings** → **Trusted Publishers** (or navigate to any of the
+   [GitVersion packages](https://www.nuget.org/profiles/GitTools) and open **Manage package** → **Settings** →
+   **Trusted Publishers**).
+3. Click **Add trusted publisher** and fill in the following fields:
 
    | Field | Value |
    |---|---|
@@ -177,11 +172,11 @@ Steps to register a Trusted Publisher for a package:
    | **Workflow file name** | `ci.yml` |
    | **Environment** | *(leave blank)* |
 
-5. Click **Add** to save the trusted publisher entry.
+4. Click **Add** to save the entry.
 
-> **Note:** nuget.org will only issue a short-lived key to a workflow run whose OIDC claims match *all* of the
-> registered fields exactly. A mismatch on any field (for example a different workflow file name) will cause the
-> token exchange to fail and the publish step will fall back to the static `NUGET_API_KEY`.
+> **Note:** nuget.org will only issue a short-lived key when the OIDC claims from the workflow run match *all*
+> registered fields exactly. A mismatch on any field (e.g. wrong workflow file name) will cause the token
+> exchange to fail and the publish step will fall back to the static `NUGET_API_KEY`.
 
 **Verification and troubleshooting:**
 
@@ -190,7 +185,7 @@ Steps to register a Trusted Publisher for a package:
   group for error details.
 - The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
 - If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
-  for that package and that the owner, repository, and workflow file name match exactly.
+  and that the owner, repository, and workflow file name match exactly.
 
 ## Code Style
 
