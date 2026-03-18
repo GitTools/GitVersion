@@ -2,28 +2,28 @@ name: Build (new-cli)
 on:
   push:
     branches:
-    - main
-    - 'fix/*'
-    - 'feature/*'
-    - 'poc/*'
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'fix/*'
+      - 'feature/*'
+      - 'poc/*'
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/new-cli.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/new-cli.yml
 
   pull_request:
     branches:
-    - main
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/new-cli.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/new-cli.yml
 
 permissions:
   contents: read
@@ -40,20 +40,19 @@ jobs:
     runs-on: ubuntu-24.04
     name: Build & Test (new-cli)
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v6
-      -
-        name: Setup .NET SDK
+
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
-      -
-        name: Build 'new-cli' solution
+
+      - name: Build 'new-cli' solution
         run: dotnet build ./new-cli
-      -
-        name: Run Format 'new-cli' solution
+
+      - name: Run Format 'new-cli' solution
         run: dotnet format ./new-cli --exclude ~/.nuget/packages --verify-no-changes
-      -
-        name: Test 'new-cli' solution
+
+      - name: Test 'new-cli' solution
         run: dotnet test --solution ./new-cli/GitVersion.slnx --no-build --verbosity normal

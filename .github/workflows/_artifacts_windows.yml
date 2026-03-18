@@ -15,21 +15,20 @@ jobs:
         package: [ Executable, MsBuildFull ]
 
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      uses: actions/download-artifact@v8
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: '[Test Artifacts]'
-      shell: pwsh
-      run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - uses: actions/download-artifact@v8
+        name: Download nuget packages
+        with:
+          name: nuget
+          path: ${{ github.workspace }}/artifacts/packages/nuget
+
+      - name: '[Test Artifacts]'
+        shell: pwsh
+        run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test

@@ -11,29 +11,19 @@ defaults:
 
 jobs:
   public-api:
-    permissions:
-      contents: write
     name: Mark public API as shipped
     runs-on: ubuntu-24.04
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v6
-        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
-      -
-        name: Mark public API as shipped
+      - name: Checkout
+        uses: gittools/cicd/checkout@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Mark public API as shipped
         run: ./src/mark-shipped.ps1
-      -
-        name: Check for changes
-        id: status
-        run: |
-          if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
-      -
-        name: Push changes
-        run: |
-          git add --verbose .
-          git config user.name 'gittools-bot'
-          git config user.email 'gittoolsbot@outlook.com'
-          git commit -m 'Mark public API as shipped' --allow-empty
-          git push --force
-        if: steps.status.outputs.has_changes == '1'
+
+      - name: Commit and push changes
+        uses: gittools/cicd/git-commit-push@v1
+        with:
+          message: "include public API changes"

@@ -10,19 +10,18 @@ jobs:
     permissions:
       contents: write
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v6
-      -
-        name: Get version
+
+      - name: Get version
         id: get-version
         shell: pwsh
         run: |
           # Finding the version from release tag
           $TAG="${{ github.ref }}".Replace("refs/tags/", "")
           "tag=$TAG" >> $env:GITHUB_OUTPUT
-      -
-        uses: peter-evans/repository-dispatch@v4
+
+      - uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}

@@ -2,9 +2,9 @@ name: 'Docker Setup'
 description: 'Setups the docker engine'
 
 runs:
-    using: 'composite'
-    steps:
-        -   name: Set up Docker
-            uses: docker/setup-docker-action@v5
-            with:
-                daemon-config: '{ "features": { "containerd-snapshotter": true } }'
+  using: 'composite'
+  steps:
+    - name: Set up Docker
+      uses: docker/setup-docker-action@v5
+      with:
+        daemon-config: '{ "features": { "containerd-snapshotter": true } }'

@@ -2,28 +2,28 @@ name: Code Format
 on:
   push:
     branches:
-    - main
-    - 'fix/*'
-    - 'feature/*'
-    - 'poc/*'
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'fix/*'
+      - 'feature/*'
+      - 'poc/*'
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/format.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/format.yml
 
   pull_request:
     branches:
-    - main
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/format.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/format.yml
 
 permissions:
   contents: read
@@ -39,17 +39,16 @@ jobs:
     runs-on: ubuntu-24.04
     name: DotNet Format
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v6
-      -
-        name: Setup .NET SDK
+
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
-      -
-        name: Run Format 'ci' solution
+
+      - name: Run Format 'ci' solution
         run: dotnet format ./build/ --verify-no-changes
-      -
-        name: Run Format 'GitVersion' solution
+
+      - name: Run Format 'GitVersion' solution
         run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes

@@ -6,24 +6,24 @@ on:
     types: [ publish-release ]
   push:
     branches:
-    - main
+      - main
     paths:
-    - docs/**
-    - package*.json
-    - markdownlint.json
-    - .remarkrc.yaml
-    - mkdocs.yml
-    - .github/workflows/docs.yml
+      - docs/**
+      - package*.json
+      - markdownlint.json
+      - .remarkrc.yaml
+      - mkdocs.yml
+      - .github/workflows/docs.yml
   pull_request:
     branches:
-    - main
+      - main
     paths:
-    - docs/**
-    - package*.json
-    - markdownlint.json
-    - .remarkrc.yaml
-    - mkdocs.yml
-    - .github/workflows/docs.yml
+      - docs/**
+      - package*.json
+      - markdownlint.json
+      - .remarkrc.yaml
+      - mkdocs.yml
+      - .github/workflows/docs.yml
 env:
   DOTNET_ROLL_FORWARD: "Major"
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -36,89 +36,87 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Cache cake frosting
-      id: cache-cake
-      uses: actions/cache@v5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Use cached tools
-      id: cache-tools
-      uses: actions/cache@v5
-      with:
-        path: tools
-        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Get npm cache directory
-      shell: bash
-      id: cache-node-dir
-      run: |
-        cacheDir=$(npm config get cache)
-        echo "dir=$cacheDir" >> $GITHUB_OUTPUT
-    -
-      name: Cache Node Modules
-      id: cache-node
-      uses: actions/cache@v5
-      with:
-        path: ${{ steps.cache-node-dir.outputs.dir }}
-        key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-        restore-keys: node-${{ runner.os }}
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v5
-      with:
-        global-json-file: global.json
-    -
-      name: '[Build]'
-      if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/ --configuration=Release
-    -
-      name: '[Prepare]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=BuildPrepare
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Cache cake frosting
+        id: cache-cake
+        uses: actions/cache@v5
+        with:
+          path: run
+          key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+      - name: Use cached tools
+        id: cache-tools
+        uses: actions/cache@v5
+        with:
+          path: tools
+          key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+      - name: Get npm cache directory
+        shell: bash
+        id: cache-node-dir
+        run: |
+          cacheDir=$(npm config get cache)
+          echo "dir=$cacheDir" >> $GITHUB_OUTPUT
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.cache-node-dir.outputs.dir }}
+          key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+          restore-keys: node-${{ runner.os }}
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: '[Build]'
+        if: steps.cache-cake.outputs.cache-hit != 'true'
+        run: dotnet build build/ --configuration=Release
+
+      - name: '[Prepare]'
+        shell: pwsh
+        run: dotnet run/build.dll --target=BuildPrepare
 
   validate:
     name: Validates Html
     needs: [ prepare ]
     runs-on: ubuntu-24.04
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      name: '[Build Documentation]'
-      shell: pwsh
-      run: dotnet run/docs.dll --target=BuildDocs
-    -
-      name: '[HTMLProofer]'
-      uses: chabad360/htmlproofer@master
-      with:
-        directory: ./artifacts/docs/preview
-        arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension --disable-external --no-check_external_hash
-    -
-      name: '[Reviewdog Reporter]'
-      id: reporter
-      run: |
-        value=$([ ${{ github.event_name == 'pull_request' }} ] && echo "github-pr-review" || echo "github-check")
-        echo "value=$value" >> $GITHUB_OUTPUT
-    -
-      name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5
-      with:
-        github_token: ${{ github.token }}
-        reporter: ${{ steps.reporter.outputs.value }}
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - name: '[Build Documentation]'
+        shell: pwsh
+        run: dotnet run/docs.dll --target=BuildDocs
+
+      - name: '[HTMLProofer]'
+        uses: chabad360/htmlproofer@master
+        with:
+          directory: ./artifacts/docs/preview
+          arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension --disable-external --no-check_external_hash
+
+      - name: '[Reviewdog Reporter]'
+        id: reporter
+        run: |
+          value=$([ ${{ github.event_name == 'pull_request' }} ] && echo "github-pr-review" || echo "github-check")
+          echo "value=$value" >> $GITHUB_OUTPUT
+
+      - name: '[Remark Lint]'
+        uses: reviewdog/action-remark-lint@v5
+        with:
+          github_token: ${{ github.token }}
+          reporter: ${{ steps.reporter.outputs.value }}
 
   publish:
     if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
@@ -131,20 +129,19 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       GITHUB_USERNAME: ${{ github.actor }}
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      name: '[Build Schemas]'
-      shell: pwsh
-      run: dotnet run/docs.dll --target=GenerateSchemas
-    -
-      name: '[Publish Documentation]'
-      if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
-      shell: pwsh
-      run: dotnet run/docs.dll --target=PublishDocs --force
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - name: '[Build Schemas]'
+        shell: pwsh
+        run: dotnet run/docs.dll --target=GenerateSchemas
+
+      - name: '[Publish Documentation]'
+        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: dotnet run/docs.dll --target=PublishDocs --force

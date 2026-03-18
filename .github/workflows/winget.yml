@@ -14,44 +14,34 @@ permissions:
 
 jobs:
   homebrew:
-    permissions:
-      contents: none
     name: Bump winget manifest
     runs-on: ubuntu-24.04
     steps:
-    - name: Load GitHub App credentials
-      id: gh-app-creds
-      uses: gittools/cicd/gh-app-creds@v1
-      with:
-        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-    - name: Generate GitHub App Token
-      id: app-token
-      uses: actions/create-github-app-token@v3
-      with:
-        app-id: ${{ steps.gh-app-creds.outputs.gh_app_id }}
-        private-key: ${{ steps.gh-app-creds.outputs.gh_app_private_key }}
-        owner: ${{ github.repository_owner }}
-        repositories: winget-pkgs
-        permission-contents: write
-        permission-pull-requests: write
-    - name: Get version
-      id: get-version
-      shell: pwsh
-      run: |
-        $version = "${{ github.event.client_payload.tag }}"
-        if ($version -eq "") {
-          $version = "${{ github.event.inputs.tag-name }}"
-        }
+      - name: Get version
+        id: get-version
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.client_payload.tag }}"
+          if ($version -eq "") {
+            $version = "${{ github.event.inputs.tag-name }}"
+          }
 
-        $url = "https://github.com/GitTools/GitVersion/releases/download/{0}/gitversion-win-{1}-{0}.zip"
-        $urls = @(($url -f $version, "x64"), ($url -f $version, "arm64")) -Join " "
+          $url = "https://github.com/GitTools/GitVersion/releases/download/{0}/gitversion-win-{1}-{0}.zip"
+          $urls = @(($url -f $version, "x64"), ($url -f $version, "arm64")) -Join " "
 
-        $run_args = "update GitTools.GitVersion --version $version --urls $urls --submit"
-        "version=$version" >> $env:GITHUB_OUTPUT
-        "run_args=$run_args" >> $env:GITHUB_OUTPUT
+          $run_args = "update GitTools.GitVersion --version $version --urls $urls --submit"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "run_args=$run_args" >> $env:GITHUB_OUTPUT
 
-    - uses: michidk/run-komac@v2.1.0
-      env:
-        GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-      with:
-        args: '${{ steps.get-version.outputs.run_args }}'
+      - name: Load GitHub release token
+        id: github-creds
+        uses: gittools/cicd/github-creds@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - uses: michidk/run-komac@v2.1.0
+        env:
+          GITHUB_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
+        with:
+          args: '${{ steps.get-version.outputs.run_args }}'
+          custom-fork-owner: gittools-bot

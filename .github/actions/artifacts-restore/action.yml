@@ -4,27 +4,26 @@ description: 'Artifacts restore'
 runs:
   using: 'composite'
   steps:
-  -
-    uses: actions/download-artifact@v4
-    name: Download native linux packages
-    with:
-      name: native-Linux
-      path: ${{ github.workspace }}/artifacts/packages/native
-  -
-    uses: actions/download-artifact@v4
-    name: Download native windows packages
-    with:
-      name: native-Windows
-      path: ${{ github.workspace }}/artifacts/packages/native
-  -
-    uses: actions/download-artifact@v4
-    name: Download native macos packages
-    with:
-      name: native-macOS
-      path: ${{ github.workspace }}/artifacts/packages/native
-  -
-    uses: actions/download-artifact@v4
-    name: Download nuget packages
-    with:
-      name: nuget
-      path: ${{ github.workspace }}/artifacts/packages/nuget
+    - uses: actions/download-artifact@v8
+      name: Download native linux packages
+      with:
+        name: native-Linux
+        path: ${{ github.workspace }}/artifacts/packages/native
+
+    - uses: actions/download-artifact@v8
+      name: Download native windows packages
+      with:
+        name: native-Windows
+        path: ${{ github.workspace }}/artifacts/packages/native
+
+    - uses: actions/download-artifact@v8
+      name: Download native macos packages
+      with:
+        name: native-macOS
+        path: ${{ github.workspace }}/artifacts/packages/native
+
+    - uses: actions/download-artifact@v8
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
