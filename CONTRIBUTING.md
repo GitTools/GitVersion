@@ -164,13 +164,13 @@ publisher entry covers every package pushed by the same workflow run.
    **Trusted Publishers**).
 3. Click **Add trusted publisher** and fill in the following fields:
 
-   | Field | Value |
-   |---|---|
-   | **Publisher type** | GitHub Actions |
-   | **Owner** | `GitTools` |
-   | **Repository** | `GitVersion` |
-   | **Workflow file name** | `ci.yml` |
-   | **Environment** | *(leave blank)* |
+   | Field                  | Value           |
+   |------------------------|-----------------|
+   | **Publisher type**     | GitHub Actions  |
+   | **Owner**              | `GitTools`      |
+   | **Repository**         | `GitVersion`    |
+   | **Workflow file name** | `ci.yml`        |
+   | **Environment**        | *(leave blank)* |
 
 4. Click **Add** to save the entry.
 
