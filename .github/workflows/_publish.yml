@@ -37,6 +37,13 @@ jobs:
           name: nuget
           path: ${{ github.workspace }}/artifacts/packages/nuget
 
+      - name: Load NuGet credentials
+        id: nuget-creds
+        if: inputs.publish_packages
+        uses: gittools/cicd/nuget-creds@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
       - name: Load Chocolatey credentials
         id: choco-creds
         if: inputs.publish_packages
@@ -50,4 +57,5 @@ jobs:
         run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          NUGET_API_KEY: ${{ steps.nuget-creds.outputs.nuget_api_key }}
           CHOCOLATEY_API_KEY: ${{ steps.choco-creds.outputs.choco_api_key }}
