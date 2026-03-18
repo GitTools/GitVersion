@@ -43,7 +43,17 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         if (context.IsTaggedRelease || context.IsTaggedPreRelease)
         {
             context.StartGroup("Publishing to Nuget.org");
-            var apiKey = context.Credentials?.Nuget?.ApiKey;
+
+            // Prefer Trusted Publishing via OIDC token exchange (no long-lived API key required)
+            var apiKey = await GetNugetApiKey(context);
+
+            // Fall back to a static API key when OIDC is not available
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                context.Information("OIDC token exchange unavailable; falling back to static NuGet API key.");
+                apiKey = context.Credentials?.Nuget?.ApiKey;
+            }
+
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet org API key.");
@@ -52,8 +62,6 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
             PublishToNugetRepo(context, apiKey, Constants.NugetOrgUrl);
             context.EndGroup();
         }
-
-        await Task.CompletedTask;
     }
 
     private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)
@@ -85,17 +93,22 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         }
         catch (HttpRequestException ex)
         {
-            context.Error($"Network error while retrieving NuGet API key: {ex.Message}");
+            context.Warning($"Network error while retrieving NuGet API key via OIDC: {ex.Message}");
             return null;
         }
         catch (InvalidOperationException ex)
         {
-            context.Error($"Invalid operation while retrieving NuGet API key: {ex.Message}");
+            context.Warning($"OIDC not available for NuGet API key retrieval: {ex.Message}");
             return null;
         }
         catch (JsonException ex)
         {
-            context.Error($"JSON parsing error while retrieving NuGet API key: {ex.Message}");
+            context.Warning($"JSON parsing error while retrieving NuGet API key via OIDC: {ex.Message}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            context.Warning($"Unexpected error while retrieving NuGet API key via OIDC: {ex.Message}");
             return null;
         }
     }

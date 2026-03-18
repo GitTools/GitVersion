@@ -142,6 +142,31 @@ We use Cake for our build and deployment process. The way the release process is
    and other distribution channels.
 9. The issues and pull requests will get updated with message specifying in which release it was included.
 
+### NuGet Trusted Publishing
+
+NuGet packages are published to nuget.org using [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing),
+which replaces long-lived API keys with short-lived, identity-based tokens issued by GitHub Actions OIDC.
+
+**How it works:**
+
+1. The publish workflow requests a GitHub OIDC token scoped to `https://www.nuget.org`.
+2. That token is exchanged with the nuget.org token service for a short-lived API key.
+3. Packages are pushed using that short-lived key — no long-lived secret is stored or rotated.
+
+**One-time setup (already done for this repository):**
+
+The `GitTools` GitHub organisation and the `GitVersion` repository must be registered as a trusted publisher on
+nuget.org for every GitVersion package. This is configured in the nuget.org package settings under
+*Publishing* → *Trusted Publishers*.
+
+**Verification and troubleshooting:**
+
+- If the OIDC token exchange fails the workflow falls back to a static `NUGET_API_KEY` environment variable
+  (not set in normal CI runs). Check the "Publishing to nuget.org" log group for error details.
+- The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
+- If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
+  for that package and that the repository/environment names match.
+
 ## Code Style
 
 In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`](https://github.com/dotnet/format).
