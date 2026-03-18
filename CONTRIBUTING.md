@@ -181,7 +181,7 @@ publisher entry covers every package pushed by the same workflow run.
 **Verification and troubleshooting:**
 
 - If the OIDC token exchange fails the workflow falls back to a static `NUGET_API_KEY` environment variable
-  loaded from 1Password via the `gittools/cicd/nuget-creds@v1` action. Check the "Publishing to nuget.org" log
+  loaded from 1Password via the `gittools/cicd/nuget-creds@v1` action. Check the "Publishing to Nuget.org" log
   group for error details.
 - The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
 - If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
