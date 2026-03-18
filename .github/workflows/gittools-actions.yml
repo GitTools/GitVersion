@@ -23,8 +23,7 @@ jobs:
     name: Update GitTools Actions
     runs-on: ubuntu-24.04
     steps:
-      -
-        name: Get version
+      - name: Get version
         id: get-version
         shell: pwsh
         run: |

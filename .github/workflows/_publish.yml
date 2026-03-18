@@ -19,42 +19,39 @@ jobs:
         taskName: [ NuGet, Chocolatey ]
 
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      uses: actions/download-artifact@v8
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-    -
-      name: Load NuGet credentials
-      id: nuget-creds
-      if: inputs.publish_packages
-      uses: gittools/cicd/nuget-creds@v1
-      with:
-        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-    -
-      name: Load Chocolatey credentials
-      id: choco-creds
-      if: inputs.publish_packages
-      uses: gittools/cicd/choco-creds@v1
-      with:
-        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
 
-    -
-      name: '[Publish]'
-      if: inputs.publish_packages
-      shell: pwsh
-      run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-        NUGET_API_KEY: ${{ steps.nuget-creds.outputs.nuget_api_key }}
-        CHOCOLATEY_API_KEY: ${{ steps.choco-creds.outputs.choco_api_key }}
+      - uses: actions/download-artifact@v8
+        name: Download nuget packages
+        with:
+          name: nuget
+          path: ${{ github.workspace }}/artifacts/packages/nuget
+
+      - name: Load NuGet credentials
+        id: nuget-creds
+        if: inputs.publish_packages
+        uses: gittools/cicd/nuget-creds@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Load Chocolatey credentials
+        id: choco-creds
+        if: inputs.publish_packages
+        uses: gittools/cicd/choco-creds@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: '[Publish]'
+        if: inputs.publish_packages
+        shell: pwsh
+        run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NUGET_API_KEY: ${{ steps.nuget-creds.outputs.nuget_api_key }}
+          CHOCOLATEY_API_KEY: ${{ steps.choco-creds.outputs.choco_api_key }}

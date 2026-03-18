@@ -18,39 +18,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2025-vs2026, ubuntu-24.04, macos-26]
+        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
 
     runs-on: ${{ matrix.os }}
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-    -
-      name: Cache cake frosting
-      id: cache-cake
-      uses: actions/cache@v5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: Use cached tools
-      id: cache-tools
-      uses: actions/cache@v5
-      with:
-        path: tools
-        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v5
-      with:
-        global-json-file: global.json
-    -
-      name: '[Build]'
-      if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/ --configuration=Release
-    -
-      name: '[Prepare]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=BuildPrepare
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache cake frosting
+        id: cache-cake
+        uses: actions/cache@v5
+        with:
+          path: run
+          key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+      - name: Use cached tools
+        id: cache-tools
+        uses: actions/cache@v5
+        with:
+          path: tools
+          key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: '[Build]'
+        if: steps.cache-cake.outputs.cache-hit != 'true'
+        run: dotnet build build/ --configuration=Release
+
+      - name: '[Prepare]'
+        shell: pwsh
+        run: dotnet run/build.dll --target=BuildPrepare
   set_matrix:
     needs: [ prepare ]
     name: Set Matrix
@@ -59,14 +59,13 @@ jobs:
       docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
       dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v6
-      -
-        name: Restore State
+
+      - name: Restore State
         uses: ./.github/actions/cache-restore
-      -
-        name: '[Matrix]'
+
+      - name: '[Matrix]'
         id: set_matrix
         shell: pwsh
         run: dotnet run/config.dll --target=SetMatrix

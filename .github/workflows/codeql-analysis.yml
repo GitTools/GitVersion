@@ -3,25 +3,25 @@ name: CodeQL
 on:
   push:
     branches:
-    - main
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/codeql-analysis.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/codeql-analysis.yml
 
   pull_request:
     branches:
-    - main
-    - 'support/*'
-    - 'next/*'
+      - main
+      - 'support/*'
+      - 'next/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!.github/**'
-    - .github/workflows/codeql-analysis.yml
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/codeql-analysis.yml
 
   schedule:
     - cron: '0 12 * * *'
@@ -49,40 +49,36 @@ jobs:
         language: [ 'csharp' ]
 
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
-        tools: linked
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          tools: linked
 
-    -
-      name: Cache cake frosting
-      id: cache-cake
-      uses: actions/cache@v5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+      - name: Cache cake frosting
+        id: cache-cake
+        uses: actions/cache@v5
+        with:
+          path: run
+          key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v5
-      with:
-        global-json-file: global.json
-    -
-      name: '[Prepare]'
-      if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/ --configuration=Release
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
 
-    -
-      name: '[Build]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=BuildPrepare --exclusive
+      - name: '[Prepare]'
+        if: steps.cache-cake.outputs.cache-hit != 'true'
+        run: dotnet build build/ --configuration=Release
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      - name: '[Build]'
+        shell: pwsh
+        run: dotnet run/build.dll --target=BuildPrepare --exclusive
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4

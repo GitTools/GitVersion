@@ -19,8 +19,7 @@ jobs:
     name: Bump Homebrew formula
     runs-on: macos-latest
     steps:
-      -
-        name: Get version
+      - name: Get version
         id: get-version
         shell: pwsh
         run: |

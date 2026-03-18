@@ -28,39 +28,38 @@ jobs:
         docker_distro: ${{ fromJson(inputs.docker_distros) }}
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      uses: actions/download-artifact@v8
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      uses: actions/download-artifact@v8
-      name: Download native packages
-      with:
-        name: native-Linux
-        path: ${{ github.workspace }}/artifacts/packages/native
-    -
-      name: Set up Docker
-      uses: ./.github/actions/docker-setup
-    -
-      name: '[Test Artifacts]'
-      uses: nick-fields/retry@v3
-      with:
-        shell: pwsh
-        timeout_minutes: 30
-        max_attempts: 3
-        retry_on: error
-        command: |
-          dotnet run/artifacts.dll `
-                --target=ArtifactsTest --arch=${{ inputs.arch }} `
-                --dotnet_version=${{ matrix.dotnet_version }} `
-                --docker_distro=${{ matrix.docker_distro }}
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - uses: actions/download-artifact@v8
+        name: Download nuget packages
+        with:
+          name: nuget
+          path: ${{ github.workspace }}/artifacts/packages/nuget
+
+      - uses: actions/download-artifact@v8
+        name: Download native packages
+        with:
+          name: native-Linux
+          path: ${{ github.workspace }}/artifacts/packages/native
+
+      - name: Set up Docker
+        uses: ./.github/actions/docker-setup
+
+      - name: '[Test Artifacts]'
+        uses: nick-fields/retry@v3
+        with:
+          shell: pwsh
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            dotnet run/artifacts.dll `
+                  --target=ArtifactsTest --arch=${{ inputs.arch }} `
+                  --dotnet_version=${{ matrix.dotnet_version }} `
+                  --docker_distro=${{ matrix.docker_distro }}
