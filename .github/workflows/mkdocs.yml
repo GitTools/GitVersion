@@ -1,5 +1,6 @@
 name: Markdown Update
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'docs/**'
