@@ -2,14 +2,14 @@
 Order: 40
 Title: Library
 Description: |
-    Install with NuGet and use GitVersion.Core as a software library. Although this
+    Install with NuGet and use GitVersion.Core as a NuGet package. Although this
     is an unsupported option and the API may break even between minor or
     patch releases, it's a useful option to some.
 CardIcon: library.svg
 RedirectFrom: docs/usage/nuget-library
 ---
 
-Install with NuGet and use GitVersion.Core as a software library. Although this
+Install with NuGet and use GitVersion.Core as a NuGet package. Although this
 is an unsupported option and the API may break even between minor or
 patch releases, it's a useful option to some.
 

@@ -3,7 +3,6 @@
 Versioning when using Git, solved. GitVersion looks at your git history and
 works out the [Semantic Version][semver] of the commit being built.
 
-[![Build status][azure-pipeline-badge]][azure-pipeline]
 [![Build status][github-actions-badge]][github-actions]
 [![codecov][codecov-badge]][codecov]
 
@@ -50,13 +49,9 @@ from The Noun Project.
 
 [semver]: https://semver.org
 
-[azure-pipeline]: https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
+[github-actions]: https://github.com/GitTools/GitVersion/actions/workflows/ci.yml
 
-[azure-pipeline-badge]: https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
-
-[github-actions]: https://github.com/GitTools/GitVersion/actions
-
-[github-actions-badge]: https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
+[github-actions-badge]: https://github.com/GitTools/GitVersion/actions/workflows/ci.yml/badge.svg
 
 [codecov]: https://codecov.io/gh/GitTools/GitVersion
 

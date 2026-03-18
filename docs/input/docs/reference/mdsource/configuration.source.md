@@ -229,28 +229,38 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 `commits-before` will be ignored.
 
 #### paths
+
 A sequence of regular expressions that represent paths in the repository. Commits that modify these paths will be excluded from version calculations. For example, to filter out commits that belong to `docs`:
+
 ```yaml
 ignore:
   paths:
     - ^docs\/
 ```
+
 ##### *Monorepo*
+
 This ignore config can be used to filter only those commits that belong to a specific project in a monorepo.
 As an example, consider a monorepo consisting of subdirectories for `ProjectA`, `ProjectB` and a shared `LibraryC`. For GitVersion to consider only commits that are part of `projectA` and shared library `LibraryC`, a regex that matches all paths except those starting with `ProjectA` or `LibraryC` can be used. Either one of the following configs would filter out `ProjectB`.
+
 * Specific match on `/ProjectB/*`:
+
 ```yaml
 ignore:
   paths:
     - `^\/ProductB\/.*`
 ```
+
 * Negative lookahead on anything other than `/ProjectA/*` and `/LibraryC/*`:
+
 ```yaml
 ignore:
   paths:
     - `^(?!\/ProductA\/|\/LibraryC\/).*`
 ```
+
 A commit having changes only in `/ProjectB/*` path would be ignored. A commit having changes in the following paths wouldn't be ignored:
+
 * `/ProductA/*`
 * `/LibraryC/*`
 * `/ProductA/*` and  `/LibraryC/*`
@@ -259,7 +269,8 @@ A commit having changes only in `/ProjectB/*` path would be ignored. A commit ha
 * `/ProductA/*` and `/ProductB/*` and `/LibraryC/*`
 
 :::
-Note: The `ignore.paths` configuration is case-sensitive. This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`.
+Note: The `ignore.paths` configuration is case-sensitive.
+This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`.
 :::
 
 ::: {.alert .alert-warning}
@@ -284,7 +295,7 @@ The regular expression should contain the following capture groups:
 * `TargetBranch` - Identifies the target branch of the merge
 * `PullRequestNumber` - Captures the pull-request number
 
-Custom merge message formats are evaluated _before_ any built in formats.
+Custom merge message formats are evaluated *before* any built in formats.
 Support for [Conventional Commits][conventional-commits] can be
 [configured][conventional-commits-config].
 
@@ -551,7 +562,7 @@ branches:
 
 Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
-`1.0.0`. The tag is _not_ on develop, but develop should be version `1.0.0` now.
+`1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
 ### track-merge-message
 
