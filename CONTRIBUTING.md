@@ -153,19 +153,44 @@ which replaces long-lived API keys with short-lived, identity-based tokens issue
 2. That token is exchanged with the nuget.org token service for a short-lived API key.
 3. Packages are pushed using that short-lived key — no long-lived secret is stored or rotated.
 
-**One-time setup (already done for this repository):**
+**One-time setup (per package on nuget.org):**
 
-The `GitTools` GitHub organisation and the `GitVersion` repository must be registered as a trusted publisher on
-nuget.org for every GitVersion package. This is configured in the nuget.org package settings under
-*Publishing* → *Trusted Publishers*.
+Each GitVersion package on nuget.org must have the `GitTools/GitVersion` repository registered as a Trusted
+Publisher. Repeat the following steps for every package listed below:
+
+- [`GitVersion.Tool`](https://www.nuget.org/packages/GitVersion.Tool)
+- [`GitVersion.MsBuild`](https://www.nuget.org/packages/GitVersion.MsBuild)
+- [`GitVersion.Core`](https://www.nuget.org/packages/GitVersion.Core)
+
+Steps to register a Trusted Publisher for a package:
+
+1. Sign in to [nuget.org](https://www.nuget.org) as a package owner.
+2. Navigate to the package page and click **Manage package**.
+3. Open the **Settings** tab and scroll to the **Trusted Publishers** section.
+4. Click **Add trusted publisher** and fill in the following fields:
+
+   | Field | Value |
+   |---|---|
+   | **Publisher type** | GitHub Actions |
+   | **Owner** | `GitTools` |
+   | **Repository** | `GitVersion` |
+   | **Workflow file name** | `ci.yml` |
+   | **Environment** | *(leave blank)* |
+
+5. Click **Add** to save the trusted publisher entry.
+
+> **Note:** nuget.org will only issue a short-lived key to a workflow run whose OIDC claims match *all* of the
+> registered fields exactly. A mismatch on any field (for example a different workflow file name) will cause the
+> token exchange to fail and the publish step will fall back to the static `NUGET_API_KEY`.
 
 **Verification and troubleshooting:**
 
 - If the OIDC token exchange fails the workflow falls back to a static `NUGET_API_KEY` environment variable
-  (not set in normal CI runs). Check the "Publishing to nuget.org" log group for error details.
+  loaded from 1Password via the `gittools/cicd/nuget-creds@v1` action. Check the "Publishing to nuget.org" log
+  group for error details.
 - The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
 - If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
-  for that package and that the repository/environment names match.
+  for that package and that the owner, repository, and workflow file name match exactly.
 
 ## Code Style
 
