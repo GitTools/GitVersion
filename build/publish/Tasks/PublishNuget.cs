@@ -1,5 +1,4 @@
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using Cake.Common.Tools.DotNet.NuGet.Push;
 using Common.Utilities;
