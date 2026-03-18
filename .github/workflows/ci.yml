@@ -22,7 +22,7 @@ on:
       - '**'
       - '!docs/**'
   merge_group:
-    types: [checks_requested]
+    types: [ checks_requested ]
 
   repository_dispatch:
     types: [ ci-release ]
@@ -53,11 +53,10 @@ jobs:
     outputs:
       can_publish: ${{ steps.flags.outputs.can_publish }}
     steps:
-    -
-      name: Resolve publish flag
-      id: flags
-      shell: bash
-      run: echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
+      - name: Resolve publish flag
+        id: flags
+        shell: bash
+        run: echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build & Package
@@ -149,52 +148,50 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       CAN_PUBLISH: ${{ github.event_name == 'repository_dispatch' }}
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/cache-restore
-    -
-      name: Restore Artifacts
-      uses: ./.github/actions/artifacts-restore
-    -
-      name: Attestation
-      if: env.CAN_PUBLISH == 'true'
-      uses: ./.github/actions/artifacts-attest
-    -
-      name: Load DockerHub credentials
-      id: dockerhub-creds
-      if: env.CAN_PUBLISH == 'true'
-      uses: gittools/cicd/dockerhub-creds@v1
-      with:
-        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-    -
-      name: DockerHub Publish Readme
-      if: env.CAN_PUBLISH == 'true'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerHubReadmePublish
-      env:
-        DOCKER_USERNAME: ${{ steps.dockerhub-creds.outputs.docker_username }}
-        DOCKER_PASSWORD: ${{ steps.dockerhub-creds.outputs.docker_password }}
-    -
-      name: '[Release]'
-      shell: pwsh
-      run: dotnet run/release.dll --target=PublishRelease
-    -
-      name: '[Publish Release]'
-      if: github.event_name == 'repository_dispatch'
-      uses: peter-evans/repository-dispatch@v4
-      with:
-        token: ${{ github.token }}
-        repository: ${{ github.repository }}
-        event-type: publish-release
-        client-payload: |
-          {
-            "ref": "${{ github.ref }}",
-            "sha": "${{ github.sha }}",
-            "tag": "${{ github.event.client_payload.tag }}"
-          }
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - name: Restore Artifacts
+        uses: ./.github/actions/artifacts-restore
+
+      - name: Attestation
+        if: env.CAN_PUBLISH == 'true'
+        uses: ./.github/actions/artifacts-attest
+
+      - name: Load DockerHub credentials
+        id: dockerhub-creds
+        if: env.CAN_PUBLISH == 'true'
+        uses: gittools/cicd/dockerhub-creds@v1
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: DockerHub Publish Readme
+        if: env.CAN_PUBLISH == 'true'
+        shell: pwsh
+        run: dotnet run/docker.dll --target=DockerHubReadmePublish
+        env:
+          DOCKER_USERNAME: ${{ steps.dockerhub-creds.outputs.docker_username }}
+          DOCKER_PASSWORD: ${{ steps.dockerhub-creds.outputs.docker_password }}
+
+      - name: '[Release]'
+        shell: pwsh
+        run: dotnet run/release.dll --target=PublishRelease
+
+      - name: '[Publish Release]'
+        if: github.event_name == 'repository_dispatch'
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          event-type: publish-release
+          client-payload: |
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "tag": "${{ github.event.client_payload.tag }}"
+            }
