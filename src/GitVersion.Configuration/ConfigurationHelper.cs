@@ -58,7 +58,16 @@ internal class ConfigurationHelper
 
                         break;
                     }
-                case null or string or IList<object>:
+                case IList:
+                    {
+                        if (anotherDictionary.TryGetValue(item.Key, out var value))
+                        {
+                            dictionary[item.Key] = value;
+                        }
+
+                        break;
+                    }
+                default:
                     {
                         if (anotherDictionary.TryGetValue(item.Key, out var value))
                         {
@@ -83,7 +92,16 @@ internal class ConfigurationHelper
                         dictionary.Add(item.Key, anotherDictionaryValue);
                         break;
                     }
-                case null or string or IList<object>:
+                case IList:
+                    {
+                        if (!dictionary.ContainsKey(item.Key))
+                        {
+                            dictionary.Add(item.Key, item.Value);
+                        }
+
+                        break;
+                    }
+                default:
                     {
                         if (!dictionary.ContainsKey(item.Key))
                         {
