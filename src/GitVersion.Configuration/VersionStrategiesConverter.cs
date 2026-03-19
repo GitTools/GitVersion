@@ -1,54 +1,99 @@
 using GitVersion.VersionCalculation;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using SharpYaml;
+using SharpYaml.Serialization;
 
 namespace GitVersion.Configuration;
 
-internal class VersionStrategiesConverter : IYamlTypeConverter
+internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategies[]>
 {
-    public static readonly IYamlTypeConverter Instance = new VersionStrategiesConverter();
+    public static YamlConverter Instance { get; } = new VersionStrategiesConverter();
 
-    public bool Accepts(Type type) => type == typeof(VersionStrategies[]);
-
-    public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
+    public override VersionStrategies[] Read(YamlReader reader)
     {
         List<VersionStrategies> strategies = [];
 
-        if (parser.TryConsume<SequenceStart>(out _))
+        if (reader.TokenType == YamlTokenType.StartSequence)
         {
-            while (!parser.TryConsume<SequenceEnd>(out _))
+            reader.Read();
+            while (reader.TokenType != YamlTokenType.EndSequence)
             {
-                var data = parser.Consume<Scalar>().Value;
+                if (reader.TokenType != YamlTokenType.Scalar)
+                {
+                    throw new YamlException(reader.SourceName, reader.Start, reader.End, "Expected a scalar value while reading version strategies.");
+                }
 
-                var strategy = Enum.Parse<VersionStrategies>(data);
-                strategies.Add(strategy);
+                strategies.Add(ParseStrategy(reader.GetScalarValue()));
+                reader.Read();
             }
+
+            reader.Read();
+            return [.. strategies];
         }
-        else
+
+        if (reader.TokenType != YamlTokenType.Scalar)
         {
-            var data = parser.Consume<Scalar>().Value;
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .Build();
-
-            strategies = deserializer.Deserialize<List<VersionStrategies>>(data);
+            throw new YamlException(reader.SourceName, reader.Start, reader.End, "Expected a scalar or sequence while reading version strategies.");
         }
 
-        return strategies.ToArray();
+        var scalar = reader.GetScalarValue();
+        reader.Read();
+
+        foreach (var item in SplitScalarList(scalar))
+        {
+            strategies.Add(ParseStrategy(item));
+        }
+
+        return [.. strategies];
     }
 
-    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
+    public override void Write(YamlWriter writer, VersionStrategies[]? value)
     {
-        var strategies = (VersionStrategies[])value!;
+        if (value is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
 
-        var s = new SerializerBuilder()
-            .JsonCompatible()
-            .Build();
-        var data = s.Serialize(strategies);
-
-        emitter.Emit(new Scalar(data));
+        writer.WriteStartSequence();
+        foreach (var strategy in value)
+        {
+            writer.WriteString(strategy.ToString());
+        }
+        writer.WriteEndSequence();
     }
+
+    private static IEnumerable<string> SplitScalarList(string scalar)
+    {
+        var trimmed = scalar.Trim();
+        if (trimmed.Length == 0) yield break;
+
+        if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
+        {
+            trimmed = trimmed[1..^1];
+        }
+
+        foreach (var item in trimmed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            yield return item;
+        }
+    }
+
+    private static VersionStrategies ParseStrategy(string value)
+    {
+        if (Enum.TryParse<VersionStrategies>(value, ignoreCase: false, out var exactMatch))
+        {
+            return exactMatch;
+        }
+
+        var normalizedValue = Normalize(value);
+        foreach (var enumValue in Enum.GetValues<VersionStrategies>().Where(enumValue => Normalize(enumValue.ToString()) == normalizedValue))
+        {
+            return enumValue;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown version strategy value.");
+    }
+
+    private static string Normalize(string value)
+        => new(value.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
 }

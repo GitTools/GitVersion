@@ -1,5 +1,7 @@
+using System.Globalization;
 using GitVersion.Core.Tests.Helpers;
-using YamlDotNet.Core;
+using GitVersion.VersionCalculation;
+using SharpYaml;
 
 namespace GitVersion.Configuration.Tests;
 
@@ -69,6 +71,17 @@ public class IgnoreConfigurationTests : TestBase
             """;
 
         Should.Throw<YamlException>(() => serializer.ReadConfiguration(yaml));
+    }
+
+    [Test]
+    public void ShouldSupportScalarVersionStrategiesOverrideFormat()
+    {
+        const string yaml = "strategies: ConfiguredNextVersion, TaggedCommit";
+
+        var configuration = serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfiguredNextVersion | VersionStrategies.TaggedCommit);
     }
 
     [Test]
