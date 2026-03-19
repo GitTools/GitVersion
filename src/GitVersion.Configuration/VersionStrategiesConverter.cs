@@ -8,6 +8,10 @@ internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategi
 {
     public static YamlConverter Instance { get; } = new VersionStrategiesConverter();
 
+    private static readonly IReadOnlyDictionary<string, VersionStrategies> NormalizedStrategies =
+        Enum.GetValues<VersionStrategies>()
+            .ToDictionary(value => Normalize(value.ToString()), value => value, StringComparer.Ordinal);
+
     public override VersionStrategies[] Read(YamlReader reader)
     {
         List<VersionStrategies> strategies = [];
@@ -86,9 +90,9 @@ internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategi
         }
 
         var normalizedValue = Normalize(value);
-        foreach (var enumValue in Enum.GetValues<VersionStrategies>().Where(enumValue => Normalize(enumValue.ToString()) == normalizedValue))
+        if (NormalizedStrategies.TryGetValue(normalizedValue, out var normalizedMatch))
         {
-            return enumValue;
+            return normalizedMatch;
         }
 
         throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown version strategy value.");
