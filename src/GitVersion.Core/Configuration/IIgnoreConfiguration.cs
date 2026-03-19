@@ -6,7 +6,7 @@ public interface IIgnoreConfiguration
 
     IReadOnlySet<string> Shas { get; }
 
-    IReadOnlyCollection<string> Paths { get; }
+    IReadOnlySet<string> Paths { get; }
 
     bool IsEmpty { get; }
 }
