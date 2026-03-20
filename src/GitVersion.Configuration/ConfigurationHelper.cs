@@ -45,72 +45,33 @@ internal class ConfigurationHelper
 
     private static void Merge(IDictionary<object, object?> dictionary, IReadOnlyDictionary<object, object?> anotherDictionary)
     {
-        foreach (var item in dictionary)
+        foreach (var (key, sourceValue) in anotherDictionary)
         {
-            switch (item.Value)
+            if (dictionary.TryGetValue(key, out var currentValue)
+                && currentValue is IDictionary<object, object?> currentDictionary
+                && sourceValue is IReadOnlyDictionary<object, object?> sourceDictionary)
             {
-                case IDictionary<object, object?> anotherDictionaryValue:
-                    {
-                        if (anotherDictionary.TryGetValue(item.Key, out var value) && value is IReadOnlyDictionary<object, object?> dictionaryValue)
-                        {
-                            Merge(anotherDictionaryValue, dictionaryValue);
-                        }
-
-                        break;
-                    }
-                case IList:
-                    {
-                        if (anotherDictionary.TryGetValue(item.Key, out var value))
-                        {
-                            dictionary[item.Key] = value;
-                        }
-
-                        break;
-                    }
-                default:
-                    {
-                        if (anotherDictionary.TryGetValue(item.Key, out var value))
-                        {
-                            dictionary[item.Key] = value;
-                        }
-
-                        break;
-                    }
+                Merge(currentDictionary, sourceDictionary);
+                continue;
             }
+
+            dictionary[key] = sourceValue is IReadOnlyDictionary<object, object?> nestedDictionary
+                ? CloneDictionary(nestedDictionary)
+                : sourceValue;
+        }
+    }
+
+    private static Dictionary<object, object?> CloneDictionary(IReadOnlyDictionary<object, object?> dictionary)
+    {
+        Dictionary<object, object?> cloned = [];
+
+        foreach (var (key, value) in dictionary)
+        {
+            cloned[key] = value is IReadOnlyDictionary<object, object?> nestedDictionary
+                ? CloneDictionary(nestedDictionary)
+                : value;
         }
 
-        foreach (var item in anotherDictionary)
-        {
-            switch (item.Value)
-            {
-                case IReadOnlyDictionary<object, object?> when dictionary.ContainsKey(item.Key):
-                    continue;
-                case IReadOnlyDictionary<object, object?> dictionaryValue:
-                    {
-                        Dictionary<object, object?> anotherDictionaryValue = [];
-                        Merge(anotherDictionaryValue, dictionaryValue);
-                        dictionary.Add(item.Key, anotherDictionaryValue);
-                        break;
-                    }
-                case IList:
-                    {
-                        if (!dictionary.ContainsKey(item.Key))
-                        {
-                            dictionary.Add(item.Key, item.Value);
-                        }
-
-                        break;
-                    }
-                default:
-                    {
-                        if (!dictionary.ContainsKey(item.Key))
-                        {
-                            dictionary.Add(item.Key, item.Value);
-                        }
-
-                        break;
-                    }
-            }
-        }
+        return cloned;
     }
 }
