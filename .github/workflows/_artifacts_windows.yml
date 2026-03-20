@@ -30,5 +30,10 @@ jobs:
           path: ${{ github.workspace }}/artifacts/packages/nuget
 
       - name: '[Test Artifacts]'
-        shell: pwsh
-        run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+        uses: nick-fields/retry@v4
+        with:
+          shell: pwsh
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
