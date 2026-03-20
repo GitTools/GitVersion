@@ -15,7 +15,7 @@ runs:
   using: 'composite'
   steps:
     - name: '[Docker Build & Test] DockerHub'
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         shell: pwsh
         timeout_minutes: 30
@@ -27,7 +27,7 @@ runs:
                 --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub --verbosity=diagnostic
 
     - name: '[Docker Build & Test] GitHub'
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         shell: pwsh
         timeout_minutes: 30
