@@ -32,7 +32,7 @@ jobs:
         uses: ./.github/actions/cache-restore
 
       - name: '[Unit Test]'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           shell: pwsh
           timeout_minutes: 30
