@@ -52,7 +52,7 @@ jobs:
         uses: ./.github/actions/docker-setup
 
       - name: '[Test Artifacts]'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           shell: pwsh
           timeout_minutes: 30
