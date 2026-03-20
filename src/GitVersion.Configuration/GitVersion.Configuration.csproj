@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="YamlDotNet" />
+        <PackageReference Include="SharpYaml" />
     </ItemGroup>
 
     <ItemGroup>

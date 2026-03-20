@@ -1,46 +1,111 @@
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization.TypeInspectors;
+using SharpYaml;
 
 namespace GitVersion.Configuration;
 
 internal class ConfigurationSerializer : IConfigurationSerializer
 {
-    private static IDeserializer Deserializer => new DeserializerBuilder()
-        .WithNamingConvention(HyphenatedNamingConvention.Instance)
-        .WithTypeConverter(VersionStrategiesConverter.Instance)
-        .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
-        .Build();
+    private static readonly ConfigurationYamlContext GeneratedContext = ConfigurationYamlContext.Default;
 
-    private static ISerializer Serializer => new SerializerBuilder()
-        .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
-        .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
-        .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+    private static readonly YamlSerializerOptions SerializerOptions = new()
+    {
+        PropertyNamingPolicy = HyphenatedJsonNamingPolicy.Instance,
+        DefaultIgnoreCondition = YamlIgnoreCondition.WhenWritingNull,
+        Converters = [VersionStrategiesConverter.Instance]
+    };
 
-    public T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
-    public string Serialize(object graph) => Serializer.Serialize(graph);
+    public T Deserialize<T>(string input)
+    {
+        if (typeof(T) == typeof(Dictionary<object, object?>))
+        {
+            var graph = YamlSerializer.Deserialize<Dictionary<string, object?>>(input, SerializerOptions);
+            return (T)(object)ConvertToObjectDictionary(graph);
+        }
+
+        if (typeof(T) == typeof(GitVersionConfiguration))
+        {
+            try
+            {
+                return (T)(object)YamlSerializer.Deserialize<GitVersionConfiguration>(input, GeneratedContext)!;
+            }
+            catch (Exception exception) when (exception is not YamlException)
+            {
+                throw new YamlException(exception.Message, exception);
+            }
+        }
+
+        return YamlSerializer.Deserialize<T>(input, SerializerOptions)!;
+    }
+
+    public string Serialize(object graph)
+        => YamlSerializer.Serialize(graph, SerializerOptions);
+
     public IGitVersionConfiguration? ReadConfiguration(string input) => Deserialize<GitVersionConfiguration?>(input);
 
-    private sealed class JsonPropertyNameInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
+    private static Dictionary<object, object?> ConvertToObjectDictionary(IReadOnlyDictionary<string, object?>? source)
     {
-        public override string GetEnumName(Type enumType, string name) => innerTypeDescriptor.GetEnumName(enumType, name);
+        if (source is null) return [];
 
-        public override string GetEnumValue(object enumValue) => innerTypeDescriptor.GetEnumValue(enumValue);
+        Dictionary<object, object?> result = [];
+        foreach (var item in source)
+        {
+            result[item.Key] = ConvertValue(item.Value);
+        }
 
-        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
-            innerTypeDescriptor.GetProperties(type, container)
-                .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-                .Select(IPropertyDescriptor (p) =>
+        return result;
+    }
+
+    private static object? ConvertValue(object? value) => value switch
+    {
+        IReadOnlyDictionary<string, object?> dictionary => ConvertToObjectDictionary(dictionary),
+        IDictionary<string, object?> dictionary => ConvertToObjectDictionary(new Dictionary<string, object?>(dictionary)),
+        IList list => ConvertList(list),
+        _ => value
+    };
+
+    private static List<object?> ConvertList(IList list)
+    {
+        List<object?> result = [];
+        foreach (var item in list)
+        {
+            result.Add(ConvertValue(item));
+        }
+
+        return result;
+    }
+
+    private sealed class HyphenatedJsonNamingPolicy : JsonNamingPolicy
+    {
+        public static JsonNamingPolicy Instance { get; } = new HyphenatedJsonNamingPolicy();
+
+        public override string ConvertName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return name;
+
+            var builder = new StringBuilder(name.Length + 8);
+            for (var index = 0; index < name.Length; index++)
+            {
+                var current = name[index];
+                if (char.IsUpper(current))
                 {
-                    var descriptor = new PropertyDescriptor(p);
-                    var member = p.GetCustomAttribute<JsonPropertyNameAttribute>();
-                    if (member is not null)
+                    var hasPrevious = index > 0;
+                    var hasNext = index + 1 < name.Length;
+                    var previousIsLowerOrDigit = hasPrevious && (char.IsLower(name[index - 1]) || char.IsDigit(name[index - 1]));
+                    var nextIsLower = hasNext && char.IsLower(name[index + 1]);
+
+                    if (hasPrevious && (previousIsLowerOrDigit || nextIsLower))
                     {
-                        descriptor.Name = member.Name;
+                        builder.Append('-');
                     }
 
-                    return descriptor;
-                })
-                .OrderBy(p => p.Order);
+                    builder.Append(char.ToLowerInvariant(current));
+                }
+                else
+                {
+                    builder.Append(current);
+                }
+            }
+
+            return builder.ToString();
+        }
     }
 }

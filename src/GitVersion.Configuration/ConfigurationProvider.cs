@@ -2,7 +2,7 @@ using System.IO.Abstractions;
 using GitVersion.Configuration.Workflows;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using YamlDotNet.Core;
+using SharpYaml;
 
 namespace GitVersion.Configuration;
 

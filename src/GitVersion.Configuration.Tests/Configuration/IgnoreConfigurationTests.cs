@@ -1,5 +1,7 @@
+using System.Globalization;
 using GitVersion.Core.Tests.Helpers;
-using YamlDotNet.Core;
+using GitVersion.VersionCalculation;
+using SharpYaml;
 
 namespace GitVersion.Configuration.Tests;
 
@@ -24,7 +26,7 @@ public class IgnoreConfigurationTests : TestBase
         configuration.Ignore.ShouldNotBeNull();
         configuration.Ignore.Shas.ShouldNotBeEmpty();
         configuration.Ignore.Shas.ShouldBe(["b6c0c9fda88830ebcd563e500a5a7da5a1658e98"]);
-        configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15"));
+        configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15", CultureInfo.InvariantCulture));
     }
 
     [Test]
@@ -69,6 +71,17 @@ public class IgnoreConfigurationTests : TestBase
             """;
 
         Should.Throw<YamlException>(() => serializer.ReadConfiguration(yaml));
+    }
+
+    [Test]
+    public void ShouldSupportScalarVersionStrategiesOverrideFormat()
+    {
+        const string yaml = "strategies: ConfiguredNextVersion, TaggedCommit";
+
+        var configuration = serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfiguredNextVersion | VersionStrategies.TaggedCommit);
     }
 
     [Test]
