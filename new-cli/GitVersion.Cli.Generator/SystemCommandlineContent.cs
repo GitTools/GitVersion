@@ -15,7 +15,7 @@ namespace {{GeneratedNamespaceName}};
 public class {{Model.CommandTypeName}}Impl : Command, ICommandImpl
 {
     public string CommandImplName => nameof({{Model.CommandTypeName}}Impl);
-    {{- if (Model.ParentCommand | string.empty) }}
+    {{- if (Model.ParentCommand == null || Model.ParentCommand == "") }}
     public string ParentCommandImplName => string.Empty;
     {{- else }}
     public string ParentCommandImplName => nameof({{Model.ParentCommand}}Impl);
