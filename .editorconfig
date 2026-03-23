@@ -16,7 +16,7 @@ dotnet_style_qualification_for_field = false:none
 dotnet_style_qualification_for_method = false:none
 dotnet_style_qualification_for_property = false:none
 
-[*.yml]
+[{*.yml,*.xml}]
 indent_size = 2
 
 ### CSharp code style settings ###

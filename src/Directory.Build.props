@@ -86,7 +86,6 @@
         </PackageReference>
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="Shouldly" />
-
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
         <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj" />
