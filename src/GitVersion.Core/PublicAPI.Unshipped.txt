@@ -1,2 +1,1 @@
 #nullable enable
-GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlySet<string!>!

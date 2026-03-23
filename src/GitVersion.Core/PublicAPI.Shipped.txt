@@ -144,6 +144,7 @@ GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IIgnoreConfiguration.IsEmpty.get -> bool
+GitVersion.Configuration.IIgnoreConfiguration.Paths.get -> System.Collections.Generic.IReadOnlySet<string!>!
 GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlySet<string!>!
 GitVersion.Configuration.IPreventIncrementConfiguration
 GitVersion.Configuration.IPreventIncrementConfiguration.OfMergedBranch.get -> bool?
