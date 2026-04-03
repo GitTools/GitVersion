@@ -47,7 +47,7 @@ jobs:
           paths: artifacts/test-results/**/results.xml
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           files: artifacts/test-results/**/results.xml
@@ -55,7 +55,7 @@ jobs:
           use_oidc: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           directory: artifacts/test-results
