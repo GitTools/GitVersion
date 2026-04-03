@@ -33,3 +33,5 @@ queue_rules:
       - check-success=DotNet Format
       - check-success=Release
       - check-success=Build & Test (new-cli)
+merge_protections_settings:
+  reporting_method: check-runs
