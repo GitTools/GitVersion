@@ -6,6 +6,7 @@
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
     </PropertyGroup>
 
     <ItemGroup>
