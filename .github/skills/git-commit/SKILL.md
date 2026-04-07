@@ -14,7 +14,7 @@ determine appropriate type, scope, and message.
 
 ## Conventional Commit Format
 
-```
+```bash
 <type>[optional scope]: <description>
 
 [optional body]
@@ -40,7 +40,7 @@ determine appropriate type, scope, and message.
 
 ## Breaking Changes
 
-```
+```bash
 # Exclamation mark after type/scope
 feat!: remove deprecated endpoint
 

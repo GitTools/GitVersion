@@ -25,8 +25,14 @@ Prepare release tracking on GitHub without creating a release.
    - None of its labels are in the allowed list.
 5. Report any invalid items clearly and stop before any release creation step.
 6. Keep the response concise and operational.
+7. Prefer plain non-interactive `gh` commands.
+   - Do not prefix commands with `GH_PAGER=cat` by default.
+   - Only disable the pager when command output would otherwise not be captured reliably.
 
 ## Operational Steps
+
+Use standard `gh` commands by default.
+Only disable the pager when needed to make command output reliably readable in the execution environment.
 
 1. Ask:
    - Source milestone?
@@ -48,21 +54,21 @@ gh api repos/{owner}/{repo}/milestones --paginate --jq '.[] | [.number,.title,.s
 gh api repos/{owner}/{repo}/milestones -X POST -f title='<DESTINATION_MILESTONE>'
 ```
 
-4. Collect closed items from the source milestone:
+1. Collect closed items from the source milestone:
 
 ```bash
 gh issue list --repo {owner}/{repo} --milestone '<SOURCE_MILESTONE>' --state closed --limit 200 --json number,title,labels
 gh pr list --repo {owner}/{repo} --state closed --search 'milestone:"<SOURCE_MILESTONE>"' --limit 200 --json number,title,labels,state
 ```
 
-5. Move closed issues and closed pull requests to the destination milestone:
+1. Move closed issues and closed pull requests to the destination milestone:
 
 ```bash
 gh issue edit <ISSUE_NUMBER> --repo {owner}/{repo} --milestone '<DESTINATION_MILESTONE>'
 gh pr edit <PR_NUMBER> --repo {owner}/{repo} --milestone '<DESTINATION_MILESTONE>'
 ```
 
-6. Verify labels against this allowlist:
+1. Verify labels against this allowlist:
 
 ```text
 breaking change
@@ -75,11 +81,12 @@ build
 ```
 
 Validation rules:
+
 - Each moved item must have at least one label.
 - At least one assigned label must match the allowlist exactly.
 - If any moved item fails validation, report the item number, title, and labels.
 
-7. Verify final milestone state and report:
+1. Verify final milestone state and report:
 
 ```bash
 gh issue list --repo {owner}/{repo} --milestone '<DESTINATION_MILESTONE>' --state closed --limit 200 --json number,title,labels
@@ -87,6 +94,7 @@ gh pr list --repo {owner}/{repo} --state closed --search 'milestone:"<DESTINATIO
 ```
 
 Report:
+
 - Source milestone
 - Destination milestone
 - Whether the destination milestone was created or already existed

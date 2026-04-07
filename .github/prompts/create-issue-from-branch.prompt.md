@@ -14,13 +14,24 @@ Create or update a GitHub issue from the changes in the current branch compared 
    - If milestone is not provided, use the latest open milestone.
 5. The issue description must be well-formatted Markdown.
 6. Use this Markdown structure exactly (omit empty sections):
+
    - ## Summary
+
    - ## Goal
+
    - ## Success Criteria
+
    - ## References
+
 7. Keep language concise, goal-oriented, and user-facing.
+8. Prefer plain non-interactive `gh` commands.
+   - Do not prefix commands with `GH_PAGER=cat` by default.
+   - Only disable the pager when command output would otherwise not be captured reliably.
 
 ## Operational Steps
+
+Use standard `gh` commands by default.
+Only disable the pager when needed to make command output reliably readable in the execution environment.
 
 1. Ensure branch comparison is up to date:
 
@@ -30,11 +41,11 @@ git log --oneline --no-merges origin/main..HEAD
 git diff --name-status origin/main..HEAD
 ```
 
-2. Ask:
+1. Ask:
    - Label? (default: improvement)
    - Milestone? (default: latest open milestone)
 
-3. Resolve defaults:
+2. Resolve defaults:
 
 ```bash
 LABEL="${LABEL:-improvement}"
@@ -44,7 +55,7 @@ if [ -z "$MILESTONE" ]; then
 fi
 ```
 
-4. Build a well-formatted Markdown body in a temp file:
+1. Build a well-formatted Markdown body in a temp file:
 
 ```bash
 cat > /tmp/issue-body.md <<'EOF'
@@ -63,11 +74,10 @@ cat > /tmp/issue-body.md <<'EOF'
 EOF
 ```
 
-5. Suggest a title in this style:
-   - [IMPROVEMENT]: <goal-focused title>
+1. Suggest a title in this style:
    - Adapt prefix to selected label where appropriate (for example: [FEATURE]: ...).
 
-6. Create or update issue:
+2. Create or update issue:
 
 Create:
 
@@ -89,13 +99,14 @@ gh issue edit <ISSUE_NUMBER> \
   --body-file /tmp/issue-body.md
 ```
 
-7. Verify and report final state:
+1. Verify and report final state:
 
 ```bash
 gh issue view <ISSUE_NUMBER> --json number,title,url,labels,milestone,body
 ```
 
 Report:
+
 - Issue number and URL
 - Final title
 - Final label(s)

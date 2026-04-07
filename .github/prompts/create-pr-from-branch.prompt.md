@@ -12,13 +12,21 @@ Create or update a GitHub pull request from the current branch into the fork's m
 6. Keep language concise, outcome-focused, and reviewer-friendly.
 7. Do not include irrelevant implementation noise; summarize what matters for review.
 8. Whenever new commits are pushed that change scope, update the PR description so it stays in sync with current branch changes.
+9. Prefer plain non-interactive `gh` commands.
+
+- Do not prefix commands with `GH_PAGER=cat` by default.
+- Only disable the pager when command output would otherwise not be captured reliably.
 
 ## PR Markdown Template
 
 Use this structure (omit empty sections):
+
 - ## Summary
+
 - ## Why
+
 - ## Validation
+
 - ## Issue
 
 Example:
@@ -41,6 +49,9 @@ Resolves #<issue-number>
 
 ## Operational Steps
 
+Use standard `gh` commands by default.
+Only disable the pager when needed to make command output reliably readable in the execution environment.
+
 1. Ensure branch comparison is current:
 
 ```bash
@@ -49,18 +60,19 @@ git log --oneline --no-merges origin/main..HEAD
 git diff --name-status origin/main..HEAD
 ```
 
-2. Determine branch and existing PR state:
+1. Determine branch and existing PR state:
 
 ```bash
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-GH_PAGER=cat GH_FORCE_TTY=0 gh pr list --head "$BRANCH" --json number,title,url,state
+GH_FORCE_TTY=0 gh pr list --head "$BRANCH" --json number,title,url,state
 ```
 
-3. Ask for required metadata if missing:
+1. Ask for required metadata if missing:
+
 - Target issue number to resolve
 - PR title override (optional)
 
-4. Build or refresh PR body in a temp file:
+1. Build or refresh PR body in a temp file:
 
 ```bash
 cat > /tmp/pr-body.md <<'EOF'
@@ -80,28 +92,28 @@ Resolves #<issue-number>
 EOF
 ```
 
-5. Create PR if none exists:
+1. Create PR if none exists:
 
 ```bash
-GH_PAGER=cat GH_FORCE_TTY=0 gh pr create \
+GH_FORCE_TTY=0 gh pr create \
   --base main \
   --head "$BRANCH" \
   --title "<PR title>" \
   --body-file /tmp/pr-body.md
 ```
 
-6. Update PR if one already exists, or after new commits change scope:
+1. Update PR if one already exists, or after new commits change scope:
 
 ```bash
-GH_PAGER=cat GH_FORCE_TTY=0 gh pr edit <PR_NUMBER> \
+GH_FORCE_TTY=0 gh pr edit <PR_NUMBER> \
   --title "<PR title>" \
   --body-file /tmp/pr-body.md
 ```
 
-7. Verify final PR state:
+1. Verify final PR state:
 
 ```bash
-GH_PAGER=cat GH_FORCE_TTY=0 gh pr view <PR_NUMBER> --json number,title,url,body
+GH_FORCE_TTY=0 gh pr view <PR_NUMBER> --json number,title,url,body
 ```
 
 ## Completion Checklist
