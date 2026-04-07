@@ -40,14 +40,14 @@ jobs:
       - name: Load NuGet credentials
         id: nuget-creds
         if: inputs.publish_packages
-        uses: gittools/cicd/nuget-creds@v1
+        uses: gittools/cicd/nuget-creds@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Load Chocolatey credentials
         id: choco-creds
         if: inputs.publish_packages
-        uses: gittools/cicd/choco-creds@v1
+        uses: gittools/cicd/choco-creds@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 

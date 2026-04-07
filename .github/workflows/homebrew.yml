@@ -31,7 +31,7 @@ jobs:
 
       - name: Load GitHub release token
         id: github-creds
-        uses: gittools/cicd/github-creds@v1
+        uses: gittools/cicd/github-creds@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 

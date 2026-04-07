@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: gittools/cicd/checkout@v1
+        uses: gittools/cicd/checkout@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 0
@@ -24,6 +24,6 @@ jobs:
         run: ./src/mark-shipped.ps1
 
       - name: Commit and push changes
-        uses: gittools/cicd/git-commit-push@v1
+        uses: gittools/cicd/git-commit-push@v2
         with:
           message: "include public API changes"
