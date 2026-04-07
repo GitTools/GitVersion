@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: gittools/cicd/checkout@v1
+        uses: gittools/cicd/checkout@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 1
@@ -46,6 +46,6 @@ jobs:
         working-directory: ${{ github.workspace }}/docs/input
 
       - name: Commit and push markdown docs changes
-        uses: gittools/cicd/git-commit-push@v1
+        uses: gittools/cicd/git-commit-push@v2
         with:
           message: "include markdown docs changes"

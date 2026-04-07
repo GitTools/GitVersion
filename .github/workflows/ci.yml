@@ -166,7 +166,7 @@ jobs:
       - name: Load DockerHub credentials
         id: dockerhub-creds
         if: env.CAN_PUBLISH == 'true'
-        uses: gittools/cicd/dockerhub-creds@v1
+        uses: gittools/cicd/dockerhub-creds@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
