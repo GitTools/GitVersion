@@ -21,7 +21,7 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
     {
         if (context.Version == null)
             return;
-        var rootPrefix = string.Empty;
+        var rootPrefix = "/tmp";
         var version = context.Version.NugetVersion;
 
         foreach (var dockerImage in context.Images)

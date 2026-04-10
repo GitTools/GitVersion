@@ -9,12 +9,12 @@ ARG VERSION
 
 WORKDIR /nuget
 COPY $nugetFolder/ ./
-RUN dotnet tool install GitVersion.Tool --version $VERSION --tool-path /tools --add-source .
+RUN dotnet tool install GitVersion.Tool --version $VERSION --tool-path /tmp/tools --add-source .
 
 FROM $REGISTRY/gittools/build-images:$DISTRO-runtime-$DOTNET_VERSION
 
-WORKDIR /tools
-COPY --from=installer /tools .
+WORKDIR /tmp/tools
+COPY --from=installer /tmp/tools .
 RUN git config --global --add safe.directory '*'
 
-ENTRYPOINT ["/tools/dotnet-gitversion"]
+ENTRYPOINT ["/tmp/tools/dotnet-gitversion"]

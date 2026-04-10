@@ -23,7 +23,7 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
         if (context.Version?.SemVersion == null)
             return;
         var version = context.Version.SemVersion.ToLower();
-        var rootPrefix = string.Empty;
+        var rootPrefix = "/tmp";
 
         foreach (var dockerImage in context.Images)
         {

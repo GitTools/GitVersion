@@ -218,7 +218,7 @@ public static class DockerContextExtensions
         private DockerContainerRunSettings GetDockerRunSettings(Architecture arch)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
-            var root = string.Empty;
+            var root = "/tmp";
             var settings = new DockerContainerRunSettings
             {
                 Rm = true,

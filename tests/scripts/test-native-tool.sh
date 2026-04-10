@@ -17,11 +17,11 @@ do
 done
 
 git config --global --add safe.directory '*'
-result=$(tar -xvpf /native/gitversion-$runtime-$version.tar.gz -C /native) # >/dev/null
+result=$(tar -xvpf /tmp/native/gitversion-$runtime-$version.tar.gz -C /tmp/native) # >/dev/null
 status=$?
 if test $status -eq 0
 then
-    /native/gitversion $repoPath /showvariable FullSemver /nocache
+    /tmp/native/gitversion $repoPath /showvariable FullSemver /nocache
 else
     echo $result
 fi

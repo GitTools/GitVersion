@@ -17,11 +17,11 @@ do
 done
 
 git config --global --add safe.directory '*'
-result=$(dotnet tool install GitVersion.Tool --version $version --tool-path /tools --add-source $nugetPath) # >/dev/null
+result=$(dotnet tool install GitVersion.Tool --version $version --tool-path /tmp/tools --add-source $nugetPath) # >/dev/null
 status=$?
 if test $status -eq 0
 then
-    /tools/dotnet-gitversion $repoPath /showvariable FullSemver /nocache
+    /tmp/tools/dotnet-gitversion $repoPath /showvariable FullSemver /nocache
 else
     echo $result
 fi
