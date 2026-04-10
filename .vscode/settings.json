@@ -1,5 +1,11 @@
 {
+    "chat.useAgentSkills": true,
+    "chat.plugins.enabled": true,
     "chat.tools.terminal.autoApprove": {
+        "dotnet --version": true,
+        "dotnet --info": true,
+        "dotnet restore": true,
+        "dotnet clean": true,
         "dotnet build": true,
         "dotnet format": true,
         "dotnet test": true,
