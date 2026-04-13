@@ -1,10 +1,12 @@
+using System.Buffers;
+
 namespace Common.Utilities;
 
 #pragma warning disable S1144
 public static class Extensions
 {
-    private static readonly char[] CharsThatRequireQuoting = [' ', '"'];
-    private static readonly char[] CharsThatRequireEscaping = ['\\', '"'];
+    private static readonly SearchValues<char> CharsRequiringQuoting = SearchValues.Create(' ', '"');
+    private static readonly SearchValues<char> CharsRequiringEscaping = SearchValues.Create('\\', '"');
 
     extension(Assembly assembly)
     {
@@ -63,57 +65,68 @@ public static class Extensions
         public string ToSuffix() => arch.ToString().ToLower();
     }
 
-    extension(string literalValue)
+    extension(string value)
     {
-        /// <summary>
-        /// Escapes arbitrary values so that the process receives the exact string you intend and injection is impossible.
-        /// Spec: https://msdn.microsoft.com/en-us/library/bb776391.aspx
-        /// </summary>
-        public string EscapeProcessArgument(bool alwaysQuote = false)
+        public bool IsNullOrWhiteSpace() =>
+            string.IsNullOrWhiteSpace(value);
+
+        public bool IsEqualInvariant(string other) =>
+            string.Equals(value, other, StringComparison.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Escapes arbitrary values so that the process receives the exact string you intend and injection is impossible.
+    /// Spec: https://msdn.microsoft.com/en-us/library/bb776391.aspx
+    /// </summary>
+    public static string EscapeProcessArgument(this string literalValue, bool alwaysQuote = false)
+    {
+        if (string.IsNullOrEmpty(literalValue)) return "\"\"";
+
+        if (literalValue.AsSpan().IndexOfAny(CharsRequiringQuoting) == -1) // Happy path
         {
-            if (string.IsNullOrEmpty(literalValue)) return "\"\"";
-
-            if (literalValue.IndexOfAny(CharsThatRequireQuoting) == -1) // Happy path
-            {
-                if (!alwaysQuote) return literalValue;
-                if (literalValue[^1] != '\\') return "\"" + literalValue + "\"";
-            }
-
-            var sb = new StringBuilder(literalValue.Length + 8).Append('"');
-
-            var nextPosition = 0;
-            while (true)
-            {
-                var nextEscapeChar = literalValue.IndexOfAny(CharsThatRequireEscaping, nextPosition);
-                if (nextEscapeChar == -1) break;
-
-                sb.Append(literalValue, nextPosition, nextEscapeChar - nextPosition);
-                nextPosition = nextEscapeChar + 1;
-
-                switch (literalValue[nextEscapeChar])
-                {
-                    case '"':
-                        sb.Append("\\\"");
-                        break;
-                    case '\\':
-                        var numBackslashes = 1;
-                        while (nextPosition < literalValue.Length && literalValue[nextPosition] == '\\')
-                        {
-                            numBackslashes++;
-                            nextPosition++;
-                        }
-                        if (nextPosition == literalValue.Length || literalValue[nextPosition] == '"')
-                            numBackslashes <<= 1;
-
-                        for (; numBackslashes != 0; numBackslashes--)
-                            sb.Append('\\');
-                        break;
-                }
-            }
-
-            sb.Append(literalValue, nextPosition, literalValue.Length - nextPosition).Append('"');
-            return sb.ToString();
+            if (!alwaysQuote) return literalValue;
+            if (literalValue[^1] != '\\') return $"\"{literalValue}\"";
         }
+
+        return BuildEscapedArgument(literalValue);
+    }
+
+    private static string BuildEscapedArgument(string s)
+    {
+        var sb = new StringBuilder(s.Length + 8).Append('"');
+        var nextPosition = 0;
+
+        while (true)
+        {
+            var relativeIndex = s.AsSpan(nextPosition).IndexOfAny(CharsRequiringEscaping);
+            if (relativeIndex == -1) break;
+
+            var nextEscapeChar = nextPosition + relativeIndex;
+            sb.Append(s, nextPosition, relativeIndex);
+            nextPosition = nextEscapeChar + 1;
+
+            if (s[nextEscapeChar] == '"')
+                sb.Append("\\\"");
+            else
+                nextPosition = AppendEscapedBackslashes(sb, s, nextPosition);
+        }
+
+        return sb.Append(s, nextPosition, s.Length - nextPosition).Append('"').ToString();
+    }
+
+    private static int AppendEscapedBackslashes(StringBuilder sb, string s, int nextPosition)
+    {
+        var numBackslashes = 1;
+        while (nextPosition < s.Length && s[nextPosition] == '\\')
+        {
+            numBackslashes++;
+            nextPosition++;
+        }
+        if (nextPosition == s.Length || s[nextPosition] == '"')
+            numBackslashes <<= 1;
+
+        sb.Append('\\', numBackslashes);
+        return nextPosition;
     }
 }
 #pragma warning restore S1144

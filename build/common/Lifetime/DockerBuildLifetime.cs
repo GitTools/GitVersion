@@ -18,19 +18,23 @@ public abstract class DockerBuildLifetime<TContext> : BuildLifetimeBase<TContext
         var dotnetVersion = context.Argument(Arguments.DotnetVersion, string.Empty).ToLower();
         var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
-        var versions = string.IsNullOrWhiteSpace(dotnetVersion)
-            ? Constants.DotnetVersions
-            : string.Equals(dotnetVersion, "lts-latest", StringComparison.OrdinalIgnoreCase)
-                ? [Constants.DotnetLtsLatest]
-                : [dotnetVersion];
+        var versions = dotnetVersion switch
+        {
+            _ when dotnetVersion.IsNullOrWhiteSpace() => Constants.DotnetVersions,
+            _ when dotnetVersion.IsEqualInvariant("lts-latest") => [Constants.DotnetLtsLatest],
+            _ => [dotnetVersion]
+        };
 
-        var distros = string.IsNullOrWhiteSpace(dockerDistro)
-            ? Constants.DockerDistros
-            : string.Equals(dockerDistro, "distro-latest", StringComparison.OrdinalIgnoreCase)
-                ? [Constants.AlpineLatest]
-                : [dockerDistro];
+        var distros = dockerDistro switch
+        {
+            _ when dockerDistro.IsNullOrWhiteSpace() => Constants.DockerDistros,
+            _ when dockerDistro.IsEqualInvariant("distro-latest") => [Constants.AlpineLatest],
+            _ => [dockerDistro]
+        };
 
-        var architectures = context.HasArgument(Arguments.Architecture) ? context.Arguments<Architecture>(Arguments.Architecture) : Constants.ArchToBuild;
+        var architectures = context.HasArgument(Arguments.Architecture)
+            ? context.Arguments<Architecture>(Arguments.Architecture)
+            : Constants.ArchToBuild;
         var platformArch = context.IsRunningOnAmd64() ? Architecture.Amd64 : Architecture.Arm64;
 
         var registry = dockerRegistry == DockerRegistry.DockerHub ? Constants.DockerHubRegistry : Constants.GitHubContainerRegistry;

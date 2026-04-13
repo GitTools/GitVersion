@@ -25,7 +25,7 @@ public class Default : FrostingTask
             context.Information($"# {task.GetTaskDescription()}");
 
             var taskName = task.GetTaskName();
-            string target = taskName != nameof(Default) ? $"-Target {taskName}" : string.Empty;
+            var target = taskName != nameof(Default) ? $"-Target {taskName}" : string.Empty;
             context.Information($"  ./build.ps1 -Stage {entryAssembly?.GetName().Name} {target} {arguments}\n");
         }
     }

@@ -20,7 +20,7 @@ public static class DockerContextExtensions
         "org.opencontainers.image.licenses=MIT",
         "org.opencontainers.image.source=https://github.com/GitTools/GitVersion.git",
         "org.opencontainers.image.documentation=https://gitversion.net/docs/usage/docker",
-        $"org.opencontainers.image.created={DateTime.UtcNow:O}",
+        $"org.opencontainers.image.created={DateTime.UtcNow:O}"
     ];
 
     extension(BuildContextBase context)
@@ -156,14 +156,14 @@ public static class DockerContextExtensions
             var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
-                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", ["/showvariable", "FullSemver", "/nocache"]);
+                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", "/showvariable", "FullSemver", "/nocache");
             }
         }
 
         public void DockerTestArtifact(DockerImage dockerImage, string cmd)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerTestRun(tag, dockerImage.Architecture, "sh", [cmd]);
+            context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
         }
 
         private void DockerTestRun(string image, Architecture arch, string command,
@@ -189,7 +189,7 @@ public static class DockerContextExtensions
             var tags = new List<string>
             {
                 $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
-                $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
+                $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}"
             };
 
             if (distro == Constants.DockerDistroLatest && targetFramework == Constants.DotnetLtsLatest)
@@ -204,7 +204,7 @@ public static class DockerContextExtensions
                         $"{name}:latest",
                         $"{name}:latest-{targetFramework}",
                         $"{name}:latest-{distro}",
-                        $"{name}:latest-{distro}-{targetFramework}",
+                        $"{name}:latest-{distro}-{targetFramework}"
                     ]);
                 }
             }
