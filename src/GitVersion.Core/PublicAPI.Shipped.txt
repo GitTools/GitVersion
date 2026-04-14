@@ -776,6 +776,7 @@ GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.ConfiguredNextVersion = 2 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.Fallback = 1 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.Mainline = 64 -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.VersionCalculation.VersionStrategies.MergeCommit = 128 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.MergeMessage = 4 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.None = 0 -> GitVersion.VersionCalculation.VersionStrategies
 GitVersion.VersionCalculation.VersionStrategies.TaggedCommit = 8 -> GitVersion.VersionCalculation.VersionStrategies
