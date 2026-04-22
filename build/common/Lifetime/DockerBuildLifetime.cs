@@ -12,6 +12,11 @@ public abstract class DockerBuildLifetime<TContext> : BuildLifetimeBase<TContext
     {
         base.Setup(context, info);
 
+        if (!context.UseDocker)
+        {
+            return;
+        }
+
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", string.Empty) == "linux";
 
         var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.DockerHub);
