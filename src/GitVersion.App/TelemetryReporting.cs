@@ -3,6 +3,16 @@ using GitVersion.Extensions;
 
 namespace GitVersion;
 
+internal interface ITelemetryReleaseDateProvider
+{
+    bool TryGetReleaseDate(out DateOnly releaseDate);
+}
+
+internal interface ITelemetryUtcDateProvider
+{
+    DateOnly UtcToday { get; }
+}
+
 internal interface ITelemetrySink
 {
     bool IsEnabled { get; }
@@ -18,6 +28,17 @@ internal interface ITelemetryNoticeState
 internal interface ITelemetryReporter
 {
     void Report(Arguments arguments);
+}
+
+internal sealed class AssemblyTelemetryReleaseDateProvider : ITelemetryReleaseDateProvider
+{
+    public bool TryGetReleaseDate(out DateOnly releaseDate) =>
+        TelemetryReleaseDate.TryGetReleaseDate(Assembly.GetExecutingAssembly(), out releaseDate);
+}
+
+internal sealed class TelemetryUtcDateProvider : ITelemetryUtcDateProvider
+{
+    public DateOnly UtcToday => DateOnly.FromDateTime(DateTime.UtcNow);
 }
 
 internal sealed class NoOpTelemetrySink : ITelemetrySink
@@ -57,7 +78,9 @@ internal sealed class FileTelemetryNoticeState(IFileSystem fileSystem) : ITeleme
 internal sealed class TelemetryReporter(
     IConsole console,
     ITelemetryNoticeState telemetryNoticeState,
-    ITelemetrySink telemetrySink
+    ITelemetrySink telemetrySink,
+    ITelemetryReleaseDateProvider telemetryReleaseDateProvider,
+    ITelemetryUtcDateProvider telemetryUtcDateProvider
 ) : ITelemetryReporter
 {
     private const string TelemetryNotice = """
@@ -73,10 +96,18 @@ internal sealed class TelemetryReporter(
     private readonly IConsole console = console.NotNull();
     private readonly ITelemetryNoticeState telemetryNoticeState = telemetryNoticeState.NotNull();
     private readonly ITelemetrySink telemetrySink = telemetrySink.NotNull();
+    private readonly ITelemetryReleaseDateProvider telemetryReleaseDateProvider = telemetryReleaseDateProvider.NotNull();
+    private readonly ITelemetryUtcDateProvider telemetryUtcDateProvider = telemetryUtcDateProvider.NotNull();
 
     public void Report(Arguments arguments)
     {
         if (arguments.TelemetryOptOut || arguments.Telemetry == null || !this.telemetrySink.IsEnabled)
+        {
+            return;
+        }
+
+        if (!this.telemetryReleaseDateProvider.TryGetReleaseDate(out var releaseDate)
+            || !TelemetryReleaseDate.IsWithinWindow(releaseDate, this.telemetryUtcDateProvider.UtcToday))
         {
             return;
         }
