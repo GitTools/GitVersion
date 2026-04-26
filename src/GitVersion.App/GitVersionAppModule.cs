@@ -21,9 +21,10 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
         services.AddSingleton<IGitVersionExecutor, GitVersionExecutor>();
         services.AddSingleton<GitVersionApp>();
 
+        services.AddSingleton(sp => sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []));
         services.AddSingleton(sp =>
         {
-            var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []);
+            var arguments = sp.GetRequiredService<Arguments>();
             var gitVersionOptions = arguments.ToOptions();
             return Options.Create(gitVersionOptions);
         });

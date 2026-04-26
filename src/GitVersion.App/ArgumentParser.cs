@@ -63,8 +63,11 @@ internal class ArgumentParser(
         }
 
         var arguments = new Arguments();
+        var telemetry = new TelemetryCollectionBuilder(nameof(ArgumentParser));
         AddAuthentication(arguments);
-        MapParsedValues(arguments, parseResult, options);
+        MapParsedValues(arguments, parseResult, options, commandLineArguments, telemetry);
+        arguments.Telemetry = telemetry.Build();
+        arguments.TelemetryOptOut = TelemetryPolicy.IsOptedOut(this.environment, parseResult.GetValue(options.TelemetryOptOut));
         ValidateConfigurationFile(arguments);
 
         return arguments;
@@ -107,197 +110,21 @@ internal class ArgumentParser(
         return start >= 0 && end > start ? message[(start + 1)..end] : message;
     }
 
-    private void MapParsedValues(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    private void MapParsedValues(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        string[] commandLineArguments,
+        TelemetryCollectionBuilder telemetry)
     {
-        arguments.LogFilePath = parseResult.GetValue(options.LogFile) ?? arguments.LogFilePath;
-        arguments.Diag = parseResult.GetValue(options.Diagnose);
-        arguments.ShowConfiguration = parseResult.GetValue(options.ShowConfig);
-        arguments.NoFetch = parseResult.GetValue(options.NoFetch);
-        arguments.NoCache = parseResult.GetValue(options.NoCache);
-        arguments.NoNormalize = parseResult.GetValue(options.NoNormalize);
-        arguments.AllowShallow = parseResult.GetValue(options.AllowShallow);
-        arguments.UpdateWixVersionFile = parseResult.GetValue(options.UpdateWixVersionFile);
+        MapLoggingAndFlags(arguments, parseResult, options, commandLineArguments, telemetry);
+        MapOutputAndDisplay(arguments, parseResult, options, telemetry);
+        MapConfigAndPath(arguments, parseResult, options, telemetry);
+        MapUpdateAssemblyInfo(arguments, parseResult, options, telemetry);
+        MapUpdateProjectFiles(arguments, parseResult, options, telemetry);
+        MapEnsureAssemblyInfo(arguments, parseResult, options, telemetry);
+        MapRepositoryOptions(arguments, parseResult, options, telemetry);
 
-        MapOutputOptions(arguments, parseResult, options);
-        MapConfigurationOptions(arguments, parseResult, options);
-        MapTargetPathAndVerbosity(arguments, parseResult, options);
-
-        MapUpdateAssemblyInfoOption(arguments, parseResult, options);
-        MapUpdateProjectFilesOption(arguments, parseResult, options);
-        MapEnsureAssemblyInfoOption(arguments, parseResult, options);
-
-        if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
-        {
-            throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
-        }
-
-        MapRemoteOptions(arguments, parseResult, options);
-        ApplyDefaults(arguments, parseResult, options);
-    }
-
-    private static void MapOutputOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetValue(options.Output) is { } outputs)
-        {
-            foreach (var output in outputs)
-            {
-                arguments.Output.Add(output);
-            }
-        }
-
-        if (parseResult.GetValue(options.OutputFile) is { } outputFile)
-        {
-            arguments.OutputFile = outputFile;
-        }
-    }
-
-    private static void MapConfigurationOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetValue(options.ShowVariable) is { } showVariable)
-        {
-            ParseShowVariable(arguments, showVariable);
-        }
-
-        if (parseResult.GetValue(options.Format) is { } format)
-        {
-            ParseFormat(arguments, format);
-        }
-
-        if (parseResult.GetValue(options.Config) is { } config)
-        {
-            arguments.ConfigurationFile = config;
-        }
-
-        if (parseResult.GetValue(options.OverrideConfig) is { Length: > 0 } overrideConfigs)
-        {
-            ParseOverrideConfig(arguments, overrideConfigs);
-        }
-    }
-
-    private void MapTargetPathAndVerbosity(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetValue(options.TargetPath) is { } targetPath)
-        {
-            arguments.TargetPath = targetPath;
-            if (string.IsNullOrWhiteSpace(targetPath) || !this.fileSystem.Directory.Exists(targetPath))
-            {
-                this.console.WriteLine($"The working directory '{targetPath}' does not exist.");
-            }
-        }
-
-        if (parseResult.GetValue(options.VerbosityOption) is { } verbosity)
-        {
-            this.loggingLevelSwitch.MinimumLevel = VerbosityMaps[ParseVerbosity(verbosity)];
-        }
-    }
-
-    private static void MapUpdateAssemblyInfoOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetResult(options.UpdateAssemblyInfo) is not { Implicit: false })
-        {
-            return;
-        }
-
-        var values = parseResult.GetValue(options.UpdateAssemblyInfo);
-        if (values is [var single] && (single.Equals("false", StringComparison.OrdinalIgnoreCase) || single.Equals("0", StringComparison.Ordinal)))
-        {
-            arguments.UpdateAssemblyInfo = false;
-        }
-        else
-        {
-            arguments.UpdateAssemblyInfo = true;
-            if (values != null)
-            {
-                foreach (var file in values.Where(f => !f.IsTrue()))
-                {
-                    arguments.UpdateAssemblyInfoFileName.Add(file);
-                }
-            }
-        }
-
-        if (arguments.UpdateProjectFiles)
-        {
-            throw new WarningException("Cannot specify both --update-project-files and --update-assembly-info in the same run. Please rerun GitVersion with only one parameter");
-        }
-    }
-
-    private static void MapUpdateProjectFilesOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetResult(options.UpdateProjectFiles) is not { Implicit: false })
-        {
-            return;
-        }
-
-        arguments.UpdateProjectFiles = true;
-        if (parseResult.GetValue(options.UpdateProjectFiles) is { } projectFiles)
-        {
-            foreach (var file in projectFiles.Where(f => !f.IsTrue()))
-            {
-                arguments.UpdateAssemblyInfoFileName.Add(file);
-            }
-        }
-
-        if (arguments.UpdateAssemblyInfo)
-        {
-            throw new WarningException("Cannot specify both --update-assembly-info and --update-project-files in the same run. Please rerun GitVersion with only one parameter");
-        }
-
-        if (arguments.EnsureAssemblyInfo)
-        {
-            throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
-        }
-    }
-
-    private static void MapEnsureAssemblyInfoOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (!parseResult.GetValue(options.EnsureAssemblyInfo))
-        {
-            return;
-        }
-
-        arguments.EnsureAssemblyInfo = true;
-
-        if (arguments.UpdateProjectFiles)
-        {
-            throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
-        }
-    }
-
-    private static void MapRemoteOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
-        if (parseResult.GetValue(options.Url) is { } url)
-        {
-            arguments.TargetUrl = url;
-        }
-
-        if (parseResult.GetValue(options.Branch) is { } branch)
-        {
-            arguments.TargetBranch = branch;
-        }
-
-        if (parseResult.GetValue(options.Username) is { } username)
-        {
-            arguments.Authentication.Username = username;
-        }
-
-        if (parseResult.GetValue(options.Password) is { } password)
-        {
-            arguments.Authentication.Password = password;
-        }
-
-        if (parseResult.GetValue(options.Commit) is { } commit)
-        {
-            arguments.CommitId = commit;
-        }
-
-        if (parseResult.GetValue(options.DynamicRepoLocation) is { } dynRepo)
-        {
-            arguments.ClonePath = dynRepo;
-        }
-    }
-
-    private void ApplyDefaults(Arguments arguments, ParseResult parseResult, CommandOptions options)
-    {
         if (arguments.Output.Count == 0)
         {
             arguments.Output.Add(OutputType.Json);
@@ -314,6 +141,301 @@ internal class ArgumentParser(
         if (!arguments.EnsureAssemblyInfo)
         {
             arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
+        }
+    }
+
+    private static void MapLoggingAndFlags(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        string[] commandLineArguments,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (commandLineArguments.Length > 0 && !commandLineArguments[0].StartsWith('-'))
+        {
+            telemetry.AddValue(TelemetryArgumentNames.Path, commandLineArguments[0], TelemetryValueKind.Path);
+        }
+
+        if (parseResult.GetResult(options.LogFile) is { Implicit: false })
+        {
+            arguments.LogFilePath = parseResult.GetValue(options.LogFile) ?? arguments.LogFilePath;
+            telemetry.AddValue(TelemetryArgumentNames.LogFile, arguments.LogFilePath, TelemetryValueKind.Path);
+        }
+
+        arguments.Diag = parseResult.GetValue(options.Diagnose);
+        if (arguments.Diag)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.Diagnose);
+        }
+
+        arguments.ShowConfiguration = parseResult.GetValue(options.ShowConfig);
+        if (arguments.ShowConfiguration)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.ShowConfig);
+        }
+
+        arguments.NoFetch = parseResult.GetValue(options.NoFetch);
+        if (arguments.NoFetch)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.NoFetch);
+        }
+
+        arguments.NoCache = parseResult.GetValue(options.NoCache);
+        if (arguments.NoCache)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.NoCache);
+        }
+
+        arguments.NoNormalize = parseResult.GetValue(options.NoNormalize);
+        if (arguments.NoNormalize)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.NoNormalize);
+        }
+
+        arguments.AllowShallow = parseResult.GetValue(options.AllowShallow);
+        if (arguments.AllowShallow)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.AllowShallow);
+        }
+
+        arguments.UpdateWixVersionFile = parseResult.GetValue(options.UpdateWixVersionFile);
+        if (arguments.UpdateWixVersionFile)
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.UpdateWixVersionFile);
+        }
+    }
+
+    private static void MapOutputAndDisplay(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetResult(options.Output) is { Implicit: false } && parseResult.GetValue(options.Output) is { } outputs)
+        {
+            foreach (var output in outputs)
+            {
+                arguments.Output.Add(output);
+            }
+
+            telemetry.AddValues(TelemetryArgumentNames.Output, outputs.Select(output => output.ToString().ToLowerInvariant()));
+        }
+
+        if (parseResult.GetResult(options.OutputFile) is { Implicit: false } && parseResult.GetValue(options.OutputFile) is { } outputFile)
+        {
+            arguments.OutputFile = outputFile;
+            telemetry.AddValue(TelemetryArgumentNames.OutputFile, outputFile, TelemetryValueKind.Path);
+        }
+
+        if (parseResult.GetResult(options.ShowVariable) is { Implicit: false } && parseResult.GetValue(options.ShowVariable) is { } showVariable)
+        {
+            ParseShowVariable(arguments, showVariable);
+            telemetry.AddValue(TelemetryArgumentNames.ShowVariable, showVariable);
+        }
+
+        if (parseResult.GetResult(options.Format) is { Implicit: false } && parseResult.GetValue(options.Format) is { } format)
+        {
+            ParseFormat(arguments, format);
+            telemetry.AddValue(TelemetryArgumentNames.Format, format);
+        }
+    }
+
+    private void MapConfigAndPath(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetResult(options.Config) is { Implicit: false } && parseResult.GetValue(options.Config) is { } config)
+        {
+            arguments.ConfigurationFile = config;
+            telemetry.AddValue(TelemetryArgumentNames.Config, config, TelemetryValueKind.Path);
+        }
+
+        if (parseResult.GetResult(options.OverrideConfig) is { Implicit: false }
+            && parseResult.GetValue(options.OverrideConfig) is { Length: > 0 } overrideConfigs)
+        {
+            ParseOverrideConfig(arguments, overrideConfigs);
+            telemetry.AddValues(TelemetryArgumentNames.OverrideConfig, overrideConfigs);
+        }
+
+        if (parseResult.GetResult(options.TargetPath) is { Implicit: false } && parseResult.GetValue(options.TargetPath) is { } targetPath)
+        {
+            arguments.TargetPath = targetPath;
+            if (string.IsNullOrWhiteSpace(targetPath) || !this.fileSystem.Directory.Exists(targetPath))
+            {
+                this.console.WriteLine($"The working directory '{targetPath}' does not exist.");
+            }
+
+            telemetry.AddValue(TelemetryArgumentNames.TargetPath, targetPath, TelemetryValueKind.Path);
+        }
+
+        if (parseResult.GetResult(options.VerbosityOption) is { Implicit: false }
+            && parseResult.GetValue(options.VerbosityOption) is { } verbosity)
+        {
+            this.loggingLevelSwitch.MinimumLevel = VerbosityMaps[ParseVerbosity(verbosity)];
+            telemetry.AddValue(TelemetryArgumentNames.Verbosity, verbosity.ToLowerInvariant());
+        }
+    }
+
+    private static void MapUpdateAssemblyInfo(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetResult(options.UpdateAssemblyInfo) is not { Implicit: false })
+        {
+            return;
+        }
+
+        var values = parseResult.GetValue(options.UpdateAssemblyInfo);
+        ApplyUpdateAssemblyInfo(arguments, values);
+
+        if (values is { Length: > 0 })
+        {
+            telemetry.AddValues(TelemetryArgumentNames.UpdateAssemblyInfo, values, TelemetryValueKind.PathOrBoolean);
+        }
+        else
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.UpdateAssemblyInfo);
+        }
+
+        if (arguments.UpdateProjectFiles)
+        {
+            throw new WarningException("Cannot specify both --update-project-files and --update-assembly-info in the same run. Please rerun GitVersion with only one parameter");
+        }
+    }
+
+    private static void ApplyUpdateAssemblyInfo(Arguments arguments, string[]? values)
+    {
+        if (values is [var single] && (single.Equals("false", StringComparison.OrdinalIgnoreCase) || single.Equals("0", StringComparison.Ordinal)))
+        {
+            arguments.UpdateAssemblyInfo = false;
+            return;
+        }
+
+        arguments.UpdateAssemblyInfo = true;
+        AddAssemblyInfoFileNames(arguments, values);
+    }
+
+    private static void AddAssemblyInfoFileNames(Arguments arguments, string[]? values)
+    {
+        if (values == null)
+        {
+            return;
+        }
+
+        foreach (var file in values.Where(f => !f.IsTrue()))
+        {
+            arguments.UpdateAssemblyInfoFileName.Add(file);
+        }
+    }
+
+    private static void MapUpdateProjectFiles(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetResult(options.UpdateProjectFiles) is not { Implicit: false })
+        {
+            return;
+        }
+
+        arguments.UpdateProjectFiles = true;
+        var projectFiles = parseResult.GetValue(options.UpdateProjectFiles);
+        AddAssemblyInfoFileNames(arguments, projectFiles);
+
+        if (projectFiles is { Length: > 0 })
+        {
+            telemetry.AddValues(TelemetryArgumentNames.UpdateProjectFiles, projectFiles, TelemetryValueKind.PathOrBoolean);
+        }
+        else
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.UpdateProjectFiles);
+        }
+
+        if (arguments.UpdateAssemblyInfo)
+        {
+            throw new WarningException("Cannot specify both --update-assembly-info and --update-project-files in the same run. Please rerun GitVersion with only one parameter");
+        }
+
+        if (arguments.EnsureAssemblyInfo)
+        {
+            throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
+        }
+    }
+
+    private static void MapEnsureAssemblyInfo(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetValue(options.EnsureAssemblyInfo))
+        {
+            arguments.EnsureAssemblyInfo = true;
+            telemetry.AddFlag(TelemetryArgumentNames.EnsureAssemblyInfo);
+
+            if (arguments.UpdateProjectFiles)
+            {
+                throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
+            }
+        }
+
+        if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+        {
+            throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
+        }
+    }
+
+    private static void MapRepositoryOptions(
+        Arguments arguments,
+        ParseResult parseResult,
+        CommandOptions options,
+        TelemetryCollectionBuilder telemetry)
+    {
+        if (parseResult.GetResult(options.Url) is { Implicit: false } && parseResult.GetValue(options.Url) is { } url)
+        {
+            arguments.TargetUrl = url;
+            telemetry.AddValue(TelemetryArgumentNames.Url, url, TelemetryValueKind.Sensitive);
+        }
+
+        if (parseResult.GetResult(options.Branch) is { Implicit: false } && parseResult.GetValue(options.Branch) is { } branch)
+        {
+            arguments.TargetBranch = branch;
+            telemetry.AddValue(TelemetryArgumentNames.Branch, branch);
+        }
+
+        if (parseResult.GetResult(options.Username) is { Implicit: false } && parseResult.GetValue(options.Username) is { } username)
+        {
+            arguments.Authentication.Username = username;
+            telemetry.AddValue(TelemetryArgumentNames.Username, username, TelemetryValueKind.Sensitive);
+        }
+
+        if (parseResult.GetResult(options.Password) is { Implicit: false } && parseResult.GetValue(options.Password) is { } password)
+        {
+            arguments.Authentication.Password = password;
+            telemetry.AddValue(TelemetryArgumentNames.Password, password, TelemetryValueKind.Sensitive);
+        }
+
+        if (parseResult.GetResult(options.Commit) is { Implicit: false } && parseResult.GetValue(options.Commit) is { } commit)
+        {
+            arguments.CommitId = commit;
+            telemetry.AddValue(TelemetryArgumentNames.Commit, commit);
+        }
+
+        if (parseResult.GetResult(options.DynamicRepoLocation) is { Implicit: false }
+            && parseResult.GetValue(options.DynamicRepoLocation) is { } dynRepo)
+        {
+            arguments.ClonePath = dynRepo;
+            telemetry.AddValue(TelemetryArgumentNames.DynamicRepoLocation, dynRepo, TelemetryValueKind.Path);
+        }
+
+        if (parseResult.GetValue(options.TelemetryOptOut))
+        {
+            telemetry.AddFlag(TelemetryArgumentNames.TelemetryOptOut);
         }
     }
 
@@ -451,6 +573,10 @@ internal class ArgumentParser(
         {
             Description = "By default dynamic repositories will be cloned to %tmp%. Use this option to override"
         };
+        var telemetryOptOut = new Option<bool>("--telemetry-opt-out")
+        {
+            Description = "Disables telemetry for this invocation"
+        };
 
         var rootCommand = new RootCommand("Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.")
         {
@@ -479,7 +605,8 @@ internal class ArgumentParser(
             username,
             password,
             commit,
-            dynamicRepoLocation
+            dynamicRepoLocation,
+            telemetryOptOut
         };
 
         // Configure the built-in help system to wrap at 260 characters to avoid too small help messages
@@ -497,7 +624,7 @@ internal class ArgumentParser(
             VerbosityOption: verbosity, UpdateAssemblyInfo: updateAssemblyInfo, UpdateProjectFiles: updateProjectFiles,
             EnsureAssemblyInfo: ensureAssemblyInfo, UpdateWixVersionFile: updateWixVersionFile,
             Url: url, Branch: branch, Username: username, Password: password,
-            Commit: commit, DynamicRepoLocation: dynamicRepoLocation
+            Commit: commit, DynamicRepoLocation: dynamicRepoLocation, TelemetryOptOut: telemetryOptOut
         ));
     }
 
@@ -638,6 +765,7 @@ internal class ArgumentParser(
         Option<string?> Username,
         Option<string?> Password,
         Option<string?> Commit,
-        Option<string?> DynamicRepoLocation
+        Option<string?> DynamicRepoLocation,
+        Option<bool> TelemetryOptOut
     );
 }

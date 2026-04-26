@@ -38,6 +38,9 @@ internal class Arguments
     public bool EnsureAssemblyInfo;
     public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
 
+    public bool TelemetryOptOut { get; set; }
+    public CommandLineTelemetry? Telemetry { get; set; }
+
     public GitVersionOptions ToOptions()
     {
         var gitVersionOptions = new GitVersionOptions

@@ -37,6 +37,7 @@ internal static class CliHost
         services.AddModule(GitBackendSelector.Resolve() == GitBackend.Managed
             ? new GitVersionManagedGitModule()
             : new GitVersionLibGit2SharpModule());
+        services.AddModule(new GitVersionTelemetryModule());
 
         var envValue = SysEnv.GetEnvironmentVariable("GITVERSION_USE_V6_ARGUMENT_PARSER");
         var useLegacyParser = string.Equals(envValue, "true", StringComparison.OrdinalIgnoreCase);

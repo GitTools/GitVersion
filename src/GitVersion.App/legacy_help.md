@@ -33,6 +33,8 @@ GitVersion [path]
                     separated key value pairs e.g. /overrideconfig
                     tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
+    /telemetryoptout
+                    Disables telemetry for this invocation.
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
     /allowshallow   Allows GitVersion to run on a shallow clone.
