@@ -66,11 +66,21 @@ internal static class TelemetryReleaseDate
         utcToday < releaseDate.AddMonths(3);
 }
 
+internal static class TelemetryContextValues
+{
+    public const string Unknown = "unknown";
+    public const string Direct = "direct";
+    public const string GitVersionMsBuild = "gitversion-msbuild";
+    public const string InternalCallerEnvironmentVariable = "GITVERSION_INTERNAL_CALLER";
+}
+
 internal sealed record TelemetryArgument(string Name, IReadOnlyList<string> Values);
 
 internal sealed record CommandLineTelemetry(
     string ToolVersion,
     string ParserImplementation,
+    string ContinuousIntegrationProvider,
+    string InvocationSource,
     string Command,
     string? Subcommand,
     IReadOnlyList<TelemetryArgument> Arguments
@@ -119,6 +129,8 @@ internal sealed class TelemetryCollectionBuilder(string parserImplementation)
     public CommandLineTelemetry Build() => new(
         ToolVersion: TelemetryVersionProvider.GetCurrentVersion(),
         ParserImplementation: parserImplementation,
+        ContinuousIntegrationProvider: TelemetryContextValues.Unknown,
+        InvocationSource: TelemetryContextValues.Direct,
         Command: CommandName,
         Subcommand: null,
         Arguments: this.arguments
