@@ -49,6 +49,8 @@ internal class LegacyArgumentParser(
 
     public Arguments ParseArguments(string[] commandLineArguments)
     {
+        var telemetry = new TelemetryCollectionBuilder(nameof(LegacyArgumentParser));
+
         if (commandLineArguments.Length == 0)
         {
             var args = new Arguments
@@ -59,6 +61,8 @@ internal class LegacyArgumentParser(
             args.Output.Add(OutputType.Json);
 
             AddAuthentication(args);
+            args.Telemetry = telemetry.Build();
+            args.TelemetryOptOut = TelemetryPolicy.IsOptedOut(this.environment, args.TelemetryOptOut);
 
             return args;
         }
@@ -109,9 +113,162 @@ internal class LegacyArgumentParser(
 
         if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
 
+        PopulateTelemetry(telemetry, switchesAndValues, commandLineArguments, firstArgumentIsSwitch);
+        arguments.Telemetry = telemetry.Build();
+        arguments.TelemetryOptOut = TelemetryPolicy.IsOptedOut(this.environment, arguments.TelemetryOptOut);
         ValidateConfigurationFile(arguments);
 
         return arguments;
+    }
+
+    private static void PopulateTelemetry(
+        TelemetryCollectionBuilder telemetry,
+        NameValueCollection switchesAndValues,
+        string[] commandLineArguments,
+        bool firstArgumentIsSwitch)
+    {
+        if (!firstArgumentIsSwitch && commandLineArguments.Length > 0)
+        {
+            telemetry.AddValue(TelemetryArgumentNames.Path, commandLineArguments[0], TelemetryValueKind.Path);
+        }
+
+        foreach (var key in switchesAndValues.AllKeys)
+        {
+            if (key == null)
+            {
+                continue;
+            }
+
+            var values = switchesAndValues.GetValues(key);
+            var value = values?.FirstOrDefault();
+
+            if (key.IsSwitch("l"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.LogFile, value, TelemetryValueKind.Path);
+            }
+            else if (key.IsSwitch("config"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Config, value, TelemetryValueKind.Path);
+            }
+            else if (key.IsSwitch("overrideconfig"))
+            {
+                telemetry.AddValues(TelemetryArgumentNames.OverrideConfig, values);
+            }
+            else if (key.IsSwitch("showConfig"))
+            {
+                AddBooleanValue(telemetry, TelemetryArgumentNames.ShowConfig, value);
+            }
+            else if (key.IsSwitch("diag"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.Diagnose);
+            }
+            else if (key.IsSwitch("updateprojectfiles"))
+            {
+                AddPathOrBooleanValues(telemetry, TelemetryArgumentNames.UpdateProjectFiles, values);
+            }
+            else if (key.IsSwitch("updateAssemblyInfo"))
+            {
+                AddPathOrBooleanValues(telemetry, TelemetryArgumentNames.UpdateAssemblyInfo, values);
+            }
+            else if (key.IsSwitch("ensureassemblyinfo"))
+            {
+                AddBooleanValue(telemetry, TelemetryArgumentNames.EnsureAssemblyInfo, value);
+            }
+            else if (key.IsSwitch("v") || key.IsSwitch("showvariable"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.ShowVariable, value);
+            }
+            else if (key.IsSwitch("format"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Format, value);
+            }
+            else if (key.IsSwitch("output"))
+            {
+                telemetry.AddValues(TelemetryArgumentNames.Output, values);
+            }
+            else if (key.IsSwitch("outputfile"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.OutputFile, value, TelemetryValueKind.Path);
+            }
+            else if (key.IsSwitch("nofetch"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.NoFetch);
+            }
+            else if (key.IsSwitch("nonormalize"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.NoNormalize);
+            }
+            else if (key.IsSwitch("nocache"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.NoCache);
+            }
+            else if (key.IsSwitch("allowshallow"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.AllowShallow);
+            }
+            else if (key.IsSwitch("verbosity"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Verbosity, value?.ToLowerInvariant());
+            }
+            else if (key.IsSwitch("updatewixversionfile"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.UpdateWixVersionFile);
+            }
+            else if (key.IsSwitch("targetpath"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.TargetPath, value, TelemetryValueKind.Path);
+            }
+            else if (key.IsSwitch("dynamicRepoLocation"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.DynamicRepoLocation, value, TelemetryValueKind.Path);
+            }
+            else if (key.IsSwitch("url"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Url, value, TelemetryValueKind.Sensitive);
+            }
+            else if (key.IsSwitch("u"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Username, value, TelemetryValueKind.Sensitive);
+            }
+            else if (key.IsSwitch("p"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Password, value, TelemetryValueKind.Sensitive);
+            }
+            else if (key.IsSwitch("c"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Commit, value);
+            }
+            else if (key.IsSwitch("b"))
+            {
+                telemetry.AddValue(TelemetryArgumentNames.Branch, value);
+            }
+            else if (key.IsSwitch("telemetryoptout"))
+            {
+                telemetry.AddFlag(TelemetryArgumentNames.TelemetryOptOut);
+            }
+        }
+    }
+
+    private static void AddBooleanValue(TelemetryCollectionBuilder telemetry, string name, string? value)
+    {
+        if (value.IsFalse())
+        {
+            telemetry.AddValue(name, "false");
+            return;
+        }
+
+        telemetry.AddFlag(name);
+    }
+
+    private static void AddPathOrBooleanValues(TelemetryCollectionBuilder telemetry, string name, string[]? values)
+    {
+        if (values is { Length: > 0 })
+        {
+            telemetry.AddValues(name, values, TelemetryValueKind.PathOrBoolean);
+            return;
+        }
+
+        telemetry.AddFlag(name);
     }
 
     private void ValidateConfigurationFile(Arguments arguments)
@@ -223,6 +380,12 @@ internal class LegacyArgumentParser(
         if (name.IsSwitch("diag"))
         {
             arguments.Diag = true;
+            return true;
+        }
+
+        if (name.IsSwitch("telemetryoptout"))
+        {
+            arguments.TelemetryOptOut = true;
             return true;
         }
 
