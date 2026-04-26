@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace GitVersion;
 
 internal enum TelemetryValueKind
@@ -37,6 +39,31 @@ internal static class TelemetryArgumentNames
     public const string Url = "url";
     public const string Username = "username";
     public const string Verbosity = "verbosity";
+}
+
+internal static class TelemetryReleaseDate
+{
+    public const string MetadataKey = "GitVersionReleaseDate";
+    public const string Format = "yyyy-MM-dd";
+
+    public static bool TryGetReleaseDate(Assembly assembly, out DateOnly releaseDate)
+    {
+        ArgumentNullException.ThrowIfNull(assembly);
+
+        if (assembly
+            .GetCustomAttributes(typeof(AssemblyMetadataAttribute), false)
+            .OfType<AssemblyMetadataAttribute>()
+            .FirstOrDefault(attribute => attribute.Key == MetadataKey) is not { Value: { } value })
+        {
+            releaseDate = default;
+            return false;
+        }
+
+        return DateOnly.TryParseExact(value, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out releaseDate);
+    }
+
+    public static bool IsWithinWindow(DateOnly releaseDate, DateOnly utcToday) =>
+        utcToday < releaseDate.AddMonths(3);
 }
 
 internal sealed record TelemetryArgument(string Name, IReadOnlyList<string> Values);
