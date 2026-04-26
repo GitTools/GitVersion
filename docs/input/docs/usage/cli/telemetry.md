@@ -17,6 +17,8 @@ Telemetry is only emitted when a concrete telemetry sink is enabled for the GitV
 
 When telemetry is active, GitVersion shows a one-time disclosure notice before the first telemetry-eligible command sends data. The notice is stored locally so it is not shown on every run.
 
+Telemetry is also timeboxed to the first **3 months after the release date embedded in the assembly metadata**. If the release-date metadata is missing or invalid, telemetry is treated as disabled.
+
 ## What GitVersion collects
 
 The telemetry payload is intentionally narrow and command-line focused. It is designed to support usage analysis, not repository inspection.
