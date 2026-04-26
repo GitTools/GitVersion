@@ -26,7 +26,13 @@ public class GitLabCiTests : TestBase
     }
 
     [TearDown]
-    public void TearDown() => this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, null);
+    public void TearDown()
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, null);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, null);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitTagEnvironmentVariableName, null);
+        this.environment.SetEnvironmentVariable(GitLabCi.MergeRequestRefPathEnvironmentVariableName, null);
+    }
 
     [Test]
     public void ShouldSetBuildNumber()
@@ -50,7 +56,7 @@ public class GitLabCiTests : TestBase
     [TestCase("#3-change_projectname", "#3-change_projectname")]
     public void GetCurrentBranchShouldHandleBranches(string branchName, string expectedResult)
     {
-        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, branchName);
 
         var result = this.buildServer.GetCurrentBranch(false);
 
@@ -63,8 +69,8 @@ public class GitLabCiTests : TestBase
     [TestCase("v1.2.1", "v1.2.1", null)]
     public void GetCurrentBranchShouldHandleTags(string branchName, string commitTag, string? expectedResult)
     {
-        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
-        this.environment.SetEnvironmentVariable("CI_COMMIT_TAG", commitTag); // only set in pipelines for tags
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, branchName);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitTagEnvironmentVariableName, commitTag); // only set in pipelines for tags
 
         var result = this.buildServer.GetCurrentBranch(false);
 
@@ -85,11 +91,47 @@ public class GitLabCiTests : TestBase
     [TestCase("#3-change_projectname", "#3-change_projectname")]
     public void GetCurrentBranchShouldHandlePullRequests(string branchName, string expectedResult)
     {
-        this.environment.SetEnvironmentVariable("CI_COMMIT_REF_NAME", branchName);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, branchName);
 
         var result = this.buildServer.GetCurrentBranch(false);
 
         result.ShouldBe(expectedResult);
+    }
+
+    [TestCase("refs/merge-requests/15/head")]
+    [TestCase("refs/merge-requests/15/merge")]
+    [TestCase("refs/merge-requests/1/head")]
+    public void GetCurrentBranch_WhenMergeRequestRefPathSet_ReturnsMergeRequestRefPath(string mrRefPath)
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.MergeRequestRefPathEnvironmentVariableName, mrRefPath);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, "some-branch");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe(mrRefPath);
+    }
+
+    [Test]
+    public void GetCurrentBranch_WhenMergeRequestRefPathAndCommitRefNameSet_PrefersMergeRequestRefPath()
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.MergeRequestRefPathEnvironmentVariableName, "refs/merge-requests/42/head");
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, "feature/foo");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBe("refs/merge-requests/42/head");
+    }
+
+    [Test]
+    public void GetCurrentBranch_WhenTagSet_ReturnsNull()
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitTagEnvironmentVariableName, "v1.0.0");
+        this.environment.SetEnvironmentVariable(GitLabCi.MergeRequestRefPathEnvironmentVariableName, "refs/merge-requests/10/head");
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, "main");
+
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        result.ShouldBeNull();
     }
 
     [Test]

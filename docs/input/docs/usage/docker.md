@@ -34,6 +34,12 @@ On GitHub Actions, you may need to set the following environment variables:
 docker run --rm -v "$(pwd):/repo" --env GITHUB_ACTIONS=true --env GITHUB_REF=$(GITHUB_REF) gittools/gitversion:{tag} /repo
 ```
 
+On GitLab CI (including Merge Request pipelines), pass the GitLab variables so GitVersion can detect the branch or MR ref:
+
+```sh
+docker run --rm -v "$(pwd):/repo" --env GITLAB_CI=true --env CI_MERGE_REQUEST_REF_PATH=$CI_MERGE_REQUEST_REF_PATH --env CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --env CI_COMMIT_TAG=$CI_COMMIT_TAG gittools/gitversion:{tag} /repo
+```
+
 ### Tags
 
 Most of the tags we provide have both arm64 and amd64 variants. If you need to pull a architecture specific tag you can do that like:
