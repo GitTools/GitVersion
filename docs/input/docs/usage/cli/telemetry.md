@@ -29,6 +29,8 @@ Each payload includes:
 | --- | --- | --- |
 | `toolVersion` | The GitVersion CLI version | Helps correlate behavior with a released version |
 | `parserImplementation` | `ArgumentParser` or `LegacyArgumentParser` | Helps understand adoption of the legacy parser |
+| `continuousIntegrationProvider` | The detected CI provider such as `github-actions`, or `unknown` when GitVersion is not running in a recognized CI environment | Helps understand where CLI usage comes from without collecting repository data |
+| `invocationSource` | `gitversion-msbuild` when the CLI is invoked internally by the `GitVersion.MsBuild` package, otherwise `direct` | Helps distinguish direct CLI usage from package-driven usage |
 | `command` | The CLI command name (`gitversion`) | Identifies the invoked entry point |
 | `subcommand` | Reserved for future CLI command trees; currently `null` in the stable CLI | Keeps the payload shape stable |
 | `arguments[].name` | Canonical argument name | Shows which switches/options are used |

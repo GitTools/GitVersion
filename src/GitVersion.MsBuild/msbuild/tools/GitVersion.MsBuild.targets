@@ -29,7 +29,8 @@
     <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" Runtime="NET" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
 
     <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
-        <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />
+        <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)"
+              EnvironmentVariables="GITVERSION_INTERNAL_CALLER=GitVersion.MsBuild" />
     </Target>
 
     <Target Name="WriteVersionInfoToBuildLog" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="$(WriteVersionInfoToBuildLog) == 'true'">

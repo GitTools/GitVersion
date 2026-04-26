@@ -131,6 +131,8 @@ public class ArgumentParserTests : TestBase
         arguments.Telemetry.ParserImplementation.ShouldBe(nameof(ArgumentParser));
         arguments.Telemetry.Command.ShouldBe("gitversion");
         arguments.Telemetry.ToolVersion.ShouldNotBeNullOrWhiteSpace();
+        arguments.Telemetry.ContinuousIntegrationProvider.ShouldBe(TelemetryContextValues.Unknown);
+        arguments.Telemetry.InvocationSource.ShouldBe(TelemetryContextValues.Direct);
         arguments.Telemetry.Arguments.ShouldContain(argument =>
             argument.Name == TelemetryArgumentNames.Path && argument.Values.Single() == "<redacted:path>");
         arguments.Telemetry.Arguments.ShouldContain(argument =>
