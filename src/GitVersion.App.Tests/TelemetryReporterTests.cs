@@ -10,7 +10,9 @@ public class TelemetryReporterTests
     {
         var output = new StringBuilder();
         var sink = new TestTelemetrySink();
-        var reporter = new TelemetryReporter(new TestConsoleAdapter(output), new TestTelemetryNoticeState(), sink);
+        var reporter = new TelemetryReporter(
+            new TestConsoleAdapter(output), new TestTelemetryNoticeState(), sink, new TestTelemetryReleaseDateProvider(true, new(2026, 04, 26)),
+            new TestTelemetryUtcDateProvider(new(2026, 04, 26)));
         var arguments = new Arguments
         {
             Telemetry = new CommandLineTelemetry("1.2.3", nameof(ArgumentParser), "gitversion", null, []),
@@ -28,11 +30,49 @@ public class TelemetryReporterTests
     public void ReportSkipsOptedOutInvocations()
     {
         var sink = new TestTelemetrySink();
-        var reporter = new TelemetryReporter(new TestConsoleAdapter(new StringBuilder()), new TestTelemetryNoticeState(), sink);
+        var reporter = new TelemetryReporter(
+            new TestConsoleAdapter(new StringBuilder()), new TestTelemetryNoticeState(), sink, new TestTelemetryReleaseDateProvider(true, new(2026, 04, 26)),
+            new TestTelemetryUtcDateProvider(new(2026, 04, 26)));
         var arguments = new Arguments
         {
             Telemetry = new CommandLineTelemetry("1.2.3", nameof(ArgumentParser), "gitversion", null, []),
             TelemetryOptOut = true
+        };
+
+        reporter.Report(arguments);
+
+        sink.Payloads.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void ReportSkipsTelemetryWhenReleaseDateIsMissing()
+    {
+        var sink = new TestTelemetrySink();
+        var reporter = new TelemetryReporter(
+            new TestConsoleAdapter(new StringBuilder()), new TestTelemetryNoticeState(), sink, new TestTelemetryReleaseDateProvider(false, default),
+            new TestTelemetryUtcDateProvider(new(2026, 04, 26)));
+        var arguments = new Arguments
+        {
+            Telemetry = new CommandLineTelemetry("1.2.3", nameof(ArgumentParser), "gitversion", null, []),
+            TelemetryOptOut = false
+        };
+
+        reporter.Report(arguments);
+
+        sink.Payloads.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void ReportSkipsTelemetryWhenReleaseWindowHasExpired()
+    {
+        var sink = new TestTelemetrySink();
+        var reporter = new TelemetryReporter(
+            new TestConsoleAdapter(new StringBuilder()), new TestTelemetryNoticeState(), sink, new TestTelemetryReleaseDateProvider(true, new(2026, 01, 01)),
+            new TestTelemetryUtcDateProvider(new(2026, 04, 01)));
+        var arguments = new Arguments
+        {
+            Telemetry = new CommandLineTelemetry("1.2.3", nameof(ArgumentParser), "gitversion", null, []),
+            TelemetryOptOut = false
         };
 
         reporter.Report(arguments);
@@ -56,5 +96,19 @@ public class TelemetryReporterTests
         public bool HasSeenNotice() => this.hasSeenNotice;
 
         public void MarkNoticeSeen() => this.hasSeenNotice = true;
+    }
+
+    private sealed class TestTelemetryReleaseDateProvider(bool hasReleaseDate, DateOnly releaseDate) : ITelemetryReleaseDateProvider
+    {
+        public bool TryGetReleaseDate(out DateOnly value)
+        {
+            value = releaseDate;
+            return hasReleaseDate;
+        }
+    }
+
+    private sealed class TestTelemetryUtcDateProvider(DateOnly utcToday) : ITelemetryUtcDateProvider
+    {
+        public DateOnly UtcToday { get; } = utcToday;
     }
 }
