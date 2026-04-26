@@ -58,6 +58,13 @@
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
+    <ItemGroup Condition="'$(GitVersionReleaseDate)' != ''">
+        <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+            <_Parameter1>GitVersionReleaseDate</_Parameter1>
+            <_Parameter2>$(GitVersionReleaseDate)</_Parameter2>
+        </AssemblyAttribute>
+    </ItemGroup>
+
     <ItemGroup Condition=" '$(DisableAnalyzers)' == 'false' ">
         <PackageReference Include="Roslynator.Analyzers">
             <PrivateAssets>all</PrivateAssets>

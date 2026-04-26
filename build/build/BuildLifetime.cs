@@ -1,3 +1,4 @@
+using System.Globalization;
 using Build.Utilities;
 using Common.Lifetime;
 using Common.Utilities;
@@ -46,5 +47,13 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         // https://github.com/dotnet/docs/issues/37674
         msBuildSettings.WithProperty("IncludeSourceRevisionInInformationalVersion", "false");
+
+        if (ShouldEmbedReleaseDate(context))
+        {
+            msBuildSettings.WithProperty("GitVersionReleaseDate", DateTimeOffset.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        }
     }
+
+    private static bool ShouldEmbedReleaseDate(BuildContext context) =>
+        context.IsTaggedRelease || context.IsTaggedPreRelease || context.IsInternalPreRelease;
 }
