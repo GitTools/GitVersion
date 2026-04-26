@@ -52,10 +52,12 @@ GitVersion [path]
     --show-config   Outputs the effective GitVersion config (defaults + custom
                     from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format
     --override-config
-                    Overrides GitVersion config values inline (semicolon-
-                    separated key value pairs e.g. --override-config
-                    tag-prefix=Foo)
-                    Currently supported config overrides: tag-prefix
+                     Overrides GitVersion config values inline (semicolon-
+                     separated key value pairs e.g. --override-config
+                     tag-prefix=Foo)
+                     Currently supported config overrides: tag-prefix
+    --telemetry-opt-out
+                     Disables telemetry for this invocation.
     --no-cache      Bypasses the cache, result will not be written to the cache.
     --no-normalize  Disables normalize step on a build server.
     --allow-shallow Allows GitVersion to run on a shallow clone.
@@ -170,3 +172,13 @@ Will use only major and minor version numbers for assembly version. Assembly bui
 ### Example: How to override configuration option 'next-version'
 
 `GitVersion.exe --output json --override-config next-version=6`
+
+## Telemetry
+
+GitVersion supports OSS-style telemetry opt-out controls:
+
+1. `DO_NOT_TRACK`
+2. `GITVERSION_TELEMETRY_OPTOUT`
+3. `--telemetry-opt-out`
+
+See [CLI Telemetry](/docs/usage/cli/telemetry) for the full disclosure, collected fields, redaction rules, reasons for collection, and opt-out behavior.

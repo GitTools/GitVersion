@@ -51,6 +51,7 @@ public class HelpWriterTests : TestBase
         var helpText = string.Empty;
 
         this.helpWriter.WriteTo(s => helpText = s);
+        helpText.ShouldContain("/telemetryoptout");
 
         var ignored = new[]
         {
