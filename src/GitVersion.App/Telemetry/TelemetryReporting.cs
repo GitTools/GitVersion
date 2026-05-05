@@ -37,7 +37,7 @@ internal interface ITelemetryContextEnricher
 internal sealed class AssemblyTelemetryReleaseDateProvider : ITelemetryReleaseDateProvider
 {
     public bool TryGetReleaseDate(out DateOnly releaseDate) =>
-        TelemetryReleaseDate.TryGetReleaseDate(System.Reflection.Assembly.GetExecutingAssembly(), out releaseDate);
+        TelemetryReleaseDate.TryGetReleaseDate(Assembly.GetExecutingAssembly(), out releaseDate);
 }
 
 internal sealed class TelemetryUtcDateProvider : ITelemetryUtcDateProvider
@@ -54,9 +54,9 @@ internal sealed class NoOpTelemetrySink : ITelemetrySink
     }
 }
 
-internal sealed class TelemetryContextEnricher(GitVersion.Agents.ICurrentBuildAgent currentBuildAgent, IEnvironment environment) : ITelemetryContextEnricher
+internal sealed class TelemetryContextEnricher(Agents.ICurrentBuildAgent currentBuildAgent, IEnvironment environment) : ITelemetryContextEnricher
 {
-    private readonly GitVersion.Agents.ICurrentBuildAgent currentBuildAgent = currentBuildAgent.NotNull();
+    private readonly Agents.ICurrentBuildAgent currentBuildAgent = currentBuildAgent.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
     public CommandLineTelemetry Enrich(CommandLineTelemetry telemetry)
@@ -70,7 +70,7 @@ internal sealed class TelemetryContextEnricher(GitVersion.Agents.ICurrentBuildAg
         };
     }
 
-    private static string ResolveContinuousIntegrationProvider(GitVersion.Agents.ICurrentBuildAgent currentBuildAgent) => currentBuildAgent.GetType().Name switch
+    private static string ResolveContinuousIntegrationProvider(Agents.ICurrentBuildAgent currentBuildAgent) => currentBuildAgent.GetType().Name switch
     {
         "AppVeyor" => "appveyor",
         "AzurePipelines" => "azure-pipelines",
