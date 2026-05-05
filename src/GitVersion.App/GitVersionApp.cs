@@ -5,11 +5,15 @@ namespace GitVersion;
 internal class GitVersionApp(
     IHostApplicationLifetime applicationLifetime,
     IGitVersionExecutor gitVersionExecutor,
-    IOptions<GitVersionOptions> options)
+    IOptions<GitVersionOptions> options,
+    Arguments arguments,
+    ITelemetryReporter telemetryReporter)
 {
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly Arguments arguments = arguments.NotNull();
+    private readonly ITelemetryReporter telemetryReporter = telemetryReporter.NotNull();
 
     public Task RunAsync(CancellationToken _)
     {
@@ -22,6 +26,7 @@ internal class GitVersionApp(
             }
             else
             {
+                this.telemetryReporter.Report(this.arguments);
                 SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
             }
         }

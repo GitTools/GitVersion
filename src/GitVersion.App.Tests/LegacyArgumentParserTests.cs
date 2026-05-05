@@ -95,6 +95,51 @@ public class LegacyArgumentParserTests : TestBase
     }
 
     [Test]
+    public void TelemetryOptOutCanBeParsed()
+    {
+        var arguments = this.argumentParser.ParseArguments("/telemetryoptout");
+        arguments.TelemetryOptOut.ShouldBe(true);
+    }
+
+    [Test]
+    public void TelemetryOptOutCanBeProvidedByEnvironment()
+    {
+        this.environment.SetEnvironmentVariable(TelemetryPolicy.GitVersionTelemetryOptOutEnvironmentVariable, "true");
+
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath");
+
+        arguments.TelemetryOptOut.ShouldBe(true);
+    }
+
+    [Test]
+    public void TelemetryPayloadIncludesParserVersionAndRedactedArguments()
+    {
+        var arguments = this.argumentParser.ParseArguments(
+            "targetDirectoryPath /l console /output buildserver /format {SemVer} /url https://example.com/repo.git /u user /p pass /dynamicRepoLocation /tmp/dynamic");
+
+        arguments.Telemetry.ShouldNotBeNull();
+        arguments.Telemetry.ParserImplementation.ShouldBe(nameof(LegacyArgumentParser));
+        arguments.Telemetry.Command.ShouldBe("gitversion");
+        arguments.Telemetry.ToolVersion.ShouldNotBeNullOrWhiteSpace();
+        arguments.Telemetry.ContinuousIntegrationProvider.ShouldBe(TelemetryContextValues.Unknown);
+        arguments.Telemetry.InvocationSource.ShouldBe(TelemetryContextValues.Direct);
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.Path && argument.Values.Single() == "<redacted:path>");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.LogFile && argument.Values.Single() == "<redacted:path>");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.Output && argument.Values.Single() == "buildserver");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.Url && argument.Values.Single() == "<redacted:sensitive>");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.Username && argument.Values.Single() == "<redacted:sensitive>");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.Password && argument.Values.Single() == "<redacted:sensitive>");
+        arguments.Telemetry.Arguments.ShouldContain(argument =>
+            argument.Name == TelemetryArgumentNames.DynamicRepoLocation && argument.Values.Single() == "<redacted:path>");
+    }
+
+    [Test]
     public void UnknownOutputShouldThrow()
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
