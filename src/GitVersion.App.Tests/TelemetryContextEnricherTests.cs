@@ -68,7 +68,7 @@ public class TelemetryContextEnricherTests
         }
     }
 
-    private sealed class GitHubActions : GitVersion.Agents.ICurrentBuildAgent
+    private sealed class GitHubActions : Agents.ICurrentBuildAgent
     {
         public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => true;
@@ -80,7 +80,7 @@ public class TelemetryContextEnricherTests
         }
     }
 
-    private sealed class LocalBuild : GitVersion.Agents.ICurrentBuildAgent
+    private sealed class LocalBuild : Agents.ICurrentBuildAgent
     {
         public bool IsDefault => true;
         public bool CanApplyToCurrentContext() => true;
@@ -92,7 +92,7 @@ public class TelemetryContextEnricherTests
         }
     }
 
-    private sealed class UnsupportedBuildAgent : GitVersion.Agents.ICurrentBuildAgent
+    private sealed class UnsupportedBuildAgent : Agents.ICurrentBuildAgent
     {
         public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => true;
