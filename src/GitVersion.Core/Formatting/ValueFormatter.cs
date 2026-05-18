@@ -13,6 +13,7 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
     internal ValueFormatter()
         => formatters =
         [
+            new LegacyCompositeFormatter(),
             new StringFormatter(),
             new FormattableFormatter(),
             new NumericFormatter(),
@@ -22,15 +23,18 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
     public override bool TryFormat(object? value, string format, CultureInfo cultureInfo, out string result)
     {
         result = string.Empty;
-        if (value is null)
-        {
-            return false;
-        }
 
+        // Allow formatters to handle null values (e.g., legacy composite formatter for zero sections)
         foreach (var formatter in formatters.OrderBy(f => f.Priority))
         {
             if (formatter.TryFormat(value, format, out result))
                 return true;
+        }
+
+        // Only return false if no formatter could handle it
+        if (value is null)
+        {
+            return false;
         }
 
         return false;
