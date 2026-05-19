@@ -1,4 +1,3 @@
-using System.Reflection.Emit;
 using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Formatting;
