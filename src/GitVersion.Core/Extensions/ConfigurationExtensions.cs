@@ -107,22 +107,20 @@ internal static class ConfigurationExtensions
             environment.NotNull();
 
             var label = configuration.Label;
+
             if (label is null)
             {
                 return label;
             }
 
-            if (environment is not null)
+            try
             {
-                try
-                {
-                    label = label.FormatWith(new { }, environment);
-                }
-                catch (ArgumentException)
-                {
-                    // If environment variable is missing an dno fallback, return label as-is
-                    // This maintains backward compatibility
-                }
+                label = label.FormatWith(new { }, environment);
+            }
+            catch (ArgumentException)
+            {
+                // If environment variable is missing an dno fallback, return label as-is
+                // This maintains backward compatibility
             }
 
             var effectiveBranchName = branchNameOverride ?? branchName;
