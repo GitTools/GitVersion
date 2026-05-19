@@ -1,5 +1,7 @@
+using System.Reflection.Emit;
 using GitVersion.Core;
 using GitVersion.Extensions;
+using GitVersion.Formatting;
 using GitVersion.Git;
 using GitVersion.VersionCalculation;
 
@@ -97,12 +99,13 @@ internal static class ConfigurationExtensions
 
     extension(EffectiveConfiguration configuration)
     {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride);
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment, throwIfNotFound);
 
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
         {
             configuration.NotNull();
+            environment.NotNull();
 
             var label = configuration.Label;
             if (label is null)
@@ -110,25 +113,36 @@ internal static class ConfigurationExtensions
                 return label;
             }
 
-            var effectiveBranchName = branchNameOverride ?? branchName;
-            if (configuration.RegularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty()) return label;
-            var regex = RegexPatterns.Cache.GetOrAdd(configuration.RegularExpression);
-            var match = regex.Match(effectiveBranchName);
-            if (!match.Success) return label;
-            foreach (var groupName in regex.GetGroupNames())
+            if (environment is not null)
             {
-                var groupValue = match.Groups[groupName].Value;
-                Lazy<string> escapedGroupValueLazy = new(() => groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-"));
-                var placeholder = $"{{{groupName}}}";
-                int index, startIndex = 0;
-                while ((index = label.IndexOf(placeholder, startIndex, StringComparison.InvariantCulture)) >= 0)
+                try
                 {
-                    var escapedGroupValue = escapedGroupValueLazy.Value;
-                    label = label.Remove(index, placeholder.Length).Insert(index, escapedGroupValue);
-                    startIndex = index + escapedGroupValue.Length;
+                    label = label.FormatWith(new { }, environment);
+                }
+                catch (ArgumentException)
+                {
+                    // If environment variable is missing an dno fallback, return label as-is
+                    // This maintains backward compatibility
                 }
             }
-            return label;
+
+            var effectiveBranchName = branchNameOverride ?? branchName;
+            var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
+
+            if (throwIfNotFound)
+            {
+                return label.FormatWith(labelPlaceholders, environment);
+            }
+
+            try
+            {
+                return label.FormatWith(labelPlaceholders, environment);
+            }
+            catch (ArgumentException)
+            {
+                // If environment variable is missing and no fallback, return label as-is (backward compatibility)
+                return label;
+            }
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()
@@ -152,6 +166,28 @@ internal static class ConfigurationExtensions
                 taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
             }
             return taggedSemanticVersion;
+        }
+
+        private static Dictionary<string, object> BuildLabelPlaceholders(string? regularExpression, string? effectiveBranchName)
+        {
+            var placeholders = new Dictionary<string, object>();
+
+            if (regularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+                return placeholders;
+
+            var regex = RegexPatterns.Cache.GetOrAdd(regularExpression);
+            var match = regex.Match(effectiveBranchName);
+
+            if (!match.Success)
+                return placeholders;
+
+            foreach (var groupName in regex.GetGroupNames())
+            {
+                var groupValue = match.Groups[groupName].Value;
+                placeholders[groupName] = groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
+            }
+
+            return placeholders;
         }
     }
 }

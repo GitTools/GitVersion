@@ -4,11 +4,13 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder, IGitVersionConfiguration Configuration)
+internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder, IGitVersionConfiguration Configuration, IEnvironment Environment)
 {
     public IIncrementStrategyFinder IncrementStrategyFinder { get; } = IncrementStrategyFinder.NotNull();
 
     public IGitVersionConfiguration Configuration { get; } = Configuration.NotNull();
+
+    public IEnvironment Environemnt { get; } = Environment.NotNull();
 
     public string? TargetLabel { get; init; }
 

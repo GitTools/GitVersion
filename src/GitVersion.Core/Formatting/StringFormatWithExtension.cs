@@ -84,6 +84,14 @@ internal static class StringFormatWithExtension
 
     private static string EvaluateMember<T>(T source, string member, string? format, string? fallback)
     {
+        if (source is IDictionary<string, object> dictionary)
+            return EvaluateMemberFromDictionary(dictionary, member, format, fallback);
+        else
+            return EvaluateMemberFromObject(source, member, format, fallback);
+    }
+
+    private static string EvaluateMemberFromObject<T>(T source, string member, string? format, string? fallback)
+    {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
         var memberPath = MemberResolver.ResolveMemberPath(source!.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
@@ -93,12 +101,28 @@ internal static class StringFormatWithExtension
             return fallback ?? string.Empty;
 
         if (format is not null && ValueFormatter.Default.TryFormat(
-            value,
-            InputSanitizer.SanitizeFormat(format),
-            out var formatted))
+                value,
+                InputSanitizer.SanitizeFormat(format),
+                out var formatted))
         {
             return formatted;
         }
+
+        return value.ToString() ?? fallback ?? string.Empty;
+    }
+
+    private static string EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format, string? fallback)
+    {
+        var safeMember = InputSanitizer.SanitizeMemberName(member);
+
+        if (!source.TryGetValue(safeMember, out var value))
+            return fallback ?? string.Empty;
+
+        if (value is null)
+            return fallback ?? string.Empty;
+
+        if (format is not null && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(format), out var formatted))
+            return formatted;
 
         return value.ToString() ?? fallback ?? string.Empty;
     }

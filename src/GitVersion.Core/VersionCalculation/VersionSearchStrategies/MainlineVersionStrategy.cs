@@ -13,7 +13,8 @@ internal sealed class MainlineVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
     IRepositoryStore repositoryStore,
     ITaggedSemanticVersionService taggedSemanticVersionService,
-    IIncrementStrategyFinder incrementStrategyFinder)
+    IIncrementStrategyFinder incrementStrategyFinder,
+    IEnvironment environment)
     : IVersionStrategy
 {
     private volatile int iterationCounter;
@@ -21,6 +22,7 @@ internal sealed class MainlineVersionStrategy(
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
     private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
 
     private GitVersionContext Context => contextLazy.Value;
@@ -102,7 +104,7 @@ internal sealed class MainlineVersionStrategy(
             notOlderThan: Context.CurrentCommit.When,
             taggedSemanticVersion: taggedSemanticVersion
         );
-        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
         IterateOverCommitsRecursive(
             commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
@@ -111,7 +113,7 @@ internal sealed class MainlineVersionStrategy(
             taggedSemanticVersions: taggedSemanticVersions
         );
 
-        yield return DetermineBaseVersion(iteration, targetLabel, incrementStrategyFinder, Context.Configuration);
+        yield return DetermineBaseVersion(iteration, targetLabel, incrementStrategyFinder, Context.Configuration, this.environment);
     }
 
     private MainlineIteration CreateIteration(
@@ -204,7 +206,7 @@ internal sealed class MainlineVersionStrategy(
             var label = targetLabel ?? new EffectiveConfiguration(
                 configuration: Context.Configuration,
                 branchConfiguration: configuration
-            ).GetBranchSpecificLabel(branchName, null);
+            ).GetBranchSpecificLabel(branchName, null, this.environment);
 
             foreach (var semanticVersion in semanticVersions)
             {
@@ -334,15 +336,15 @@ internal sealed class MainlineVersionStrategy(
     }
 
     private static BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel,
-            IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
-        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration);
+            IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
+        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration, environment);
 
     internal static BaseVersion DetermineBaseVersionRecursive(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
     {
         iteration.NotNull();
 
-        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration).ToArray();
+        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, environment).ToArray();
 
         BaseVersion? result = null;
         foreach (var baseVersionIncrement in incrementSteps)
@@ -365,9 +367,9 @@ internal sealed class MainlineVersionStrategy(
     }
 
     private static IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
     {
-        MainlineContext context = new(incrementStrategyFinder, configuration)
+        MainlineContext context = new(incrementStrategyFinder, configuration, environment)
         {
             TargetLabel = targetLabel
         };

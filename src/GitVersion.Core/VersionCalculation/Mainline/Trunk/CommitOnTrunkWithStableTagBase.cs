@@ -22,6 +22,6 @@ internal abstract class CommitOnTrunkWithStableTagBase : IIncrementer
         };
 
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
     }
 }
