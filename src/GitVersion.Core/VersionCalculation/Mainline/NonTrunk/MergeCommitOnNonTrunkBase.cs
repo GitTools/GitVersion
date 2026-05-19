@@ -22,7 +22,8 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
                    iteration: commit.ChildIteration,
                    targetLabel: context.TargetLabel,
                    incrementStrategyFinder: context.IncrementStrategyFinder,
-                   configuration: context.Configuration
+                   configuration: context.Configuration,
+                   environment: context.Environment
                );
 
             context.Label ??= baseVersion.Operator?.Label;

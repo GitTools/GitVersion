@@ -21,7 +21,7 @@ internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
 
         var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
-        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null) ?? context.Label;
+        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment) ?? context.Label;
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator

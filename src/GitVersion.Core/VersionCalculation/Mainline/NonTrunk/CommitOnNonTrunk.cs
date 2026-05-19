@@ -22,7 +22,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
             context.Label = null;
 
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
 
         if (commit.Successor is not null) yield break;
         yield return new BaseVersionOperator

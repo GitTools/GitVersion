@@ -14,13 +14,15 @@ internal class NextVersionCalculator(
     IEnumerable<IDeploymentModeCalculator> deploymentModeCalculators,
     IEnumerable<IVersionStrategy> versionStrategies,
     IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
-    ITaggedSemanticVersionService taggedSemanticVersionService)
+    ITaggedSemanticVersionService taggedSemanticVersionService,
+    IEnvironment environment)
     : INextVersionCalculator
 {
     private readonly ILog log = log.NotNull();
     private readonly Lazy<GitVersionContext> versionContext = versionContext.NotNull();
     private readonly IVersionStrategy[] versionStrategies = [.. versionStrategies.NotNull()];
     private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
 
     private GitVersionContext Context => this.versionContext.Value;
 
@@ -108,7 +110,7 @@ internal class NextVersionCalculator(
     {
         result = null;
 
-        var label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
         var currentCommitTaggedVersion = taggedSemanticVersionsOfCurrentCommit
             .Where(element => element.Value.IsMatchForBranchSpecificLabel(label)).Max();
 
