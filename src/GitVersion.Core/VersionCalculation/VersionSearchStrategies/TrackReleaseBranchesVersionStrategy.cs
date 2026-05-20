@@ -11,14 +11,16 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
     Lazy<GitVersionContext> contextLazy,
     IRepositoryStore repositoryStore,
     IBranchRepository branchRepository,
-    IIncrementStrategyFinder incrementStrategyFinder)
+    IIncrementStrategyFinder incrementStrategyFinder,
+    IEnvironment environment)
     : IVersionStrategy
 {
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IBranchRepository branchRepository = branchRepository.NotNull();
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
-    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy);
+    private readonly IEnvironment environment = environment.NotNull();
+    private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy, environment);
 
     private GitVersionContext Context => contextLazy.Value;
 
@@ -48,7 +50,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         if (!this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion)) return result is not null;
         // Find the commit where the child branch was created.
         var baseVersionSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
         var increment = this.incrementStrategyFinder.DetermineIncrementedField(
             currentCommit: Context.CurrentCommit,
             baseVersionSource: baseVersionSource,
