@@ -234,7 +234,12 @@ internal class GitPreparer(
         var localBranchesWhereCommitShaIsHead = this.repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
 
         var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
-            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
+            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b =>
+            {
+                if (ReferenceName.TryParseMergeRequestsRef(currentBranchName, out var mergeRequestId))
+                    return b.Name.Canonical == ReferenceName.LocalBranchPrefix + ReferenceName.MergeRequestsRefFriendlyName(mergeRequestId);
+                return b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/");
+            })
             : null;
         if (matchingCurrentBranch != null)
         {
@@ -379,11 +384,15 @@ internal class GitPreparer(
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
-            ? ReferenceName.LocalBranchPrefix + currentBranch
-            : isLocalBranch
-                ? currentBranch
-                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        string localCanonicalName;
+        if (ReferenceName.TryParseMergeRequestsRef(currentBranch, out var mergeRequestId))
+            localCanonicalName = ReferenceName.LocalBranchPrefix + ReferenceName.MergeRequestsRefFriendlyName(mergeRequestId);
+        else
+            localCanonicalName = !currentBranch.StartsWith(referencePrefix)
+                ? ReferenceName.LocalBranchPrefix + currentBranch
+                : isLocalBranch
+                    ? currentBranch
+                    : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 
