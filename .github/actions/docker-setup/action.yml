@@ -5,6 +5,6 @@ runs:
   using: 'composite'
   steps:
     - name: Set up Docker
-      uses: docker/setup-docker-action@v5
+      uses: docker/setup-docker-action@b2189fbf2a6592b51fee7cdd93ee2bfaeba733db # v5.1.0
       with:
         daemon-config: '{ "features": { "containerd-snapshotter": true } }'

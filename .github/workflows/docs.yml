@@ -36,21 +36,26 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
       - name: Cache cake frosting
         id: cache-cake
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: run
           key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
       - name: Use cached tools
         id: cache-tools
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: tools
           key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -64,14 +69,14 @@ jobs:
 
       - name: Cache Node Modules
         id: cache-node
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{ steps.cache-node-dir.outputs.dir }}
           key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
           restore-keys: node-${{ runner.os }}
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           global-json-file: global.json
 
@@ -88,8 +93,13 @@ jobs:
     needs: [ prepare ]
     runs-on: ubuntu-24.04
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -101,7 +111,7 @@ jobs:
         run: dotnet run/docs.dll --target=BuildDocs
 
       - name: '[HTMLProofer]'
-        uses: chabad360/htmlproofer@master
+        uses: chabad360/htmlproofer@a1a3419200cea0e832a5c6249647d1d271178e82 # master
         with:
           directory: ./artifacts/docs/preview
           arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension --disable-external --no-check_external_hash
@@ -113,7 +123,7 @@ jobs:
           echo "value=$value" >> $GITHUB_OUTPUT
 
       - name: '[Remark Lint]'
-        uses: reviewdog/action-remark-lint@v5
+        uses: reviewdog/action-remark-lint@82225f7db5b4a3caaca3052733b6800fa7d109b0 # v5.18.0
         with:
           github_token: ${{ github.token }}
           reporter: ${{ steps.reporter.outputs.value }}
@@ -129,8 +139,13 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       GITHUB_USERNAME: ${{ github.actor }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 

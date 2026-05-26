@@ -19,6 +19,11 @@ jobs:
     name: Bump Homebrew formula
     runs-on: macos-latest
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Get version
         id: get-version
         shell: pwsh
@@ -31,11 +36,11 @@ jobs:
 
       - name: Load GitHub release token
         id: github-creds
-        uses: gittools/cicd/github-creds@v5
+        uses: gittools/cicd/github-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-      - uses: mislav/bump-homebrew-formula-action@v4
+      - uses: mislav/bump-homebrew-formula-action@ccf2332299a883f6af50a1d2d41e5df7904dd769 # v4.1
         name: Bump Homebrew formula
         with:
           formula-name: gitversion

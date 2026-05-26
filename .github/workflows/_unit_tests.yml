@@ -11,6 +11,9 @@ env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
 
+permissions:
+  contents: read
+
 jobs:
   unit_test:
     name: ${{ matrix.os }} - net${{ matrix.dotnet_version }}
@@ -24,15 +27,20 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
       - name: Restore State
         uses: ./.github/actions/cache-restore
 
       - name: '[Unit Test]'
-        uses: nick-fields/retry@v4
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           shell: pwsh
           timeout_minutes: 30
@@ -41,13 +49,13 @@ jobs:
           command: 'dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }}'
 
       - name: Test Summary
-        uses: test-summary/action@v2.6
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
         if: always() && matrix.dotnet_version == '10.0'
         with:
           paths: artifacts/test-results/**/results.xml
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           files: artifacts/test-results/**/results.xml
@@ -55,7 +63,7 @@ jobs:
           use_oidc: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           directory: artifacts/test-results
