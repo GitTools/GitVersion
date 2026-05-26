@@ -12,7 +12,6 @@ that we know about today.
 * [ChocolateyGUI](https://github.com/chocolatey/ChocolateyGUI)
 * [GitLink](https://github.com/GitTools/GitLink)
 * [OctopusDeploy](https://github.com/OctopusDeploy)
-* [NUKE](https://nuke.build)
 * [Orc.\* packages](https://github.com/wildgums?query=orc)
 * [Orchestra](https://github.com/wildgums/orchestra)
 * [Shouldly](https://github.com/shouldly/shouldly)
