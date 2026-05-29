@@ -40,7 +40,7 @@
     <PackageVersion Include="NUnit" Version="4.6.1" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.13.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
-    <PackageVersion Include="SharpYaml" Version="3.7.1" />
+    <PackageVersion Include="SharpYaml" Version="3.8.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.8" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.7" />
