@@ -98,10 +98,10 @@ internal static class ConfigurationExtensions
 
     extension(EffectiveConfiguration configuration)
     {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment, throwIfNotFound);
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
 
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment, bool throwIfNotFound = false)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment)
         {
             configuration.NotNull();
             environment.NotNull();
@@ -113,33 +113,10 @@ internal static class ConfigurationExtensions
                 return label;
             }
 
-            try
-            {
-                label = label.FormatWith(new { }, environment);
-            }
-            catch (ArgumentException)
-            {
-                // If environment variable is missing an dno fallback, return label as-is
-                // This maintains backward compatibility
-            }
-
             var effectiveBranchName = branchNameOverride ?? branchName;
             var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
 
-            if (throwIfNotFound)
-            {
-                return label.FormatWith(labelPlaceholders, environment);
-            }
-
-            try
-            {
-                return label.FormatWith(labelPlaceholders, environment);
-            }
-            catch (ArgumentException)
-            {
-                // If environment variable is missing and no fallback, return label as-is (backward compatibility)
-                return label;
-            }
+            return label.FormatWith(labelPlaceholders, environment);
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()

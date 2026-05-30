@@ -139,7 +139,7 @@ public class ConfigurationExtensionsTests : TestBase
 
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("pull-request"));
         Should.Throw<ArgumentException>(() =>
-            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment, throwIfNotFound: true));
+            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment));
     }
 
     [Test]
