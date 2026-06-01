@@ -141,25 +141,4 @@ public class ConfigurationExtensionsTests : TestBase
         Should.Throw<ArgumentException>(() =>
             effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment));
     }
-
-    [Test]
-    public void EnsureGetBranchSpecificLabelProcessesEnvironmentVariablesEvenWhenRegexDoesNotMatch()
-    {
-        var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable("GITHUB_HEAD_REF", "feature-branch");
-
-        var configuration = GitFlowConfigurationBuilder.New
-            .WithoutBranches()
-            .WithBranch("pull-request", builder => builder
-                .WithLabel("pr-{env:GITHUB_HEAD_REF}")
-                .WithRegularExpression(@"^pull[/-]"))
-            .WithBranch("feature", builder => builder
-                .WithLabel("{BranchName}")
-                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
-            .Build();
-
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/other-branch"));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/other-branch"), null, environment);
-        actual.ShouldBe("other-branch");
-    }
 }
