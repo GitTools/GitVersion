@@ -55,7 +55,7 @@ internal record MainlineIteration
         MainlineIteration? parentIteration, MainlineCommit? parentCommit)
     {
         Id = id.NotNullOrEmpty();
-        Depth = parentIteration?.Depth ?? 0 + 1;
+        Depth = (parentIteration?.Depth ?? 0) + 1;
         BranchName = branchName.NotNull();
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
