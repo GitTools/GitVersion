@@ -6,6 +6,8 @@ namespace GitVersion.Configuration.Tests;
 [TestFixture]
 public class ConfigurationExtensionsTests : TestBase
 {
+    private const string BranchName = "pull-request";
+
     [TestCase("release/2.0.0",
         "refs/heads/release/2.0.0", "release/2.0.0", "release/2.0.0",
         true, false, false, false, true)]
@@ -63,13 +65,13 @@ public class ConfigurationExtensionsTests : TestBase
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
-            .WithBranch("pull-request", builder => builder
+            .WithBranch(BranchName, builder => builder
                 .WithLabel("pr-{env:GITHUB_HEAD_REF}")
                 .WithRegularExpression(@"^pull[/-]"))
             .Build();
 
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("pull-request"));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment);
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment);
         actual.ShouldBe("pr-feature-branch");
     }
 
@@ -81,13 +83,13 @@ public class ConfigurationExtensionsTests : TestBase
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
-            .WithBranch("pull-request", builder => builder
+            .WithBranch(BranchName, builder => builder
                 .WithLabel("pr-{env:GITHUB_HEAD_REF ?? \"unknown\"}")
                 .WithRegularExpression(@"^pull[/-]"))
             .Build();
 
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("pull-request"));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment);
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment);
         actual.ShouldBe("pr-unknown");
     }
 
@@ -132,13 +134,13 @@ public class ConfigurationExtensionsTests : TestBase
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
-            .WithBranch("pull-request", builder => builder
+            .WithBranch(BranchName, builder => builder
                 .WithLabel("pr-{env:MISSING_VAR}")
                 .WithRegularExpression(@"^pull[/-]"))
             .Build();
 
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("pull-request"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
         Should.Throw<ArgumentException>(() =>
-            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("pull-request"), null, environment));
+            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment));
     }
 }
