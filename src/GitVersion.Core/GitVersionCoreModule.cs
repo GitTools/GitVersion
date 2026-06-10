@@ -6,8 +6,10 @@ using GitVersion.VersionCalculation.Caching;
 
 namespace GitVersion;
 
+/// <summary>Registers the core GitVersion services including version calculation, repository access, and caching.</summary>
 public class GitVersionCoreModule : IGitVersionModule
 {
+    /// <summary>Registers all core services into the DI container.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<IGitVersionCacheProvider, GitVersionCacheProvider>();

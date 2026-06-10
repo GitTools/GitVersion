@@ -1,5 +1,6 @@
 namespace GitVersion.OutputVariables;
 
+/// <summary>Contains all version variables calculated by GitVersion for a given repository state.</summary>
 public record GitVersionVariables(
     string? AssemblySemFileVer,
     string? AssemblySemVer,
@@ -96,9 +97,11 @@ public record GitVersionVariables(
         { nameof(WeightedPreReleaseNumber), WeightedPreReleaseNumber }
     };
 
+    /// <summary>Returns an enumerator that iterates over all version variable name/value pairs.</summary>
     public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => Instance.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    /// <summary>Attempts to retrieve the value of the version variable identified by <paramref name="variable"/>.</summary>
     public bool TryGetValue(string variable, out string? variableValue) => Instance.TryGetValue(variable, out variableValue);
 }

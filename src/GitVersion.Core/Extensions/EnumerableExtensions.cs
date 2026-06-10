@@ -1,7 +1,9 @@
 namespace GitVersion.Extensions;
 
+/// <summary>Extension methods that augment <see cref="IEnumerable{T}"/> and related collection types.</summary>
 public static class EnumerableExtensions
 {
+    /// <summary>Returns the single element of the sequence, or <see langword="default"/> if the sequence is empty or contains more than one element.</summary>
     public static T? OnlyOrDefault<T>(this IEnumerable<T> source)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -18,6 +20,7 @@ public static class EnumerableExtensions
         return !e.MoveNext() ? current : default;
     }
 
+    /// <summary>Returns the single element of type <typeparamref name="T"/> from a non-generic sequence, throwing if not exactly one exists.</summary>
     public static T SingleOfType<T>(this IEnumerable source)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -25,6 +28,7 @@ public static class EnumerableExtensions
         return source.OfType<T>().Single();
     }
 
+    /// <summary>Appends all elements of <paramref name="items"/> to <paramref name="source"/>.</summary>
     public static void AddRange<T>(this ICollection<T> source, IEnumerable<T> items)
     {
         source.NotNull();

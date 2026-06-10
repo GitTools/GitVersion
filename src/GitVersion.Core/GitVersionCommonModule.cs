@@ -4,8 +4,10 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
+/// <summary>Registers common infrastructure services such as logging, file system, environment, and build-agent resolution.</summary>
 public class GitVersionCommonModule : IGitVersionModule
 {
+    /// <summary>Registers the common infrastructure services into the DI container.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<ILog, Log>();
