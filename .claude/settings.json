@@ -1,0 +1,15 @@
+{
+    "enabledPlugins": {
+        "dotnet-test@dotnet-agent-skills": true,
+        "dotnet-upgrade@dotnet-agent-skills": true
+    },
+    "permissions": {
+        "allow": [
+            "Bash(grep -E \"\\\\.cs$\")",
+            "Bash(dotnet --version)",
+            "Bash(dotnet restore)",
+            "Bash(dotnet build *)",
+            "Bash(dotnet test *)"
+        ]
+    }
+}
