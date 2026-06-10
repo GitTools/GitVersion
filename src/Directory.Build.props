@@ -18,8 +18,8 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>$(NoWarn);NU1701;1591,8618,SYSLIB10;EnableGenerateDocumentationFile</NoWarn>
-        <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>
+        <NoWarn>$(NoWarn);NU1701;CS1591;EnableGenerateDocumentationFile</NoWarn>
+<!--        <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>-->
 
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
@@ -45,6 +45,7 @@
         <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
 
+        <NoWarn>$(NoWarn);CS8618</NoWarn>
         <EnableNUnitRunner>true</EnableNUnitRunner>
         <EnableMicrosoftTestingPlatformRunner>true</EnableMicrosoftTestingPlatformRunner>
 

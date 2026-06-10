@@ -8,7 +8,7 @@ internal class Arguments
     public AuthenticationInfo Authentication = new();
 
     public string? ConfigurationFile;
-    public IReadOnlyDictionary<object, object?> OverrideConfiguration;
+    public IReadOnlyDictionary<object, object?> OverrideConfiguration = new Dictionary<object, object?>();
     public bool ShowConfiguration;
 
     public string? TargetPath;
