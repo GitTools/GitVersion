@@ -18,8 +18,7 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>$(NoWarn);NU1701;CS1591;EnableGenerateDocumentationFile</NoWarn>
-<!--        <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0022;RS0024;RS0025;RS0026;RS0027</WarningsAsErrors>-->
+        <NoWarn>$(NoWarn);NU1701;EnableGenerateDocumentationFile</NoWarn>
 
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>

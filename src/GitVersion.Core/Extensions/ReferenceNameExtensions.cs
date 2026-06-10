@@ -5,13 +5,16 @@ using SemanticVersionResult = (GitVersion.SemanticVersion Value, string? Name);
 
 namespace GitVersion.Configuration;
 
+/// <summary>Extension methods on <see cref="ReferenceName"/> for semantic-version extraction.</summary>
 public static class ReferenceNameExtensions
 {
     extension(ReferenceName source)
     {
+        /// <summary>Attempts to parse a semantic version from this reference name using the supplied effective configuration.</summary>
         public bool TryGetSemanticVersion(EffectiveConfiguration configuration, out SemanticVersionResult result)
             => source.TryGetSemanticVersion(configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat, out result);
 
+        /// <summary>Attempts to parse a semantic version from this reference name using the supplied global configuration.</summary>
         public bool TryGetSemanticVersion(IGitVersionConfiguration configuration, out SemanticVersionResult result)
             => source.TryGetSemanticVersion(configuration.VersionInBranchPattern, configuration.TagPrefixPattern, configuration.SemanticVersionFormat, out result);
 

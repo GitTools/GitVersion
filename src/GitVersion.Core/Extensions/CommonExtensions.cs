@@ -3,11 +3,14 @@ using System.Runtime.CompilerServices;
 
 namespace GitVersion.Extensions;
 
+/// <summary>General-purpose extension and guard methods used throughout GitVersion.</summary>
 public static class CommonExtensions
 {
+    /// <summary>Throws <see cref="ArgumentNullException"/> when <paramref name="value"/> is <see langword="null"/>; otherwise returns the value.</summary>
     public static T NotNull<T>([NotNull] this T? value, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : class => value ?? throw new ArgumentNullException(name);
 
+    /// <summary>Throws <see cref="ArgumentException"/> when <paramref name="value"/> is <see langword="null"/> or empty; otherwise returns the value.</summary>
     public static string NotNullOrEmpty([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (string.IsNullOrEmpty(value))
@@ -18,6 +21,7 @@ public static class CommonExtensions
         return value;
     }
 
+    /// <summary>Throws <see cref="ArgumentException"/> when <paramref name="value"/> is <see langword="null"/>, empty, or whitespace; otherwise returns the value.</summary>
     public static string NotNullOrWhitespace([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (string.IsNullOrWhiteSpace(value))

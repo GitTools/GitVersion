@@ -5,27 +5,38 @@ using GitVersion.Extensions;
 
 namespace GitVersion;
 
+/// <summary>Represents a semantic version with optional pre-release tag and build metadata.</summary>
 public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
 {
+    /// <summary>A zero-valued semantic version with no pre-release tag or build metadata.</summary>
     public static readonly SemanticVersion Empty = new();
 
+    /// <summary>Gets or initializes the major version component.</summary>
     public long Major { get; init; }
 
+    /// <summary>Gets or initializes the minor version component.</summary>
     public long Minor { get; init; }
 
+    /// <summary>Gets or initializes the patch version component.</summary>
     public long Patch { get; init; }
 
+    /// <summary>Gets a value indicating whether this version has a pre-release tag.</summary>
     public bool IsPreRelease => PreReleaseTag.HasTag();
 
+    /// <summary>Gets or initializes the pre-release tag.</summary>
     public SemanticVersionPreReleaseTag PreReleaseTag { get; init; }
 
+    /// <summary>Gets or initializes the build metadata associated with this version.</summary>
     public SemanticVersionBuildMetaData BuildMetaData { get; init; }
 
+    /// <summary>Returns <see langword="true"/> when the pre-release tag name equals <paramref name="value"/> (case-insensitive).</summary>
     public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
 
+    /// <summary>Returns <see langword="true"/> when this version is compatible with a branch-specific label check: no tag set, no label supplied, or the label matches.</summary>
     public bool IsMatchForBranchSpecificLabel(string? value)
         => (PreReleaseTag.Name.Length == 0 && PreReleaseTag.Number is null) || value is null || IsLabeledWith(value);
 
+    /// <summary>Initializes a new semantic version with the given major, minor, and patch values.</summary>
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
         this.Major = major;
@@ -35,6 +46,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.BuildMetaData = SemanticVersionBuildMetaData.Empty;
     }
 
+    /// <summary>Initializes a new semantic version as a copy of <paramref name="semanticVersion"/>.</summary>
     public SemanticVersion(SemanticVersion semanticVersion)
     {
         semanticVersion.NotNull();
@@ -47,6 +59,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.BuildMetaData = semanticVersion.BuildMetaData;
     }
 
+    /// <summary>Returns <see langword="true"/> when this version is equal to <paramref name="obj"/>.</summary>
     public bool Equals(SemanticVersion? obj)
     {
         if (obj == null)
@@ -60,8 +73,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             && this.BuildMetaData == obj.BuildMetaData;
     }
 
+    /// <summary>Returns <see langword="true"/> when this instance equals <see cref="Empty"/>.</summary>
     public bool IsEmpty() => Equals(Empty);
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="SemanticVersion"/> equal to this instance.</summary>
     public override bool Equals(object? obj)
     {
         if (obj is null)
@@ -75,8 +90,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return obj.GetType() == GetType() && Equals((SemanticVersion)obj);
     }
 
+    /// <summary>Returns a hash code combining all version components.</summary>
     public override int GetHashCode() => HashCode.Combine(Major, Minor, Patch, PreReleaseTag, BuildMetaData);
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> and <paramref name="v2"/> are equal.</summary>
     public static bool operator ==(SemanticVersion? v1, SemanticVersion? v2)
     {
         if (v1 is null)
@@ -86,8 +103,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.Equals(v2);
     }
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> and <paramref name="v2"/> are not equal.</summary>
     public static bool operator !=(SemanticVersion? v1, SemanticVersion? v2) => !(v1 == v2);
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> is greater than <paramref name="v2"/>.</summary>
     public static bool operator >(SemanticVersion v1, SemanticVersion v2)
     {
         ArgumentNullException.ThrowIfNull(v1);
@@ -96,6 +115,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) > 0;
     }
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> is greater than or equal to <paramref name="v2"/>.</summary>
     public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
     {
         ArgumentNullException.ThrowIfNull(v1);
@@ -104,6 +124,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) >= 0;
     }
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> is less than or equal to <paramref name="v2"/>.</summary>
     public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
     {
         ArgumentNullException.ThrowIfNull(v1);
@@ -112,6 +133,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) <= 0;
     }
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="v1"/> is less than <paramref name="v2"/>.</summary>
     public static bool operator <(SemanticVersion v1, SemanticVersion v2)
     {
         ArgumentNullException.ThrowIfNull(v1);
@@ -120,6 +142,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) < 0;
     }
 
+    /// <summary>Parses <paramref name="version"/> as a semantic version, throwing when the input cannot be parsed.</summary>
     public static SemanticVersion Parse(
         string version, string? tagPrefixRegex, SemanticVersionFormat versionFormat = SemanticVersionFormat.Strict)
     {
@@ -129,6 +152,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return semanticVersion;
     }
 
+    /// <summary>Attempts to parse <paramref name="version"/> as a semantic version, returning <see langword="true"/> on success.</summary>
     public static bool TryParse(string version, string? tagPrefixRegex,
         [NotNullWhen(true)] out SemanticVersion? semanticVersion, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
@@ -201,23 +225,30 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return true;
     }
 
+    /// <summary>Returns <see langword="true"/> when this version is greater than <paramref name="value"/>.</summary>
     public bool IsGreaterThan(SemanticVersion? value, bool includePreRelease = true)
         => CompareTo(value, includePreRelease) > 0;
 
+    /// <summary>Returns <see langword="true"/> when this version is greater than or equal to <paramref name="value"/>.</summary>
     public bool IsGreaterThanOrEqualTo(SemanticVersion? value, bool includePreRelease = true)
         => CompareTo(value, includePreRelease) >= 0;
 
+    /// <summary>Returns <see langword="true"/> when this version is less than <paramref name="value"/>.</summary>
     public bool IsLessThan(SemanticVersion? value, bool includePreRelease = true)
         => CompareTo(value, includePreRelease) < 0;
 
+    /// <summary>Returns <see langword="true"/> when this version is less than or equal to <paramref name="value"/>.</summary>
     public bool IsLessThanOrEqualTo(SemanticVersion? value, bool includePreRelease = true)
         => CompareTo(value, includePreRelease) <= 0;
 
+    /// <summary>Returns <see langword="true"/> when this version is equal to <paramref name="value"/>.</summary>
     public bool IsEqualTo(SemanticVersion? value, bool includePreRelease = true)
         => CompareTo(value, includePreRelease) == 0;
 
+    /// <summary>Compares this version to <paramref name="value"/>, including the pre-release tag in the comparison.</summary>
     public int CompareTo(SemanticVersion? value) => CompareTo(value, includePreRelease: true);
 
+    /// <summary>Compares this version to <paramref name="value"/>, optionally excluding the pre-release tag from the comparison.</summary>
     public int CompareTo(SemanticVersion? value, bool includePreRelease)
     {
         if (value == null)
@@ -257,8 +288,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return -1;
     }
 
+    /// <summary>Returns the default semantic version string (without build metadata).</summary>
     public override string ToString() => ToString("s");
 
+    /// <summary>Returns a string representation of this version using the given format specifier.</summary>
     public string ToString(string format) => ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
@@ -303,16 +336,20 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
+    /// <summary>Returns a new version derived from this one with the pre-release tag changed to <paramref name="label"/>.</summary>
     public SemanticVersion WithLabel(string? label) => Increment(VersionField.None, label, mode: IncrementMode.Standard);
 
+    /// <summary>Returns a new version incremented by <paramref name="increment"/> with the given <paramref name="label"/>.</summary>
     public SemanticVersion Increment(
             VersionField increment, string? label, params SemanticVersion?[] alternativeSemanticVersions)
         => Increment(increment, label, mode: IncrementMode.Standard, alternativeSemanticVersions);
 
+    /// <summary>Returns a new version incremented by <paramref name="increment"/> with the given <paramref name="label"/>, optionally forcing the increment.</summary>
     public SemanticVersion Increment(
             VersionField increment, string? label, bool forceIncrement, params SemanticVersion?[] alternativeSemanticVersions)
         => Increment(increment, label, mode: forceIncrement ? IncrementMode.Force : IncrementMode.Standard, alternativeSemanticVersions);
 
+    /// <summary>Returns a new version incremented by <paramref name="increment"/> with the given <paramref name="label"/> and increment <paramref name="mode"/>.</summary>
     public SemanticVersion Increment(
         VersionField increment, string? label, IncrementMode mode, params SemanticVersion?[] alternativeSemanticVersions)
     {
@@ -422,12 +459,16 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         };
     }
 
+    /// <summary>Controls how version incrementing is applied.</summary>
     public enum IncrementMode
     {
+        /// <summary>Increments the pre-release number when already on a pre-release, otherwise bumps the field.</summary>
         Standard,
 
+        /// <summary>Always bumps the version field regardless of whether a pre-release tag is present.</summary>
         Force,
 
+        /// <summary>Ensures the resulting version is strictly greater than the current one without forcing an unnecessary bump.</summary>
         EnsureIntegrity
     }
 }
