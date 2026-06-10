@@ -6,7 +6,7 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class TeamCityTests : TestBase
 {
-    private TeamCity buildServer;
+    private TeamCity buildServer = null!;
 
     [SetUp]
     public void SetUp()

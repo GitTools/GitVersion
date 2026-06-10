@@ -10,10 +10,10 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class BitBucketPipelinesTests : TestBase
 {
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private BitBucketPipelines buildServer;
-    private IServiceProvider sp;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private BitBucketPipelines buildServer = null!;
+    private IServiceProvider sp = null!;
 
     [SetUp]
     public void SetEnvironmentVariableForTest()

@@ -6,9 +6,9 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class DroneTests : TestBase
 {
-    private IEnvironment environment;
-    private IServiceProvider sp;
-    private Drone buildServer;
+    private IEnvironment environment = null!;
+    private IServiceProvider sp = null!;
+    private Drone buildServer = null!;
 
     [SetUp]
     public void SetUp()

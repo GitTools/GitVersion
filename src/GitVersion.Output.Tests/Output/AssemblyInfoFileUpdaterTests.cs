@@ -14,10 +14,10 @@ namespace GitVersion.Output.Tests;
 [Parallelizable(ParallelScope.None)]
 public class AssemblyInfoFileUpdaterTests : TestBase
 {
-    private IVariableProvider variableProvider;
-    private ILog log;
-    private IFileSystem fileSystem;
-    private string workingDir;
+    private IVariableProvider variableProvider = null!;
+    private ILog log = null!;
+    private IFileSystem fileSystem = null!;
+    private string workingDir = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp() => workingDir = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), nameof(AssemblyInfoFileUpdaterTests));

@@ -10,8 +10,8 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class VariableProviderTests : TestBase
 {
-    private IVariableProvider variableProvider;
-    private List<string> logMessages;
+    private IVariableProvider variableProvider = null!;
+    private List<string> logMessages = null!;
 
     [SetUp]
     public void Setup()

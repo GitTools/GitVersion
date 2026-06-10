@@ -8,7 +8,7 @@ namespace GitVersion.App.Tests;
 [TestFixture]
 public class ArgumentParserOnBuildServerTests : TestBase
 {
-    private IArgumentParser argumentParser;
+    private IArgumentParser argumentParser = null!;
 
     [SetUp]
     public void SetUp()

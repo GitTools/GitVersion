@@ -8,9 +8,9 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class GitHubActionsTests : TestBase
 {
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private GitHubActions buildServer;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private GitHubActions buildServer = null!;
     private string? githubSetEnvironmentTempFilePath;
 
     [SetUp]

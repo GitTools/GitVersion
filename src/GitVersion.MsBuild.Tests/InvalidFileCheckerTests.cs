@@ -8,9 +8,9 @@ namespace GitVersion.MsBuild.Tests;
 [TestFixture]
 public class InvalidFileCheckerTests : TestBase
 {
-    private string projectDirectory;
-    private string projectFile;
-    private IFileSystem fileSystem;
+    private string projectDirectory = null!;
+    private string projectFile = null!;
+    private IFileSystem fileSystem = null!;
 
     [SetUp]
     public void CreateTemporaryProject()

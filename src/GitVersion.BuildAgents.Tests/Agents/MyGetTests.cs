@@ -6,7 +6,7 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class MyGetTests : TestBase
 {
-    private MyGet buildServer;
+    private MyGet buildServer = null!;
 
     [SetUp]
     public void SetUp()
