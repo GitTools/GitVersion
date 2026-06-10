@@ -89,11 +89,21 @@ dotnet run --project new-cli/GitVersion.Cli
 ## Conventions
 
 - **SDK / TFM**: .NET 10 (`global.json`); most projects target `net10.0`.
+- **C# version**: `LangVersion=latest` (C# 14). Prefer new syntax where it improves clarity:
+  - `field` keyword — access auto-property backing field inside the property body instead of a manual backing field
+  - Extension members — use the new `extension(Type t) { }` block syntax for extension methods/properties
+  - Null-conditional assignment — `x?.Property = value`
+  - `params` collections — `params` now works with any collection type, not just arrays
+  - Partial properties — analogous to partial methods for source generators
 - **Package versions**: update `src/Directory.Packages.props`, not individual csproj files. Add packages via `dotnet add package <Package> --version <Version>`.
 - **Config file names**: `GitVersion.yml`, `GitVersion.yaml`, `.GitVersion.yml`, `.GitVersion.yaml` — use these names or pass `--configfile`.
 - **Code style**: `.editorconfig` defines style; run `dotnet format` to apply.
 - **Commit style**: prefer atomic commits; rebase onto `main` rather than merging.
 - **Tests**: integration tests live in `src/GitVersion.Core.Tests/IntegrationTests/`. Use `EmptyRepositoryFixture` / `BaseGitFlowRepositoryFixture` and builder patterns (`GitFlowConfigurationBuilder`, `GitHubFlowConfigurationBuilder`).
+
+## Tips
+
+- For `gh` commands, set `GH_PAGER=cat GH_FORCE_TTY=0` to avoid pager/TTY issues in non-interactive terminals.
 
 ## What to check when changing behavior
 

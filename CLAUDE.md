@@ -64,7 +64,13 @@ Each tree has its own `Directory.Packages.props` for centralized package version
 
 - **Package versions**: update `src/Directory.Packages.props` (or `new-cli/Directory.Packages.props`), not individual csproj files. Add packages via `dotnet add package <Package> --version <Version>`.
 - **Config file names**: `GitVersion.yml`, `GitVersion.yaml`, `.GitVersion.yml`, `.GitVersion.yaml` — see `ConfigurationFileLocator.cs` for the lookup order.
-- **Code style**: defined in `.editorconfig`; run `dotnet format` to apply. C# latest features, nullable reference types, implicit usings enabled.
+- **Code style**: defined in `.editorconfig`; run `dotnet format` to apply. Nullable reference types and implicit usings are enabled.
+- **C# version**: `LangVersion=latest` (C# 14). Prefer new syntax where it improves clarity:
+  - `field` keyword — access auto-property backing field inside the property body instead of a manual backing field
+  - Extension members — use the new `extension(Type t) { }` block syntax for extension methods/properties
+  - Null-conditional assignment — `x?.Property = value`
+  - `params` collections — `params` now works with any collection type, not just arrays
+  - Partial properties — analogous to partial methods for source generators
 - **Commit style**: prefer atomic commits; rebase onto `main` rather than merging.
 - **CLI output changes**: update `docs/` examples and build-agent adapters that parse JSON or env vars.
 
