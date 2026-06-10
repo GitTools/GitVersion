@@ -370,7 +370,7 @@ public class ArgumentParserTests : TestBase
     public void OverrideconfigWithNoOptions()
     {
         var arguments = this.argumentParser.ParseArguments("/overrideconfig");
-        arguments.OverrideConfiguration.ShouldBeNull();
+        arguments.OverrideConfiguration.ShouldBeEmpty();
     }
 
     [TestCaseSource(nameof(OverrideconfigWithInvalidOptionTestData))]

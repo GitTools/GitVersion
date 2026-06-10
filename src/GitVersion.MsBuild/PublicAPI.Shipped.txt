@@ -6,7 +6,7 @@ GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GitVersionInformationFile
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.IntermediateOutputPath.get -> string!
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.Language.get -> string!
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.ProjectFile.get -> string!
-GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string?
 GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.UseProjectNamespaceForGitVersionInformation.get -> string?
 GitVersion.MsBuild.Tasks.GetVersion
 GitVersion.MsBuild.Tasks.GetVersion.AssemblySemFileVer.get -> string!
