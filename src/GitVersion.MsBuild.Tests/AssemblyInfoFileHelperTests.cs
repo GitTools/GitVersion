@@ -16,7 +16,7 @@ public class AssemblyInfoFileHelperTests
         }
         else
         {
-            Assert.That((TestDelegate)(() => AssemblyInfoFileHelper.GetFileExtension(language)), Throws.ArgumentException.With.Message.EqualTo($"Unknown language detected: '{language}'"));
+            Assert.That(() => AssemblyInfoFileHelper.GetFileExtension(language), Throws.ArgumentException.With.Message.EqualTo($"Unknown language detected: '{language}'"));
         }
     }
 

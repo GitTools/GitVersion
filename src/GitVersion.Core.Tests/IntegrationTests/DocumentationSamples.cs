@@ -381,7 +381,9 @@ public class DocumentationSamples : TestBase
 
         // test that the VersionSourceDistance should still return the commit count
         var version = fixture.GetVersion();
+#pragma warning disable CS0618
         version.CommitsSinceVersionSource.ShouldBe("0");
+#pragma warning restore CS0618
         version.VersionSourceDistance.ShouldBe("0");
 
         // Make a commit after a tag should bump up the beta
