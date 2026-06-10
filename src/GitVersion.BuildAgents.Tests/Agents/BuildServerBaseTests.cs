@@ -11,8 +11,8 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class BuildServerBaseTests : TestBase
 {
-    private IVariableProvider buildServer;
-    private IServiceProvider sp;
+    private IVariableProvider buildServer = null!;
+    private IServiceProvider sp = null!;
 
     [SetUp]
     public void SetUp()

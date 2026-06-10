@@ -6,7 +6,7 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class ContinuaCiTests : TestBase
 {
-    private IServiceProvider sp;
+    private IServiceProvider sp = null!;
 
     [SetUp]
     public void SetUp() => this.sp = ConfigureServices(services => services.AddSingleton<ContinuaCi>());

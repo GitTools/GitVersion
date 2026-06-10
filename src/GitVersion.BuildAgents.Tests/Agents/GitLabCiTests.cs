@@ -10,10 +10,10 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class GitLabCiTests : TestBase
 {
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private IServiceProvider sp;
-    private GitLabCi buildServer;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private IServiceProvider sp = null!;
+    private GitLabCi buildServer = null!;
 
     [SetUp]
     public void SetUp()

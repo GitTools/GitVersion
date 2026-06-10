@@ -16,11 +16,11 @@ namespace GitVersion.Output.Tests;
 public class ProjectFileUpdaterTests : TestBase
 {
     private const string TargetFramework = "net10.0";
-    private IVariableProvider variableProvider;
-    private ILog log;
-    private IFileSystem fileSystem;
-    private ProjectFileUpdater projectFileUpdater;
-    private List<string> logMessages;
+    private IVariableProvider variableProvider = null!;
+    private ILog log = null!;
+    private IFileSystem fileSystem = null!;
+    private ProjectFileUpdater projectFileUpdater = null!;
+    private List<string> logMessages = null!;
 
     [SetUp]
     public void Setup()

@@ -11,9 +11,9 @@ namespace GitVersion.App.Tests;
 [TestFixture]
 public class ArgumentParserTests : TestBase
 {
-    private IEnvironment environment;
-    private IArgumentParser argumentParser;
-    private IFileSystem fileSystem;
+    private IEnvironment environment = null!;
+    private IArgumentParser argumentParser = null!;
+    private IFileSystem fileSystem = null!;
 
     [SetUp]
     public void SetUp()
