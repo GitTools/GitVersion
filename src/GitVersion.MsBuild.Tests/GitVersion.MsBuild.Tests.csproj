@@ -3,7 +3,6 @@
     <ItemGroup>
         <PackageReference Include="Buildalyzer" />
         <PackageReference Include="LibGit2Sharp" />
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
         <PackageReference Include="Microsoft.Build" />
         <PackageReference Include="Microsoft.Build.Tasks.Core" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
@@ -13,9 +12,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.IO.Redist" />
         <PackageReference Include="MSBuild.ProjectCreation" />
-        <PackageReference Include="System.Drawing.Common" />
-        <PackageReference Include="System.Formats.Nrbf" />
-        <PackageReference Include="System.Security.Cryptography.Xml" />
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
