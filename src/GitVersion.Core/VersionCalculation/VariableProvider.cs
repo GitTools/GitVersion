@@ -70,7 +70,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             WeightedPreReleaseNumber: semverFormatValues.WeightedPreReleaseNumber);
     }
 
-    private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
+    private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName) where T : notnull
     {
         string? formattedString;
 
