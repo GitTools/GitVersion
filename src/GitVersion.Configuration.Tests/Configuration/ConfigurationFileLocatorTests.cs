@@ -90,8 +90,8 @@ public static class ConfigurationFileLocatorTests
     {
         private string repoPath;
         private string workingPath;
-        private IFileSystem fileSystem;
-        private IConfigurationFileLocator configFileLocator;
+        private IFileSystem fileSystem = null!;
+        private IConfigurationFileLocator configFileLocator = null!;
         private GitVersionOptions gitVersionOptions;
         private string ConfigFile => this.gitVersionOptions.ConfigurationInfo.ConfigurationFile!;
 

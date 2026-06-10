@@ -44,7 +44,6 @@
         <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
 
-        <NoWarn>$(NoWarn);CS8618</NoWarn>
         <EnableNUnitRunner>true</EnableNUnitRunner>
         <EnableMicrosoftTestingPlatformRunner>true</EnableMicrosoftTestingPlatformRunner>
 

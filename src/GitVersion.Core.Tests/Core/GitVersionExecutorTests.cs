@@ -16,10 +16,10 @@ namespace GitVersion.Core.Tests;
 [Parallelizable(ParallelScope.None)]
 public class GitVersionExecutorTests : TestBase
 {
-    private IFileSystem fileSystem;
-    private ILog log;
-    private GitVersionCacheProvider gitVersionCacheProvider;
-    private IServiceProvider sp;
+    private IFileSystem fileSystem = null!;
+    private ILog log = null!;
+    private GitVersionCacheProvider gitVersionCacheProvider = null!;
+    private IServiceProvider sp = null!;
 
     private const string versionCacheFileContent =
         """

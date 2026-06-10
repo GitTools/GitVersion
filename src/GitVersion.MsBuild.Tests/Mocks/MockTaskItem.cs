@@ -4,11 +4,11 @@ namespace GitVersion.MsBuild.Tests.Mocks;
 
 internal class MockTaskItem : ITaskItem
 {
-    public string ItemSpec { get; set; }
+    public string ItemSpec { get; set; } = null!;
 
     public int MetadataCount { get; set; }
 
-    public ICollection MetadataNames { get; set; }
+    public ICollection MetadataNames { get; set; } = null!;
 
     public IDictionary CloneCustomMetadata() => throw new NotImplementedException();
 
