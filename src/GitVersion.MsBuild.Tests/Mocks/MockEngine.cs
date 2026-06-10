@@ -96,7 +96,7 @@ internal sealed class MockEngine : IBuildEngine4
         IDictionary[] globalProperties,
         IList<string>[] removeGlobalProperties,
         string[] toolsVersion,
-        bool returnTargetOutputs) => new(false, null);
+        bool returnTargetOutputs) => new(false, []);
 
     public void Yield()
     {
