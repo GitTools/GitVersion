@@ -3,10 +3,12 @@ using GitVersion.Helpers;
 
 namespace GitVersion.Extensions;
 
+/// <summary>Extension methods on <see cref="IFileSystem"/> for common file-system operations.</summary>
 public static class FileSystemExtensions
 {
     extension(IFileSystem fileSystem)
     {
+        /// <summary>Returns the latest last-write timestamp (in UTC ticks) of any subdirectory under <paramref name="path"/>.</summary>
         public long GetLastDirectoryWrite(string path) => fileSystem.DirectoryInfo.New(path)
             .GetDirectories("*.*", SearchOption.AllDirectories)
             .Select(d => d.LastWriteTimeUtc)
@@ -14,6 +16,7 @@ public static class FileSystemExtensions
             .Max()
             .Ticks;
 
+        /// <summary>Walks up the directory tree from <paramref name="path"/> looking for a <c>.git</c> directory or file, returning the git directory and working-tree paths when found.</summary>
         public (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(string? path)
         {
             var startingDir = path;

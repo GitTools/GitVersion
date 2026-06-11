@@ -6,8 +6,8 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class BuildKiteTests : TestBase
 {
-    private IEnvironment environment;
-    private BuildKite buildServer;
+    private IEnvironment environment = null!;
+    private BuildKite buildServer = null!;
 
     [SetUp]
     public void SetUp()

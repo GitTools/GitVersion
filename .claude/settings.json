@@ -7,9 +7,11 @@
         "allow": [
             "Bash(grep -E \"\\\\.cs$\")",
             "Bash(dotnet --version)",
-            "Bash(dotnet restore)",
             "Bash(dotnet build *)",
-            "Bash(dotnet test *)"
+            "Bash(dotnet test *)",
+            "Bash(dotnet clean *)",
+            "Bash(dotnet restore *)",
+            "Bash(dotnet format *)"
         ]
     }
 }

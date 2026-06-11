@@ -9,8 +9,8 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class DocumentationTests : TestBase
 {
-    private FileSystem fileSystem;
-    private IDirectoryInfo docsDirectory;
+    private FileSystem fileSystem = null!;
+    private IDirectoryInfo docsDirectory = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()

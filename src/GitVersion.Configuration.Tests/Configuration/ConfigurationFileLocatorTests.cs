@@ -10,11 +10,11 @@ public static class ConfigurationFileLocatorTests
 {
     public class DefaultConfigFileLocatorTests : TestBase
     {
-        private string repoPath;
-        private string workingPath;
-        private IFileSystem fileSystem;
-        private ConfigurationProvider configurationProvider;
-        private IConfigurationFileLocator configFileLocator;
+        private string repoPath = null!;
+        private string workingPath = null!;
+        private IFileSystem fileSystem = null!;
+        private ConfigurationProvider configurationProvider = null!;
+        private IConfigurationFileLocator configFileLocator = null!;
 
         [SetUp]
         public void Setup()
@@ -88,11 +88,11 @@ public static class ConfigurationFileLocatorTests
 
     public class NamedConfigurationFileLocatorTests : TestBase
     {
-        private string repoPath;
-        private string workingPath;
-        private IFileSystem fileSystem;
-        private IConfigurationFileLocator configFileLocator;
-        private GitVersionOptions gitVersionOptions;
+        private string repoPath = null!;
+        private string workingPath = null!;
+        private IFileSystem fileSystem = null!;
+        private IConfigurationFileLocator configFileLocator = null!;
+        private GitVersionOptions gitVersionOptions = null!;
         private string ConfigFile => this.gitVersionOptions.ConfigurationInfo.ConfigurationFile!;
 
         [SetUp]

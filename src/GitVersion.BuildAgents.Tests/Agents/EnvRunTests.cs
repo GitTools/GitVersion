@@ -9,10 +9,10 @@ namespace GitVersion.BuildAgents.Tests;
 public class EnvRunTests : TestBase
 {
     private const string EnvVarName = "ENVRUN_DATABASE";
-    private string mFilePath;
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private EnvRun buildServer;
+    private string mFilePath = null!;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private EnvRun buildServer = null!;
 
     [SetUp]
     public void SetEnvironmentVariableForTest()

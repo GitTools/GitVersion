@@ -8,9 +8,9 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class GitVersionTaskDirectoryTests : TestBase
 {
-    private string gitDirectory;
-    private string workDirectory;
-    private IFileSystem fileSystem;
+    private string gitDirectory = null!;
+    private string workDirectory = null!;
+    private IFileSystem fileSystem = null!;
 
     [SetUp]
     public void SetUp()

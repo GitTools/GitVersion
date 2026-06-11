@@ -5,15 +5,15 @@ namespace GitVersion.MsBuild.Tasks;
 
 public abstract class GitVersionTaskBase : ITask
 {
-    public IBuildEngine BuildEngine { get; set; }
-    public ITaskHost HostObject { get; set; }
+    public IBuildEngine BuildEngine { get; set; } = null!;
+    public ITaskHost HostObject { get; set; } = null!;
 
     protected GitVersionTaskBase() => Log = new(this);
 
     [Required]
-    public string SolutionDirectory { get; set; }
+    public string SolutionDirectory { get; set; } = null!;
 
-    public string VersionFile { get; set; }
+    public string VersionFile { get; set; } = null!;
 
     public TaskLoggingHelper Log { get; }
 

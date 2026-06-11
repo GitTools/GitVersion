@@ -11,9 +11,9 @@ namespace GitVersion.Configuration.Tests;
 [TestFixture]
 public class ConfigurationProviderTests : TestBase
 {
-    private string repoPath;
-    private ConfigurationProvider configurationProvider;
-    private IFileSystem fileSystem;
+    private string repoPath = null!;
+    private ConfigurationProvider configurationProvider = null!;
+    private IFileSystem fileSystem = null!;
 
     [SetUp]
     public void Setup()

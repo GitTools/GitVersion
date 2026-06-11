@@ -12,7 +12,7 @@ namespace GitVersion.Output.Tests;
 [Parallelizable(ParallelScope.None)]
 internal class WixFileTests : TestBase
 {
-    private string workingDir;
+    private string workingDir = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp() => workingDir = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "WixFileTests");

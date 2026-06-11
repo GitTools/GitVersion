@@ -8,7 +8,7 @@ namespace GitVersion.App.Tests;
 [Parallelizable(ParallelScope.None)]
 internal class UpdateWixVersionFileTests
 {
-    private string wixVersionFileName;
+    private string wixVersionFileName = null!;
 
     [SetUp]
     public void Setup() => this.wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;

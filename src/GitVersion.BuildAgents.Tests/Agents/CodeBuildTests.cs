@@ -10,10 +10,10 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public sealed class CodeBuildTests : TestBase
 {
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private IServiceProvider sp;
-    private CodeBuild buildServer;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private IServiceProvider sp = null!;
+    private CodeBuild buildServer = null!;
 
     [SetUp]
     public void SetUp()

@@ -9,8 +9,8 @@ public class AzurePipelinesTests : TestBase
     private const string key = "BUILD_BUILDNUMBER";
     private const string logPrefix = "##vso[build.updatebuildnumber]";
 
-    private IEnvironment environment;
-    private AzurePipelines buildServer;
+    private IEnvironment environment = null!;
+    private AzurePipelines buildServer = null!;
 
     [SetUp]
     public void SetEnvironmentVariableForTest()

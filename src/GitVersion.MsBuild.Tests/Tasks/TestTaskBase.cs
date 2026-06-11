@@ -14,7 +14,7 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 
 public abstract class TestTaskBase : TestBase
 {
-    protected IFileSystem FileSystem;
+    protected IFileSystem FileSystem = null!;
 
     [SetUp]
     public void SetUp()

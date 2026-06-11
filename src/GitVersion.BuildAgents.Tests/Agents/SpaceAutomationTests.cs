@@ -6,8 +6,8 @@ namespace GitVersion.BuildAgents.Tests;
 [TestFixture]
 public class SpaceAutomationTests : TestBase
 {
-    private IEnvironment environment;
-    private SpaceAutomation buildServer;
+    private IEnvironment environment = null!;
+    private SpaceAutomation buildServer = null!;
 
     [SetUp]
     public void SetUp()

@@ -7,6 +7,7 @@ using GitVersion.Git;
 
 namespace GitVersion;
 
+/// <summary>Parses the message of a merge commit to extract the merged branch name, target branch, pull-request number, and embedded semantic version.</summary>
 public class MergeMessage
 {
     private static readonly IList<(string Name, Regex Pattern)> DefaultFormats =
@@ -21,6 +22,7 @@ public class MergeMessage
         new("AzureDevOpsPull", RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex)
     ];
 
+    /// <summary>Parses <paramref name="mergeMessage"/> using the configured and built-in merge message formats.</summary>
     public MergeMessage(string mergeMessage, IGitVersionConfiguration configuration)
     {
         mergeMessage.NotNull();
@@ -59,12 +61,22 @@ public class MergeMessage
         }
     }
 
+    /// <summary>Gets the name of the merge message format pattern that was matched, or <see langword="null"/> if none matched.</summary>
     public string? FormatName { get; }
+
+    /// <summary>Gets the name of the branch that was the merge target, or <see langword="null"/> if not captured.</summary>
     public string? TargetBranch { get; }
+
+    /// <summary>Gets the reference name of the branch that was merged in, or <see langword="null"/> if not captured.</summary>
     public ReferenceName? MergedBranch { get; }
 
+    /// <summary>Gets a value indicating whether this merge message represents a merged pull request.</summary>
     public bool IsMergedPullRequest => PullRequestNumber != null;
+
+    /// <summary>Gets the pull-request number extracted from the merge message, or <see langword="null"/> if this is not a pull-request merge.</summary>
     public int? PullRequestNumber { get; }
+
+    /// <summary>Gets the semantic version embedded in the merged branch name, or <see langword="null"/> if none was found.</summary>
     public SemanticVersion? Version { get; }
 
     private ReferenceName GetMergedBranchName(string mergedBranch)
@@ -76,6 +88,7 @@ public class MergeMessage
         return ReferenceName.FromBranchName(mergedBranch);
     }
 
+    /// <summary>Attempts to parse a valid merge message from <paramref name="mergeCommit"/>, setting <paramref name="mergeMessage"/> when successful.</summary>
     public static bool TryParse(
         ICommit mergeCommit, IGitVersionConfiguration configuration, [NotNullWhen(true)] out MergeMessage? mergeMessage)
     {

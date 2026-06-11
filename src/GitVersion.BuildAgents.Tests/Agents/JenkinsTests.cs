@@ -14,10 +14,10 @@ public class JenkinsTests : TestBase
     private const string branch = "GIT_BRANCH";
     private const string localBranch = "GIT_LOCAL_BRANCH";
     private const string pipelineBranch = "BRANCH_NAME";
-    private IEnvironment environment;
-    private IFileSystem fileSystem;
-    private IServiceProvider sp;
-    private Jenkins buildServer;
+    private IEnvironment environment = null!;
+    private IFileSystem fileSystem = null!;
+    private IServiceProvider sp = null!;
+    private Jenkins buildServer = null!;
 
     [SetUp]
     public void SetUp()

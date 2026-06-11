@@ -21,11 +21,11 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? patchVersionBumpMessage;
     private string? noBumpMessage;
     private int? tagPreReleaseWeight;
-    private IgnoreConfiguration ignore;
+    private IgnoreConfiguration ignore = new();
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
-    private VersionStrategies[] versionStrategies;
+    private VersionStrategies[] versionStrategies = [];
     private Dictionary<string, string> mergeMessageFormats = [];
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = [];
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = [];
@@ -479,8 +479,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     protected record BranchMetaData
     {
-        public string Name { get; init; }
+        public required string Name { get; init; }
 
-        public string RegexPattern { get; init; }
+        public required string RegexPattern { get; init; }
     }
 }
