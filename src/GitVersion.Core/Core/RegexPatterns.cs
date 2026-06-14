@@ -17,27 +17,7 @@ internal static partial class RegexPatterns
     private const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)";
 
     [StringSyntax(StringSyntaxAttribute.Regex)]
-    private const string ExpandTokensRegexPattern =
-        """
-        \{                              # Opening brace
-            (?:                         # Start of either env or member expression
-                env:(?!env:)(?<envvar>[A-Za-z_][A-Za-z0-9_]*)       # Only a single env: prefix, not followed by another env:
-                |                                                   # OR
-                (?<member>[A-Za-z_][A-Za-z0-9_]*)                   # member/property name
-                (?:                                                 # Optional format specifier
-                    :(?<format>[A-Za-z0-9\.\-,]+)                   # Colon followed by format string (no spaces, ?, or }), format cannot contain colon
-                )?                                                  # Format is optional
-            )                                                       # End group for env or member
-            (?:                                                     # Optional fallback group
-                \s*\?\?\s+                                          # '??' operator with optional whitespace: exactly two question marks for fallback
-                (?:                                                 # Fallback value alternatives:
-                    (?<fallback>\w+)                                #   A single word fallback
-                    |                                               # OR
-                    "(?<fallback>[^"]*)"                            #   A quoted string fallback
-                )
-            )?                                                      # Fallback is optional
-        \}
-        """;
+    private const string ExpandTokensRegexPattern = @"\{([^{}]+)\}";
 
     /// <summary>
     ///   Allow alphanumeric, underscore, colon (for custom format specification), hyphen, and dot

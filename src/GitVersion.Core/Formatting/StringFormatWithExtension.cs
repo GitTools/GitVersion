@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace GitVersion.Formatting;
 
@@ -40,7 +41,7 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format, fallback) => EvaluateMemberFromObject(source, member, format, fallback), environment);
+            return template.FormatWith((member, format) => EvaluateMemberFromObject(source, member, format), environment);
         }
 
         /// <summary>
@@ -68,62 +69,64 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format, fallback) => EvaluateMemberFromDictionary(source, member, format, fallback), environment);
+            return template.FormatWith((member, format) => EvaluateMemberFromDictionary(source, member, format), environment);
         }
 
         private string FormatWith(EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
         {
             ArgumentNullException.ThrowIfNull(template);
 
-            var result = new StringBuilder();
-            var lastIndex = 0;
-
-            foreach (var match in RegexPatterns.ExpandTokensRegex.Matches(template).Cast<Match>())
-            {
-                var replacement = EvaluateMatch(match, memberEvaluator, environment);
-                result.Append(template, lastIndex, match.Index - lastIndex);
-                result.Append(replacement);
-                lastIndex = match.Index + match.Length;
-            }
-
-            result.Append(template, lastIndex, template.Length - lastIndex);
-            return result.ToString();
+            return RegexPatterns.ExpandTokensRegex.Replace(template, match => EvaluateMatch(match.Groups[1].Value, memberEvaluator, environment));
         }
     }
 
-    private static string EvaluateMatch(Match match, EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
+    private static string EvaluateMatch(string input, EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
     {
-        var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
+        ArgumentNullException.ThrowIfNull(input);
 
-        if (match.Groups["envvar"].Success)
-            return EvaluateEnvVar(match.Groups["envvar"].Value, fallback, environment);
-
-        if (match.Groups["member"].Success)
+        foreach (var token in ParseFormatTokens(input))
         {
-            var format = match.Groups["format"].Success ? match.Groups["format"].Value : null;
-            return memberEvaluator(match.Groups["member"].Value, format, fallback);
+            if (token.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
+            {
+                var safeName = InputSanitizer.SanitizeEnvVarName(token[4..]);
+                var value = environment.GetEnvironmentVariable(safeName);
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    return value;
+                }
+            }
+            else if (token.StartsWith('"') && token.EndsWith('"'))
+            {
+                return token.Trim('"');
+            }
+            else
+            {
+                var formattedParts = token.Split(':', 2);
+                var member = formattedParts.First();
+                var format = formattedParts.Skip(1).FirstOrDefault();
+
+                var value = memberEvaluator(member, format);
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    return value;
+                }
+            }
         }
 
-        throw new ArgumentException($"Invalid token format: '{match.Value}'");
+        throw new ArgumentException($"Invalid token string or no available values to parse: '{input}'");
     }
 
-    private static string EvaluateEnvVar(string name, string? fallback, IEnvironment env)
-    {
-        var safeName = InputSanitizer.SanitizeEnvVarName(name);
-        return env.GetEnvironmentVariable(safeName)
-            ?? fallback
-            ?? throw new ArgumentException($"Environment variable {safeName} not found and no fallback provided");
-    }
-
-    private static string EvaluateMemberFromObject(object source, string member, string? format, string? fallback)
+    private static string? EvaluateMemberFromObject(object source, string member, string? format)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
-        var memberPath = MemberResolver.ResolveMemberPath(source!.GetType(), safeMember);
+        var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
         var value = getter(source);
 
         if (value is null)
-            return fallback ?? string.Empty;
+            return null;
 
         if (format is not null && ValueFormatter.Default.TryFormat(
                 value,
@@ -133,24 +136,63 @@ internal static class StringFormatWithExtension
             return formatted;
         }
 
-        return value.ToString() ?? fallback ?? string.Empty;
+        return value.ToString();
     }
 
-    private static string EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format, string? fallback)
+    private static string? EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
 
         if (!source.TryGetValue(safeMember, out var value))
-            return fallback ?? string.Empty;
+            return null;
 
         if (value is null)
-            return fallback ?? string.Empty;
+            return null;
 
         if (format is not null && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(format), out var formatted))
             return formatted;
 
-        return value.ToString() ?? fallback ?? string.Empty;
+        return value.ToString();
     }
 
-    private delegate string EvaluateMemberDelegate(string member, string? format, string? fallback);
+    private static IEnumerable<string> ParseFormatTokens(string value)
+    {
+        var tokens = new List<string>();
+        var current = new StringBuilder();
+
+        var inQuotes = false;
+        var index = 0;
+
+        while (index < value.Length)
+        {
+            if (value[index] == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+
+            if (!inQuotes && index + 1 < value.Length && value[index] == '?' && value[index + 1] == '?')
+            {
+                tokens.Add(current.ToString().Trim());
+
+                current.Clear();
+                index += 2;
+            }
+            else
+            {
+                current.Append(value[index]);
+                index++;
+            }
+        }
+
+        if (current.Length > 0)
+        {
+            tokens.Add(current.ToString().Trim());
+        }
+
+        return tokens;
+    }
+
+    private static string UnescapeLiteral(string value) => value.Replace("\\\"", "\"");
+
+    private delegate string? EvaluateMemberDelegate(string member, string? format);
 }
