@@ -41,7 +41,7 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format) => EvaluateMemberFromObject(source, member, format), environment);
+            return template.FormatWith(member => EvaluateMemberFromObject(source, member), environment);
         }
 
         /// <summary>
@@ -69,10 +69,10 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format) => EvaluateMemberFromDictionary(source, member, format), environment);
+            return template.FormatWith(member => EvaluateMemberFromDictionary(source, member), environment);
         }
 
-        private string FormatWith(EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
+        private string FormatWith(Func<string, string?> memberEvaluator, IEnvironment environment)
         {
             ArgumentNullException.ThrowIfNull(template);
 
@@ -80,84 +80,64 @@ internal static class StringFormatWithExtension
         }
     }
 
-    private static string EvaluateMatch(string input, EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
+    private static string EvaluateMatch(string input, Func<string, string?> memberEvaluator, IEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(input);
 
-        foreach (var token in ParseFormatTokens(input))
+        foreach (var token in ParseTokens(input))
         {
-            if (token.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
+            if (token.Type == TokenType.Literal)
             {
-                var safeName = InputSanitizer.SanitizeEnvVarName(token[4..]);
-                var value = environment.GetEnvironmentVariable(safeName);
-
-                if (!string.IsNullOrEmpty(value))
-                {
-                    return value;
-                }
+                return token.Name;
             }
-            else if (token.StartsWith('"') && token.EndsWith('"'))
-            {
-                return token.Trim('"');
-            }
-            else
-            {
-                var formattedParts = token.Split(':', 2);
-                var member = formattedParts.First();
-                var format = formattedParts.Skip(1).FirstOrDefault();
 
-                var value = memberEvaluator(member, format);
+            var value = token.Type == TokenType.EnvironmentVariable
+                ? environment.GetEnvironmentVariable(token.Name)
+                : memberEvaluator(token.Name);
 
-                if (!string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(token.Format))
+            {
+                if (ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
                 {
-                    return value;
+                    return formatted;
                 }
+
+                return value;
+            }
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                return value;
             }
         }
 
         throw new ArgumentException($"Invalid token string or no available values to parse: '{input}'");
     }
 
-    private static string? EvaluateMemberFromObject(object source, string member, string? format)
+    private static string? EvaluateMemberFromObject(object source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
         var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
+
         var value = getter(source);
 
-        if (value is null)
-            return null;
-
-        if (format is not null && ValueFormatter.Default.TryFormat(
-                value,
-                InputSanitizer.SanitizeFormat(format),
-                out var formatted))
-        {
-            return formatted;
-        }
-
-        return value.ToString();
+        return value?.ToString();
     }
 
-    private static string? EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format)
+    private static string? EvaluateMemberFromDictionary(IDictionary<string, object> source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
 
         if (!source.TryGetValue(safeMember, out var value))
             return null;
 
-        if (value is null)
-            return null;
-
-        if (format is not null && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(format), out var formatted))
-            return formatted;
-
         return value.ToString();
     }
 
-    private static IEnumerable<string> ParseFormatTokens(string value)
+    private static IEnumerable<Token> ParseTokens(string value)
     {
-        var tokens = new List<string>();
+        var tokens = new List<Token>();
         var current = new StringBuilder();
 
         var inQuotes = false;
@@ -172,7 +152,7 @@ internal static class StringFormatWithExtension
 
             if (!inQuotes && index + 1 < value.Length && value[index] == '?' && value[index + 1] == '?')
             {
-                tokens.Add(current.ToString().Trim());
+                tokens.Add(ParseToken(current.ToString()));
 
                 current.Clear();
                 index += 2;
@@ -186,13 +166,54 @@ internal static class StringFormatWithExtension
 
         if (current.Length > 0)
         {
-            tokens.Add(current.ToString().Trim());
+            tokens.Add(ParseToken(current.ToString()));
         }
 
         return tokens;
     }
 
+    private static Token ParseToken(string token)
+    {
+        token = token.Trim();
+
+        if (token.StartsWith('"') && token.EndsWith('"'))
+        {
+            return new Token(token.Trim('"'), TokenType.Literal);
+        }
+
+        if (token.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
+        {
+            var variable = token[4..];
+
+            var (name, format) = ParseNameAndFormat(variable);
+            var safeName = InputSanitizer.SanitizeEnvVarName(name);
+
+            return new Token(safeName, TokenType.EnvironmentVariable, format);
+        }
+
+        var (member, memberFormat) = ParseNameAndFormat(token);
+
+        return new Token(member, TokenType.Proeprty, memberFormat);
+    }
+
+    private static (string Name, string? Format) ParseNameAndFormat(string value)
+    {
+        if (value.Split(':', 2) is [var name, var format])
+        {
+            return (name, format);
+        }
+
+        return (value, null);
+    }
+
     private static string UnescapeLiteral(string value) => value.Replace("\\\"", "\"");
 
-    private delegate string? EvaluateMemberDelegate(string member, string? format);
+    private enum TokenType
+    {
+        Literal,
+        Proeprty,
+        EnvironmentVariable
+    }
+
+    private record Token(string Name, TokenType Type, string? Format = null);
 }

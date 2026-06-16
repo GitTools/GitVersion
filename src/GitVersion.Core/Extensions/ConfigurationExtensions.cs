@@ -154,9 +154,10 @@ internal static class ConfigurationExtensions
             if (!match.Success)
                 return placeholders;
 
-            foreach (var groupName in regex.GetGroupNames())
+            foreach (var groupName in regex.GetGroupNames().Skip(1))
             {
                 var groupValue = match.Groups[groupName].Value;
+
                 placeholders[groupName] = groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
             }
 
