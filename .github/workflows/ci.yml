@@ -149,7 +149,7 @@ jobs:
       CAN_PUBLISH: ${{ github.event_name == 'repository_dispatch' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
