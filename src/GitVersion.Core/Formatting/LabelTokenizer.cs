@@ -52,7 +52,7 @@ internal class LabelTokenizer(string input)
         return new LabelToken(propertyName, LabelTokenType.Property, propertyFormat);
     }
 
-    private (string Key, string? Format) ParseKeyAndFormat(string identifier)
+    private static (string Key, string? Format) ParseKeyAndFormat(string identifier)
     {
         var parts = identifier.Split(':');
 
@@ -95,12 +95,7 @@ internal class LabelTokenizer(string input)
                 return value.ToString();
             }
 
-            if (!inQuotes && char.IsWhiteSpace(c))
-            {
-                return value.ToString();
-            }
-
-            if (!inQuotes && c == '?')
+            if (!inQuotes && (char.IsWhiteSpace(c) || c == '?'))
             {
                 return value.ToString();
             }
@@ -113,7 +108,6 @@ internal class LabelTokenizer(string input)
             else
             {
                 value.Append(c);
-
                 index++;
             }
         }

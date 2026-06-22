@@ -117,10 +117,10 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatWithSingleFallbackChar()
     {
-        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
+        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "DummyVal");
         var propertyObject = new { };
         const string target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
-        const string expected = " and Dummy-Val";
+        const string expected = " and DummyVal";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
     }
@@ -138,10 +138,10 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatWithMissingPropertyAndEnvFallback()
     {
-        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
+        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Value");
         var propertyObject = new { };
         const string target = "{SomeProperty ?? env:DUMMY_ENV_VAR}";
-        const string expected = "Dummy-Val";
+        const string expected = "Dummy-Value";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
     }
@@ -189,10 +189,10 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatWithPropertyAndEnvAndFormatters()
     {
-        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
-        var propertyObject = new { SomeProperty = "Some-Value" };
+        this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "DummyVal");
+        var propertyObject = new { SomeProperty = "SomeValue" };
         const string target = "{SomeProperty:l} and {env:DUMMY_ENV_VAR:l}";
-        const string expected = "some-value and dummy-val";
+        const string expected = "somevalue and dummyval";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
     }
