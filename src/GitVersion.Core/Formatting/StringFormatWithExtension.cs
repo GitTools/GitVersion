@@ -84,14 +84,17 @@ internal static class StringFormatWithExtension
     {
         ArgumentNullException.ThrowIfNull(input);
 
-        foreach (var token in ParseTokens(input))
+        var tokenizer = new LabelTokenizer(input);
+        var tokens = tokenizer.ParseTokens().ToArray();
+
+        foreach (var token in tokens)
         {
-            if (token.Type == TokenType.Literal)
+            if (token.Type == LabelTokenType.Literal)
             {
                 return token.Name;
             }
 
-            var value = token.Type == TokenType.EnvironmentVariable
+            var value = token.Type == LabelTokenType.Environment
                 ? environment.GetEnvironmentVariable(token.Name)
                 : memberEvaluator(token.Name);
 
@@ -111,13 +114,26 @@ internal static class StringFormatWithExtension
             }
         }
 
-        throw new ArgumentException($"Invalid token string or no available values to parse: '{input}'");
+        var lastToken = tokens.LastOrDefault();
+
+        if (tokens.Length > 1 && lastToken?.Type == LabelTokenType.Property)
+        {
+            return lastToken.Name;
+        }
+
+        return string.Empty;
     }
 
     private static string? EvaluateMemberFromObject(object source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
         var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
+
+        if (memberPath.Length == 0)
+        {
+            return null;
+        }
+
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
 
         var value = getter(source);
@@ -132,88 +148,8 @@ internal static class StringFormatWithExtension
         if (!source.TryGetValue(safeMember, out var value))
             return null;
 
-        return value.ToString();
+        return value?.ToString();
     }
 
-    private static IEnumerable<Token> ParseTokens(string value)
-    {
-        var tokens = new List<Token>();
-        var current = new StringBuilder();
-
-        var inQuotes = false;
-        var index = 0;
-
-        while (index < value.Length)
-        {
-            if (value[index] == '"')
-            {
-                inQuotes = !inQuotes;
-            }
-
-            if (!inQuotes && index + 1 < value.Length && value[index] == '?' && value[index + 1] == '?')
-            {
-                tokens.Add(ParseToken(current.ToString()));
-
-                current.Clear();
-                index += 2;
-            }
-            else
-            {
-                current.Append(value[index]);
-                index++;
-            }
-        }
-
-        if (current.Length > 0)
-        {
-            tokens.Add(ParseToken(current.ToString()));
-        }
-
-        return tokens;
-    }
-
-    private static Token ParseToken(string token)
-    {
-        token = token.Trim();
-
-        if (token.StartsWith('"') && token.EndsWith('"'))
-        {
-            return new Token(token.Trim('"'), TokenType.Literal);
-        }
-
-        if (token.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
-        {
-            var variable = token[4..];
-
-            var (name, format) = ParseNameAndFormat(variable);
-            var safeName = InputSanitizer.SanitizeEnvVarName(name);
-
-            return new Token(safeName, TokenType.EnvironmentVariable, format);
-        }
-
-        var (member, memberFormat) = ParseNameAndFormat(token);
-
-        return new Token(member, TokenType.Proeprty, memberFormat);
-    }
-
-    private static (string Name, string? Format) ParseNameAndFormat(string value)
-    {
-        if (value.Split(':', 2) is [var name, var format])
-        {
-            return (name, format);
-        }
-
-        return (value, null);
-    }
-
-    private static string UnescapeLiteral(string value) => value.Replace("\\\"", "\"");
-
-    private enum TokenType
-    {
-        Literal,
-        Proeprty,
-        EnvironmentVariable
-    }
-
-    private record Token(string Name, TokenType Type, string? Format = null);
+    private record struct StringValue(string? Value, bool Exists);
 }

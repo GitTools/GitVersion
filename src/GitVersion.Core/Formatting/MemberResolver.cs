@@ -15,7 +15,7 @@ internal class MemberResolver : IMemberResolver
             {
                 var recursivePath = FindMemberRecursive(type, memberName, []);
                 return recursivePath == null
-                    ? throw new ArgumentException($"'{memberName}' is not a property or field on type '{type.Name}'")
+                    ? []
                     : [.. recursivePath];
             }
 
