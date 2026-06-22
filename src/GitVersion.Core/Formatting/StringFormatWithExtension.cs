@@ -150,6 +150,4 @@ internal static class StringFormatWithExtension
 
         return value?.ToString();
     }
-
-    private record struct StringValue(string? Value, bool Exists);
 }
