@@ -32,7 +32,7 @@ internal class LabelTokenizer(string input)
         return tokens;
     }
 
-    private LabelToken ParseToken(string identifier)
+    private static LabelToken ParseToken(string identifier)
     {
         if (identifier.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
         {

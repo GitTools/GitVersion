@@ -33,9 +33,9 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatWithMultipleTokensAndVerbatimText()
     {
-        var propertyObject = new { SomeProperty = "SomeValue", AnotherProperty = "Other Value" };
+        var propertyObject = new { SomeProperty = "AValue", AnotherProperty = "Other Value" };
         const string target = "{SomeProperty} some text {AnotherProperty}";
-        const string expected = "SomeValue some text Other Value";
+        const string expected = "AValue some text Other Value";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
     }
@@ -190,9 +190,9 @@ public class StringFormatWithExtensionTests
     public void FormatWithPropertyAndEnvAndFormatters()
     {
         this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "DummyVal");
-        var propertyObject = new { SomeProperty = "SomeValue" };
+        var propertyObject = new { SomeProperty = "TheValue" };
         const string target = "{SomeProperty:l} and {env:DUMMY_ENV_VAR:l}";
-        const string expected = "somevalue and dummyval";
+        const string expected = "thevalue and dummyval";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
     }

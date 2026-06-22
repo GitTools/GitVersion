@@ -41,7 +41,7 @@ public class LabelTokenizerTests
     [TestCase("Prop ?? fall?back")]
     public void ParseTokens_MalformedIdentifiers_Throws(string input) => AssertThrows(input);
 
-    private void AssertTokens(string input, string[] expected)
+    private static void AssertTokens(string input, string[] expected)
     {
         var tokenizer = new LabelTokenizer(input);
         var tokens = tokenizer.ParseTokens()
@@ -51,7 +51,7 @@ public class LabelTokenizerTests
         tokens.ShouldBeEquivalentTo(expected);
     }
 
-    private void AssertThrows(string input)
+    private static void AssertThrows(string input)
     {
         var tokenizer = new LabelTokenizer(input);
 
