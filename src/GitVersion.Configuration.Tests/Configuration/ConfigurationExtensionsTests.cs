@@ -140,7 +140,7 @@ public class ConfigurationExtensionsTests : TestBase
             .Build();
 
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
-        Should.Throw<ArgumentException>(() =>
-            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment);
+        actual.ShouldBe("pr-");
     }
 }
