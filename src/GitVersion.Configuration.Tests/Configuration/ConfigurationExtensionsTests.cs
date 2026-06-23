@@ -127,7 +127,7 @@ public class ConfigurationExtensionsTests : TestBase
     }
 
     [Test]
-    public void EnsureGetBranchSpecificLabelThrowsWhenThrowIfNotFoundAndEnvVarMissing()
+    public void EnsureGetBranchSpecificLabelReturnsEmptyWhenEnvVarMissing()
     {
         var environment = new TestEnvironment();
         // Do not set MISSING_VAR
