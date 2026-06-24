@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-
 namespace GitVersion.Formatting;
 
 internal class LabelTokenizer(string input)
@@ -9,10 +7,11 @@ internal class LabelTokenizer(string input)
     public IEnumerable<LabelToken> ParseTokens()
     {
         var tokens = new List<LabelToken>();
+        var separatedParsed = false;
 
         SkipWhitespace();
 
-        while (index < input.Length)
+        while (this.index < input.Length)
         {
             var identifier = ParseIdentifier();
 
@@ -25,8 +24,14 @@ internal class LabelTokenizer(string input)
 
             tokens.Add(ParseToken(identifier));
 
-            ParseSeparator();
+            separatedParsed = ParseSeparator();
+
             SkipWhitespace();
+        }
+
+        if (separatedParsed)
+        {
+            throw new FormatException("Invalid format sequence, expected identifier after '??' separator");
         }
 
         return tokens;
@@ -37,9 +42,9 @@ internal class LabelTokenizer(string input)
         if (identifier.StartsWith("env:", StringComparison.OrdinalIgnoreCase))
         {
             var name = identifier[4..];
-            var (environmentName, environemntFormat) = ParseKeyAndFormat(name);
+            var (environmentName, environmentFormat) = ParseKeyAndFormat(name);
 
-            return new LabelToken(environmentName, LabelTokenType.Environment, environemntFormat);
+            return new LabelToken(environmentName, LabelTokenType.Environment, environmentFormat);
         }
 
         if (identifier.StartsWith('"') && identifier.EndsWith('"'))
@@ -79,9 +84,9 @@ internal class LabelTokenizer(string input)
             value.Append('"');
         }
 
-        while (index < input.Length)
+        while (this.index < input.Length)
         {
-            var c = input[index];
+            var c = input[this.index];
 
             if (!inQuotes && IsQuote())
             {
@@ -103,12 +108,12 @@ internal class LabelTokenizer(string input)
             if (IsEscapeQuote())
             {
                 value.Append('"');
-                index += 2;
+                this.index += 2;
             }
             else
             {
                 value.Append(c);
-                index++;
+                this.index++;
             }
         }
 
@@ -120,32 +125,34 @@ internal class LabelTokenizer(string input)
         return value.ToString();
     }
 
-    private void ParseSeparator()
+    private bool ParseSeparator()
     {
         var seen = 0;
 
         while (this.index < input.Length && seen < 2)
         {
-            if (input[index] != '?')
+            if (input[this.index] != '?')
             {
                 throw new FormatException("Expected '??' separator");
             }
 
             seen++;
-            index++;
+            this.index++;
         }
+
+        return seen == 2;
     }
 
     private void SkipWhitespace()
     {
-        while (index < input.Length)
+        while (this.index < input.Length)
         {
-            if (!char.IsWhiteSpace(input[index]))
+            if (!char.IsWhiteSpace(input[this.index]))
             {
                 break;
             }
 
-            index++;
+            this.index++;
         }
     }
 
@@ -153,7 +160,7 @@ internal class LabelTokenizer(string input)
     {
         if (IsQuote())
         {
-            index++;
+            this.index++;
 
             return true;
         }
@@ -161,7 +168,7 @@ internal class LabelTokenizer(string input)
         return false;
     }
 
-    private bool IsQuote() => index < input.Length && input[index] == '"';
+    private bool IsQuote() => this.index < input.Length && input[this.index] == '"';
 
-    private bool IsEscapeQuote() => this.index + 1 < input.Length && input[index] == '\\' && input[this.index + 1] == '"';
+    private bool IsEscapeQuote() => this.index + 1 < input.Length && input[this.index] == '\\' && input[this.index + 1] == '"';
 }

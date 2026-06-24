@@ -154,7 +154,10 @@ internal static class ConfigurationExtensions
             if (!match.Success)
                 return placeholders;
 
-            foreach (var groupName in regex.GetGroupNames().Skip(1))
+            var namedGroups = regex.GetGroupNames()
+                .Where(name => !int.TryParse(name, out _));
+
+            foreach (var groupName in namedGroups)
             {
                 var groupValue = match.Groups[groupName].Value;
 

@@ -84,7 +84,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
                 formattedString = formatString.FormatWith(source, this.environment)
                     .RegexReplace(RegexPatterns.Output.SanitizeAssemblyInfoRegexPattern, "-");
             }
-            catch (ArgumentException exception)
+            catch (Exception exception) when (exception is ArgumentException or FormatException)
             {
                 throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {exception.Message}");
             }

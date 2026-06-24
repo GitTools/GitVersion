@@ -39,6 +39,8 @@ public class LabelTokenizerTests
     [TestCase("Prop ?? literal ?? ? fallback")]
     [TestCase("Prop ? fallback")]
     [TestCase("Prop ?? fall?back")]
+    [TestCase("Prop ?? fallback ??")]
+    [TestCase("Prop ?? fallback ??   ")]
     public void ParseTokens_MalformedIdentifiers_Throws(string input) => AssertThrows(input);
 
     private static void AssertTokens(string input, string[] expected)

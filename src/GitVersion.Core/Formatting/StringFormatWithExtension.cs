@@ -1,6 +1,3 @@
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-
 namespace GitVersion.Formatting;
 
 internal static class StringFormatWithExtension
@@ -95,10 +92,10 @@ internal static class StringFormatWithExtension
             }
 
             var value = token.Type == LabelTokenType.Environment
-                ? environment.GetEnvironmentVariable(token.Name)
+                ? environment.GetEnvironmentVariable(InputSanitizer.SanitizeEnvVarName(token.Name))
                 : memberEvaluator(token.Name);
 
-            if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(token.Format))
+            if (value is not null && !string.IsNullOrEmpty(token.Format))
             {
                 if (ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
                 {
@@ -108,7 +105,7 @@ internal static class StringFormatWithExtension
                 return value;
             }
 
-            if (!string.IsNullOrEmpty(value))
+            if (value is not null)
             {
                 return value;
             }
