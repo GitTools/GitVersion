@@ -39,7 +39,7 @@
     <PackageVersion Include="NUnit" Version="4.6.1" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.14.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
-    <PackageVersion Include="SharpYaml" Version="3.10.2" />
+    <PackageVersion Include="SharpYaml" Version="3.11.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.9" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.1.1" />
