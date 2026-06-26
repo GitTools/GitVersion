@@ -27,12 +27,12 @@ internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fil
         // https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#environment-files
         // The outgoing environment variables must be written to a temporary file (identified by the $GITHUB_ENV environment
         // variable, which changes for every step in a workflow) which is then parsed. That file must also be UTF-8, or it will fail.
-        var gitHubSetEnvFilePath = this.Environment.GetEnvironmentVariable(GitHubSetEnvTempFileEnvironmentVariableName);
+        var gitHubSetEnvFilePath = this.environment.GetEnvironmentVariable(GitHubSetEnvTempFileEnvironmentVariableName);
 
         if (gitHubSetEnvFilePath != null)
         {
             writer($"Writing version variables to $GITHUB_ENV file for '{GetType().Name}'.");
-            using var streamWriter = this.FileSystem.File.AppendText(gitHubSetEnvFilePath);
+            using var streamWriter = this.fileSystem.File.AppendText(gitHubSetEnvFilePath);
             foreach (var (key, value) in variables)
             {
                 if (!value.IsNullOrEmpty())
@@ -53,8 +53,8 @@ internal class GitHubActions(IEnvironment environment, ILog log, IFileSystem fil
         // GITHUB_REF must be used only for "real" branches, not for tags.
         // Bug fix for https://github.com/GitTools/GitVersion/issues/2838
 
-        var refType = Environment.GetEnvironmentVariable("GITHUB_REF_TYPE") ?? "";
-        return refType.Equals("tag", StringComparison.OrdinalIgnoreCase) ? null : Environment.GetEnvironmentVariable("GITHUB_REF");
+        var refType = this.environment.GetEnvironmentVariable("GITHUB_REF_TYPE") ?? "";
+        return refType.Equals("tag", StringComparison.OrdinalIgnoreCase) ? null : this.environment.GetEnvironmentVariable("GITHUB_REF");
     }
 
     public override bool PreventFetch() => true;

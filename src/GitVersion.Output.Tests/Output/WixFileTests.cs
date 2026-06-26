@@ -15,10 +15,10 @@ internal class WixFileTests : TestBase
     private string workingDir = null!;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => workingDir = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "WixFileTests");
+    public void OneTimeSetUp() => this.workingDir = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "WixFileTests");
 
     [OneTimeTearDown]
-    public void OneTimeTearDown() => FileSystemHelper.Directory.DeleteDirectory(workingDir);
+    public void OneTimeTearDown() => FileSystemHelper.Directory.DeleteDirectory(this.workingDir);
 
     [SetUp]
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -53,9 +53,9 @@ internal class WixFileTests : TestBase
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
-        wixVersionFileUpdater.Execute(versionVariables, new(workingDir));
+        wixVersionFileUpdater.Execute(versionVariables, new(this.workingDir));
 
-        var file = FileSystemHelper.Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        var file = FileSystemHelper.Path.Combine(this.workingDir, WixVersionFileUpdater.WixVersionFileName);
         fileSystem
             .File.ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
@@ -95,14 +95,14 @@ internal class WixFileTests : TestBase
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
         // fake an already existing file
-        var file = FileSystemHelper.Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
-        if (!fileSystem.Directory.Exists(workingDir))
+        var file = FileSystemHelper.Path.Combine(this.workingDir, WixVersionFileUpdater.WixVersionFileName);
+        if (!fileSystem.Directory.Exists(this.workingDir))
         {
-            fileSystem.Directory.CreateDirectory(workingDir);
+            fileSystem.Directory.CreateDirectory(this.workingDir);
         }
         fileSystem.File.WriteAllText(file, new('x', 1024 * 1024));
 
-        wixVersionFileUpdater.Execute(versionVariables, new(workingDir));
+        wixVersionFileUpdater.Execute(versionVariables, new(this.workingDir));
 
         fileSystem
             .File.ReadAllText(file)

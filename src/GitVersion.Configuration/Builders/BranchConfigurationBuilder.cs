@@ -159,24 +159,24 @@ internal class BranchConfigurationBuilder
 
     public IBranchConfiguration Build() => new BranchConfiguration
     {
-        DeploymentMode = deploymentMode,
-        Label = label,
-        Increment = increment,
-        RegularExpression = regularExpression,
-        TracksReleaseBranches = tracksReleaseBranches,
-        TrackMergeTarget = trackMergeTarget,
-        TrackMergeMessage = trackMergeMessage,
-        CommitMessageIncrementing = commitMessageIncrementing,
-        IsMainBranch = isMainBranch,
-        IsReleaseBranch = isReleaseBranch,
+        DeploymentMode = this.deploymentMode,
+        Label = this.label,
+        Increment = this.increment,
+        RegularExpression = this.regularExpression,
+        TracksReleaseBranches = this.tracksReleaseBranches,
+        TrackMergeTarget = this.trackMergeTarget,
+        TrackMergeMessage = this.trackMergeMessage,
+        CommitMessageIncrementing = this.commitMessageIncrementing,
+        IsMainBranch = this.isMainBranch,
+        IsReleaseBranch = this.isReleaseBranch,
         PreventIncrement = new PreventIncrementConfiguration
         {
-            OfMergedBranch = preventIncrementOfMergedBranch,
-            WhenBranchMerged = preventIncrementWhenBranchMerged,
-            WhenCurrentCommitTagged = preventIncrementWhenCurrentCommitTagged
+            OfMergedBranch = this.preventIncrementOfMergedBranch,
+            WhenBranchMerged = this.preventIncrementWhenBranchMerged,
+            WhenCurrentCommitTagged = this.preventIncrementWhenCurrentCommitTagged
         },
-        PreReleaseWeight = preReleaseWeight,
-        SourceBranches = sourceBranches,
-        IsSourceBranchFor = isSourceBranchFor
+        PreReleaseWeight = this.preReleaseWeight,
+        SourceBranches = this.sourceBranches,
+        IsSourceBranchFor = this.isSourceBranchFor
     };
 }

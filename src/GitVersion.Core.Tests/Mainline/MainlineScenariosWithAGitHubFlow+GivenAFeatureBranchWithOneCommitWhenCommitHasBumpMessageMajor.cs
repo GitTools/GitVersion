@@ -19,13 +19,13 @@ internal partial class MainlineScenariosWithAGitHubFlow
         {
             // A  59 minutes ago  (HEAD -> feature/foo)
 
-            fixture = new EmptyRepositoryFixture("feature/foo");
+            this.fixture = new EmptyRepositoryFixture("feature/foo");
 
-            fixture.MakeACommit("A +semver: major");
+            this.fixture.MakeACommit("A +semver: major");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "1.0.0-1+1")]
         [TestCase(IncrementStrategy.Patch, null, ExpectedResult = "1.0.0-1+1")]
@@ -52,7 +52,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0-1+1")]
@@ -81,7 +81,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)
                 ).Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0-1+1")]
@@ -110,7 +110,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                     .WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly)
                 ).Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

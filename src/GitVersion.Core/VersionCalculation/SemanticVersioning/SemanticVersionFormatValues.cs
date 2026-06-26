@@ -20,13 +20,13 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     public string PreReleaseTag => semver.PreReleaseTag.ToString();
 
     /// <summary>Gets the pre-release tag prefixed with a dash (e.g. <c>-beta.1</c>), or empty string when there is no tag.</summary>
-    public string PreReleaseTagWithDash => this.PreReleaseTag.WithPrefixIfNotNullOrEmpty("-");
+    public string PreReleaseTagWithDash => PreReleaseTag.WithPrefixIfNotNullOrEmpty("-");
 
     /// <summary>Gets the pre-release label without the numeric identifier (e.g. <c>beta</c>).</summary>
     public string PreReleaseLabel => semver.PreReleaseTag.Name;
 
     /// <summary>Gets the pre-release label prefixed with a dash (e.g. <c>-beta</c>), or empty string when there is no label.</summary>
-    public string PreReleaseLabelWithDash => this.PreReleaseLabel.WithPrefixIfNotNullOrEmpty("-");
+    public string PreReleaseLabelWithDash => PreReleaseLabel.WithPrefixIfNotNullOrEmpty("-");
 
     /// <summary>Gets the numeric pre-release identifier as a string, or empty string when absent.</summary>
     public string PreReleaseNumber => semver.PreReleaseTag.Number?.ToString() ?? string.Empty;

@@ -87,8 +87,8 @@ internal class ConfigurationProvider(
         }
 
         this.log.Info($"Using configuration file '{configFilePath}'");
-        var content = fileSystem.File.ReadAllText(configFilePath);
-        return configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
+        var content = this.fileSystem.File.ReadAllText(configFilePath);
+        return this.configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
     }
 
     private static string? GetWorkflow(IReadOnlyDictionary<object, object?>? overrideConfiguration, IReadOnlyDictionary<object, object?>? overrideConfigurationFromFile)

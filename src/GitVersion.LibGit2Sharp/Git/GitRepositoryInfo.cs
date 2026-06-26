@@ -33,7 +33,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
 
     private string? GetDynamicGitRepositoryPath()
     {
-        var repositoryInfo = gitVersionOptions.RepositoryInfo;
+        var repositoryInfo = this.gitVersionOptions.RepositoryInfo;
         if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
 
         var targetUrl = repositoryInfo.TargetUrl;
@@ -64,7 +64,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     {
         var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
             ? DynamicGitRepositoryPath
-            : Repository.Discover(gitVersionOptions.WorkingDirectory);
+            : Repository.Discover(this.gitVersionOptions.WorkingDirectory);
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
         if (gitDirectory.IsNullOrEmpty())
@@ -80,10 +80,10 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     {
         if (!DynamicGitRepositoryPath.IsNullOrWhiteSpace())
         {
-            return gitVersionOptions.WorkingDirectory;
+            return this.gitVersionOptions.WorkingDirectory;
         }
 
-        var gitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
+        var gitDirectory = Repository.Discover(this.gitVersionOptions.WorkingDirectory);
 
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");

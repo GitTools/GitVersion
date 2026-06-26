@@ -20,7 +20,7 @@ internal sealed class FallbackVersionStrategy(
     private readonly ITaggedSemanticVersionService taggedSemanticVersionService = taggedSemanticVersionService.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         => GetBaseVersionsInternal(configuration);
@@ -34,7 +34,7 @@ internal sealed class FallbackVersionStrategy(
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 
-        var baseVersionSource = taggedSemanticVersionService.GetTaggedSemanticVersions(
+        var baseVersionSource = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,
             configuration: Context.Configuration,
             label: label,
@@ -42,7 +42,7 @@ internal sealed class FallbackVersionStrategy(
             taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
         ).Select(element => element.Key).FirstOrDefault();
 
-        var increment = incrementStrategyFinder.DetermineIncrementedField(
+        var increment = this.incrementStrategyFinder.DetermineIncrementedField(
             currentCommit: Context.CurrentCommit,
             baseVersionSource: baseVersionSource,
             shouldIncrement: true,

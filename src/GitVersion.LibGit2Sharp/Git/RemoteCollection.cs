@@ -43,5 +43,5 @@ internal sealed class RemoteCollection : IRemoteCollection
         });
 
     private void InitializeRemotesLazy()
-        => this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
+        => this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(this.repositoryCache.GetOrWrap)]);
 }

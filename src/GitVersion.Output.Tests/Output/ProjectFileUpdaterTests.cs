@@ -55,10 +55,10 @@ public class ProjectFileUpdaterTests : TestBase
                      </PropertyGroup>
                    </Project>
                    """;
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+        var canUpdate = this.projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(true);
-        logMessages.ShouldBeEmpty();
+        this.logMessages.ShouldBeEmpty();
     }
 
     [TestCase($"""
@@ -71,13 +71,13 @@ public class ProjectFileUpdaterTests : TestBase
                """)]
     public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
     {
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+        var canUpdate = this.projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
 
-        logMessages.ShouldNotBeEmpty();
-        logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+        this.logMessages.ShouldNotBeEmpty();
+        this.logMessages.Count.ShouldBe(1);
+        this.logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""
@@ -90,13 +90,13 @@ public class ProjectFileUpdaterTests : TestBase
                """)]
     public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
     {
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+        var canUpdate = this.projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
 
-        logMessages.ShouldNotBeEmpty();
-        logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+        this.logMessages.ShouldNotBeEmpty();
+        this.logMessages.Count.ShouldBe(1);
+        this.logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""
@@ -110,13 +110,13 @@ public class ProjectFileUpdaterTests : TestBase
                """)]
     public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
     {
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+        var canUpdate = this.projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
 
-        logMessages.ShouldNotBeEmpty();
-        logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
+        this.logMessages.ShouldNotBeEmpty();
+        this.logMessages.Count.ShouldBe(1);
+        this.logMessages[0].ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
     }
 
     [TestCase("""
@@ -125,13 +125,13 @@ public class ProjectFileUpdaterTests : TestBase
               """)]
     public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
     {
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+        var canUpdate = this.projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
 
-        logMessages.ShouldNotBeEmpty();
-        logMessages.Count.ShouldBe(1);
-        logMessages[0].ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
+        this.logMessages.ShouldNotBeEmpty();
+        this.logMessages.Count.ShouldBe(1);
+        this.logMessages[0].ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
     }
 
     [TestCase($"""

@@ -21,15 +21,15 @@ internal partial class MainlineScenariosWithAGitHubFlow
             // B 58 minutes ago
             // A 59 minutes ago
 
-            fixture = new EmptyRepositoryFixture();
+            this.fixture = new EmptyRepositoryFixture();
 
-            fixture.MakeACommit("A");
-            fixture.MakeACommit("B");
-            fixture.MakeACommit("C");
+            this.fixture.MakeACommit("A");
+            this.fixture.MakeACommit("B");
+            this.fixture.MakeACommit("C");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0-3+1")]
         [TestCase(IncrementStrategy.Patch, null, ExpectedResult = "0.0.3-1+1")]
@@ -56,7 +56,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("main", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

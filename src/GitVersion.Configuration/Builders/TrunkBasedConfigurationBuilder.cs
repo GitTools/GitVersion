@@ -44,7 +44,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             IsMainBranch = false
         });
 
-        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.MainBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDeployment,
             Label = string.Empty,
@@ -55,7 +55,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             },
             TrackMergeTarget = false,
             TrackMergeMessage = true,
-            RegularExpression = MainBranch.RegexPattern,
+            RegularExpression = this.MainBranch.RegexPattern,
             SourceBranches = [],
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
@@ -63,7 +63,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 55000
         });
 
-        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.FeatureBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = ConfigurationConstants.BranchNamePlaceholder,
@@ -72,7 +72,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             {
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = FeatureBranch.RegexPattern,
+            RegularExpression = this.FeatureBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
@@ -82,7 +82,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(HotfixBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.HotfixBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = ConfigurationConstants.BranchNamePlaceholder,
@@ -91,7 +91,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             {
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = HotfixBranch.RegexPattern,
+            RegularExpression = this.HotfixBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
@@ -101,7 +101,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = $"PullRequest{ConfigurationConstants.PullRequestNumberPlaceholder}",
@@ -111,7 +111,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = PullRequestBranch.RegexPattern,
+            RegularExpression = this.PullRequestBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -122,14 +122,14 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Patch,
             PreventIncrement = new PreventIncrementConfiguration
             {
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = UnknownBranch.RegexPattern,
+            RegularExpression = this.UnknownBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name

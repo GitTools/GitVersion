@@ -23,7 +23,7 @@ internal sealed class TaggedCommitVersionStrategy(
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         => GetBaseVersionsInternal(configuration);
@@ -35,7 +35,7 @@ internal sealed class TaggedCommitVersionStrategy(
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TaggedCommit))
             yield break;
 
-        var taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+        var taggedSemanticVersions = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,
             configuration: Context.Configuration,
             label: null,
@@ -69,7 +69,7 @@ internal sealed class TaggedCommitVersionStrategy(
             }
 
             var baseVersionSource = semanticVersion.Tag.Commit;
-            var increment = incrementStrategyFinder.DetermineIncrementedField(
+            var increment = this.incrementStrategyFinder.DetermineIncrementedField(
                 currentCommit: Context.CurrentCommit,
                 baseVersionSource: baseVersionSource,
                 shouldIncrement: true,

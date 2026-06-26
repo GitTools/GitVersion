@@ -11,7 +11,7 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
     public int Priority => 0;
 
     internal ValueFormatter()
-        => formatters =
+        => this.formatters =
         [
             new StringFormatter(),
             new FormattableFormatter(),
@@ -27,7 +27,7 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
             return false;
         }
 
-        foreach (var formatter in formatters.OrderBy(f => f.Priority))
+        foreach (var formatter in this.formatters.OrderBy(f => f.Priority))
         {
             if (formatter.TryFormat(value, format, out result))
                 return true;
@@ -36,7 +36,7 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
         return false;
     }
 
-    void IValueFormatterCombiner.RegisterFormatter(IValueFormatter formatter) => formatters.Add(formatter);
+    void IValueFormatterCombiner.RegisterFormatter(IValueFormatter formatter) => this.formatters.Add(formatter);
 
-    void IValueFormatterCombiner.RemoveFormatter<T>() => formatters.RemoveAll(f => f is T);
+    void IValueFormatterCombiner.RemoveFormatter<T>() => this.formatters.RemoveAll(f => f is T);
 }

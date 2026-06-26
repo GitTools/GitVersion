@@ -20,7 +20,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
     private readonly IEnvironment environment = environment.NotNull();
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new(contextLazy, environment);
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {

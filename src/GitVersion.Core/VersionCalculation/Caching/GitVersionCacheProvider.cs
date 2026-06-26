@@ -31,7 +31,7 @@ internal class GitVersionCacheProvider(
         {
             try
             {
-                serializer.ToFile(versionVariables, cacheFileName);
+                this.serializer.ToFile(versionVariables, cacheFileName);
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ internal class GitVersionCacheProvider(
 
             try
             {
-                var loadedVariables = serializer.FromFile(cacheFileName);
+                var loadedVariables = this.serializer.FromFile(cacheFileName);
                 return loadedVariables;
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ internal class GitVersionCacheProvider(
 
     private GitVersionCacheKey GetCacheKey()
     {
-        var cacheKey = this.cacheKeyFactory.Create(options.Value.ConfigurationInfo.OverrideConfiguration);
+        var cacheKey = this.cacheKeyFactory.Create(this.options.Value.ConfigurationInfo.OverrideConfiguration);
         return cacheKey;
     }
 

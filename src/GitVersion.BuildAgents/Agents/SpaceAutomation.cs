@@ -10,7 +10,7 @@ internal class SpaceAutomation(IEnvironment environment, ILog log, IFileSystem f
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos) => this.environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
 
     public override string[] SetOutputVariables(string name, string? value) => [];
 

@@ -27,18 +27,18 @@ internal partial class MainlineScenariosWithAGitHubFlow
             // |/
             // A  58 minutes ago
 
-            fixture = new EmptyRepositoryFixture();
+            this.fixture = new EmptyRepositoryFixture();
 
-            fixture.MakeACommit("A");
-            fixture.BranchTo("feature/foo");
-            fixture.MakeACommit("B");
-            fixture.Checkout("main");
-            fixture.MakeACommit("C");
-            fixture.MergeTo("feature/foo");
+            this.fixture.MakeACommit("A");
+            this.fixture.BranchTo("feature/foo");
+            this.fixture.MakeACommit("B");
+            this.fixture.Checkout("main");
+            this.fixture.MakeACommit("C");
+            this.fixture.MergeTo("feature/foo");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-foo.1+2")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, ExpectedResult = "0.0.1-foo.1+2")]
@@ -70,7 +70,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-foo.1+2")]
@@ -103,7 +103,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-foo.3+2")]
@@ -136,7 +136,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-foo.1+2")]
@@ -169,7 +169,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

@@ -18,7 +18,7 @@ public class ConfigurationProviderTests : TestBase
     public void Setup()
     {
         this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
@@ -282,7 +282,7 @@ public class ConfigurationProviderTests : TestBase
         var logAppender = new TestLogAppender(Action);
         var log = new Log(logAppender);
 
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
         var sp = ConfigureServices(services =>
         {
             services.AddSingleton(options);

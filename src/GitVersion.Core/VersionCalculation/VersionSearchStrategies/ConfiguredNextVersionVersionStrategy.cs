@@ -13,7 +13,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
@@ -27,7 +27,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
         var semanticVersion = SemanticVersion.Parse(
             nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
         );
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, environment);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 
         if (!semanticVersion.IsMatchForBranchSpecificLabel(label)) yield break;
         BaseVersionOperator? operation = null;

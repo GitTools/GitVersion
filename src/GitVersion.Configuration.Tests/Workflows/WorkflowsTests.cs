@@ -18,7 +18,7 @@ public class WorkflowsTests
     {
         var configuration = configurationBuilder.Build();
 
-        var serializedConfiguration = serializer.Serialize(configuration);
+        var serializedConfiguration = this.serializer.Serialize(configuration);
         var segments = workflow.Split("/");
         var folderName = segments[0];
         var fileName = segments[^1];

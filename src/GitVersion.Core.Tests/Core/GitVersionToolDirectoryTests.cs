@@ -29,7 +29,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     {
         var exception = Assert.Catch(() =>
         {
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = workDirectory, Settings = { NoFetch = true } });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.workDirectory, Settings = { NoFetch = true } });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 

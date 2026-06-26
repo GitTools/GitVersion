@@ -50,5 +50,5 @@ internal sealed class ReferenceCollection : IReferenceCollection
         });
 
     private void InitializeReferencesLazy()
-        => this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(repositoryCache.GetOrWrap)]);
+        => this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(this.repositoryCache.GetOrWrap)]);
 }

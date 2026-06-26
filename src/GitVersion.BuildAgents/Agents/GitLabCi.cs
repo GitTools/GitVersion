@@ -27,8 +27,8 @@ internal class GitLabCi : BuildAgentBase
     // CI_COMMIT_TAG is only available in tag pipelines,
     // so we can exit if CI_COMMIT_REF_NAME would return the tag
     public override string? GetCurrentBranch(bool usingDynamicRepos) =>
-        string.IsNullOrEmpty(this.Environment.GetEnvironmentVariable("CI_COMMIT_TAG"))
-            ? this.Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME")
+        string.IsNullOrEmpty(this.environment.GetEnvironmentVariable("CI_COMMIT_TAG"))
+            ? this.environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME")
             : null;
 
     public override bool PreventFetch() => true;
@@ -41,6 +41,6 @@ internal class GitLabCi : BuildAgentBase
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
 
-        this.FileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
+        this.fileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
     }
 }

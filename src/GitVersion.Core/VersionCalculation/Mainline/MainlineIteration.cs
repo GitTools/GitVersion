@@ -44,9 +44,9 @@ internal record MainlineIteration
 
     public int Depth { get; }
 
-    public int NumberOfCommits => commits.Count;
+    public int NumberOfCommits => this.commits.Count;
 
-    public IReadOnlyCollection<MainlineCommit> Commits => commits;
+    public IReadOnlyCollection<MainlineCommit> Commits => this.commits;
     private readonly Stack<MainlineCommit> commits = new();
 
     private readonly Dictionary<ICommit, MainlineCommit> commitLookup = [];
@@ -68,11 +68,11 @@ internal record MainlineIteration
         var commit = this.commits.Count != 0
             ? this.commits.Peek().Append(value, branchName, configuration)
             : new MainlineCommit(this, value, branchName, configuration);
-        commits.Push(commit);
+        this.commits.Push(commit);
 
         if (value is not null)
         {
-            commitLookup.Add(value, commit);
+            this.commitLookup.Add(value, commit);
         }
 
         return commit;
@@ -82,7 +82,7 @@ internal record MainlineIteration
     {
         commit.NotNull();
 
-        commitLookup.TryGetValue(commit, out var result);
+        this.commitLookup.TryGetValue(commit, out var result);
         return result;
     }
 }

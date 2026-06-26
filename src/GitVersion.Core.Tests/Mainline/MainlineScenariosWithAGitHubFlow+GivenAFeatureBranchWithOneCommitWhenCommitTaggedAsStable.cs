@@ -21,14 +21,14 @@ internal partial class MainlineScenariosWithAGitHubFlow
         {
             // A 59 minutes ago (HEAD -> feature/foo) (tag 0.0.0)
 
-            fixture = new EmptyRepositoryFixture("feature/foo");
+            this.fixture = new EmptyRepositoryFixture("feature/foo");
 
-            fixture.MakeACommit("A");
-            fixture.ApplyTag("0.0.0");
+            this.fixture.MakeACommit("A");
+            this.fixture.ApplyTag("0.0.0");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0")]
         [TestCase(IncrementStrategy.Patch, null, ExpectedResult = "0.0.0")]
@@ -55,7 +55,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.0-1+0")]
@@ -83,7 +83,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label).WithPreventIncrementWhenCurrentCommitTagged(false))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

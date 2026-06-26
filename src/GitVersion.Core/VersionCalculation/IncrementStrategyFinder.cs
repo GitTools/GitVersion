@@ -98,7 +98,7 @@ internal class IncrementStrategyFinder(
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)
     {
         var targetShas = new Lazy<HashSet<string>>(() =>
-            [.. taggedSemanticVersionRepository
+            [.. this.taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
                 .SelectMany(versionWithTags => versionWithTags)
                 .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))

@@ -21,7 +21,7 @@ public static class ConfigurationFileLocatorTests
         {
             this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
             this.workingPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo", "Working");
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 

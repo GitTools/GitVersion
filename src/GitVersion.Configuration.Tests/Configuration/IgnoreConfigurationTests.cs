@@ -20,7 +20,7 @@ public class IgnoreConfigurationTests : TestBase
                 commits-before: 2015-10-23T12:23:15
             """;
 
-        var configuration = serializer.ReadConfiguration(yaml);
+        var configuration = this.serializer.ReadConfiguration(yaml);
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -40,7 +40,7 @@ public class IgnoreConfigurationTests : TestBase
                     - 6c19c7c219ecf8dbc468042baefa73a1b213e8b1
             """;
 
-        var configuration = serializer.ReadConfiguration(yaml);
+        var configuration = this.serializer.ReadConfiguration(yaml);
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -53,7 +53,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "next-version: 1.0";
 
-        var configuration = serializer.ReadConfiguration(yaml);
+        var configuration = this.serializer.ReadConfiguration(yaml);
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -70,7 +70,7 @@ public class IgnoreConfigurationTests : TestBase
                 commits-before: bad format date
             """;
 
-        Should.Throw<YamlException>(() => serializer.ReadConfiguration(yaml));
+        Should.Throw<YamlException>(() => this.serializer.ReadConfiguration(yaml));
     }
 
     [Test]
@@ -78,7 +78,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "strategies: ConfiguredNextVersion, TaggedCommit";
 
-        var configuration = serializer.ReadConfiguration(yaml);
+        var configuration = this.serializer.ReadConfiguration(yaml);
 
         configuration.ShouldNotBeNull();
         configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfiguredNextVersion | VersionStrategies.TaggedCommit);
