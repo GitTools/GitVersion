@@ -151,7 +151,7 @@ public string RequiredProperty { get; set; } = string.Empty;
 Use file-scoped namespaces:
 
 ```csharp
-namespace GitVersion.Core;
+namespace GitVersion;
 
 public class MyClass
 {

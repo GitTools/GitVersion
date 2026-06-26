@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Core.Tests.Extensions;
+﻿namespace GitVersion.Tests.Extensions;
 
 public static class ShouldlyExtensions
 {

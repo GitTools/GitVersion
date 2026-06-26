@@ -1,9 +1,9 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Tests;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.App.Tests;

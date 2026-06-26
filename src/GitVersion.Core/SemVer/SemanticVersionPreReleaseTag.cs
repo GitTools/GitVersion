@@ -1,5 +1,4 @@
 using System.Globalization;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 

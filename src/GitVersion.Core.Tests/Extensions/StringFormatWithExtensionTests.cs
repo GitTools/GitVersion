@@ -1,8 +1,7 @@
 using System.Globalization;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Formatting;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class StringFormatWithExtensionTests

@@ -1,6 +1,5 @@
 using System.Globalization;
 using GitVersion.Configuration.Attributes;
-using GitVersion.Core;
 using GitVersion.VersionCalculation;
 using static GitVersion.Configuration.ConfigurationConstants;
 

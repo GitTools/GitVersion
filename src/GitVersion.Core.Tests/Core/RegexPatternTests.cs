@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using static GitVersion.Core.RegexPatterns.AssemblyVersion;
+using static GitVersion.RegexPatterns.AssemblyVersion;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 public class RegexPatternsTests
 {

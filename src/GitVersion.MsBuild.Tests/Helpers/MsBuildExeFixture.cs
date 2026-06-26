@@ -1,7 +1,7 @@
 using Buildalyzer;
 using Buildalyzer.Environment;
-using GitVersion.Core.Tests;
 using GitVersion.Helpers;
+using GitVersion.Tests;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities.ProjectCreation;

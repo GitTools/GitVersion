@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 /// <summary>
 /// - For mode 1 the main-releases are especially not marked with dedicated tags.

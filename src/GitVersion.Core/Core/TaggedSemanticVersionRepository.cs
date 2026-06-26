@@ -1,11 +1,10 @@
 using System.Collections.Concurrent;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Logging;
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {

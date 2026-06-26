@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 

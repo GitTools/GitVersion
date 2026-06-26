@@ -1,10 +1,10 @@
 using GitVersion.Agents;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output;
 using GitVersion.Testing.Extensions;
+using GitVersion.Tests;
 using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;

@@ -1,5 +1,5 @@
 using System.Globalization;
-using GitVersion.Core.Tests.Helpers;
+using GitVersion.Tests;
 using GitVersion.VersionCalculation;
 using SharpYaml;
 

@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal interface ITaggedSemanticVersionService
 {

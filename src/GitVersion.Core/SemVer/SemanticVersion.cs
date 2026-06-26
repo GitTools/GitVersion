@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using GitVersion.Core;
 using GitVersion.Extensions;
 
 namespace GitVersion;

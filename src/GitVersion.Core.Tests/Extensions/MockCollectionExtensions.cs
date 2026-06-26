@@ -1,4 +1,4 @@
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 public static class MockCollectionExtensions
 {

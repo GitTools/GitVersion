@@ -1,7 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
@@ -10,7 +9,7 @@ using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation.Caching;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]
@@ -69,7 +68,7 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
         var preparer = this.sp.GetRequiredService<IGitPreparer>();
         var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
@@ -126,7 +125,7 @@ public class GitVersionExecutorTests : TestBase
 
             this.sp = GetServiceProvider(gitVersionOptions);
 
-            sp.DiscoverRepository();
+            this.sp.DiscoverRepository();
 
             var preparer = this.sp.GetRequiredService<IGitPreparer>();
             var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
@@ -416,7 +415,7 @@ public class GitVersionExecutorTests : TestBase
         // Setup
         this.fileSystem = new FileSystem();
         using var fixture = new EmptyRepositoryFixture();
-        var repoDir = fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
+        var repoDir = this.fileSystem.DirectoryInfo.New(fixture.RepositoryPath);
         var worktreePath = FileSystemHelper.Path.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
@@ -461,9 +460,9 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
-        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+        var sut = this.sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
         var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
@@ -491,9 +490,9 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
-        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+        var sut = this.sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
         var version = sut.CalculateVersionVariables();
@@ -520,9 +519,9 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
-        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+        var sut = this.sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
         var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
@@ -548,9 +547,9 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
-        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+        var sut = this.sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
         var version = sut.CalculateVersionVariables();
@@ -584,8 +583,8 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-        sp.DiscoverRepository();
-        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+        this.sp.DiscoverRepository();
+        var sut = this.sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
         var version = sut.CalculateVersionVariables();
@@ -625,7 +624,7 @@ public class GitVersionExecutorTests : TestBase
         this.log = this.sp.GetRequiredService<ILog>();
         this.gitVersionCacheProvider = (GitVersionCacheProvider)this.sp.GetRequiredService<IGitVersionCacheProvider>();
 
-        sp.DiscoverRepository();
+        this.sp.DiscoverRepository();
 
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }

@@ -1,9 +1,8 @@
 using System.IO.Abstractions;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class GitVersionTaskDirectoryTests : TestBase

@@ -1,9 +1,8 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
 public class SupportBranchScenarios : TestBase

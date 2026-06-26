@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
 
-namespace GitVersion.Common;
+namespace GitVersion;
 
 /// <summary>Provides high-level read access to a Git repository, exposing the objects and queries needed for version calculation.</summary>
 public interface IRepositoryStore

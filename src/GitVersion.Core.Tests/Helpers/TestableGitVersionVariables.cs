@@ -1,6 +1,6 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 internal record TestableGitVersionVariables() : GitVersionVariables(
     AssemblySemFileVer: "",

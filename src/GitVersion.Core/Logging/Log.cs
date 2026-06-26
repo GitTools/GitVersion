@@ -1,5 +1,4 @@
 using System.Globalization;
-using GitVersion.Core;
 using GitVersion.Helpers;
 
 namespace GitVersion.Logging;

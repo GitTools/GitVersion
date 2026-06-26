@@ -1,6 +1,4 @@
-using GitVersion.Core.Tests.Helpers;
-
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
 public class GitflowScenarios : TestBase

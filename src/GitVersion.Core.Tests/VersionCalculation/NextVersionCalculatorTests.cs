@@ -1,9 +1,8 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests.VersionCalculation;
+namespace GitVersion.Tests.VersionCalculation;
 
 public class NextVersionCalculatorTests : TestBase
 {

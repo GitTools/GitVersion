@@ -1,9 +1,8 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Git;
 using GitVersion.Logging;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class RepositoryStoreTests : TestBase

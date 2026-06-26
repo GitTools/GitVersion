@@ -19,26 +19,26 @@ GitVersion.BugException
 GitVersion.BugException.BugException() -> void
 GitVersion.BugException.BugException(string! message) -> void
 GitVersion.BugException.BugException(string? message, System.Exception? innerException) -> void
-GitVersion.Common.IRepositoryStore
-GitVersion.Common.IRepositoryStore.Branches.get -> GitVersion.Git.IBranchCollection!
-GitVersion.Common.IRepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>! branchesToExclude) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
-GitVersion.Common.IRepositoryStore.FindBranch(GitVersion.Git.ReferenceName! branchName) -> GitVersion.Git.IBranch?
-GitVersion.Common.IRepositoryStore.FindCommitBranchesBranchedFrom(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.BranchCommit>!
-GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.IBranch? branch, GitVersion.Git.IBranch? otherBranch) -> GitVersion.Git.ICommit?
-GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.Git.ICommit! commit, GitVersion.Git.ICommit! mainlineTip) -> GitVersion.Git.ICommit?
-GitVersion.Common.IRepositoryStore.GetBranchesContainingCommit(GitVersion.Git.ICommit! commit, System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.Git.ICommit? baseVersionSource, GitVersion.Git.ICommit! currentCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
-GitVersion.Common.IRepositoryStore.GetCommitsReacheableFrom(GitVersion.Git.ICommit! commit, GitVersion.Git.IBranch! branch) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
-GitVersion.Common.IRepositoryStore.GetCommitsReacheableFromHead(GitVersion.Git.ICommit? headCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
-GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.Git.IBranch! currentBranch, string? commitId, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> GitVersion.Git.ICommit?
-GitVersion.Common.IRepositoryStore.GetForwardMerge(GitVersion.Git.ICommit? commitToFindCommonBase, GitVersion.Git.ICommit? findMergeBase) -> GitVersion.Git.ICommit?
-GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.Git.IBranch!
-GitVersion.Common.IRepositoryStore.Head.get -> GitVersion.Git.IBranch!
-GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.Git.ICommit? baseVersionSource, GitVersion.Git.IBranch! branch, GitVersion.Git.ICommit! firstMatchingCommit) -> bool
-GitVersion.Common.IRepositoryStore.Tags.get -> GitVersion.Git.ITagCollection!
-GitVersion.Common.IRepositoryStore.UncommittedChangesCount.get -> int
+GitVersion.IRepositoryStore
+GitVersion.IRepositoryStore.Branches.get -> GitVersion.Git.IBranchCollection!
+GitVersion.IRepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>! branchesToExclude) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
+GitVersion.IRepositoryStore.FindBranch(GitVersion.Git.ReferenceName! branchName) -> GitVersion.Git.IBranch?
+GitVersion.IRepositoryStore.FindCommitBranchesBranchedFrom(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.BranchCommit>!
+GitVersion.IRepositoryStore.FindMergeBase(GitVersion.Git.IBranch? branch, GitVersion.Git.IBranch? otherBranch) -> GitVersion.Git.ICommit?
+GitVersion.IRepositoryStore.FindMergeBase(GitVersion.Git.ICommit! commit, GitVersion.Git.ICommit! mainlineTip) -> GitVersion.Git.ICommit?
+GitVersion.IRepositoryStore.GetBranchesContainingCommit(GitVersion.Git.ICommit! commit, System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
+GitVersion.IRepositoryStore.GetCommitLog(GitVersion.Git.ICommit? baseVersionSource, GitVersion.Git.ICommit! currentCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
+GitVersion.IRepositoryStore.GetCommitsReacheableFrom(GitVersion.Git.ICommit! commit, GitVersion.Git.IBranch! branch) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
+GitVersion.IRepositoryStore.GetCommitsReacheableFromHead(GitVersion.Git.ICommit? headCommit, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> System.Collections.Generic.IReadOnlyList<GitVersion.Git.ICommit!>!
+GitVersion.IRepositoryStore.GetCurrentCommit(GitVersion.Git.IBranch! currentBranch, string? commitId, GitVersion.Configuration.IIgnoreConfiguration! ignore) -> GitVersion.Git.ICommit?
+GitVersion.IRepositoryStore.GetForwardMerge(GitVersion.Git.ICommit? commitToFindCommonBase, GitVersion.Git.ICommit? findMergeBase) -> GitVersion.Git.ICommit?
+GitVersion.IRepositoryStore.GetSourceBranches(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, params GitVersion.Git.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
+GitVersion.IRepositoryStore.GetSourceBranches(GitVersion.Git.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.Git.IBranch!>!
+GitVersion.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.Git.IBranch!
+GitVersion.IRepositoryStore.Head.get -> GitVersion.Git.IBranch!
+GitVersion.IRepositoryStore.IsCommitOnBranch(GitVersion.Git.ICommit? baseVersionSource, GitVersion.Git.IBranch! branch, GitVersion.Git.ICommit! firstMatchingCommit) -> bool
+GitVersion.IRepositoryStore.Tags.get -> GitVersion.Git.ITagCollection!
+GitVersion.IRepositoryStore.UncommittedChangesCount.get -> int
 GitVersion.Configuration.AssemblyFileVersioningScheme
 GitVersion.Configuration.AssemblyFileVersioningScheme.Major = 3 -> GitVersion.Configuration.AssemblyFileVersioningScheme
 GitVersion.Configuration.AssemblyFileVersioningScheme.MajorMinor = 2 -> GitVersion.Configuration.AssemblyFileVersioningScheme

@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Git;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 public class TestBase
 {

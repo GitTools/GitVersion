@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
 public class ContinuousDeliveryTestScenarios
@@ -115,7 +115,7 @@ public class ContinuousDeliveryTestScenarios
     public void ShouldCalculateTheCorrectVersionWhenMergingFromMainToFeatureBranch()
     {
         // *94f03f8 55 minutes ago(HEAD -> main)
-        // |\  
+        // |\
         // | *b1f41a4 56 minutes ago
         // |/
         // *ec77f9c 58 minutes ago
@@ -168,7 +168,7 @@ public class ContinuousDeliveryTestScenarios
     public void ShouldCalculateTheCorrectVersionWhenMergingFromDevelopToFeatureBranch()
     {
         // *2c475bf 55 minutes ago(HEAD -> develop)
-        // |\  
+        // |\
         // | *e05365d 56 minutes ago
         // |/
         // *67acc03 58 minutes ago(main)
@@ -220,7 +220,7 @@ public class ContinuousDeliveryTestScenarios
     {
         // *b1e5593 53 minutes ago(HEAD -> release/ 1.0.0)
         // *8752695 55 minutes ago
-        // |\  
+        // |\
         // | *0965b88 56 minutes ago
         // |/
         // *f63a536 58 minutes ago(main)
@@ -272,7 +272,7 @@ public class ContinuousDeliveryTestScenarios
     public void ShouldFallbackToTheVersionOnDevelopLikeTheReleaseWasNeverCreatedWhenReleaseHasBeenCanceled()
     {
         // *8f062c7 49 minutes ago(HEAD -> develop)
-        // |\  
+        // |\
         // | *bda6ba8 52 minutes ago
         // | *6f5cf19 54 minutes ago
         // * | 3b20f15 50 minutes ago
@@ -354,16 +354,16 @@ public class ContinuousDeliveryTestScenarios
     public void ShouldConsiderTheMergeCommitFromMainToDevelopWhenReleaseHasBeenMergedAndTaggedOnMain()
     {
         // *   5d13120 48 minutes ago  (HEAD -> develop)
-        // |\  
+        // |\
         // | *   8ddd9b0 49 minutes ago  (tag: 1.0.0, main)
-        // | |\  
-        // | | * 4b826b8 52 minutes ago 
-        // | | * d4b0047 54 minutes ago 
-        // * | | 0457671 50 minutes ago 
-        // | |/  
-        // |/|   
-        // * | 5f31f30 56 minutes ago 
-        // |/  
+        // | |\
+        // | | * 4b826b8 52 minutes ago
+        // | | * d4b0047 54 minutes ago
+        // * | | 0457671 50 minutes ago
+        // | |/
+        // |/|
+        // * | 5f31f30 56 minutes ago
+        // |/
         // * 252971e 58 minutes ago
 
         var configuration = GitFlowConfigurationBuilder.New

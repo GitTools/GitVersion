@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Mocks;
+using GitVersion.Tests;
 
 namespace GitVersion.MsBuild.Tests;
 

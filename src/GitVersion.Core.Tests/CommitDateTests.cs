@@ -1,7 +1,6 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class CommitDateTests : TestBase
