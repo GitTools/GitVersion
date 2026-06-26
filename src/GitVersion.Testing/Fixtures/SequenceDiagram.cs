@@ -15,8 +15,8 @@ public class SequenceDiagram
     /// </summary>
     public SequenceDiagram()
     {
-        this.DiagramBuilder = new StringBuilder();
-        this.DiagramBuilder.AppendLine("@startuml");
+        DiagramBuilder = new StringBuilder();
+        DiagramBuilder.AppendLine("@startuml");
     }
 
     public StringBuilder DiagramBuilder { get; }
@@ -24,17 +24,17 @@ public class SequenceDiagram
     /// <summary>
     /// Activates a branch/participant in the sequence diagram
     /// </summary>
-    public void Activate(string branch) => this.DiagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
+    public void Activate(string branch) => DiagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
 
     /// <summary>
     /// Deactivates a branch/participant in the sequence diagram
     /// </summary>
-    public void Deactivate(string branch) => this.DiagramBuilder.AppendLineFormat("deactivate {0}", GetParticipant(branch));
+    public void Deactivate(string branch) => DiagramBuilder.AppendLineFormat("deactivate {0}", GetParticipant(branch));
 
     /// <summary>
     /// Destroys a branch/participant in the sequence diagram
     /// </summary>
-    public void Destroy(string branch) => this.DiagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
+    public void Destroy(string branch) => DiagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
 
     /// <summary>
     /// Creates a participant in the sequence diagram
@@ -44,21 +44,21 @@ public class SequenceDiagram
         var cleanParticipant = ParticipantSanitizer.SanitizeParticipant(@as ?? participant);
         this.participants.Add(participant, cleanParticipant);
         if (participant == cleanParticipant)
-            this.DiagramBuilder.AppendLineFormat("participant {0}", participant);
+            DiagramBuilder.AppendLineFormat("participant {0}", participant);
         else
-            this.DiagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, cleanParticipant);
+            DiagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, cleanParticipant);
     }
 
     /// <summary>
     /// Appends a divider with specified text to the sequence diagram
     /// </summary>
-    public void Divider(string text) => this.DiagramBuilder.AppendLineFormat("== {0} ==", text);
+    public void Divider(string text) => DiagramBuilder.AppendLineFormat("== {0} ==", text);
 
     /// <summary>
     /// Appends a note over one or many participants to the sequence diagram
     /// </summary>
     public void NoteOver(string noteText, string startParticipant, string? endParticipant = null, string? prefix = null, string? color = null) =>
-        this.DiagramBuilder.AppendLineFormat(
+        DiagramBuilder.AppendLineFormat(
             prefix + """
                      note over {0}{1}{2}
                        {3}
@@ -72,7 +72,7 @@ public class SequenceDiagram
     /// <summary>
     /// Appends applying a tag to the specified branch/participant to the sequence diagram
     /// </summary>
-    public void ApplyTag(string tag, string toBranch) => this.DiagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
+    public void ApplyTag(string tag, string toBranch) => DiagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
 
     /// <summary>
     /// Appends branching from a branch to another branch, @as can override the participant name
@@ -81,11 +81,11 @@ public class SequenceDiagram
     {
         if (!this.participants.ContainsKey(branchName))
         {
-            this.DiagramBuilder.Append("create ");
+            DiagramBuilder.Append("create ");
             Participant(branchName, @as);
         }
 
-        this.DiagramBuilder.AppendLineFormat(
+        DiagramBuilder.AppendLineFormat(
             "{0} -> {1}: branch from {2}",
             GetParticipant(currentName),
             GetParticipant(branchName), currentName);
@@ -98,32 +98,32 @@ public class SequenceDiagram
     {
         if (!this.participants.ContainsKey(branchName))
         {
-            this.DiagramBuilder.Append("create ");
+            DiagramBuilder.Append("create ");
             Participant(branchName, @as);
         }
 
-        this.DiagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
+        DiagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
     }
 
     /// <summary>
     /// Appends a commit on the target participant/branch to the sequence diagram
     /// </summary>
-    public void MakeACommit(string toParticipant) => this.DiagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
+    public void MakeACommit(string toParticipant) => DiagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
 
     /// <summary>
     /// Append a merge to the sequence diagram
     /// </summary>
-    public void Merge(string from, string to) => this.DiagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
+    public void Merge(string from, string to) => DiagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
 
     public string GetParticipant(string branch) => this.participants.GetValueOrDefault(branch, branch);
 
     /// <summary>
     /// Ends the sequence diagram
     /// </summary>
-    public void End() => this.DiagramBuilder.AppendLine("@enduml");
+    public void End() => DiagramBuilder.AppendLine("@enduml");
 
     /// <summary>
     /// returns the plantUML representation of the Sequence Diagram
     /// </summary>
-    public string GetDiagram() => this.DiagramBuilder.ToString();
+    public string GetDiagram() => DiagramBuilder.ToString();
 }

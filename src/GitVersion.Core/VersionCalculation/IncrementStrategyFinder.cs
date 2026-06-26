@@ -1,7 +1,5 @@
 using System.Text.RegularExpressions;
-using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
@@ -100,7 +98,7 @@ internal class IncrementStrategyFinder(
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)
     {
         var targetShas = new Lazy<HashSet<string>>(() =>
-            [.. taggedSemanticVersionRepository
+            [.. this.taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
                 .SelectMany(versionWithTags => versionWithTags)
                 .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))

@@ -61,10 +61,10 @@ public abstract class RepositoryFixtureBase : IDisposable
             // throw;
         }
 
-        this.SequenceDiagram.End();
+        SequenceDiagram.End();
         Console.WriteLine("**Visualisation of test:**");
         Console.WriteLine(string.Empty);
-        Console.WriteLine(this.SequenceDiagram.GetDiagram());
+        Console.WriteLine(SequenceDiagram.GetDiagram());
     }
 
     public void Checkout(string branch) => Commands.Checkout(Repository, branch);
@@ -86,26 +86,26 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void ApplyTag(string tag)
     {
-        this.SequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
+        SequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
         Repository.ApplyTag(tag);
     }
 
     public void CreateBranch(string branchName, string? @as = null)
     {
-        this.SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
+        SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
         Repository.CreateBranch(branchName);
     }
 
     public void BranchTo(string branchName, string? @as = null)
     {
-        this.SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
+        SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
         var branch = Repository.CreateBranch(branchName);
         Commands.Checkout(Repository, branch);
     }
 
     public void BranchToFromTag(string branchName, string fromTag, string onBranch, string? @as = null)
     {
-        this.SequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
+        SequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
         var branch = Repository.CreateBranch(branchName);
         Commands.Checkout(Repository, branch);
     }
@@ -113,7 +113,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     public string MakeACommit()
     {
         var to = Repository.Head.FriendlyName;
-        this.SequenceDiagram.MakeACommit(to);
+        SequenceDiagram.MakeACommit(to);
         var commit = Repository.MakeACommit();
         return commit.Sha;
     }
@@ -139,7 +139,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     /// </summary>
     public void MergeNoFF(string mergeSource)
     {
-        this.SequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
+        SequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
         Repository.MergeNoFF(mergeSource, Generate.SignatureNow());
     }
 

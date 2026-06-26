@@ -5,7 +5,7 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Output;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 public class GitVersionCoreTestModule : IGitVersionModule
 {

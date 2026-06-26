@@ -1,4 +1,4 @@
-<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
 
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/AutoCompleteBasicCompletion/@EntryValue">True</s:Boolean>
@@ -196,17 +196,23 @@
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/Profiles/=GitVersion/@EntryIndexedValue">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Profile name="GitVersion"&gt;&lt;CSMakeFieldReadonly&gt;True&lt;/CSMakeFieldReadonly&gt;&lt;CSUseVar&gt;&lt;BehavourStyle&gt;CAN_CHANGE_TO_IMPLICIT&lt;/BehavourStyle&gt;&lt;LocalVariableStyle&gt;ALWAYS_IMPLICIT&lt;/LocalVariableStyle&gt;&lt;ForeachVariableStyle&gt;ALWAYS_IMPLICIT&lt;/ForeachVariableStyle&gt;&lt;/CSUseVar&gt;&lt;CSOptimizeUsings&gt;&lt;OptimizeUsings&gt;True&lt;/OptimizeUsings&gt;&lt;/CSOptimizeUsings&gt;&lt;CSReformatCode&gt;True&lt;/CSReformatCode&gt;&lt;CSReorderTypeMembers&gt;True&lt;/CSReorderTypeMembers&gt;&lt;JsInsertSemicolon&gt;True&lt;/JsInsertSemicolon&gt;&lt;JsReformatCode&gt;True&lt;/JsReformatCode&gt;&lt;CssReformatCode&gt;True&lt;/CssReformatCode&gt;&lt;CSArrangeThisQualifier&gt;True&lt;/CSArrangeThisQualifier&gt;&lt;RemoveCodeRedundancies&gt;True&lt;/RemoveCodeRedundancies&gt;&lt;CSUseAutoProperty&gt;True&lt;/CSUseAutoProperty&gt;&lt;HtmlReformatCode&gt;True&lt;/HtmlReformatCode&gt;&lt;CSShortenReferences&gt;True&lt;/CSShortenReferences&gt;&lt;CSharpFormatDocComments&gt;True&lt;/CSharpFormatDocComments&gt;&lt;CssAlphabetizeProperties&gt;True&lt;/CssAlphabetizeProperties&gt;&lt;CSCodeStyleAttributes ArrangeVarStyle="True" ArrangeTypeAccessModifier="True" ArrangeTypeMemberAccessModifier="True" SortModifiers="True" ArrangeArgumentsStyle="True" RemoveRedundantParentheses="True" AddMissingParentheses="True" ArrangeBraces="True" ArrangeAttributes="True" ArrangeCodeBodyStyle="True" ArrangeTrailingCommas="True" ArrangeObjectCreation="True" ArrangeDefaultValue="True" ArrangeNamespaces="True" /&gt;&lt;CSArrangeQualifiers&gt;True&lt;/CSArrangeQualifiers&gt;&lt;CSFixBuiltinTypeReferences&gt;True&lt;/CSFixBuiltinTypeReferences&gt;&lt;IDEA_SETTINGS&gt;&amp;lt;profile version="1.0"&amp;gt;
   &amp;lt;option name="myName" value="GitVersion" /&amp;gt;
 &amp;lt;/profile&amp;gt;&lt;/IDEA_SETTINGS&gt;&lt;RIDER_SETTINGS&gt;&amp;lt;profile&amp;gt;
-  &amp;lt;Language id="CSS"&amp;gt;
-    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
+  &amp;lt;Language id=""&amp;gt;
+    &amp;lt;OptimizeImports&amp;gt;false&amp;lt;/OptimizeImports&amp;gt;
+  &amp;lt;/Language&amp;gt;
+  &amp;lt;Language id="CMake"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+  &amp;lt;/Language&amp;gt;
+  &amp;lt;Language id="CSS"&amp;gt;
+    &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="EditorConfig"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="HTML"&amp;gt;
-    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
-    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
+    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="HTTP Request"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
@@ -224,9 +230,9 @@
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="JavaScript"&amp;gt;
-    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
-    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
+    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="Markdown"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
@@ -237,18 +243,24 @@
   &amp;lt;Language id="RELAX-NG"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
   &amp;lt;/Language&amp;gt;
+  &amp;lt;Language id="Razor"&amp;gt;
+    &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+  &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="SQL"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
   &amp;lt;/Language&amp;gt;
-  &amp;lt;Language id="XML"&amp;gt;
-    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
-    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
+  &amp;lt;Language id="VueExpr"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+  &amp;lt;/Language&amp;gt;
+  &amp;lt;Language id="XML"&amp;gt;
+    &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
+    &amp;lt;OptimizeImports&amp;gt;true&amp;lt;/OptimizeImports&amp;gt;
+    &amp;lt;Rearrange&amp;gt;true&amp;lt;/Rearrange&amp;gt;
   &amp;lt;/Language&amp;gt;
   &amp;lt;Language id="yaml"&amp;gt;
     &amp;lt;Reformat&amp;gt;true&amp;lt;/Reformat&amp;gt;
   &amp;lt;/Language&amp;gt;
-&amp;lt;/profile&amp;gt;&lt;/RIDER_SETTINGS&gt;&lt;/Profile&gt;</s:String>
+&amp;lt;/profile&amp;gt;&lt;/RIDER_SETTINGS&gt;&lt;UpgradedBackendToFrontendHtml&gt;True&lt;/UpgradedBackendToFrontendHtml&gt;&lt;CSMakeAutoPropertyGetOnly&gt;True&lt;/CSMakeAutoPropertyGetOnly&gt;&lt;/Profile&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/RecentlyUsedProfile/@EntryValue">Default: Reformat Code</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/SilentCleanupProfile/@EntryValue">GitVersion</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/EXPLICIT_INTERNAL_MODIFIER/@EntryValue">False</s:Boolean>

@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Mainline;
+namespace GitVersion.Tests.Mainline;
 
 internal partial class MainlineScenariosWithAGitHubFlow
 {
@@ -22,15 +22,15 @@ internal partial class MainlineScenariosWithAGitHubFlow
             // B 58 minutes ago (HEAD -> feature/foo)
             // A 59 minutes ago (tag 0.0.3-4)
 
-            fixture = new EmptyRepositoryFixture("feature/foo");
+            this.fixture = new EmptyRepositoryFixture("feature/foo");
 
-            fixture.MakeACommit("A");
-            fixture.ApplyTag("0.0.3-4");
-            fixture.MakeACommit("B");
+            this.fixture.MakeACommit("A");
+            this.fixture.ApplyTag("0.0.3-4");
+            this.fixture.MakeACommit("B");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, null, ExpectedResult = "0.0.3-5+1")]
         [TestCase(IncrementStrategy.Patch, null, ExpectedResult = "0.0.3-5+1")]
@@ -57,7 +57,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

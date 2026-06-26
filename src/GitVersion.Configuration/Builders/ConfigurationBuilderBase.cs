@@ -1,4 +1,3 @@
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
@@ -400,7 +399,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
-            VersionStrategies = versionStrategies,
+            VersionStrategies = this.versionStrategies,
             Branches = branches,
             MergeMessageFormats = this.mergeMessageFormats,
             DeploymentMode = this.versioningMode,

@@ -19,11 +19,11 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var gitBranch = Environment.GetEnvironmentVariable("GIT_BRANCH");
+        var gitBranch = this.environment.GetEnvironmentVariable("GIT_BRANCH");
         if (gitBranch is not null)
             return gitBranch;
 
-        var sourceBranch = Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+        var sourceBranch = this.environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
 
         // https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         // BUILD_SOURCEBRANCH must be used only for "real" branches, not for tags.
@@ -37,7 +37,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
     {
         // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
         // specified
-        var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
+        var buildNumberEnv = this.environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
         if (buildNumberEnv.IsNullOrWhiteSpace())
             return variables.FullSemVer;
 

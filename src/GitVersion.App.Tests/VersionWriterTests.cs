@@ -1,5 +1,5 @@
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

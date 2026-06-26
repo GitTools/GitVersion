@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;

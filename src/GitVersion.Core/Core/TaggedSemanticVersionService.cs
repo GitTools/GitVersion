@@ -1,10 +1,9 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
-
 using CommitSemanticVersion = (GitVersion.Git.ICommit Commit, GitVersion.SemanticVersionWithTag SemanticVersion);
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal sealed class TaggedSemanticVersionService(
     ITaggedSemanticVersionRepository repository, IBranchRepository branchRepository)

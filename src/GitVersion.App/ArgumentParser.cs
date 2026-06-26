@@ -292,7 +292,7 @@ internal class ArgumentParser(IEnvironment environment,
 
         if (name.IsSwitch("verbosity"))
         {
-            ParseVerbosity(arguments, value);
+            arguments.Verbosity = ParseVerbosity(value);
             return true;
         }
 
@@ -437,13 +437,8 @@ internal class ArgumentParser(IEnvironment environment,
         }
     }
 
-    private static void ParseVerbosity(Arguments arguments, string? value)
-    {
-        if (!Enum.TryParse(value, true, out arguments.Verbosity))
-        {
-            throw new WarningException($"Could not parse Verbosity value '{value}'");
-        }
-    }
+    private static Verbosity ParseVerbosity(string? value) =>
+        Enum.TryParse(value, true, out Verbosity verbosity) ? verbosity : throw new WarningException($"Could not parse Verbosity value '{value}'");
 
     private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string>? values)
     {

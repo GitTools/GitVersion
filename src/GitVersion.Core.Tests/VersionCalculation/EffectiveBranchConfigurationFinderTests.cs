@@ -1,10 +1,9 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Git;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.VersionCalculation;
+namespace GitVersion.Tests.VersionCalculation;
 
 [TestFixture]
 public class EffectiveBranchConfigurationFinderTests

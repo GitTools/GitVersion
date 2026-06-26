@@ -1,7 +1,7 @@
 using Buildalyzer;
 using Buildalyzer.Environment;
-using GitVersion.Core.Tests;
 using GitVersion.Helpers;
+using GitVersion.Tests;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -18,13 +18,13 @@ public class MsBuildExeFixture
     public const string OutputTarget = "GitVersionOutput";
 
     private readonly AnalyzerManager manager = new();
-    private readonly string ProjectPath;
+    private readonly string projectPath;
 
     public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "", string language = "C#")
     {
         var projectExtension = AssemblyInfoFileHelper.GetProjectExtension(language);
         this.fixture = fixture;
-        this.ProjectPath = FileSystemHelper.Path.Combine(workingDirectory, $"app.{projectExtension}");
+        this.projectPath = FileSystemHelper.Path.Combine(workingDirectory, $"app.{projectExtension}");
 
         var versionFile = FileSystemHelper.Path.Combine(workingDirectory, "gitversion.json");
 
@@ -33,7 +33,7 @@ public class MsBuildExeFixture
 
     public MsBuildExeFixtureResult Execute()
     {
-        var analyzer = this.manager.GetProject(this.ProjectPath);
+        var analyzer = this.manager.GetProject(this.projectPath);
 
         var output = new StringWriter();
         analyzer.AddBuildLogger(new ConsoleLogger(LoggerVerbosity.Normal, output.Write, null, null));
@@ -54,7 +54,7 @@ public class MsBuildExeFixture
 
         return new MsBuildExeFixtureResult(this.fixture)
         {
-            ProjectPath = ProjectPath,
+            ProjectPath = this.projectPath,
             Output = output.ToString(),
             MsBuild = results
         };
@@ -62,7 +62,7 @@ public class MsBuildExeFixture
 
     public void CreateTestProject(Action<ProjectCreator> extendProject)
     {
-        var project = ProjectCreator.Templates.SdkCsproj(this.ProjectPath);
+        var project = ProjectCreator.Templates.SdkCsproj(this.projectPath);
         extendProject(project);
 
         project.Save();

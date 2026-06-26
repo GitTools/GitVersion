@@ -1,6 +1,6 @@
 using GitVersion.Logging;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 public class TestLogAppender(Action<string> logAction) : ILogAppender
 {

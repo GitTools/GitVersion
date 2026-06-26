@@ -1,14 +1,13 @@
 using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
 public class OtherScenarios : TestBase

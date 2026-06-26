@@ -1,5 +1,4 @@
 using System.Globalization;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -68,17 +67,17 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         VersionField versionSourceIncrement,
         string? otherMetadata = null)
     {
-        this.Sha = commitSha;
-        this.ShortSha = commitShortSha;
-        this.CommitsSinceTag = commitsSinceTag;
-        this.Branch = branch;
-        this.CommitDate = commitDate;
-        this.OtherMetaData = otherMetadata;
-        this.VersionSourceIncrement = versionSourceIncrement;
-        this.VersionSourceSemVer = versionSourceSemVer;
-        this.VersionSourceSha = versionSourceSha;
-        this.VersionSourceDistance = commitsSinceTag ?? 0;
-        this.UncommittedChanges = numberOfUnCommittedChanges;
+        Sha = commitSha;
+        ShortSha = commitShortSha;
+        CommitsSinceTag = commitsSinceTag;
+        Branch = branch;
+        CommitDate = commitDate;
+        OtherMetaData = otherMetadata;
+        VersionSourceIncrement = versionSourceIncrement;
+        VersionSourceSemVer = versionSourceSemVer;
+        VersionSourceSha = versionSourceSha;
+        VersionSourceDistance = commitsSinceTag ?? 0;
+        UncommittedChanges = numberOfUnCommittedChanges;
     }
 
     /// <summary>Initializes a new build metadata instance as a copy of <paramref name="buildMetaData"/>.</summary>
@@ -86,17 +85,17 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     {
         buildMetaData.NotNull();
 
-        this.Sha = buildMetaData.Sha;
-        this.ShortSha = buildMetaData.ShortSha;
-        this.CommitsSinceTag = buildMetaData.CommitsSinceTag;
-        this.Branch = buildMetaData.Branch;
-        this.CommitDate = buildMetaData.CommitDate;
-        this.OtherMetaData = buildMetaData.OtherMetaData;
-        this.VersionSourceSemVer = buildMetaData.VersionSourceSemVer;
-        this.VersionSourceSha = buildMetaData.VersionSourceSha;
-        this.VersionSourceDistance = buildMetaData.VersionSourceDistance;
-        this.UncommittedChanges = buildMetaData.UncommittedChanges;
-        this.VersionSourceIncrement = buildMetaData.VersionSourceIncrement;
+        Sha = buildMetaData.Sha;
+        ShortSha = buildMetaData.ShortSha;
+        CommitsSinceTag = buildMetaData.CommitsSinceTag;
+        Branch = buildMetaData.Branch;
+        CommitDate = buildMetaData.CommitDate;
+        OtherMetaData = buildMetaData.OtherMetaData;
+        VersionSourceSemVer = buildMetaData.VersionSourceSemVer;
+        VersionSourceSha = buildMetaData.VersionSourceSha;
+        VersionSourceDistance = buildMetaData.VersionSourceDistance;
+        UncommittedChanges = buildMetaData.UncommittedChanges;
+        VersionSourceIncrement = buildMetaData.VersionSourceIncrement;
     }
 
     /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="SemanticVersionBuildMetaData"/> equal to this instance.</summary>
@@ -130,9 +129,9 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         format = format.ToLower();
         return format.ToLower() switch
         {
-            "b" => $"{this.CommitsSinceTag}",
-            "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
-            "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
+            "b" => $"{CommitsSinceTag}",
+            "s" => $"{CommitsSinceTag}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}".TrimStart('.'),
+            "f" => $"{CommitsSinceTag}{(Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(Branch))}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}{(OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }

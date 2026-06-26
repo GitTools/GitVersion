@@ -1,6 +1,6 @@
 using GitVersion.Logging;
 
-namespace GitVersion.Core.Tests.Logging;
+namespace GitVersion.Tests.Logging;
 
 [TestFixture]
 public class LoggingTests

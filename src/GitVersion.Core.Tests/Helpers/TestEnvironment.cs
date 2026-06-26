@@ -1,4 +1,4 @@
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 public class TestEnvironment : IEnvironment
 {

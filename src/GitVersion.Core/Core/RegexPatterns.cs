@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal static partial class RegexPatterns
 {

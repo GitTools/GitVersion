@@ -50,7 +50,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
     private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
 
-    public IReadOnlyCollection<SemanticVersion> SemanticVersions => semanticVersions;
+    public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
     private readonly HashSet<SemanticVersion> semanticVersions = [];
 
@@ -58,7 +58,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
     {
-        if (effectiveConfiguration is not null) return effectiveConfiguration;
+        if (this.effectiveConfiguration is not null) return this.effectiveConfiguration;
 
         var branchConfiguration = Configuration;
 
@@ -81,7 +81,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
         var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
 
-        return effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
     }
 
     public VersionField GetIncrementForcedByBranch(IGitVersionConfiguration configuration)
@@ -97,7 +97,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     {
         foreach (var semanticVersion in values.NotNull())
         {
-            semanticVersions.Add(semanticVersion);
+            this.semanticVersions.Add(semanticVersion);
         }
     }
 

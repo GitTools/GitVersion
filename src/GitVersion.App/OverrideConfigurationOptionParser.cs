@@ -50,7 +50,7 @@ internal class OverrideConfigurationOptionParser
                || unwrappedType == typeof(VersionStrategies[]);
     }
 
-    internal void SetValue(string key, string value) => overrideConfiguration[key] = QuotedStringHelpers.UnquoteText(value);
+    internal void SetValue(string key, string value) => this.overrideConfiguration[key] = QuotedStringHelpers.UnquoteText(value);
 
     internal IReadOnlyDictionary<object, object?> GetOverrideConfiguration() => this.overrideConfiguration;
 }

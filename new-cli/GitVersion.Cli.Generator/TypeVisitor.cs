@@ -3,9 +3,9 @@ namespace GitVersion;
 internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, CancellationToken cancellation)
     : SymbolVisitor
 {
-    private readonly HashSet<INamedTypeSymbol> _exportedTypes = new(SymbolEqualityComparer.Default);
+    private readonly HashSet<INamedTypeSymbol> exportedTypes = new(SymbolEqualityComparer.Default);
 
-    public ImmutableArray<INamedTypeSymbol> GetResults() => [.. _exportedTypes];
+    public ImmutableArray<INamedTypeSymbol> GetResults() => [.. this.exportedTypes];
 
     public override void VisitAssembly(IAssemblySymbol symbol)
     {
@@ -28,7 +28,7 @@ internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, Cancellatio
 
         if (searchQuery(type))
         {
-            _exportedTypes.Add(type);
+            this.exportedTypes.Add(type);
         }
     }
 }

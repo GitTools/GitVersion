@@ -1,4 +1,3 @@
-using GitVersion.Core;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -42,7 +41,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             IsMainBranch = false
         });
 
-        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.MainBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Label = string.Empty,
             Increment = IncrementStrategy.Patch,
@@ -52,7 +51,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             },
             TrackMergeTarget = false,
             TrackMergeMessage = true,
-            RegularExpression = MainBranch.RegexPattern,
+            RegularExpression = this.MainBranch.RegexPattern,
             SourceBranches = [],
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
@@ -60,7 +59,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 55000
         });
 
-        WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = "beta",
@@ -73,7 +72,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             },
             TrackMergeTarget = false,
             TrackMergeMessage = true,
-            RegularExpression = ReleaseBranch.RegexPattern,
+            RegularExpression = this.ReleaseBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name
@@ -84,7 +83,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.FeatureBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = ConfigurationConstants.BranchNamePlaceholder,
@@ -93,7 +92,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             {
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = FeatureBranch.RegexPattern,
+            RegularExpression = this.FeatureBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -104,7 +103,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             Label = $"PullRequest{ConfigurationConstants.PullRequestNumberPlaceholder}",
@@ -114,7 +113,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
                 OfMergedBranch = true,
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = PullRequestBranch.RegexPattern,
+            RegularExpression = this.PullRequestBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -125,7 +124,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
             DeploymentMode = DeploymentMode.ManualDeployment,
             Label = ConfigurationConstants.BranchNamePlaceholder,
@@ -134,7 +133,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             {
                 WhenCurrentCommitTagged = false
             },
-            RegularExpression = UnknownBranch.RegexPattern,
+            RegularExpression = this.UnknownBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name,

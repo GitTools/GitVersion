@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 public static class GitVersionVariablesExtensions
 {

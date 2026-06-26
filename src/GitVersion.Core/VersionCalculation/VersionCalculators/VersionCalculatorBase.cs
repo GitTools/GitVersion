@@ -1,4 +1,3 @@
-using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 

@@ -1,6 +1,6 @@
-using GitVersion.Core.Tests;
 using GitVersion.Extensions;
 using GitVersion.OutputVariables;
+using GitVersion.Tests;
 
 namespace GitVersion.App.Tests;
 

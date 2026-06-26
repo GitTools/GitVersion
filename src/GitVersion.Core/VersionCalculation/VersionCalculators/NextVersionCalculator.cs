@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Logging;
@@ -157,7 +156,7 @@ internal class NextVersionCalculator(
     private NextVersion CalculateNextVersion(IBranch branch, IGitVersionConfiguration configuration)
     {
         var nextVersions = GetNextVersions(branch, configuration);
-        log.Separator();
+        this.log.Separator();
 
         var maxVersion = nextVersions.Max()
             ?? throw new GitVersionException("No base versions determined on the current branch.");
@@ -174,7 +173,7 @@ internal class NextVersionCalculator(
             var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
             latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;
             maxVersion = latestVersion;
-            log.Info(
+            this.log.Info(
                 $"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), " +
                 $"taking latest source for commit counting ({latestVersion.BaseVersion.Source})");
         }
@@ -211,8 +210,8 @@ internal class NextVersionCalculator(
             }
         };
 
-        log.Info($"Base version used: {calculatedBase}");
-        log.Separator();
+        this.log.Info($"Base version used: {calculatedBase}");
+        this.log.Separator();
 
         return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);
     }
@@ -232,7 +231,7 @@ internal class NextVersionCalculator(
 
     private List<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
-        using (log.IndentLog("Fetching the base versions for version calculation..."))
+        using (this.log.IndentLog("Fetching the base versions for version calculation..."))
         {
             if (branch.Tip == null)
                 throw new GitVersionException("No commits found on the current branch.");
@@ -264,7 +263,7 @@ internal class NextVersionCalculator(
                         {
                             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                             {
-                                log.Info(baseVersion.ToString());
+                                this.log.Info(baseVersion.ToString());
                                 if (!IncludeVersion(baseVersion, configuration.Ignore)) continue;
                                 atLeastOneBaseVersionReturned = true;
 

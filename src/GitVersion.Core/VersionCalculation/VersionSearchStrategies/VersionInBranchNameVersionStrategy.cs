@@ -14,7 +14,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {

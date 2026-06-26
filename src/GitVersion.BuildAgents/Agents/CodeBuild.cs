@@ -26,9 +26,9 @@ internal sealed class CodeBuild : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
+        var currentBranch = this.environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
 
-        return currentBranch.IsNullOrEmpty() ? Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName) : currentBranch;
+        return currentBranch.IsNullOrEmpty() ? this.environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName) : currentBranch;
     }
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
@@ -38,11 +38,11 @@ internal sealed class CodeBuild : BuildAgentBase
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        this.FileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
+        this.fileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
     }
 
     public override bool PreventFetch() => true;
 
-    public override bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty()
-                                                       || !Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();
+    public override bool CanApplyToCurrentContext() => !this.environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty()
+                                                       || !this.environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();
 }

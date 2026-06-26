@@ -5,40 +5,33 @@ namespace GitVersion;
 
 internal class Arguments
 {
-    public AuthenticationInfo Authentication = new();
-
-    public string? ConfigurationFile;
-    public IReadOnlyDictionary<object, object?> OverrideConfiguration = new Dictionary<object, object?>();
-    public bool ShowConfiguration;
-
-    public string? TargetPath;
-
-    public string? TargetUrl;
-    public string? TargetBranch;
-    public string? CommitId;
-    public string? ClonePath;
-
-    public bool Diag;
-    public bool IsVersion;
-    public bool IsHelp;
-
-    public bool NoFetch;
-    public bool NoCache;
-    public bool NoNormalize;
-    public bool AllowShallow;
-
-    public string? LogFilePath;
-    public string? ShowVariable;
-    public string? Format;
-    public string? OutputFile;
-    public ISet<OutputType> Output = new HashSet<OutputType>();
-    public Verbosity Verbosity = Verbosity.Normal;
-
-    public bool UpdateWixVersionFile;
-    public bool UpdateProjectFiles;
-    public bool UpdateAssemblyInfo;
-    public bool EnsureAssemblyInfo;
-    public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
+    public AuthenticationInfo Authentication { get; set; } = new();
+    public string? ConfigurationFile { get; set; }
+    public IReadOnlyDictionary<object, object?> OverrideConfiguration { get; set; } = new Dictionary<object, object?>();
+    public bool ShowConfiguration { get; set; }
+    public string? TargetPath { get; set; }
+    public string? TargetUrl { get; set; }
+    public string? TargetBranch { get; set; }
+    public string? CommitId { get; set; }
+    public string? ClonePath { get; set; }
+    public bool Diag { get; set; }
+    public bool IsVersion { get; set; }
+    public bool IsHelp { get; set; }
+    public bool NoFetch { get; set; }
+    public bool NoCache { get; set; }
+    public bool NoNormalize { get; set; }
+    public bool AllowShallow { get; set; }
+    public string? LogFilePath { get; set; }
+    public string? ShowVariable { get; set; }
+    public string? Format { get; set; }
+    public string? OutputFile { get; set; }
+    public ISet<OutputType> Output { get; set; } = new HashSet<OutputType>();
+    public Verbosity Verbosity { get; set; } = Verbosity.Normal;
+    public bool UpdateWixVersionFile { get; set; }
+    public bool UpdateProjectFiles { get; set; }
+    public bool UpdateAssemblyInfo { get; set; }
+    public bool EnsureAssemblyInfo { get; set; }
+    public ISet<string> UpdateAssemblyInfoFileName { get; set; } = new HashSet<string>();
 
     public GitVersionOptions ToOptions()
     {
@@ -54,9 +47,9 @@ internal class Arguments
 
             AuthenticationInfo =
             {
-                Username = this.Authentication.Username,
-                Password = this.Authentication.Password,
-                Token = this.Authentication.Token
+                Username = Authentication.Username,
+                Password = Authentication.Password,
+                Token = Authentication.Token
             },
 
             ConfigurationInfo =
@@ -99,7 +92,7 @@ internal class Arguments
             OutputFile = OutputFile
         };
 
-        var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
+        var workingDirectory = TargetPath?.TrimEnd('/', '\\');
         if (workingDirectory != null)
         {
             gitVersionOptions.WorkingDirectory = workingDirectory;

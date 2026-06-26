@@ -158,8 +158,19 @@ resharper_csharp_use_roslyn_logic_for_evident_types = true
 # Alignment
 resharper_csharp_align_multiline_parameter = true
 
-# Qualify fields with "this."
+# Qualify fields with `this.` in ReSharper
 resharper_csharp_instance_members_qualify_members = field
+
+# Qualify fields with `this.` in Roslyn
+dotnet_style_qualification_for_field = true:error
+
+# Do not qualify properties, methods, and events with `this.` in Roslyn
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+
+# Make missing `this.` qualification an error
+dotnet_diagnostic.IDE0009.severity = error
 
 # IDE0005: Using directive is unnecessary.
 dotnet_diagnostic.ide0005.severity = warning

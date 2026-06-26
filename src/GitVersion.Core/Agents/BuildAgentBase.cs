@@ -8,15 +8,15 @@ namespace GitVersion.Agents;
 internal abstract class BuildAgentBase(IEnvironment environment, ILog log, IFileSystem fileSystem) : ICurrentBuildAgent
 {
     protected readonly ILog Log = log.NotNull();
-    protected readonly IEnvironment Environment = environment.NotNull();
-    protected readonly IFileSystem FileSystem = fileSystem.NotNull();
+    protected readonly IEnvironment environment = environment.NotNull();
+    protected readonly IFileSystem fileSystem = fileSystem.NotNull();
 
     protected abstract string EnvironmentVariable { get; }
 
     public abstract string? SetBuildNumber(GitVersionVariables variables);
     public abstract string[] SetOutputVariables(string name, string? value);
 
-    public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
+    public virtual bool CanApplyToCurrentContext() => !this.environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
 
     public virtual string? GetCurrentBranch(bool usingDynamicRepos) => null;
 

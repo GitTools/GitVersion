@@ -1,4 +1,3 @@
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using SemanticVersionResult = (GitVersion.SemanticVersion Value, string? Name);

@@ -1,10 +1,9 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class DocumentationTests : TestBase
@@ -62,7 +61,7 @@ public class DocumentationTests : TestBase
     {
         var documentationFilePath = FileSystemHelper.Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
         // Normalize path separators and such.
-        documentationFilePath = fileSystem.FileInfo.New(documentationFilePath).FullName;
+        documentationFilePath = this.fileSystem.FileInfo.New(documentationFilePath).FullName;
 
         if (!this.fileSystem.File.Exists(documentationFilePath))
         {

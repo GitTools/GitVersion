@@ -1,6 +1,6 @@
 using GitVersion.Testing.Helpers;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class ParticipantSanitizerTests

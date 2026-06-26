@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
+using GitVersion.Tests;
 
 namespace GitVersion.BuildAgents.Tests;
 

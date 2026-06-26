@@ -1,9 +1,8 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal sealed class BranchRepository(IRepositoryStore repositoryStore) : IBranchRepository
 {

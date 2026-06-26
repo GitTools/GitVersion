@@ -1,8 +1,7 @@
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
 public class FallbackVersionStrategyScenarios : TestBase

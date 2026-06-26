@@ -1,5 +1,4 @@
 using GitVersion.Configuration;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Formatting;
 using GitVersion.OutputVariables;

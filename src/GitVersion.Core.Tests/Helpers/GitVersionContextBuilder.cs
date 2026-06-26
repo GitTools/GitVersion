@@ -1,8 +1,7 @@
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Git;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 public class GitVersionContextBuilder : IDisposable
 {
@@ -56,8 +55,8 @@ public class GitVersionContextBuilder : IDisposable
     {
         var repo = this.repository ?? CreateRepository();
 
-        emptyRepositoryFixture = new();
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = emptyRepositoryFixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration } });
+        this.emptyRepositoryFixture = new();
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.emptyRepositoryFixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration } });
 
         this.ServicesProvider = ConfigureServices(services =>
         {

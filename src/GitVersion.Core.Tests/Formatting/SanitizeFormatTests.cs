@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using GitVersion.Core.Tests.Extensions;
 using GitVersion.Formatting;
+using GitVersion.Tests.Extensions;
 
-namespace GitVersion.Core.Tests.Formatting;
+namespace GitVersion.Tests.Formatting;
 
 [SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value")]
 [SuppressMessage("Style", "IDE0060:Remove unused parameter")]

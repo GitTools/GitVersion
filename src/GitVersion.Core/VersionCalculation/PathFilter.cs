@@ -24,10 +24,10 @@ internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = Pat
 
     private bool IsMatch(string path)
     {
-        if (!pathMatchCache.TryGetValue(path, out var isMatch))
+        if (!this.pathMatchCache.TryGetValue(path, out var isMatch))
         {
             isMatch = this.pathsRegexes.Any(regex => regex.IsMatch(path));
-            pathMatchCache[path] = isMatch;
+            this.pathMatchCache[path] = isMatch;
         }
         return isMatch;
     }
@@ -44,7 +44,7 @@ internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = Pat
         {
             case PathFilterMode.Inclusive:
                 {
-                    if (commit.DiffPaths.All(this.IsMatch))
+                    if (commit.DiffPaths.All(IsMatch))
                     {
                         reason = "Source was ignored due to all commit paths matching ignore regex";
                         return true;

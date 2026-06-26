@@ -4,6 +4,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
+        <RootNamespace>GitVersion.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Mainline;
+namespace GitVersion.Tests.Mainline;
 
 internal partial class MainlineScenariosWithAGitFlow
 {
@@ -24,18 +24,18 @@ internal partial class MainlineScenariosWithAGitFlow
             // |/
             // * 58 minutes ago
 
-            fixture = new EmptyRepositoryFixture();
+            this.fixture = new EmptyRepositoryFixture();
 
-            fixture.MakeACommit("A");
-            fixture.BranchTo("develop");
-            fixture.MakeACommit("B");
-            fixture.MergeTo("main");
-            fixture.ApplyTag("1.0.0");
-            fixture.Checkout("develop");
+            this.fixture.MakeACommit("A");
+            this.fixture.BranchTo("develop");
+            this.fixture.MakeACommit("B");
+            this.fixture.MergeTo("main");
+            this.fixture.ApplyTag("1.0.0");
+            this.fixture.Checkout("develop");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "1.0.0-alpha.1+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, ExpectedResult = "1.0.1-alpha.1+0")]
@@ -63,7 +63,7 @@ internal partial class MainlineScenariosWithAGitFlow
                 .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(true))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-alpha.1+1")]
@@ -92,7 +92,7 @@ internal partial class MainlineScenariosWithAGitFlow
                 .WithBranch("develop", b => b.WithIncrement(increment).WithTrackMergeTarget(false))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

@@ -12,14 +12,14 @@ public class ArgumentBuilder(string? workingDirectory, string? additionalArgumen
     {
         var arguments = new StringBuilder();
 
-        if (!this.WorkingDirectory.IsNullOrWhiteSpace())
+        if (!WorkingDirectory.IsNullOrWhiteSpace())
         {
-            arguments.Append(" /targetpath \"").Append(this.WorkingDirectory).Append('\"');
+            arguments.Append(" /targetpath \"").Append(WorkingDirectory).Append('\"');
         }
 
-        if (!this.LogFile.IsNullOrWhiteSpace())
+        if (!LogFile.IsNullOrWhiteSpace())
         {
-            arguments.Append(" /l \"").Append(this.LogFile).Append('\"');
+            arguments.Append(" /l \"").Append(LogFile).Append('\"');
         }
 
         arguments.Append(additionalArguments);

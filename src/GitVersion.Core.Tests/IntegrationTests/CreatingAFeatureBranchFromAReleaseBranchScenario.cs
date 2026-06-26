@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
 
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 /// <summary>
 /// Version not generated correct when creating a feature branch from a release branch #3101
@@ -14,7 +14,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *f59b84f in the future(HEAD -> release/ 1.0.0)
         // *d0f4669 in the future
-        // |\  
+        // |\
         // | *471acec in the future
         // |/
         // | *266fa68 in the future(release/ 1.1.0, main)
@@ -90,7 +90,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *19ed1e8 in the future(HEAD -> release/ 1.0.0)
         // *1684169 in the future
-        // |\  
+        // |\
         // | *07bd75c in the future
         // |/
         // | *ff34213 in the future(release/ 1.1.0, develop)
@@ -172,7 +172,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *2b9c8bf 42 minutes ago(HEAD -> release/ 1.0.0)
         // *66cfc66 44 minutes ago
-        // |\  
+        // |\
         // | *e9978b9 45 minutes ago
         // |/
         // | *c2b96e5 47 minutes ago(release/ 1.1.0, main|develop)
@@ -240,7 +240,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *2b9c8bf 42 minutes ago(HEAD -> release/ 1.0.0)
         // *66cfc66 44 minutes ago
-        // |\  
+        // |\
         // | *e9978b9 45 minutes ago
         // |/
         // | *c2b96e5 47 minutes ago(release/ 1.1.0, main|develop)
@@ -309,14 +309,14 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     public void ShouldTreatTheFeatureBranchLikeTheFirstReleaseBranchWhenItHasBeenBranchedFromFirstButNotFromTheSecondReleaseBranchFromMain()
     {
         // * 3807c66 49 minutes ago  (HEAD -> release/1.0.0)
-        // *   da32145 51 minutes ago 
-        // |\  
-        // | * 6a89f35 52 minutes ago 
-        // |/  
-        // * 19f2980 56 minutes ago 
+        // *   da32145 51 minutes ago
+        // |\
+        // | * 6a89f35 52 minutes ago
+        // |/
+        // * 19f2980 56 minutes ago
         // | * 2282a59 54 minutes ago  (release/1.1.0, main)
-        // |/  
-        // * d7b7c5e 58 minutes ago 
+        // |/
+        // * d7b7c5e 58 minutes ago
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
 
@@ -380,7 +380,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *1525ad0 38 minutes ago(HEAD -> release/ 1.0.0)
         // *476fc51 40 minutes ago
-        // |\  
+        // |\
         // | *c8c5030 41 minutes ago
         // |/
         // *d91061d 45 minutes ago
@@ -453,7 +453,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *1525ad0 38 minutes ago(HEAD -> release/ 1.0.0)
         // *476fc51 40 minutes ago
-        // |\  
+        // |\
         // | *c8c5030 41 minutes ago
         // |/
         // *d91061d 45 minutes ago
@@ -523,7 +523,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *1525ad0 38 minutes ago(HEAD -> release/ 1.0.0)
         // *476fc51 40 minutes ago
-        // |\  
+        // |\
         // | *c8c5030 41 minutes ago
         // |/
         // *d91061d 45 minutes ago
@@ -596,7 +596,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *588f0de in the future(HEAD -> release/ 1.0.0)
         // *56f660c in the future
-        // |\  
+        // |\
         // | *9450fb0 in the future
         // |/
         // *9e557cd in the future
@@ -659,7 +659,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     {
         // *809eaa7 in the future(HEAD -> develop)
         // *46e2cb8 in the future
-        // |\  
+        // |\
         // | *08bd8ff in the future
         // | *9b741de in the future
         // * | 13206fd in the future
@@ -733,9 +733,9 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     public void ShouldOnlyTrackTheCommitsOnDevelopBranchForNextReleaseWhenReleaseHasBeenShippedToProduction()
     {
         // *9afb0ca in the future(HEAD -> develop)
-        // |\  
+        // |\
         // | *90c96f2 in the future(tag: 1.0.0, main)
-        // | |\  
+        // | |\
         // | | *7de3d63 in the future
         // | | *2ccf33b in the future
         // * | | e050757 in the future
@@ -822,9 +822,9 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
     public void ShouldNotConsiderTheMergeCommitFromReleaseToMainWhenCommitHasNotBeenTagged()
     {
         // *457e0cd in the future(HEAD -> develop)
-        // |\  
+        // |\
         // | *d9da657 in the future(tag: 1.0.0, main)
-        // | |\  
+        // | |\
         // | | *026a6cd in the future
         // | | *7f5de6e in the future
         // * | | 3db6e6f in the future

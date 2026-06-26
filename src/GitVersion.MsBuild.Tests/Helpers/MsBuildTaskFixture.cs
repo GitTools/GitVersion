@@ -1,8 +1,8 @@
 using GitVersion.Agents;
-using GitVersion.Core.Tests;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Mocks;
+using GitVersion.Tests;
 
 namespace GitVersion.MsBuild.Tests.Helpers;
 

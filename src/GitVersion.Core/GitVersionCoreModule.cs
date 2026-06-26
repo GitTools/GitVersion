@@ -1,5 +1,3 @@
-using GitVersion.Common;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;

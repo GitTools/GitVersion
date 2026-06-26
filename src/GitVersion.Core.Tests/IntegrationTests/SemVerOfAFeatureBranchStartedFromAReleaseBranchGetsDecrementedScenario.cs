@@ -1,4 +1,4 @@
-namespace GitVersion.Core.Tests.IntegrationTests;
+namespace GitVersion.Tests.IntegrationTests;
 
 /// <summary>
 /// [Bug] SemVer of a feature branch started from a release branch gets decremented #3151

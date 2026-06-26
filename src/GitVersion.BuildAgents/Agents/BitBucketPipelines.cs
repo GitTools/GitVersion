@@ -55,13 +55,13 @@ internal class BitBucketPipelines : BuildAgentBase
             .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
             .ToList();
 
-        this.FileSystem.File.WriteAllLines(this.propertyFile, exports);
+        this.fileSystem.File.WriteAllLines(this.propertyFile, exports);
 
         var psExports = variables
             .Select(variable => $"$GITVERSION_{variable.Key.ToUpperInvariant()} = \"{variable.Value}\"")
             .ToList();
 
-        this.FileSystem.File.WriteAllLines(this.ps1File, psExports);
+        this.fileSystem.File.WriteAllLines(this.ps1File, psExports);
     }
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
@@ -72,7 +72,7 @@ internal class BitBucketPipelines : BuildAgentBase
 
     private string? EvaluateEnvironmentVariable(string variableName)
     {
-        var branchName = Environment.GetEnvironmentVariable(variableName);
+        var branchName = this.environment.GetEnvironmentVariable(variableName);
         this.Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
         return branchName;
     }

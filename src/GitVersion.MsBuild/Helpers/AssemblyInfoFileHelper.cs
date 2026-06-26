@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 using Microsoft.Build.Framework;
 
-using static GitVersion.Core.RegexPatterns.AssemblyVersion;
+using static GitVersion.RegexPatterns.AssemblyVersion;
 
 namespace GitVersion.MsBuild;
 

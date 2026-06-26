@@ -1,11 +1,10 @@
 using System.Collections.Concurrent;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Logging;
 
-namespace GitVersion.Core;
+namespace GitVersion;
 
 internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {
@@ -26,7 +25,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
             return [.. GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When)];
@@ -67,7 +66,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
             return [.. GetElements().Distinct().OrderByDescending(element => element.Key.When)];
@@ -107,7 +106,7 @@ internal sealed class TaggedSemanticVersionRepository(ILog log, IRepositoryStore
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
         {
             isCached = false;
             return [.. GetElements().OrderByDescending(element => element.Tag.Commit.When)];

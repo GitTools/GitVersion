@@ -1,4 +1,3 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -20,7 +19,7 @@ internal sealed class MergeMessageVersionStrategy(ILog log, Lazy<GitVersionConte
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         => GetBaseVersionsInternal(configuration).Take(5);

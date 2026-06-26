@@ -12,8 +12,7 @@ internal class MyGet(IEnvironment environment, ILog log, IFileSystem fileSystem)
     protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext()
     {
-        var buildRunner = Environment.GetEnvironmentVariable(EnvironmentVariable);
-
+        var buildRunner = this.environment.GetEnvironmentVariable(EnvironmentVariable);
         return !buildRunner.IsNullOrEmpty()
                && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
     }

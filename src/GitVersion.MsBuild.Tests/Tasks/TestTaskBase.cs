@@ -1,12 +1,11 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.Testing.Extensions;
+using GitVersion.Tests;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
 

@@ -1,7 +1,6 @@
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Git;
 
-namespace GitVersion.Core.Tests;
+namespace GitVersion.Tests;
 
 [TestFixture]
 public class RepositoryExtensionsTests : TestBase

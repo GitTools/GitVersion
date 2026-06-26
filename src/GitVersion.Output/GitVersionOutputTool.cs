@@ -27,22 +27,22 @@ internal class GitVersionOutputTool(
     {
         using (this.outputGenerator)
         {
-            this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.OutputFile, updateBuildNumber));
+            this.outputGenerator.Execute(variables, new OutputContext(this.gitVersionOptions.OutputFile, updateBuildNumber));
         }
     }
 
     public void UpdateAssemblyInfo(GitVersionVariables variables)
     {
-        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, [.. gitVersionOptions.AssemblySettingsInfo.Files]);
+        var assemblyInfoContext = new AssemblyInfoContext(this.gitVersionOptions.WorkingDirectory, this.gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, [.. this.gitVersionOptions.AssemblySettingsInfo.Files]);
 
-        if (gitVersionOptions.AssemblySettingsInfo.UpdateProjectFiles)
+        if (this.gitVersionOptions.AssemblySettingsInfo.UpdateProjectFiles)
         {
             using (this.projectFileUpdater)
             {
                 this.projectFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
-        else if (gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo)
+        else if (this.gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo)
         {
             using (this.assemblyInfoFileUpdater)
             {
@@ -64,7 +64,7 @@ internal class GitVersionOutputTool(
     {
         using (this.gitVersionInfoGenerator)
         {
-            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, targetNamespace));
+            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(this.gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, targetNamespace));
         }
     }
 }

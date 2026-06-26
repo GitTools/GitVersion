@@ -1,7 +1,7 @@
 ﻿using GitVersion.Configuration;
 using GitVersion.VersionCalculation.Mainline;
 
-namespace GitVersion.Core.Tests.VersionCalculation;
+namespace GitVersion.Tests.VersionCalculation;
 
 [TestFixture]
 public class MainlineIterationTests

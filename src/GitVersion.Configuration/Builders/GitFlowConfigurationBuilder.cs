@@ -1,4 +1,3 @@
-using GitVersion.Core;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -42,11 +41,11 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             IsMainBranch = false
         });
 
-        WithBranch(DevelopBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.DevelopBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Minor,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
-            RegularExpression = DevelopBranch.RegexPattern,
+            RegularExpression = this.DevelopBranch.RegexPattern,
             SourceBranches = [this.MainBranch.Name],
             Label = "alpha",
             PreventIncrement = new PreventIncrementConfiguration
@@ -61,10 +60,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 0
         });
 
-        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.MainBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Patch,
-            RegularExpression = MainBranch.RegexPattern,
+            RegularExpression = this.MainBranch.RegexPattern,
             SourceBranches = [],
             Label = string.Empty,
             PreventIncrement = new PreventIncrementConfiguration
@@ -79,11 +78,11 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 55000
         });
 
-        WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.ReleaseBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Minor,
             DeploymentMode = DeploymentMode.ManualDeployment,
-            RegularExpression = ReleaseBranch.RegexPattern,
+            RegularExpression = this.ReleaseBranch.RegexPattern,
             SourceBranches =
             [
                 this.MainBranch.Name,
@@ -102,10 +101,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 30000
         });
 
-        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.FeatureBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Inherit,
-            RegularExpression = FeatureBranch.RegexPattern,
+            RegularExpression = this.FeatureBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
             SourceBranches =
             [
@@ -125,10 +124,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 30000
         });
 
-        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.PullRequestBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Inherit,
-            RegularExpression = PullRequestBranch.RegexPattern,
+            RegularExpression = this.PullRequestBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ContinuousDelivery,
             SourceBranches =
             [
@@ -149,10 +148,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 30000
         });
 
-        WithBranch(HotfixBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.HotfixBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Inherit,
-            RegularExpression = HotfixBranch.RegexPattern,
+            RegularExpression = this.HotfixBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
             PreventIncrement = new PreventIncrementConfiguration
             {
@@ -169,10 +168,10 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 30000
         });
 
-        WithBranch(SupportBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.SupportBranch.Name).WithConfiguration(new BranchConfiguration
         {
             Increment = IncrementStrategy.Patch,
-            RegularExpression = SupportBranch.RegexPattern,
+            RegularExpression = this.SupportBranch.RegexPattern,
             SourceBranches = [this.MainBranch.Name],
             Label = string.Empty,
             PreventIncrement = new PreventIncrementConfiguration
@@ -186,9 +185,9 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PreReleaseWeight = 55000
         });
 
-        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration
+        WithBranch(this.UnknownBranch.Name).WithConfiguration(new BranchConfiguration
         {
-            RegularExpression = UnknownBranch.RegexPattern,
+            RegularExpression = this.UnknownBranch.RegexPattern,
             DeploymentMode = DeploymentMode.ManualDeployment,
             Increment = IncrementStrategy.Inherit,
             SourceBranches =

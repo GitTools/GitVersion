@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using System.Security.Cryptography;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -159,7 +158,7 @@ internal class GitVersionCacheKeyFactory(
 
         // Doesn't depend on command line representation and
         // includes possible changes in default values of Config per se.
-        var configContent = configurationSerializer.Serialize(overrideConfiguration);
+        var configContent = this.configurationSerializer.Serialize(overrideConfiguration);
 
         return GetHash(configContent);
     }

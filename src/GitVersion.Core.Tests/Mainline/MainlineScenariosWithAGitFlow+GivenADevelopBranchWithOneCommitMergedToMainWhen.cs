@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Mainline;
+namespace GitVersion.Tests.Mainline;
 
 internal partial class MainlineScenariosWithAGitFlow
 {
@@ -24,16 +24,16 @@ internal partial class MainlineScenariosWithAGitFlow
             // |/
             // * 58 minutes ago
 
-            fixture = new EmptyRepositoryFixture();
+            this.fixture = new EmptyRepositoryFixture();
 
-            fixture.MakeACommit("A");
-            fixture.BranchTo("develop");
-            fixture.MakeACommit("B");
-            fixture.MergeTo("main");
+            this.fixture.MakeACommit("A");
+            this.fixture.BranchTo("develop");
+            this.fixture.MakeACommit("B");
+            this.fixture.MergeTo("main");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-alpha.1+2")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, ExpectedResult = "0.0.1-alpha.1+2")]
@@ -61,7 +61,7 @@ internal partial class MainlineScenariosWithAGitFlow
                 .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, ExpectedResult = "0.0.0-2+2")]
@@ -90,7 +90,7 @@ internal partial class MainlineScenariosWithAGitFlow
                 .WithBranch("develop", b => b.WithIncrement(increment))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

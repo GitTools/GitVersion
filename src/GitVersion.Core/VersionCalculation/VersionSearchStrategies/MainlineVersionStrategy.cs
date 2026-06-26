@@ -1,6 +1,4 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Core;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.VersionCalculation.Mainline;
@@ -25,7 +23,7 @@ internal sealed class MainlineVersionStrategy(
     private readonly IEnvironment environment = environment.NotNull();
     private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
 
-    private GitVersionContext Context => contextLazy.Value;
+    private GitVersionContext Context => this.contextLazy.Value;
 
     private static readonly IReadOnlyCollection<IContextPreEnricher> TrunkContextPreEnricherCollection =
     [
@@ -97,7 +95,7 @@ internal sealed class MainlineVersionStrategy(
         {
             taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
         }
-        var taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+        var taggedSemanticVersions = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,
             configuration: Context.Configuration,
             label: null,
@@ -113,14 +111,14 @@ internal sealed class MainlineVersionStrategy(
             taggedSemanticVersions: taggedSemanticVersions
         );
 
-        yield return DetermineBaseVersion(iteration, targetLabel, incrementStrategyFinder, Context.Configuration, this.environment);
+        yield return DetermineBaseVersion(iteration, targetLabel, this.incrementStrategyFinder, Context.Configuration, this.environment);
     }
 
     private MainlineIteration CreateIteration(
         ReferenceName branchName, IBranchConfiguration configuration,
         MainlineIteration? parentIteration = null, MainlineCommit? parentCommit = null)
     {
-        var iterationCount = Interlocked.Increment(ref iterationCounter);
+        var iterationCount = Interlocked.Increment(ref this.iterationCounter);
         return new MainlineIteration(
             id: $"#{iterationCount}",
             branchName: branchName,
@@ -140,7 +138,7 @@ internal sealed class MainlineVersionStrategy(
 
         var configuration = iteration.Configuration;
         var branchName = iteration.BranchName;
-        var branch = repositoryStore.FindBranch(branchName);
+        var branch = this.repositoryStore.FindBranch(branchName);
 
         var currentBranch = branch;
         Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy = new(
@@ -167,7 +165,7 @@ internal sealed class MainlineVersionStrategy(
                     configuration = effectiveConfigurationWasBranchedFrom.Value;
                     branchName = effectiveConfigurationWasBranchedFrom.Branch.Name;
 
-                    branch = repositoryStore.FindBranch(branchName);
+                    branch = this.repositoryStore.FindBranch(branchName);
 
                     var branchPointer = branch;
                     commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Configuration)>>>
@@ -188,7 +186,7 @@ internal sealed class MainlineVersionStrategy(
                     {
                         taggedSemanticVersion |= TaggedSemanticVersions.OfMainBranches;
                     }
-                    taggedSemanticVersions = taggedSemanticVersionService.GetTaggedSemanticVersions(
+                    taggedSemanticVersions = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
                         branch: effectiveConfigurationWasBranchedFrom.Branch,
                         configuration: Context.Configuration,
                         label: null,
@@ -291,7 +289,7 @@ internal sealed class MainlineVersionStrategy(
 
         Dictionary<ICommit, List<(IBranch, IBranchConfiguration Configuration)>> result = [];
 
-        var branchCommits = repositoryStore.FindCommitBranchesBranchedFrom(
+        var branchCommits = this.repositoryStore.FindCommitBranchesBranchedFrom(
             branch, Context.Configuration, excludedBranches: excludedBranches
         ).ToList();
 

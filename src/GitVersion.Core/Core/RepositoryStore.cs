@@ -1,4 +1,3 @@
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -25,7 +24,7 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     /// </summary>
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
     {
-        var mergeBaseFinder = new MergeBaseFinder(this, log);
+        var mergeBaseFinder = new MergeBaseFinder(this, this.log);
         return mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
     }
 

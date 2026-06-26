@@ -39,10 +39,10 @@ internal sealed class Commit : ICommit
     {
         get
         {
-            if (!pathsCache.TryGetValue(this.Sha, out var paths))
+            if (!pathsCache.TryGetValue(Sha, out var paths))
             {
-                paths = this.CommitChanges.Paths;
-                pathsCache[this.Sha] = paths;
+                paths = CommitChanges.Paths;
+                pathsCache[Sha] = paths;
             }
             return paths;
         }

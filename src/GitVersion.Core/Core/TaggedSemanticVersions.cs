@@ -1,4 +1,4 @@
-namespace GitVersion.Core;
+namespace GitVersion;
 
 [Flags]
 internal enum TaggedSemanticVersions

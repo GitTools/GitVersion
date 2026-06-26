@@ -1,7 +1,7 @@
-﻿using GitVersion.Core.Tests.Extensions;
-using GitVersion.Formatting;
+﻿using GitVersion.Formatting;
+using GitVersion.Tests.Extensions;
 
-namespace GitVersion.Core.Tests.Formatting;
+namespace GitVersion.Tests.Formatting;
 
 [TestFixture]
 public class EdgeCaseTests

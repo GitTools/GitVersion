@@ -1,7 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Mainline;
+namespace GitVersion.Tests.Mainline;
 
 internal partial class MainlineScenariosWithAGitHubFlow
 {
@@ -22,14 +22,14 @@ internal partial class MainlineScenariosWithAGitHubFlow
         {
             // A  58 minutes ago  (HEAD -> feature/foo, main)
 
-            fixture = new EmptyRepositoryFixture();
+            this.fixture = new EmptyRepositoryFixture();
 
-            fixture.MakeACommit("A");
-            fixture.BranchTo("feature/foo");
+            this.fixture.MakeACommit("A");
+            this.fixture.BranchTo("feature/foo");
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown() => fixture?.Dispose();
+        public void OneTimeTearDown() => this.fixture?.Dispose();
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-2+0")]
         [TestCase(IncrementStrategy.None, IncrementStrategy.Patch, null, ExpectedResult = "0.0.1-1+0")]
@@ -141,7 +141,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-2+0")]
@@ -255,7 +255,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-foo.2+0")]
@@ -368,7 +368,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
 
         [TestCase(IncrementStrategy.None, IncrementStrategy.None, null, ExpectedResult = "0.0.0-bar.2+0")]
@@ -481,7 +481,7 @@ internal partial class MainlineScenariosWithAGitHubFlow
                 .WithBranch("feature", b => b.WithIncrement(increment).WithLabel(label))
                 .Build();
 
-            return fixture!.GetVersion(mainline).FullSemVer;
+            return this.fixture!.GetVersion(mainline).FullSemVer;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Tests;
 
 namespace GitVersion.Configuration.Tests;
 
@@ -21,7 +21,7 @@ public static class ConfigurationFileLocatorTests
         {
             this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
             this.workingPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo", "Working");
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 

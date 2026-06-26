@@ -28,11 +28,11 @@ internal class ConfigurationFileLocator(
     private readonly ILog log = log.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
-    private string? ConfigurationFile => options.Value.ConfigurationInfo.ConfigurationFile;
+    private string? ConfigurationFile => this.options.Value.ConfigurationInfo.ConfigurationFile;
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (FileSystemHelper.Path.IsPathRooted(this.ConfigurationFile)) return;
+        if (FileSystemHelper.Path.IsPathRooted(ConfigurationFile)) return;
         if (FileSystemHelper.Path.Equal(workingDirectory, projectRootDirectory)) return;
         WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
@@ -46,12 +46,12 @@ internal class ConfigurationFileLocator(
             return customConfigurationFile;
         }
 
-        if (string.IsNullOrWhiteSpace(directoryPath) || !fileSystem.Directory.Exists(directoryPath))
+        if (string.IsNullOrWhiteSpace(directoryPath) || !this.fileSystem.Directory.Exists(directoryPath))
         {
             return null;
         }
 
-        var files = fileSystem.Directory.GetFiles(directoryPath);
+        var files = this.fileSystem.Directory.GetFiles(directoryPath);
         foreach (var fileName in this.SupportedConfigFileNames)
         {
             this.log.Debug($"Trying to find configuration file {fileName} at '{directoryPath}'");
@@ -66,11 +66,11 @@ internal class ConfigurationFileLocator(
 
     private string? GetCustomConfigurationFilePathIfEligable(string? directoryPath)
     {
-        if (string.IsNullOrWhiteSpace(this.ConfigurationFile)) return null;
-        var configurationFilePath = this.ConfigurationFile;
+        if (string.IsNullOrWhiteSpace(ConfigurationFile)) return null;
+        var configurationFilePath = ConfigurationFile;
         if (!string.IsNullOrWhiteSpace(directoryPath))
         {
-            configurationFilePath = FileSystemHelper.Path.Combine(directoryPath, this.ConfigurationFile);
+            configurationFilePath = FileSystemHelper.Path.Combine(directoryPath, ConfigurationFile);
         }
 
         return this.fileSystem.File.Exists(configurationFilePath) ? configurationFilePath : null;
@@ -89,10 +89,10 @@ internal class ConfigurationFileLocator(
             throw new WarningException($"Ambiguous configuration file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
         }
 
-        if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(this.ConfigurationFile, StringComparison.OrdinalIgnoreCase))) return;
+        if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(ConfigurationFile, StringComparison.OrdinalIgnoreCase))) return;
 
-        workingConfigFile = FileSystemHelper.Path.Combine(workingDirectory, this.ConfigurationFile);
-        projectRootConfigFile = FileSystemHelper.Path.Combine(projectRootDirectory, this.ConfigurationFile);
+        workingConfigFile = FileSystemHelper.Path.Combine(workingDirectory, ConfigurationFile);
+        projectRootConfigFile = FileSystemHelper.Path.Combine(projectRootDirectory, ConfigurationFile);
         throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
     }
 }

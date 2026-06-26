@@ -34,7 +34,7 @@ internal sealed class IgnoreConfigurationBuilder
 
     public IIgnoreConfiguration Build() => new IgnoreConfiguration
     {
-        Before = before,
-        Shas = shas
+        Before = this.before,
+        Shas = this.shas
     };
 }

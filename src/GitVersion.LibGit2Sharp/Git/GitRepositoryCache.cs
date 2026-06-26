@@ -17,21 +17,21 @@ internal class GitRepositoryCache
         var cacheKey = innerBranch.Tip is null
             ? $"{innerBranch.RemoteName}/{innerBranch.CanonicalName}"
             : $"{innerBranch.RemoteName}/{innerBranch.CanonicalName}@{innerBranch.Tip.Sha}";
-        return cachedBranches.GetOrAdd(cacheKey, _ => new Branch(innerBranch, repoDiff, this));
+        return this.cachedBranches.GetOrAdd(cacheKey, _ => new Branch(innerBranch, repoDiff, this));
     }
 
     public Commit GetOrWrap(LibGit2Sharp.Commit innerCommit, Diff repoDiff)
-        => cachedCommits.GetOrAdd(innerCommit.Sha, _ => new Commit(innerCommit, repoDiff, this));
+        => this.cachedCommits.GetOrAdd(innerCommit.Sha, _ => new Commit(innerCommit, repoDiff, this));
 
     public Tag GetOrWrap(LibGit2Sharp.Tag innerTag, Diff repoDiff)
-        => cachedTags.GetOrAdd(innerTag.CanonicalName, _ => new Tag(innerTag, repoDiff, this));
+        => this.cachedTags.GetOrAdd(innerTag.CanonicalName, _ => new Tag(innerTag, repoDiff, this));
 
     public Remote GetOrWrap(LibGit2Sharp.Remote innerRemote)
-        => cachedRemotes.GetOrAdd(innerRemote.Name, _ => new Remote(innerRemote, this));
+        => this.cachedRemotes.GetOrAdd(innerRemote.Name, _ => new Remote(innerRemote, this));
 
     public Reference GetOrWrap(LibGit2Sharp.Reference innerReference)
-        => cachedReferences.GetOrAdd(innerReference.CanonicalName, _ => new Reference(innerReference));
+        => this.cachedReferences.GetOrAdd(innerReference.CanonicalName, _ => new Reference(innerReference));
 
     public RefSpec GetOrWrap(LibGit2Sharp.RefSpec innerRefSpec)
-        => cachedRefSpecs.GetOrAdd(innerRefSpec.Specification, _ => new RefSpec(innerRefSpec));
+        => this.cachedRefSpecs.GetOrAdd(innerRefSpec.Specification, _ => new RefSpec(innerRefSpec));
 }
