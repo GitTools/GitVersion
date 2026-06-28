@@ -35,7 +35,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
-        if (context.ForcePublish is false)
+        if (!context.ForcePublish)
         {
             if (AnyDocsChanged(context))
             {
