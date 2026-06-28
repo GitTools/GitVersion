@@ -12,7 +12,7 @@ public class OutputProjectCommand(ILogger<OutputProjectCommand> logger, IService
     public Task<int> InvokeAsync(OutputProjectSettings settings, CancellationToken cancellationToken = default)
     {
         var value = this.service.Call();
-        this.logger.LogInformation($"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");
+        this.logger.LogInformation("Command : 'output project', LogFile : '{LogFile}', WorkDir : '{OutputDir}', InputFile: '{InputFile}', Project: '{ProjectFile}' ", settings.LogFile, settings.OutputDir, settings.InputFile, settings.ProjectFile);
         return Task.FromResult(value);
     }
 }

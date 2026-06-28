@@ -13,8 +13,8 @@ public class OutputAssemblyInfoCommand(ILogger<OutputAssemblyInfoCommand> logger
     {
         var value = this.service.Call();
         var versionInfo = settings.VersionInfo.Value;
-        this.logger.LogInformation($"Command : 'output assemblyinfo', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', AssemblyInfo: '{settings.AssemblyinfoFile}' ");
-        this.logger.LogInformation($"Version info: {versionInfo}");
+        this.logger.LogInformation("Command : 'output assemblyinfo', LogFile : '{LogFile}', WorkDir : '{OutputDir}', InputFile: '{InputFile}', AssemblyInfo: '{AssemblyInfo}' ", settings.LogFile, settings.OutputDir, settings.InputFile, settings.AssemblyinfoFile);
+        this.logger.LogInformation("Version info: {VersionInfo}", versionInfo);
         return Task.FromResult(value);
     }
 }
