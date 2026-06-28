@@ -10,12 +10,6 @@ end_of_line = lf
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-# Microsoft .NET properties
-dotnet_style_qualification_for_event = false:none
-dotnet_style_qualification_for_field = false:none
-dotnet_style_qualification_for_method = false:none
-dotnet_style_qualification_for_property = false:none
-
 [{*.yml,*.xml}]
 indent_size = 2
 
@@ -24,12 +18,6 @@ indent_size = 2
 # Organize usings
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
-
-# Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = false:silent
-dotnet_style_qualification_for_property = false:silent
-dotnet_style_qualification_for_method = false:silent
-dotnet_style_qualification_for_event = false:silent
 
 # Use language keywords instead of framework type names for type references
 dotnet_style_predefined_type_for_locals_parameters_members = true:warning
@@ -185,6 +173,8 @@ dotnet_diagnostic.S2325.severity = none
 dotnet_diagnostic.S4136.severity = none
 
 xml_space_before_self_closing = true
+
+resharper_arrange_this_qualifier_highlighting = none
 
 resharper_arrange_object_creation_when_type_not_evident_highlighting = none
 
