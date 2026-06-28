@@ -22,13 +22,13 @@ internal class TypeVisitor(Func<INamedTypeSymbol, bool> searchQuery, Cancellatio
         }
     }
 
-    public override void VisitNamedType(INamedTypeSymbol type)
+    public override void VisitNamedType(INamedTypeSymbol symbol)
     {
         cancellation.ThrowIfCancellationRequested();
 
-        if (searchQuery(type))
+        if (searchQuery(symbol))
         {
-            this.exportedTypes.Add(type);
+            this.exportedTypes.Add(symbol);
         }
     }
 }
