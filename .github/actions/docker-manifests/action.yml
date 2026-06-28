@@ -31,10 +31,13 @@ runs:
 
     - name: '[Docker Publish Manifests] DockerHub'
       shell: pwsh
+      env:
+        DOTNET_VERSION: ${{ inputs.dotnet_version }}
+        DOCKER_DISTRO: ${{ inputs.docker_distro }}
       run: |
         dotnet run/docker.dll `
-              --target=DockerManifest --arch=amd64 --arch=arm64 --dotnet_version=${{ inputs.dotnet_version }} `
-              --docker_distro=${{ inputs.docker_distro }} --docker_registry dockerhub
+              --target=DockerManifest --arch=amd64 --arch=arm64 --dotnet_version=$env:DOTNET_VERSION `
+              --docker_distro=$env:DOCKER_DISTRO --docker_registry dockerhub
 
     - name: Login to GitHub
       uses: docker/login-action@v4
@@ -45,7 +48,10 @@ runs:
 
     - name: '[Docker Publish Manifests] GitHub'
       shell: pwsh
+      env:
+        DOTNET_VERSION: ${{ inputs.dotnet_version }}
+        DOCKER_DISTRO: ${{ inputs.docker_distro }}
       run: |
         dotnet run/docker.dll `
-              --target=DockerManifest --arch=amd64 --arch=arm64 --dotnet_version=${{ inputs.dotnet_version }} `
-              --docker_distro=${{ inputs.docker_distro }} --docker_registry github
+              --target=DockerManifest --arch=amd64 --arch=arm64 --dotnet_version=$env:DOTNET_VERSION `
+              --docker_distro=$env:DOCKER_DISTRO --docker_registry github
