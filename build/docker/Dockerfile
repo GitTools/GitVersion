@@ -9,7 +9,7 @@ ARG VERSION
 
 WORKDIR /nuget
 COPY $nugetFolder/ ./
-RUN dotnet tool install GitVersion.Tool --version $VERSION --tool-path /tools --add-source .
+RUN dotnet tool install GitVersion.Tool --version "$VERSION" --tool-path /tools --add-source .
 
 FROM $REGISTRY/gittools/build-images:$DISTRO-runtime-$DOTNET_VERSION
 

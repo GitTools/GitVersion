@@ -24,7 +24,7 @@ public class UnitTest : FrostingTask<BuildContext>
             }
             if (!frameworks.Contains(dotnetVersion, StringComparer.OrdinalIgnoreCase))
             {
-                throw new Exception($"Dotnet Target {dotnetVersion} is not supported at the moment");
+                throw new NotSupportedException($"Dotnet Target {dotnetVersion} is not supported at the moment");
             }
             frameworks = [dotnetVersion];
         }

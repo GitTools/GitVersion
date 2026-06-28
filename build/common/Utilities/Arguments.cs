@@ -1,6 +1,6 @@
 namespace Common.Utilities;
 
-public class Arguments
+public static class Arguments
 {
     public const string Target = "target";
     public const string Configuration = "configuration";

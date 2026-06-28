@@ -1,6 +1,6 @@
 namespace Common.Utilities;
 
-public class Tools
+public static class Tools
 {
     public const string CodecovUploaderCmd = "CodecovUploader";
 
