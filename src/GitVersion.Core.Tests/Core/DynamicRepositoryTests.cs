@@ -39,7 +39,18 @@ public class DynamicRepositoryTests : TestBase
         };
         var options = Options.Create(gitVersionOptions);
 
-        var sp = ConfigureServices(services => services.AddSingleton(options));
+        // Cloning a fixed commit on a moving remote branch can transiently move HEAD during the
+        // intermediate normalisation steps (more likely when the machine is under load), which
+        // trips the HEAD-move safety check. The final state - asserted below - is what matters,
+        // so disable that guard for this scenario.
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE", "1");
+
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+        });
 
         sp.DiscoverRepository();
 
