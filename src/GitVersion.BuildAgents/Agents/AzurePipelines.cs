@@ -30,7 +30,7 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
         // https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         // BUILD_SOURCEBRANCH must be used only for "real" branches, not for tags.
         // Azure Pipelines sets BUILD_SOURCEBRANCH to refs/tags/<tag> when the pipeline is triggered for a tag.
-        return sourceBranch?.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) is true ? null : sourceBranch;
+        return sourceBranch is not null && sourceBranch.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) ? null : sourceBranch;
     }
 
     public override bool PreventFetch() => true;
