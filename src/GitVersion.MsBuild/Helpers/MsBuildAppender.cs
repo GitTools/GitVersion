@@ -14,7 +14,7 @@ internal class MsBuildAppender(TaskLoggingHelper taskLog) : ILogAppender
         }
         catch
         {
-            //
+            // Logging failures must not break the build.
         }
     }
 

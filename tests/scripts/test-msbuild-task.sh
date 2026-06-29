@@ -15,6 +15,8 @@ do
     --targetframework)
         targetframework="$2"
         ;;
+    *)
+        ;;
     esac
     shift
 done
