@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace GitVersion.Formatting;
 
 internal static class StringFormatWithExtension
@@ -40,7 +38,7 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format, fallback) => EvaluateMemberFromObject(source, member, format, fallback), environment);
+            return template.FormatWith(member => EvaluateMemberFromObject(source, member), environment);
         }
 
         /// <summary>
@@ -68,89 +66,90 @@ internal static class StringFormatWithExtension
         {
             ArgumentNullException.ThrowIfNull(source);
 
-            return template.FormatWith((member, format, fallback) => EvaluateMemberFromDictionary(source, member, format, fallback), environment);
+            return template.FormatWith(member => EvaluateMemberFromDictionary(source, member), environment);
         }
 
-        private string FormatWith(EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
+        private string FormatWith(Func<string, string?> memberEvaluator, IEnvironment environment)
         {
             ArgumentNullException.ThrowIfNull(template);
 
-            var result = new StringBuilder();
-            var lastIndex = 0;
+            return RegexPatterns.ExpandTokensRegex.Replace(template, match => EvaluateMatch(match.Groups[1].Value, memberEvaluator, environment));
+        }
+    }
 
-            foreach (var match in RegexPatterns.ExpandTokensRegex.Matches(template).Cast<Match>())
+    private static string EvaluateMatch(string input, Func<string, string?> memberEvaluator, IEnvironment environment)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+
+        var tokenizer = new LabelTokenizer(input);
+        var tokens = tokenizer.ParseTokens().ToArray();
+
+        Exception? lastException = null;
+
+        foreach (var token in tokens)
+        {
+            if (token.Type == LabelTokenType.Literal)
             {
-                var replacement = EvaluateMatch(match, memberEvaluator, environment);
-                result.Append(template, lastIndex, match.Index - lastIndex);
-                result.Append(replacement);
-                lastIndex = match.Index + match.Length;
+                return token.Name;
             }
 
-            result.Append(template, lastIndex, template.Length - lastIndex);
-            return result.ToString();
+            try
+            {
+                var value = token.Type == LabelTokenType.Environment
+                    ? EvaluateEnvVar(token.Name, environment)
+                    : memberEvaluator(token.Name);
+
+                if (value is null)
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(token.Format) && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
+                {
+                    return formatted;
+                }
+
+                return value;
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+            }
         }
-    }
 
-    private static string EvaluateMatch(Match match, EvaluateMemberDelegate memberEvaluator, IEnvironment environment)
-    {
-        var fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
-
-        if (match.Groups["envvar"].Success)
-            return EvaluateEnvVar(match.Groups["envvar"].Value, fallback, environment);
-
-        if (match.Groups["member"].Success)
+        if (lastException != null)
         {
-            var format = match.Groups["format"].Success ? match.Groups["format"].Value : null;
-            return memberEvaluator(match.Groups["member"].Value, format, fallback);
+            throw lastException;
         }
 
-        throw new ArgumentException($"Invalid token format: '{match.Value}'");
+        return string.Empty;
     }
 
-    private static string EvaluateEnvVar(string name, string? fallback, IEnvironment env)
-    {
-        var safeName = InputSanitizer.SanitizeEnvVarName(name);
-        return env.GetEnvironmentVariable(safeName)
-            ?? fallback
-            ?? throw new ArgumentException($"Environment variable {safeName} not found and no fallback provided");
-    }
-
-    private static string EvaluateMemberFromObject(object source, string member, string? format, string? fallback)
+    private static string? EvaluateMemberFromObject(object source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
-        var memberPath = MemberResolver.ResolveMemberPath(source!.GetType(), safeMember);
+        var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
+
         var value = getter(source);
 
-        if (value is null)
-            return fallback ?? string.Empty;
-
-        if (format is not null && ValueFormatter.Default.TryFormat(
-                value,
-                InputSanitizer.SanitizeFormat(format),
-                out var formatted))
-        {
-            return formatted;
-        }
-
-        return value.ToString() ?? fallback ?? string.Empty;
+        return value?.ToString();
     }
 
-    private static string EvaluateMemberFromDictionary(IDictionary<string, object> source, string member, string? format, string? fallback)
+    private static string? EvaluateMemberFromDictionary(IDictionary<string, object> source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
 
         if (!source.TryGetValue(safeMember, out var value))
-            return fallback ?? string.Empty;
+            throw new ArgumentException($"'{safeMember}' is not a valid placeholder");
 
-        if (value is null)
-            return fallback ?? string.Empty;
-
-        if (format is not null && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(format), out var formatted))
-            return formatted;
-
-        return value.ToString() ?? fallback ?? string.Empty;
+        return value?.ToString();
     }
 
-    private delegate string EvaluateMemberDelegate(string member, string? format, string? fallback);
+    private static string EvaluateEnvVar(string name, IEnvironment environment)
+    {
+        var safeName = InputSanitizer.SanitizeEnvVarName(name);
+
+        return environment.GetEnvironmentVariable(name) ?? throw new ArgumentException($"Environment variable {safeName} not found and no fallback provided");
+    }
 }

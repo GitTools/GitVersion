@@ -504,7 +504,7 @@ of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?
 
 Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
 
-You can also use environment variable placeholders with the `{env:VARIABLE_NAME}` syntax. Environment variable placeholders can also be combined with regex placeholders, for example `{BranchName}-{env:VARIABLE_NAME}`, and support fallback values using the `{env:VARIABLE_NAME ?? "fallback"}` syntax.
+You can also use environment variable placeholders with the `{env:VARIABLE_NAME}` syntax. Environment variable placeholders can also be combined with regex placeholders, for example `{BranchName}-{env:VARIABLE_NAME}`, and support fallback values using the `{env:VARIABLE_NAME ?? "fallback"}` syntax. These can be combined with cascading fallbacks using environment variables and placeholders like this: `{env:VARIABLE_NAME ?? BranchName ?? "fallback"}`.
 
 **Note:** To clear a default use an empty string: `label: ''`
 
