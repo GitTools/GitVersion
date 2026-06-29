@@ -11,11 +11,6 @@ public class DynamicRepositoryTests : TestBase
     [SetUp]
     public void SetUp() => this.workDirectory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPathLegacy(), "GV");
 
-    [TearDown]
-    public void TearDown()
-    {
-    }
-
     // Note: use same name twice to see if changing commits works on same (cached) repository
     [NonParallelizable]
     [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "2dc142a4a4df77db61a00d9fb7510b18b3c2c85a", "5.8.2-47")]

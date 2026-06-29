@@ -4,7 +4,7 @@ namespace GitVersion.App.Tests.Helpers;
 
 public static class ExecutableHelper
 {
-    public static string GetDotNetExecutable() => "dotnet";
+    public const string DotNetExecutable = "dotnet";
 
     public static string GetExecutableArgs(string args) => $"{FileSystemHelper.Path.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
 

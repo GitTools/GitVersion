@@ -7,6 +7,10 @@ public class TestBase
 {
     public const string MainBranch = "main";
 
+    protected TestBase()
+    {
+    }
+
     protected static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()

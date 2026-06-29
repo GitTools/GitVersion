@@ -3,13 +3,13 @@ using GitVersion.Git;
 
 namespace GitVersion.Tests;
 
-public class GitVersionContextBuilder : IDisposable
+public sealed class GitVersionContextBuilder : IDisposable
 {
     private IGitRepository? repository;
     private EmptyRepositoryFixture? emptyRepositoryFixture;
     private IReadOnlyDictionary<object, object?>? overrideConfiguration;
     private Action<IServiceCollection>? overrideServices;
-    public IServiceProvider? ServicesProvider;
+    public IServiceProvider? ServicesProvider { get; private set; }
 
     public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
     {
@@ -58,7 +58,7 @@ public class GitVersionContextBuilder : IDisposable
         this.emptyRepositoryFixture = new();
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.emptyRepositoryFixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration } });
 
-        this.ServicesProvider = ConfigureServices(services =>
+        ServicesProvider = ConfigureServices(services =>
         {
             services.AddSingleton(options);
             services.AddSingleton(repo);
@@ -93,17 +93,6 @@ public class GitVersionContextBuilder : IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (!disposing)
-        {
-            return;
-        }
-
         this.repository?.Dispose();
         this.emptyRepositoryFixture?.Dispose();
     }

@@ -24,7 +24,7 @@ public class DateFormatterTests
     {
         // For UTC datetime strings, parse as UTC to ensure consistent behavior across timezones
         DateTime date;
-        if (input.EndsWith("Z"))
+        if (input.EndsWith('Z'))
         {
             date = DateTime.Parse(input, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
         }

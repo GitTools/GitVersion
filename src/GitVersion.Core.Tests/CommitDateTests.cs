@@ -12,7 +12,7 @@ public class CommitDateTests : TestBase
     [TestCase("yyyy-MM", "2017-10")]
     public void CommitDateFormatTest(string format, string expectedOutcome)
     {
-        var date = new DateTime(2017, 10, 6);
+        var date = new DateTime(2017, 10, 6, 0, 0, 0, DateTimeKind.Utc);
         var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(
             new SemanticVersion(1, 2, 2),
             "950d2f830f5a2af12a6779a48d20dcbb02351f25",
