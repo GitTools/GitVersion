@@ -19,7 +19,7 @@ public static class ContextExtensions
             }
 
             context.StartProcess(exe, processSettings, out var redirectedOutput);
-            return redirectedOutput.ToList();
+            return [.. redirectedOutput];
         }
 
         private IEnumerable<string> ExecGitCmd(string? cmd, DirectoryPath? workDir = null)

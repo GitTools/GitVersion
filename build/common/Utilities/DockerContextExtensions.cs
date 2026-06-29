@@ -65,7 +65,7 @@ public static class DockerContextExtensions
                 Rm = true,
                 Pull = true,
                 // NoCache = true,
-                Tag = tags.ToArray(),
+                Tag = [.. tags],
                 Platform = [$"linux/{suffix}"],
                 Output = ["type=docker,oci-mediatypes=true"],
                 File = workDir.CombineWithFilePath("Dockerfile").FullPath,
