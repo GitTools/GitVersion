@@ -161,13 +161,16 @@ dotnet_style_qualification_for_event = false:error
 dotnet_diagnostic.IDE0009.severity = error
 
 # IDE0005: Using directive is unnecessary.
-dotnet_diagnostic.ide0005.severity = warning
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0305: Use collection expression for fluent 
+dotnet_diagnostic.IDE0305.severity = error
 
 # RCS1037: Remove trailing white-space.
-dotnet_diagnostic.rcs1037.severity = error
+dotnet_diagnostic.RCS1037.severity = error
 
 # RCS1036: Remove redundant empty line.
-dotnet_diagnostic.rcs1036.severity = error
+dotnet_diagnostic.RCS1036.severity = error
 
 dotnet_diagnostic.S2325.severity = none
 dotnet_diagnostic.S4136.severity = none
