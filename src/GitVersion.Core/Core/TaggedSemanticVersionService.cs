@@ -77,8 +77,8 @@ internal sealed class TaggedSemanticVersionService(
         string? tagPrefix,
         SemanticVersionFormat format,
         IIgnoreConfiguration ignore,
-        string? label,
-        DateTimeOffset? notOlderThan)
+        string? label = null,
+        DateTimeOffset? notOlderThan = null)
     {
         var result = GetTaggedSemanticVersionsOfBranchInternal(
             branch: branch,
@@ -122,8 +122,8 @@ internal sealed class TaggedSemanticVersionService(
          string? tagPrefix,
          SemanticVersionFormat format,
          IIgnoreConfiguration ignore,
-         string? label,
-         DateTimeOffset? notOlderThan)
+         string? label = null,
+         DateTimeOffset? notOlderThan = null)
     {
         var result = GetTaggedSemanticVersionsOfMergeTargetInternal(
             branch: branch,
@@ -168,8 +168,8 @@ internal sealed class TaggedSemanticVersionService(
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
         IGitVersionConfiguration configuration,
-        DateTimeOffset? notOlderThan,
-        string? label,
+        DateTimeOffset? notOlderThan = null,
+        string? label = null,
         params IBranch[] excludeBranches)
     {
         var result = GetTaggedSemanticVersionsOfMainBranchesInternal(
@@ -208,8 +208,8 @@ internal sealed class TaggedSemanticVersionService(
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
         IGitVersionConfiguration configuration,
-        DateTimeOffset? notOlderThan,
-        string? label,
+        DateTimeOffset? notOlderThan = null,
+        string? label = null,
         params IBranch[] excludeBranches)
     {
         var result = GetTaggedSemanticVersionsOfReleaseBranchesInternal(
