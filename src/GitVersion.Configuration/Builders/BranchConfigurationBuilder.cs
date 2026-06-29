@@ -90,7 +90,7 @@ internal class BranchConfigurationBuilder
 
     public virtual BranchConfigurationBuilder WithSourceBranches(IEnumerable<string> values)
     {
-        WithSourceBranches([.. values]);
+        this.sourceBranches = [.. values];
         return this;
     }
 
@@ -102,7 +102,7 @@ internal class BranchConfigurationBuilder
 
     public virtual BranchConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string> values)
     {
-        WithIsSourceBranchFor([.. values]);
+        this.isSourceBranchFor = [.. values];
         return this;
     }
 
