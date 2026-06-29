@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
@@ -36,7 +37,7 @@ internal class WixFileTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -77,7 +78,7 @@ internal class WixFileTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 

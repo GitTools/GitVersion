@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
@@ -34,7 +35,7 @@ public class BuildServerBaseTests : TestBase
             BuildMetaData = new SemanticVersionBuildMetaData("5")
             {
                 Sha = "commitSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 

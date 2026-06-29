@@ -42,7 +42,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -68,7 +68,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -92,7 +92,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -118,7 +118,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -144,7 +144,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceDistance = 5,
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -169,7 +169,7 @@ public class VariableProviderTests : TestBase
                 Branch = "pull/2/merge",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -194,7 +194,7 @@ public class VariableProviderTests : TestBase
                 Branch = "feature",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -219,7 +219,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -244,7 +244,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -281,7 +281,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
