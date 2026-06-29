@@ -90,7 +90,6 @@ public static class ConfigurationFileLocatorTests
     {
         private string repoPath = null!;
         private string workingPath = null!;
-        private IFileSystem fileSystem = null!;
         private IConfigurationFileLocator configFileLocator = null!;
         private GitVersionOptions gitVersionOptions = null!;
         private string ConfigFile => this.gitVersionOptions.ConfigurationInfo.ConfigurationFile!;
@@ -110,10 +109,10 @@ public static class ConfigurationFileLocatorTests
         {
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var repositoryConfigFilePath = this.fileSystem.SetupConfigFile(path: this.repoPath, fileName: ConfigFile);
-            using var workDirConfigFilePath = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
+            using var repositoryConfigFilePath = fileSystem.SetupConfigFile(path: this.repoPath, fileName: ConfigFile);
+            using var workDirConfigFilePath = fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
@@ -128,9 +127,9 @@ public static class ConfigurationFileLocatorTests
 
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
+            using var _ = fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -142,9 +141,9 @@ public static class ConfigurationFileLocatorTests
 
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
+            using var _ = fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -158,9 +157,9 @@ public static class ConfigurationFileLocatorTests
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = configurationFilePath } };
 
             var serviceProvider = GetServiceProvider(this.gitVersionOptions);
-            this.fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
+            var fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(
+            using var _ = fileSystem.SetupConfigFile(
                 path: FileSystemHelper.Path.Combine(this.workingPath, "Configuration"), fileName: "CustomConfig.yaml"
             );
             this.configFileLocator = serviceProvider.GetRequiredService<IConfigurationFileLocator>();
@@ -193,9 +192,9 @@ public static class ConfigurationFileLocatorTests
             this.gitVersionOptions = new() { ConfigurationInfo = { ConfigurationFile = "./src/my-config.yaml" } };
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
+            using var _ = fileSystem.SetupConfigFile(path: this.workingPath, fileName: ConfigFile);
 
             Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
         }
@@ -210,9 +209,9 @@ public static class ConfigurationFileLocatorTests
 
             var sp = GetServiceProvider(this.gitVersionOptions, log);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
-            using var _ = this.fileSystem.SetupConfigFile(path: null, fileName: ConfigFile);
+            using var _ = fileSystem.SetupConfigFile(path: null, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
@@ -233,10 +232,10 @@ public static class ConfigurationFileLocatorTests
 
             var sp = GetServiceProvider(this.gitVersionOptions, log);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
-            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            var fileSystem = sp.GetRequiredService<IFileSystem>();
 
             var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "unrelatedPath");
-            using var _ = this.fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
+            using var _ = fileSystem.SetupConfigFile(path: path, fileName: ConfigFile);
 
             var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
