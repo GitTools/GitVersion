@@ -133,7 +133,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         var tokenBody = await responseMessage.Content.ReadAsStringAsync();
 
         if (!responseMessage.IsSuccessStatusCode)
-            throw new Exception("Failed to retrieve OIDC token from GitHub.");
+            throw new InvalidOperationException("Failed to retrieve OIDC token from GitHub.");
 
         using var tokenDoc = JsonDocument.Parse(tokenBody);
         return ParseJsonProperty(tokenDoc, "value", "Failed to retrieve OIDC token from GitHub.");
@@ -157,7 +157,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         if (!responseMessage.IsSuccessStatusCode)
         {
             var errorMessage = BuildErrorMessage((int)responseMessage.StatusCode, exchangeBody);
-            throw new Exception(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         using var respDoc = JsonDocument.Parse(exchangeBody);
@@ -168,9 +168,9 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
     {
         if (!document.RootElement.TryGetProperty(propertyName, out var property) ||
             property.ValueKind != JsonValueKind.String)
-            throw new Exception(errorMessage);
+            throw new InvalidOperationException(errorMessage);
 
-        return property.GetString() ?? throw new Exception(errorMessage);
+        return property.GetString() ?? throw new InvalidOperationException(errorMessage);
     }
 
     private static string BuildErrorMessage(int statusCode, string responseBody)

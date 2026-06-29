@@ -20,7 +20,7 @@ public class CalculateCommand(ILogger<CalculateCommand> logger, IService service
         {
             this.repository.DiscoverRepository(settings.WorkDir.FullName);
             var branches = this.repository.Branches.ToList();
-            this.logger.LogInformation("Command : 'calculate', LogFile : '{logFile}', WorkDir : '{workDir}' ",
+            this.logger.LogInformation("Command : 'calculate', LogFile : '{LogFile}', WorkDir : '{WorkDir}' ",
                 settings.LogFile, settings.WorkDir);
             this.logger.LogInformation("Found {count} branches", branches.Count);
         }

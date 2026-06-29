@@ -74,7 +74,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         }
         context.EndGroup();
     }
-    protected void LogBuildInformation(T context)
+    protected static void LogBuildInformation(T context)
     {
         if (context.HasArgument(Arguments.Target))
         {

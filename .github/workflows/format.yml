@@ -51,4 +51,4 @@ jobs:
         run: dotnet format ./build/ --verify-no-changes
 
       - name: Run Format 'GitVersion' solution
-        run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes
+        run: dotnet format ./src/ --exclude "**/AddFormats/" --verify-no-changes

@@ -6,7 +6,7 @@ The build stage to execute.
 The build script target to run.
 .PARAMETER Verbosity
 Specifies the amount of information to be displayed.
-.PARAMETER WhatIf
+.PARAMETER DryRun
 Performs a dry run of the build script.
 No tasks will be executed.
 .PARAMETER ScriptArgs
@@ -14,13 +14,13 @@ Remaining arguments are added here.
 #>
 
 [CmdletBinding()]
-Param(
+param(
     [ValidateSet("artifacts", "build", "docker", "docs", "publish", "release")]
     [string]$Stage = "build",
     [string]$Target = "Default",
     [string]$Verbosity = "Normal",
-    [Alias("DryRun","Noop")]
-    [switch]$WhatIf,
+    [Alias("WhatIf","Noop")]
+    [switch]$DryRun,
     [switch]$Exclusive,
     [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
     [string[]]$ScriptArgs
@@ -39,7 +39,7 @@ $env:DOTNET_NOLOGO=$true
 $Arguments = @{
     target=$Target;
     verbosity=$Verbosity;
-    dryrun=$WhatIf;
+    dryrun=$DryRun;
     exclusive=$Exclusive;
     nuget_useinprocessclient=$true;
 }.GetEnumerator() | ForEach-Object {

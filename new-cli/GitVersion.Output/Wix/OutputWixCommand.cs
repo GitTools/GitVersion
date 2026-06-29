@@ -12,7 +12,7 @@ public class OutputWixCommand(ILogger<OutputWixCommand> logger, IService service
     public Task<int> InvokeAsync(OutputWixSettings settings, CancellationToken cancellationToken = default)
     {
         var value = this.service.Call();
-        this.logger.LogInformation($"Command : 'output wix', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', WixFile: '{settings.WixFile}' ");
+        this.logger.LogInformation("Command : 'output wix', LogFile : '{LogFile}', WorkDir : '{OutputDir}', InputFile: '{InputFile}', WixFile: '{WixFile}' ", settings.LogFile, settings.OutputDir, settings.InputFile, settings.WixFile);
         return Task.FromResult(value);
     }
 }

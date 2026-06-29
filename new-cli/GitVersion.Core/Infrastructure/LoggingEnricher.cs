@@ -14,7 +14,7 @@ public class LoggingEnricher : ILogEventEnricher
 
     public const string LogFilePathPropertyName = "LogFilePath";
 
-    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propFactory)
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         // the settings might not have a path, or we might not be within a command, in which case
         // we won't have the setting, so a default value for the log file will be required
@@ -30,7 +30,7 @@ public class LoggingEnricher : ILogEventEnricher
             // We've got a new path for the log. Let's create a new property
             // and cache it for future log events to use
             this.cachedLogFilePath = path;
-            this.cachedLogFilePathProp = logFilePathProp = propFactory.CreateProperty(LogFilePathPropertyName, path);
+            this.cachedLogFilePathProp = logFilePathProp = propertyFactory.CreateProperty(LogFilePathPropertyName, path);
         }
 
         logEvent.AddPropertyIfAbsent(logFilePathProp);

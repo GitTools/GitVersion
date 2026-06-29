@@ -62,17 +62,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
     {
         var builder = new ProcessArgumentBuilder();
 
-        if (settings.OutputTypes.Contains(GitVersionOutput.Json))
-        {
-            builder.Append("-output");
-            builder.Append("json");
-        }
-
-        if (settings.OutputTypes.Contains(GitVersionOutput.BuildServer))
-        {
-            builder.Append("-output");
-            builder.Append("buildserver");
-        }
+        AppendOutputArguments(builder, settings);
 
         if (!string.IsNullOrWhiteSpace(settings.ShowVariable))
         {
@@ -80,58 +70,9 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append(settings.ShowVariable);
         }
 
-        if (!string.IsNullOrWhiteSpace(settings.UserName))
-        {
-            builder.Append("-u");
-            builder.AppendQuoted(settings.UserName);
-
-            builder.Append("-p");
-            builder.AppendQuotedSecret(settings.Password);
-        }
-
-        if (settings.UpdateAssemblyInfo)
-        {
-            builder.Append("-updateassemblyinfo");
-
-            if (settings.UpdateAssemblyInfoFilePath != null)
-            {
-                builder.AppendQuoted(settings.UpdateAssemblyInfoFilePath.FullPath);
-            }
-        }
-
-        if (settings.RepositoryPath != null)
-        {
-            builder.Append("-targetpath");
-            builder.AppendQuoted(settings.RepositoryPath.FullPath);
-        }
-        else if (!string.IsNullOrWhiteSpace(settings.Url))
-        {
-            builder.Append("-url");
-            builder.AppendQuoted(settings.Url);
-
-            if (!string.IsNullOrWhiteSpace(settings.Branch))
-            {
-                builder.Append("-b");
-                builder.Append(settings.Branch);
-            }
-            else
-            {
-                this._log.Warning(
-                    "If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
-            }
-
-            if (!string.IsNullOrWhiteSpace(settings.Commit))
-            {
-                builder.Append("-c");
-                builder.AppendQuoted(settings.Commit);
-            }
-
-            if (settings.DynamicRepositoryPath != null)
-            {
-                builder.Append("-dynamicRepoLocation");
-                builder.AppendQuoted(settings.DynamicRepositoryPath.FullPath);
-            }
-        }
+        AppendAuthenticationArguments(builder, settings);
+        AppendAssemblyInfoArguments(builder, settings);
+        AppendRepositoryArguments(builder, settings);
 
         if (settings.LogFilePath != null)
         {
@@ -144,6 +85,98 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append("-nofetch");
         }
 
+        AppendVerbosityArguments(builder, settings);
+
+        return builder;
+    }
+
+    private static void AppendOutputArguments(ProcessArgumentBuilder builder, GitVersionSettings settings)
+    {
+        if (settings.OutputTypes.Contains(GitVersionOutput.Json))
+        {
+            builder.Append("-output");
+            builder.Append("json");
+        }
+
+        if (settings.OutputTypes.Contains(GitVersionOutput.BuildServer))
+        {
+            builder.Append("-output");
+            builder.Append("buildserver");
+        }
+    }
+
+    private static void AppendAuthenticationArguments(ProcessArgumentBuilder builder, GitVersionSettings settings)
+    {
+        if (string.IsNullOrWhiteSpace(settings.UserName))
+        {
+            return;
+        }
+
+        builder.Append("-u");
+        builder.AppendQuoted(settings.UserName);
+
+        builder.Append("-p");
+        builder.AppendQuotedSecret(settings.Password);
+    }
+
+    private static void AppendAssemblyInfoArguments(ProcessArgumentBuilder builder, GitVersionSettings settings)
+    {
+        if (!settings.UpdateAssemblyInfo)
+        {
+            return;
+        }
+
+        builder.Append("-updateassemblyinfo");
+
+        if (settings.UpdateAssemblyInfoFilePath != null)
+        {
+            builder.AppendQuoted(settings.UpdateAssemblyInfoFilePath.FullPath);
+        }
+    }
+
+    private void AppendRepositoryArguments(ProcessArgumentBuilder builder, GitVersionSettings settings)
+    {
+        if (settings.RepositoryPath != null)
+        {
+            builder.Append("-targetpath");
+            builder.AppendQuoted(settings.RepositoryPath.FullPath);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.Url))
+        {
+            return;
+        }
+
+        builder.Append("-url");
+        builder.AppendQuoted(settings.Url);
+
+        if (!string.IsNullOrWhiteSpace(settings.Branch))
+        {
+            builder.Append("-b");
+            builder.Append(settings.Branch);
+        }
+        else
+        {
+            this._log.Warning(
+                "If you leave the branch name for GitVersion unset, it will fallback to the default branch for the repository.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(settings.Commit))
+        {
+            builder.Append("-c");
+            builder.AppendQuoted(settings.Commit);
+        }
+
+        if (settings.DynamicRepositoryPath != null)
+        {
+            builder.Append("-dynamicRepoLocation");
+            builder.AppendQuoted(settings.DynamicRepositoryPath.FullPath);
+        }
+    }
+
+    private void AppendVerbosityArguments(ProcessArgumentBuilder builder, GitVersionSettings settings)
+    {
         var verbosity = settings.Verbosity ?? this._log.Verbosity;
 
         if (verbosity != Verbosity.Normal)
@@ -151,8 +184,6 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
             builder.Append("-verbosity");
             builder.Append(verbosity.ToString());
         }
-
-        return builder;
     }
 
     /// <summary>

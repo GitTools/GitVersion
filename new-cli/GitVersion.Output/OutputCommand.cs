@@ -12,7 +12,7 @@ public class OutputCommand(ILogger<OutputCommand> logger, IService service) : IC
     public Task<int> InvokeAsync(OutputSettings settings, CancellationToken cancellationToken = default)
     {
         var value = this.service.Call();
-        this.logger.LogInformation($"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        this.logger.LogInformation("Command : 'output', LogFile : '{LogFile}', WorkDir : '{WorkDir}' ", settings.LogFile, settings.WorkDir);
         return Task.FromResult(value);
     }
 }
