@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
@@ -134,7 +135,7 @@ public class JenkinsTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "commitSha", CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z") }
+            BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "commitSha", CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture) }
         };
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();

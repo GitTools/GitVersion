@@ -7,15 +7,14 @@ namespace GitVersion.BuildAgents.Tests;
 public class DroneTests : TestBase
 {
     private IEnvironment environment = null!;
-    private IServiceProvider sp = null!;
     private Drone buildServer = null!;
 
     [SetUp]
     public void SetUp()
     {
-        this.sp = ConfigureServices(services => services.AddSingleton<Drone>());
-        this.environment = this.sp.GetRequiredService<IEnvironment>();
-        this.buildServer = this.sp.GetRequiredService<Drone>();
+        var sp = ConfigureServices(services => services.AddSingleton<Drone>());
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<Drone>();
         this.environment.SetEnvironmentVariable("DRONE", "true");
     }
 

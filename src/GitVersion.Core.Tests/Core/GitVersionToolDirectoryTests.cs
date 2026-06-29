@@ -7,7 +7,6 @@ namespace GitVersion.Tests;
 [TestFixture]
 public class GitVersionTaskDirectoryTests : TestBase
 {
-    private string gitDirectory = null!;
     private string workDirectory = null!;
     private IFileSystem fileSystem = null!;
 
@@ -17,8 +16,8 @@ public class GitVersionTaskDirectoryTests : TestBase
         var sp = ConfigureServices();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.workDirectory = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), Guid.NewGuid().ToString());
-        this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(FileSystemHelper.Path.DirectorySeparatorChar);
-        Assert.That(this.gitDirectory, Is.Not.Null);
+        var gitDirectory = Repository.Init(this.workDirectory).TrimEnd(FileSystemHelper.Path.DirectorySeparatorChar);
+        Assert.That(gitDirectory, Is.Not.Null);
     }
 
     [TearDown]

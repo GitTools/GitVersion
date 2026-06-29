@@ -28,7 +28,7 @@ public class ArgumentParserOnBuildServerTests : TestBase
         arguments.NoFetch.ShouldBe(true);
     }
 
-    private class MockBuildAgent : ICurrentBuildAgent
+    private sealed class MockBuildAgent : ICurrentBuildAgent
     {
         public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => throw new NotImplementedException();

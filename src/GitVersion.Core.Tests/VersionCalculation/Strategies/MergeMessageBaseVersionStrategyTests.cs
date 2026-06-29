@@ -193,7 +193,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
             ? [new MockCommit(), new MockCommit()]
             : [new MockCommit()];
 
-    private class MockCommit : ICommit
+    private sealed class MockCommit : ICommit
     {
         public bool Equals(ICommit? other) => throw new NotImplementedException();
         public int CompareTo(ICommit? other) => throw new NotImplementedException();

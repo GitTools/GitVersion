@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
@@ -34,7 +35,7 @@ public class BuildServerBaseTests : TestBase
             BuildMetaData = new SemanticVersionBuildMetaData("5")
             {
                 Sha = "commitSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
             }
         };
 
@@ -49,7 +50,7 @@ public class BuildServerBaseTests : TestBase
         writes.ShouldNotContain(x => x != null && x.StartsWith("Set Build Number for "));
     }
 
-    private class BuildAgent(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+    private sealed class BuildAgent(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
     {
         protected override string EnvironmentVariable => throw new NotImplementedException();
 
