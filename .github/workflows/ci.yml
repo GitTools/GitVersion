@@ -37,10 +37,7 @@ env:
   ENABLED_DIAGNOSTICS: ${{ vars.ENABLED_DIAGNOSTICS }}
 
 permissions:
-  id-token: write
   contents: read
-  packages: write
-  attestations: write
 
 jobs:
   prepare:
@@ -66,6 +63,9 @@ jobs:
   unit_test:
     name: Test
     needs: [ prepare, publish_flags ]
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/_unit_tests.yml
     with:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
@@ -98,6 +98,9 @@ jobs:
   docker_linux_images:
     needs: [ prepare, build, publish_flags ]
     name: Docker Images (${{ matrix.arch }})
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -119,6 +122,9 @@ jobs:
   docker_linux_manifests:
     needs: [ prepare, docker_linux_images, publish_flags ]
     name: Docker Manifests
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/_docker_manifests.yml
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
@@ -129,6 +135,10 @@ jobs:
   publish:
     name: Publish
     needs: [ artifacts_windows_test, artifacts_linux_test, publish_flags ]
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     uses: ./.github/workflows/_publish.yml
     with:
       publish_packages: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
