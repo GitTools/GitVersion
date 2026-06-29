@@ -82,7 +82,7 @@ csharp_prefer_static_local_function = true:warning
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:silent
 
 # Code-block preferences
-csharp_prefer_braces = when_multiline:none
+csharp_prefer_braces = true:error
 csharp_prefer_simple_using_statement = true:warning
 
 # Expression-level preferences
@@ -161,13 +161,16 @@ dotnet_style_qualification_for_event = false:error
 dotnet_diagnostic.IDE0009.severity = error
 
 # IDE0005: Using directive is unnecessary.
-dotnet_diagnostic.ide0005.severity = warning
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0305: Use collection expression for fluent 
+dotnet_diagnostic.IDE0305.severity = error
 
 # RCS1037: Remove trailing white-space.
-dotnet_diagnostic.rcs1037.severity = error
+dotnet_diagnostic.RCS1037.severity = error
 
 # RCS1036: Remove redundant empty line.
-dotnet_diagnostic.rcs1036.severity = error
+dotnet_diagnostic.RCS1036.severity = error
 
 dotnet_diagnostic.S2325.severity = none
 dotnet_diagnostic.S4136.severity = none
@@ -181,3 +184,9 @@ resharper_arrange_object_creation_when_type_not_evident_highlighting = none
 resharper_unused_auto_property_accessor_global_highlighting = none
 
 resharper_unused_method_return_value_global_highlighting = none
+
+# Test projects
+# Repeated string literals in tests (branch names, versions, config keys) are
+# intentionally inline for readability, so don't flag duplicate literals there.
+[**/*.Tests/**.cs]
+dotnet_diagnostic.S1192.severity = none

@@ -38,7 +38,10 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
 
         var milestone = context.Version?.Milestone;
 
-        if (milestone is null) return;
+        if (milestone is null)
+        {
+            return;
+        }
 
         context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
         {

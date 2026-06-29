@@ -129,16 +129,26 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
             {
                 var lastMatch = assemblyMatches[^1];
                 var replacementString = lastMatch.Value;
-                if (!lastMatch.Value.EndsWith(NewLine)) replacementString += NewLine;
+                if (!lastMatch.Value.EndsWith(NewLine))
+                {
+                    replacementString += NewLine;
+                }
+
                 if (assemblyAddFormat != null)
+                {
                     replacementString += string.Format(assemblyAddFormat, replaceString);
+                }
+
                 replacementString += NewLine;
                 return inputString.Replace(lastMatch.Value, replacementString);
             }
         }
 
         if (assemblyAddFormat != null)
+        {
             inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
+        }
+
         appendedAttributes = true;
         return inputString;
     }

@@ -13,7 +13,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.SwitchArgumentRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("https://user:pass@host", true, "https://user:pass@")]
@@ -24,7 +26,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.ObscurePasswordRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("{env:FOO}", true, "{env:FOO}")]
@@ -37,7 +41,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.ExpandTokensRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("v", true, "v")]
@@ -52,7 +58,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.DefaultTagPrefixRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("v1.2.3", true, "v1.2.3")]
@@ -63,7 +71,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.DefaultVersionInBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("main", true, "main")]
@@ -74,7 +84,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.MainBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("develop", true, "develop")]
@@ -86,7 +98,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.DevelopBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("release/1.0", true, "release/1.0")]
@@ -97,7 +111,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.ReleaseBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("feature/foo", true, "feature/foo")]
@@ -108,7 +124,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.FeatureBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("pull-requests/123", true, "pull-requests/123")]
@@ -120,7 +138,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.PullRequestBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("hotfix/1.0", true, "hotfix/1.0")]
@@ -131,7 +151,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.HotfixBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("support/1.0", true, "support/1.0")]
@@ -142,7 +164,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.SupportBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("any-branch", true, "any-branch")]
@@ -152,7 +176,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Configuration.UnknownBranchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Merge branch 'feature/foo' into develop", true, "Merge branch 'feature/foo' into develop")]
@@ -163,7 +189,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.DefaultMergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Finish feature/foo into develop", true, "Finish feature/foo into develop")]
@@ -174,7 +202,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.SmartGitMergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Merge pull request #123 from repo from feature/foo to develop", true, "Merge pull request #123 from repo from feature/foo to develop")]
@@ -185,7 +215,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.BitBucketPullMergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Pull request #123\n\nMerge in repo from feature/foo to develop", true, "Pull request #123\n\nMerge in repo from feature/foo to develop")]
@@ -196,7 +228,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.BitBucketPullv7MergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Merged in feature/foo (pull request #123)", true, "Merged in feature/foo (pull request #123)")]
@@ -207,7 +241,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.BitBucketCloudPullMergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("Merge pull request #123 from repo/feature/foo", false, null)]
@@ -217,7 +253,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.MergeMessage.AzureDevOpsPullMergeMessageRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("[assembly: AssemblyVersion(\"1.0.0.0\")]", true, "[assembly: AssemblyVersion(\"1.0.0.0\")]")]
@@ -229,7 +267,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Output.CsharpAssemblyAttributeRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("[<assembly: AssemblyVersion(\"1.0.0.0\")>]", true, "[<assembly: AssemblyVersion(\"1.0.0.0\")>]")]
@@ -241,7 +281,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Output.FsharpAssemblyAttributeRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("<Assembly: AssemblyVersion(\"1.0.0.0\")>", true, "<Assembly: AssemblyVersion(\"1.0.0.0\")>")]
@@ -253,7 +295,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.Output.VisualBasicAssemblyAttributeRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("+semver: major", true, "+semver: major")]
@@ -264,7 +308,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.VersionCalculation.DefaultMajorRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("+semver: minor", true, "+semver: minor")]
@@ -275,7 +321,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.VersionCalculation.DefaultMinorRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("+semver: patch", true, "+semver: patch")]
@@ -286,7 +334,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.VersionCalculation.DefaultPatchRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("+semver: none", true, "+semver: none")]
@@ -297,7 +347,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.VersionCalculation.DefaultNoBumpRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("1.2.3", true, "1.2.3")]
@@ -308,7 +360,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.SemanticVersion.ParseStrictRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("1.2.3", true, "1.2.3")]
@@ -320,7 +374,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.SemanticVersion.ParseLooseRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("123.BranchName.foo.Sha.abc", true, "123.BranchName.foo.Sha.abc")]
@@ -331,7 +387,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("meta-data", false, new string[0])]
@@ -348,7 +406,9 @@ public class RegexPatternsTests
 
         var captured = new List<string>();
         foreach (Match m in matches)
+        {
             captured.Add(m.Value);
+        }
 
         captured.ShouldBe(expectedCaptures);
     }
@@ -361,7 +421,9 @@ public class RegexPatternsTests
         var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(input);
         match.Success.ShouldBe(expected);
         if (expected)
+        {
             match.Value.ShouldBe(expectedCapture);
+        }
     }
 
     [TestCase("/* block comment */", true, "block", " block comment ")]

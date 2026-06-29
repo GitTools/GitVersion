@@ -36,9 +36,20 @@ public class RetryAction<T, Result> where T : Exception
 
     private static IEnumerable<TimeSpan> LinearBackoff(TimeSpan initialDelay, int retryCount, double factor = 1.0, bool fastFirst = false)
     {
-        if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
-        if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
-        if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
+        if (initialDelay < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
+        }
+
+        if (retryCount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
+        }
+
+        if (factor < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
+        }
 
         return retryCount == 0 ? Empty() : Enumerate(initialDelay, retryCount, fastFirst, factor);
 

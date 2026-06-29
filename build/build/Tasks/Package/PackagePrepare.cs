@@ -33,7 +33,10 @@ public class PackagePrepare : FrostingTask<BuildContext>
             var outputPath = PackPrepareNative(context, runtime);
 
             // testing windows and macos artifacts, the linux is tested with docker
-            if (platform == PlatformFamily.Linux) continue;
+            if (platform == PlatformFamily.Linux)
+            {
+                continue;
+            }
 
             if (context.IsRunningOnAmd64() && runtime.EndsWith("x64") || context.IsRunningOnArm64() && runtime.EndsWith("arm64"))
             {

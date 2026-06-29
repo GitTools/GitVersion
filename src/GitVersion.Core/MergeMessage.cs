@@ -26,7 +26,10 @@ public class MergeMessage
     {
         mergeMessage.NotNull();
 
-        if (mergeMessage.Length == 0) return;
+        if (mergeMessage.Length == 0)
+        {
+            return;
+        }
 
         // Concatenate configuration formats with the defaults.
         // Ensure configurations are processed first.
@@ -38,7 +41,9 @@ public class MergeMessage
         {
             var match = Pattern.Match(mergeMessage);
             if (!match.Success)
+            {
                 continue;
+            }
 
             FormatName = Name;
             var sourceBranch = match.Groups["SourceBranch"].Value;

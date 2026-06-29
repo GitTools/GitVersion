@@ -69,7 +69,10 @@ internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategi
     private static IEnumerable<string> SplitScalarList(string scalar)
     {
         var trimmed = scalar.Trim();
-        if (trimmed.Length == 0) yield break;
+        if (trimmed.Length == 0)
+        {
+            yield break;
+        }
 
         if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
         {
@@ -99,5 +102,5 @@ internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategi
     }
 
     private static string Normalize(string value)
-        => new(value.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
+        => new([.. value.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant)]);
 }

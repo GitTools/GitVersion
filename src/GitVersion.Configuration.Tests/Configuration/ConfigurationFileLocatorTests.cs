@@ -265,7 +265,11 @@ public static class ConfigurationFileLocatorTests
         private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null) =>
             ConfigureServices(services =>
             {
-                if (log != null) services.AddSingleton(log);
+                if (log != null)
+                {
+                    services.AddSingleton(log);
+                }
+
                 services.AddSingleton(Options.Create(gitVersionOptions));
             });
     }

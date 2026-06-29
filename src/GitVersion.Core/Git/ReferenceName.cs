@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 namespace GitVersion.Git;
 
 /// <summary>Represents a Git reference name in both its canonical (<c>refs/heads/main</c>) and friendly (<c>main</c>) forms.</summary>
-public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
+public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
 {
     private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
     private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);
@@ -43,7 +43,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     /// <summary>Parses <paramref name="canonicalName"/> as a canonical Git reference name, throwing when the input is not a valid canonical form.</summary>
     public static ReferenceName Parse(string canonicalName)
     {
-        if (TryParse(out var value, canonicalName)) return value;
+        if (TryParse(out var value, canonicalName))
+        {
+            return value;
+        }
+
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
 
@@ -74,11 +78,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     /// <summary>Gets a value indicating whether this reference corresponds to a pull request.</summary>
     public bool IsPullRequest { get; }
 
-    /// <summary>Returns <see langword="true"/> when the canonical name of this instance equals that of <paramref name="other"/>.</summary>
-    public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
-
     /// <summary>Compares this instance to <paramref name="other"/> by canonical name.</summary>
     public int CompareTo(ReferenceName? other) => comparerHelper.Compare(this, other);
+
+    /// <summary>Returns <see langword="true"/> when the canonical name of this instance equals that of <paramref name="other"/>.</summary>
+    public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
 
     /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="ReferenceName"/> with the same canonical name.</summary>
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);
@@ -92,13 +96,33 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     /// <summary>Returns <see langword="true"/> when <paramref name="left"/> and <paramref name="right"/> have equal canonical names.</summary>
     public static bool operator ==(ReferenceName? left, ReferenceName? right)
     {
-        if (ReferenceEquals(left, right)) return true;
-        if (left is null || right is null) return false;
+        if (ReferenceEquals(left, right))
+        {
+            return true;
+        }
+
+        if (left is null || right is null)
+        {
+            return false;
+        }
+
         return left.Equals(right);
     }
 
     /// <summary>Returns <see langword="true"/> when <paramref name="left"/> and <paramref name="right"/> have different canonical names.</summary>
     public static bool operator !=(ReferenceName? left, ReferenceName? right) => !(left == right);
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts before <paramref name="right"/> by canonical name.</summary>
+    public static bool operator <(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) < 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts before or equal to <paramref name="right"/> by canonical name.</summary>
+    public static bool operator <=(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) <= 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts after <paramref name="right"/> by canonical name.</summary>
+    public static bool operator >(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) > 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts after or equal to <paramref name="right"/> by canonical name.</summary>
+    public static bool operator >=(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) >= 0;
 
     /// <summary>Returns <see langword="true"/> when <paramref name="name"/> matches any of the canonical, friendly, or origin-stripped forms of this reference.</summary>
     public bool EquivalentTo(string? name) =>
@@ -109,10 +133,14 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     private string Shorten()
     {
         if (IsLocalBranch)
+        {
             return Canonical[LocalBranchPrefix.Length..];
+        }
 
         if (IsRemoteBranch)
+        {
             return Canonical[RemoteTrackingBranchPrefix.Length..];
+        }
 
         return IsTag ? Canonical[TagPrefix.Length..] : Canonical;
     }

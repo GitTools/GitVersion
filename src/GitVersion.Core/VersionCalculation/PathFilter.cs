@@ -13,14 +13,8 @@ internal enum PathFilterMode
 
 internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = PathFilterMode.Inclusive) : IVersionFilter
 {
-    private readonly IReadOnlyList<Regex> pathsRegexes = [.. paths.Select(path => new Regex(path, RegexOptions.Compiled))];
+    private readonly IReadOnlyList<Regex> pathsRegexes = [.. paths.Select(RegexPatterns.Cache.GetOrAdd)];
     private readonly ConcurrentDictionary<string, bool> pathMatchCache = [];
-
-    public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
-    {
-        ArgumentNullException.ThrowIfNull(baseVersion);
-        return Exclude(baseVersion.BaseVersionSource, out reason);
-    }
 
     private bool IsMatch(string path)
     {
@@ -30,6 +24,12 @@ internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = Pat
             this.pathMatchCache[path] = isMatch;
         }
         return isMatch;
+    }
+
+    public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
+    {
+        ArgumentNullException.ThrowIfNull(baseVersion);
+        return Exclude(baseVersion.BaseVersionSource, out reason);
     }
 
     public bool Exclude(ICommit? commit, [NotNullWhen(true)] out string? reason)

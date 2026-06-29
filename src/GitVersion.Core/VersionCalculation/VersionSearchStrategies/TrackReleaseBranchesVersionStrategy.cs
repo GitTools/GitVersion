@@ -27,9 +27,15 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         configuration.NotNull();
 
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TrackReleaseBranches))
+        {
             yield break;
+        }
 
-        if (!configuration.Value.TracksReleaseBranches) yield break;
+        if (!configuration.Value.TracksReleaseBranches)
+        {
+            yield break;
+        }
+
         foreach (var releaseBranch in this.branchRepository.GetReleaseBranches(Context.Configuration))
         {
             if (TryGetBaseVersion(releaseBranch, configuration, out var baseVersion))
@@ -45,7 +51,10 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         result = null;
 
         var releaseBranchConfiguration = Context.Configuration.GetEffectiveBranchConfiguration(releaseBranch);
-        if (!this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion)) return result is not null;
+        if (!this.releaseVersionStrategy.TryGetBaseVersion(releaseBranchConfiguration, out var baseVersion))
+        {
+            return result is not null;
+        }
         // Find the commit where the child branch was created.
         var baseVersionSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);

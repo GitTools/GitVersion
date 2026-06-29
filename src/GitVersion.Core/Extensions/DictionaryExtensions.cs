@@ -9,7 +9,11 @@ internal static class DictionaryExtensions
             ArgumentNullException.ThrowIfNull(dict);
             ArgumentNullException.ThrowIfNull(getValue);
 
-            if (dict.TryGetValue(key, out var value)) return value;
+            if (dict.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+
             value = getValue();
             dict.Add(key, value);
             return value;

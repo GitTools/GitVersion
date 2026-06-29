@@ -84,7 +84,11 @@ internal class GitVersionTaskExecutor(
         static string? GetTargetNamespace(GenerateGitVersionInformation task)
         {
             string? targetNamespace = null;
-            if (!bool.TryParse(task.UseProjectNamespaceForGitVersionInformation, out var useTargetPathAsRootNamespace) || !useTargetPathAsRootNamespace) return targetNamespace;
+            if (!bool.TryParse(task.UseProjectNamespaceForGitVersionInformation, out var useTargetPathAsRootNamespace) || !useTargetPathAsRootNamespace)
+            {
+                return targetNamespace;
+            }
+
             targetNamespace = task.RootNamespace;
             if (string.IsNullOrWhiteSpace(targetNamespace))
             {

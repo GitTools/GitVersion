@@ -14,7 +14,7 @@ internal class AppVeyor(IEnvironment environment, ILog log, IFileSystem fileSyst
     public override string SetBuildNumber(GitVersionVariables variables)
     {
         var buildNumber = this.environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
-        var apiUrl = this.environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
+        var apiUrl = this.environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new InvalidOperationException("APPVEYOR_API_URL environment variable not set");
 
         using var httpClient = GetHttpClient(apiUrl);
 
@@ -40,7 +40,7 @@ internal class AppVeyor(IEnvironment environment, ILog log, IFileSystem fileSyst
 
     public override string[] SetOutputVariables(string name, string? value)
     {
-        var apiUrl = this.environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
+        var apiUrl = this.environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new InvalidOperationException("APPVEYOR_API_URL environment variable not set");
         var httpClient = GetHttpClient(apiUrl);
 
         var body = new

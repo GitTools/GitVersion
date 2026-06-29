@@ -32,7 +32,9 @@ internal class BitBucketPipelines : BuildAgentBase
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         if (this.propertyFile is null || this.ps1File is null)
+        {
             return;
+        }
 
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.propertyFile}' for Bash,");

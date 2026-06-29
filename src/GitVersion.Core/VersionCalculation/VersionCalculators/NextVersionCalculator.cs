@@ -113,7 +113,11 @@ internal class NextVersionCalculator(
         var currentCommitTaggedVersion = taggedSemanticVersionsOfCurrentCommit
             .Where(element => element.Value.IsMatchForBranchSpecificLabel(label)).Max();
 
-        if (currentCommitTaggedVersion is null) return result is not null;
+        if (currentCommitTaggedVersion is null)
+        {
+            return result is not null;
+        }
+
         SemanticVersionBuildMetaData semanticVersionBuildMetaData = new(
             versionSourceSemVer: currentCommitTaggedVersion.Value,
             versionSourceSha: Context.CurrentCommit.Sha,
@@ -219,10 +223,14 @@ internal class NextVersionCalculator(
     private static NextVersion CompareVersions(NextVersion version1, NextVersion version2)
     {
         if (version1.BaseVersion.BaseVersionSource == null)
+        {
             return version2;
+        }
 
         if (version2.BaseVersion.BaseVersionSource == null)
+        {
             return version1;
+        }
 
         return version1.BaseVersion.BaseVersionSource.When >= version2.BaseVersion.BaseVersionSource.When
             ? version1
@@ -234,7 +242,9 @@ internal class NextVersionCalculator(
         using (this.log.IndentLog("Fetching the base versions for version calculation..."))
         {
             if (branch.Tip == null)
+            {
                 throw new GitVersionException("No commits found on the current branch.");
+            }
 
             return [.. GetNextVersionsInternal()];
         }
@@ -257,14 +267,21 @@ internal class NextVersionCalculator(
                     var atLeastOneBaseVersionReturned = false;
                     foreach (var versionStrategy in strategies)
                     {
-                        if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy) continue;
+                        if (atLeastOneBaseVersionReturned && versionStrategy is FallbackVersionStrategy)
+                        {
+                            continue;
+                        }
 
                         using (this.log.IndentLog($"[Using '{versionStrategy.GetType().Name}' strategy]"))
                         {
                             foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                             {
                                 this.log.Info(baseVersion.ToString());
-                                if (!IncludeVersion(baseVersion, configuration.Ignore)) continue;
+                                if (!IncludeVersion(baseVersion, configuration.Ignore))
+                                {
+                                    continue;
+                                }
+
                                 atLeastOneBaseVersionReturned = true;
 
                                 yield return new NextVersion(
@@ -284,7 +301,11 @@ internal class NextVersionCalculator(
     {
         foreach (var versionFilter in ignoreConfiguration.ToFilters())
         {
-            if (!versionFilter.Exclude(baseVersion, out var reason)) continue;
+            if (!versionFilter.Exclude(baseVersion, out var reason))
+            {
+                continue;
+            }
+
             if (reason != null)
             {
                 this.log.Info(reason);

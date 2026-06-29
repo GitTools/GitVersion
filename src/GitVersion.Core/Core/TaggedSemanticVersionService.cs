@@ -77,8 +77,8 @@ internal sealed class TaggedSemanticVersionService(
         string? tagPrefix,
         SemanticVersionFormat format,
         IIgnoreConfiguration ignore,
-        string? label,
-        DateTimeOffset? notOlderThan)
+        string? label = null,
+        DateTimeOffset? notOlderThan = null)
     {
         var result = GetTaggedSemanticVersionsOfBranchInternal(
             branch: branch,
@@ -105,14 +105,14 @@ internal sealed class TaggedSemanticVersionService(
         );
         foreach (var grouping in semanticVersionsOfBranch)
         {
-            if (grouping.Key.When > notOlderThan) continue;
-
-            foreach (var semanticVersion in grouping)
+            if (grouping.Key.When > notOlderThan)
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                {
-                    yield return (grouping.Key, semanticVersion);
-                }
+                continue;
+            }
+
+            foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
+            {
+                yield return (grouping.Key, semanticVersion);
             }
         }
     }
@@ -122,8 +122,8 @@ internal sealed class TaggedSemanticVersionService(
          string? tagPrefix,
          SemanticVersionFormat format,
          IIgnoreConfiguration ignore,
-         string? label,
-         DateTimeOffset? notOlderThan)
+         string? label = null,
+         DateTimeOffset? notOlderThan = null)
     {
         var result = GetTaggedSemanticVersionsOfMergeTargetInternal(
             branch: branch,
@@ -154,22 +154,22 @@ internal sealed class TaggedSemanticVersionService(
         );
         foreach (var grouping in semanticVersionsOfMergeTarget)
         {
-            if (grouping.Key.When > notOlderThan) continue;
-
-            foreach (var semanticVersion in grouping)
+            if (grouping.Key.When > notOlderThan)
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                {
-                    yield return new(grouping.Key, semanticVersion);
-                }
+                continue;
+            }
+
+            foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
+            {
+                yield return new(grouping.Key, semanticVersion);
             }
         }
     }
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMainBranches(
         IGitVersionConfiguration configuration,
-        DateTimeOffset? notOlderThan,
-        string? label,
+        DateTimeOffset? notOlderThan = null,
+        string? label = null,
         params IBranch[] excludeBranches)
     {
         var result = GetTaggedSemanticVersionsOfMainBranchesInternal(
@@ -208,8 +208,8 @@ internal sealed class TaggedSemanticVersionService(
 
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfReleaseBranches(
         IGitVersionConfiguration configuration,
-        DateTimeOffset? notOlderThan,
-        string? label,
+        DateTimeOffset? notOlderThan = null,
+        string? label = null,
         params IBranch[] excludeBranches)
     {
         var result = GetTaggedSemanticVersionsOfReleaseBranchesInternal(

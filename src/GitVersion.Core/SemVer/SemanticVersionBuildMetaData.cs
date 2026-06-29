@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 namespace GitVersion;
 
 /// <summary>Holds the build metadata attached to a semantic version (commits-since-tag, branch, SHA, commit date, etc.).</summary>
-public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
+public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
 {
     /// <summary>An empty build metadata instance with no fields set.</summary>
     public static readonly SemanticVersionBuildMetaData Empty = new();
@@ -121,10 +121,14 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+        {
             return formatter.Format(format, this, formatProvider);
+        }
 
         if (format.IsNullOrEmpty())
+        {
             format = "b";
+        }
 
         format = format.ToLower();
         return format.ToLower() switch
@@ -154,7 +158,9 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
     {
         if (buildMetaData.IsNullOrEmpty())
+        {
             return Empty;
+        }
 
         var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(buildMetaData);
 
@@ -163,21 +169,30 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         if (parsed.Groups["BuildNumber"].Success)
         {
             if (long.TryParse(parsed.Groups["BuildNumber"].Value, out var buildNumber))
+            {
                 buildMetaDataCommitsSinceTag = buildNumber;
+            }
+
             buildMetaDataVersionSourceDistance = buildMetaDataCommitsSinceTag ?? 0;
         }
 
         string? buildMetaDataBranch = null;
         if (parsed.Groups["BranchName"].Success)
+        {
             buildMetaDataBranch = parsed.Groups["BranchName"].Value;
+        }
 
         string? buildMetaDataSha = null;
         if (parsed.Groups["Sha"].Success)
+        {
             buildMetaDataSha = parsed.Groups["Sha"].Value;
+        }
 
         string? buildMetaDataOtherMetaData = null;
         if (parsed.Groups["Other"].Success && !parsed.Groups["Other"].Value.IsNullOrEmpty())
+        {
             buildMetaDataOtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
+        }
 
         return new()
         {
@@ -192,7 +207,10 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static string FormatMetaDataPart(string value)
     {
         if (!value.IsNullOrEmpty())
+        {
             value = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex.Replace(value, "-");
+        }
+
         return value;
     }
 }

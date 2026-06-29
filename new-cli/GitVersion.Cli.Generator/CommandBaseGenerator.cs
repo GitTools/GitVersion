@@ -40,7 +40,10 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
         ct.ThrowIfCancellationRequested();
 
         var commandAttribute = classSymbol.GetAttributeData(CommandAttributeFullName) ?? classSymbol.GetAttributeData(CommandAttributeGenericFullName);
-        if (commandAttribute is null) return null;
+        if (commandAttribute is null)
+        {
+            return null;
+        }
 
         var ctorArguments = commandAttribute.ConstructorArguments;
 
@@ -51,13 +54,16 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
         description.NotNull();
 
         ITypeSymbol? parentCommandType = null;
-        if (commandAttribute.AttributeClass?.TypeArguments.Any() is true)
+        if (commandAttribute.AttributeClass?.TypeArguments is { Length: > 0 })
         {
             parentCommandType = commandAttribute.AttributeClass.TypeArguments.Single();
         }
 
         var commandBase = classSymbol.AllInterfaces.SingleOrDefault(x => x.OriginalDefinition.ToDisplayString() == CommandInterfaceFullName);
-        if (commandBase is null) return null;
+        if (commandBase is null)
+        {
+            return null;
+        }
 
         var settingsType = commandBase.TypeArguments.Single();
 

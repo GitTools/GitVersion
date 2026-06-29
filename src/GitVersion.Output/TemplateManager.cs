@@ -55,7 +55,11 @@ internal class TemplateManager(TemplateType templateType)
 
         foreach (var name in assembly.GetManifestResourceNames())
         {
-            if (!name.Contains(templateType.ToString()) || !name.Contains(templateCategory)) continue;
+            if (!name.Contains(templateType.ToString()) || !name.Contains(templateCategory))
+            {
+                continue;
+            }
+
             var extension = FileSystemHelper.Path.GetExtension(name);
             if (string.IsNullOrWhiteSpace(extension))
             {

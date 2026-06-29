@@ -28,10 +28,10 @@ internal sealed class Branch : IBranch
     public ICommit? Tip { get; }
     public ICommitCollection Commits { get; }
     public int CompareTo(IBranch? other) => comparerHelper.Compare(this, other);
-    public bool Equals(IBranch? other) => equalityHelper.Equals(this, other);
     public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
     public bool IsRemote => this.innerBranch.IsRemote;
     public bool IsTracking => this.innerBranch.IsTracking;
+    public bool Equals(IBranch? other) => equalityHelper.Equals(this, other);
     public override bool Equals(object? obj) => Equals(obj as IBranch);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();

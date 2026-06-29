@@ -44,9 +44,13 @@ public class SequenceDiagram
         var cleanParticipant = ParticipantSanitizer.SanitizeParticipant(@as ?? participant);
         this.participants.Add(participant, cleanParticipant);
         if (participant == cleanParticipant)
+        {
             DiagramBuilder.AppendLineFormat("participant {0}", participant);
+        }
         else
+        {
             DiagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, cleanParticipant);
+        }
     }
 
     /// <summary>

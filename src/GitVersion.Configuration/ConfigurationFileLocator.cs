@@ -32,8 +32,16 @@ internal class ConfigurationFileLocator(
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (FileSystemHelper.Path.IsPathRooted(ConfigurationFile)) return;
-        if (FileSystemHelper.Path.Equal(workingDirectory, projectRootDirectory)) return;
+        if (FileSystemHelper.Path.IsPathRooted(ConfigurationFile))
+        {
+            return;
+        }
+
+        if (FileSystemHelper.Path.Equal(workingDirectory, projectRootDirectory))
+        {
+            return;
+        }
+
         WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
 
@@ -56,7 +64,11 @@ internal class ConfigurationFileLocator(
         {
             this.log.Debug($"Trying to find configuration file {fileName} at '{directoryPath}'");
             var matchingFile = files.FirstOrDefault(file => string.Equals(FileSystemHelper.Path.GetFileName(file), fileName, StringComparison.OrdinalIgnoreCase));
-            if (matchingFile == null) continue;
+            if (matchingFile == null)
+            {
+                continue;
+            }
+
             this.log.Info($"Found configuration file at '{matchingFile}'");
             return matchingFile;
         }
@@ -66,7 +78,11 @@ internal class ConfigurationFileLocator(
 
     private string? GetCustomConfigurationFilePathIfEligable(string? directoryPath)
     {
-        if (string.IsNullOrWhiteSpace(ConfigurationFile)) return null;
+        if (string.IsNullOrWhiteSpace(ConfigurationFile))
+        {
+            return null;
+        }
+
         var configurationFilePath = ConfigurationFile;
         if (!string.IsNullOrWhiteSpace(directoryPath))
         {
@@ -89,7 +105,10 @@ internal class ConfigurationFileLocator(
             throw new WarningException($"Ambiguous configuration file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
         }
 
-        if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(ConfigurationFile, StringComparison.OrdinalIgnoreCase))) return;
+        if (hasConfigInProjectRootDirectory || hasConfigInWorkingDirectory || this.SupportedConfigFileNames.Any(entry => entry.Equals(ConfigurationFile, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
 
         workingConfigFile = FileSystemHelper.Path.Combine(workingDirectory, ConfigurationFile);
         projectRootConfigFile = FileSystemHelper.Path.Combine(projectRootDirectory, ConfigurationFile);

@@ -23,7 +23,9 @@ internal static class QuotedStringHelpers
     public static string[] SplitUnquoted(string? input, char splitChar)
     {
         if (input == null)
+        {
             return [];
+        }
 
         var split = new List<string>();
         var isPreviousCharBackslash = false;
@@ -37,7 +39,10 @@ internal static class QuotedStringHelpers
             {
                 case '"':
                     if (!isPreviousCharBackslash)
+                    {
                         isInsideQuotes = !isInsideQuotes;
+                    }
+
                     break;
                 default:
                     if (current == splitChar && !isInsideQuotes)
@@ -69,10 +74,14 @@ internal static class QuotedStringHelpers
         var sb = new StringBuilder(input);
 
         if (sb[0] == '"')
+        {
             sb.Remove(0, 1);
+        }
 
         if (sb[^1] == '"' && sb[^2] != '\\')
+        {
             sb.Remove(sb.Length - 1, 1);
+        }
 
         sb.Replace("\\\"", "\""); // unescape quotes.
 

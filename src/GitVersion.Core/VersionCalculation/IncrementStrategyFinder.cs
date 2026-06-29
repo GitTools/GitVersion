@@ -110,7 +110,11 @@ internal class IncrementStrategyFinder(
 
         foreach (var intermediateCommit in intermediateCommits.Reverse())
         {
-            if (!targetShas.Value.Contains(intermediateCommit.Sha) || !commitLog.Remove(intermediateCommit.Sha)) continue;
+            if (!targetShas.Value.Contains(intermediateCommit.Sha) || !commitLog.Remove(intermediateCommit.Sha))
+            {
+                continue;
+            }
+
             var parentCommits = intermediateCommit.Parents.ToList();
             while (parentCommits.Count != 0)
             {
@@ -137,7 +141,11 @@ internal class IncrementStrategyFinder(
         var commitAfterBaseIndex = 0;
         if (baseCommit != null)
         {
-            if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return [];
+            if (!map.TryGetValue(baseCommit.Sha, out var baseIndex))
+            {
+                return [];
+            }
+
             commitAfterBaseIndex = baseIndex + 1;
         }
 
@@ -169,10 +177,26 @@ internal class IncrementStrategyFinder(
 
     private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex)
     {
-        if (noBumpRegex.IsMatch(message)) return VersionField.None;
-        if (majorRegex.IsMatch(message)) return VersionField.Major;
-        if (minorRegex.IsMatch(message)) return VersionField.Minor;
-        if (patchRegex.IsMatch(message)) return VersionField.Patch;
+        if (noBumpRegex.IsMatch(message))
+        {
+            return VersionField.None;
+        }
+
+        if (majorRegex.IsMatch(message))
+        {
+            return VersionField.Major;
+        }
+
+        if (minorRegex.IsMatch(message))
+        {
+            return VersionField.Minor;
+        }
+
+        if (patchRegex.IsMatch(message))
+        {
+            return VersionField.Patch;
+        }
+
         return null;
     }
 
@@ -187,7 +211,10 @@ internal class IncrementStrategyFinder(
 
         var baseCommit = mergeCommit.Parents[0];
         var mergedCommit = GetMergedHead(mergeCommit);
-        if (index == 0) (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
+        if (index == 0)
+        {
+            (mergedCommit, baseCommit) = (baseCommit, mergedCommit);
+        }
 
         var findMergeBase = this.repositoryStore.FindMergeBase(baseCommit, mergedCommit)
             ?? throw new InvalidOperationException("Cannot find the base commit of merged branch.");
@@ -198,7 +225,10 @@ internal class IncrementStrategyFinder(
     {
         var parents = mergeCommit.Parents.Skip(1).ToList();
         if (parents.Count > 1)
+        {
             throw new NotSupportedException("GitVersion does not support more than one merge source in a single commit yet");
+        }
+
         return parents.Single();
     }
 

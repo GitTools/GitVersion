@@ -21,7 +21,10 @@ internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositorySt
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
         IBranch branch, IGitVersionConfiguration configuration, IBranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
+        if (!traversedBranches.Add(branch))
+        {
+            yield break; // This should never happen!! But it is good to have a circuit breaker.
+        }
 
         var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
         if (childBranchConfiguration != null)
@@ -43,7 +46,10 @@ internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositorySt
                 this.log.Info(
                     $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
                 );
-                if (skipTraversingOfOrphanedBranches) yield break;
+                if (skipTraversingOfOrphanedBranches)
+                {
+                    yield break;
+                }
             }
         }
 

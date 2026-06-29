@@ -24,7 +24,9 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
     public void Execute(GitVersionVariables variables, AssemblyInfoContext context)
     {
         if (context.EnsureAssemblyInfo)
+        {
             throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating project files!");
+        }
 
         var projectFilesToUpdate = GetProjectFiles(context).ToList();
 
@@ -33,10 +35,8 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         var assemblyFileVersion = variables.AssemblySemFileVer;
         var packageVersion = variables.SemVer;
 
-        foreach (var projectFile in projectFilesToUpdate)
+        foreach (var localProjectFile in projectFilesToUpdate.Select(projectFile => projectFile.FullName))
         {
-            var localProjectFile = projectFile.FullName;
-
             var originalFileContents = fileSystem.File.ReadAllText(localProjectFile);
             XElement fileXml;
             try
@@ -125,7 +125,11 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         }
 
         var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
-        if (lastGenerateAssemblyInfoElement == null || (bool)lastGenerateAssemblyInfoElement) return true;
+        if (lastGenerateAssemblyInfoElement == null || (bool)lastGenerateAssemblyInfoElement)
+        {
+            return true;
+        }
+
         log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
         return false;
     }

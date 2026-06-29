@@ -36,7 +36,11 @@ internal sealed class DirectoryInfoGlobbingWrapper
 
     public override IEnumerable<Microsoft.Extensions.FileSystemGlobbing.Abstractions.FileSystemInfoBase> EnumerateFileSystemInfos()
     {
-        if (!this.directoryInfo.Exists) yield break;
+        if (!this.directoryInfo.Exists)
+        {
+            yield break;
+        }
+
         IEnumerable<IFileSystemInfo> fileSystemInfos;
         try
         {

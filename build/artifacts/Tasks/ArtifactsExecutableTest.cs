@@ -30,7 +30,9 @@ public class ArtifactsExecutableTest : FrostingTask<BuildContext>
     private static void PackageTest(BuildContextBase context, string packageToTest)
     {
         if (context.Version == null)
+        {
             return;
+        }
 
         var outputDirectory = Paths.Packages.Combine("test");
 

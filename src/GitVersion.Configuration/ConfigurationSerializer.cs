@@ -43,7 +43,10 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
     private static Dictionary<object, object?> ConvertToObjectDictionary(IReadOnlyDictionary<string, object?>? source)
     {
-        if (source is null) return [];
+        if (source is null)
+        {
+            return [];
+        }
 
         Dictionary<object, object?> result = [];
         foreach (var item in source)
@@ -79,7 +82,10 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
         public override string ConvertName(string name)
         {
-            if (string.IsNullOrEmpty(name)) return name;
+            if (string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
 
             var builder = new StringBuilder(name.Length + 8);
             for (var index = 0; index < name.Length; index++)

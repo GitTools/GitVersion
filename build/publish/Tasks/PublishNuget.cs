@@ -121,7 +121,9 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         var oidcRequestUrl = context.Environment.GetEnvironmentVariable("ACTIONS_ID_TOKEN_REQUEST_URL");
 
         if (string.IsNullOrEmpty(oidcRequestToken) || string.IsNullOrEmpty(oidcRequestUrl))
+        {
             throw new InvalidOperationException("Missing GitHub OIDC request environment variables.");
+        }
 
         var tokenUrl = $"{oidcRequestUrl}&audience={Uri.EscapeDataString(nugetAudience)}";
         context.Information($"Requesting GitHub OIDC token from: {tokenUrl}");
@@ -133,7 +135,9 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
         var tokenBody = await responseMessage.Content.ReadAsStringAsync();
 
         if (!responseMessage.IsSuccessStatusCode)
+        {
             throw new InvalidOperationException("Failed to retrieve OIDC token from GitHub.");
+        }
 
         using var tokenDoc = JsonDocument.Parse(tokenBody);
         return ParseJsonProperty(tokenDoc, "value", "Failed to retrieve OIDC token from GitHub.");
@@ -168,7 +172,9 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
     {
         if (!document.RootElement.TryGetProperty(propertyName, out var property) ||
             property.ValueKind != JsonValueKind.String)
+        {
             throw new InvalidOperationException(errorMessage);
+        }
 
         return property.GetString() ?? throw new InvalidOperationException(errorMessage);
     }

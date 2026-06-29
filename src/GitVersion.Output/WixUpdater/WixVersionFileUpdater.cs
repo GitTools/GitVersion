@@ -11,12 +11,11 @@ internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : 
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly ILog log = log.NotNull();
-    private string? wixVersionFile;
     public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
     public void Execute(GitVersionVariables variables, WixVersionContext context)
     {
-        this.wixVersionFile = FileSystemHelper.Path.Combine(context.WorkingDirectory, WixVersionFileName);
+        var wixVersionFile = FileSystemHelper.Path.Combine(context.WorkingDirectory, WixVersionFileName);
         this.log.Info("Updating GitVersion_WixVersion.wxi");
 
         var doc = new XmlDocument();
@@ -26,16 +25,16 @@ internal sealed class WixVersionFileUpdater(ILog log, IFileSystem fileSystem) : 
         var root = doc.DocumentElement;
         doc.InsertBefore(xmlDecl, root);
 
-        if (this.fileSystem.File.Exists(this.wixVersionFile))
+        if (this.fileSystem.File.Exists(wixVersionFile))
         {
-            this.fileSystem.File.Delete(this.wixVersionFile);
+            this.fileSystem.File.Delete(wixVersionFile);
         }
 
         if (!this.fileSystem.Directory.Exists(context.WorkingDirectory))
         {
             this.fileSystem.Directory.CreateDirectory(context.WorkingDirectory);
         }
-        using var fs = this.fileSystem.File.OpenWrite(this.wixVersionFile);
+        using var fs = this.fileSystem.File.OpenWrite(wixVersionFile);
         doc.Save(fs);
     }
 

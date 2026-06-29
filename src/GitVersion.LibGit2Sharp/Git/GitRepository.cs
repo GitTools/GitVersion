@@ -13,7 +13,7 @@ internal sealed partial class GitRepository
     {
         get
         {
-            var lazy = this.repositoryLazy ?? throw new NullReferenceException("Repository not initialized. Call DiscoverRepository() first.");
+            var lazy = this.repositoryLazy ?? throw new InvalidOperationException("Repository not initialized. Call DiscoverRepository() first.");
             return lazy.Value;
         }
     }
@@ -69,7 +69,11 @@ internal sealed partial class GitRepository
 
     public void Dispose()
     {
-        if (this.repositoryLazy is not { IsValueCreated: true }) return;
+        if (this.repositoryLazy is not { IsValueCreated: true })
+        {
+            return;
+        }
+
         RepositoryInstance.Dispose();
         this.repositoryLazy = null;
     }

@@ -21,7 +21,10 @@ await using var serviceProvider = RegisterModules(modules);
 var app = serviceProvider.GetRequiredService<ICliApp>();
 
 var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
-if (!Console.IsInputRedirected) Console.ReadKey();
+if (!Console.IsInputRedirected)
+{
+    Console.ReadKey();
+}
 
 return result;
 

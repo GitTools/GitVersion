@@ -16,14 +16,16 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
         return this.excludedBranches.Where(predicate.IsSourceBranch);
     }
 
-    private class SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
+    private sealed class SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
     {
         private readonly IEnumerable<Regex> sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
 
         public bool IsSourceBranch(INamedReference sourceBranchCandidate)
         {
             if (Equals(sourceBranchCandidate, branch))
+            {
                 return false;
+            }
 
             var branchName = sourceBranchCandidate.Name.WithoutOrigin;
 
@@ -44,7 +46,9 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
                 {
                     var regex = branches[sourceBranch].RegularExpression;
                     if (regex != null)
+                    {
                         yield return RegexPatterns.Cache.GetOrAdd(regex);
+                    }
                 }
             }
         }

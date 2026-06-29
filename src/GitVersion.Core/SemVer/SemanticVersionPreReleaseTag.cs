@@ -88,7 +88,10 @@ public sealed class SemanticVersionPreReleaseTag :
     /// <summary>Parses a pre-release tag string, returning <see cref="Empty"/> when the input is null or empty.</summary>
     public static SemanticVersionPreReleaseTag Parse(string? preReleaseTag)
     {
-        if (preReleaseTag.IsNullOrEmpty()) return Empty;
+        if (preReleaseTag.IsNullOrEmpty())
+        {
+            return Empty;
+        }
 
         var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(preReleaseTag);
         if (!match.Success)
@@ -134,18 +137,28 @@ public sealed class SemanticVersionPreReleaseTag :
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+        {
             return formatter.Format(format, this, formatProvider);
+        }
 
         if (format.IsNullOrEmpty())
+        {
             format = "t";
+        }
 
         format = format.ToLower();
 
-        return format switch
+        if (format != "t")
         {
-            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
-            _ => throw new FormatException($"Unknown format '{format}'.")
-        };
+            throw new FormatException($"Unknown format '{format}'.");
+        }
+
+        if (!Number.HasValue)
+        {
+            return Name;
+        }
+
+        return Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}";
     }
 
     /// <summary>Returns <see langword="true"/> when this tag has a non-empty name or a number with the promotion flag set.</summary>

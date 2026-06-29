@@ -16,7 +16,11 @@ internal class TeamCity(IEnvironment environment, ILog log, IFileSystem fileSyst
     {
         var branchName = this.environment.GetEnvironmentVariable("Git_Branch");
 
-        if (!branchName.IsNullOrEmpty()) return branchName;
+        if (!branchName.IsNullOrEmpty())
+        {
+            return branchName;
+        }
+
         if (!usingDynamicRepos)
         {
             WriteBranchEnvVariableWarning();

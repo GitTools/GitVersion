@@ -41,7 +41,7 @@ internal class GitPreparer(
         this.log.Info($"DotGit directory is: {dotGitDirectory}");
         if (dotGitDirectory.IsNullOrEmpty() || projectRoot.IsNullOrEmpty())
         {
-            throw new($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
+            throw new DirectoryNotFoundException($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
         }
 
         PrepareInternal(gitVersionOptions);
@@ -59,7 +59,11 @@ internal class GitPreparer(
         else
         {
             // Normalize if we are running on build server
-            if (gitVersionOptions.Settings.NoNormalize || this.buildAgent is LocalBuild) return;
+            if (gitVersionOptions.Settings.NoNormalize || this.buildAgent is LocalBuild)
+            {
+                return;
+            }
+
             if (this.buildAgent.ShouldCleanUpRemotes())
             {
                 CleanupDuplicateOrigin();
@@ -105,7 +109,7 @@ internal class GitPreparer(
     {
         if (targetBranch.IsNullOrWhiteSpace())
         {
-            throw new("Dynamic Git repositories must have a target branch (/b)");
+            throw new InvalidOperationException("Dynamic Git repositories must have a target branch (/b)");
         }
 
         var gitDirectory = this.repositoryInfo.DynamicGitRepositoryPath;
@@ -116,7 +120,7 @@ internal class GitPreparer(
             var authentication = gitVersionOptions.AuthenticationInfo;
             if (string.IsNullOrWhiteSpace(gitDirectory))
             {
-                throw new("Dynamic Git repositories should have a path specified");
+                throw new InvalidOperationException("Dynamic Git repositories should have a path specified");
             }
             if (!this.fileSystem.Directory.Exists(gitDirectory))
             {
@@ -129,20 +133,20 @@ internal class GitPreparer(
         }
     }
 
+    private void CloneRepository(string? repositoryUrl, string? gitDirectory, AuthenticationInfo auth)
+    {
+        using (this.log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
+        {
+            this.retryAction.Execute(() => this.repository.Clone(repositoryUrl, gitDirectory, auth));
+        }
+    }
+
     private void NormalizeGitDirectory(string? targetBranch, bool isDynamicRepository)
     {
         using (this.log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
         {
             // Normalize (download branches) before using the branch
             NormalizeGitDirectory(this.options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
-        }
-    }
-
-    private void CloneRepository(string? repositoryUrl, string? gitDirectory, AuthenticationInfo auth)
-    {
-        using (this.log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
-        {
-            this.retryAction.Execute(() => this.repository.Clone(repositoryUrl, gitDirectory, auth));
         }
     }
 
@@ -171,23 +175,25 @@ internal class GitPreparer(
         var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
         // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
         // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-        if (expectedSha != this.repository.Head.Tip?.Sha)
+        if (expectedSha != this.repository.Head.Tip?.Sha
+            && (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch)))
         {
-            if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
-            {
-                var newExpectedSha = this.repository.Head.Tip?.Sha;
-                var newExpectedBranchName = this.repository.Head.Name.Canonical;
+            var newExpectedSha = this.repository.Head.Tip?.Sha;
+            var newExpectedBranchName = this.repository.Head.Name.Canonical;
 
-                this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+            this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
-                expectedSha = newExpectedSha;
-            }
+            expectedSha = newExpectedSha;
         }
 
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
 
-        if (!this.repository.IsShallow) return;
+        if (!this.repository.IsShallow)
+        {
+            return;
+        }
+
         if (this.options.Value.Settings.AllowShallow)
         {
             this.log.Info("Repository is a shallow clone. GitVersion will continue, but it is recommended to use a full clone for accurate versioning.");
@@ -202,10 +208,14 @@ internal class GitPreparer(
     {
         expectedSha.NotNull();
         if (this.repository.Head.Tip?.Sha == expectedSha)
+        {
             return;
+        }
 
         if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") == "1")
+        {
             return;
+        }
 
         // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
         throw new BugException($"""
@@ -313,7 +323,9 @@ internal class GitPreparer(
             var remote = remotes.Single();
             this.log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
+            {
                 return remote;
+            }
 
             var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
             this.log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
@@ -341,7 +353,10 @@ internal class GitPreparer(
             var localReferenceName = ReferenceName.FromBranchName(branchName);
 
             // We do not want to touch our current branch
-            if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
+            if (this.repository.Head.Name.EquivalentTo(branchName))
+            {
+                continue;
+            }
 
             var localRef = this.repository.References[localReferenceName];
             if (localRef != null)
@@ -375,15 +390,26 @@ internal class GitPreparer(
     {
         remote.NotNull();
 
-        if (currentBranch.IsNullOrEmpty()) return;
+        if (currentBranch.IsNullOrEmpty())
+        {
+            return;
+        }
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
-            ? ReferenceName.LocalBranchPrefix + currentBranch
-            : isLocalBranch
-                ? currentBranch
-                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        string localCanonicalName;
+        if (!currentBranch.StartsWith(referencePrefix))
+        {
+            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch;
+        }
+        else if (isLocalBranch)
+        {
+            localCanonicalName = currentBranch;
+        }
+        else
+        {
+            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        }
 
         var repoTip = this.repository.Head.Tip;
 

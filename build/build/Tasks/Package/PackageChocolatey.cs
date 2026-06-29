@@ -24,16 +24,12 @@ public class PackageChocolatey : FrostingTask<BuildContext>
         var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinPortable).FullPath;
 
         var portableSettings = GetChocolateyPackSettings(context, "GitVersion.Portable");
-        portableSettings.Files = context.GetFiles(artifactPath + "/**/*.*")
-            .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-            .ToArray();
+        portableSettings.Files = [.. context.GetFiles(artifactPath + "/**/*.*").Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })];
 
         context.ChocolateyPack(portableSettings);
 
         var metaPackageSettings = GetChocolateyPackSettings(context, "GitVersion");
-        metaPackageSettings.Files = context.GetFiles(artifactPath + "/**/*.txt")
-            .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-            .ToArray();
+        metaPackageSettings.Files = [.. context.GetFiles(artifactPath + "/**/*.txt").Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })];
 
         metaPackageSettings.Dependencies =
         [

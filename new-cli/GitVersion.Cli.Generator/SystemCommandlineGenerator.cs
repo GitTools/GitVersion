@@ -8,7 +8,9 @@ public class SystemCommandlineGenerator : CommandBaseGenerator
         foreach (var commandInfo in commandInfos)
         {
             if (commandInfo == null)
+            {
                 continue;
+            }
 
             var commandHandlerTemplate = Template.Parse(SystemCommandlineContent.CommandImplContent);
 

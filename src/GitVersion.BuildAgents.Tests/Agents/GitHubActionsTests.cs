@@ -33,7 +33,9 @@ public class GitHubActionsTests : TestBase
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
         if (this.githubSetEnvironmentTempFilePath == null || !this.fileSystem.File.Exists(this.githubSetEnvironmentTempFilePath))
+        {
             return;
+        }
 
         this.fileSystem.File.Delete(this.githubSetEnvironmentTempFilePath);
         this.githubSetEnvironmentTempFilePath = null;

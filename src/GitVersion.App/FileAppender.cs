@@ -18,9 +18,12 @@ internal class FileAppender : ILogAppender
         var logFile = this.fileSystem.FileInfo.New(FileSystemHelper.Path.GetFullPath(filePath));
 
         logFile.Directory?.Create();
-        if (logFile.Exists) return;
+        if (logFile.Exists)
+        {
+            return;
+        }
 
-        using (logFile.CreateText()) { }
+        logFile.CreateText().Dispose();
     }
 
     public void WriteTo(LogLevel level, string message)
@@ -31,7 +34,7 @@ internal class FileAppender : ILogAppender
         }
         catch
         {
-            //
+            // Logging failures must not interrupt the main GitVersion command.
         }
     }
 

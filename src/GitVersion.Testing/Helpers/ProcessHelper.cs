@@ -127,23 +127,33 @@ public static partial class ProcessHelper
         {
             // ReSharper disable once AccessToDisposedClosure
             if (e.Data == null)
+            {
                 mreOut.Set();
+            }
             else
+            {
                 output(e.Data);
+            }
         };
         process.BeginOutputReadLine();
         process.ErrorDataReceived += (_, e) =>
         {
             // ReSharper disable once AccessToDisposedClosure
             if (e.Data == null)
+            {
                 mreErr.Set();
+            }
             else
+            {
                 errorOutput(e.Data);
+            }
         };
         process.BeginErrorReadLine();
 
         while (input?.ReadLine() is { } line)
+        {
             process.StandardInput.WriteLine(line);
+        }
 
         process.StandardInput.Close();
         process.WaitForExit();

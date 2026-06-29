@@ -19,12 +19,18 @@ internal sealed class CommitOnNonTrunk : IIncrementer
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
         if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        {
             context.Label = null;
+        }
 
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
 
-        if (commit.Successor is not null) yield break;
+        if (commit.Successor is not null)
+        {
+            yield break;
+        }
+
         yield return new BaseVersionOperator
         {
             Source = GetType().Name,

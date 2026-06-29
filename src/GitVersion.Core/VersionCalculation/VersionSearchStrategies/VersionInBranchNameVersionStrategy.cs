@@ -19,7 +19,9 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
     public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.VersionInBranchName))
+        {
             yield break;
+        }
 
         if (TryGetBaseVersion(configuration, out var baseVersion))
         {
@@ -32,13 +34,19 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
         baseVersion = null;
 
         if (!configuration.Value.IsReleaseBranch)
-            return false;
-
-        foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            if (!branch.Name.TryGetSemanticVersion(configuration.Value, out var result)) continue;
+            return false;
+        }
+
+        foreach (var branchName in new[] { Context.CurrentBranch, configuration.Branch }.Select(branch => branch.Name))
+        {
+            if (!branchName.TryGetSemanticVersion(configuration.Value, out var result))
+            {
+                continue;
+            }
+
             string? branchNameOverride = null;
-            if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+            if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branchName)
                                                  || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
             {
                 branchNameOverride = result.Name;

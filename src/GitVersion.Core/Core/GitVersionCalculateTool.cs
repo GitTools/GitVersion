@@ -39,7 +39,10 @@ internal class GitVersionCalculateTool(
             ? this.gitVersionCacheProvider.LoadVersionVariablesFromDiskCache()
             : null;
 
-        if (versionVariables != null) return versionVariables;
+        if (versionVariables != null)
+        {
+            return versionVariables;
+        }
 
         var semanticVersion = this.nextVersionCalculator.FindVersion();
 
@@ -48,7 +51,11 @@ internal class GitVersionCalculateTool(
         versionVariables = this.variableProvider.GetVariablesFor(
             semanticVersion, Context.Configuration, effectiveConfiguration.PreReleaseWeight);
 
-        if (gitVersionOptions.Settings.NoCache) return versionVariables;
+        if (gitVersionOptions.Settings.NoCache)
+        {
+            return versionVariables;
+        }
+
         try
         {
             this.gitVersionCacheProvider.WriteVariablesToDiskCache(versionVariables);

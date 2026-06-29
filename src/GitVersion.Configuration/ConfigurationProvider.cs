@@ -20,7 +20,7 @@ internal class ConfigurationProvider(
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
-    public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
+    public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
@@ -53,9 +53,10 @@ internal class ConfigurationProvider(
             : ConfigurationBuilder.New;
 
         var overrideConfigurationFromWorkflow = WorkflowManager.GetOverrideConfiguration(workflow);
-        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration })
+        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration }
+                     .OfType<IReadOnlyDictionary<object, object?>>())
         {
-            if (item is not null) configurationBuilder.AddOverride(item);
+            configurationBuilder.AddOverride(item);
         }
 
         try

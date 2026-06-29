@@ -28,6 +28,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         return mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
     }
 
+    public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
+
     public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId, IIgnoreConfiguration ignore)
     {
         currentBranch.NotNull();
@@ -70,7 +72,9 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         // Make sure the desired branch has been specified
         if (targetBranchName.IsNullOrEmpty())
+        {
             return desiredBranch;
+        }
 
         // There are some edge cases where HEAD is not pointing to the desired branch.
         // Therefore, it's important to verify if 'currentBranch' is indeed the desired branch.
@@ -78,7 +82,9 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
         if (desiredBranch.Equals(targetBranch))
+        {
             return desiredBranch;
+        }
 
         // In the case where HEAD is not the desired branch, try to find the branch with matching name
         desiredBranch = this.repository.Branches.Where(b => b.Name.EquivalentTo(targetBranchName)).MinBy(b => b.IsRemote);
@@ -127,13 +133,14 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             }
         }
 
-        foreach (var item in commitBranches.Skip(1).Reverse())
+        foreach (var item in commitBranches.Skip(1).Reverse().Where(item => !ignore.Contains(item)))
         {
-            if (ignore.Contains(item)) continue;
-
             foreach (var commitBranch in commitBranches)
             {
-                if (item.Commit.Equals(commitBranch.Commit)) break;
+                if (item.Commit.Equals(commitBranch.Commit))
+                {
+                    break;
+                }
 
                 foreach (var commit in commitBranch.Branch.Commits.Where(element => element.When >= item.Commit.When))
                 {
@@ -150,17 +157,27 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             var referenceMatchFound = false;
             var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
 
-            foreach (var item in branchGrouping)
+            foreach (var item in branchGrouping.Where(item => referenceNames.Contains(item.Name)))
             {
-                if (!referenceNames.Contains(item.Name)) continue;
-                if (returnedBranches.Add(item)) yield return item;
+                if (returnedBranches.Add(item))
+                {
+                    yield return item;
+                }
+
                 referenceMatchFound = true;
             }
 
-            if (referenceMatchFound) continue;
+            if (referenceMatchFound)
+            {
+                continue;
+            }
+
             foreach (var item in branchGrouping)
             {
-                if (returnedBranches.Add(item)) yield return item;
+                if (returnedBranches.Add(item))
+                {
+                    yield return item;
+                }
             }
         }
     }
@@ -188,7 +205,9 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                     .ToList();
 
             if (possibleBranches.Count <= 1)
+            {
                 return possibleBranches.SingleOrDefault();
+            }
 
             var first = possibleBranches[0];
             this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{FileSystemHelper.Path.NewLine}" +
@@ -259,8 +278,6 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
     private IEnumerable<ICommit> FilterCommits(CommitFilter filter) => this.repository.Commits.QueryBy(filter);
 
-    public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
-
     private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
     private List<BranchCommit> FindCommitBranchesBranchedFrom(
@@ -268,7 +285,11 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     {
         using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {
-            if (branch.Tip != null) return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch)];
+            if (branch.Tip != null)
+            {
+                return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.log).FindMergeCommitsFor(branch)];
+            }
+
             this.log.Warning($"{branch} has no tip.");
             return [];
         }

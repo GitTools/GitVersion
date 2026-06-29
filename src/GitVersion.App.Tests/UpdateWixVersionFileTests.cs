@@ -78,7 +78,9 @@ internal class UpdateWixVersionFileTests
         while (reader.Read())
         {
             if (reader.Name != "define")
+            {
                 continue;
+            }
 
             var component = reader.Value.Split('=');
             gitVersionVarsInWix[component[0]] = component[1].TrimStart('"').TrimEnd('"');

@@ -28,13 +28,21 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -85,7 +93,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -102,7 +114,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -153,7 +169,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -195,7 +215,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -249,7 +273,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -279,7 +307,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -333,7 +365,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -359,7 +395,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -376,7 +416,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -407,7 +451,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -440,7 +488,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -457,7 +509,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -488,7 +544,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -511,7 +571,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -585,7 +649,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-7", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -608,7 +676,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -667,7 +739,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-5", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("E");
 
         // ✅ succeeds as expected
@@ -690,7 +766,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -730,7 +810,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-4", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -753,7 +837,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("hotfix/bar");
 
         // ✅ succeeds as expected
@@ -793,7 +881,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-4", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -816,7 +908,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -872,7 +968,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-5", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -895,7 +995,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -946,7 +1050,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-4", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("E");
 
         // ✅ succeeds as expected
@@ -969,7 +1077,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -1055,7 +1167,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-8", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -1078,7 +1194,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -1159,7 +1279,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-7", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -1182,7 +1306,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("develop");
 
         // ✅ succeeds as expected
@@ -1268,7 +1396,11 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-8", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected

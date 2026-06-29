@@ -62,7 +62,9 @@ public static class LogExtensions
         private void Write(Verbosity verbosity, LogLevel level, LogAction? logAction)
         {
             if (logAction == null)
+            {
                 return;
+            }
 
             if (verbosity > log.Verbosity)
             {
@@ -78,7 +80,9 @@ public static class LogExtensions
         private void Write(LogLevel level, LogAction? logAction)
         {
             if (logAction == null)
+            {
                 return;
+            }
 
             var verbosity = GetVerbosityForLevel(level);
             if (verbosity > log.Verbosity)

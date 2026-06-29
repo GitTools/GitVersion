@@ -30,22 +30,34 @@ public record EffectiveConfiguration
         }
 
         if (!branchConfiguration.DeploymentMode.HasValue)
-            throw new("Configuration value for 'Deployment mode' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'Deployment mode' has no value. (this should not happen, please report an issue)");
+        }
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
-            throw new("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+        }
 
         if (!configuration.AssemblyFileVersioningScheme.HasValue)
-            throw new("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
+        }
 
         if (!branchConfiguration.CommitMessageIncrementing.HasValue)
-            throw new("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
+        }
 
         if (!configuration.TagPreReleaseWeight.HasValue)
-            throw new("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
+        }
 
         if (configuration.CommitDateFormat.IsNullOrEmpty())
-            throw new("Configuration value for 'CommitDateFormat' has no value. (this should not happen, please report an issue)");
+        {
+            throw new InvalidOperationException("Configuration value for 'CommitDateFormat' has no value. (this should not happen, please report an issue)");
+        }
 
         AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
         AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;

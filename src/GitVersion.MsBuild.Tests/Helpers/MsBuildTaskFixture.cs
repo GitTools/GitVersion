@@ -70,7 +70,11 @@ public class MsBuildTaskFixture(RepositoryFixtureBase fixture)
 
     private static void SetEnvironmentVariables(KeyValuePair<string, string?>[]? envs)
     {
-        if (envs == null) return;
+        if (envs == null)
+        {
+            return;
+        }
+
         foreach (var (key, value) in envs)
         {
             SysEnv.SetEnvironmentVariable(key, value);

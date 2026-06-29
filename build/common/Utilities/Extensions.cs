@@ -80,12 +80,22 @@ public static class Extensions
     /// </summary>
     public static string EscapeProcessArgument(this string literalValue, bool alwaysQuote = false)
     {
-        if (string.IsNullOrEmpty(literalValue)) return "\"\"";
+        if (string.IsNullOrEmpty(literalValue))
+        {
+            return "\"\"";
+        }
 
         if (literalValue.AsSpan().IndexOfAny(CharsRequiringQuoting) == -1) // Happy path
         {
-            if (!alwaysQuote) return literalValue;
-            if (literalValue[^1] != '\\') return $"\"{literalValue}\"";
+            if (!alwaysQuote)
+            {
+                return literalValue;
+            }
+
+            if (literalValue[^1] != '\\')
+            {
+                return $"\"{literalValue}\"";
+            }
         }
 
         return BuildEscapedArgument(literalValue);
@@ -99,16 +109,23 @@ public static class Extensions
         while (true)
         {
             var relativeIndex = s.AsSpan(nextPosition).IndexOfAny(CharsRequiringEscaping);
-            if (relativeIndex == -1) break;
+            if (relativeIndex == -1)
+            {
+                break;
+            }
 
             var nextEscapeChar = nextPosition + relativeIndex;
             sb.Append(s, nextPosition, relativeIndex);
             nextPosition = nextEscapeChar + 1;
 
             if (s[nextEscapeChar] == '"')
+            {
                 sb.Append("\\\"");
+            }
             else
+            {
                 nextPosition = AppendEscapedBackslashes(sb, s, nextPosition);
+            }
         }
 
         return sb.Append(s, nextPosition, s.Length - nextPosition).Append('"').ToString();
@@ -123,7 +140,9 @@ public static class Extensions
             nextPosition++;
         }
         if (nextPosition == s.Length || s[nextPosition] == '"')
+        {
             numBackslashes <<= 1;
+        }
 
         sb.Append('\\', numBackslashes);
         return nextPosition;

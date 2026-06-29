@@ -12,6 +12,8 @@ do
     --repoPath)
         repoPath="$2"
         ;;
+    *)
+        ;;
     esac
     shift
 done

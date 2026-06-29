@@ -38,7 +38,11 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
         Run(settings, GetArguments(settings), new ProcessSettings { RedirectStandardOutput = true }, process =>
         {
             output = string.Join("\n", process.GetStandardOutput());
-            if (this._log.Verbosity >= Verbosity.Diagnostic) return;
+            if (this._log.Verbosity >= Verbosity.Diagnostic)
+            {
+                return;
+            }
+
             var regex = ParseErrorRegex();
             var errors = regex.Matches(output)
                 .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
@@ -49,7 +53,9 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
         });
 
         if (!settings.OutputTypes.Contains(GitVersionOutput.Json))
+        {
             return new GitVersion();
+        }
 
         var jsonStartIndex = output.IndexOf('{');
         var jsonEndIndex = output.IndexOf('}');

@@ -21,7 +21,9 @@ public readonly struct BranchCommit(ICommit commit, IBranch branch) : IEquatable
     public bool Equals(BranchCommit? other)
     {
         if (other is null)
+        {
             return false;
+        }
 
         return Equals(Branch, other.Value.Branch) && Equals(Commit, other.Value.Commit);
     }

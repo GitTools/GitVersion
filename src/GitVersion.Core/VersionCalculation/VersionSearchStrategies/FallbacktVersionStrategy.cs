@@ -30,7 +30,9 @@ internal sealed class FallbackVersionStrategy(
         configuration.NotNull();
 
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.Fallback))
+        {
             yield break;
+        }
 
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
 

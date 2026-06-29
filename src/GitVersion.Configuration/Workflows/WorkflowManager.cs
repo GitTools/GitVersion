@@ -16,7 +16,10 @@ internal static class WorkflowManager
 
     public static IReadOnlyDictionary<object, object?>? GetOverrideConfiguration(string? workflow)
     {
-        if (string.IsNullOrEmpty(workflow)) return null;
+        if (string.IsNullOrEmpty(workflow))
+        {
+            return null;
+        }
 
         var resourceName = GetResourceName(workflow);
         var embeddedResource = resourceName.ReadAsStringFromEmbeddedResource(typeof(WorkflowManager).Assembly);

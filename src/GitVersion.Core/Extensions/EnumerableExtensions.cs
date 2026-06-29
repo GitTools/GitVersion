@@ -15,7 +15,10 @@ public static class EnumerableExtensions
 
         using var e = source.GetEnumerator();
         if (!e.MoveNext())
+        {
             return default;
+        }
+
         var current = e.Current;
         return !e.MoveNext() ? current : default;
     }

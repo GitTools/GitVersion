@@ -115,7 +115,9 @@ public class OtherScenarios : TestBase
             fileSystem.File.WriteAllText(repoFile, $"Hello world / testfile {i}");
 
             if (stageFile)
+            {
                 Commands.Stage(fixture.Repository, repoFile);
+            }
         }
 
         var version = fixture.GetVersion();
@@ -1077,7 +1079,11 @@ public class OtherScenarios : TestBase
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
-        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        if (!tag.IsNullOrEmpty())
+        {
+            fixture.ApplyTag(tag);
+        }
+
         fixture.BranchTo("develop");
 
         fixture.AssertFullSemver(version, configuration);
@@ -1106,7 +1112,11 @@ public class OtherScenarios : TestBase
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
-        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        if (!tag.IsNullOrEmpty())
+        {
+            fixture.ApplyTag(tag);
+        }
+
         fixture.BranchTo("develop");
 
         fixture.AssertFullSemver(version, configuration);
@@ -1135,7 +1145,11 @@ public class OtherScenarios : TestBase
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("A");
-        if (!tag.IsNullOrEmpty()) fixture.ApplyTag(tag);
+        if (!tag.IsNullOrEmpty())
+        {
+            fixture.ApplyTag(tag);
+        }
+
         fixture.BranchTo("develop");
 
         fixture.AssertFullSemver(version, configuration);
@@ -1276,7 +1290,11 @@ public class OtherScenarios : TestBase
 
         fixture.Checkout("main");
         fixture.MakeACommit("C");
-        if (applyTag) fixture.ApplyTag("1.0.1");
+        if (applyTag)
+        {
+            fixture.ApplyTag("1.0.1");
+        }
+
         fixture.Checkout("develop");
         fixture.MergeNoFF("main");
 
@@ -1302,7 +1320,11 @@ public class OtherScenarios : TestBase
 
         fixture.Checkout("main");
         fixture.MakeACommit("C");
-        if (applyTag) fixture.ApplyTag("2.0.0");
+        if (applyTag)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.Checkout("develop");
         fixture.MergeNoFF("main");
 

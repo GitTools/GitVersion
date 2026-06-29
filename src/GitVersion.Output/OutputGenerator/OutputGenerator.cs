@@ -62,11 +62,17 @@ internal sealed class OutputGenerator(
             var retryOperation = new RetryAction<IOException>();
             retryOperation.Execute(() =>
             {
-                if (context.OutputFile != null) this.fileSystem.File.WriteAllText(context.OutputFile, json);
+                if (context.OutputFile != null)
+                {
+                    this.fileSystem.File.WriteAllText(context.OutputFile, json);
+                }
             });
         }
 
-        if (!gitVersionOptions.Output.Contains(OutputType.Json)) return;
+        if (!gitVersionOptions.Output.Contains(OutputType.Json))
+        {
+            return;
+        }
 
         if (gitVersionOptions.ShowVariable is null && gitVersionOptions.Format is null)
         {

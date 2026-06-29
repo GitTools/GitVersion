@@ -7,6 +7,8 @@ namespace GitVersion.Git;
 
 public class GitRepositoryInfo : IGitRepositoryInfo
 {
+    private static readonly char[] DirectorySeparators = ['/', '\\'];
+
     private readonly IFileSystem fileSystem;
     private readonly GitVersionOptions gitVersionOptions;
 
@@ -34,13 +36,16 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     private string? GetDynamicGitRepositoryPath()
     {
         var repositoryInfo = this.gitVersionOptions.RepositoryInfo;
-        if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
+        if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+        {
+            return null;
+        }
 
         var targetUrl = repositoryInfo.TargetUrl;
         var clonePath = repositoryInfo.ClonePath;
 
         var userTemp = clonePath ?? FileSystemHelper.Path.GetTempPath();
-        var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
+        var repositoryName = targetUrl.Split(DirectorySeparators)[^1].Replace(".git", string.Empty);
         var possiblePath = FileSystemHelper.Path.Combine(userTemp, repositoryName);
 
         // Verify that the existing directory is ok for us to use
@@ -68,7 +73,9 @@ public class GitRepositoryInfo : IGitRepositoryInfo
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
         if (gitDirectory.IsNullOrEmpty())
+        {
             throw new DirectoryNotFoundException("Cannot find the .git directory");
+        }
 
         var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
         return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
@@ -86,7 +93,9 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         var gitDirectory = Repository.Discover(this.gitVersionOptions.WorkingDirectory);
 
         if (gitDirectory.IsNullOrEmpty())
+        {
             throw new DirectoryNotFoundException("Cannot find the .git directory");
+        }
 
         using var repo = new Repository(gitDirectory);
         return repo.Info.WorkingDirectory;

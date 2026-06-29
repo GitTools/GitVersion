@@ -30,7 +30,9 @@ internal class ValueFormatter : InvariantFormatter, IValueFormatterCombiner
         foreach (var formatter in this.formatters.OrderBy(f => f.Priority))
         {
             if (formatter.TryFormat(value, format, out result))
+            {
                 return true;
+            }
         }
 
         return false;
