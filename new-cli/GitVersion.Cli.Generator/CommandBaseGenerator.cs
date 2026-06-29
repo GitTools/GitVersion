@@ -51,7 +51,7 @@ public abstract class CommandBaseGenerator : IIncrementalGenerator
         description.NotNull();
 
         ITypeSymbol? parentCommandType = null;
-        if (commandAttribute.AttributeClass?.TypeArguments.Any() is true)
+        if (commandAttribute.AttributeClass?.TypeArguments is { Length: > 0 })
         {
             parentCommandType = commandAttribute.AttributeClass.TypeArguments.Single();
         }
