@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 namespace GitVersion.Git;
 
 /// <summary>Represents a Git reference name in both its canonical (<c>refs/heads/main</c>) and friendly (<c>main</c>) forms.</summary>
-public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
+public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
 {
     private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
     private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);

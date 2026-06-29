@@ -4,7 +4,7 @@ using GitVersion.Extensions;
 namespace GitVersion.VersionCalculation;
 
 /// <summary>Represents the next calculated version together with its base version and branch configuration.</summary>
-public class NextVersion(
+public sealed class NextVersion(
     SemanticVersion incrementedVersion,
     IBaseVersion baseVersion,
     EffectiveBranchConfiguration configuration)

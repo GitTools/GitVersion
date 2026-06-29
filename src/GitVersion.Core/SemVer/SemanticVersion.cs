@@ -5,7 +5,7 @@ using GitVersion.Extensions;
 namespace GitVersion;
 
 /// <summary>Represents a semantic version with optional pre-release tag and build metadata.</summary>
-public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
+public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
 {
     /// <summary>A zero-valued semantic version with no pre-release tag or build metadata.</summary>
     public static readonly SemanticVersion Empty = new();

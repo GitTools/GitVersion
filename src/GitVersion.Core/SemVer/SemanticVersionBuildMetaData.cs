@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 namespace GitVersion;
 
 /// <summary>Holds the build metadata attached to a semantic version (commits-since-tag, branch, SHA, commit date, etc.).</summary>
-public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
+public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
 {
     /// <summary>An empty build metadata instance with no fields set.</summary>
     public static readonly SemanticVersionBuildMetaData Empty = new();
