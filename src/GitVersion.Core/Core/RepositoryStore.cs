@@ -142,12 +142,9 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                     break;
                 }
 
-                foreach (var commit in commitBranch.Branch.Commits.Where(element => element.When >= item.Commit.When))
+                if (commitBranch.Branch.Commits.Any(element => element.When >= item.Commit.When && element.Equals(item.Commit)))
                 {
-                    if (commit.Equals(item.Commit))
-                    {
-                        commitBranches.Remove(item);
-                    }
+                    commitBranches.Remove(item);
                 }
             }
         }
@@ -172,12 +169,9 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                 continue;
             }
 
-            foreach (var item in branchGrouping)
+            foreach (var item in branchGrouping.Where(returnedBranches.Add))
             {
-                if (returnedBranches.Add(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
     }
