@@ -99,20 +99,17 @@ internal static class StringFormatWithExtension
                     ? EvaluateEnvVar(token.Name, environment)
                     : memberEvaluator(token.Name);
 
-                if (value is not null && !string.IsNullOrEmpty(token.Format))
+                if (value is null)
                 {
-                    if (ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
-                    {
-                        return formatted;
-                    }
-
-                    return value;
+                    continue;
                 }
 
-                if (value is not null)
+                if (!string.IsNullOrEmpty(token.Format) && ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
                 {
-                    return value;
+                    return formatted;
                 }
+
+                return value;
             }
             catch (Exception e)
             {

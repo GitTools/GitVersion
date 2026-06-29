@@ -317,9 +317,9 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject_WithFallback_Quoted()
     {
         var propertyObject = new { Property = (object?)null };
-        const string target = "{Property ?? \"fallback\"}";
+        const string target = "{Property ?? \"literal\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.That(actual, Is.EqualTo("fallback"));
+        Assert.That(actual, Is.EqualTo("literal"));
     }
 
     [Test]
