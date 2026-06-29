@@ -33,10 +33,8 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         var assemblyFileVersion = variables.AssemblySemFileVer;
         var packageVersion = variables.SemVer;
 
-        foreach (var projectFile in projectFilesToUpdate)
+        foreach (var localProjectFile in projectFilesToUpdate.Select(projectFile => projectFile.FullName))
         {
-            var localProjectFile = projectFile.FullName;
-
             var originalFileContents = fileSystem.File.ReadAllText(localProjectFile);
             XElement fileXml;
             try
