@@ -129,10 +129,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             }
         }
 
-        foreach (var item in commitBranches.Skip(1).Reverse())
+        foreach (var item in commitBranches.Skip(1).Reverse().Where(item => !ignore.Contains(item)))
         {
-            if (ignore.Contains(item)) continue;
-
             foreach (var commitBranch in commitBranches)
             {
                 if (item.Commit.Equals(commitBranch.Commit)) break;
@@ -152,9 +150,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             var referenceMatchFound = false;
             var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
 
-            foreach (var item in branchGrouping)
+            foreach (var item in branchGrouping.Where(item => referenceNames.Contains(item.Name)))
             {
-                if (!referenceNames.Contains(item.Name)) continue;
                 if (returnedBranches.Add(item)) yield return item;
                 referenceMatchFound = true;
             }

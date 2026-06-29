@@ -34,11 +34,11 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
         if (!configuration.Value.IsReleaseBranch)
             return false;
 
-        foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
+        foreach (var branchName in new[] { Context.CurrentBranch, configuration.Branch }.Select(branch => branch.Name))
         {
-            if (!branch.Name.TryGetSemanticVersion(configuration.Value, out var result)) continue;
+            if (!branchName.TryGetSemanticVersion(configuration.Value, out var result)) continue;
             string? branchNameOverride = null;
-            if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+            if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branchName)
                                                  || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
             {
                 branchNameOverride = result.Name;

@@ -107,12 +107,9 @@ internal sealed class TaggedSemanticVersionService(
         {
             if (grouping.Key.When > notOlderThan) continue;
 
-            foreach (var semanticVersion in grouping)
+            foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                {
-                    yield return (grouping.Key, semanticVersion);
-                }
+                yield return (grouping.Key, semanticVersion);
             }
         }
     }
@@ -156,12 +153,9 @@ internal sealed class TaggedSemanticVersionService(
         {
             if (grouping.Key.When > notOlderThan) continue;
 
-            foreach (var semanticVersion in grouping)
+            foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
             {
-                if (semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
-                {
-                    yield return new(grouping.Key, semanticVersion);
-                }
+                yield return new(grouping.Key, semanticVersion);
             }
         }
     }

@@ -100,6 +100,18 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     /// <summary>Returns <see langword="true"/> when <paramref name="left"/> and <paramref name="right"/> have different canonical names.</summary>
     public static bool operator !=(ReferenceName? left, ReferenceName? right) => !(left == right);
 
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts before <paramref name="right"/> by canonical name.</summary>
+    public static bool operator <(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) < 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts before or equal to <paramref name="right"/> by canonical name.</summary>
+    public static bool operator <=(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) <= 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts after <paramref name="right"/> by canonical name.</summary>
+    public static bool operator >(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) > 0;
+
+    /// <summary>Returns <see langword="true"/> when <paramref name="left"/> sorts after or equal to <paramref name="right"/> by canonical name.</summary>
+    public static bool operator >=(ReferenceName? left, ReferenceName? right) => Comparer<ReferenceName>.Default.Compare(left, right) >= 0;
+
     /// <summary>Returns <see langword="true"/> when <paramref name="name"/> matches any of the canonical, friendly, or origin-stripped forms of this reference.</summary>
     public bool EquivalentTo(string? name) =>
         Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
