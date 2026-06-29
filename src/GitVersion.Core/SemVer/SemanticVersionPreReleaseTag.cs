@@ -141,11 +141,13 @@ public sealed class SemanticVersionPreReleaseTag :
 
         format = format.ToLower();
 
-        return format switch
-        {
-            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
-            _ => throw new FormatException($"Unknown format '{format}'.")
-        };
+        if (format != "t")
+            throw new FormatException($"Unknown format '{format}'.");
+
+        if (!Number.HasValue)
+            return Name;
+
+        return Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}";
     }
 
     /// <summary>Returns <see langword="true"/> when this tag has a non-empty name or a number with the promotion flag set.</summary>

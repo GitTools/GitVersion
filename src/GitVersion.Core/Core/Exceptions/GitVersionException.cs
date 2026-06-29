@@ -1,7 +1,6 @@
 namespace GitVersion;
 
 /// <summary>Base exception type for errors raised by GitVersion during normal operation.</summary>
-[Serializable]
 public class GitVersionException : Exception
 {
     /// <summary>Initializes a new instance with no message.</summary>

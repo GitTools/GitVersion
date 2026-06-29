@@ -1,7 +1,6 @@
 namespace GitVersion;
 
 /// <summary>Raised to report a recoverable warning condition that should be presented to the user rather than treated as a hard error.</summary>
-[Serializable]
 public class WarningException : Exception
 {
     /// <summary>Initializes a new instance with the given warning message.</summary>

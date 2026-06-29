@@ -168,9 +168,10 @@ internal sealed class MainlineVersionStrategy(
                     branch = this.repositoryStore.FindBranch(branchName);
 
                     var branchPointer = branch;
+                    IBranch[] excludeBranches = excludeBranch is null ? [] : [excludeBranch];
                     commitsWasBranchedFromLazy = new Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Configuration)>>>
                         (() => branchPointer is null ? []
-                            : GetCommitsWasBranchedFrom(branchPointer, excludeBranch is null ? [] : [excludeBranch])
+                            : GetCommitsWasBranchedFrom(branchPointer, excludeBranches)
                     );
 
                     var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;

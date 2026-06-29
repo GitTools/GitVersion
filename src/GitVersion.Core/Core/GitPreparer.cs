@@ -171,17 +171,15 @@ internal class GitPreparer(
         var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
         // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
         // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-        if (expectedSha != this.repository.Head.Tip?.Sha)
+        if (expectedSha != this.repository.Head.Tip?.Sha
+            && (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch)))
         {
-            if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
-            {
-                var newExpectedSha = this.repository.Head.Tip?.Sha;
-                var newExpectedBranchName = this.repository.Head.Name.Canonical;
+            var newExpectedSha = this.repository.Head.Tip?.Sha;
+            var newExpectedBranchName = this.repository.Head.Name.Canonical;
 
-                this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+            this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
-                expectedSha = newExpectedSha;
-            }
+            expectedSha = newExpectedSha;
         }
 
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
@@ -379,11 +377,13 @@ internal class GitPreparer(
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
-            ? ReferenceName.LocalBranchPrefix + currentBranch
-            : isLocalBranch
-                ? currentBranch
-                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        string localCanonicalName;
+        if (!currentBranch.StartsWith(referencePrefix))
+            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch;
+        else if (isLocalBranch)
+            localCanonicalName = currentBranch;
+        else
+            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 
