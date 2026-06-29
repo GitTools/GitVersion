@@ -26,20 +26,20 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
             var message = ex.Message;
             if (message.Contains("401"))
             {
-                throw new Exception("Unauthorized: Incorrect username/password", ex);
+                throw new InvalidOperationException("Unauthorized: Incorrect username/password", ex);
             }
 
             if (message.Contains("403"))
             {
-                throw new Exception("Forbidden: Possibly Incorrect username/password", ex);
+                throw new InvalidOperationException("Forbidden: Possibly Incorrect username/password", ex);
             }
 
             if (message.Contains("404"))
             {
-                throw new Exception("Not found: The repository was not found", ex);
+                throw new InvalidOperationException("Not found: The repository was not found", ex);
             }
 
-            throw new Exception("There was an unknown problem with the Git repository you provided", ex);
+            throw new InvalidOperationException("There was an unknown problem with the Git repository you provided", ex);
         }
     }
     public void Checkout(string commitOrBranchSpec) =>

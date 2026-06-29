@@ -40,7 +40,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         var clonePath = repositoryInfo.ClonePath;
 
         var userTemp = clonePath ?? FileSystemHelper.Path.GetTempPath();
-        var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
+        var repositoryName = targetUrl.Split('/', '\\')[^1].Replace(".git", string.Empty);
         var possiblePath = FileSystemHelper.Path.Combine(userTemp, repositoryName);
 
         // Verify that the existing directory is ok for us to use
