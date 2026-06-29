@@ -1236,15 +1236,5 @@ public class DocumentationSamplesForGitFlow
 
         fixture.Checkout("main");
         fixture.AssertFullSemver("2.0.0-1", configuration);
-        //fixture.MergeNoFF("support/1.x");
-        //fixture.AssertFullSemver("2.0.1-6", configuration);
-
-        //fixture.Checkout("support/1.x");
-        //fixture.MakeACommit();
-        //fixture.AssertFullSemver("1.2.4-1", configuration);
-
-        //fixture.Checkout("main");
-        //fixture.MergeNoFF("support/1.x");
-        //fixture.AssertFullSemver("2.0.2-2", configuration);
     }
 }
