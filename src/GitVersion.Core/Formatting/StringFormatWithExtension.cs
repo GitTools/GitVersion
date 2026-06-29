@@ -84,6 +84,8 @@ internal static class StringFormatWithExtension
         var tokenizer = new LabelTokenizer(input);
         var tokens = tokenizer.ParseTokens().ToArray();
 
+        Exception? lastException = null;
+
         foreach (var token in tokens)
         {
             if (token.Type == LabelTokenType.Literal)
@@ -91,31 +93,36 @@ internal static class StringFormatWithExtension
                 return token.Name;
             }
 
-            var value = token.Type == LabelTokenType.Environment
-                ? environment.GetEnvironmentVariable(InputSanitizer.SanitizeEnvVarName(token.Name))
-                : memberEvaluator(token.Name);
-
-            if (value is not null && !string.IsNullOrEmpty(token.Format))
+            try
             {
-                if (ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
+                var value = token.Type == LabelTokenType.Environment
+                    ? EvaluateEnvVar(token.Name, environment)
+                    : memberEvaluator(token.Name);
+
+                if (value is not null && !string.IsNullOrEmpty(token.Format))
                 {
-                    return formatted;
+                    if (ValueFormatter.Default.TryFormat(value, InputSanitizer.SanitizeFormat(token.Format), out var formatted))
+                    {
+                        return formatted;
+                    }
+
+                    return value;
                 }
 
-                return value;
+                if (value is not null)
+                {
+                    return value;
+                }
             }
-
-            if (value is not null)
+            catch (Exception e)
             {
-                return value;
+                lastException = e;
             }
         }
 
-        var lastToken = tokens.LastOrDefault();
-
-        if (tokens.Length > 1 && lastToken?.Type == LabelTokenType.Property)
+        if (lastException != null)
         {
-            return lastToken.Name;
+            throw lastException;
         }
 
         return string.Empty;
@@ -125,12 +132,6 @@ internal static class StringFormatWithExtension
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
         var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
-
-        if (memberPath.Length == 0)
-        {
-            return null;
-        }
-
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
 
         var value = getter(source);
@@ -143,8 +144,15 @@ internal static class StringFormatWithExtension
         var safeMember = InputSanitizer.SanitizeMemberName(member);
 
         if (!source.TryGetValue(safeMember, out var value))
-            return null;
+            throw new ArgumentException($"'{safeMember}' is not a valid placeholder");
 
         return value?.ToString();
+    }
+
+    private static string EvaluateEnvVar(string name, IEnvironment environment)
+    {
+        var safeName = InputSanitizer.SanitizeEnvVarName(name);
+
+        return environment.GetEnvironmentVariable(name) ?? throw new ArgumentException($"Environment variable {safeName} not found and no fallback provided");
     }
 }

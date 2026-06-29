@@ -24,14 +24,17 @@ public class LabelTokenizerTests
     [TestCase("Pat\"tern")]
     public void ParseTokens_InvalidLiterals_Throws(string input) => AssertThrows(input);
 
-    [TestCase("Prop ?? literal", "Prop", "literal")]
-    [TestCase("Prop??literal", "Prop", "literal")]
-    [TestCase("Prop ?? literal ?? fallback", "Prop", "literal", "fallback")]
-    [TestCase("Prop ??literal?? fallback", "Prop", "literal", "fallback")]
-    [TestCase("Prop ?? \"literal\" ?? fallback", "Prop", "literal", "fallback")]
-    [TestCase("Prop:format ?? \"literal\" ?? fallback", "Prop", "literal", "fallback")]
-    [TestCase("env:Prop ?? \"literal\" ?? fallback", "Prop", "literal", "fallback")]
-    [TestCase("env:Prop:format ?? \"literal\" ?? fallback", "Prop", "literal", "fallback")]
+    [TestCase("Prop1 ?? Prop2", "Prop1", "Prop2")]
+    [TestCase("Prop1??Prop2", "Prop1", "Prop2")]
+    [TestCase("Prop1??Prop2??42", "Prop1", "Prop2", "42")]
+    [TestCase("Prop1??Prop2??\"42\"", "Prop1", "Prop2", "42")]
+    [TestCase("Prop1 ?? Prop2 ?? \"fallback\"", "Prop1", "Prop2", "fallback")]
+    [TestCase("Prop1 ??Prop2?? \"fallback\"", "Prop1", "Prop2", "fallback")]
+    [TestCase("Prop1 ?? Prop2 ?? 42", "Prop1", "Prop2", "42")]
+    [TestCase("Prop1:format ?? Prop2 ?? \"fallback\"", "Prop1", "Prop2", "fallback")]
+    [TestCase("env:Env1 ?? Prop2 ?? \"fallback\"", "Env1", "Prop2", "fallback")]
+    [TestCase("env:Env1:format ?? \"literal\" ?? \"fallback\"", "Env1", "literal", "fallback")]
+    [TestCase("env:Env1 ?? 42", "Env1", "42")]
     public void ParseTokens_ValidIdentifiers_ReturnsValid(string input, params string[] expected) => AssertTokens(input, expected);
 
     [TestCase("Prop ??? literal")]

@@ -1,6 +1,3 @@
-## v6.8.0
-* When using `{env:VAR_NAME}` or `{BranchName}` syntax in labels or version formatting, a missing environment variable or placeholder no longer throws and instead returns a blank value.
-
 ## v6.2.0
 
 * The configuration property `label-number-pattern` was removed. The functionality can be still used by changing the label and the branch name regular expression for pull-request branches.

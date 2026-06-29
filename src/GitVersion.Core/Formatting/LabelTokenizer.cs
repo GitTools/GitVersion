@@ -52,6 +52,11 @@ internal class LabelTokenizer(string input)
             return new LabelToken(identifier[1..^1], LabelTokenType.Literal);
         }
 
+        if (int.TryParse(identifier, out _))
+        {
+            return new LabelToken(identifier, LabelTokenType.Literal);
+        }
+
         var (propertyName, propertyFormat) = ParseKeyAndFormat(identifier);
 
         return new LabelToken(propertyName, LabelTokenType.Property, propertyFormat);
