@@ -99,5 +99,5 @@ internal sealed class VersionStrategiesConverter : YamlConverter<VersionStrategi
     }
 
     private static string Normalize(string value)
-        => new(value.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
+        => new([.. value.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant)]);
 }

@@ -41,7 +41,7 @@ internal class GitPreparer(
         this.log.Info($"DotGit directory is: {dotGitDirectory}");
         if (dotGitDirectory.IsNullOrEmpty() || projectRoot.IsNullOrEmpty())
         {
-            throw new($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
+            throw new DirectoryNotFoundException($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
         }
 
         PrepareInternal(gitVersionOptions);
@@ -105,7 +105,7 @@ internal class GitPreparer(
     {
         if (targetBranch.IsNullOrWhiteSpace())
         {
-            throw new("Dynamic Git repositories must have a target branch (/b)");
+            throw new InvalidOperationException("Dynamic Git repositories must have a target branch (/b)");
         }
 
         var gitDirectory = this.repositoryInfo.DynamicGitRepositoryPath;
@@ -116,7 +116,7 @@ internal class GitPreparer(
             var authentication = gitVersionOptions.AuthenticationInfo;
             if (string.IsNullOrWhiteSpace(gitDirectory))
             {
-                throw new("Dynamic Git repositories should have a path specified");
+                throw new InvalidOperationException("Dynamic Git repositories should have a path specified");
             }
             if (!this.fileSystem.Directory.Exists(gitDirectory))
             {
