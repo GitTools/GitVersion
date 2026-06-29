@@ -42,7 +42,10 @@ public static class DockerContextExtensions
 
         public void DockerBuildImage(DockerImage dockerImage)
         {
-            if (context.Version == null) return;
+            if (context.Version == null)
+            {
+                return;
+            }
 
             var (distro, targetFramework, arch, registry, _) = dockerImage;
 
@@ -185,7 +188,11 @@ public static class DockerContextExtensions
             var distro = dockerImage.Distro;
             var targetFramework = dockerImage.TargetFramework;
 
-            if (context.Version == null) return [];
+            if (context.Version == null)
+            {
+                return [];
+            }
+
             var tags = new List<string>
             {
                 $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
@@ -209,7 +216,10 @@ public static class DockerContextExtensions
                 }
             }
 
-            if (!arch.HasValue) return tags.Distinct();
+            if (!arch.HasValue)
+            {
+                return tags.Distinct();
+            }
 
             var suffix = arch.Value.ToSuffix();
             return tags.Select(x => $"{x}-{suffix}").Distinct();

@@ -92,7 +92,11 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
 
     private static object? ChangeType(object? value, Type type)
     {
-        if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Nullable<>)) return Convert.ChangeType(value, type);
+        if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Nullable<>))
+        {
+            return Convert.ChangeType(value, type);
+        }
+
         if (value == null || value.ToString()?.Length == 0)
         {
             return null;

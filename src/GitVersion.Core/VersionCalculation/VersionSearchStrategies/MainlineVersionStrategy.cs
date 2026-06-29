@@ -74,7 +74,9 @@ internal sealed class MainlineVersionStrategy(
         configuration.NotNull();
 
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.Mainline))
+        {
             yield break;
+        }
 
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
 
@@ -86,7 +88,11 @@ internal sealed class MainlineVersionStrategy(
         var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits.ToArray());
 
         var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
-        if (branchConfiguration.TrackMergeTarget == true) taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+        if (branchConfiguration.TrackMergeTarget == true)
+        {
+            taggedSemanticVersion |= TaggedSemanticVersions.OfMergeTargets;
+        }
+
         if (branchConfiguration.TracksReleaseBranches == true)
         {
             taggedSemanticVersion |= TaggedSemanticVersions.OfReleaseBranches;
@@ -147,7 +153,10 @@ internal sealed class MainlineVersionStrategy(
 
         foreach (var item in commitsInReverseOrder)
         {
-            if (!traversedCommits.Add(item)) continue;
+            if (!traversedCommits.Add(item))
+            {
+                continue;
+            }
 
             if (commitsWasBranchedFromLazy.Value.TryGetValue(item, out var effectiveConfigurationsWasBranchedFrom))
             {
@@ -209,7 +218,11 @@ internal sealed class MainlineVersionStrategy(
 
             foreach (var semanticVersion in semanticVersions)
             {
-                if (!semanticVersion.Value.IsMatchForBranchSpecificLabel(label)) continue;
+                if (!semanticVersion.Value.IsMatchForBranchSpecificLabel(label))
+                {
+                    continue;
+                }
+
                 if (configuration.Increment != IncrementStrategy.Inherit)
                 {
                     return true;
@@ -223,7 +236,11 @@ internal sealed class MainlineVersionStrategy(
                 return true;
             }
 
-            if (!item.IsMergeCommit) continue;
+            if (!item.IsMergeCommit)
+            {
+                continue;
+            }
+
             Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
                 () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
             );
@@ -244,7 +261,10 @@ internal sealed class MainlineVersionStrategy(
 
             if (childConfiguration.IsMainBranch == true)
             {
-                if (configuration.IsMainBranch == true) throw new NotImplementedException();
+                if (configuration.IsMainBranch == true)
+                {
+                    throw new NotImplementedException();
+                }
 
                 mergedCommitsInReverseOrderLazy = new(
                     () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
@@ -269,7 +289,10 @@ internal sealed class MainlineVersionStrategy(
                 traversedCommits: traversedCommits);
 
             commit.AddChildIteration(childIteration);
-            if (done) return true;
+            if (done)
+            {
+                return true;
+            }
 
             traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
         }

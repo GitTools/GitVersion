@@ -16,7 +16,11 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch) yield break;
+        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        {
+            yield break;
+        }
+
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator

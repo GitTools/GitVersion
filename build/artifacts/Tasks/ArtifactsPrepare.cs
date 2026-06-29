@@ -21,7 +21,11 @@ public class ArtifactsPrepare : FrostingTask<BuildContext>
     {
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageTesting(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage))
+            {
+                continue;
+            }
+
             context.DockerPullImage(dockerImage);
         }
     }

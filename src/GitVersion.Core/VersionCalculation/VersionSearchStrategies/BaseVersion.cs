@@ -87,7 +87,10 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
         }
 
         if (BaseVersionSource is not null)
+        {
             stringBuilder.Append($" based on commit '{commitSource}'.");
+        }
+
         return stringBuilder.ToString();
     }
 

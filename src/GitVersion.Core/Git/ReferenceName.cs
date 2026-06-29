@@ -43,7 +43,11 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
     /// <summary>Parses <paramref name="canonicalName"/> as a canonical Git reference name, throwing when the input is not a valid canonical form.</summary>
     public static ReferenceName Parse(string canonicalName)
     {
-        if (TryParse(out var value, canonicalName)) return value;
+        if (TryParse(out var value, canonicalName))
+        {
+            return value;
+        }
+
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
 
@@ -92,8 +96,16 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
     /// <summary>Returns <see langword="true"/> when <paramref name="left"/> and <paramref name="right"/> have equal canonical names.</summary>
     public static bool operator ==(ReferenceName? left, ReferenceName? right)
     {
-        if (ReferenceEquals(left, right)) return true;
-        if (left is null || right is null) return false;
+        if (ReferenceEquals(left, right))
+        {
+            return true;
+        }
+
+        if (left is null || right is null)
+        {
+            return false;
+        }
+
         return left.Equals(right);
     }
 
@@ -121,10 +133,14 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
     private string Shorten()
     {
         if (IsLocalBranch)
+        {
             return Canonical[LocalBranchPrefix.Length..];
+        }
 
         if (IsRemoteBranch)
+        {
             return Canonical[RemoteTrackingBranchPrefix.Length..];
+        }
 
         return IsTag ? Canonical[TagPrefix.Length..] : Canonical;
     }

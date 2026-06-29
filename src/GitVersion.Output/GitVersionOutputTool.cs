@@ -53,7 +53,11 @@ internal class GitVersionOutputTool(
 
     public void UpdateWixVersionFile(GitVersionVariables variables)
     {
-        if (!this.gitVersionOptions.WixInfo.UpdateWixVersionFile) return;
+        if (!this.gitVersionOptions.WixInfo.UpdateWixVersionFile)
+        {
+            return;
+        }
+
         using (this.wixVersionFileUpdater)
         {
             this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(this.gitVersionOptions.WorkingDirectory));

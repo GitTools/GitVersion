@@ -82,7 +82,11 @@ public static class GitRepositoryTestingExtensions
     {
         public void RenameRemote(string oldName, string newName)
         {
-            if (oldName.IsEquivalentTo(newName)) return;
+            if (oldName.IsEquivalentTo(newName))
+            {
+                return;
+            }
+
             if (remotes.Any(remote => remote.Name == newName))
             {
                 throw new InvalidOperationException($"A remote with the name '{newName}' already exists.");

@@ -20,13 +20,19 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         if (context.Version == null)
+        {
             return;
+        }
+
         var rootPrefix = string.Empty;
         var version = context.Version.NugetVersion;
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageTesting(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage))
+            {
+                continue;
+            }
 
             var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework net{dockerImage.TargetFramework}";
 

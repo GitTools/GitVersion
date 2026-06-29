@@ -17,7 +17,11 @@ internal class BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log
         {
             try
             {
-                if (!buildAgent.CanApplyToCurrentContext()) continue;
+                if (!buildAgent.CanApplyToCurrentContext())
+                {
+                    continue;
+                }
+
                 instance = (ICurrentBuildAgent)buildAgent;
             }
             catch (Exception ex)

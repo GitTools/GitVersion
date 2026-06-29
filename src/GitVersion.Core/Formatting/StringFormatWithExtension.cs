@@ -141,7 +141,9 @@ internal static class StringFormatWithExtension
         var safeMember = InputSanitizer.SanitizeMemberName(member);
 
         if (!source.TryGetValue(safeMember, out var value))
+        {
             throw new ArgumentException($"'{safeMember}' is not a valid placeholder");
+        }
 
         return value?.ToString();
     }

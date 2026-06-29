@@ -103,7 +103,11 @@ internal class ArgumentParser(IEnvironment environment,
 
         arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
 
-        if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
+        if (!arguments.EnsureAssemblyInfo)
+        {
+            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
+        }
+
         arguments.NoFetch = arguments.NoFetch || this.buildAgent.PreventFetch();
 
         ValidateConfigurationFile(arguments);
@@ -113,17 +117,28 @@ internal class ArgumentParser(IEnvironment environment,
 
     private void ValidateConfigurationFile(Arguments arguments)
     {
-        if (arguments.ConfigurationFile.IsNullOrWhiteSpace()) return;
+        if (arguments.ConfigurationFile.IsNullOrWhiteSpace())
+        {
+            return;
+        }
 
         if (FileSystemHelper.Path.IsPathRooted(arguments.ConfigurationFile))
         {
-            if (!this.fileSystem.File.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
+            if (!this.fileSystem.File.Exists(arguments.ConfigurationFile))
+            {
+                throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
+            }
+
             arguments.ConfigurationFile = FileSystemHelper.Path.GetFullPath(arguments.ConfigurationFile);
         }
         else
         {
             var configFilePath = FileSystemHelper.Path.GetFullPath(FileSystemHelper.Path.Combine(arguments.TargetPath, arguments.ConfigurationFile));
-            if (!this.fileSystem.File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
+            if (!this.fileSystem.File.Exists(configFilePath))
+            {
+                throw new WarningException($"Could not find config file at '{configFilePath}'");
+            }
+
             arguments.ConfigurationFile = configFilePath;
         }
     }
@@ -134,7 +149,10 @@ internal class ArgumentParser(IEnvironment environment,
         var values = switchesAndValues.GetValues(name);
         var value = values?.FirstOrDefault();
 
-        if (ParseSwitches(arguments, name, values, value)) return;
+        if (ParseSwitches(arguments, name, values, value))
+        {
+            return;
+        }
 
         ParseTargetPath(arguments, name, values, value, i == 0);
     }
@@ -156,7 +174,10 @@ internal class ArgumentParser(IEnvironment environment,
 
     private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string>? assemblyInfoFiles)
     {
-        if (assemblyInfoFiles == null) yield break;
+        if (assemblyInfoFiles == null)
+        {
+            yield break;
+        }
 
         foreach (var file in assemblyInfoFiles)
         {
@@ -184,7 +205,11 @@ internal class ArgumentParser(IEnvironment environment,
         var couldNotParseMessage = $"Could not parse command line parameter '{name}'.";
 
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
-        if (!parseEnded) throw new WarningException(couldNotParseMessage);
+        if (!parseEnded)
+        {
+            throw new WarningException(couldNotParseMessage);
+        }
+
         if (name?.StartsWith('/') == true)
         {
             if (FileSystemHelper.Path.DirectorySeparatorChar == '/' && name.IsValidPath())
@@ -213,9 +238,15 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (ParseConfigArguments(arguments, name, values, value)) return true;
+        if (ParseConfigArguments(arguments, name, values, value))
+        {
+            return true;
+        }
 
-        if (ParseRemoteArguments(arguments, name, values, value)) return true;
+        if (ParseRemoteArguments(arguments, name, values, value))
+        {
+            return true;
+        }
 
         if (name.IsSwitch("diag"))
         {
@@ -296,7 +327,11 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (!name.IsSwitch("updatewixversionfile")) return false;
+        if (!name.IsSwitch("updatewixversionfile"))
+        {
+            return false;
+        }
+
         arguments.UpdateWixVersionFile = true;
         return true;
     }
@@ -317,7 +352,9 @@ internal class ArgumentParser(IEnvironment environment,
         }
 
         if (!name.IsSwitch("showConfig"))
+        {
             return false;
+        }
 
         arguments.ShowConfiguration = value.IsTrue() || !value.IsFalse();
         return true;
@@ -360,7 +397,11 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (!name.IsSwitch("b")) return false;
+        if (!name.IsSwitch("b"))
+        {
+            return false;
+        }
+
         EnsureArgumentValueCount(values);
         arguments.TargetBranch = value;
         return true;
@@ -424,7 +465,9 @@ internal class ArgumentParser(IEnvironment environment,
     private static void ParseOutput(Arguments arguments, IEnumerable<string>? values)
     {
         if (values == null)
+        {
             return;
+        }
 
         foreach (var v in values)
         {
@@ -443,7 +486,9 @@ internal class ArgumentParser(IEnvironment environment,
     private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string>? values)
     {
         if (values == null || values.Count == 0)
+        {
             return;
+        }
 
         var parser = new OverrideConfigurationOptionParser();
 

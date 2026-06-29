@@ -69,7 +69,11 @@ internal sealed partial class GitRepository
 
     public void Dispose()
     {
-        if (this.repositoryLazy is not { IsValueCreated: true }) return;
+        if (this.repositoryLazy is not { IsValueCreated: true })
+        {
+            return;
+        }
+
         RepositoryInstance.Dispose();
         this.repositoryLazy = null;
     }

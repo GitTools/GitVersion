@@ -47,7 +47,9 @@ internal class MergeCommitFinder(IRepositoryStore repositoryStore, IGitVersionCo
 
             var findMergeBase = this.repositoryStore.FindMergeBase(branch, sourceBranch);
             if (findMergeBase != null)
+            {
                 yield return new(findMergeBase, sourceBranch);
+            }
         }
     }
 }

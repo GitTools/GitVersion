@@ -34,7 +34,11 @@ public abstract class TestTaskBase : TestBase
         task.SolutionDirectory = fixture.RepositoryPath;
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var result = msbuildFixture.Execute(task);
-        if (!result.Success) Console.WriteLine(result.Log);
+        if (!result.Success)
+        {
+            Console.WriteLine(result.Log);
+        }
+
         return result;
     }
 
@@ -47,7 +51,11 @@ public abstract class TestTaskBase : TestBase
         msbuildFixture.CreateTestProject(extendProject);
 
         var result = msbuildFixture.Execute();
-        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess)
+        {
+            Console.WriteLine(result.Output);
+        }
+
         return result;
     }
 
@@ -69,7 +77,11 @@ public abstract class TestTaskBase : TestBase
 
         var result = msbuildFixture.Execute(task);
 
-        if (!result.Success) Console.WriteLine(result.Log);
+        if (!result.Success)
+        {
+            Console.WriteLine(result.Log);
+        }
+
         return result;
     }
 
@@ -81,7 +93,9 @@ public abstract class TestTaskBase : TestBase
         msbuildFixture.WithEnv(new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"));
         var result = msbuildFixture.Execute(task);
         if (!result.Success)
+        {
             Console.WriteLine(result.Log);
+        }
 
         return result;
     }
@@ -96,7 +110,11 @@ public abstract class TestTaskBase : TestBase
         msbuildFixture.WithEnv([.. env]);
 
         var result = msbuildFixture.Execute();
-        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess)
+        {
+            Console.WriteLine(result.Output);
+        }
+
         return result;
     }
 

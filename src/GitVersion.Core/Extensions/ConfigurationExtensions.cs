@@ -40,7 +40,11 @@ internal static class ConfigurationExtensions
                 IBranchConfiguration? unknownBranchConfiguration = null;
                 foreach (var (key, branchConfiguration) in configuration.Branches)
                 {
-                    if (!branchConfiguration.IsMatch(branchName)) continue;
+                    if (!branchConfiguration.IsMatch(branchName))
+                    {
+                        continue;
+                    }
+
                     if (key == "unknown")
                     {
                         unknownBranchConfiguration = branchConfiguration;
@@ -51,7 +55,10 @@ internal static class ConfigurationExtensions
                     }
                 }
 
-                if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
+                if (unknownBranchConfiguration != null)
+                {
+                    yield return unknownBranchConfiguration;
+                }
             }
         }
 
@@ -70,9 +77,20 @@ internal static class ConfigurationExtensions
         {
             ignoreConfig.NotNull();
 
-            if (ignoreConfig.Shas.Count != 0) yield return new ShaVersionFilter(ignoreConfig.Shas);
-            if (ignoreConfig.Before.HasValue) yield return new MinDateVersionFilter(ignoreConfig.Before.Value);
-            if (ignoreConfig.Paths.Count != 0) yield return new PathFilter([.. ignoreConfig.Paths]);
+            if (ignoreConfig.Shas.Count != 0)
+            {
+                yield return new ShaVersionFilter(ignoreConfig.Shas);
+            }
+
+            if (ignoreConfig.Before.HasValue)
+            {
+                yield return new MinDateVersionFilter(ignoreConfig.Before.Value);
+            }
+
+            if (ignoreConfig.Paths.Count != 0)
+            {
+                yield return new PathFilter([.. ignoreConfig.Paths]);
+            }
         }
 
         public IEnumerable<ITag> Filter(ITag[] source)
@@ -146,13 +164,17 @@ internal static class ConfigurationExtensions
             var placeholders = new Dictionary<string, object>();
 
             if (regularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+            {
                 return placeholders;
+            }
 
             var regex = RegexPatterns.Cache.GetOrAdd(regularExpression);
             var match = regex.Match(effectiveBranchName);
 
             if (!match.Success)
+            {
                 return placeholders;
+            }
 
             var namedGroups = regex.GetGroupNames()
                 .Where(name => !int.TryParse(name, out _));

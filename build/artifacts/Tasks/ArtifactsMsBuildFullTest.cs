@@ -17,7 +17,10 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         if (context.Version == null)
+        {
             return;
+        }
+
         var version = context.Version.NugetVersion;
         var fullSemVer = context.Version.GitVersion.FullSemVer;
 

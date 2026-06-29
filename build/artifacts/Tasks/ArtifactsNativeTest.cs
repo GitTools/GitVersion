@@ -21,13 +21,19 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         if (context.Version?.SemVersion == null)
+        {
             return;
+        }
+
         var version = context.Version.SemVersion.ToLower();
         var rootPrefix = string.Empty;
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageTesting(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage))
+            {
+                continue;
+            }
 
             var runtime = "linux";
             if (dockerImage.Distro.StartsWith("alpine"))

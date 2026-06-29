@@ -34,7 +34,10 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     private string? GetDynamicGitRepositoryPath()
     {
         var repositoryInfo = this.gitVersionOptions.RepositoryInfo;
-        if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
+        if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+        {
+            return null;
+        }
 
         var targetUrl = repositoryInfo.TargetUrl;
         var clonePath = repositoryInfo.ClonePath;
@@ -68,7 +71,9 @@ public class GitRepositoryInfo : IGitRepositoryInfo
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
         if (gitDirectory.IsNullOrEmpty())
+        {
             throw new DirectoryNotFoundException("Cannot find the .git directory");
+        }
 
         var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
         return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
@@ -86,7 +91,9 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         var gitDirectory = Repository.Discover(this.gitVersionOptions.WorkingDirectory);
 
         if (gitDirectory.IsNullOrEmpty())
+        {
             throw new DirectoryNotFoundException("Cannot find the .git directory");
+        }
 
         using var repo = new Repository(gitDirectory);
         return repo.Info.WorkingDirectory;

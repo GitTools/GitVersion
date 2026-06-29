@@ -10,7 +10,10 @@ public class Default : FrostingTask
     {
         var entryAssembly = Assembly.GetEntryAssembly();
         var tasks = entryAssembly?.FindAllDerivedTypes(typeof(IFrostingTask)).Where(x => !x.Name.Contains("Internal")).ToList();
-        if (tasks == null) return;
+        if (tasks == null)
+        {
+            return;
+        }
 
         var defaultTask = tasks.Find(x => x.Name.Contains(nameof(Default)));
         if (defaultTask != null && tasks.Remove(defaultTask))

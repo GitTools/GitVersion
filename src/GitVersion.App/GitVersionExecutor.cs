@@ -135,7 +135,11 @@ internal class GitVersionExecutor(
 
     private bool VerifyAndDisplayConfiguration(GitVersionOptions gitVersionOptions)
     {
-        if (!gitVersionOptions.ConfigurationInfo.ShowConfiguration) return false;
+        if (!gitVersionOptions.ConfigurationInfo.ShowConfiguration)
+        {
+            return false;
+        }
+
         if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
             this.configurationFileLocator.Verify(gitVersionOptions.WorkingDirectory, this.repositoryInfo.ProjectRootDirectory);

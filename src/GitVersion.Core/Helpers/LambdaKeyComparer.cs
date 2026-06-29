@@ -13,11 +13,19 @@ public class LambdaKeyComparer<TSource, TKey>(
     public override int Compare(TSource? x, TSource? y)
     {
         if (ReferenceEquals(x, y))
+        {
             return 0;
+        }
+
         if (x == null)
+        {
             return -1;
+        }
+
         if (y == null)
+        {
             return 1;
+        }
 
         var xKey = keySelector(x);
         var yKey = keySelector(y);

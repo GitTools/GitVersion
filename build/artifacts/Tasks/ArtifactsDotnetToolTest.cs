@@ -21,13 +21,19 @@ public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         if (context.Version == null)
+        {
             return;
+        }
+
         var rootPrefix = string.Empty;
         var version = context.Version.NugetVersion;
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImageTesting(dockerImage)) continue;
+            if (context.SkipImageTesting(dockerImage))
+            {
+                continue;
+            }
 
             var cmd = $"{rootPrefix}/scripts/test-global-tool.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo";
 

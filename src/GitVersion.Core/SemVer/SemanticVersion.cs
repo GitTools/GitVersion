@@ -146,7 +146,9 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
         string version, string? tagPrefixRegex, SemanticVersionFormat versionFormat = SemanticVersionFormat.Strict)
     {
         if (!TryParse(version, tagPrefixRegex, out var semanticVersion, versionFormat))
+        {
             throw new WarningException($"Failed to parse {version} into a Semantic Version");
+        }
 
         return semanticVersion;
     }
@@ -279,7 +281,11 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
             return -1;
         }
 
-        if (!includePreRelease || PreReleaseTag == value.PreReleaseTag) return 0;
+        if (!includePreRelease || PreReleaseTag == value.PreReleaseTag)
+        {
+            return 0;
+        }
+
         if (PreReleaseTag > value.PreReleaseTag)
         {
             return 1;
@@ -303,10 +309,14 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (format.IsNullOrEmpty())
+        {
             format = "s";
+        }
 
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+        {
             return formatter.Format(format, this, formatProvider);
+        }
 
         // Check for lp first because the param can vary
         format = format.ToLower();
@@ -374,7 +384,10 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
                 else
                 {
                     patch++;
-                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                    if (preReleaseNumber.HasValue)
+                    {
+                        preReleaseNumber = 1;
+                    }
                 }
                 break;
 
@@ -388,7 +401,10 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
                 {
                     minor++;
                     patch = 0;
-                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                    if (preReleaseNumber.HasValue)
+                    {
+                        preReleaseNumber = 1;
+                    }
                 }
                 break;
 
@@ -403,7 +419,10 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
                     major++;
                     minor = 0;
                     patch = 0;
-                    if (preReleaseNumber.HasValue) preReleaseNumber = 1;
+                    if (preReleaseNumber.HasValue)
+                    {
+                        preReleaseNumber = 1;
+                    }
                 }
                 break;
 
@@ -416,7 +435,11 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
         var foundAlternativeSemanticVersion = false;
         foreach (var alternativeSemanticVersion in alternativeSemanticVersions)
         {
-            if (!semanticVersion.IsLessThan(alternativeSemanticVersion, includePreRelease: false)) continue;
+            if (!semanticVersion.IsLessThan(alternativeSemanticVersion, includePreRelease: false))
+            {
+                continue;
+            }
+
             semanticVersion = alternativeSemanticVersion!;
             foundAlternativeSemanticVersion = true;
         }

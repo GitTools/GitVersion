@@ -88,12 +88,18 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(schemaTargetDir);
         context.CopyDirectory(Paths.Schemas, schemaTargetDir);
 
-        if (!context.GitHasUncommitedChanges(publishFolder)) return;
+        if (!context.GitHasUncommitedChanges(publishFolder))
+        {
+            return;
+        }
 
         context.Information("Stage all changes...");
         context.GitAddAll(publishFolder);
 
-        if (!context.GitHasStagedChanges(publishFolder)) return;
+        if (!context.GitHasStagedChanges(publishFolder))
+        {
+            return;
+        }
 
         context.Information("Commit all changes...");
         context.GitCommit(

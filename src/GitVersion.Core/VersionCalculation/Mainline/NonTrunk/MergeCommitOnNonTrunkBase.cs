@@ -12,7 +12,10 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        if (commit.ChildIteration is null) throw new InvalidOperationException("The commit child iteration is null.");
+        if (commit.ChildIteration is null)
+        {
+            throw new InvalidOperationException("The commit child iteration is null.");
+        }
 
         return GetIncrementsInternal();
 

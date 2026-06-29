@@ -70,7 +70,9 @@ public class GitVersionInfoGeneratorTests : TestBase
             Guid.NewGuid().ToString());
 
         if (!fileSystem.Directory.Exists(directory))
+        {
             fileSystem.Directory.CreateDirectory(directory);
+        }
 
         var fileName = "GitVersionInformation.g." + fileExtension;
         var fullPath = FileSystemHelper.Path.Combine(directory, fileName);

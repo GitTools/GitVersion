@@ -33,7 +33,9 @@ internal sealed class TaggedCommitVersionStrategy(
         configuration.NotNull();
 
         if (!Context.Configuration.VersionStrategy.HasFlag(VersionStrategies.TaggedCommit))
+        {
             yield break;
+        }
 
         var taggedSemanticVersions = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,

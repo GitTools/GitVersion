@@ -38,7 +38,11 @@ public class LoggingEnricher : ILogEventEnricher
 
     public static void Configure(string? logFile, Verbosity verbosity)
     {
-        if (!string.IsNullOrWhiteSpace(logFile)) path = logFile;
+        if (!string.IsNullOrWhiteSpace(logFile))
+        {
+            path = logFile;
+        }
+
         LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
     }
 

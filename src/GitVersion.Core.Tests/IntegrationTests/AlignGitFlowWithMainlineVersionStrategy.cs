@@ -36,13 +36,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -100,13 +108,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -172,13 +188,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -244,13 +268,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -316,13 +348,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -380,7 +420,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -446,7 +490,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -512,7 +560,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -570,7 +622,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -628,7 +684,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -686,13 +746,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -750,13 +818,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -822,13 +898,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -886,13 +970,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -950,13 +1042,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1014,13 +1114,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1078,13 +1186,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1150,13 +1266,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1222,13 +1346,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1286,13 +1418,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1350,13 +1490,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1414,13 +1562,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1486,13 +1642,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1558,13 +1722,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1630,13 +1802,21 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("B");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1694,7 +1874,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1711,7 +1895,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1769,7 +1957,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1786,7 +1978,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1852,7 +2048,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1869,7 +2069,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1935,7 +2139,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -1952,7 +2160,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2018,7 +2230,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2035,7 +2251,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2093,7 +2313,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2188,7 +2412,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2283,7 +2511,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2308,7 +2540,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("0.0.0-1+1", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MergeTo("feature/foo");
 
         if (useMainline)
@@ -2382,7 +2618,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2407,7 +2647,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("0.0.0-1+1", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2465,7 +2709,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2490,7 +2738,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("0.0.0-1+1", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2548,7 +2800,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2565,7 +2821,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2623,7 +2883,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2640,7 +2904,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2706,7 +2974,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2723,7 +2995,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2781,7 +3057,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2798,7 +3078,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2856,7 +3140,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2873,7 +3161,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2931,7 +3223,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -2948,7 +3244,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3006,7 +3306,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3023,7 +3327,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3089,7 +3397,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3106,7 +3418,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3172,7 +3488,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3189,7 +3509,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3247,7 +3571,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3264,7 +3592,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3322,7 +3654,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3339,7 +3675,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3397,7 +3737,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3414,7 +3758,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3480,7 +3828,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3497,7 +3849,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3563,7 +3919,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3580,7 +3940,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3646,7 +4010,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3663,7 +4031,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3721,7 +4093,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3773,7 +4149,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3841,7 +4221,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3909,7 +4293,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -3977,7 +4365,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4029,7 +4421,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4089,7 +4485,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4149,7 +4549,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4209,7 +4613,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4269,7 +4677,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4329,7 +4741,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4381,7 +4797,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4449,7 +4869,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4501,7 +4925,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4561,7 +4989,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4621,7 +5053,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4673,7 +5109,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4741,7 +5181,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4809,7 +5253,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4861,7 +5309,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4921,7 +5373,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -4973,7 +5429,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -5041,7 +5501,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -5109,7 +5573,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -5177,7 +5645,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("feature/foo");
 
         // ✅ succeeds as expected
@@ -5238,7 +5710,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("release/3.0.0");
 
         // ✅ succeeds as expected
@@ -5255,7 +5731,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("release/3.0.0");
 
         // ✅ succeeds as expected
@@ -5286,7 +5766,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -5332,7 +5816,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5349,7 +5837,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5380,7 +5872,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -5422,7 +5918,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5439,7 +5939,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5526,7 +6030,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5543,7 +6051,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5582,7 +6094,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("3.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("2.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.1");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -5628,7 +6144,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5645,7 +6165,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5684,7 +6208,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("3.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("2.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -5730,7 +6258,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5747,7 +6279,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -5778,7 +6314,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -5820,7 +6360,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -5880,7 +6424,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         if (useMainline)
@@ -5924,7 +6472,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6040,7 +6592,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6156,7 +6712,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6216,7 +6776,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("G");
 
         if (useMainline)
@@ -6260,7 +6824,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6320,7 +6888,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         if (useMainline)
@@ -6364,7 +6936,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6424,7 +7000,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         if (useMainline)
@@ -6474,7 +7054,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -6491,7 +7075,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -6522,7 +7110,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -6562,7 +7154,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6579,7 +7175,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6610,7 +7210,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.3-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.3");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.3");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -6648,7 +7252,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6665,7 +7273,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6748,7 +7360,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6765,7 +7381,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6796,7 +7416,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.3-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.3");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.3");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -6834,7 +7458,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6851,7 +7479,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6882,7 +7514,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -6920,7 +7556,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6937,7 +7577,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -6968,7 +7612,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7010,7 +7658,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -7027,7 +7679,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -7058,7 +7714,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7098,7 +7758,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7115,7 +7779,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7146,7 +7814,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.3.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.3.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.3.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7186,7 +7858,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7203,7 +7879,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7286,7 +7966,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7303,7 +7987,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7342,7 +8030,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("0.3.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("0.2.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.1");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7382,7 +8074,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7399,7 +8095,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7430,7 +8130,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.3.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.3.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.3.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7472,7 +8176,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7489,7 +8197,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7520,7 +8232,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7562,7 +8278,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("release/3.0.0");
 
         // ✅ succeeds as expected
@@ -7579,7 +8299,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo("release/3.0.0");
 
         // ✅ succeeds as expected
@@ -7610,7 +8334,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7656,7 +8384,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7673,7 +8405,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7704,7 +8440,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7744,7 +8484,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7761,7 +8505,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7846,7 +8594,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7863,7 +8615,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7902,7 +8658,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("3.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("2.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.1");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -7946,7 +8706,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -7963,7 +8727,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8002,7 +8770,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("3.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("2.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.1.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -8052,7 +8824,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8069,7 +8845,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MergeTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8100,7 +8880,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("3.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("3.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("3.0.0");
+        }
+
         fixture.MakeACommit("G");
 
         // ✅ succeeds as expected
@@ -8142,7 +8926,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -8196,7 +8984,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -8247,7 +9039,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8301,7 +9097,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -8350,7 +9150,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8467,7 +9271,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8529,7 +9337,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("1.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.1");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -8584,7 +9396,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8646,7 +9462,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("1.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.1.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -8705,7 +9525,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -8759,7 +9583,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -8801,7 +9629,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -8855,7 +9687,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         if (useMainline)
@@ -8900,7 +9736,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9011,7 +9851,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9123,7 +9967,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9177,7 +10025,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.MakeACommit("F");
 
         if (useMainline)
@@ -9225,7 +10077,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9279,7 +10135,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("F");
 
         if (useMainline)
@@ -9330,7 +10190,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9384,7 +10248,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         if (useMainline)
@@ -9434,7 +10302,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -9488,7 +10360,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -9529,7 +10405,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9583,7 +10463,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -9622,7 +10506,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9729,7 +10617,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9783,7 +10675,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.2-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.2");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.2");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -9823,7 +10719,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9877,7 +10777,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -9921,7 +10825,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.0.1");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -9975,7 +10883,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10017,7 +10929,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -10071,7 +10987,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10118,7 +11038,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10172,7 +11096,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10215,7 +11143,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10326,7 +11258,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10388,7 +11324,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("0.2.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("0.1.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.1");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10435,7 +11375,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10489,7 +11433,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.2.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.2.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.2.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10536,7 +11484,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("0.1.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("0.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("0.1.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10590,7 +11542,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10632,7 +11588,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo("release/2.0.0");
 
         // ✅ succeeds as expected
@@ -10686,7 +11646,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10737,7 +11701,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10791,7 +11759,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -10840,7 +11812,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -10957,7 +11933,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -11019,7 +11999,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("1.0.1");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.1");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -11074,7 +12058,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -11136,7 +12124,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
             fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
-        if (!useMainline) fixture.ApplyTag("1.1.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.1.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected
@@ -11195,7 +12187,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-1+1", configuration);
 
-        if (!useMainline) fixture.ApplyTag("1.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("1.0.0");
+        }
+
         fixture.BranchTo(releaseBranch);
 
         // ✅ succeeds as expected
@@ -11249,7 +12245,11 @@ public class AlignGitFlowWithMainlineVersionStrategy
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-1+6", configuration);
 
-        if (!useMainline) fixture.ApplyTag("2.0.0");
+        if (!useMainline)
+        {
+            fixture.ApplyTag("2.0.0");
+        }
+
         fixture.MakeACommit("F");
 
         // ✅ succeeds as expected

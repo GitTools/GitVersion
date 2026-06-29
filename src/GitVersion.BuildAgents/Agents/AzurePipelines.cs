@@ -21,7 +21,9 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
     {
         var gitBranch = this.environment.GetEnvironmentVariable("GIT_BRANCH");
         if (gitBranch is not null)
+        {
             return gitBranch;
+        }
 
         var sourceBranch = this.environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
 
@@ -39,12 +41,18 @@ internal class AzurePipelines(IEnvironment environment, ILog log, IFileSystem fi
         // specified
         var buildNumberEnv = this.environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
         if (buildNumberEnv.IsNullOrWhiteSpace())
+        {
             return variables.FullSemVer;
+        }
 
         var newBuildNumber = variables.OrderBy(x => x.Key).Aggregate(buildNumberEnv, ReplaceVariables);
 
         // If no variable substitution has happened, use FullSemVer
-        if (buildNumberEnv != newBuildNumber) return $"##vso[build.updatebuildnumber]{newBuildNumber}";
+        if (buildNumberEnv != newBuildNumber)
+        {
+            return $"##vso[build.updatebuildnumber]{newBuildNumber}";
+        }
+
         var buildNumber = variables.FullSemVer.EndsWith("+0")
             ? variables.FullSemVer[..^2]
             : variables.FullSemVer;

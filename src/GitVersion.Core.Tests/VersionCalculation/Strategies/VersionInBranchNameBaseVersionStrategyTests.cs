@@ -100,7 +100,11 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         using var fixture = new RemoteRepositoryFixture();
 
         fixture.CreateBranch(branchName);
-        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
+        if (origin != "origin")
+        {
+            fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
+        }
+
         fixture.LocalRepositoryFixture.Fetch(origin);
 
         var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();

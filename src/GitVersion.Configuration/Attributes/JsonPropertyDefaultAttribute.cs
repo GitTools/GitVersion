@@ -30,7 +30,9 @@ public sealed class JsonPropertyDefaultAttribute : JsonAttribute
             var typedObj = Convert.ChangeType(boxedValue, type);
             Value = typedObj.ToString() ?? string.Empty;
             if (Value == type.ToString())
+            {
                 Value = JsonSerializer.Serialize(typedObj, type);
+            }
         }
         else
         {

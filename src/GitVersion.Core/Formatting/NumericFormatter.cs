@@ -11,7 +11,9 @@ internal class NumericFormatter : InvariantFormatter, IValueFormatter
         result = string.Empty;
 
         if (value is not string s)
+        {
             return false;
+        }
 
         // Integer formatting
         if (format.All(char.IsDigit) && int.TryParse(s, NumberStyles.Integer, cultureInfo, out var integerValue))

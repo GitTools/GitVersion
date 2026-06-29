@@ -59,7 +59,11 @@ internal class GitPreparer(
         else
         {
             // Normalize if we are running on build server
-            if (gitVersionOptions.Settings.NoNormalize || this.buildAgent is LocalBuild) return;
+            if (gitVersionOptions.Settings.NoNormalize || this.buildAgent is LocalBuild)
+            {
+                return;
+            }
+
             if (this.buildAgent.ShouldCleanUpRemotes())
             {
                 CleanupDuplicateOrigin();
@@ -185,7 +189,11 @@ internal class GitPreparer(
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
 
-        if (!this.repository.IsShallow) return;
+        if (!this.repository.IsShallow)
+        {
+            return;
+        }
+
         if (this.options.Value.Settings.AllowShallow)
         {
             this.log.Info("Repository is a shallow clone. GitVersion will continue, but it is recommended to use a full clone for accurate versioning.");
@@ -200,10 +208,14 @@ internal class GitPreparer(
     {
         expectedSha.NotNull();
         if (this.repository.Head.Tip?.Sha == expectedSha)
+        {
             return;
+        }
 
         if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") == "1")
+        {
             return;
+        }
 
         // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
         throw new BugException($"""
@@ -311,7 +323,9 @@ internal class GitPreparer(
             var remote = remotes.Single();
             this.log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
+            {
                 return remote;
+            }
 
             var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
             this.log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
@@ -339,7 +353,10 @@ internal class GitPreparer(
             var localReferenceName = ReferenceName.FromBranchName(branchName);
 
             // We do not want to touch our current branch
-            if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
+            if (this.repository.Head.Name.EquivalentTo(branchName))
+            {
+                continue;
+            }
 
             var localRef = this.repository.References[localReferenceName];
             if (localRef != null)
@@ -373,17 +390,26 @@ internal class GitPreparer(
     {
         remote.NotNull();
 
-        if (currentBranch.IsNullOrEmpty()) return;
+        if (currentBranch.IsNullOrEmpty())
+        {
+            return;
+        }
 
         const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
         string localCanonicalName;
         if (!currentBranch.StartsWith(referencePrefix))
+        {
             localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch;
+        }
         else if (isLocalBranch)
+        {
             localCanonicalName = currentBranch;
+        }
         else
+        {
             localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+        }
 
         var repoTip = this.repository.Head.Tip;
 

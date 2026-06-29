@@ -11,7 +11,9 @@ internal class FormattableFormatter : InvariantFormatter, IValueFormatter
         result = string.Empty;
 
         if (string.IsNullOrWhiteSpace(format))
+        {
             return false;
+        }
 
         if (value is IFormattable formattable)
         {

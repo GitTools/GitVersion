@@ -34,7 +34,9 @@ internal sealed class GitVersionInfoGenerator(IFileSystem fileSystem) : IGitVers
         var targetNamespace = getTargetNamespace(fileExtension);
 
         if (string.IsNullOrWhiteSpace(template) || string.IsNullOrWhiteSpace(addFormat) || targetNamespace == targetNamespaceSentinelValue)
+        {
             return;
+        }
 
         var indentation = GetIndentation(fileExtension);
         string? closeBracket = null;

@@ -15,7 +15,9 @@ internal static class ArgumentParserExtensions
         public bool IsValidPath()
         {
             if (value == null)
+            {
                 return false;
+            }
 
             try
             {
@@ -50,7 +52,9 @@ internal static class ArgumentParserExtensions
         public bool IsSwitch(string switchName)
         {
             if (value == null)
+            {
                 return false;
+            }
 
             if (value.StartsWith('-'))
             {
@@ -78,7 +82,9 @@ internal static class ArgumentParserExtensions
 
             // If this is the first argument that might be a target path, the argument starts with slash, and we're on an OS that supports paths with slashes, the argument does not require a value.
             if (argumentMightRequireValue && argumentIndex == 0 && singleArgument.StartsWith('/') && FileSystemHelper.Path.DirectorySeparatorChar == '/' && singleArgument.IsValidPath())
+            {
                 return false;
+            }
 
             return argumentMightRequireValue;
         }

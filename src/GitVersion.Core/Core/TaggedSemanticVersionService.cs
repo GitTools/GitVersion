@@ -105,7 +105,10 @@ internal sealed class TaggedSemanticVersionService(
         );
         foreach (var grouping in semanticVersionsOfBranch)
         {
-            if (grouping.Key.When > notOlderThan) continue;
+            if (grouping.Key.When > notOlderThan)
+            {
+                continue;
+            }
 
             foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
             {
@@ -151,7 +154,10 @@ internal sealed class TaggedSemanticVersionService(
         );
         foreach (var grouping in semanticVersionsOfMergeTarget)
         {
-            if (grouping.Key.When > notOlderThan) continue;
+            if (grouping.Key.When > notOlderThan)
+            {
+                continue;
+            }
 
             foreach (var semanticVersion in grouping.Where(semanticVersion => semanticVersion.Value.IsMatchForBranchSpecificLabel(label)))
             {

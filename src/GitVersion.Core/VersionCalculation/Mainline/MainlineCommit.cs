@@ -58,14 +58,20 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
     {
-        if (this.effectiveConfiguration is not null) return this.effectiveConfiguration;
+        if (this.effectiveConfiguration is not null)
+        {
+            return this.effectiveConfiguration;
+        }
 
         var branchConfiguration = Configuration;
 
         var last = Configuration;
         for (var i = this; i is not null; i = i.Predecessor)
         {
-            if (branchConfiguration.Increment != IncrementStrategy.Inherit) break;
+            if (branchConfiguration.Increment != IncrementStrategy.Inherit)
+            {
+                break;
+            }
 
             if (i.Configuration != last)
             {
@@ -76,7 +82,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
         }
 
         if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
+        {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        }
 
         var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
@@ -106,7 +114,10 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)
     {
-        if (HasPredecessor) throw new InvalidOperationException();
+        if (HasPredecessor)
+        {
+            throw new InvalidOperationException();
+        }
 
         MainlineCommit commit = new(Iteration, referenceValue, branchName, configuration);
         Predecessor = commit;

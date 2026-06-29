@@ -121,10 +121,14 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+        {
             return formatter.Format(format, this, formatProvider);
+        }
 
         if (format.IsNullOrEmpty())
+        {
             format = "b";
+        }
 
         format = format.ToLower();
         return format.ToLower() switch
@@ -154,7 +158,9 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
     public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
     {
         if (buildMetaData.IsNullOrEmpty())
+        {
             return Empty;
+        }
 
         var parsed = RegexPatterns.SemanticVersion.ParseBuildMetaDataRegex.Match(buildMetaData);
 
@@ -163,21 +169,30 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
         if (parsed.Groups["BuildNumber"].Success)
         {
             if (long.TryParse(parsed.Groups["BuildNumber"].Value, out var buildNumber))
+            {
                 buildMetaDataCommitsSinceTag = buildNumber;
+            }
+
             buildMetaDataVersionSourceDistance = buildMetaDataCommitsSinceTag ?? 0;
         }
 
         string? buildMetaDataBranch = null;
         if (parsed.Groups["BranchName"].Success)
+        {
             buildMetaDataBranch = parsed.Groups["BranchName"].Value;
+        }
 
         string? buildMetaDataSha = null;
         if (parsed.Groups["Sha"].Success)
+        {
             buildMetaDataSha = parsed.Groups["Sha"].Value;
+        }
 
         string? buildMetaDataOtherMetaData = null;
         if (parsed.Groups["Other"].Success && !parsed.Groups["Other"].Value.IsNullOrEmpty())
+        {
             buildMetaDataOtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
+        }
 
         return new()
         {
@@ -192,7 +207,10 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
     private static string FormatMetaDataPart(string value)
     {
         if (!value.IsNullOrEmpty())
+        {
             value = RegexPatterns.SemanticVersion.FormatBuildMetaDataRegex.Replace(value, "-");
+        }
+
         return value;
     }
 }

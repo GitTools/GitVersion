@@ -10,7 +10,11 @@ internal class FormatAttributeHandler : IAttributeHandler<FormatAttribute>
 {
     void IAttributeHandler.AddConstraints(SchemaGenerationContextBase context, Attribute attribute)
     {
-        if (attribute is not FormatAttribute formatAttribute) return;
+        if (attribute is not FormatAttribute formatAttribute)
+        {
+            return;
+        }
+
         var format = formatAttribute.Format switch
         {
             Format.Date => Formats.Date,
@@ -36,6 +40,8 @@ internal class FormatAttributeHandler : IAttributeHandler<FormatAttribute>
         };
 
         if (format != null)
+        {
             context.Intents.Insert(0, new FormatIntent(format));
+        }
     }
 }

@@ -30,7 +30,9 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
             var commit = first.Tip;
 
             if (commit == null)
+            {
                 return null;
+            }
 
             if (commitToFindCommonBase?.Parents.Contains(commit) == true)
             {
@@ -38,7 +40,9 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
             }
 
             if (commitToFindCommonBase == null)
+            {
                 return null;
+            }
 
             var findMergeBase = FindMergeBase(commit, commitToFindCommonBase);
 
@@ -60,7 +64,9 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
     {
         var findMergeBase = this.repositoryStore.FindMergeBase(commit, commitToFindCommonBase);
         if (findMergeBase == null)
+        {
             return null;
+        }
 
         this.log.Info($"Found merge base of '{findMergeBase}'");
 
@@ -72,7 +78,9 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
             forwardMerge = this.repositoryStore.GetForwardMerge(commitToFindCommonBase, findMergeBase);
 
             if (forwardMerge == null)
+            {
                 continue;
+            }
 
             // TODO Fix the logging up in this section
             var second = forwardMerge.Parents[0];

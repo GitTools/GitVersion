@@ -26,7 +26,9 @@ internal record MainlineIteration
         var branchConfiguration = Configuration;
 
         if (branchConfiguration.Increment != IncrementStrategy.Inherit || Commits.FirstOrDefault() is not { } commit)
+        {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        }
 
         var parentConfiguration = commit.GetEffectiveConfiguration(configuration);
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);

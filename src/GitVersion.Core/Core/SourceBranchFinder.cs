@@ -23,7 +23,9 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
         public bool IsSourceBranch(INamedReference sourceBranchCandidate)
         {
             if (Equals(sourceBranchCandidate, branch))
+            {
                 return false;
+            }
 
             var branchName = sourceBranchCandidate.Name.WithoutOrigin;
 
@@ -44,7 +46,9 @@ internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVer
                 {
                     var regex = branches[sourceBranch].RegularExpression;
                     if (regex != null)
+                    {
                         yield return RegexPatterns.Cache.GetOrAdd(regex);
+                    }
                 }
             }
         }

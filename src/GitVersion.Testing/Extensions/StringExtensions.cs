@@ -6,7 +6,10 @@ public static class StringExtensions
     {
         public IEnumerable<string> SplitIntoLines(int maxLineLength)
         {
-            if (string.IsNullOrEmpty(str)) yield break;
+            if (string.IsNullOrEmpty(str))
+            {
+                yield break;
+            }
 
             foreach (var line in SplitByNewlines(str))
             {

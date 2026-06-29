@@ -13,7 +13,9 @@ internal class MinDateVersionFilter(DateTimeOffset minimum) : IVersionFilter
         reason = null;
 
         if (baseVersion.BaseVersionSource == null || baseVersion.BaseVersionSource.When >= minimum)
+        {
             return false;
+        }
 
         reason = "Source was ignored due to commit date being outside of configured range";
         return true;
@@ -24,7 +26,9 @@ internal class MinDateVersionFilter(DateTimeOffset minimum) : IVersionFilter
         reason = null;
 
         if (commit == null || commit.When >= minimum)
+        {
             return false;
+        }
 
         reason = "Source was ignored due to commit date being outside of configured range";
         return true;

@@ -38,7 +38,11 @@ public class PublishChocolateyInternal : AsyncFrostingTask<BuildContext>
             .OrderByDescending(x => x.PackageName);
         foreach (var (packageName, filePath, _) in packages)
         {
-            if (IsPackagePublished(context, packageName, nugetVersion)) continue;
+            if (IsPackagePublished(context, packageName, nugetVersion))
+            {
+                continue;
+            }
+
             try
             {
                 context.Information($"Package {packageName}, version {nugetVersion} is being published.");

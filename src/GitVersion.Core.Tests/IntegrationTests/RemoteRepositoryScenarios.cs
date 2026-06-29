@@ -125,7 +125,11 @@ public class RemoteRepositoryScenarios : TestBase
     {
         foreach (var branch in repository.Branches)
         {
-            if (!branch.IsRemote) continue;
+            if (!branch.IsRemote)
+            {
+                continue;
+            }
+
             var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
             if (repository.Branches[localName] == null)
             {
@@ -145,7 +149,11 @@ public class RemoteRepositoryScenarios : TestBase
         fixture.CreateBranch(branchName);
         fixture.MakeACommit();
 
-        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
+        if (origin != "origin")
+        {
+            fixture.LocalRepositoryFixture.Repository.Network.Remotes.RenameRemote("origin", origin);
+        }
+
         fixture.LocalRepositoryFixture.Fetch(origin);
         fixture.LocalRepositoryFixture.Checkout("develop");
 

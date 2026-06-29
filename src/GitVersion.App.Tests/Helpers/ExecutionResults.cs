@@ -14,7 +14,10 @@ public class ExecutionResults(int exitCode, string? output, string? logContents 
     {
         get
         {
-            if (Output.IsNullOrWhiteSpace()) return null;
+            if (Output.IsNullOrWhiteSpace())
+            {
+                return null;
+            }
 
             var jsonStartIndex = Output.IndexOf('{');
             var jsonEndIndex = Output.IndexOf('}');

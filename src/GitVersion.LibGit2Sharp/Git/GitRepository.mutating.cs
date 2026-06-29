@@ -54,7 +54,9 @@ internal partial class GitRepository(ILog log) : IMutatingGitRepository
 
         // FIX ME: What to do when Tip is null?
         if (Head.Tip == null)
+        {
             return;
+        }
 
         var headTipSha = Head.Tip.Sha;
         var remote = RepositoryInstance.Network.Remotes.Single();

@@ -36,7 +36,10 @@ public static class ServiceCollectionExtensions
             .WriteTo.Console()
             .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, sinkConfiguration) =>
             {
-                if (!string.IsNullOrEmpty(logFilePath)) sinkConfiguration.File(logFilePath);
+                if (!string.IsNullOrEmpty(logFilePath))
+                {
+                    sinkConfiguration.File(logFilePath);
+                }
             }, 1)
             .CreateLogger();
         return logger;

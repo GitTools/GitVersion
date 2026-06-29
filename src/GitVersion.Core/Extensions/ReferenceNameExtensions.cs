@@ -29,7 +29,10 @@ public static class ReferenceNameExtensions
             var length = 0;
             foreach (var branchPart in source.WithoutOrigin.Split(GetBranchSeparator()))
             {
-                if (string.IsNullOrEmpty(branchPart)) return false;
+                if (string.IsNullOrEmpty(branchPart))
+                {
+                    return false;
+                }
 
                 var match = versionPatternRegex.Match(branchPart);
                 if (match.Success)
@@ -53,7 +56,11 @@ public static class ReferenceNameExtensions
 
             static string GetVersionInBranchPattern(string? versionInBranchPattern)
             {
-                if (versionInBranchPattern.IsNullOrEmpty()) versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern;
+                if (versionInBranchPattern.IsNullOrEmpty())
+                {
+                    versionInBranchPattern = RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern;
+                }
+
                 return $"^{versionInBranchPattern.TrimStart('^')}";
             }
         }

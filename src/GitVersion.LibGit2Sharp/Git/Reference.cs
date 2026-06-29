@@ -16,7 +16,9 @@ internal sealed class Reference : IReference
         Name = new ReferenceName(reference.CanonicalName);
 
         if (reference is DirectReference)
+        {
             ReferenceTargetId = new ObjectId(reference.TargetIdentifier);
+        }
     }
 
     public ReferenceName Name { get; }

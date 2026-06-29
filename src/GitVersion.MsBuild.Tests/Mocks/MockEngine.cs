@@ -43,7 +43,9 @@ internal sealed class MockEngine : IBuildEngine4
     {
         // Only if the message is above the minimum importance should we record the log message
         if (e.Importance > MinimumMessageImportance)
+        {
             return;
+        }
 
         Console.WriteLine(e.Message);
         this.log.AppendLine(e.Message);

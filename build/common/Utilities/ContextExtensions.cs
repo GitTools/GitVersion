@@ -84,9 +84,20 @@ public static class ContextExtensions
 
         public string GetOS()
         {
-            if (context.IsRunningOnWindows()) return "Windows";
-            if (context.IsRunningOnLinux()) return "Linux";
-            if (context.IsRunningOnMacOs()) return "macOs";
+            if (context.IsRunningOnWindows())
+            {
+                return "Windows";
+            }
+
+            if (context.IsRunningOnLinux())
+            {
+                return "Linux";
+            }
+
+            if (context.IsRunningOnMacOs())
+            {
+                return "macOs";
+            }
 
             return string.Empty;
         }
@@ -138,7 +149,10 @@ public static class ContextExtensions
 
         public bool ShouldRun(bool criteria, string skipMessage)
         {
-            if (criteria) return true;
+            if (criteria)
+            {
+                return true;
+            }
 
             context.Information(skipMessage);
             return false;

@@ -12,8 +12,16 @@ internal class EnvRun(IEnvironment environment, ILog log, IFileSystem fileSystem
     public override bool CanApplyToCurrentContext()
     {
         var envRunDatabasePath = this.environment.GetEnvironmentVariable(EnvironmentVariableName);
-        if (envRunDatabasePath.IsNullOrEmpty()) return false;
-        if (this.fileSystem.File.Exists(envRunDatabasePath)) return true;
+        if (envRunDatabasePath.IsNullOrEmpty())
+        {
+            return false;
+        }
+
+        if (this.fileSystem.File.Exists(envRunDatabasePath))
+        {
+            return true;
+        }
+
         this.Log.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
 
         return false;

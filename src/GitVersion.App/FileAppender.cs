@@ -18,7 +18,10 @@ internal class FileAppender : ILogAppender
         var logFile = this.fileSystem.FileInfo.New(FileSystemHelper.Path.GetFullPath(filePath));
 
         logFile.Directory?.Create();
-        if (logFile.Exists) return;
+        if (logFile.Exists)
+        {
+            return;
+        }
 
         logFile.CreateText().Dispose();
     }

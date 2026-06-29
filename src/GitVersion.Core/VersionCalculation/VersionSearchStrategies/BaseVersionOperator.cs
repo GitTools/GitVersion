@@ -43,7 +43,9 @@ public sealed record BaseVersionOperator : IBaseVersionIncrement
         }
 
         if (BaseVersionSource is not null)
+        {
             stringBuilder.Append($" based on commit '{BaseVersionSource.Id.ToString(7)}'.");
+        }
 
         return stringBuilder.ToString();
     }

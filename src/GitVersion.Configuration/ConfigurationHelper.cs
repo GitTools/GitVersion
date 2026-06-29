@@ -14,7 +14,11 @@ internal class ConfigurationHelper
     {
         get
         {
-            if (this.dictionary != null) return this.dictionary;
+            if (this.dictionary != null)
+            {
+                return this.dictionary;
+            }
+
             this.yaml ??= Serializer.Serialize(this.configuration!);
             this.dictionary = Serializer.Deserialize<Dictionary<object, object?>>(this.yaml);
             return this.dictionary;
@@ -35,7 +39,11 @@ internal class ConfigurationHelper
     {
         value.NotNull();
 
-        if (!value.Any()) return;
+        if (!value.Any())
+        {
+            return;
+        }
+
         var map = Dictionary.ToDictionary(element => element.Key, element => element.Value);
         Merge(map, value);
         this.dictionary = map;
