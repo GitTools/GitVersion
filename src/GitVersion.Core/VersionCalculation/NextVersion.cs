@@ -46,8 +46,8 @@ public class NextVersion(
     /// <summary>Returns <see langword="true"/> when this instance equals <paramref name="other"/>.</summary>
     public bool Equals(NextVersion? other) => this == other;
 
-    /// <summary>Returns <see langword="true"/> when <paramref name="other"/> is a <see cref="NextVersion"/> equal to this instance.</summary>
-    public override bool Equals(object? other) => other is NextVersion nextVersion && Equals(nextVersion);
+    /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="NextVersion"/> equal to this instance.</summary>
+    public override bool Equals(object? obj) => obj is NextVersion nextVersion && Equals(nextVersion);
 
     /// <summary>Returns a human-readable representation showing the base version and incremented version.</summary>
     public override string ToString() => $"{BaseVersion} | {IncrementedVersion}";

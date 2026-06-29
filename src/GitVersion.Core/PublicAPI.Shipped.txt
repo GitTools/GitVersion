@@ -880,7 +880,7 @@ override GitVersion.VersionCalculation.BaseVersionOperator.ToString() -> string!
 override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Equals(object? obj) -> bool
 override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GetHashCode() -> int
 override GitVersion.VersionCalculation.Caching.GitVersionCacheKey.ToString() -> string!
-override GitVersion.VersionCalculation.NextVersion.Equals(object? other) -> bool
+override GitVersion.VersionCalculation.NextVersion.Equals(object? obj) -> bool
 override GitVersion.VersionCalculation.NextVersion.GetHashCode() -> int
 override GitVersion.VersionCalculation.NextVersion.ToString() -> string!
 override GitVersion.WixInfo.Equals(object? obj) -> bool
