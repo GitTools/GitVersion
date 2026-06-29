@@ -74,11 +74,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     /// <summary>Gets a value indicating whether this reference corresponds to a pull request.</summary>
     public bool IsPullRequest { get; }
 
-    /// <summary>Returns <see langword="true"/> when the canonical name of this instance equals that of <paramref name="other"/>.</summary>
-    public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
-
     /// <summary>Compares this instance to <paramref name="other"/> by canonical name.</summary>
     public int CompareTo(ReferenceName? other) => comparerHelper.Compare(this, other);
+
+    /// <summary>Returns <see langword="true"/> when the canonical name of this instance equals that of <paramref name="other"/>.</summary>
+    public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
 
     /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="ReferenceName"/> with the same canonical name.</summary>
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);

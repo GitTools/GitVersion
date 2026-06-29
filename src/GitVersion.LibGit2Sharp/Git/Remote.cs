@@ -18,7 +18,6 @@ internal sealed class Remote : IRemote
     }
 
     public int CompareTo(IRemote? other) => comparerHelper.Compare(this, other);
-    public bool Equals(IRemote? other) => equalityHelper.Equals(this, other);
     public string Name => this.innerRemote.Name;
     public string Url => this.innerRemote.Url;
 
@@ -35,6 +34,7 @@ internal sealed class Remote : IRemote
 
     public IEnumerable<IRefSpec> FetchRefSpecs => RefSpecs.Where(x => x.Direction == RefSpecDirection.Fetch);
     public IEnumerable<IRefSpec> PushRefSpecs => RefSpecs.Where(x => x.Direction == RefSpecDirection.Push);
+    public bool Equals(IRemote? other) => equalityHelper.Equals(this, other);
     public override bool Equals(object? obj) => Equals(obj as IRemote);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name;

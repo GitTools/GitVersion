@@ -129,20 +129,20 @@ internal class GitPreparer(
         }
     }
 
+    private void CloneRepository(string? repositoryUrl, string? gitDirectory, AuthenticationInfo auth)
+    {
+        using (this.log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
+        {
+            this.retryAction.Execute(() => this.repository.Clone(repositoryUrl, gitDirectory, auth));
+        }
+    }
+
     private void NormalizeGitDirectory(string? targetBranch, bool isDynamicRepository)
     {
         using (this.log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
         {
             // Normalize (download branches) before using the branch
             NormalizeGitDirectory(this.options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
-        }
-    }
-
-    private void CloneRepository(string? repositoryUrl, string? gitDirectory, AuthenticationInfo auth)
-    {
-        using (this.log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
-        {
-            this.retryAction.Execute(() => this.repository.Clone(repositoryUrl, gitDirectory, auth));
         }
     }
 

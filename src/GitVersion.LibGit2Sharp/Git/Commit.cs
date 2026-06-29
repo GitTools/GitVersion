@@ -27,7 +27,6 @@ internal sealed class Commit : ICommit
     }
 
     public int CompareTo(ICommit? other) => comparerHelper.Compare(this, other);
-    public bool Equals(ICommit? other) => equalityHelper.Equals(this, other);
     public IReadOnlyList<ICommit> Parents => this.parentsLazy.Value;
     public IObjectId Id { get; }
     public string Sha { get; }
@@ -47,6 +46,7 @@ internal sealed class Commit : ICommit
             return paths;
         }
     }
+    public bool Equals(ICommit? other) => equalityHelper.Equals(this, other);
     public override bool Equals(object? obj) => Equals(obj as ICommit);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => $"'{Id.ToString(7)}' - {this.innerCommit.MessageShort}";

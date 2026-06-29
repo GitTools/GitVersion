@@ -24,7 +24,6 @@ internal sealed class Tag : ITag
 
     public ReferenceName Name { get; }
     public int CompareTo(ITag? other) => comparerHelper.Compare(this, other);
-    public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
     public string TargetSha => this.innerTag.Target.Sha;
     public ICommit Commit => this.commitLazy.Value.NotNull();
 
@@ -40,6 +39,7 @@ internal sealed class Tag : ITag
         return target is LibGit2Sharp.Commit commit ? this.repositoryCache.GetOrWrap(commit, this.diff) : null;
     }
 
+    public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
     public override bool Equals(object? obj) => Equals(obj as ITag);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();

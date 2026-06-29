@@ -28,6 +28,8 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
         return mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
     }
 
+    public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
+
     public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId, IIgnoreConfiguration ignore)
     {
         currentBranch.NotNull();
@@ -258,8 +260,6 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
     }
 
     private IEnumerable<ICommit> FilterCommits(CommitFilter filter) => this.repository.Commits.QueryBy(filter);
-
-    public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
     private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 

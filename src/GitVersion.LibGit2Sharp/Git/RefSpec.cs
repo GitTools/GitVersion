@@ -11,11 +11,11 @@ internal sealed class RefSpec : IRefSpec
 
     internal RefSpec(LibGit2Sharp.RefSpec refSpec) => this.innerRefSpec = refSpec.NotNull();
     public int CompareTo(IRefSpec? other) => comparerHelper.Compare(this, other);
-    public bool Equals(IRefSpec? other) => equalityHelper.Equals(this, other);
     public string Specification => this.innerRefSpec.Specification;
     public RefSpecDirection Direction => (RefSpecDirection)this.innerRefSpec.Direction;
     public string Source => this.innerRefSpec.Source;
     public string Destination => this.innerRefSpec.Destination;
+    public bool Equals(IRefSpec? other) => equalityHelper.Equals(this, other);
     public override bool Equals(object? obj) => Equals(obj as IRefSpec);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Specification;

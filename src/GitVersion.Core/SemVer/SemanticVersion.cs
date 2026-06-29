@@ -58,6 +58,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         BuildMetaData = semanticVersion.BuildMetaData;
     }
 
+    /// <summary>Returns <see langword="true"/> when this instance equals <see cref="Empty"/>.</summary>
+    public bool IsEmpty() => Equals(Empty);
+
     /// <summary>Returns <see langword="true"/> when this version is equal to <paramref name="obj"/>.</summary>
     public bool Equals(SemanticVersion? obj)
     {
@@ -71,9 +74,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             && PreReleaseTag == obj.PreReleaseTag
             && BuildMetaData == obj.BuildMetaData;
     }
-
-    /// <summary>Returns <see langword="true"/> when this instance equals <see cref="Empty"/>.</summary>
-    public bool IsEmpty() => Equals(Empty);
 
     /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="SemanticVersion"/> equal to this instance.</summary>
     public override bool Equals(object? obj)
