@@ -4,14 +4,14 @@ namespace GitVersion;
 public class AssemblySettingsInfo
 {
     /// <summary>Gets or sets a value indicating whether <c>AssemblyInfo.cs</c> files should be updated with the calculated version.</summary>
-    public bool UpdateAssemblyInfo;
+    public bool UpdateAssemblyInfo { get; set; }
 
     /// <summary>Gets or sets a value indicating whether SDK-style project files (<c>.csproj</c>) should be updated with the calculated version.</summary>
-    public bool UpdateProjectFiles;
+    public bool UpdateProjectFiles { get; set; }
 
     /// <summary>Gets or sets a value indicating whether missing <c>AssemblyInfo.cs</c> files should be created automatically.</summary>
-    public bool EnsureAssemblyInfo;
+    public bool EnsureAssemblyInfo { get; set; }
 
     /// <summary>Gets or sets the set of specific assembly-info or project file paths to update.</summary>
-    public ISet<string> Files = new HashSet<string>();
+    public ISet<string> Files { get; set; } = new HashSet<string>();
 }

@@ -28,29 +28,29 @@ public class GitVersionOptions
     public Settings Settings { get; } = new();
 
     /// <summary>Gets or sets a value indicating whether extended diagnostic output should be emitted.</summary>
-    public bool Diag;
+    public bool Diag { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the GitVersion version number should be printed and execution should stop.</summary>
-    public bool IsVersion;
+    public bool IsVersion { get; set; }
 
     /// <summary>Gets or sets a value indicating whether help text should be printed and execution should stop.</summary>
-    public bool IsHelp;
+    public bool IsHelp { get; set; }
 
     /// <summary>Gets or sets the path to a file where log output should be written.</summary>
-    public string? LogFilePath;
+    public string? LogFilePath { get; set; }
 
     /// <summary>Gets or sets the name of a single version variable to output.</summary>
-    public string? ShowVariable;
+    public string? ShowVariable { get; set; }
 
     /// <summary>Gets or sets the output format string used when writing a single variable.</summary>
-    public string? Format;
+    public string? Format { get; set; }
 
     /// <summary>Gets or sets the path of the file to which version output is written when the <see cref="OutputType.File"/> output type is selected.</summary>
-    public string? OutputFile;
+    public string? OutputFile { get; set; }
 
     /// <summary>Gets or sets the set of output types to produce (JSON, build-server, file, dotenv).</summary>
-    public ISet<OutputType> Output = new HashSet<OutputType>();
+    public ISet<OutputType> Output { get; set; } = new HashSet<OutputType>();
 
     /// <summary>Gets or sets the minimum log verbosity level.</summary>
-    public Verbosity Verbosity = Verbosity.Normal;
+    public Verbosity Verbosity { get; set; } = Verbosity.Normal;
 }
