@@ -17,7 +17,6 @@ public class ProjectFileUpdaterTests : TestBase
     private const string TargetFramework = "net10.0";
     private IVariableProvider variableProvider = null!;
     private ILog log = null!;
-    private IFileSystem fileSystem = null!;
     private ProjectFileUpdater projectFileUpdater = null!;
     private List<string> logMessages = null!;
 
@@ -30,9 +29,9 @@ public class ProjectFileUpdaterTests : TestBase
         this.logMessages = [];
         this.log = new Log(new TestLogAppender(this.logMessages.Add));
 
-        this.fileSystem = sp.GetRequiredService<IFileSystem>();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
-        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
+        this.projectFileUpdater = new ProjectFileUpdater(this.log, fileSystem);
     }
 
     [TearDown]
@@ -326,9 +325,9 @@ public class ProjectFileUpdaterTests : TestBase
         var configuration = EmptyConfigurationBuilder.New.WithAssemblyVersioningScheme(versioningScheme).Build();
         var variables = this.variableProvider.GetVariablesFor(version, configuration, 0);
 
-        this.fileSystem = Substitute.For<IFileSystem>();
-        this.fileSystem.File.Returns(file);
-        this.fileSystem.FileInfo.Returns(new FileSystem().FileInfo);
-        verify?.Invoke(this.fileSystem, variables);
+        var fileSystem = Substitute.For<IFileSystem>();
+        fileSystem.File.Returns(file);
+        fileSystem.FileInfo.Returns(new FileSystem().FileInfo);
+        verify?.Invoke(fileSystem, variables);
     }
 }
