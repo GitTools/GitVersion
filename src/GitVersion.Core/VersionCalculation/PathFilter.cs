@@ -13,7 +13,7 @@ internal enum PathFilterMode
 
 internal class PathFilter(IReadOnlyList<string> paths, PathFilterMode mode = PathFilterMode.Inclusive) : IVersionFilter
 {
-    private readonly IReadOnlyList<Regex> pathsRegexes = [.. paths.Select(path => new Regex(path, RegexOptions.Compiled))];
+    private readonly IReadOnlyList<Regex> pathsRegexes = [.. paths.Select(RegexPatterns.Cache.GetOrAdd)];
     private readonly ConcurrentDictionary<string, bool> pathMatchCache = [];
 
     public bool Exclude(IBaseVersion baseVersion, [NotNullWhen(true)] out string? reason)
