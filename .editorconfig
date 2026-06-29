@@ -184,3 +184,9 @@ resharper_arrange_object_creation_when_type_not_evident_highlighting = none
 resharper_unused_auto_property_accessor_global_highlighting = none
 
 resharper_unused_method_return_value_global_highlighting = none
+
+# Test projects
+# Repeated string literals in tests (branch names, versions, config keys) are
+# intentionally inline for readability, so don't flag duplicate literals there.
+[**/*.Tests/**.cs]
+dotnet_diagnostic.S1192.severity = none
