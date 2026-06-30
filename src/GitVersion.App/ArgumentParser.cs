@@ -248,9 +248,8 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
-        if (name.IsSwitch("diag"))
+        if (ParseBooleanArguments(arguments, name))
         {
-            arguments.Diag = true;
             return true;
         }
 
@@ -297,6 +296,23 @@ internal class ArgumentParser(IEnvironment environment,
             return true;
         }
 
+        if (!name.IsSwitch("verbosity"))
+        {
+            return false;
+        }
+
+        arguments.Verbosity = ParseVerbosity(value);
+        return true;
+    }
+
+    private static bool ParseBooleanArguments(Arguments arguments, string? name)
+    {
+        if (name.IsSwitch("diag"))
+        {
+            arguments.Diag = true;
+            return true;
+        }
+
         if (name.IsSwitch("nofetch"))
         {
             arguments.NoFetch = true;
@@ -318,12 +334,6 @@ internal class ArgumentParser(IEnvironment environment,
         if (name.IsSwitch("allowshallow"))
         {
             arguments.AllowShallow = true;
-            return true;
-        }
-
-        if (name.IsSwitch("verbosity"))
-        {
-            arguments.Verbosity = ParseVerbosity(value);
             return true;
         }
 
