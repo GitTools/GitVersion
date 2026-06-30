@@ -30,75 +30,80 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
 
         var projectFilesToUpdate = GetProjectFiles(context).ToList();
 
+        foreach (var localProjectFile in projectFilesToUpdate.Select(projectFile => projectFile.FullName))
+        {
+            UpdateProjectFile(localProjectFile, variables);
+        }
+
+        CommitChanges();
+    }
+
+    private void UpdateProjectFile(string localProjectFile, GitVersionVariables variables)
+    {
         var assemblyVersion = variables.AssemblySemVer;
         var assemblyInfoVersion = variables.InformationalVersion;
         var assemblyFileVersion = variables.AssemblySemFileVer;
         var packageVersion = variables.SemVer;
 
-        foreach (var localProjectFile in projectFilesToUpdate.Select(projectFile => projectFile.FullName))
+        var originalFileContents = fileSystem.File.ReadAllText(localProjectFile);
+        XElement fileXml;
+        try
         {
-            var originalFileContents = fileSystem.File.ReadAllText(localProjectFile);
-            XElement fileXml;
-            try
-            {
-                fileXml = XElement.Parse(originalFileContents);
-            }
-            catch (XmlException e)
-            {
-                throw new XmlException($"Unable to parse file as xml: {localProjectFile}", e);
-            }
-
-            if (!CanUpdateProjectFile(fileXml))
-            {
-                log.Warning($"Unable to update file: {localProjectFile}");
-                continue;
-            }
-
-            log.Debug($"Update file: {localProjectFile}");
-
-            var backupProjectFile = localProjectFile + ".bak";
-            fileSystem.File.Copy(localProjectFile, backupProjectFile, true);
-
-            this.restoreBackupTasks.Add(() =>
-            {
-                if (fileSystem.File.Exists(localProjectFile))
-                {
-                    fileSystem.File.Delete(localProjectFile);
-                }
-
-                fileSystem.File.Move(backupProjectFile, localProjectFile);
-            });
-
-            this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupProjectFile));
-
-            if (!assemblyVersion.IsNullOrWhiteSpace())
-            {
-                UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
-            }
-
-            if (!assemblyFileVersion.IsNullOrWhiteSpace())
-            {
-                UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
-            }
-
-            if (!assemblyInfoVersion.IsNullOrWhiteSpace())
-            {
-                UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
-            }
-
-            if (!packageVersion.IsNullOrWhiteSpace())
-            {
-                UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
-            }
-
-            var outputXmlString = fileXml.ToString();
-            if (originalFileContents != outputXmlString)
-            {
-                fileSystem.File.WriteAllText(localProjectFile, outputXmlString);
-            }
+            fileXml = XElement.Parse(originalFileContents);
+        }
+        catch (XmlException e)
+        {
+            throw new XmlException($"Unable to parse file as xml: {localProjectFile}", e);
         }
 
-        CommitChanges();
+        if (!CanUpdateProjectFile(fileXml))
+        {
+            log.Warning($"Unable to update file: {localProjectFile}");
+            return;
+        }
+
+        log.Debug($"Update file: {localProjectFile}");
+
+        var backupProjectFile = localProjectFile + ".bak";
+        fileSystem.File.Copy(localProjectFile, backupProjectFile, true);
+
+        this.restoreBackupTasks.Add(() =>
+        {
+            if (fileSystem.File.Exists(localProjectFile))
+            {
+                fileSystem.File.Delete(localProjectFile);
+            }
+
+            fileSystem.File.Move(backupProjectFile, localProjectFile);
+        });
+
+        this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupProjectFile));
+
+        if (!assemblyVersion.IsNullOrWhiteSpace())
+        {
+            UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
+        }
+
+        if (!assemblyFileVersion.IsNullOrWhiteSpace())
+        {
+            UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
+        }
+
+        if (!assemblyInfoVersion.IsNullOrWhiteSpace())
+        {
+            UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
+        }
+
+        if (!packageVersion.IsNullOrWhiteSpace())
+        {
+            UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
+        }
+
+        var outputXmlString = fileXml.ToString();
+        if (originalFileContents != outputXmlString)
+        {
+            fileSystem.File.WriteAllText(localProjectFile, outputXmlString);
+        }
     }
 
     public bool CanUpdateProjectFile(XElement xmlRoot)

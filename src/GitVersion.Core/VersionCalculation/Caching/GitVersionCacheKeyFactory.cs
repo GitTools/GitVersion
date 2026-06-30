@@ -70,64 +70,19 @@ internal class GitVersionCacheKeyFactory(
             var di = this.fileSystem.DirectoryInfo.New(currentDir);
             result.Add(di.Name);
 
-            string[] subDirs;
-            try
+            var subDirs = TryGetDirectories(currentDir);
+            if (subDirs is null)
             {
-                subDirs = this.fileSystem.Directory.GetDirectories(currentDir);
-            }
-            // An UnauthorizedAccessException exception will be thrown if we do not have
-            // discovery permission on a folder or file. It may or may not be acceptable
-            // to ignore the exception and continue enumerating the remaining files and
-            // folders. It is also possible (but unlikely) that a DirectoryNotFound exception
-            // will be raised. This will happen if currentDir has been deleted by
-            // another application or thread after our call to Directory.Exists. The
-            // choice of which exceptions to catch depends entirely on the specific task
-            // you are intending to perform and also on how much you know with certainty
-            // about the systems on which this code will run.
-            catch (UnauthorizedAccessException e)
-            {
-                this.log.Error(e.Message);
-                continue;
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                this.log.Error(e.Message);
                 continue;
             }
 
-            string[] files;
-            try
+            var files = TryGetFiles(currentDir);
+            if (files is null)
             {
-                files = this.fileSystem.Directory.GetFiles(currentDir);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                this.log.Error(e.Message);
-                continue;
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                this.log.Error(e.Message);
                 continue;
             }
 
-            foreach (var file in files)
-            {
-                try
-                {
-                    if (!this.fileSystem.File.Exists(file))
-                    {
-                        continue;
-                    }
-
-                    result.Add(FileSystemHelper.Path.GetFileName(file));
-                    result.Add(this.fileSystem.File.ReadAllText(file));
-                }
-                catch (IOException e)
-                {
-                    this.log.Error(e.Message);
-                }
-            }
+            AddFileContents(files, result);
 
             // Push the subdirectories onto the stack for traversal.
             // This could also be done before handing the files.
@@ -139,6 +94,72 @@ internal class GitVersionCacheKeyFactory(
         }
 
         return result;
+    }
+
+    private string[]? TryGetDirectories(string currentDir)
+    {
+        try
+        {
+            return this.fileSystem.Directory.GetDirectories(currentDir);
+        }
+        // An UnauthorizedAccessException exception will be thrown if we do not have
+        // discovery permission on a folder or file. It may or may not be acceptable
+        // to ignore the exception and continue enumerating the remaining files and
+        // folders. It is also possible (but unlikely) that a DirectoryNotFound exception
+        // will be raised. This will happen if currentDir has been deleted by
+        // another application or thread after our call to Directory.Exists. The
+        // choice of which exceptions to catch depends entirely on the specific task
+        // you are intending to perform and also on how much you know with certainty
+        // about the systems on which this code will run.
+        catch (UnauthorizedAccessException e)
+        {
+            this.log.Error(e.Message);
+            return null;
+        }
+        catch (DirectoryNotFoundException e)
+        {
+            this.log.Error(e.Message);
+            return null;
+        }
+    }
+
+    private string[]? TryGetFiles(string currentDir)
+    {
+        try
+        {
+            return this.fileSystem.Directory.GetFiles(currentDir);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            this.log.Error(e.Message);
+            return null;
+        }
+        catch (DirectoryNotFoundException e)
+        {
+            this.log.Error(e.Message);
+            return null;
+        }
+    }
+
+    private void AddFileContents(string[] files, List<string> result)
+    {
+        foreach (var file in files)
+        {
+            try
+            {
+                if (!this.fileSystem.File.Exists(file))
+                {
+                    continue;
+                }
+
+                result.Add(FileSystemHelper.Path.GetFileName(file));
+                result.Add(this.fileSystem.File.ReadAllText(file));
+            }
+            catch (IOException e)
+            {
+                this.log.Error(e.Message);
+            }
+        }
     }
 
     private string GetRepositorySnapshotHash()

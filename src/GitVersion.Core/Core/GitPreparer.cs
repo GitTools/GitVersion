@@ -395,21 +395,8 @@ internal class GitPreparer(
             return;
         }
 
-        const string referencePrefix = "refs/";
         var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
-        string localCanonicalName;
-        if (!currentBranch.StartsWith(referencePrefix))
-        {
-            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch;
-        }
-        else if (isLocalBranch)
-        {
-            localCanonicalName = currentBranch;
-        }
-        else
-        {
-            localCanonicalName = ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
-        }
+        var localCanonicalName = ResolveLocalCanonicalName(currentBranch, isLocalBranch);
 
         var repoTip = this.repository.Head.Tip;
 
@@ -425,27 +412,48 @@ internal class GitPreparer(
 
         if (repoTipId != null)
         {
-            var referenceName = ReferenceName.Parse(localCanonicalName);
-            if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
-            {
-                this.log.Info(isLocalBranch
-                    ? $"Creating local branch {referenceName}"
-                    : $"Creating local branch {referenceName} pointing at {repoTipId}");
-                this.repository.References.Add(localCanonicalName, repoTipId.Sha);
-            }
-            else
-            {
-                this.log.Info(isLocalBranch
-                    ? $"Updating local branch {referenceName} to point at {repoTipId}"
-                    : $"Updating local branch {referenceName} to match ref {currentBranch}");
-                var localRef = this.repository.References[localCanonicalName];
-                if (localRef != null)
-                {
-                    this.retryAction.Execute(() => this.repository.References.UpdateTarget(localRef, repoTipId));
-                }
-            }
+            CreateOrUpdateLocalBranch(localCanonicalName, repoTipId, isLocalBranch, currentBranch);
         }
+
         Checkout(localCanonicalName);
+    }
+
+    private static string ResolveLocalCanonicalName(string currentBranch, bool isLocalBranch)
+    {
+        const string referencePrefix = "refs/";
+        if (!currentBranch.StartsWith(referencePrefix))
+        {
+            return ReferenceName.LocalBranchPrefix + currentBranch;
+        }
+
+        if (isLocalBranch)
+        {
+            return currentBranch;
+        }
+
+        return ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
+    }
+
+    private void CreateOrUpdateLocalBranch(string localCanonicalName, IObjectId repoTipId, bool isLocalBranch, string currentBranch)
+    {
+        var referenceName = ReferenceName.Parse(localCanonicalName);
+        if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
+        {
+            this.log.Info(isLocalBranch
+                ? $"Creating local branch {referenceName}"
+                : $"Creating local branch {referenceName} pointing at {repoTipId}");
+            this.repository.References.Add(localCanonicalName, repoTipId.Sha);
+            return;
+        }
+
+        this.log.Info(isLocalBranch
+            ? $"Updating local branch {referenceName} to point at {repoTipId}"
+            : $"Updating local branch {referenceName} to match ref {currentBranch}");
+        var localRef = this.repository.References[localCanonicalName];
+        if (localRef != null)
+        {
+            this.retryAction.Execute(() => this.repository.References.UpdateTarget(localRef, repoTipId));
+        }
     }
 
     private void Checkout(string commitOrBranchSpec) => this.retryAction.Execute(() => this.repository.Checkout(commitOrBranchSpec));

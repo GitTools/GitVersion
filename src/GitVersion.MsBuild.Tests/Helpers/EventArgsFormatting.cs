@@ -155,29 +155,7 @@ internal static class EventArgsFormatting
         else
         {
             format.Append("{1}");
-
-            if (lineNumber == 0)
-            {
-                format.Append(" : ");
-            }
-            else
-            {
-                if (columnNumber == 0)
-                {
-                    format.Append(endLineNumber == 0 ? "({2}): " : "({2}-{7}): ");
-                }
-                else
-                {
-                    if (endLineNumber == 0)
-                    {
-                        format.Append(endColumnNumber == 0 ? "({2},{3}): " : "({2},{3}-{8}): ");
-                    }
-                    else
-                    {
-                        format.Append(endColumnNumber == 0 ? "({2}-{7},{3}): " : "({2},{3},{7},{8}): ");
-                    }
-                }
-            }
+            format.Append(GetPositionFormat(lineNumber, endLineNumber, columnNumber, endColumnNumber));
         }
 
         if (!string.IsNullOrWhiteSpace(subcategory))
@@ -228,6 +206,29 @@ internal static class EventArgsFormatting
         }
 
         return formattedMessage.ToString();
+    }
+
+    /// <summary>
+    /// Selects the line/column position format placeholder for the given coordinates.
+    /// </summary>
+    private static string GetPositionFormat(int lineNumber, int endLineNumber, int columnNumber, int endColumnNumber)
+    {
+        if (lineNumber == 0)
+        {
+            return " : ";
+        }
+
+        if (columnNumber == 0)
+        {
+            return endLineNumber == 0 ? "({2}): " : "({2}-{7}): ";
+        }
+
+        if (endLineNumber == 0)
+        {
+            return endColumnNumber == 0 ? "({2},{3}): " : "({2},{3}-{8}): ";
+        }
+
+        return endColumnNumber == 0 ? "({2}-{7},{3}): " : "({2},{3},{7},{8}): ";
     }
 
     /// <summary>

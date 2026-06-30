@@ -30,44 +30,53 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
                );
 
             context.Label ??= baseVersion.Operator?.Label;
-
-            var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-            var increment = VersionField.None;
-            if (!effectiveConfiguration.PreventIncrementOfMergedBranch)
-            {
-                increment = increment.Consolidate(context.Increment);
-            }
-
-            if (!effectiveConfiguration.PreventIncrementWhenBranchMerged)
-            {
-                increment = increment.Consolidate(baseVersion.Operator?.Increment);
-            }
-
-            if (effectiveConfiguration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
-            {
-                increment = increment.Consolidate(commit.Increment);
-            }
-            context.Increment = increment;
-
-            if (baseVersion.BaseVersionSource is not null)
-            {
-                context.BaseVersionSource = baseVersion.BaseVersionSource;
-                context.SemanticVersion = baseVersion.SemanticVersion;
-            }
-            else
-            {
-                if (baseVersion.SemanticVersion != SemanticVersion.Empty)
-                {
-                    context.AlternativeSemanticVersions.Add(baseVersion.SemanticVersion);
-                }
-
-                if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
-                {
-                    context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
-                }
-            }
+            context.Increment = ConsolidateIncrement(commit, context, baseVersion);
+            ApplyBaseVersion(context, baseVersion);
 
             yield break;
+        }
+    }
+
+    private static VersionField ConsolidateIncrement(MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
+    {
+        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var increment = VersionField.None;
+
+        if (!effectiveConfiguration.PreventIncrementOfMergedBranch)
+        {
+            increment = increment.Consolidate(context.Increment);
+        }
+
+        if (!effectiveConfiguration.PreventIncrementWhenBranchMerged)
+        {
+            increment = increment.Consolidate(baseVersion.Operator?.Increment);
+        }
+
+        if (effectiveConfiguration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+        {
+            increment = increment.Consolidate(commit.Increment);
+        }
+
+        return increment;
+    }
+
+    private static void ApplyBaseVersion(MainlineContext context, BaseVersion baseVersion)
+    {
+        if (baseVersion.BaseVersionSource is not null)
+        {
+            context.BaseVersionSource = baseVersion.BaseVersionSource;
+            context.SemanticVersion = baseVersion.SemanticVersion;
+            return;
+        }
+
+        if (baseVersion.SemanticVersion != SemanticVersion.Empty)
+        {
+            context.AlternativeSemanticVersions.Add(baseVersion.SemanticVersion);
+        }
+
+        if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
+        {
+            context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
         }
     }
 }
