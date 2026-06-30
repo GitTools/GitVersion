@@ -5,6 +5,7 @@ works out the [Semantic Version][semver] of the commit being built.
 
 [![Build status][github-actions-badge]][github-actions]
 [![codecov][codecov-badge]][codecov]
+[![Quality Gate Status][sonar-badge]][sonar]
 
 | Artifact                   | Stable                                                             |
 |:---------------------------|:-------------------------------------------------------------------|
@@ -56,6 +57,10 @@ from The Noun Project.
 [codecov]: https://codecov.io/gh/GitTools/GitVersion
 
 [codecov-badge]: https://codecov.io/gh/GitTools/GitVersion/branch/main/graph/badge.svg
+
+[sonar]: https://sonarcloud.io/summary/new_code?id=GitTools_GitVersion
+
+[sonar-badge]: https://sonarcloud.io/api/project_badges/measure?project=GitTools_GitVersion&metric=alert_status
 
 [docs]: https://gitversion.net/docs/
 
