@@ -46,10 +46,13 @@ updates:
         group-by: dependency-name
         patterns:
           - "JsonSchemaNet.*"
+    # Central Package Management: all versions live in the Directory.Packages.props
+    # at each of these roots, so Dependabot only needs to scan the roots.
     directories:
-      - "/build"
-      - "/new-cli"
-      - "/src"
+      - /build
+      - /new-cli
+      - /src
+      - /tests/integration
     schedule:
       interval: cron
       cronjob: "0 12 * * *"
@@ -65,8 +68,8 @@ updates:
         patterns:
           - "actions/*"
     directories:
-      - "/.github/workflows"
-      - "/.github/actions"
+      - /.github/workflows
+      - /.github/actions
     schedule:
       interval: cron
       cronjob: "0 12 * * *"
@@ -84,3 +87,13 @@ updates:
     schedule:
       interval: cron
       cronjob: "0 12 1,15 * *"
+
+  - package-ecosystem: docker
+    directory: /.devcontainer
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /build/docker
+    schedule:
+      interval: daily

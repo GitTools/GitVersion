@@ -17,6 +17,11 @@ jobs:
     name: Bump winget manifest
     runs-on: ubuntu-24.04
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Get version
         id: get-version
         shell: pwsh
