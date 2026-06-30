@@ -46,45 +46,12 @@ updates:
         group-by: dependency-name
         patterns:
           - "JsonSchemaNet.*"
+    # Central Package Management: all versions live in the Directory.Packages.props
+    # at each of these roots, so Dependabot only needs to scan the roots.
     directories:
       - /build
       - /new-cli
       - /src
-      - /build/artifacts
-      - /build/build
-      - /build/common
-      - /build/config
-      - /build/docker
-      - /build/docs
-      - /build/publish
-      - /build/release
-      - /new-cli/GitVersion.Calculation
-      - /new-cli/GitVersion.Cli.Generator.Tests
-      - /new-cli/GitVersion.Cli.Generator
-      - /new-cli/GitVersion.Cli
-      - /new-cli/GitVersion.Common.Command
-      - /new-cli/GitVersion.Common
-      - /new-cli/GitVersion.Configuration
-      - /new-cli/GitVersion.Core.Libgit2Sharp
-      - /new-cli/GitVersion.Core.Tester
-      - /new-cli/GitVersion.Core
-      - /new-cli/GitVersion.Normalization
-      - /new-cli/GitVersion.Output
-      - /src/GitVersion.App.Tests
-      - /src/GitVersion.App
-      - /src/GitVersion.BuildAgents.Tests
-      - /src/GitVersion.BuildAgents
-      - /src/GitVersion.Configuration.Tests
-      - /src/GitVersion.Configuration
-      - /src/GitVersion.Core.Tests
-      - /src/GitVersion.Core
-      - /src/GitVersion.LibGit2Sharp
-      - /src/GitVersion.MsBuild.Tests
-      - /src/GitVersion.MsBuild
-      - /src/GitVersion.Output.Tests
-      - /src/GitVersion.Output
-      - /src/GitVersion.Schema
-      - /src/GitVersion.Testing
       - /tests/integration
     schedule:
       interval: cron
@@ -103,7 +70,6 @@ updates:
     directories:
       - /.github/workflows
       - /.github/actions
-      - /
     schedule:
       interval: cron
       cronjob: "0 12 * * *"
