@@ -120,6 +120,21 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
 
         var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
 
+        var ignore = CollectIgnoredMergeCommitBranches(branch, commitBranches);
+
+        RemoveCommitBranchesFoundInOtherBranches(commitBranches, ignore);
+
+        foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
+        {
+            foreach (var item in GetSourceBranchesForGrouping(branchGrouping, referenceLookup, returnedBranches))
+            {
+                yield return item;
+            }
+        }
+    }
+
+    private static HashSet<BranchCommit> CollectIgnoredMergeCommitBranches(IBranch branch, HashSet<BranchCommit> commitBranches)
+    {
         var ignore = new HashSet<BranchCommit>();
         foreach (var commitBranch in commitBranches)
         {
@@ -133,6 +148,11 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
             }
         }
 
+        return ignore;
+    }
+
+    private static void RemoveCommitBranchesFoundInOtherBranches(HashSet<BranchCommit> commitBranches, HashSet<BranchCommit> ignore)
+    {
         foreach (var item in commitBranches.Skip(1).Reverse().Where(item => !ignore.Contains(item)))
         {
             foreach (var commitBranch in commitBranches)
@@ -148,31 +168,32 @@ internal class RepositoryStore(ILog log, IGitRepository repository) : IRepositor
                 }
             }
         }
+    }
 
-        foreach (var branchGrouping in commitBranches.GroupBy(element => element.Commit, element => element.Branch))
+    private static IEnumerable<IBranch> GetSourceBranchesForGrouping(
+        IGrouping<ICommit, IBranch> branchGrouping, ILookup<string, IReference> referenceLookup, HashSet<IBranch> returnedBranches)
+    {
+        var referenceMatchFound = false;
+        var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
+
+        foreach (var item in branchGrouping.Where(item => referenceNames.Contains(item.Name)))
         {
-            var referenceMatchFound = false;
-            var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
-
-            foreach (var item in branchGrouping.Where(item => referenceNames.Contains(item.Name)))
-            {
-                if (returnedBranches.Add(item))
-                {
-                    yield return item;
-                }
-
-                referenceMatchFound = true;
-            }
-
-            if (referenceMatchFound)
-            {
-                continue;
-            }
-
-            foreach (var item in branchGrouping.Where(returnedBranches.Add))
+            if (returnedBranches.Add(item))
             {
                 yield return item;
             }
+
+            referenceMatchFound = true;
+        }
+
+        if (referenceMatchFound)
+        {
+            yield break;
+        }
+
+        foreach (var item in branchGrouping.Where(returnedBranches.Add))
+        {
+            yield return item;
         }
     }
 
