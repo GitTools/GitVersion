@@ -31,64 +31,62 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
         log.Info("Updating assembly info files");
         log.Info($"Found {assemblyInfoFiles.Count} files");
 
-        var assemblyVersion = variables.AssemblySemVer;
-        var assemblyVersionString = !assemblyVersion.IsNullOrWhiteSpace() ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
-
-        var assemblyInfoVersion = variables.InformationalVersion;
-        var assemblyInfoVersionString = !assemblyInfoVersion.IsNullOrWhiteSpace() ? $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")" : null;
-
-        var assemblyFileVersion = variables.AssemblySemFileVer;
-        var assemblyFileVersionString = !assemblyFileVersion.IsNullOrWhiteSpace() ? $"AssemblyFileVersion(\"{assemblyFileVersion}\")" : null;
-
         foreach (var assemblyInfoFile in assemblyInfoFiles)
         {
-            var localAssemblyInfo = assemblyInfoFile.FullName;
-            var backupAssemblyInfo = localAssemblyInfo + ".bak";
-            fileSystem.File.Copy(localAssemblyInfo, backupAssemblyInfo, true);
-
-            this.restoreBackupTasks.Add(() =>
-            {
-                if (fileSystem.File.Exists(localAssemblyInfo))
-                {
-                    fileSystem.File.Delete(localAssemblyInfo);
-                }
-
-                fileSystem.File.Move(backupAssemblyInfo, localAssemblyInfo);
-            });
-
-            this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupAssemblyInfo));
-
-            var originalFileContents = fileSystem.File.ReadAllText(localAssemblyInfo);
-            var fileContents = originalFileContents;
-            var appendedAttributes = false;
-
-            if (!assemblyVersion.IsNullOrWhiteSpace())
-            {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
-            }
-
-            if (!assemblyFileVersion.IsNullOrWhiteSpace())
-            {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
-            }
-
-            if (!assemblyInfoVersion.IsNullOrWhiteSpace())
-            {
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
-            }
-
-            if (appendedAttributes)
-            {
-                // If we appended any attributes, put a new line after them
-                fileContents += NewLine;
-            }
-
-            if (originalFileContents != fileContents)
-            {
-                fileSystem.File.WriteAllText(localAssemblyInfo, fileContents);
-            }
+            UpdateAssemblyInfoFile(assemblyInfoFile, variables);
         }
+
         CommitChanges();
+    }
+
+    private void UpdateAssemblyInfoFile(IFileInfo assemblyInfoFile, GitVersionVariables variables)
+    {
+        var localAssemblyInfo = assemblyInfoFile.FullName;
+        var backupAssemblyInfo = localAssemblyInfo + ".bak";
+        fileSystem.File.Copy(localAssemblyInfo, backupAssemblyInfo, true);
+
+        this.restoreBackupTasks.Add(() =>
+        {
+            if (fileSystem.File.Exists(localAssemblyInfo))
+            {
+                fileSystem.File.Delete(localAssemblyInfo);
+            }
+
+            fileSystem.File.Move(backupAssemblyInfo, localAssemblyInfo);
+        });
+
+        this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupAssemblyInfo));
+
+        var originalFileContents = fileSystem.File.ReadAllText(localAssemblyInfo);
+        var fileContents = originalFileContents;
+        var appendedAttributes = false;
+        var extension = assemblyInfoFile.Extension;
+
+        if (!variables.AssemblySemVer.IsNullOrWhiteSpace())
+        {
+            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, $"AssemblyVersion(\"{variables.AssemblySemVer}\")", extension, ref appendedAttributes);
+        }
+
+        if (!variables.AssemblySemFileVer.IsNullOrWhiteSpace())
+        {
+            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, $"AssemblyFileVersion(\"{variables.AssemblySemFileVer}\")", extension, ref appendedAttributes);
+        }
+
+        if (!variables.InformationalVersion.IsNullOrWhiteSpace())
+        {
+            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, $"AssemblyInformationalVersion(\"{variables.InformationalVersion}\")", extension, ref appendedAttributes);
+        }
+
+        if (appendedAttributes)
+        {
+            // If we appended any attributes, put a new line after them
+            fileContents += NewLine;
+        }
+
+        if (originalFileContents != fileContents)
+        {
+            fileSystem.File.WriteAllText(localAssemblyInfo, fileContents);
+        }
     }
 
     public void Dispose()
