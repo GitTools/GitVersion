@@ -36,17 +36,18 @@ env:
 
   ENABLED_DIAGNOSTICS: ${{ vars.ENABLED_DIAGNOSTICS }}
 
-permissions:
-  contents: read
-
 jobs:
   prepare:
     name: Prepare
+    permissions:
+      contents: read
     uses: ./.github/workflows/_prepare.yml
 
   publish_flags:
     name: Publish Flags
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     outputs:
       can_publish: ${{ steps.flags.outputs.can_publish }}
     steps:
@@ -58,6 +59,8 @@ jobs:
   build:
     name: Build & Package
     needs: [ prepare ]
+    permissions:
+      contents: read
     uses: ./.github/workflows/_build.yml
 
   unit_test:
@@ -75,11 +78,15 @@ jobs:
   artifacts_windows_test:
     name: Artifacts Windows
     needs: [ build ]
+    permissions:
+      contents: read
     uses: ./.github/workflows/_artifacts_windows.yml
 
   artifacts_linux_test:
     needs: [ prepare, build ]
     name: Artifacts Linux (${{ matrix.arch }})
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:

@@ -32,7 +32,7 @@ function MarkShipped([string]$dir) {
     }
 
     $changeCount = $added.Count + $removed.Count
-    Write-Host ("{0,-6} Processed {1}" -f "[$changeCount]", $unshippedFilePath)
+    Write-Output ("{0,-6} Processed {1}" -f "[$changeCount]", $unshippedFilePath)
 
     $shipped | Sort-Object -Unique | Where-Object { -not $removed.Contains($_) } | Out-File $shippedFilePath -Encoding Ascii
     $nullableHeader | Out-File $unshippedFilePath -Encoding Ascii
