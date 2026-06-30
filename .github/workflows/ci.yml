@@ -159,7 +159,7 @@ jobs:
       CAN_PUBLISH: ${{ github.event_name == 'repository_dispatch' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
@@ -176,7 +176,7 @@ jobs:
       - name: Load DockerHub credentials
         id: dockerhub-creds
         if: env.CAN_PUBLISH == 'true'
-        uses: gittools/cicd/dockerhub-creds@v5
+        uses: gittools/cicd/dockerhub-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
@@ -194,7 +194,7 @@ jobs:
 
       - name: '[Publish Release]'
         if: github.event_name == 'repository_dispatch'
-        uses: peter-evans/repository-dispatch@v4
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}

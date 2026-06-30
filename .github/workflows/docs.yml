@@ -37,20 +37,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
       - name: Cache cake frosting
         id: cache-cake
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: run
           key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
       - name: Use cached tools
         id: cache-tools
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: tools
           key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -64,14 +64,14 @@ jobs:
 
       - name: Cache Node Modules
         id: cache-node
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ steps.cache-node-dir.outputs.dir }}
           key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
           restore-keys: node-${{ runner.os }}
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           global-json-file: global.json
 
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
@@ -101,7 +101,7 @@ jobs:
         run: dotnet run/docs.dll --target=BuildDocs
 
       - name: '[HTMLProofer]'
-        uses: chabad360/htmlproofer@master
+        uses: chabad360/htmlproofer@a1a3419200cea0e832a5c6249647d1d271178e82 # master
         with:
           directory: ./artifacts/docs/preview
           arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension --disable-external --no-check_external_hash
@@ -113,7 +113,7 @@ jobs:
           echo "value=$value" >> $GITHUB_OUTPUT
 
       - name: '[Remark Lint]'
-        uses: reviewdog/action-remark-lint@v5
+        uses: reviewdog/action-remark-lint@82225f7db5b4a3caaca3052733b6800fa7d109b0 # v5
         with:
           github_token: ${{ github.token }}
           reporter: ${{ steps.reporter.outputs.value }}
@@ -130,7 +130,7 @@ jobs:
       GITHUB_USERNAME: ${{ github.actor }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 

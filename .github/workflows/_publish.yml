@@ -24,14 +24,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
       - name: Restore State
         uses: ./.github/actions/cache-restore
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         name: Download nuget packages
         with:
           name: nuget
@@ -40,14 +40,14 @@ jobs:
       - name: Load NuGet credentials
         id: nuget-creds
         if: inputs.publish_packages
-        uses: gittools/cicd/nuget-creds@v5
+        uses: gittools/cicd/nuget-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Load Chocolatey credentials
         id: choco-creds
         if: inputs.publish_packages
-        uses: gittools/cicd/choco-creds@v5
+        uses: gittools/cicd/choco-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 

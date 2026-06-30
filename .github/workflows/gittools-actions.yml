@@ -35,13 +35,13 @@ jobs:
 
       - name: Load GitHub App credentials
         id: github-app-creds
-        uses: gittools/cicd/github-app-creds@v5
+        uses: gittools/cicd/github-app-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Generate GitHub App Token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           app-id: ${{ steps.github-app-creds.outputs.gh_app_id }}
           private-key: ${{ steps.github-app-creds.outputs.gh_app_private_key }}
@@ -49,7 +49,7 @@ jobs:
           repositories: actions
           permission-contents: write
 
-      - uses: peter-evans/repository-dispatch@v4
+      - uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4
         name: Update GitTools Actions
         with:
           token: ${{ steps.app-token.outputs.token }}

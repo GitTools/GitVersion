@@ -29,20 +29,20 @@ jobs:
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
       - name: Restore State
         uses: ./.github/actions/cache-restore
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         name: Download nuget packages
         with:
           name: nuget
           path: ${{ github.workspace }}/artifacts/packages/nuget
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         name: Download native packages
         with:
           name: native-Linux
@@ -52,7 +52,7 @@ jobs:
         uses: ./.github/actions/docker-setup
 
       - name: '[Test Artifacts]'
-        uses: nick-fields/retry@v4
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
         with:
           shell: pwsh
           timeout_minutes: 30

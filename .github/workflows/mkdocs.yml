@@ -29,13 +29,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: gittools/cicd/checkout@v5
+        uses: gittools/cicd/checkout@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 1
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           global-json-file: global.json
 
@@ -46,6 +46,6 @@ jobs:
         working-directory: ${{ github.workspace }}/docs/input
 
       - name: Commit and push markdown docs changes
-        uses: gittools/cicd/git-commit-push@v5
+        uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           message: "include markdown docs changes"

@@ -31,11 +31,11 @@ jobs:
 
       - name: Load GitHub release token
         id: github-creds
-        uses: gittools/cicd/github-creds@v5
+        uses: gittools/cicd/github-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-      - uses: mislav/bump-homebrew-formula-action@v4
+      - uses: mislav/bump-homebrew-formula-action@ccf2332299a883f6af50a1d2d41e5df7904dd769 # v4
         name: Bump Homebrew formula
         with:
           formula-name: gitversion

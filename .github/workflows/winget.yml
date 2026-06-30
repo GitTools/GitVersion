@@ -35,11 +35,11 @@ jobs:
 
       - name: Load GitHub release token
         id: github-creds
-        uses: gittools/cicd/github-creds@v5
+        uses: gittools/cicd/github-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-      - uses: michidk/run-komac@v2.1.0
+      - uses: michidk/run-komac@9b27eadc6e9235c252444a437d246c139da2f57f # v2.1.0
         env:
           GITHUB_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
         with:
