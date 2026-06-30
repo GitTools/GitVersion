@@ -96,7 +96,6 @@ public sealed class SemanticVersionPreReleaseTag :
         var match = RegexPatterns.SemanticVersion.ParsePreReleaseTagRegex.Match(preReleaseTag);
         if (!match.Success)
         {
-            // TODO check how to log this
             Console.WriteLine($"Unable to successfully parse semver tag {preReleaseTag}");
             return Empty;
         }

@@ -82,7 +82,6 @@ internal class MergeBaseFinder(IRepositoryStore repositoryStore, ILog log)
                 continue;
             }
 
-            // TODO Fix the logging up in this section
             var second = forwardMerge.Parents[0];
             this.log.Debug($"Second {second}");
             var mergeBase = this.repositoryStore.FindMergeBase(commit, second);

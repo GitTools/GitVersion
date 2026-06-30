@@ -14,7 +14,6 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
         commit.NotNull();
         branches ??= [.. this.repositoryStore.Branches];
 
-        // TODO Should we cache this?
         // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
         // Details at https://github.com/GitTools/GitVersion/issues/2755
         return InnerGetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
@@ -26,7 +25,6 @@ internal class BranchesContainingCommitFinder(IRepositoryStore repositoryStore, 
         {
             var directBranchHasBeenFound = false;
             this.log.Info("Trying to find direct branches.");
-            // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
             var branchList = branches.ToList();
             foreach (var branch in branchList.Where(branch => BranchTipIsNullOrCommit(branch, commit) && !IncludeTrackedBranches(branch, onlyTrackedBranches)))
             {
