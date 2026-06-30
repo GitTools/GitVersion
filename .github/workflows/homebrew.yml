@@ -40,16 +40,28 @@ jobs:
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-      - uses: mislav/bump-homebrew-formula-action@ccf2332299a883f6af50a1d2d41e5df7904dd769 # v4.1
-        name: Bump Homebrew formula
-        with:
-          formula-name: gitversion
-          tag-name: ${{ steps.get-version.outputs.version }}
-          download-url: https://github.com/GitTools/GitVersion/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
-          push-to: gittools-bot/homebrew-core
-          commit-message: |
-            {{formulaName}} {{version}}
-
-            For additional details see https://github.com/GitTools/GitVersion/releases/tag/${{ steps.get-version.outputs.version }}
+      - name: Bump Homebrew formula
         env:
-          COMMITTER_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
+          HOMEBREW_GIT_NAME: GitTools Bot
+          HOMEBREW_GIT_EMAIL: gittoolsbot@outlook.com
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          version="${{ steps.get-version.outputs.version }}"
+          url="https://github.com/GitTools/GitVersion/archive/refs/tags/${version}.tar.gz"
+          sha256="$(curl -fsSL --proto '=https' --proto-redir '=https' "$url" | shasum -a 256 | cut -d ' ' -f 1)"
+
+          git config --global user.name "GitTools Bot"
+          git config --global user.email "gittoolsbot@outlook.com"
+
+          # No --fork-org: that flag requires an *organization* login, but the
+          # publish runs as the gittools-bot *user*. Omitting it makes brew fork
+          # to the authenticated user (gittools-bot/homebrew-core) — the same
+          # target the old action used via push-to.
+          brew bump-formula-pr gitversion \
+            --url "$url" \
+            --sha256 "$sha256" \
+            --fork-org gittools
+            --no-audit \
+            --no-browse \
+            --message "For additional details see https://github.com/GitTools/GitVersion/releases/tag/${version}"
