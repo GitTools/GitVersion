@@ -1,9 +1,1 @@
 #nullable enable
-static GitVersion.Git.ReferenceName.operator <(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
-static GitVersion.Git.ReferenceName.operator <=(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
-static GitVersion.Git.ReferenceName.operator >(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
-static GitVersion.Git.ReferenceName.operator >=(GitVersion.Git.ReferenceName? left, GitVersion.Git.ReferenceName? right) -> bool
-static GitVersion.SemanticVersionWithTag.operator <(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
-static GitVersion.SemanticVersionWithTag.operator <=(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
-static GitVersion.SemanticVersionWithTag.operator >(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
-static GitVersion.SemanticVersionWithTag.operator >=(GitVersion.SemanticVersionWithTag? left, GitVersion.SemanticVersionWithTag? right) -> bool
