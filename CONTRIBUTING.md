@@ -142,6 +142,39 @@ We use Cake for our build and deployment process. The way the release process is
    and other distribution channels.
 9. The issues and pull requests will get updated with message specifying in which release it was included.
 
+### Running the release with the `release` agent skill
+
+Steps 2–9 above are automated by the `release` agent skill, kept at [`.agents/skills/release/SKILL.md`](.agents/skills/release/SKILL.md)
+(also symlinked at `.claude/skills/release` for tool discovery, and referenced from [`AGENTS.md`](AGENTS.md)). It walks
+through milestone setup, GitReleaseManager label validation, creating the GitHub release, monitoring the downstream
+publish PRs (Homebrew, winget, GitTools Actions), and verifying published artifacts (NuGet, Docker, Chocolatey, docs schema).
+
+All three supported coding agents resolve to the same skill file, with different invocation mechanics:
+
+- **Claude Code** has native skill support. Open a session in the repo root and run:
+
+  ```
+  /release
+  ```
+
+  or ask the assistant to run the `release` skill directly if slash commands aren't available in your client.
+
+- **GitHub Copilot** reads [`.github/copilot-instructions.md`](.github/copilot-instructions.md), which points to `AGENTS.md`.
+  Ask Copilot Chat (or the Copilot coding agent) to perform a GitVersion release; it should follow the pointer to
+  `AGENTS.md` and from there to the skill file. If it doesn't pick up the pointer on its own, explicitly ask it to
+  read `.agents/skills/release/SKILL.md` and follow its phases in order.
+
+- **Codex CLI** reads `AGENTS.md` automatically as repo-specific guidance. Ask it to perform a GitVersion release;
+  it should follow the `AGENTS.md` pointer to `.agents/skills/release/SKILL.md`. As with Copilot, you can also
+  reference the skill file path directly if it doesn't follow the pointer unprompted.
+
+In every case, the skill requires the `gh` CLI installed and authenticated (`gh auth login`) — Phase 0 checks this
+before doing anything else.
+
+The skill is interactive: it stops at each phase to show its findings and confirm next steps with you (e.g. before
+creating the GitHub release, before fixing label issues, before retrying a failed publish workflow). It does not
+wait for downstream PRs to merge — once a PR is confirmed created it's linked in the summary and considered done.
+
 ### NuGet Trusted Publishing
 
 NuGet packages are published to nuget.org using [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing),

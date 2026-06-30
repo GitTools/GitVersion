@@ -127,3 +127,6 @@ dogfood/
 new-cli/log.txt
 
 new-cli/logs/
+
+# Agent skills (name collides with the VS build-output [Rr]elease/ rule above)
+!.agents/skills/release/

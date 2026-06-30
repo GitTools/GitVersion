@@ -101,6 +101,15 @@ dotnet run --project new-cli/GitVersion.Cli
 - **Commit style**: prefer atomic commits; rebase onto `main` rather than merging.
 - **Tests**: integration tests live in `src/GitVersion.Core.Tests/IntegrationTests/`. Use `EmptyRepositoryFixture` / `BaseGitFlowRepositoryFixture` and builder patterns (`GitFlowConfigurationBuilder`, `GitHubFlowConfigurationBuilder`).
 
+## Release process
+
+Cutting a release (milestone setup, label validation, creating the GitHub release, monitoring downstream
+publish PRs for Homebrew/winget/GitTools Actions, and verifying published artifacts on NuGet/Docker/Chocolatey)
+is documented step-by-step in [`.agents/skills/release/SKILL.md`](.agents/skills/release/SKILL.md) — read that
+file in full before doing any release work, and follow its phases in order rather than improvising. It's also
+symlinked at `.claude/skills/release` for tool discovery, and summarized for humans in
+[`CONTRIBUTING.md`](CONTRIBUTING.md#release-process). It requires the `gh` CLI authenticated (`gh auth login`).
+
 ## Tips
 
 - For `gh` commands, set `GH_PAGER=cat GH_FORCE_TTY=0` to avoid pager/TTY issues in non-interactive terminals.
