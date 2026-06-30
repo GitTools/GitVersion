@@ -6,19 +6,19 @@ runs:
   steps:
     - name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v5
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     - name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v5
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
       with:
         global-json-file: global.json
