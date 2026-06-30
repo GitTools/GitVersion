@@ -64,17 +64,23 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
 
         if (!variables.AssemblySemVer.IsNullOrWhiteSpace())
         {
-            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, $"AssemblyVersion(\"{variables.AssemblySemVer}\")", extension, ref appendedAttributes);
+            var result = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyVersionRegex, fileContents, $"AssemblyVersion(\"{variables.AssemblySemVer}\")", extension);
+            fileContents = result.Content;
+            appendedAttributes |= result.Appended;
         }
 
         if (!variables.AssemblySemFileVer.IsNullOrWhiteSpace())
         {
-            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, $"AssemblyFileVersion(\"{variables.AssemblySemFileVer}\")", extension, ref appendedAttributes);
+            var result = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyFileVersionRegex, fileContents, $"AssemblyFileVersion(\"{variables.AssemblySemFileVer}\")", extension);
+            fileContents = result.Content;
+            appendedAttributes |= result.Appended;
         }
 
         if (!variables.InformationalVersion.IsNullOrWhiteSpace())
         {
-            fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, $"AssemblyInformationalVersion(\"{variables.InformationalVersion}\")", extension, ref appendedAttributes);
+            var result = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(RegexPatterns.Output.AssemblyInfoVersionRegex, fileContents, $"AssemblyInformationalVersion(\"{variables.InformationalVersion}\")", extension);
+            fileContents = result.Content;
+            appendedAttributes |= result.Appended;
         }
 
         if (appendedAttributes)
@@ -111,13 +117,13 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
         this.restoreBackupTasks.Clear();
     }
 
-    private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string? replaceString, string fileExtension, ref bool appendedAttributes)
+    private (string Content, bool Appended) ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string? replaceString, string fileExtension)
     {
         var assemblyAddFormat = this.templateManager.GetAddFormatFor(fileExtension);
 
         if (replaceRegex.IsMatch(inputString) && replaceString != null)
         {
-            return replaceRegex.Replace(inputString, replaceString);
+            return (replaceRegex.Replace(inputString, replaceString), false);
         }
 
         if (this.assemblyAttributeRegexes.TryGetValue(fileExtension, out var assemblyRegex))
@@ -138,7 +144,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
                 }
 
                 replacementString += NewLine;
-                return inputString.Replace(lastMatch.Value, replacementString);
+                return (inputString.Replace(lastMatch.Value, replacementString), false);
             }
         }
 
@@ -147,8 +153,7 @@ internal sealed class AssemblyInfoFileUpdater(ILog log, IFileSystem fileSystem) 
             inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
         }
 
-        appendedAttributes = true;
-        return inputString;
+        return (inputString, true);
     }
 
     private IEnumerable<IFileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
