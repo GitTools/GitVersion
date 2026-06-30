@@ -32,41 +32,37 @@ internal sealed class EffectiveBranchConfigurationFinder(ILog log, IRepositorySt
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
         }
 
-        IBranch[] sourceBranches = [];
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
-        {
-            // At this point we need to check if source branches are available.
-            sourceBranches = [.. this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches)];
-
-            if (sourceBranches.Length == 0)
-            {
-                // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
-                // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
-                var skipTraversingOfOrphanedBranches = configuration.Increment == IncrementStrategy.Inherit;
-                this.log.Info(
-                    $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
-                );
-                if (skipTraversingOfOrphanedBranches)
-                {
-                    yield break;
-                }
-            }
-        }
-
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit && sourceBranches.Length != 0)
-        {
-            foreach (var sourceBranch in sourceBranches)
-            {
-                foreach (var effectiveConfiguration
-                    in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches))
-                {
-                    yield return effectiveConfiguration;
-                }
-            }
-        }
-        else
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit)
         {
             yield return new(new(configuration, branchConfiguration), branch);
+            yield break;
+        }
+
+        // At this point we need to check if source branches are available.
+        IBranch[] sourceBranches = [.. this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches)];
+
+        if (sourceBranches.Length == 0)
+        {
+            // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
+            // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
+            var skipTraversingOfOrphanedBranches = configuration.Increment == IncrementStrategy.Inherit;
+            this.log.Info(
+                $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
+            );
+            if (!skipTraversingOfOrphanedBranches)
+            {
+                yield return new(new(configuration, branchConfiguration), branch);
+            }
+            yield break;
+        }
+
+        foreach (var sourceBranch in sourceBranches)
+        {
+            foreach (var effectiveConfiguration
+                in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches))
+            {
+                yield return effectiveConfiguration;
+            }
         }
     }
 }
