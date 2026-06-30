@@ -8,6 +8,8 @@ namespace Common.Addins.GitVersion;
 /// </summary>
 public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
 {
+    private const string ToolName = "GitVersion";
+
     private readonly ICakeLog _log;
 
     /// <summary>
@@ -196,7 +198,7 @@ public sealed partial class GitVersionRunner : Tool<GitVersionSettings>
     /// Gets the name of the tool.
     /// </summary>
     /// <returns>The name of the tool.</returns>
-    protected override string GetToolName() => "GitVersion";
+    protected override string GetToolName() => ToolName;
 
     /// <summary>
     /// Gets the possible names of the tool executable.
