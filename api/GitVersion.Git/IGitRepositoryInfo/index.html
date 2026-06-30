@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -195,14 +196,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
@@ -257,11 +255,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Class Types</li>
             <li>
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -275,6 +276,11 @@
           <h1>IGitRepositoryInfo <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Provides paths describing the layout of the Git repository on disk.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -331,7 +337,11 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the path to the
+                        <code class="cs">.git</code> directory, or
+                        <code class="cs">null</code> when not yet discovered.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -342,7 +352,11 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the path to the dynamically created Git repository
+                        used for shallow-clone scenarios, or
+                        <code class="cs">null</code> when not applicable.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -353,7 +367,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the root path of the Git working tree, or
+                        <code class="cs">null</code> when not yet discovered.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -364,7 +381,11 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the path to the project root directory (the
+                        directory that contains the solution or project file),
+                        or <code class="cs">null</code> when not determined.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -393,7 +414,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

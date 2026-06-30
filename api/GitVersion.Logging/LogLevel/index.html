@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -194,17 +195,17 @@
               <a href="/api/GitVersion.Logging">GitVersion<wbr />.Logging</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li class="selected">
+              <a href="/api/GitVersion.Logging/LogLevel">LogLevel</a>
+            </li>
+            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
             <li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
             <li>
               <a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li class="selected">
-              <a href="/api/GitVersion.Logging/LogLevel">LogLevel</a>
-            </li>
-            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Delegate Types</li>
             <li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
             <li>
@@ -226,6 +227,11 @@
           <h1>LogLevel <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Defines the severity levels used when writing log messages.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -296,7 +302,10 @@
                     </td>
                     <td>5</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Very detailed low-level diagnostic output, typically
+                        only useful during development.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -310,7 +319,9 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        A serious failure occurred that may be recoverable.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -324,7 +335,9 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        The application cannot continue and must terminate.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -338,7 +351,9 @@
                     </td>
                     <td>3</td>
                     <td>
-                      <div></div>
+                      <div>
+                        General informational output about normal operation.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -352,7 +367,9 @@
                     </td>
                     <td>4</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Detailed diagnostic output useful for troubleshooting.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -366,7 +383,10 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        An unexpected but non-fatal situation that deserves
+                        attention.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

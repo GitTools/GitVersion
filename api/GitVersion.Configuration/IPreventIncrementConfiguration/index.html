@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -214,6 +215,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -251,18 +264,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -276,6 +277,12 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Controls under what circumstances automatic version increments
+            should be suppressed.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -323,7 +330,11 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether version increment is
+                        prevented when this branch is itself the result of a
+                        merge.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -335,7 +346,11 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether version increment is
+                        prevented at the point when this branch is merged into
+                        another.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -347,7 +362,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether version increment is
+                        prevented when the current commit is already tagged.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -376,7 +394,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

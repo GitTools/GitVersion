@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -192,6 +193,19 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li class="selected">
+              <a href="/api/GitVersion/OutputType">OutputType</a>
+            </li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -257,19 +271,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li class="selected">
-              <a href="/api/GitVersion/OutputType">OutputType</a>
-            </li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -295,6 +296,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -309,6 +313,11 @@
           <h1>OutputType <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Specifies the format in which GitVersion outputs version variables.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -375,7 +384,11 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes version variables to the CI build server's
+                        environment (e.g. TeamCity build parameters, GitHub
+                        Actions outputs).
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -387,7 +400,10 @@
                     </td>
                     <td>3</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes version variables in the
+                        <code class="cs">KEY=value</code> dotenv format.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -399,7 +415,7 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>Writes version variables to a file on disk.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -411,7 +427,10 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes version variables as a JSON object to standard
+                        output.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

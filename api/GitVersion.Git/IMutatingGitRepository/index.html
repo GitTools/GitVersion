@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -195,14 +196,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
@@ -257,11 +255,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Class Types</li>
             <li>
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -277,6 +278,17 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Extends
+            <code class="cs"
+              ><a href="/api/GitVersion.Git/IGitRepository"
+                >IGitRepository</a
+              ></code
+            >
+            with operations that modify the repository state.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -336,7 +348,7 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>Checks out the specified commit or branch.</div>
                     </td>
                   </tr>
                   <tr>
@@ -349,7 +361,15 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Clones the repository at
+                        <span name="sourceUrl" class="paramref">sourceUrl</span>
+                        into
+                        <span name="workdirPath" class="paramref"
+                          >workdirPath</span
+                        >
+                        using the supplied credentials.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -361,7 +381,10 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Creates a local branch that tracks the pull-request ref
+                        identified by the current build environment.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -375,7 +398,13 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Fetches the given
+                        <span name="refSpecs" class="paramref">refSpecs</span>
+                        from
+                        <span name="remote" class="paramref">remote</span> using
+                        the supplied credentials.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -404,7 +433,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

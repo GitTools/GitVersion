@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#Methods">Methods</a></p>
@@ -196,14 +197,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
@@ -258,11 +256,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Class Types</li>
             <li>
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -276,6 +277,11 @@
           <h1>IReferenceCollection <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents the set of all references in a Git repository.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -336,7 +342,10 @@
                       <a href="/api/GitVersion.Git/IReference">IReference</a>
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the current HEAD reference, or
+                        <code class="cs">null</code> when HEAD is unborn.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -350,7 +359,12 @@
                       <a href="/api/GitVersion.Git/IReference">IReference</a>
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the reference with the given
+                        <span name="referenceName" class="paramref"
+                          >referenceName</span
+                        >, or <code class="cs">null</code> if it does not exist.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -364,7 +378,11 @@
                       <a href="/api/GitVersion.Git/IReference">IReference</a>
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the reference with the given canonical
+                        <span name="name" class="paramref">name</span>, or
+                        <code class="cs">null</code> if it does not exist.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -393,7 +411,14 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Creates a new reference named
+                        <span name="name" class="paramref">name</span> pointing
+                        to
+                        <span name="canonicalRefNameOrObject" class="paramref"
+                          >canonicalRefNameOrObject</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -410,7 +435,10 @@
                       >&gt;<wbr />
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns all references whose canonical names start with
+                        <span name="prefix" class="paramref">prefix</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -422,7 +450,12 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Updates the target of the direct reference
+                        <span name="directRef" class="paramref">directRef</span>
+                        to point to
+                        <span name="targetId" class="paramref">targetId</span>.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -451,7 +484,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -214,6 +215,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -251,18 +264,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -273,6 +274,12 @@
           <h1>IIgnoreConfiguration <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Specifies which commits or time ranges should be excluded from
+            version calculation.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -319,7 +326,11 @@
                     </td>
                     <td>DateTimeOffset?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the cut-off date before which commits are ignored;
+                        <code class="cs">null</code> means no date filter is
+                        applied.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -331,7 +342,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this configuration
+                        contains no ignore rules.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -343,7 +357,10 @@
                     </td>
                     <td>IReadOnlySet<wbr />&lt;string&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the set of file paths whose changes should be
+                        ignored during version calculation.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -355,7 +372,10 @@
                     </td>
                     <td>IReadOnlySet<wbr />&lt;string&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the set of commit SHAs that should be excluded from
+                        version calculation.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -384,7 +404,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

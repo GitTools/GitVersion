@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -214,6 +215,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -251,18 +264,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -273,6 +274,17 @@
           <h1>I<wbr />Configuration<wbr />Provider <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Loads and provides the
+            <code class="cs"
+              ><a href="/api/GitVersion.Configuration/IGitVersionConfiguration"
+                >IGitVersionConfiguration</a
+              ></code
+            >
+            for the current repository.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -325,7 +337,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the resolved configuration, optionally applying
+                        the supplied override values.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -354,7 +369,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

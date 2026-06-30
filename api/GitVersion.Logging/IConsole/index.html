@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -195,6 +196,9 @@
               <a href="/api/GitVersion.Logging">GitVersion<wbr />.Logging</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Interface Types</li>
             <li class="selected">
               <a href="/api/GitVersion.Logging/IConsole">IConsole</a>
@@ -203,9 +207,6 @@
             <li>
               <a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Delegate Types</li>
             <li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
             <li>
@@ -227,6 +228,12 @@
           <h1>IConsole <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Provides console I/O operations used by GitVersion's logging
+            infrastructure.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -272,7 +279,7 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>Reads a line of text from the console.</div>
                     </td>
                   </tr>
                   <tr>
@@ -283,7 +290,14 @@
                     </td>
                     <td>IDisposable</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a disposable that sets the console foreground
+                        colour to
+                        <span name="consoleColor" class="paramref"
+                          >consoleColor</span
+                        >
+                        and restores the previous colour when disposed.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -294,7 +308,10 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes <span name="msg" class="paramref">msg</span> to
+                        the console without a trailing newline.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -305,7 +322,11 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes
+                        <span name="msg" class="paramref">msg</span> followed by
+                        a newline to the console.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -334,7 +355,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

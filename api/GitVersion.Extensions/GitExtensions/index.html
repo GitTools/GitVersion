@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <hr class="infobar-hidden" />
@@ -254,6 +255,12 @@
           <h1>GitExtensions <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Extension and utility methods that supplement Git-related
+            operations.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -308,7 +315,15 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Builds the <code class="cs">git log</code> argument
+                        string for a decorated graph view, optionally limiting
+                        to
+                        <span name="maxCommits" class="paramref"
+                          >maxCommits</span
+                        >
+                        commits.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -324,7 +339,11 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes a hint message explaining how to run
+                        <code class="cs">git log --graph</code> to visualise the
+                        repository history.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -193,6 +194,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -258,17 +270,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -294,6 +295,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -308,6 +312,12 @@
           <h1>IGitVersionModule <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents a self-contained IoC registration module that adds a
+            cohesive set of services to the DI container.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -320,8 +330,21 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>
-                          <a href="/api/GitVersion/GitVersionCommonModule"
-                            >Git<wbr />Version<wbr />Common<wbr />Module</a
+                          <a
+                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                            >Version<wbr />Calculation<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/api/GitVersion.Output/GitVersionOutputModule"
+                            >Git<wbr />Version<wbr />Output<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/api/GitVersion.Configuration/GitVersionConfigurationModule"
+                            >Git<wbr />Version<wbr />Configuration<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -331,9 +354,13 @@
                           >
                         </li>
                         <li>
-                          <a
-                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                            >Version<wbr />Calculation<wbr />Module</a
+                          <a href="/api/GitVersion/GitVersionCommonModule"
+                            >Git<wbr />Version<wbr />Common<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
+                            >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -347,23 +374,6 @@
                             >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
                           >
                         </li>
-                        <li>
-                          <a
-                            href="/api/GitVersion.Configuration/GitVersionConfigurationModule"
-                            >Git<wbr />Version<wbr />Configuration<wbr />Module</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="/api/GitVersion.Output/GitVersionOutputModule"
-                            >Git<wbr />Version<wbr />Output<wbr />Module</a
-                          >
-                        </li>
-                        <li>
-                          <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
-                            >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
-                          >
-                        </li>
                       </ul>
                     </dd>
                   </dl>
@@ -371,28 +381,28 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type["IGitVersionModule"] class Type type-node
-                    Implementing0["GitVersionCommonModule"]-.-&gt;Type click
-                    Implementing0 "/api/GitVersion/GitVersionCommonModule"
-                    Implementing1["VersionStrategyModule"]-.-&gt;Type click
-                    Implementing1
-                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-                    Implementing2["VersionCalculationModule"]-.-&gt;Type click
-                    Implementing2
+                    Implementing0["VersionCalculationModule"]-.-&gt;Type click
+                    Implementing0
                     "/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                    Implementing3["GitVersionCoreModule"]-.-&gt;Type click
-                    Implementing3 "/api/GitVersion/GitVersionCoreModule"
-                    Implementing4["GitVersionBuildAgentsModule"]-.-&gt;Type
-                    click Implementing4
-                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-                    Implementing5["GitVersionConfigurationModule"]-.-&gt;Type
-                    click Implementing5
-                    "/api/GitVersion.Configuration/GitVersionConfigurationModule"
-                    Implementing6["GitVersionOutputModule"]-.-&gt;Type click
-                    Implementing6
+                    Implementing1["GitVersionOutputModule"]-.-&gt;Type click
+                    Implementing1
                     "/api/GitVersion.Output/GitVersionOutputModule"
-                    Implementing7["GitVersionLibGit2SharpModule"]-.-&gt;Type
-                    click Implementing7
+                    Implementing2["GitVersionConfigurationModule"]-.-&gt;Type
+                    click Implementing2
+                    "/api/GitVersion.Configuration/GitVersionConfigurationModule"
+                    Implementing3["VersionStrategyModule"]-.-&gt;Type click
+                    Implementing3
+                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                    Implementing4["GitVersionCommonModule"]-.-&gt;Type click
+                    Implementing4 "/api/GitVersion/GitVersionCommonModule"
+                    Implementing5["GitVersionLibGit2SharpModule"]-.-&gt;Type
+                    click Implementing5
                     "/api/GitVersion/GitVersionLibGit2SharpModule"
+                    Implementing6["GitVersionCoreModule"]-.-&gt;Type click
+                    Implementing6 "/api/GitVersion/GitVersionCoreModule"
+                    Implementing7["GitVersionBuildAgentsModule"]-.-&gt;Type
+                    click Implementing7
+                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
                   </div>
                 </div>
               </div>
@@ -422,7 +432,12 @@
                     </td>
                     <td>IEnumerable<wbr />&lt;Type&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns all concrete types in
+                        <span name="assembly" class="paramref">assembly</span>
+                        that are assignable to
+                        <span name="T" class="typeparamref">T</span>.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -436,7 +451,10 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Registers the services provided by this module into
+                        <span name="services" class="paramref">services</span>.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -465,7 +483,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

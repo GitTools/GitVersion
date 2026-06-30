@@ -1418,6 +1418,17 @@ branches:
             <code>regex: '^features?[\/-](?&lt;StoryNo&gt;sc-\d+)[-/].+'</code>.
           </p>
           <p>
+            You can also use environment variable placeholders with the
+            <code>{env:VARIABLE_NAME}</code> syntax. Environment variable
+            placeholders can also be combined with regex placeholders, for
+            example <code>{BranchName}-{env:VARIABLE_NAME}</code>, and support
+            fallback values using the
+            <code>{env:VARIABLE_NAME ?? "fallback"}</code> syntax. These can be
+            combined with cascading fallbacks using environment variables and
+            placeholders like this:
+            <code>{env:VARIABLE_NAME ?? BranchName ?? "fallback"}</code>.
+          </p>
+          <p>
             <strong>Note:</strong> To clear a default use an empty string:
             <code>label: ''</code>
           </p>

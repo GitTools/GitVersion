@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -213,6 +214,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li class="selected">
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -250,18 +263,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li class="selected">
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -275,6 +276,12 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Determines which version components are included in the assembly
+            file version (<code class="cs">AssemblyFileVersionAttribute</code>).
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -346,7 +353,7 @@
                     </td>
                     <td>3</td>
                     <td>
-                      <div></div>
+                      <div>Uses Major.0.0.0 as the assembly file version.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -361,7 +368,9 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses Major.Minor.0.0 as the assembly file version.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -376,7 +385,9 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses Major.Minor.Patch.0 as the assembly file version.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -391,7 +402,10 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses Major.Minor.Patch.PreReleaseNumber as the assembly
+                        file version.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -406,7 +420,7 @@
                     </td>
                     <td>4</td>
                     <td>
-                      <div></div>
+                      <div>Does not set the assembly file version.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>

@@ -123,6 +123,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -249,23 +250,6 @@
                 >IVersionStrategy</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                >DeploymentMode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                >VersionStrategies</a
-              >
-            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion.VersionCalculation/NextVersion"
@@ -283,6 +267,23 @@
                 >Version<wbr />Strategy<wbr />Module</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                >DeploymentMode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                >VersionStrategies</a
+              >
+            </li>
           </ul>
         </section>
       </aside>
@@ -296,6 +297,13 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Resolves the set of
+            <code class="cs">EffectiveBranchConfiguration</code> instances that
+            apply to a given branch.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -346,7 +354,14 @@
                       IEnumerable<wbr />&lt;Effective<wbr />Branch<wbr />Configuration&gt;<wbr />
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the effective branch configurations that match
+                        <span name="branch" class="paramref">branch</span> under
+                        the given global
+                        <span name="configuration" class="paramref"
+                          >configuration</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -375,7 +390,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

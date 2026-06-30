@@ -197,9 +197,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -213,9 +210,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -323,7 +317,11 @@
                         >Disposable</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Factory methods for creating lightweight
+                      <code class="cs">IDisposable</code> wrappers around
+                      cleanup actions.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -334,7 +332,11 @@
                         >T</a
                       >&gt;<wbr />
                     </td>
-                    <td></td>
+                    <td>
+                      Provides equality and hash-code implementation for
+                      <span name="T" class="typeparamref">T</span> based on a
+                      set of key-selector functions.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -348,7 +350,11 @@
                         >TKey</a
                       >&gt;<wbr />
                     </td>
-                    <td></td>
+                    <td>
+                      A <code class="cs">Comparer&lt;T&gt;</code> that delegates
+                      comparison to a key-selector function, with an optional
+                      inner comparer for the key type.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -359,7 +365,12 @@
                         >T</a
                       >&gt;<wbr />
                     </td>
-                    <td></td>
+                    <td>
+                      Executes an action with automatic linear-backoff retries
+                      when a
+                      <span name="T" class="typeparamref">T</span> exception is
+                      thrown, discarding the return value.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -368,7 +379,10 @@
                         >Service<wbr />Message<wbr />Escape<wbr />Helper</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Escapes special characters in values written to TeamCity
+                      service messages.
+                    </td>
                   </tr>
                 </tbody>
               </table>

@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -247,23 +248,6 @@
                 >IVersionStrategy</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                >DeploymentMode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                >VersionStrategies</a
-              >
-            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion.VersionCalculation/NextVersion"
@@ -281,6 +265,23 @@
                 >Version<wbr />Strategy<wbr />Module</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                >DeploymentMode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                >VersionStrategies</a
+              >
+            </li>
           </ul>
         </section>
       </aside>
@@ -291,6 +292,12 @@
           <h1>IVersionStrategy <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Implements a strategy for discovering candidate base versions from a
+            specific source (e.g. tags, branch names, merge messages).
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -337,7 +344,13 @@
                     </td>
                     <td>IEnumerable<wbr />&lt;BaseVersion&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the candidate base versions found by this
+                        strategy for the given branch
+                        <span name="configuration" class="paramref"
+                          >configuration</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -366,7 +379,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

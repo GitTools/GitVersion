@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -217,6 +218,13 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Serializes and deserializes
+            <code class="cs">GitVersionVariables</code> to and from JSON and
+            disk files.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -264,7 +272,12 @@
                     </td>
                     <td>GitVersionVariables</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Deserializes a
+                        <code class="cs">GitVersionVariables</code> instance
+                        from the JSON file at
+                        <span name="filePath" class="paramref">filePath</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -277,7 +290,14 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Writes
+                        <span name="gitVersionVariables" class="paramref"
+                          >gitVersionVariables</span
+                        >
+                        as JSON to the file at
+                        <span name="filePath" class="paramref">filePath</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -289,7 +309,13 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Serializes
+                        <span name="gitVersionVariables" class="paramref"
+                          >gitVersionVariables</span
+                        >
+                        to a JSON string.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -318,7 +344,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

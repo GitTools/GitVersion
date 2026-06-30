@@ -121,8 +121,8 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
-            <p><a href="#Attributes">Attributes</a></p>
             <p><a href="#Constructors">Constructors</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
             <hr class="infobar-hidden" />
@@ -194,6 +194,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -259,17 +270,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -295,6 +295,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -309,6 +312,12 @@
           <h1>GitVersionException <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Base exception type for errors raised by GitVersion during normal
+            operation.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -350,28 +359,7 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>[Serializable]
-public class GitVersionException : Exception</code></pre>
-
-          <h1 id="Attributes">Attributes</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Serializable</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <pre><code>public class GitVersionException : Exception</code></pre>
 
           <h1 id="Constructors">Constructors</h1>
           <div class="box">
@@ -390,7 +378,7 @@ public class GitVersionException : Exception</code></pre>
                         >GitVersionException<wbr />()<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>Initializes a new instance with no message.</td>
                   </tr>
                   <tr>
                     <td>
@@ -399,7 +387,10 @@ public class GitVersionException : Exception</code></pre>
                         <wbr />Exception)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new instance with the given message and
+                      inner exception.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -408,7 +399,10 @@ public class GitVersionException : Exception</code></pre>
                         <wbr />object[])<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new instance using the formatted message
+                      string.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -416,7 +410,9 @@ public class GitVersionException : Exception</code></pre>
                         >GitVersionException<wbr />(string)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new instance with the given error message.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -444,7 +440,13 @@ public class GitVersionException : Exception</code></pre>
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

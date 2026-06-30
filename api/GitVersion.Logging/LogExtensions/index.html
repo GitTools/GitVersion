@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <hr class="infobar-hidden" />
           </div>
@@ -193,15 +194,15 @@
               <a href="/api/GitVersion.Logging">GitVersion<wbr />.Logging</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
             <li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
             <li>
               <a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Delegate Types</li>
             <li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
             <li>
@@ -223,6 +224,18 @@
           <h1>LogExtensions <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Extension methods on
+            <code class="cs"
+              ><a href="/api/GitVersion.Logging/ILog">ILog</a></code
+            >
+            that provide level-specific logging helpers (<code class="cs"
+              >Debug</code
+            >, <code class="cs">Info</code>, <code class="cs">Warning</code>,
+            <code class="cs">Error</code>) and verbosity-scope methods.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">

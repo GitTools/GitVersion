@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Attributes">Attributes</a></p>
             <p><a href="#fields">Fields</a></p>
@@ -247,23 +248,6 @@
                 >IVersionStrategy</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                >DeploymentMode</a
-              >
-            </li>
-            <li class="selected">
-              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                >VersionStrategies</a
-              >
-            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion.VersionCalculation/NextVersion"
@@ -281,6 +265,23 @@
                 >Version<wbr />Strategy<wbr />Module</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                >DeploymentMode</a
+              >
+            </li>
+            <li class="selected">
+              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                >VersionStrategies</a
+              >
+            </li>
           </ul>
         </section>
       </aside>
@@ -291,6 +292,12 @@
           <h1>VersionStrategies <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            A bitmask that enables or disables individual version-discovery
+            strategies.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -383,7 +390,10 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses the <code class="cs">next-version</code> value from
+                        the configuration file.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -398,7 +408,11 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses a fallback version (typically
+                        <code class="cs">0.1.0</code>) when no other strategy
+                        finds a version.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -413,7 +427,10 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>64</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses the mainline development strategy to calculate the
+                        version from the commit graph.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -428,7 +445,9 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>4</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Extracts the version from merge commit messages.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -443,7 +462,7 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>No strategies are enabled.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -458,7 +477,10 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>8</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Uses the most recent version tag reachable from the
+                        current commit.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -473,7 +495,9 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>16</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Tracks the version from related release branches.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -488,7 +512,9 @@ public enum VersionStrategies</code></pre>
                     </td>
                     <td>32</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Extracts the version embedded in the branch name.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

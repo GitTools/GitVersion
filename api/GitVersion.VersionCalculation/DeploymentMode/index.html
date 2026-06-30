@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -246,23 +247,6 @@
                 >IVersionStrategy</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-              >
-            </li>
-            <li class="selected">
-              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                >DeploymentMode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                >VersionStrategies</a
-              >
-            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion.VersionCalculation/NextVersion"
@@ -280,6 +264,23 @@
                 >Version<wbr />Strategy<wbr />Module</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+              >
+            </li>
+            <li class="selected">
+              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                >DeploymentMode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                >VersionStrategies</a
+              >
+            </li>
           </ul>
         </section>
       </aside>
@@ -290,6 +291,12 @@
           <h1>DeploymentMode <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Specifies the deployment strategy used to determine how the version
+            number changes between releases.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -361,7 +368,10 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Each commit is a potential release candidate; the build
+                        number is appended as the pre-release number.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -376,7 +386,10 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Each commit is automatically deployed; versions are
+                        calculated as if every commit is a new release.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -391,7 +404,11 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Each build on a pre-release branch produces a unique
+                        pre-release version; the version is only finalised on an
+                        explicit release.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

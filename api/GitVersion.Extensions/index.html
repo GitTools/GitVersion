@@ -197,9 +197,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -213,9 +210,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li class="selected">
                   <a href="/api/GitVersion.Extensions"
@@ -324,7 +318,15 @@
                         >Assembly<wbr />Versions<wbr />Generator<wbr />Extensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs"
+                        ><a href="/api/GitVersion/SemanticVersion"
+                          >SemanticVersion</a
+                        ></code
+                      >
+                      for generating assembly version strings.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -332,7 +334,10 @@
                         >CommonExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      General-purpose extension and guard methods used
+                      throughout GitVersion.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -340,7 +345,11 @@
                         >EnumerableExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods that augment
+                      <code class="cs">IEnumerable&lt;T&gt;</code> and related
+                      collection types.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -348,7 +357,11 @@
                         >FileSystemExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs">IFileSystem</code> for common file-system
+                      operations.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -356,7 +369,10 @@
                         >GitExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension and utility methods that supplement Git-related
+                      operations.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -365,7 +381,15 @@
                         >Increment<wbr />Strategy<wbr />Extensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs"
+                        ><a href="/api/GitVersion/IncrementStrategy"
+                          >IncrementStrategy</a
+                        ></code
+                      >
+                      for converting to related types.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -374,7 +398,11 @@
                         >Read<wbr />Embedded<wbr />Resource<wbr />Extensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs"><a href="/">string</a></code> for reading
+                      embedded assembly resources.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -383,7 +411,12 @@
                         >Service<wbr />Collection<wbr />Extensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs">IServiceCollection</code> and
+                      <code class="cs">IServiceProvider</code> for GitVersion
+                      module registration.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -391,7 +424,12 @@
                         >StringExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs"><a href="/">string</a></code> and
+                      <code class="cs">StringBuilder</code> for common string
+                      manipulations.
+                    </td>
                   </tr>
                 </tbody>
               </table>

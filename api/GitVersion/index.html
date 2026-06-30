@@ -121,8 +121,8 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#EnumTypes">Enum Types</a></p>
+            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#InterfaceTypes">Interface Types</a></p>
             <p><a href="#Namespaces">Namespaces</a></p>
             <hr class="infobar-hidden" />
@@ -200,9 +200,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -216,9 +213,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -309,148 +303,6 @@
           <h1>GitVersion <small>Namespace</small></h1>
         </section>
         <section class="content">
-          <h1 id="ClassTypes">Class Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Class</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/AssemblySettingsInfo"
-                        >AssemblySettingsInfo</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/BugException">BugException</a>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionCommonModule"
-                        >Git<wbr />Version<wbr />Common<wbr />Module</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionContext"
-                        >GitVersionContext</a
-                      >
-                    </td>
-                    <td>
-                      Contextual information about where GitVersion is being run
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionCoreModule"
-                        >GitVersionCoreModule</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionException"
-                        >GitVersionException</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
-                        >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/GitVersionOptions"
-                        >GitVersionOptions</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/LibGit2SharpExtensions"
-                        >Lib<wbr />Git2<wbr />Sharp<wbr />Extensions</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/LockedFileException"
-                        >LockedFileException</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/MergeMessage">MergeMessage</a>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/SemanticVersion"
-                        >SemanticVersion</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/SemanticVersionBuildMetaData"
-                        >Semantic<wbr />Version<wbr />Build<wbr />Meta<wbr />Data</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/SemanticVersionFormatValues"
-                        >Semantic<wbr />Version<wbr />Format<wbr />Values</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/SemanticVersionPreReleaseTag"
-                        >Semantic<wbr />Version<wbr />Pre<wbr />Release<wbr />Tag</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/WarningException"
-                        >WarningException</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           <h1 id="EnumTypes">Enum Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
@@ -468,11 +320,17 @@
                         >IncrementStrategy</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Specifies which version component should be incremented
+                      when creating a release from a branch.
+                    </td>
                   </tr>
                   <tr>
                     <td><a href="/api/GitVersion/OutputType">OutputType</a></td>
-                    <td></td>
+                    <td>
+                      Specifies the format in which GitVersion outputs version
+                      variables.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -480,13 +338,203 @@
                         >Semantic<wbr />Version<wbr />Format</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Controls the leniency applied when parsing semantic
+                      version strings.
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <a href="/api/GitVersion/VersionField">VersionField</a>
                     </td>
+                    <td>
+                      Identifies the position in a semantic version string that
+                      should be incremented.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="ClassTypes">Class Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/AssemblySettingsInfo"
+                        >AssemblySettingsInfo</a
+                      >
+                    </td>
+                    <td>
+                      Contains options that control how GitVersion updates
+                      assembly version attributes and project files.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/BugException">BugException</a>
+                    </td>
+                    <td>
+                      Indicates an internal logic error that should never occur
+                      in normal usage; represents a bug in GitVersion itself.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionCommonModule"
+                        >Git<wbr />Version<wbr />Common<wbr />Module</a
+                      >
+                    </td>
+                    <td>
+                      Registers common infrastructure services such as logging,
+                      file system, environment, and build-agent resolution.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionContext"
+                        >GitVersionContext</a
+                      >
+                    </td>
+                    <td>
+                      Contextual information about where GitVersion is being run
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionCoreModule"
+                        >GitVersionCoreModule</a
+                      >
+                    </td>
+                    <td>
+                      Registers the core GitVersion services including version
+                      calculation, repository access, and caching.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionException"
+                        >GitVersionException</a
+                      >
+                    </td>
+                    <td>
+                      Base exception type for errors raised by GitVersion during
+                      normal operation.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
+                        >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
+                      >
+                    </td>
                     <td></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/GitVersionOptions"
+                        >GitVersionOptions</a
+                      >
+                    </td>
+                    <td>
+                      Top-level options object that aggregates all settings used
+                      to configure a GitVersion execution.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/LibGit2SharpExtensions"
+                        >Lib<wbr />Git2<wbr />Sharp<wbr />Extensions</a
+                      >
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/LockedFileException"
+                        >LockedFileException</a
+                      >
+                    </td>
+                    <td>
+                      Raised when a file cannot be accessed because it is locked
+                      by another process.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/MergeMessage">MergeMessage</a>
+                    </td>
+                    <td>
+                      Parses the message of a merge commit to extract the merged
+                      branch name, target branch, pull-request number, and
+                      embedded semantic version.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/SemanticVersion"
+                        >SemanticVersion</a
+                      >
+                    </td>
+                    <td>
+                      Represents a semantic version with optional pre-release
+                      tag and build metadata.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/SemanticVersionBuildMetaData"
+                        >Semantic<wbr />Version<wbr />Build<wbr />Meta<wbr />Data</a
+                      >
+                    </td>
+                    <td>
+                      Holds the build metadata attached to a semantic version
+                      (commits-since-tag, branch, SHA, commit date, etc.).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/SemanticVersionFormatValues"
+                        >Semantic<wbr />Version<wbr />Format<wbr />Values</a
+                      >
+                    </td>
+                    <td>
+                      Exposes all computed version format values used by custom
+                      format strings in GitVersion configuration.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/SemanticVersionPreReleaseTag"
+                        >Semantic<wbr />Version<wbr />Pre<wbr />Release<wbr />Tag</a
+                      >
+                    </td>
+                    <td>
+                      Represents the pre-release label and optional numeric
+                      identifier of a semantic version (e.g.
+                      <code class="cs">beta.1</code>).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/WarningException"
+                        >WarningException</a
+                      >
+                    </td>
+                    <td>
+                      Raised to report a recoverable warning condition that
+                      should be presented to the user rather than treated as a
+                      hard error.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -510,19 +558,34 @@
                         >IConverterContext</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Marker interface for context objects passed to
+                      <code class="cs"
+                        ><a href="/api/GitVersion/IVersionConverter_1"
+                          >IVersionConverter&lt;T&gt;</a
+                        ></code
+                      >
+                      implementations.
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <a href="/api/GitVersion/IEnvironment">IEnvironment</a>
                     </td>
-                    <td></td>
+                    <td>
+                      Provides access to environment variables in the current
+                      process.
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <a href="/api/GitVersion/IGitPreparer">IGitPreparer</a>
                     </td>
-                    <td></td>
+                    <td>
+                      Prepares the Git repository so that GitVersion can
+                      calculate the version (fetches, clones, and normalises
+                      refs as needed).
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -530,7 +593,10 @@
                         >I<wbr />Git<wbr />Version<wbr />Calculate<wbr />Tool</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Orchestrates the end-to-end version calculation and
+                      returns the resulting version variables.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -538,7 +604,15 @@
                         >I<wbr />Git<wbr />Version<wbr />Context<wbr />Factory</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Creates a
+                      <code class="cs"
+                        ><a href="/api/GitVersion/GitVersionContext"
+                          >GitVersionContext</a
+                        ></code
+                      >
+                      for the current repository and branch.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -546,7 +620,10 @@
                         >IGitVersionModule</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Represents a self-contained IoC registration module that
+                      adds a cohesive set of services to the DI container.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -558,6 +635,18 @@
                   </tr>
                   <tr>
                     <td>
+                      <a href="/api/GitVersion/IRepositoryStore"
+                        >IRepositoryStore</a
+                      >
+                    </td>
+                    <td>
+                      Provides high-level read access to a Git repository,
+                      exposing the objects and queries needed for version
+                      calculation.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
                       <a href="/api/GitVersion/IVersionConverter_1"
                         >IVersionConverter</a
                       ><wbr />&lt;<a
@@ -565,7 +654,11 @@
                         >T</a
                       >&gt;<wbr />
                     </td>
-                    <td></td>
+                    <td>
+                      Converts <code class="cs">GitVersionVariables</code> to a
+                      specific output format (e.g. JSON, environment variables,
+                      build-server properties).
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -593,23 +686,9 @@
                   </tr>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion.Common"
-                        >GitVersion<wbr />.Common</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
                       <a href="/api/GitVersion.Configuration"
                         >GitVersion<wbr />.Configuration</a
                       >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                     </td>
                     <td></td>
                   </tr>

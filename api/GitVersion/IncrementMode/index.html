@@ -123,6 +123,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -194,6 +195,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -259,17 +271,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -295,6 +296,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -312,6 +316,9 @@
           <h1>SemanticVersion<wbr />.IncrementMode <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">Controls how version incrementing is applied.</div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -378,7 +385,10 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Ensures the resulting version is strictly greater than
+                        the current one without forcing an unnecessary bump.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -390,7 +400,10 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Always bumps the version field regardless of whether a
+                        pre-release tag is present.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -404,7 +417,10 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Increments the pre-release number when already on a
+                        pre-release, otherwise bumps the field.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

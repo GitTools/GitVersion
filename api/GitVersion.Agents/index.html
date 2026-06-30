@@ -121,8 +121,8 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#InterfaceTypes">Interface Types</a></p>
+            <p><a href="#ClassTypes">Class Types</a></p>
             <hr class="infobar-hidden" />
           </div>
         </section>
@@ -198,9 +198,6 @@
                 <li class="selected">
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -214,9 +211,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -307,31 +301,6 @@
           <h1>GitVersion<wbr />.Agents <small>Namespace</small></h1>
         </section>
         <section class="content">
-          <h1 id="ClassTypes">Class Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Class</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-                        >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           <h1 id="InterfaceTypes">Interface Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
@@ -349,12 +318,43 @@
                         >IBuildAgent</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Represents a CI/CD build agent integration that GitVersion
+                      can write version information to.
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <a href="/api/GitVersion.Agents/ICurrentBuildAgent"
                         >ICurrentBuildAgent</a
+                      >
+                    </td>
+                    <td>
+                      Marker interface for the build agent that is active in the
+                      current execution context.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="ClassTypes">Class Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+                        >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
                       >
                     </td>
                     <td></td>

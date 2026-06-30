@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Constructors">Constructors</a></p>
             <p><a href="#fields">Fields</a></p>
@@ -197,6 +198,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -262,17 +274,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -298,6 +299,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -315,6 +319,12 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents the pre-release label and optional numeric identifier of
+            a semantic version (e.g. <code class="cs">beta.1</code>).
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -383,7 +393,7 @@
                         >Semantic<wbr />Version<wbr />Pre<wbr />Release<wbr />Tag<wbr />()<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>Initializes an empty pre-release tag.</td>
                   </tr>
                   <tr>
                     <td>
@@ -392,7 +402,12 @@
                         >Semantic<wbr />Version<wbr />Pre<wbr />Release<wbr />Tag<wbr />(<wbr />Semantic<wbr />Version<wbr />Pre<wbr />Release<wbr />Tag)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new pre-release tag as a copy of
+                      <span name="preReleaseTag" class="paramref"
+                        >preReleaseTag</span
+                      >.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -402,7 +417,10 @@
                         <wbr />long?, <wbr />bool)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new pre-release tag with the given name,
+                      number, and promotion flag.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -430,7 +448,9 @@
                     </td>
                     <td></td>
                     <td>
-                      <div></div>
+                      <div>
+                        An empty pre-release tag with no name and no number.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -462,7 +482,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the pre-release label (e.g.
+                        <code class="cs">beta</code>).
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -474,7 +497,11 @@
                     </td>
                     <td>long?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the numeric identifier appended
+                        after the label (e.g. the <code class="cs">1</code> in
+                        <code class="cs">beta.1</code>).
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -486,7 +513,17 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes a value indicating whether the tag
+                        should be promoted even when
+                        <code class="cs"
+                          ><a
+                            href="/api/GitVersion/SemanticVersionPreReleaseTag/BBBD029A"
+                            >Name</a
+                          ></code
+                        >
+                        is empty.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -515,7 +552,11 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Compares this tag to
+                        <span name="other" class="paramref">other</span> by name
+                        and number.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -527,7 +568,17 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when
+                        <span name="obj" class="paramref">obj</span> is a
+                        <code class="cs"
+                          ><a
+                            href="/api/GitVersion/SemanticVersionPreReleaseTag"
+                            >SemanticVersionPreReleaseTag</a
+                          ></code
+                        >
+                        equal to this instance.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -539,7 +590,12 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this tag is
+                        equal to
+                        <span name="other" class="paramref">other</span> by name
+                        and number.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -551,7 +607,9 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a hash code based on the tag name and number.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -563,7 +621,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this tag has a
+                        non-empty name or a number with the promotion flag set.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -579,7 +640,16 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Parses a pre-release tag string, returning
+                        <code class="cs"
+                          ><a
+                            href="/api/GitVersion/SemanticVersionPreReleaseTag/3C479150"
+                            >Empty</a
+                          ></code
+                        >
+                        when the input is null or empty.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -594,7 +664,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the default SemVer 2.0 formatted tag string
+                        (e.g. <code class="cs">beta.1</code>).
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -621,7 +694,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a string representation using the given format
+                        specifier.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -752,7 +828,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

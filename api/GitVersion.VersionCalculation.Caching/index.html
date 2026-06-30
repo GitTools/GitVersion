@@ -199,9 +199,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -215,9 +212,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -329,7 +323,11 @@
                         >I<wbr />Git<wbr />Version<wbr />Cache<wbr />Provider</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Persists and retrieves
+                      <code class="cs">GitVersionVariables</code> from a disk
+                      cache to avoid redundant recalculation.
+                    </td>
                   </tr>
                 </tbody>
               </table>

@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#Methods">Methods</a></p>
@@ -215,6 +216,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -252,18 +265,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -277,6 +278,12 @@
           </h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents the top-level GitVersion configuration, extending
+            branch-level configuration with global settings.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -338,7 +345,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the format string used to compute the assembly file
+                        version.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -355,7 +365,11 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the scheme used to compute the
+                        <code class="cs">AssemblyFileVersionAttribute</code>
+                        value.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -367,7 +381,13 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the format string used to compute the
+                        <code class="cs"
+                          >AssemblyInformationalVersionAttribute</code
+                        >
+                        value.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -379,7 +399,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the format string used to compute the assembly
+                        version.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -396,7 +419,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the scheme used to compute the
+                        <code class="cs">AssemblyVersionAttribute</code> value.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -413,7 +439,10 @@
                       >&gt;<wbr />
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the per-branch configuration map, keyed by branch
+                        name pattern.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -425,7 +454,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the format string used when rendering commit dates
+                        in version output.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -442,7 +474,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the configuration that controls which commits and
+                        time ranges are ignored during version calculation.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -454,7 +489,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the commit message pattern that triggers a major
+                        version bump.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -469,7 +507,10 @@
                       <wbr />string&gt;<wbr />
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a dictionary of named regex patterns for
+                        recognising merge commit message formats.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -481,7 +522,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the commit message pattern that triggers a minor
+                        version bump.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -493,7 +537,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the manually configured next version, overriding
+                        automatic calculation.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -505,7 +552,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the commit message pattern that suppresses any
+                        version bump.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -517,7 +567,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the commit message pattern that triggers a patch
+                        version bump.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -533,7 +586,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the semantic version format (strict or loose) used
+                        when parsing version strings.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -545,7 +601,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the regex pattern that identifies tag prefixes to
+                        strip when parsing version tags.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -557,7 +616,10 @@
                     </td>
                     <td>int?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the pre-release weight applied to tagged commits
+                        when calculating the weighted pre-release number.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -569,7 +631,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether the build number in the
+                        CI system should be updated.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -581,7 +646,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the regex pattern used to extract a semantic
+                        version from a branch name.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -598,7 +666,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the set of version strategies enabled for this
+                        configuration.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -610,7 +681,12 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the name of the workflow preset (e.g.
+                        <code class="cs">GitFlow/v1</code> or
+                        <code class="cs">GitHubFlow/v1</code>) used as a base
+                        configuration.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -644,7 +720,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns an empty branch configuration that carries no
+                        values.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -673,7 +752,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

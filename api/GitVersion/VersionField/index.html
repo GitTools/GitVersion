@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -192,6 +193,19 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li class="selected">
+              <a href="/api/GitVersion/VersionField">VersionField</a>
+            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -257,19 +271,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li class="selected">
-              <a href="/api/GitVersion/VersionField">VersionField</a>
-            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -295,6 +296,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -309,6 +313,12 @@
           <h1>VersionField <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Identifies the position in a semantic version string that should be
+            incremented.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -373,7 +383,10 @@
                     </td>
                     <td>3</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Increment the major component (and reset minor and patch
+                        to zero).
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -385,7 +398,9 @@
                     </td>
                     <td>2</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Increment the minor component (and reset patch to zero).
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -397,7 +412,10 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        No field is incremented; the pre-release number is
+                        bumped instead.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -409,7 +427,7 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>Increment the patch component.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>

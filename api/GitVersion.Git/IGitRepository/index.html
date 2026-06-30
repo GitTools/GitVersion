@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#Methods">Methods</a></p>
@@ -196,14 +197,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
@@ -258,11 +256,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Class Types</li>
             <li>
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -276,6 +277,9 @@
           <h1>IGitRepository <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">Provides read-only access to a Git repository.</div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -344,7 +348,9 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the collection of all branches in the repository.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -359,7 +365,9 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the collection of all commits reachable from HEAD.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -370,7 +378,7 @@
                     </td>
                     <td><a href="/api/GitVersion.Git/IBranch">IBranch</a></td>
                     <td>
-                      <div></div>
+                      <div>Gets the currently checked-out branch.</div>
                     </td>
                   </tr>
                   <tr>
@@ -381,7 +389,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether HEAD is in a detached
+                        state.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -392,7 +403,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether the repository is a
+                        shallow clone.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -403,7 +417,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the path to the
+                        <code class="cs">.git</code> directory.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -418,7 +435,9 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the collection of all references in the repository.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -433,7 +452,7 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>Gets the collection of configured remotes.</div>
                     </td>
                   </tr>
                   <tr>
@@ -448,7 +467,9 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the collection of all tags in the repository.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -459,7 +480,9 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the path to the working tree root directory.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -487,7 +510,12 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Loads the repository located at
+                        <span name="gitDirectory" class="paramref"
+                          >gitDirectory</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -498,7 +526,13 @@
                     </td>
                     <td><a href="/api/GitVersion.Git/ICommit">ICommit</a></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Finds the best common ancestor between
+                        <span name="commit" class="paramref">commit</span> and
+                        <span name="otherCommit" class="paramref"
+                          >otherCommit</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -509,7 +543,10 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the number of files that have been modified but
+                        not yet staged or committed.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -538,7 +575,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

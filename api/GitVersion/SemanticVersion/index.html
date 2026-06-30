@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Constructors">Constructors</a></p>
             <p><a href="#fields">Fields</a></p>
@@ -197,6 +198,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -262,17 +274,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -298,6 +299,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -312,6 +316,12 @@
           <h1>SemanticVersion <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents a semantic version with optional pre-release tag and
+            build metadata.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -359,7 +369,7 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>public class SemanticVersion : IFormattable, IComparable&lt;SemanticVersion&gt;, 
+          <pre><code>public sealed class SemanticVersion : IFormattable, IComparable&lt;SemanticVersion&gt;, 
     IEquatable&lt;SemanticVersion&gt;</code></pre>
 
           <h1 id="Constructors">Constructors</h1>
@@ -380,7 +390,10 @@
                         <wbr />long)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new semantic version with the given major,
+                      minor, and patch values.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -388,7 +401,12 @@
                         >SemanticVersion<wbr />(SemanticVersion)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Initializes a new semantic version as a copy of
+                      <span name="semanticVersion" class="paramref"
+                        >semanticVersion</span
+                      >.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -415,7 +433,10 @@
                     </td>
                     <td></td>
                     <td>
-                      <div></div>
+                      <div>
+                        A zero-valued semantic version with no pre-release tag
+                        or build metadata.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -450,7 +471,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the build metadata associated with
+                        this version.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -461,7 +485,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this version has a
+                        pre-release tag.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -472,7 +499,9 @@
                     </td>
                     <td>long</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the major version component.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -483,7 +512,9 @@
                     </td>
                     <td>long</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the minor version component.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -494,7 +525,9 @@
                     </td>
                     <td>long</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets or initializes the patch version component.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -509,7 +542,7 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>Gets or initializes the pre-release tag.</div>
                     </td>
                   </tr>
                 </tbody>
@@ -537,7 +570,12 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Compares this version to
+                        <span name="value" class="paramref">value</span>,
+                        optionally excluding the pre-release tag from the
+                        comparison.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -548,7 +586,11 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Compares this version to
+                        <span name="value" class="paramref">value</span>,
+                        including the pre-release tag in the comparison.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -559,7 +601,16 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when
+                        <span name="obj" class="paramref">obj</span> is a
+                        <code class="cs"
+                          ><a href="/api/GitVersion/SemanticVersion"
+                            >SemanticVersion</a
+                          ></code
+                        >
+                        equal to this instance.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -570,7 +621,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is equal to
+                        <span name="obj" class="paramref">obj</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -581,7 +636,9 @@
                     </td>
                     <td>int</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a hash code combining all version components.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -597,7 +654,13 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new version incremented by
+                        <span name="increment" class="paramref">increment</span>
+                        with the given
+                        <span name="label" class="paramref">label</span>,
+                        optionally forcing the increment.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -614,7 +677,14 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new version incremented by
+                        <span name="increment" class="paramref">increment</span>
+                        with the given
+                        <span name="label" class="paramref">label</span> and
+                        increment
+                        <span name="mode" class="paramref">mode</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -630,7 +700,12 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new version incremented by
+                        <span name="increment" class="paramref">increment</span>
+                        with the given
+                        <span name="label" class="paramref">label</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -641,7 +716,15 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this instance
+                        equals
+                        <code class="cs"
+                          ><a href="/api/GitVersion/SemanticVersion/6BFB5A60"
+                            >Empty</a
+                          ></code
+                        >.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -652,7 +735,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is equal to
+                        <span name="value" class="paramref">value</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -663,7 +750,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is greater than
+                        <span name="value" class="paramref">value</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -675,7 +766,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is greater than or equal to
+                        <span name="value" class="paramref">value</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -686,7 +781,12 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when the
+                        pre-release tag name equals
+                        <span name="value" class="paramref">value</span>
+                        (case-insensitive).
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -697,7 +797,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is less than
+                        <span name="value" class="paramref">value</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -709,7 +813,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is less than or equal to
+                        <span name="value" class="paramref">value</span>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -720,7 +828,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when this version
+                        is compatible with a branch-specific label check: no tag
+                        set, no label supplied, or the label matches.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -736,7 +848,12 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Parses
+                        <span name="version" class="paramref">version</span> as
+                        a semantic version, throwing when the input cannot be
+                        parsed.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -750,7 +867,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns the default semantic version string (without
+                        build metadata).
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -781,7 +901,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a string representation of this version using
+                        the given format specifier.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -794,7 +917,12 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Attempts to parse
+                        <span name="version" class="paramref">version</span> as
+                        a semantic version, returning
+                        <code class="cs">true</code> on success.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -812,7 +940,11 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new version derived from this one with the
+                        pre-release tag changed to
+                        <span name="label" class="paramref">label</span>.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -918,7 +1050,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

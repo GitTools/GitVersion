@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Constructors">Constructors</a></p>
             <p><a href="#Properties">Properties</a></p>
@@ -195,6 +196,17 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+            </li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li>
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
+              >
+            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -262,17 +274,6 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
-            </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
-            <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
-              >
-            </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
@@ -298,6 +299,9 @@
               >
             </li>
             <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
               <a href="/api/GitVersion/IVersionConverter_1"
                 >IVersionConverter<wbr />&lt;T&gt;<wbr
               /></a>
@@ -312,6 +316,13 @@
           <h1>MergeMessage <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Parses the message of a merge commit to extract the merged branch
+            name, target branch, pull-request number, and embedded semantic
+            version.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -359,7 +370,13 @@
                         <wbr />I<wbr />Git<wbr />Version<wbr />Configuration)<wbr
                       /></a>
                     </td>
-                    <td></td>
+                    <td>
+                      Parses
+                      <span name="mergeMessage" class="paramref"
+                        >mergeMessage</span
+                      >
+                      using the configured and built-in merge message formats.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -386,7 +403,11 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the name of the merge message format pattern that
+                        was matched, or <code class="cs">null</code> if none
+                        matched.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -397,7 +418,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this merge message
+                        represents a merged pull request.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -412,7 +436,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the reference name of the branch that was merged
+                        in, or <code class="cs">null</code> if not captured.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -423,7 +450,11 @@
                     </td>
                     <td>int?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the pull-request number extracted from the merge
+                        message, or <code class="cs">null</code> if this is not
+                        a pull-request merge.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -434,7 +465,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the name of the branch that was the merge target,
+                        or <code class="cs">null</code> if not captured.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -449,7 +483,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the semantic version embedded in the merged branch
+                        name, or <code class="cs">null</code> if none was found.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -479,7 +516,16 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Attempts to parse a valid merge message from
+                        <span name="mergeCommit" class="paramref"
+                          >mergeCommit</span
+                        >, setting
+                        <span name="mergeMessage" class="paramref"
+                          >mergeMessage</span
+                        >
+                        when successful.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -511,7 +557,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

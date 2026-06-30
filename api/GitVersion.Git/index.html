@@ -121,9 +121,9 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#ClassTypes">Class Types</a></p>
-            <p><a href="#InterfaceTypes">Interface Types</a></p>
             <p><a href="#EnumTypes">Enum Types</a></p>
+            <p><a href="#InterfaceTypes">Interface Types</a></p>
+            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#StructTypes">Struct Types</a></p>
             <hr class="infobar-hidden" />
           </div>
@@ -200,9 +200,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -216,9 +213,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -309,6 +303,207 @@
           <h1>GitVersion<wbr />.Git <small>Namespace</small></h1>
         </section>
         <section class="content">
+          <h1 id="EnumTypes">Enum Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Enum</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/RefSpecDirection"
+                        >RefSpecDirection</a
+                      >
+                    </td>
+                    <td>Indicates the direction of a refspec mapping.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="InterfaceTypes">Interface Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Interface</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a href="/api/GitVersion.Git/IBranch">IBranch</a></td>
+                    <td>
+                      Represents a Git branch, exposing its tip commit and
+                      tracking information.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IBranchCollection"
+                        >IBranchCollection</a
+                      >
+                    </td>
+                    <td>
+                      Represents the set of all branches in a Git repository.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion.Git/ICommit">ICommit</a></td>
+                    <td>Represents a single Git commit.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/ICommitCollection"
+                        >ICommitCollection</a
+                      >
+                    </td>
+                    <td>
+                      Represents an ordered, queryable collection of commits in
+                      a Git repository.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IGitRepository"
+                        >IGitRepository</a
+                      >
+                    </td>
+                    <td>Provides read-only access to a Git repository.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IGitRepositoryInfo"
+                        >IGitRepositoryInfo</a
+                      >
+                    </td>
+                    <td>
+                      Provides paths describing the layout of the Git repository
+                      on disk.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IMutatingGitRepository"
+                        >I<wbr />Mutating<wbr />Git<wbr />Repository</a
+                      >
+                    </td>
+                    <td>
+                      Extends
+                      <code class="cs"
+                        ><a href="/api/GitVersion.Git/IGitRepository"
+                          >IGitRepository</a
+                        ></code
+                      >
+                      with operations that modify the repository state.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/INamedReference"
+                        >INamedReference</a
+                      >
+                    </td>
+                    <td>
+                      Represents any Git object (branch, tag, or ref) that has a
+                      canonical reference name.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IObjectId">IObjectId</a>
+                    </td>
+                    <td>
+                      Represents the SHA-1 object identifier of a Git object.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IReference">IReference</a>
+                    </td>
+                    <td>
+                      Represents a Git reference (branch tip, tag, or symbolic
+                      ref).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IReferenceCollection"
+                        >IReferenceCollection</a
+                      >
+                    </td>
+                    <td>
+                      Represents the set of all references in a Git repository.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion.Git/IRefSpec">IRefSpec</a></td>
+                    <td>
+                      Represents a Git refspec that maps source references to
+                      destination references for a remote operation.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IRefSpecCollection"
+                        >IRefSpecCollection</a
+                      >
+                    </td>
+                    <td>
+                      Represents an ordered collection of
+                      <code class="cs">IRefSpec</code> objects for a remote.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion.Git/IRemote">IRemote</a></td>
+                    <td>Represents a configured Git remote.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/IRemoteCollection"
+                        >IRemoteCollection</a
+                      >
+                    </td>
+                    <td>
+                      Represents the set of remotes configured for a Git
+                      repository.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion.Git/ITag">ITag</a></td>
+                    <td>Represents a Git tag (lightweight or annotated).</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/ITagCollection"
+                        >ITagCollection</a
+                      >
+                    </td>
+                    <td>Represents the set of all tags in a Git repository.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Git/ITreeChanges"
+                        >ITreeChanges</a
+                      >
+                    </td>
+                    <td>
+                      Represents the set of file paths changed between two tree
+                      objects.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <h1 id="ClassTypes">Class Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
@@ -334,167 +529,11 @@
                         >ReferenceName</a
                       >
                     </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <h1 id="InterfaceTypes">Interface Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Interface</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a href="/api/GitVersion.Git/IBranch">IBranch</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
                     <td>
-                      <a href="/api/GitVersion.Git/IBranchCollection"
-                        >IBranchCollection</a
-                      >
+                      Represents a Git reference name in both its canonical
+                      (<code class="cs">refs/heads/main</code>) and friendly
+                      (<code class="cs">main</code>) forms.
                     </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion.Git/ICommit">ICommit</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/ICommitCollection"
-                        >ICommitCollection</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IGitRepository"
-                        >IGitRepository</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IGitRepositoryInfo"
-                        >IGitRepositoryInfo</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IMutatingGitRepository"
-                        >I<wbr />Mutating<wbr />Git<wbr />Repository</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/INamedReference"
-                        >INamedReference</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IObjectId">IObjectId</a>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IReference">IReference</a>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IReferenceCollection"
-                        >IReferenceCollection</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion.Git/IRefSpec">IRefSpec</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IRefSpecCollection"
-                        >IRefSpecCollection</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion.Git/IRemote">IRemote</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/IRemoteCollection"
-                        >IRemoteCollection</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion.Git/ITag">ITag</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/ITagCollection"
-                        >ITagCollection</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/ITreeChanges"
-                        >ITreeChanges</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <h1 id="EnumTypes">Enum Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Enum</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Git/RefSpecDirection"
-                        >RefSpecDirection</a
-                      >
-                    </td>
-                    <td></td>
                   </tr>
                 </tbody>
               </table>

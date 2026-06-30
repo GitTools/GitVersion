@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
             <hr class="infobar-hidden" />
@@ -246,23 +247,6 @@
                 >IVersionStrategy</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                >DeploymentMode</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                >VersionStrategies</a
-              >
-            </li>
             <li class="header">Class Types</li>
             <li class="selected">
               <a href="/api/GitVersion.VersionCalculation/NextVersion"
@@ -280,6 +264,23 @@
                 >Version<wbr />Strategy<wbr />Module</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                >DeploymentMode</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                >VersionStrategies</a
+              >
+            </li>
           </ul>
         </section>
       </aside>
@@ -290,6 +291,12 @@
           <h1>NextVersion <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents the next calculated version together with its base
+            version and branch configuration.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -321,7 +328,7 @@
           </div>
 
           <h1 id="Syntax">Syntax</h1>
-          <pre><code>public class NextVersion</code></pre>
+          <pre><code>public sealed class NextVersion</code></pre>
 
           <h1 id="ExtensionMethods">Extension Methods</h1>
           <div class="box">
@@ -344,7 +351,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

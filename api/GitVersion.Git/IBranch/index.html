@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -195,14 +196,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li class="selected">
@@ -259,11 +257,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Class Types</li>
             <li>
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -277,6 +278,12 @@
           <h1>IBranch <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents a Git branch, exposing its tip commit and tracking
+            information.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -349,7 +356,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the ordered sequence of commits reachable from this
+                        branch's tip.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -360,7 +370,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether HEAD is in a detached
+                        state pointing at this branch's tip.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -371,7 +384,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this branch is a
+                        remote-tracking branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -382,7 +398,10 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this branch tracks a
+                        remote branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -391,7 +410,10 @@
                     </td>
                     <td><a href="/api/GitVersion.Git/ICommit">ICommit</a></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the most recent commit on this branch, or
+                        <code class="cs">null</code> for an empty branch.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -420,7 +442,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

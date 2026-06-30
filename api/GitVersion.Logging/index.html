@@ -121,8 +121,8 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#InterfaceTypes">Interface Types</a></p>
             <p><a href="#EnumTypes">Enum Types</a></p>
+            <p><a href="#InterfaceTypes">Interface Types</a></p>
             <p><a href="#DelegateTypes">Delegate Types</a></p>
             <p><a href="#ClassTypes">Class Types</a></p>
             <hr class="infobar-hidden" />
@@ -200,9 +200,6 @@
                 <li>
                   <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
                 </li>
-                <li>
-                  <a href="/api/GitVersion.Common">GitVersion<wbr />.Common</a>
-                </li>
 
                 <li class="treeview">
                   <a href="/api/GitVersion.Configuration"
@@ -216,9 +213,6 @@
                       >
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="/api/GitVersion.Core">GitVersion<wbr />.Core</a>
                 </li>
                 <li>
                   <a href="/api/GitVersion.Extensions"
@@ -309,40 +303,6 @@
           <h1>GitVersion<wbr />.Logging <small>Namespace</small></h1>
         </section>
         <section class="content">
-          <h1 id="InterfaceTypes">Interface Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Interface</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Logging/IConsole">IConsole</a>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion.Logging/ILog">ILog</a></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.Logging/ILogAppender"
-                        >ILogAppender</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           <h1 id="EnumTypes">Enum Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
@@ -358,13 +318,63 @@
                     <td>
                       <a href="/api/GitVersion.Logging/LogLevel">LogLevel</a>
                     </td>
-                    <td></td>
+                    <td>
+                      Defines the severity levels used when writing log
+                      messages.
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <a href="/api/GitVersion.Logging/Verbosity">Verbosity</a>
                     </td>
                     <td>Represents verbosity.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="InterfaceTypes">Interface Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Interface</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Logging/IConsole">IConsole</a>
+                    </td>
+                    <td>
+                      Provides console I/O operations used by GitVersion's
+                      logging infrastructure.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion.Logging/ILog">ILog</a></td>
+                    <td>
+                      Provides structured logging for GitVersion, supporting
+                      multiple verbosity levels and pluggable appenders.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.Logging/ILogAppender"
+                        >ILogAppender</a
+                      >
+                    </td>
+                    <td>
+                      Receives log messages forwarded by the
+                      <code class="cs"
+                        ><a href="/api/GitVersion.Logging/ILog">ILog</a></code
+                      >
+                      implementation, allowing custom sinks (e.g. file,
+                      build-agent output).
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -386,7 +396,15 @@
                     <td>
                       <a href="/api/GitVersion.Logging/LogAction">LogAction</a>
                     </td>
-                    <td></td>
+                    <td>
+                      A delegate that receives a
+                      <code class="cs"
+                        ><a href="/api/GitVersion.Logging/LogActionEntry"
+                          >LogActionEntry</a
+                        ></code
+                      >
+                      callback used to lazily compose a log message.
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -394,7 +412,10 @@
                         >LogActionEntry</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      A delegate that formats and writes a log message using the
+                      supplied format string and arguments.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -418,7 +439,19 @@
                         >LogExtensions</a
                       >
                     </td>
-                    <td></td>
+                    <td>
+                      Extension methods on
+                      <code class="cs"
+                        ><a href="/api/GitVersion.Logging/ILog">ILog</a></code
+                      >
+                      that provide level-specific logging helpers (<code
+                        class="cs"
+                        >Debug</code
+                      >, <code class="cs">Info</code>,
+                      <code class="cs">Warning</code>,
+                      <code class="cs">Error</code>) and verbosity-scope
+                      methods.
+                    </td>
                   </tr>
                 </tbody>
               </table>

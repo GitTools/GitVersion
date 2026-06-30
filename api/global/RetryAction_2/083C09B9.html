@@ -124,6 +124,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Parameters">Parameters</a></p>
             <p><a href="#ReturnValue">Return Value</a></p>
@@ -232,6 +233,13 @@
           <h1>RetryAction<wbr />(int)<wbr /> <small>Constructor</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Initializes a new retry handler that retries up to
+            <span name="maxRetries" class="paramref">maxRetries</span> times
+            with a linear backoff starting at 100 ms.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <dl class="dl-horizontal">

@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Operators">Operators</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -195,15 +196,15 @@
               <a href="/api/GitVersion.Logging">GitVersion<wbr />.Logging</a>
             </li>
             <li role="separator" class="divider"></li>
+            <li class="header">Enum Types</li>
+            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
             <li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
             <li>
               <a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a>
             </li>
-            <li class="header">Enum Types</li>
-            <li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-            <li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
             <li class="header">Delegate Types</li>
             <li class="selected">
               <a href="/api/GitVersion.Logging/LogAction">LogAction</a>
@@ -227,6 +228,17 @@
           <h1>LogAction <small>Delegate</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            A delegate that receives a
+            <code class="cs"
+              ><a href="/api/GitVersion.Logging/LogActionEntry"
+                >LogActionEntry</a
+              ></code
+            >
+            callback used to lazily compose a log message.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -362,7 +374,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

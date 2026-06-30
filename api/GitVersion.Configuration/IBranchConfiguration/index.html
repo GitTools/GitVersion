@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Properties">Properties</a></p>
             <p><a href="#Methods">Methods</a></p>
@@ -215,6 +216,18 @@
                 >Reference<wbr />Name<wbr />Extensions</a
               >
             </li>
+            <li class="header">Enum Types</li>
+            <li>
+              <a
+                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
+                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
+                >Assembly<wbr />Versioning<wbr />Scheme</a
+              >
+            </li>
             <li class="header">Interface Types</li>
             <li class="selected">
               <a href="/api/GitVersion.Configuration/IBranchConfiguration"
@@ -252,18 +265,6 @@
                 >I<wbr />Prevent<wbr />Increment<wbr />Configuration</a
               >
             </li>
-            <li class="header">Enum Types</li>
-            <li>
-              <a
-                href="/api/GitVersion.Configuration/AssemblyFileVersioningScheme"
-                >Assembly<wbr />File<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Configuration/AssemblyVersioningScheme"
-                >Assembly<wbr />Versioning<wbr />Scheme</a
-              >
-            </li>
           </ul>
         </section>
       </aside>
@@ -274,6 +275,12 @@
           <h1>IBranchConfiguration <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Represents the version-related configuration for a specific branch
+            or branch pattern.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -340,7 +347,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the mode that controls how commit messages drive
+                        version increments.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -357,7 +367,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the deployment mode used to compute versions on
+                        this branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -373,7 +386,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the version field that is incremented when creating
+                        a new release from this branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -385,7 +401,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this branch is treated
+                        as a main/trunk branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -397,7 +416,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this branch is a release
+                        branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -409,7 +431,10 @@
                     </td>
                     <td>IReadOnlyCollection<wbr />&lt;string&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the names of branches for which this branch may act
+                        as a source.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -421,7 +446,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the pre-release label applied to versions produced
+                        on this branch.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -433,7 +461,10 @@
                     </td>
                     <td>int?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the numeric weight applied to the pre-release tag
+                        number to produce a weighted pre-release number.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -450,7 +481,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the configuration that controls under what
+                        conditions automatic version increments are suppressed.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -462,7 +496,10 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the regular expression that matches branch names
+                        eligible for this configuration.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -474,7 +511,10 @@
                     </td>
                     <td>IReadOnlyCollection<wbr />&lt;string&gt;<wbr /></td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets the names of branches that this branch may be
+                        branched from.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -486,7 +526,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether merge commit messages
+                        are considered when determining version increments.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -498,7 +541,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether to track the merge
+                        target branch for version calculation.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -510,7 +556,10 @@
                     </td>
                     <td>bool?</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Gets a value indicating whether this branch tracks
+                        release branches.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -544,7 +593,10 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new configuration that inherits unset values
+                        from the given effective configuration.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -561,7 +613,13 @@
                       >
                     </td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns a new configuration that inherits unset values
+                        from
+                        <span name="configuration" class="paramref"
+                          >configuration</span
+                        >.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -573,7 +631,16 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns whether the given branch name matches the
+                        <code class="cs"
+                          ><a
+                            href="/api/GitVersion.Configuration/IBranchConfiguration/42D7E070"
+                            >RegularExpression</a
+                          ></code
+                        >
+                        for this configuration.
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -602,7 +669,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

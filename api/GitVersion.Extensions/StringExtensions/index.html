@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#Methods">Methods</a></p>
             <hr class="infobar-hidden" />
@@ -254,6 +255,14 @@
           <h1>StringExtensions <small>Class</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Extension methods on
+            <code class="cs"><a href="/">string</a></code> and
+            <code class="cs">StringBuilder</code> for common string
+            manipulations.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -309,7 +318,10 @@
                     </td>
                     <td>void</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Appends a formatted line (format + newline) to the
+                        <code class="cs">StringBuilder</code>.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -324,7 +336,11 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when
+                        <span name="value" class="paramref">value</span> is
+                        exactly <code class="cs">System.String.Empty</code>.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -339,7 +355,12 @@
                     </td>
                     <td>bool</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Returns <code class="cs">true</code> when
+                        <span name="self" class="paramref">self</span> and
+                        <span name="other" class="paramref">other</span> are
+                        equal under ordinal case-insensitive comparison.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -385,7 +406,13 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Replaces all occurrences of
+                        <span name="pattern" class="paramref">pattern</span> in
+                        <span name="input" class="paramref">input</span> with
+                        <span name="replace" class="paramref">replace</span>
+                        using the regex cache.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -401,7 +428,13 @@
                     </td>
                     <td>string</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Prepends
+                        <span name="prefix" class="paramref">prefix</span> to
+                        <span name="value" class="paramref">value</span> when
+                        the value is non-empty; returns the original value
+                        otherwise.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>

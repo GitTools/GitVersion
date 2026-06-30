@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#ExtensionMethods">Extension Methods</a></p>
             <hr class="infobar-hidden" />
@@ -194,12 +195,6 @@
               <a href="/api/GitVersion.Agents">GitVersion<wbr />.Agents</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
-            <li>
-              <a href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-                >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
-              >
-            </li>
             <li class="header">Interface Types</li>
             <li>
               <a href="/api/GitVersion.Agents/IBuildAgent">IBuildAgent</a>
@@ -207,6 +202,12 @@
             <li class="selected">
               <a href="/api/GitVersion.Agents/ICurrentBuildAgent"
                 >ICurrentBuildAgent</a
+              >
+            </li>
+            <li class="header">Class Types</li>
+            <li>
+              <a href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+                >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
               >
             </li>
           </ul>
@@ -219,6 +220,12 @@
           <h1>ICurrentBuildAgent <small>Interface</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">
+            Marker interface for the build agent that is active in the current
+            execution context.
+          </div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -278,7 +285,13 @@
                     </td>
                     <td>T</td>
                     <td>
-                      <div></div>
+                      <div>
+                        Throws
+                        <code class="cs">ArgumentNullException</code> when
+                        <span name="value" class="paramref">value</span> is
+                        <code class="cs">null</code>; otherwise returns the
+                        value.
+                      </div>
                       <div>
                         <small
                           ><em

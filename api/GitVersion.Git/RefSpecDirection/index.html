@@ -121,6 +121,7 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
+            <p><a href="#Summary">Summary</a></p>
             <p><a href="#Syntax">Syntax</a></p>
             <p><a href="#fields">Fields</a></p>
             <hr class="infobar-hidden" />
@@ -194,14 +195,11 @@
               <a href="/api/GitVersion.Git">GitVersion<wbr />.Git</a>
             </li>
             <li role="separator" class="divider"></li>
-            <li class="header">Class Types</li>
-            <li>
-              <a href="/api/GitVersion.Git/GitRepositoryInfo"
-                >GitRepositoryInfo</a
+            <li class="header">Enum Types</li>
+            <li class="selected">
+              <a href="/api/GitVersion.Git/RefSpecDirection"
+                >RefSpecDirection</a
               >
-            </li>
-            <li>
-              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Interface Types</li>
             <li><a href="/api/GitVersion.Git/IBranch">IBranch</a></li>
@@ -256,11 +254,14 @@
               <a href="/api/GitVersion.Git/ITagCollection">ITagCollection</a>
             </li>
             <li><a href="/api/GitVersion.Git/ITreeChanges">ITreeChanges</a></li>
-            <li class="header">Enum Types</li>
-            <li class="selected">
-              <a href="/api/GitVersion.Git/RefSpecDirection"
-                >RefSpecDirection</a
+            <li class="header">Class Types</li>
+            <li>
+              <a href="/api/GitVersion.Git/GitRepositoryInfo"
+                >GitRepositoryInfo</a
               >
+            </li>
+            <li>
+              <a href="/api/GitVersion.Git/ReferenceName">ReferenceName</a>
             </li>
             <li class="header">Struct Types</li>
             <li><a href="/api/GitVersion.Git/BranchCommit">BranchCommit</a></li>
@@ -274,6 +275,9 @@
           <h1>RefSpecDirection <small>Enum</small></h1>
         </section>
         <section class="content">
+          <h1 id="Summary">Summary</h1>
+          <div class="lead">Indicates the direction of a refspec mapping.</div>
+
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="row">
@@ -342,7 +346,9 @@
                     </td>
                     <td>0</td>
                     <td>
-                      <div></div>
+                      <div>
+                        The refspec is used when fetching from a remote.
+                      </div>
                       <div>
                         <small><em>static</em></small>
                       </div>
@@ -356,7 +362,7 @@
                     </td>
                     <td>1</td>
                     <td>
-                      <div></div>
+                      <div>The refspec is used when pushing to a remote.</div>
                       <div>
                         <small><em>static</em></small>
                       </div>
