@@ -362,76 +362,56 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     public SemanticVersion Increment(
         VersionField increment, string? label, IncrementMode mode, params SemanticVersion?[] alternativeSemanticVersions)
     {
-        var major = Major;
-        var minor = Minor;
-        var patch = Patch;
-        var preReleaseNumber = PreReleaseTag.Number;
-
         var hasPreReleaseTag = PreReleaseTag.HasTag();
 
-        switch (increment)
+        var (major, minor, patch, preReleaseNumber) = ApplyIncrement(increment, mode, hasPreReleaseTag);
+
+        var (semanticVersion, foundAlternativeSemanticVersion) =
+            SelectAlternativeIfGreater(new SemanticVersion(major, minor, patch), alternativeSemanticVersions);
+        major = semanticVersion.Major;
+        minor = semanticVersion.Minor;
+        patch = semanticVersion.Patch;
+
+        if (foundAlternativeSemanticVersion && increment == VersionField.None)
         {
-            case VersionField.None:
-                preReleaseNumber++;
-                break;
-
-            case VersionField.Patch:
-                if (hasPreReleaseTag && (mode == IncrementMode.Standard
-                    || (mode == IncrementMode.EnsureIntegrity && patch != 0)))
-                {
-                    preReleaseNumber++;
-                }
-                else
-                {
-                    patch++;
-                    if (preReleaseNumber.HasValue)
-                    {
-                        preReleaseNumber = 1;
-                    }
-                }
-                break;
-
-            case VersionField.Minor:
-                if (hasPreReleaseTag && (mode == IncrementMode.Standard
-                    || (mode == IncrementMode.EnsureIntegrity && minor != 0 && patch == 0)))
-                {
-                    preReleaseNumber++;
-                }
-                else
-                {
-                    minor++;
-                    patch = 0;
-                    if (preReleaseNumber.HasValue)
-                    {
-                        preReleaseNumber = 1;
-                    }
-                }
-                break;
-
-            case VersionField.Major:
-                if (hasPreReleaseTag && (mode == IncrementMode.Standard
-                    || (mode == IncrementMode.EnsureIntegrity && major != 0 && minor == 0 && patch == 0)))
-                {
-                    preReleaseNumber++;
-                }
-                else
-                {
-                    major++;
-                    minor = 0;
-                    patch = 0;
-                    if (preReleaseNumber.HasValue)
-                    {
-                        preReleaseNumber = 1;
-                    }
-                }
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(increment));
+            preReleaseNumber = 1;
         }
 
-        SemanticVersion semanticVersion = new(major, minor, patch);
+        return BuildIncrementedVersion(major, minor, patch, preReleaseNumber, hasPreReleaseTag, label);
+    }
 
+    private (long Major, long Minor, long Patch, long? PreReleaseNumber) ApplyIncrement(
+        VersionField increment, IncrementMode mode, bool hasPreReleaseTag)
+    {
+        var preReleaseNumber = PreReleaseTag.Number;
+        return increment switch
+        {
+            VersionField.None => (Major, Minor, Patch, preReleaseNumber + 1),
+            VersionField.Patch => IncrementField(mode, hasPreReleaseTag, Patch != 0, Major, Minor, Patch + 1, preReleaseNumber),
+            VersionField.Minor => IncrementField(mode, hasPreReleaseTag, Minor != 0 && Patch == 0, Major, Minor + 1, 0, preReleaseNumber),
+            VersionField.Major => IncrementField(mode, hasPreReleaseTag, Major != 0 && Minor == 0 && Patch == 0, Major + 1, 0, 0, preReleaseNumber),
+            _ => throw new ArgumentOutOfRangeException(nameof(increment))
+        };
+    }
+
+    private (long Major, long Minor, long Patch, long? PreReleaseNumber) IncrementField(
+        IncrementMode mode, bool hasPreReleaseTag, bool integrityCondition,
+        long bumpedMajor, long bumpedMinor, long bumpedPatch, long? preReleaseNumber)
+    {
+        if (ShouldIncrementPreReleaseNumber(mode, hasPreReleaseTag, integrityCondition))
+        {
+            return (Major, Minor, Patch, preReleaseNumber + 1);
+        }
+
+        return (bumpedMajor, bumpedMinor, bumpedPatch, preReleaseNumber.HasValue ? 1 : preReleaseNumber);
+    }
+
+    private static bool ShouldIncrementPreReleaseNumber(IncrementMode mode, bool hasPreReleaseTag, bool integrityCondition)
+        => hasPreReleaseTag && (mode == IncrementMode.Standard || (mode == IncrementMode.EnsureIntegrity && integrityCondition));
+
+    private static (SemanticVersion Version, bool Found) SelectAlternativeIfGreater(
+        SemanticVersion semanticVersion, SemanticVersion?[] alternativeSemanticVersions)
+    {
         var foundAlternativeSemanticVersion = false;
         foreach (var alternativeSemanticVersion in alternativeSemanticVersions)
         {
@@ -444,15 +424,12 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
             foundAlternativeSemanticVersion = true;
         }
 
-        major = semanticVersion.Major;
-        minor = semanticVersion.Minor;
-        patch = semanticVersion.Patch;
+        return (semanticVersion, foundAlternativeSemanticVersion);
+    }
 
-        if (foundAlternativeSemanticVersion && increment == VersionField.None)
-        {
-            preReleaseNumber = 1;
-        }
-
+    private SemanticVersion BuildIncrementedVersion(
+        long major, long minor, long patch, long? preReleaseNumber, bool hasPreReleaseTag, string? label)
+    {
         string preReleaseTagName;
         if (hasPreReleaseTag)
         {
@@ -464,13 +441,11 @@ public sealed class SemanticVersion : IFormattable, IComparable<SemanticVersion>
             preReleaseTagName = string.Empty;
         }
 
-        if (label is null || preReleaseTagName == label)
+        if (label is not null && preReleaseTagName != label)
         {
-            return new SemanticVersion(this) { Major = major, Minor = minor, Patch = patch, PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseNumber, true) };
+            preReleaseNumber = 1;
+            preReleaseTagName = label;
         }
-
-        preReleaseNumber = 1;
-        preReleaseTagName = label;
 
         return new SemanticVersion(this)
         {
