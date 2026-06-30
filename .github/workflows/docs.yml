@@ -60,7 +60,7 @@ jobs:
         id: cache-node-dir
         run: |
           cacheDir=$(npm config get cache)
-          echo "dir=$cacheDir" >> $GITHUB_OUTPUT
+          echo "dir=$cacheDir" >> "$GITHUB_OUTPUT"
 
       - name: Cache Node Modules
         id: cache-node
@@ -109,8 +109,8 @@ jobs:
       - name: '[Reviewdog Reporter]'
         id: reporter
         run: |
-          value=$([ ${{ github.event_name == 'pull_request' }} ] && echo "github-pr-review" || echo "github-check")
-          echo "value=$value" >> $GITHUB_OUTPUT
+          value=${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
+          echo "value=$value" >> "$GITHUB_OUTPUT"
 
       - name: '[Remark Lint]'
         uses: reviewdog/action-remark-lint@82225f7db5b4a3caaca3052733b6800fa7d109b0 # v5
