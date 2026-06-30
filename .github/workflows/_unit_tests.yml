@@ -25,14 +25,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - name: Restore State
         uses: ./.github/actions/cache-restore
 
       - name: '[Unit Test]'
-        uses: nick-fields/retry@v4
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           shell: pwsh
           timeout_minutes: 30
@@ -41,13 +41,13 @@ jobs:
           command: 'dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }}'
 
       - name: Test Summary
-        uses: test-summary/action@v2.6
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
         if: always() && matrix.dotnet_version == '10.0'
         with:
           paths: artifacts/test-results/**/results.xml
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           files: artifacts/test-results/**/results.xml
@@ -55,7 +55,7 @@ jobs:
           use_oidc: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
         with:
           directory: artifacts/test-results

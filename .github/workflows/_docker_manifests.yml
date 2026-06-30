@@ -29,7 +29,7 @@ jobs:
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
@@ -42,7 +42,7 @@ jobs:
       - name: Load DockerHub credentials
         if: inputs.publish_manifests
         id: dockerhub-creds
-        uses: gittools/cicd/dockerhub-creds@v5
+        uses: gittools/cicd/dockerhub-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
