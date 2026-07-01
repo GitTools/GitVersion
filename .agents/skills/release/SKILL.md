@@ -339,7 +339,9 @@ Provide the release URL: `https://github.com/GitTools/GitVersion/releases/tag/<V
 
 Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to complete, after which it fires a `publish-release` dispatch to Homebrew, winget, and GitTools Actions. You will monitor all three automatically using `/loop`.
 
-**"Not yet created" is an ambiguous status — checking PR existence alone does not disambiguate it.** It could mean the publish CI is still running, *or* that the publish workflow already ran and failed, *or* (for GitTools Actions specifically) that it pushed directly to `main` instead of opening a PR at all. A loop that only searches for PRs will report "not yet created" for the full 40-minute window even when the underlying job failed minutes in. Always cross-check the actual workflow run conclusion alongside the PR search; do not rely on elapsed time alone to infer failure.
+**"Not yet created" is an ambiguous status — checking PR existence alone does not disambiguate it.** It could mean the publish CI is still running, *or* that the publish workflow already ran and failed. A loop that only searches for PRs will report "not yet created" for the full 40-minute window even when the underlying job failed minutes in. Always cross-check the actual workflow run conclusion alongside the PR search; do not rely on elapsed time alone to infer failure.
+
+> **Note on GitTools Actions:** all three downstream targets — Homebrew, winget, and GitTools Actions — open a PR that must be verified. If you find a *recent direct commit to `main`* on `GitTools/actions` for this version but no PR, treat that as unexpected and flag it — don't record it as a normal terminal state.
 
 **Scope of monitoring: PR creation only, not merge status.** Once a target has a confirmed PR (any state — `OPEN` is sufficient), mark that target resolved: record its link and exclude it from subsequent polling iterations. Merge status is outside this skill's scope — it depends on third-party reviewers and is not deterministic on any timeline this loop should poll against. Continue polling only the targets that remain unresolved (no PR and no failure signal yet).
 
@@ -354,27 +356,27 @@ Skill({
     3. gh pr list --repo GitTools/actions --search \"gitversion <VERSION>\" --state all --limit 5 --json number,title,state,url --jq '.[]'
     4. For each target with no PR found yet, also check whether its publish workflow already ran and what it concluded — don't just wait blindly:
        gh run list --repo GitTools/GitVersion --limit 30 --json name,event,status,conclusion,createdAt --jq '[.[] | select(.name == \"Publish to Homebrew\" or .name == \"Publish to Winget\" or .name == \"Update GitTools Actions\")]'
-    5. If GitTools Actions has no PR but its workflow run succeeded, check whether it pushed directly to main instead of opening a PR:
+    5. If GitTools Actions has no PR but its workflow run succeeded, sanity-check that it didn't push directly to main instead of opening a PR:
        gh api repos/GitTools/actions/commits?per_page=5 --jq '.[] | {sha, message: .commit.message, date: .commit.author.date}'
   Display a status table:
     Downstream Release Status: <VERSION>
     ─────────────────────────────────────────────────────
     📦 Homebrew          <url> / not yet created (CI still running) / FAILED: <run url>
     📦 winget            <url> / not yet created (CI still running) / FAILED: <run url>
-    ⚙️  GitTools Actions  <url> / pushed directly to main: <commit url> / not yet created (CI still running) / FAILED: <run url>
+    ⚙️  GitTools Actions  <url> / not yet created (CI still running) / FAILED: <run url> / ⚠️ pushed directly to main (unexpected): <commit url>
   Self-pace: use a long fallback (1200s) while CI is still running and nothing has resolved yet.
   If a publish workflow run shows conclusion 'failure', surface it to the user immediately in the next message rather than waiting out the fallback — don't auto-retry a failed publish workflow without asking, since it's a one-way external action (opens a PR/pushes to a third-party repo).
-  Stop the loop (omit ScheduleWakeup) once every target has reached a terminal state: PR confirmed created (any state, don't track to merge), FAILED-and-reported, or confirmed-pushed-directly."
+  Stop the loop (omit ScheduleWakeup) once every target has reached a terminal state: PR confirmed created (any state, don't track to merge) or FAILED-and-reported. A GitTools Actions direct-push-to-main is not a normal terminal state — report it as unexpected (see note above) rather than silently resolving the target on it."
 })
 ```
 
 The loop self-paces as follows:
 - While CI is still running and no target has resolved → long fallback interval (~20 min)
-- Once a target's PR/commit is confirmed, that target is excluded from further polling
+- Once a target's PR is confirmed, that target is excluded from further polling
 - A failed publish workflow run is reported in the next message, not deferred until the fallback interval elapses
-- The loop terminates once every target has reached a terminal state (PR/commit confirmed, failure reported, or direct-push confirmed)
+- The loop terminates once every target has reached a terminal state (PR confirmed or failure reported)
 
-**Known recurring failure mode — Homebrew:** `mislav/bump-homebrew-formula-action` can fail immediately with `Error: unexpected HTTP 303 response`. This is a confirmed upstream defect: GitHub's tarball redirect endpoint began returning HTTP 303 instead of 302 around 2026-05-16, and the action's redirect handling only accepts 302 (fix: [mislav/bump-homebrew-formula-action#342](https://github.com/mislav/bump-homebrew-formula-action/pull/342), unmerged as of last check). If Homebrew fails with this exact error, attribute it to this defect rather than re-investigating the fork configuration or token validity. Check whether #342 has merged and been tagged; if so, recommend bumping the pinned SHA in `.github/workflows/homebrew.yml`. Retrying the workflow without that fix will reproduce the same failure deterministically — do not recommend a retry as the first remediation step.
+**Homebrew publish mechanism:** `.github/workflows/homebrew.yml` runs Homebrew's own `brew bump-formula-pr` CLI. It computes the source tarball SHA-256, forks via the `gittools-bot` org, and commits as the GitTools Bot identity, opening a PR to `Homebrew/homebrew-core`. If the job fails, investigate the actual `brew bump-formula-pr` step output — likely causes are the `HOMEBREW_GITHUB_API_TOKEN` lacking fork/push scope, the `gittools-bot` fork being out of sync, or `brew bump-formula-pr` rejecting the formula (audit/version). Surface the failing run's log to the user.
 
 ---
 
@@ -535,7 +537,7 @@ gh pr list --repo GitTools/actions --search "gitversion <VERSION>" --state all -
 
 **Once a downstream PR is confirmed created, report only its link — its merge state is out of scope.** PR creation marks the end of this skill's tracking for that target; merge timing depends on third-party review and is not tracked or reported.
 
-Present a table covering every PR/issue touched during the run — not just downstream ones. Include rows for: the milestone created/reused, any items relabeled or moved into it, and the three downstream publish PRs. Mark anything that never got a PR (e.g. blocked by an upstream bug, or merged directly without one) so it's visually distinct from "still pending."
+Present a table covering every PR/issue touched during the run — not just downstream ones. Include rows for: the milestone created/reused, any items relabeled or moved into it, and the three downstream publish PRs (Homebrew, winget, and GitTools Actions all open PRs). Mark anything that never got a PR (e.g. a publish job failed, or GitTools Actions pushed directly to main) so it's visually distinct from "still pending."
 
 ```
 Release Summary: <VERSION>
@@ -544,9 +546,9 @@ Release:     https://github.com/GitTools/GitVersion/releases/tag/<VERSION>
 Milestone:   https://github.com/GitTools/GitVersion/milestone/<MILESTONE_NUMBER> (N items)
 
 Downstream PRs:
-📦 Homebrew          <url> / not yet created (<reason>, e.g. blocked by upstream bug)
+📦 Homebrew          <url> / not yet created (<reason>)
 📦 winget            <url> / not yet created (CI still running)
-⚙️  GitTools Actions  <url> / pushed directly to main: <commit url> (no PR opened)
+⚙️  GitTools Actions  <url> / not yet created (CI still running) / ⚠️ pushed directly to main (unexpected): <commit url>
 
 Other issues/PRs touched:
 - [#NUMBER](url) — relabeled <old> → <new> / moved into milestone / etc. (only list non-obvious actions, not every routine milestone assignment)
