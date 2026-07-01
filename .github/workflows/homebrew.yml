@@ -58,10 +58,13 @@ jobs:
           git config --global user.name "GitTools Bot"
           git config --global user.email "gittoolsbot@outlook.com"
 
+          # No --fork-org: that flag requires an *organization* login, but the
+          # publish runs as the gittools-bot *user*. Omitting it makes brew fork
+          # to the authenticated user (gittools-bot/homebrew-core) — the same
+          # target the old action used via push-to.
           brew bump-formula-pr gitversion \
             --url "$url" \
             --sha256 "$sha256" \
-            --fork-org gittools-bot \
             --no-audit \
             --no-browse \
             --message "For additional details see https://github.com/GitTools/GitVersion/releases/tag/${version}"
