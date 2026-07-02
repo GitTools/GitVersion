@@ -37,8 +37,8 @@ public class ExecCmdLineArgumentTest
     }
 
     [Theory]
-    [TestCase("", "INFO [")]
-    [TestCase("-verbosity NORMAL", "INFO [")]
+    [TestCase("", "INFO")]
+    [TestCase("-verbosity NORMAL", "INFO")]
     [TestCase("-verbosity quiet", "")]
     public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
     {
@@ -80,7 +80,7 @@ public class ExecCmdLineArgumentTest
     {
         using var fixture = new EmptyRepositoryFixture();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, null, false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " /l console", false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldNotBeNull();

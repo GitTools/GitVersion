@@ -1,6 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
-using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersion;
 
@@ -10,7 +10,7 @@ public class GitVersionCommonModule : IGitVersionModule
     /// <summary>Registers the common infrastructure services into the DI container.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddSingleton<ILog, Log>();
+        services.AddGitVersionLogging();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IEnvironment, Environment>();
         services.AddSingleton<IConsole, ConsoleAdapter>();

@@ -1,4 +1,4 @@
-namespace GitVersion.Logging;
+namespace GitVersion;
 
 /// <summary>Provides console I/O operations used by GitVersion's logging infrastructure.</summary>
 public interface IConsole

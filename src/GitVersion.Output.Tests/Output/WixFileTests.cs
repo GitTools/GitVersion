@@ -2,7 +2,6 @@ using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.Output.WixUpdater;
 using GitVersion.Tests;
 using GitVersion.VersionCalculation;
@@ -43,10 +42,9 @@ internal class WixFileTests : TestBase
 
         var stringBuilder = new StringBuilder();
 
-        var logAppender = new TestLogAppender(Action);
-        var log = new Log(logAppender);
+        var loggerFactory = new TestLoggerFactory(s => stringBuilder.AppendLine(s));
 
-        var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
+        var sp = ConfigureServices(service => loggerFactory.RegisterWith(service));
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
@@ -60,9 +58,6 @@ internal class WixFileTests : TestBase
         fileSystem
             .File.ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
-        return;
-
-        void Action(string s) => stringBuilder.AppendLine(s);
     }
 
     [Test]
@@ -84,10 +79,9 @@ internal class WixFileTests : TestBase
 
         var stringBuilder = new StringBuilder();
 
-        var logAppender = new TestLogAppender(Action);
-        var log = new Log(logAppender);
+        var loggerFactory = new TestLoggerFactory(s => stringBuilder.AppendLine(s));
 
-        var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
+        var sp = ConfigureServices(service => loggerFactory.RegisterWith(service));
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
@@ -108,8 +102,5 @@ internal class WixFileTests : TestBase
         fileSystem
             .File.ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(FileSystemHelper.Path.Combine("Approved")));
-        return;
-
-        void Action(string s) => stringBuilder.AppendLine(s);
     }
 }
