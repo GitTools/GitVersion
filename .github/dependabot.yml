@@ -67,6 +67,18 @@ updates:
       actions:
         patterns:
           - "actions/*"
+      docker:
+        patterns:
+          - "docker/*"
+      codeql:
+        patterns:
+          - "github/codeql-action/*"
+      reviewdog:
+        patterns:
+          - "reviewdog/*"
+      gittools:
+        patterns:
+          - "gittools/*"
     directories:
       - /.github/workflows
       - /.github/actions
@@ -89,11 +101,29 @@ updates:
       cronjob: "0 12 1,15 * *"
 
   - package-ecosystem: docker
-    directory: /.devcontainer
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "(docker deps)"
+    groups:
+      docker:
+        patterns:
+          - "*"
+    directories:
+      - /.devcontainer
+      - /build/docker
     schedule:
       interval: daily
 
-  - package-ecosystem: docker
-    directory: /build/docker
+  - package-ecosystem: devcontainers
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "(devcontainer deps)"
+    groups:
+      devcontainers:
+        patterns:
+          - "*"
+    directory: "/"
     schedule:
       interval: daily
