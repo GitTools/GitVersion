@@ -1,12 +1,11 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
 
-internal class MyGet(IEnvironment environment, ILog log, IFileSystem fileSystem) : BuildAgentBase(environment, log, fileSystem)
+internal class MyGet(IEnvironment environment, ILogger<MyGet> logger, IFileSystem fileSystem) : BuildAgentBase(environment, logger, fileSystem)
 {
     public const string EnvironmentVariableName = "BuildRunner";
     protected override string EnvironmentVariable => EnvironmentVariableName;

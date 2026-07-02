@@ -2,6 +2,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion;
 
+#pragma warning disable S1144
 internal static class ArgumentParserExtensions
 {
     private static readonly string[] TrueValues = ["1", "true"];
@@ -90,3 +91,4 @@ internal static class ArgumentParserExtensions
         }
     }
 }
+#pragma warning restore S1144

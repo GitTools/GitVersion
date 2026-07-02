@@ -3,12 +3,12 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
-using GitVersion.Logging;
+using Serilog;
 
 namespace GitVersion;
 
 internal class GitVersionExecutor(
-    ILog log,
+    ILogger<GitVersionExecutor> logger,
     IFileSystem fileSystem,
     IConsole console,
     IConfigurationFileLocator configurationFileLocator,
@@ -20,7 +20,7 @@ internal class GitVersionExecutor(
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionExecutor
 {
-    private readonly ILog log = log.NotNull();
+    private readonly ILogger<GitVersionExecutor> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IConsole console = console.NotNull();
 
@@ -43,8 +43,7 @@ internal class GitVersionExecutor(
 
         if (exitCode != 0)
         {
-            // Dump log to console if we fail to complete successfully
-            this.console.Write(this.log.ToString());
+            Log.CloseAndFlush();
         }
 
         return exitCode;
@@ -73,22 +72,26 @@ internal class GitVersionExecutor(
         }
         catch (WarningException exception)
         {
-            var error = $"An error occurred:{FileSystemHelper.Path.NewLine}{exception.Message}";
-            this.log.Warning(error);
+            this.logger.LogError(exception, """
+                                            An error occurred:
+                                            {Message}
+                                            """, exception.Message);
             return 1;
         }
         catch (Exception exception)
         {
-            var error = $"An unexpected error occurred:{FileSystemHelper.Path.NewLine}{exception}";
-            this.log.Error(error);
+            this.logger.LogError(exception, """
+                                            An unexpected error occurred:
+                                            {ExceptionMessage}
+                                            """, exception.Message);
 
             try
             {
-                GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
+                GitExtensions.DumpGraphLog(logMessage => this.logger.LogInformation("{LogMessage}", logMessage));
             }
             catch (Exception dumpGraphException)
             {
-                this.log.Error($"Couldn't dump the git graph due to the following error: {dumpGraphException}");
+                this.logger.LogError(dumpGraphException, "Couldn't dump the git graph");
             }
             return 1;
         }
@@ -107,29 +110,19 @@ internal class GitVersionExecutor(
             gitVersionOptions.Settings.NoCache = true;
         }
 
-        if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console")
-        {
-            this.log.AddLogAppender(new ConsoleAppender());
-        }
-
-        if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
-        {
-            this.log.AddLogAppender(new FileAppender(this.fileSystem, gitVersionOptions.LogFilePath));
-        }
-
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         if (gitVersionOptions.Diag)
         {
-            GitExtensions.DumpGraphLog(logMessage => this.log.Info(logMessage));
+            GitExtensions.DumpGraphLog(logMessage => this.logger.LogInformation(logMessage));
         }
 
         if (!this.fileSystem.Directory.Exists(workingDirectory))
         {
-            this.log.Warning($"The working directory '{workingDirectory}' does not exist.");
+            this.logger.LogWarning("The working directory '{WorkingDirectory}' does not exist.", workingDirectory);
         }
         else
         {
-            this.log.Info("Working directory: " + workingDirectory);
+            this.logger.LogInformation("Working directory: {WorkingDirectory}", workingDirectory);
         }
     }
 
