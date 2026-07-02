@@ -7,27 +7,27 @@
         "context": "."
     },
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
+        "ghcr.io/devcontainers/features/common-utils": {
             "installZsh": "true",
             "username": "vscode",
             "userUid": "1000",
             "userGid": "1000",
             "upgradePackages": "true"
         },
-        "ghcr.io/devcontainers/features/git:1": {
+        "ghcr.io/devcontainers/features/git": {
             "version": "os-provided",
             "ppa": "false"
         },
-        "ghcr.io/devcontainers/features/powershell:1": {
+        "ghcr.io/devcontainers/features/powershell": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/github-cli:1": {
+        "ghcr.io/devcontainers/features/github-cli": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+        "ghcr.io/devcontainers/features/docker-in-docker": {
             "version": "latest"
         },
-        "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
+        "ghcr.io/eitsupi/devcontainer-features/jq-likes": {
             "jqVersion": "latest",
             "yqVersion": "latest",
             "xqVersion": "none"
