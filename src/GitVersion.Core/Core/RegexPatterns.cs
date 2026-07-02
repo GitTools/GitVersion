@@ -34,6 +34,9 @@ internal static partial class RegexPatterns
     [StringSyntax(StringSyntaxAttribute.Regex, Options)]
     internal const string SanitizeNameRegexPattern = "[^a-zA-Z0-9-]";
 
+    [StringSyntax(StringSyntaxAttribute.Regex, Options)]
+    internal const string SanitizeLabelRegexPattern = "[^a-zA-Z0-9-.]";
+
 #if NET9_0_OR_GREATER
     [GeneratedRegex(SwitchArgumentRegexPattern, Options)]
     public static partial Regex SwitchArgumentRegex { get; }

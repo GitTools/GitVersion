@@ -134,7 +134,7 @@ internal static class ConfigurationExtensions
             var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
 
             return label.FormatWith(labelPlaceholders, environment)
-                .RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
+                .RegexReplace(RegexPatterns.SanitizeLabelRegexPattern, "-");
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()
