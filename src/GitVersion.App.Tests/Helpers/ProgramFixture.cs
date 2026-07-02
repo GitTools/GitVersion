@@ -55,7 +55,7 @@ public sealed class ProgramFixture
     {
         if (!this.workingDirectory.IsNullOrWhiteSpace())
         {
-            args = ["-targetpath", this.workingDirectory, .. args];
+            args = ["--target-path", this.workingDirectory, .. args];
         }
 
         var builder = CliHost.CreateCliHostBuilder(args);
