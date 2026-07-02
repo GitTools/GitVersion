@@ -9,6 +9,37 @@ To use GitVersion with GitLab CI, either use the [MSBuild
 Task](/docs/usage/msbuild) or put the GitVersion executable in your
 runner's `PATH`.
 
+### Merge Request pipelines
+
+In merge request pipelines GitLab sets `CI_MERGE_REQUEST_REF_PATH` (for example
+`refs/merge-requests/15/head` or `refs/merge-requests/15/merge`). GitVersion
+reads this variable through the `GitLabCi` build agent when it is present,
+following the same pass-through pattern as Azure Pipelines (`BUILD_SOURCEBRANCH`)
+and GitHub Actions (`GITHUB_REF`).
+
+Branch resolution order in `GitLabCi`:
+
+1. `CI_COMMIT_TAG` set — treat as a tag pipeline (`GetCurrentBranch` returns `null`)
+2. `CI_MERGE_REQUEST_REF_PATH` set — use the merge request ref
+3. otherwise — `CI_COMMIT_REF_NAME` (branch name)
+
+After repository normalisation the friendly branch name becomes
+`merge-requests/<iid>/head` or `merge-requests/<iid>/merge`. Extend the
+`pull-request` branch configuration in `GitVersion.yml` so the regex matches
+GitLab's namespace (the default `pull-requests|pull|pr` pattern does not):
+
+```yaml
+workflow: GitFlow/v1
+branches:
+  pull-request:
+    regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
+    label: PullRequest{Number}
+```
+
+`CI_COMMIT_REF_NAME` still contains the source branch name (for example
+`feature/foo`) in MR pipelines; it is ignored when `CI_MERGE_REQUEST_REF_PATH`
+is set.
+
 A working example of integrating GitVersion with GitLab is maintained in the project [Utterly Automated Versioning][utterly-automated-versioning]
 
 Here is a summary of what it demonstrated (many more details in the [Readme][readme])

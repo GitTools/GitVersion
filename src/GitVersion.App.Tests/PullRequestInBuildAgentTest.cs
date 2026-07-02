@@ -22,6 +22,12 @@ public class PullRequestInBuildAgentTest
         "refs/remotes/pull-requests/5/merge"
     ];
 
+    private static readonly string[] GitLabMergeRequestRefs =
+    [
+        "refs/merge-requests/5/head",
+        "refs/merge-requests/5/merge"
+    ];
+
     [TestCaseSource(nameof(PrMergeRefs))]
     public async Task VerifyAzurePipelinesPullRequest(string pullRequestRef)
     {
@@ -75,15 +81,16 @@ public class PullRequestInBuildAgentTest
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
 
-    [TestCaseSource(nameof(PrMergeRefs))]
-    public async Task VerifyGitLabCIPullRequest(string pullRequestRef)
+    [TestCaseSource(nameof(GitLabMergeRequestRefs))]
+    public async Task VerifyGitLabCIPullRequest(string mergeRequestRef)
     {
         var env = new Dictionary<string, string>
         {
             { GitLabCi.EnvironmentVariableName, "true" },
-            { "CI_COMMIT_REF_NAME", PullRequestBranchName }
+            { GitLabCi.MergeRequestRefPathEnvironmentVariableName, mergeRequestRef },
+            { GitLabCi.CommitRefNameEnvironmentVariableName, "FeatureBranch" }
         };
-        await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+        await VerifyGitLabMergeRequestVersionIsCalculatedProperly(mergeRequestRef, env);
     }
 
     [TestCaseSource(nameof(PrMergeRefs))]
@@ -142,9 +149,29 @@ public class PullRequestInBuildAgentTest
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
 
+    private const string GitLabMergeRequestPullRequestConfig = """
+        workflow: GitFlow/v1
+        branches:
+          pull-request:
+            regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
+        """;
+
+    private static async Task VerifyGitLabMergeRequestVersionIsCalculatedProperly(string mergeRequestRef, Dictionary<string, string> env)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var configPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, "GitVersion.yml");
+        await File.WriteAllTextAsync(configPath, GitLabMergeRequestPullRequestConfig);
+        await VerifyPullRequestVersionIsCalculatedProperly(fixture, mergeRequestRef, env);
+    }
+
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture();
+        await VerifyPullRequestVersionIsCalculatedProperly(fixture, pullRequestRef, env);
+    }
+
+    private static async Task VerifyPullRequestVersionIsCalculatedProperly(EmptyRepositoryFixture fixture, string pullRequestRef, Dictionary<string, string> env)
+    {
         var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
         using var remoteRepository = new Repository(remoteRepositoryPath);
