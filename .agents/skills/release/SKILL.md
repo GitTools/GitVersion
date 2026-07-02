@@ -33,6 +33,7 @@ Check that the GitHub CLI is installed and authenticated before doing anything e
 ```bash
 command -v gh >/dev/null && gh --version || echo "MISSING"
 gh auth status
+gh auth status --hostname github.com   # must be logged in to github.com specifically
 ```
 
 If `gh` is missing, stop and tell the user to install it (e.g. `brew install gh` on macOS, or https://cli.github.com/) and run `gh auth login`, then re-run this skill. Do not proceed to Phase 1 until `gh` is present and authenticated.
@@ -139,8 +140,9 @@ From the result:
 If any related umbrella milestones exist (e.g. `6.x`), fetch their closed items:
 
 ```bash
-gh api "repos/GitTools/GitVersion/issues?milestone=<UMBRELLA_MILESTONE_NUMBER>&state=closed&per_page=100" \
-  --jq '[.[] | {number, title, labels: [.labels[].name]}]'
+# --paginate streams every page (a milestone with >100 closed items would otherwise truncate to the first page)
+gh api "repos/GitTools/GitVersion/issues?milestone=<UMBRELLA_MILESTONE_NUMBER>&state=closed&per_page=100" --paginate \
+  --jq '.[] | {number, title, labels: [.labels[].name]}'
 ```
 
 If closed items exist in the umbrella milestone(s), ask the user via `AskUserQuestion`:
@@ -159,8 +161,8 @@ Confirm how many were moved.
 ### 3b. Open issues/PRs in milestone
 
 ```bash
-gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=open&per_page=100" \
-  --jq '[.[] | {number, title, url: ("https://github.com/GitTools/GitVersion/issues/" + (.number | tostring)), type: (if .pull_request then "PR" else "issue" end)}]'
+gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=open&per_page=100" --paginate \
+  --jq '.[] | {number, title, url: ("https://github.com/GitTools/GitVersion/issues/" + (.number | tostring)), type: (if .pull_request then "PR" else "issue" end)}'
 ```
 
 **If open items exist — warning 3b:**
@@ -192,11 +194,21 @@ Extract:
 Then fetch closed milestone items and classify each one:
 
 ```bash
-gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" \
-  --jq '[.[] | {number, title, url: ("https://github.com/GitTools/GitVersion/issues/" + (.number | tostring)), labels: [.labels[].name]}]'
+gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate \
+  --jq '.[] | {number, title, url: ("https://github.com/GitTools/GitVersion/issues/" + (.number | tostring)), labels: [.labels[].name]}'
 ```
 
-For each item, count how many of its labels match `issue-labels-include`, then apply this logic (GitReleaseManager, hereafter GRM, requires **exactly one** included label per item — it categorises each item under a single section and aborts if an item has more than one matching label):
+For a fast offender scan, this one-pass filter prints only the items whose count of GRM-relevant labels (the six included + the excluded `build`) is not exactly one — i.e. every zero-label, multi-label, and mixed-with-`build` case in a single line each:
+
+```bash
+gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate \
+  --jq '.[] | {n:.number, type:(if .pull_request then "PR" else "issue" end), labels:[.labels[].name]}
+        | (.labels | map(select(. as $l | ["breaking change","bug","dependencies","documentation","feature","improvement","build"] | index($l)))) as $valid
+        | select(($valid|length) != 1)
+        | "\(.type) #\(.n)\tvalid=\($valid)\tall=\(.labels)"'
+```
+
+An empty result means every closed item has exactly one GRM-relevant label. For anything it prints, classify it with the full logic below (the scan can't tell an included label from `build`, so a lone `build` shows up here as a ⚠️, not a ❌). For each item, count how many of its labels match `issue-labels-include`, then apply this logic (GitReleaseManager, hereafter GRM, requires **exactly one** included label per item — it categorises each item under a single section and aborts if an item has more than one matching label):
 
 - **Exactly one `issue-labels-include` label** → ✅ will appear in release notes under that label's section
 - **Two or more `issue-labels-include` labels** (e.g. `bug` + `improvement`, or `bug` + `breaking change`) → ❌ blocker: GRM supports only one label per item and will fail because it cannot decide which section to file it under
@@ -229,11 +241,25 @@ For each item, count how many of its labels match `issue-labels-include`, then a
 >
 > Tell the user to fix the blockers, then confirm they are done before continuing.
 
+### 3c-bis. At least one closed issue present
+
+GitReleaseManager needs at least one closed **issue** (not just PRs) in the milestone. With a PR-only milestone GRM can fail to generate notes or produce an empty/degenerate release, so verify an issue is present:
+
+```bash
+gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate \
+  --jq '[.[] | select(.pull_request | not)] | length'
+```
+
+- **≥ 1** → ✅ proceed.
+- **0** (milestone contains only PRs) → ❌ blocker: ensure the work is tracked by at least one closed issue assigned to the milestone (create/label a tracking issue, or attach the relevant issue), then re-check.
+
 ### 3d. Merged PRs not assigned to milestone
 
 ```bash
 # Step 1: get all item numbers currently in the milestone
-MILESTONE_ITEMS=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --jq '[.[].number]')
+# --paginate --slurp so milestones with >100 items aren't truncated to the first page (--slurp can't combine with --jq, so flatten the page arrays in python)
+MILESTONE_ITEMS=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys, json; pages = json.load(sys.stdin); print(json.dumps([i['number'] for pg in pages for i in pg]))")
 
 # Step 2: get PRs merged since last release
 # IMPORTANT: pass --limit well above gh's default of 30, or merged PRs will be silently dropped from this check
@@ -270,6 +296,30 @@ gh pr view <NUMBER> --repo GitTools/GitVersion --json closingIssuesReferences --
 > Ask the user: *"Should I assign all N unassigned merged PRs to the `<VERSION>` milestone now?"*
 > If yes, run the command for each PR and confirm.
 
+### 3d-bis. In-milestone PRs that close an in-milestone issue (double-count)
+
+The inverse of 3d: a PR **already in** the milestone that closes an issue **also in** the milestone gets counted twice in the release notes (once as the PR, once as the issue). For each PR in the milestone, check its closing references against `$MILESTONE_ITEMS` (captured in 3d). The GraphQL form below is more reliable than `gh pr view` when the closing reference spans repos:
+
+```bash
+# For a suspect PR already in the milestone, is its closing target also in the milestone?
+gh api graphql -f query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){pullRequest(number:$n){closingIssuesReferences(first:20){nodes{number}}}}}' \
+  -F o=GitTools -F r=GitVersion -F n=<PR_NUMBER> \
+  --jq '[.data.repository.pullRequest.closingIssuesReferences.nodes[].number]'
+```
+
+**If any in-milestone PR closes an in-milestone issue — blocker 3d-bis:**
+
+> ❌ **Blocker:** N PRs in the milestone close an issue that is also in the milestone — the change would be double-counted in the release notes.
+>
+> List each as: `- PR [#NUMBER](url) closes issue #ISSUE (both in milestone)`
+>
+> Fix — drop the PR from the milestone (the linked issue is the tracked unit of change):
+> ```bash
+> gh api repos/GitTools/GitVersion/issues/<PR_NUMBER> --method PATCH -f milestone=null
+> ```
+>
+> Ask the user before removing. The issue stays in the milestone and carries the change in the notes.
+
 ### Present the consolidated checklist
 
 After all checks complete and any fixes have been applied, show a single readiness summary:
@@ -279,14 +329,18 @@ Release Readiness: <VERSION>
 ─────────────────────────────────────────────────────
 ✅/❌  Milestone <VERSION> exists (N open, N closed items)
 ✅/⚠️  Open items in milestone: N
+✅/❌  At least one closed issue present (3c-bis)
 ✅/❌/⚠️  Closed items have exactly one GRM label  (N blockers, N multi-label, N excluded-only)
+✅/❌  No in-milestone PR closes an in-milestone issue (3d-bis)
 ✅/⚠️  All merged PRs in milestone (N missing)
 ```
 
 **Hard blockers (❌)** — do not proceed to Phase 4 until resolved:
 - Milestone does not exist (and user declined to create it)
+- No closed issue in the milestone (PR-only milestone — 3c-bis)
 - Closed items with no labels, or whose only labels don't match any `issue-labels-include` entry in `GitReleaseManager.yml`
 - Closed items with **more than one** `issue-labels-include` label (GRM supports only one label per item)
+- An in-milestone PR closes an in-milestone issue (double-count — 3d-bis)
 
 **Warnings (⚠️)** — ask the user to confirm before proceeding to Phase 4:
 - Open items remaining in the milestone
@@ -300,7 +354,9 @@ After any move/assignment in 3a-fix or 3d, verify the index reflects what you ju
 
 ```bash
 # The count the listing endpoint returns must equal the milestone's own closed-item count.
-LISTED=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --jq 'length')
+# --paginate --slurp to count across every page (>100 items); --slurp can't combine with --jq, so sum the page lengths in python.
+LISTED=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys, json; print(sum(len(pg) for pg in json.load(sys.stdin)))")
 MILESTONE_CLOSED=$(gh api repos/GitTools/GitVersion/milestones/<MILESTONE_NUMBER> --jq '.closed_issues')
 echo "listed=$LISTED  milestone.closed_issues=$MILESTONE_CLOSED"
 ```
@@ -321,8 +377,11 @@ gh release create <VERSION> \
   --repo GitTools/GitVersion \
   --title "<VERSION>" \
   --notes "" \
+  --discussion-category "Announcements" \
   --target main
 ```
+
+> **Announcements discussion:** `--discussion-category "Announcements"` links the release to a discussion in the repo's **Announcements** category so users can follow up in one place. The category must already exist (it does — verify with `gh api graphql -f query='{repository(owner:"GitTools",name:"GitVersion"){discussionCategories(first:20){nodes{name}}}}'` if unsure). Omit the flag only if the user explicitly doesn't want a discussion for this release.
 
 > **Important:** Do NOT mark it as a pre-release unless the version contains a pre-release label (e.g. `-beta.1`). Check automatically:
 > ```bash
@@ -331,7 +390,10 @@ gh release create <VERSION> \
 
 After running, confirm the release URL was created and inform the user that the CI pipeline is now running (`ci-release` dispatch was triggered by the release publication).
 
-Provide the release URL: `https://github.com/GitTools/GitVersion/releases/tag/<VERSION>`
+Provide the release URL: `https://github.com/GitTools/GitVersion/releases/tag/<VERSION>` — and the linked discussion URL:
+```bash
+gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
+```
 
 ---
 
@@ -462,8 +524,9 @@ Sanity-check: body is non-empty, lists categorized changes (Breaking change / Fe
 
 ```bash
 # Items GRM should have rendered = closed milestone items minus the excluded-label (build) ones.
-EXPECTED=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" \
-  --jq '[.[] | select([.labels[].name] | index("build") | not)] | length')
+# --paginate --slurp to include every page (>100 items); --slurp can't combine with --jq, so filter/count in python.
+EXPECTED=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys, json; pages = json.load(sys.stdin); print(sum(1 for pg in pages for i in pg if 'build' not in [l['name'] for l in i['labels']]))")
 # Items GRM actually rendered = distinct #NNNN / !NNNN references in the published body.
 RENDERED=$(gh release view <VERSION> --repo GitTools/GitVersion --json body --jq '.body' \
   | grep -oE '[#!][0-9]+' | sort -u | wc -l | tr -d ' ')
@@ -493,6 +556,17 @@ gh run list --repo GitTools/GitVersion --limit 30 --json name,event,status,concl
 
 If that workflow didn't run or failed, that's the blocker — re-dispatch or investigate it rather than the schema URL itself.
 
+### 6f. Announcements discussion linked
+
+Confirm the release is linked to a discussion in the **Announcements** category (created via `--discussion-category` in Phase 4):
+
+```bash
+gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
+```
+
+- Non-null URL → ✅ discussion linked; include it in the summary.
+- `null` → ⚠️ no discussion linked (the `--discussion-category` flag was omitted or the category name didn't match). Not a hard blocker, but flag it so the user can create one manually if intended.
+
 ### Present the verification report
 
 ```
@@ -503,6 +577,7 @@ Release Verification: <VERSION>
 ✅/⚠️/❌  Chocolatey (pushed / pending moderation / missing)
 ✅/⚠️  Release notes accurate
 ✅/❌/➖/⏳  Docs schema at /schemas/<major.minor>/ (➖ = skipped, patch release)
+✅/⚠️  Announcements discussion linked
 ```
 
 ⏳ means the underlying CI/publish step already succeeded but the artifact isn't visible yet (NuGet search-index lag, docs CDN propagation) — this is expected to clear within minutes, not a failure. Distinguish it from ❌ (the publish step itself failed or never ran) by checking the relevant CI job's `conclusion` first.
@@ -543,6 +618,7 @@ Present a table covering every PR/issue touched during the run — not just down
 Release Summary: <VERSION>
 ─────────────────────────────────────────────────────
 Release:     https://github.com/GitTools/GitVersion/releases/tag/<VERSION>
+Discussion:  <Announcements discussion url> / ⚠️ none linked
 Milestone:   https://github.com/GitTools/GitVersion/milestone/<MILESTONE_NUMBER> (N items)
 
 Downstream PRs:
