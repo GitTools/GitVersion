@@ -1,5 +1,47 @@
 ## Unreleased
 
+### CLI Arguments — POSIX-style Syntax
+
+The command-line interface has been migrated from Windows-style (`/switch` and single-dash `-switch`) arguments to POSIX-style `--long-name` arguments using [System.CommandLine](https://github.com/dotnet/command-line-api).
+
+**Old-style arguments are no longer accepted by default.** Update any scripts, CI pipelines, or tooling accordingly.
+
+As a temporary migration aid, set the environment variable `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to restore the legacy `/switch` and `-switch` argument handling. This escape hatch will be removed in a future release.
+
+#### Full argument mapping
+
+| Old argument                  | New argument                     | Short alias                    | Env var alternative          |
+| ----------------------------- | -------------------------------- | ------------------------------ | ---------------------------- |
+| `/targetpath <path>`          | `--target-path <path>`           | _(positional `path` argument)_ |                              |
+| `/output <type>`              | `--output <type>`                | `-o`                           |                              |
+| `/outputfile <path>`          | `--output-file <path>`           |                                |                              |
+| `/showvariable <var>`         | `--show-variable <var>`          | `-v`                           |                              |
+| `/format <format>`            | `--format <format>`              | `-f`                           |                              |
+| `/config <path>`              | `--config <path>`                | `-c`                           |                              |
+| `/showconfig`                 | `--show-config`                  |                                |                              |
+| `/overrideconfig <k=v>`       | `--override-config <k=v>`        |                                |                              |
+| `/nocache`                    | `--no-cache`                     |                                |                              |
+| `/nofetch`                    | `--no-fetch`                     |                                |                              |
+| `/nonormalize`                | `--no-normalize`                 |                                |                              |
+| `/allowshallow`               | `--allow-shallow`                |                                |                              |
+| `/verbosity <level>`          | `--verbosity <level>`            |                                |                              |
+| `/l <path>`                   | `--log-file <path>`              | `-l`                           |                              |
+| `/diag`                       | `--diagnose`                     | `-d`                           |                              |
+| `/updateassemblyinfo [files]` | `--update-assembly-info [files]` |                                |                              |
+| `/updateprojectfiles [files]` | `--update-project-files [files]` |                                |                              |
+| `/ensureassemblyinfo`         | `--ensure-assembly-info`         |                                |                              |
+| `/updatewixversionfile`       | `--update-wix-version-file`      |                                |                              |
+| `/url <url>`                  | `--url <url>`                    |                                |                              |
+| `/b <branch>`                 | `--branch <branch>`              | `-b`                           |                              |
+| `/u <username>`               | `--username <username>`          | `-u`                           | `GITVERSION_REMOTE_USERNAME` |
+| `/p <password>`               | `--password <password>`          | `-p`                           | `GITVERSION_REMOTE_PASSWORD` |
+| `/c <commit>`                 | `--commit <commit>`              | _(no short alias)_             |                              |
+| `/dynamicRepoLocation <path>` | `--dynamic-repo-location <path>` |                                |                              |
+
+> **Critical**: `-c` previously referred to the commit id. It is now aliased to `--config` (config file path). Any usage of `-c <commit-id>` must be changed to `--commit <commit-id>`.
+
+The `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` environment variables can be used as alternatives to `--username` and `--password`. Environment variables take lower precedence than explicit CLI arguments.
+
 ### Logging System Replacement
 
 * The custom `ILog` logging abstraction has been replaced with the industry-standard `Microsoft.Extensions.Logging` (M.E.L.) infrastructure using Serilog as the underlying provider.

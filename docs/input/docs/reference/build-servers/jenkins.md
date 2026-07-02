@@ -31,7 +31,7 @@ To inject the GitVersion variables as environment variables for a build job
 using [EnvInject][env-inject], do the following:
 
 1. Add an **Execute Windows batch command** build step with _Command_:
-   `gitversion /output buildserver`
+   `gitversion --output buildserver`
 2. Add an **Inject environment variables** build step and use value
    'gitversion.properties' for the _Properties File Path_ parameter
 
@@ -58,7 +58,7 @@ In a pipeline stage:
 1. Run GitVersion with the flag for _buildserver_ output (this only works when run from Jenkins, specifically when the `JENKINS_URL` environment variable is defined):
 
 ```groovy
-sh 'gitversion /output buildserver'`
+sh 'gitversion --output buildserver'`
 ```
 
 2. Add a script block to read the properties file, assign environment variables as needed:
