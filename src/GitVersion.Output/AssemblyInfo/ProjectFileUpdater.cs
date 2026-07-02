@@ -2,14 +2,13 @@ using System.IO.Abstractions;
 using System.Xml.Linq;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.AssemblyInfo;
 
 internal interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>;
 
-internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IProjectFileUpdater
+internal sealed class ProjectFileUpdater(ILogger<ProjectFileUpdater> logger, IFileSystem fileSystem) : IProjectFileUpdater
 {
     internal const string AssemblyVersionElement = "AssemblyVersion";
 
@@ -20,6 +19,8 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
 
     private readonly List<Action> restoreBackupTasks = [];
     private readonly List<Action> cleanupBackupTasks = [];
+    private readonly ILogger<ProjectFileUpdater> logger = logger.NotNull();
+    private readonly IFileSystem fileSystem = fileSystem.NotNull();
 
     public void Execute(GitVersionVariables variables, AssemblyInfoContext context)
     {
@@ -45,7 +46,7 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         var assemblyFileVersion = variables.AssemblySemFileVer;
         var packageVersion = variables.SemVer;
 
-        var originalFileContents = fileSystem.File.ReadAllText(localProjectFile);
+        var originalFileContents = this.fileSystem.File.ReadAllText(localProjectFile);
         XElement fileXml;
         try
         {
@@ -58,26 +59,26 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
 
         if (!CanUpdateProjectFile(fileXml))
         {
-            log.Warning($"Unable to update file: {localProjectFile}");
+            this.logger.LogWarning("Unable to update file: {LocalProjectFile}", localProjectFile);
             return;
         }
 
-        log.Debug($"Update file: {localProjectFile}");
+        this.logger.LogDebug("Update file: {LocalProjectFile}", localProjectFile);
 
         var backupProjectFile = localProjectFile + ".bak";
-        fileSystem.File.Copy(localProjectFile, backupProjectFile, true);
+        this.fileSystem.File.Copy(localProjectFile, backupProjectFile, true);
 
         this.restoreBackupTasks.Add(() =>
         {
-            if (fileSystem.File.Exists(localProjectFile))
+            if (this.fileSystem.File.Exists(localProjectFile))
             {
-                fileSystem.File.Delete(localProjectFile);
+                this.fileSystem.File.Delete(localProjectFile);
             }
 
-            fileSystem.File.Move(backupProjectFile, localProjectFile);
+            this.fileSystem.File.Move(backupProjectFile, localProjectFile);
         });
 
-        this.cleanupBackupTasks.Add(() => fileSystem.File.Delete(backupProjectFile));
+        this.cleanupBackupTasks.Add(() => this.fileSystem.File.Delete(backupProjectFile));
 
         if (!assemblyVersion.IsNullOrWhiteSpace())
         {
@@ -102,7 +103,7 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
         var outputXmlString = fileXml.ToString();
         if (originalFileContents != outputXmlString)
         {
-            fileSystem.File.WriteAllText(localProjectFile, outputXmlString);
+            this.fileSystem.File.WriteAllText(localProjectFile, outputXmlString);
         }
     }
 
@@ -110,22 +111,30 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
     {
         if (xmlRoot.Name != "Project")
         {
-            log.Warning("Invalid project file specified, root element must be <Project>.");
+            this.logger.LogWarning("Invalid project file specified, root element must be <Project>.");
             return false;
         }
 
         var sdkAttribute = xmlRoot.Attribute("Sdk");
-        if (sdkAttribute?.Value.StartsWith("Microsoft.NET.Sdk") != true &&
-            sdkAttribute?.Value.StartsWith("Microsoft.Build.Sql") != true)
+        if (sdkAttribute != null)
         {
-            log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+            var sdkAttributeValue = sdkAttribute.Value;
+            if (!sdkAttributeValue.StartsWith("Microsoft.NET.Sdk") && !sdkAttributeValue.StartsWith("Microsoft.Build.Sql"))
+            {
+                this.logger.LogWarning("Specified project file Sdk ({SdkAttributeValue}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'", sdkAttributeValue);
+                return false;
+            }
+        }
+        else
+        {
+            this.logger.LogWarning("Project file does not specify a Sdk attribute, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
             return false;
         }
 
         var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
         if (propertyGroups.Count == 0)
         {
-            log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
+            this.logger.LogWarning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
             return false;
         }
 
@@ -135,7 +144,7 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
             return true;
         }
 
-        log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
+        this.logger.LogWarning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
         return false;
     }
 
@@ -190,13 +199,13 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
             {
                 var fullPath = FileSystemHelper.Path.Combine(workingDirectory, item);
 
-                if (fileSystem.File.Exists(fullPath))
+                if (this.fileSystem.File.Exists(fullPath))
                 {
-                    yield return fileSystem.FileInfo.New(fullPath);
+                    yield return this.fileSystem.FileInfo.New(fullPath);
                 }
                 else
                 {
-                    log.Warning($"Specified file {fullPath} was not found and will not be updated.");
+                    this.logger.LogWarning("Specified file {FullPath} was not found and will not be updated.", fullPath);
                 }
             }
         }
@@ -207,13 +216,13 @@ internal sealed class ProjectFileUpdater(ILog log, IFileSystem fileSystem) : IPr
                 RecurseSubdirectories = true,
                 MaxRecursionDepth = DefaultMaxRecursionDepth
             };
-            var projectFiles = fileSystem.Directory
+            var projectFiles = this.fileSystem.Directory
                 .EnumerateFiles(workingDirectory, "*proj", options)
                 .Where(IsSupportedProjectFile);
 
             foreach (var projectFile in projectFiles)
             {
-                yield return fileSystem.FileInfo.New(projectFile);
+                yield return this.fileSystem.FileInfo.New(projectFile);
             }
         }
     }

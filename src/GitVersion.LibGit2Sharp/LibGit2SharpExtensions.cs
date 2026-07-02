@@ -1,5 +1,4 @@
 using GitVersion.Git;
-using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion;
@@ -10,7 +9,7 @@ public static class LibGit2SharpExtensions
     {
         public IGitRepository ToGitRepository()
         {
-            var gitRepository = new GitRepository(new NullLog());
+            var gitRepository = new GitRepository(NullLogger<GitRepository>.Instance);
             gitRepository.DiscoverRepository(repository.Info.Path);
             return gitRepository;
         }

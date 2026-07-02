@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Tests.VersionCalculation;
@@ -21,7 +20,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
@@ -47,7 +46,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
@@ -76,7 +75,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
@@ -110,7 +109,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
@@ -137,7 +136,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
@@ -171,7 +170,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(releaseBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(releaseBranchMock, configuration).ToArray();
@@ -195,7 +194,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
@@ -220,7 +219,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
@@ -243,7 +242,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
@@ -268,7 +267,7 @@ public class EffectiveBranchConfigurationFinderTests
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
@@ -293,7 +292,7 @@ public class EffectiveBranchConfigurationFinderTests
         var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(unknownBranchMock, configuration).ToArray();
@@ -326,7 +325,7 @@ public class EffectiveBranchConfigurationFinderTests
         var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(unknownBranchMock, configuration).ToArray();
@@ -361,7 +360,7 @@ public class EffectiveBranchConfigurationFinderTests
         var developBranchMock = GitRepositoryTestingExtensions.CreateMockBranch("develop", GitRepositoryTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns([developBranchMock]);
 
-        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStoreMock);
 
         // Act
         var actual = unitUnderTest.GetConfigurations(unknownBranchMock, configuration).ToArray();

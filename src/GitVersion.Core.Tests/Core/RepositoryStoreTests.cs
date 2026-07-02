@@ -1,18 +1,17 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Logging;
 
 namespace GitVersion.Tests;
 
 [TestFixture]
 public class RepositoryStoreTests : TestBase
 {
-    private readonly ILog log;
+    private readonly ILogger<RepositoryStore> logger;
 
     public RepositoryStoreTests()
     {
         var sp = ConfigureServices();
-        this.log = sp.GetRequiredService<ILog>();
+        this.logger = sp.GetRequiredService<ILogger<RepositoryStore>>();
     }
 
     [Test]
@@ -57,7 +56,7 @@ public class RepositoryStoreTests : TestBase
 
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
+        var gitRepoMetadataProvider = new RepositoryStore(this.logger, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -113,7 +112,7 @@ public class RepositoryStoreTests : TestBase
 
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
+        var gitRepoMetadataProvider = new RepositoryStore(this.logger, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -188,7 +187,7 @@ public class RepositoryStoreTests : TestBase
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
 
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
+        var gitRepoMetadataProvider = new RepositoryStore(this.logger, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -205,7 +204,7 @@ public class RepositoryStoreTests : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         var fixtureRepository = fixture.Repository.ToGitRepository();
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
+        var gitRepoMetadataProvider = new RepositoryStore(this.logger, fixtureRepository);
 
         Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null!));
     }
@@ -218,7 +217,7 @@ public class RepositoryStoreTests : TestBase
 
         var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();
 
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, localRepository);
+        var gitRepoMetadataProvider = new RepositoryStore(this.logger, localRepository);
 
         var branch = localRepository.FindBranch("main");
         branch.ShouldNotBeNull();
