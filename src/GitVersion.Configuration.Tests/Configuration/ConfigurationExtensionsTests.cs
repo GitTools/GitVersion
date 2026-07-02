@@ -143,4 +143,24 @@ public class ConfigurationExtensionsTests : TestBase
         Should.Throw<ArgumentException>(() =>
             effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment));
     }
+
+    [TestCase("case-00/my-branch", "case-00-my-branch")]
+    [TestCase("my-branch", "my-branch")]
+    [TestCase("my_branch/valid", "my-branch-valid")]
+    public void EnsureGetBranchSpecificLabelReturnsValidLabelForEnvironmentVariables(string variable, string expectedLabel)
+    {
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable("GITHUB_HEAD_REF", variable);
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch("feature/test-feature", builder => builder
+                .WithLabel("{env:GITHUB_HEAD_REF}")
+                .WithRegularExpression(@"^features?[\/-](?<BranchName>.+)"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/test-feature"));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName("feature/test-feature"), null, environment);
+        actual.ShouldBe(expectedLabel);
+    }
 }

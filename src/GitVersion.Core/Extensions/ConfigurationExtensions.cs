@@ -133,7 +133,8 @@ internal static class ConfigurationExtensions
             var effectiveBranchName = branchNameOverride ?? branchName;
             var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
 
-            return label.FormatWith(labelPlaceholders, environment);
+            return label.FormatWith(labelPlaceholders, environment)
+                .RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()
