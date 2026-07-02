@@ -2,7 +2,6 @@ using System.IO.Abstractions;
 using System.Xml.Linq;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.Tests;
@@ -16,7 +15,7 @@ public class ProjectFileUpdaterTests : TestBase
 {
     private const string TargetFramework = "net10.0";
     private IVariableProvider variableProvider = null!;
-    private ILog log = null!;
+    private ILogger<ProjectFileUpdater> logger = null!;
     private ProjectFileUpdater projectFileUpdater = null!;
     private List<string> logMessages = null!;
 
@@ -27,11 +26,11 @@ public class ProjectFileUpdaterTests : TestBase
         var sp = ConfigureServices();
 
         this.logMessages = [];
-        this.log = new Log(new TestLogAppender(this.logMessages.Add));
+        this.logger = new TestLogger<ProjectFileUpdater>(this.logMessages.Add);
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
-        this.projectFileUpdater = new ProjectFileUpdater(this.log, fileSystem);
+        this.projectFileUpdater = new ProjectFileUpdater(this.logger, fileSystem);
     }
 
     [TearDown]
@@ -95,7 +94,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         this.logMessages.ShouldNotBeEmpty();
         this.logMessages.Count.ShouldBe(1);
-        this.logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
+        this.logMessages[0].ShouldContain("Project file does not specify a Sdk attribute, please ensure the project sdk starts with 'Microsoft.NET.Sdk' or 'Microsoft.Build.Sql'");
     }
 
     [TestCase($"""
@@ -278,7 +277,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
-            using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
+            using var projFileUpdater = new ProjectFileUpdater(this.logger, fs);
             projFileUpdater.Execute(variables, new(workingDirectory, false, fileName));
 
             var expectedXml = $"""
