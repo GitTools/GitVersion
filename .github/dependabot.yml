@@ -17,15 +17,15 @@ updates:
     commit-message:
       prefix: "(deps)"
     groups:
+      Microsoft_CodeAnalysis:
+        group-by: dependency-name
+        patterns:
+          - "Microsoft.CodeAnalysis.*"
       microsoft:
         group-by: dependency-name
         patterns:
           - "Microsoft.*"
           - "System.*"
-      Microsoft_CodeAnalysis:
-        group-by: dependency-name
-        patterns:
-          - "Microsoft.CodeAnalysis.*"
       analyzers:
         group-by: dependency-name
         patterns:
