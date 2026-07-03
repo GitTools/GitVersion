@@ -1,0 +1,88 @@
+name: Update SchemaStore
+
+on:
+  push:
+    branches:
+      - gh-pages
+    paths:
+      - schemas/**
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'GitVersion schema version to publish (e.g. 6.7)'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  update-schemastore:
+    name: Open PR to SchemaStore
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: gh-pages
+          fetch-depth: 2
+
+      - name: Detect schema version
+        id: detect
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.event.after }}" -- 'schemas/*/GitVersion.configuration.json' \
+              | sed -E 's#schemas/([^/]+)/.*#\1#' | sort -V | tail -1)"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Load GitHub release token
+        id: github-creds
+        if: steps.detect.outputs.version != ''
+        uses: gittools/cicd/github-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: '[Update SchemaStore]'
+        if: steps.detect.outputs.version != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
+          VERSION: ${{ steps.detect.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          git config --global user.name "GitTools Bot"
+          git config --global user.email "gittoolsbot@outlook.com"
+
+          gh repo sync GitTools/schemastore --source SchemaStore/schemastore --branch master
+
+          workdir="$(mktemp -d)"
+          gh repo clone GitTools/schemastore "$workdir" -- --branch master
+          cd "$workdir"
+
+          branch="gitversion-schema-${VERSION}"
+          git checkout -b "$branch"
+
+          url="https://gitversion.net/schemas/${VERSION}/GitVersion.configuration.json"
+          catalog="src/api/json/catalog.json"
+          schemaRef="src/schemas/json/gitversion.json"
+
+          jq --arg url "$url" --arg version "$VERSION" \
+            '(.schemas[] | select(.name == "GitVersion")) |= (.url = $url | .versions[$version] = $url)' \
+            "$catalog" > "$catalog.tmp" && mv "$catalog.tmp" "$catalog"
+          jq --arg ref "$url" '."$ref" = $ref' "$schemaRef" > "$schemaRef.tmp" && mv "$schemaRef.tmp" "$schemaRef"
+
+          git commit -am "update gitversion schema to ${VERSION}" || { echo "Nothing to update, skipping PR."; exit 0; }
+          git push origin "$branch"
+
+          gh pr create --repo SchemaStore/schemastore --head "GitTools:${branch}" --base master \
+            --title "update gitversion schema to ${VERSION}" \
+            --body "Automated update of the GitVersion configuration schema for the ${VERSION} release."
