@@ -1,11 +1,9 @@
 name: Update SchemaStore
 
 on:
-  push:
-    branches:
-      - gh-pages
-    paths:
-      - schemas/**
+  workflow_run:
+    workflows: [ 'Verify & Publish Docs' ]
+    types: [ completed ]
   workflow_dispatch:
     inputs:
       version:
@@ -17,6 +15,7 @@ permissions:
 
 jobs:
   update-schemastore:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     name: Open PR to SchemaStore
     runs-on: ubuntu-24.04
     steps:
@@ -37,13 +36,13 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_VERSION: ${{ inputs.version }}
-          BEFORE_SHA: ${{ github.event.before }}
-          AFTER_SHA: ${{ github.event.after }}
         run: |
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             version="$INPUT_VERSION"
           else
-            version="$(git diff --name-only --diff-filter=A "$BEFORE_SHA" "$AFTER_SHA" -- 'schemas/*/GitVersion.configuration.json' \
+            # docs.yml pushes a single commit to gh-pages per run, so the newly
+            # added schema folder (if any) is in the diff of the last commit.
+            version="$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'schemas/*/GitVersion.configuration.json' \
               | sed -E 's#schemas/([^/]+)/.*#\1#' | sort -V | tail -1)"
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
