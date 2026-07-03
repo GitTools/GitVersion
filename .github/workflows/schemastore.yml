@@ -68,6 +68,7 @@ jobs:
 
           git config --global user.name "GitTools Bot"
           git config --global user.email "gittoolsbot@outlook.com"
+          gh auth setup-git
 
           gh repo sync GitTools/schemastore --source SchemaStore/schemastore --branch master
 
@@ -82,9 +83,37 @@ jobs:
           catalog="src/api/json/catalog.json"
           schemaRef="src/schemas/json/gitversion.json"
 
-          jq --arg url "$url" --arg version "$VERSION" \
-            '(.schemas[] | select(.name == "GitVersion")) |= (.url = $url | .versions[$version] = $url)' \
-            "$catalog" > "$catalog.tmp" && mv "$catalog.tmp" "$catalog"
+          # catalog.json mixes compact and multi-line JSON arrays throughout its
+          # ~10k lines, so re-serializing the whole document (e.g. via jq) reformats
+          # every entry and produces a huge, unreviewable diff. Patch only the text
+          # of the GitVersion schema object instead, leaving the rest untouched.
+          python3 - "$catalog" "$VERSION" "$url" <<'PYEOF'
+          import re
+          import sys
+
+          path, version, url = sys.argv[1], sys.argv[2], sys.argv[3]
+
+          with open(path, encoding="utf-8") as f:
+              text = f.read()
+
+          start = text.index('"name": "GitVersion"')
+          end = text.index('"name":', start + 1)
+          block = text[start:end]
+
+          old_url = re.search(r'"url": "([^"]+)"', block).group(1)
+          new_block = block.replace(f'"url": "{old_url}"', f'"url": "{url}"', 1)
+
+          last_version_entry = re.search(r'(\n(\s*)"[^"]+": "[^"]+")(\n\s*\}\s*\n)', new_block)
+          indent = last_version_entry.group(2)
+          insert_at = last_version_entry.end(1)
+          new_block = f"{new_block[:insert_at]},\n{indent}\"{version}\": \"{url}\"{new_block[insert_at:]}"
+
+          text = text[:start] + new_block + text[end:]
+
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(text)
+          PYEOF
+
           jq --arg ref "$url" '."$ref" = $ref' "$schemaRef" > "$schemaRef.tmp" && mv "$schemaRef.tmp" "$schemaRef"
 
           git commit -am "update gitversion schema to ${VERSION}" || { echo "Nothing to update, skipping PR."; exit 0; }
