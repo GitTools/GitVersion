@@ -352,6 +352,50 @@
             <a href="/docs/usage/msbuild">MSBuild Task</a> or put the GitVersion
             executable in your runner's <code>PATH</code>.
           </p>
+          <h3 id="merge-request-pipelines">Merge Request pipelines</h3>
+          <p>
+            In merge request pipelines GitLab sets
+            <code>CI_MERGE_REQUEST_REF_PATH</code> (for example
+            <code>refs/merge-requests/15/head</code> or
+            <code>refs/merge-requests/15/merge</code>). GitVersion reads this
+            variable through the <code>GitLabCi</code> build agent when it is
+            present, following the same pass-through pattern as Azure Pipelines
+            (<code>BUILD_SOURCEBRANCH</code>) and GitHub Actions
+            (<code>GITHUB_REF</code>).
+          </p>
+          <p>Branch resolution order in <code>GitLabCi</code>:</p>
+          <ol>
+            <li>
+              <code>CI_COMMIT_TAG</code> set — treat as a tag pipeline (<code
+                >GetCurrentBranch</code
+              >
+              returns <code>null</code>)
+            </li>
+            <li>
+              <code>CI_MERGE_REQUEST_REF_PATH</code> set — use the merge request
+              ref
+            </li>
+            <li>otherwise — <code>CI_COMMIT_REF_NAME</code> (branch name)</li>
+          </ol>
+          <p>
+            After repository normalisation the friendly branch name becomes
+            <code>merge-requests/&lt;iid&gt;/head</code> or
+            <code>merge-requests/&lt;iid&gt;/merge</code>. Extend the
+            <code>pull-request</code> branch configuration in
+            <code>GitVersion.yml</code> so the regex matches GitLab's namespace
+            (the default <code>pull-requests|pull|pr</code> pattern does not):
+          </p>
+          <pre><code class="language-yaml">workflow: GitFlow/v1
+branches:
+  pull-request:
+    regex: ^merge-requests/(?&lt;Number&gt;\d+)/(head|merge)$
+    label: PullRequest{Number}
+</code></pre>
+          <p>
+            <code>CI_COMMIT_REF_NAME</code> still contains the source branch
+            name (for example <code>feature/foo</code>) in MR pipelines; it is
+            ignored when <code>CI_MERGE_REQUEST_REF_PATH</code> is set.
+          </p>
           <p>
             A working example of integrating GitVersion with GitLab is
             maintained in the project

@@ -121,9 +121,9 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#EnumTypes">Enum Types</a></p>
-            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#InterfaceTypes">Interface Types</a></p>
+            <p><a href="#ClassTypes">Class Types</a></p>
+            <p><a href="#EnumTypes">Enum Types</a></p>
             <p><a href="#Namespaces">Namespaces</a></p>
             <hr class="infobar-hidden" />
           </div>
@@ -303,53 +303,123 @@
           <h1>GitVersion <small>Namespace</small></h1>
         </section>
         <section class="content">
-          <h1 id="EnumTypes">Enum Types</h1>
+          <h1 id="InterfaceTypes">Interface Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
               <table class="table table-striped table-hover two-cols">
                 <thead>
                   <tr>
-                    <th>Enum</th>
+                    <th>Interface</th>
                     <th>Summary</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/IncrementStrategy"
-                        >IncrementStrategy</a
+                      <a href="/api/GitVersion/IConverterContext"
+                        >IConverterContext</a
                       >
                     </td>
                     <td>
-                      Specifies which version component should be incremented
-                      when creating a release from a branch.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="/api/GitVersion/OutputType">OutputType</a></td>
-                    <td>
-                      Specifies the format in which GitVersion outputs version
-                      variables.
+                      Marker interface for context objects passed to
+                      <code class="cs"
+                        ><a href="/api/GitVersion/IVersionConverter_1"
+                          >IVersionConverter&lt;T&gt;</a
+                        ></code
+                      >
+                      implementations.
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/SemanticVersionFormat"
-                        >Semantic<wbr />Version<wbr />Format</a
+                      <a href="/api/GitVersion/IEnvironment">IEnvironment</a>
+                    </td>
+                    <td>
+                      Provides access to environment variables in the current
+                      process.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IGitPreparer">IGitPreparer</a>
+                    </td>
+                    <td>
+                      Prepares the Git repository so that GitVersion can
+                      calculate the version (fetches, clones, and normalises
+                      refs as needed).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IGitVersionCalculateTool"
+                        >I<wbr />Git<wbr />Version<wbr />Calculate<wbr />Tool</a
                       >
                     </td>
                     <td>
-                      Controls the leniency applied when parsing semantic
-                      version strings.
+                      Orchestrates the end-to-end version calculation and
+                      returns the resulting version variables.
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/VersionField">VersionField</a>
+                      <a href="/api/GitVersion/IGitVersionContextFactory"
+                        >I<wbr />Git<wbr />Version<wbr />Context<wbr />Factory</a
+                      >
                     </td>
                     <td>
-                      Identifies the position in a semantic version string that
-                      should be incremented.
+                      Creates a
+                      <code class="cs"
+                        ><a href="/api/GitVersion/GitVersionContext"
+                          >GitVersionContext</a
+                        ></code
+                      >
+                      for the current repository and branch.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IGitVersionModule"
+                        >IGitVersionModule</a
+                      >
+                    </td>
+                    <td>
+                      Represents a self-contained IoC registration module that
+                      adds a cohesive set of services to the DI container.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IGitVersionOutputTool"
+                        >I<wbr />Git<wbr />Version<wbr />Output<wbr />Tool</a
+                      >
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IRepositoryStore"
+                        >IRepositoryStore</a
+                      >
+                    </td>
+                    <td>
+                      Provides high-level read access to a Git repository,
+                      exposing the objects and queries needed for version
+                      calculation.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion/IVersionConverter_1"
+                        >IVersionConverter</a
+                      ><wbr />&lt;<a
+                        href="/api/GitVersion/IVersionConverter_1#typeparam-T"
+                        >T</a
+                      >&gt;<wbr />
+                    </td>
+                    <td>
+                      Converts <code class="cs">GitVersionVariables</code> to a
+                      specific output format (e.g. JSON, environment variables,
+                      build-server properties).
                     </td>
                   </tr>
                 </tbody>
@@ -541,123 +611,53 @@
             </div>
           </div>
 
-          <h1 id="InterfaceTypes">Interface Types</h1>
+          <h1 id="EnumTypes">Enum Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
               <table class="table table-striped table-hover two-cols">
                 <thead>
                   <tr>
-                    <th>Interface</th>
+                    <th>Enum</th>
                     <th>Summary</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/IConverterContext"
-                        >IConverterContext</a
+                      <a href="/api/GitVersion/IncrementStrategy"
+                        >IncrementStrategy</a
                       >
                     </td>
                     <td>
-                      Marker interface for context objects passed to
-                      <code class="cs"
-                        ><a href="/api/GitVersion/IVersionConverter_1"
-                          >IVersionConverter&lt;T&gt;</a
-                        ></code
-                      >
-                      implementations.
+                      Specifies which version component should be incremented
+                      when creating a release from a branch.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a href="/api/GitVersion/OutputType">OutputType</a></td>
+                    <td>
+                      Specifies the format in which GitVersion outputs version
+                      variables.
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/IEnvironment">IEnvironment</a>
-                    </td>
-                    <td>
-                      Provides access to environment variables in the current
-                      process.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IGitPreparer">IGitPreparer</a>
-                    </td>
-                    <td>
-                      Prepares the Git repository so that GitVersion can
-                      calculate the version (fetches, clones, and normalises
-                      refs as needed).
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IGitVersionCalculateTool"
-                        >I<wbr />Git<wbr />Version<wbr />Calculate<wbr />Tool</a
+                      <a href="/api/GitVersion/SemanticVersionFormat"
+                        >Semantic<wbr />Version<wbr />Format</a
                       >
                     </td>
                     <td>
-                      Orchestrates the end-to-end version calculation and
-                      returns the resulting version variables.
+                      Controls the leniency applied when parsing semantic
+                      version strings.
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="/api/GitVersion/IGitVersionContextFactory"
-                        >I<wbr />Git<wbr />Version<wbr />Context<wbr />Factory</a
-                      >
+                      <a href="/api/GitVersion/VersionField">VersionField</a>
                     </td>
                     <td>
-                      Creates a
-                      <code class="cs"
-                        ><a href="/api/GitVersion/GitVersionContext"
-                          >GitVersionContext</a
-                        ></code
-                      >
-                      for the current repository and branch.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IGitVersionModule"
-                        >IGitVersionModule</a
-                      >
-                    </td>
-                    <td>
-                      Represents a self-contained IoC registration module that
-                      adds a cohesive set of services to the DI container.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IGitVersionOutputTool"
-                        >I<wbr />Git<wbr />Version<wbr />Output<wbr />Tool</a
-                      >
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IRepositoryStore"
-                        >IRepositoryStore</a
-                      >
-                    </td>
-                    <td>
-                      Provides high-level read access to a Git repository,
-                      exposing the objects and queries needed for version
-                      calculation.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion/IVersionConverter_1"
-                        >IVersionConverter</a
-                      ><wbr />&lt;<a
-                        href="/api/GitVersion/IVersionConverter_1#typeparam-T"
-                        >T</a
-                      >&gt;<wbr />
-                    </td>
-                    <td>
-                      Converts <code class="cs">GitVersionVariables</code> to a
-                      specific output format (e.g. JSON, environment variables,
-                      build-server properties).
+                      Identifies the position in a semantic version string that
+                      should be incremented.
                     </td>
                   </tr>
                 </tbody>

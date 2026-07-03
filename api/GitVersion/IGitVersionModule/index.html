@@ -194,17 +194,38 @@
             <li class="header">Namespace</li>
             <li><a href="/api/GitVersion">GitVersion</a></li>
             <li role="separator" class="divider"></li>
-            <li class="header">Enum Types</li>
+            <li class="header">Interface Types</li>
             <li>
-              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
+              <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
             </li>
-            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
+            <li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
+            <li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
             <li>
-              <a href="/api/GitVersion/SemanticVersionFormat"
-                >Semantic<wbr />Version<wbr />Format</a
+              <a href="/api/GitVersion/IGitVersionCalculateTool"
+                >I<wbr />Git<wbr />Version<wbr />Calculate<wbr />Tool</a
               >
             </li>
-            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
+            <li>
+              <a href="/api/GitVersion/IGitVersionContextFactory"
+                >I<wbr />Git<wbr />Version<wbr />Context<wbr />Factory</a
+              >
+            </li>
+            <li class="selected">
+              <a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a>
+            </li>
+            <li>
+              <a href="/api/GitVersion/IGitVersionOutputTool"
+                >I<wbr />Git<wbr />Version<wbr />Output<wbr />Tool</a
+              >
+            </li>
+            <li>
+              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
+            </li>
+            <li>
+              <a href="/api/GitVersion/IVersionConverter_1"
+                >IVersionConverter<wbr />&lt;T&gt;<wbr
+              /></a>
+            </li>
             <li class="header">Class Types</li>
             <li>
               <a href="/api/GitVersion/AssemblySettingsInfo"
@@ -270,38 +291,17 @@
             <li>
               <a href="/api/GitVersion/WarningException">WarningException</a>
             </li>
-            <li class="header">Interface Types</li>
+            <li class="header">Enum Types</li>
             <li>
-              <a href="/api/GitVersion/IConverterContext">IConverterContext</a>
+              <a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a>
             </li>
-            <li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
-            <li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
+            <li><a href="/api/GitVersion/OutputType">OutputType</a></li>
             <li>
-              <a href="/api/GitVersion/IGitVersionCalculateTool"
-                >I<wbr />Git<wbr />Version<wbr />Calculate<wbr />Tool</a
+              <a href="/api/GitVersion/SemanticVersionFormat"
+                >Semantic<wbr />Version<wbr />Format</a
               >
             </li>
-            <li>
-              <a href="/api/GitVersion/IGitVersionContextFactory"
-                >I<wbr />Git<wbr />Version<wbr />Context<wbr />Factory</a
-              >
-            </li>
-            <li class="selected">
-              <a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a>
-            </li>
-            <li>
-              <a href="/api/GitVersion/IGitVersionOutputTool"
-                >I<wbr />Git<wbr />Version<wbr />Output<wbr />Tool</a
-              >
-            </li>
-            <li>
-              <a href="/api/GitVersion/IRepositoryStore">IRepositoryStore</a>
-            </li>
-            <li>
-              <a href="/api/GitVersion/IVersionConverter_1"
-                >IVersionConverter<wbr />&lt;T&gt;<wbr
-              /></a>
-            </li>
+            <li><a href="/api/GitVersion/VersionField">VersionField</a></li>
           </ul>
         </section>
       </aside>
@@ -330,15 +330,8 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>
-                          <a
-                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                            >Version<wbr />Calculation<wbr />Module</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="/api/GitVersion.Output/GitVersionOutputModule"
-                            >Git<wbr />Version<wbr />Output<wbr />Module</a
+                          <a href="/api/GitVersion/GitVersionCommonModule"
+                            >Git<wbr />Version<wbr />Common<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -349,18 +342,8 @@
                         </li>
                         <li>
                           <a
-                            href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
-                            >Version<wbr />Strategy<wbr />Module</a
-                          >
-                        </li>
-                        <li>
-                          <a href="/api/GitVersion/GitVersionCommonModule"
-                            >Git<wbr />Version<wbr />Common<wbr />Module</a
-                          >
-                        </li>
-                        <li>
-                          <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
-                            >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
+                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                            >Version<wbr />Calculation<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -374,6 +357,23 @@
                             >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
                           >
                         </li>
+                        <li>
+                          <a href="/api/GitVersion/GitVersionLibGit2SharpModule"
+                            >Git<wbr />Version<wbr />Lib<wbr />Git2<wbr />Sharp<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/api/GitVersion.Output/GitVersionOutputModule"
+                            >Git<wbr />Version<wbr />Output<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                            >Version<wbr />Strategy<wbr />Module</a
+                          >
+                        </li>
                       </ul>
                     </dd>
                   </dl>
@@ -381,28 +381,28 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type["IGitVersionModule"] class Type type-node
-                    Implementing0["VersionCalculationModule"]-.-&gt;Type click
-                    Implementing0
-                    "/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                    Implementing1["GitVersionOutputModule"]-.-&gt;Type click
-                    Implementing1
-                    "/api/GitVersion.Output/GitVersionOutputModule"
-                    Implementing2["GitVersionConfigurationModule"]-.-&gt;Type
-                    click Implementing2
+                    Implementing0["GitVersionCommonModule"]-.-&gt;Type click
+                    Implementing0 "/api/GitVersion/GitVersionCommonModule"
+                    Implementing1["GitVersionConfigurationModule"]-.-&gt;Type
+                    click Implementing1
                     "/api/GitVersion.Configuration/GitVersionConfigurationModule"
-                    Implementing3["VersionStrategyModule"]-.-&gt;Type click
-                    Implementing3
-                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-                    Implementing4["GitVersionCommonModule"]-.-&gt;Type click
-                    Implementing4 "/api/GitVersion/GitVersionCommonModule"
+                    Implementing2["VersionCalculationModule"]-.-&gt;Type click
+                    Implementing2
+                    "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                    Implementing3["GitVersionCoreModule"]-.-&gt;Type click
+                    Implementing3 "/api/GitVersion/GitVersionCoreModule"
+                    Implementing4["GitVersionBuildAgentsModule"]-.-&gt;Type
+                    click Implementing4
+                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
                     Implementing5["GitVersionLibGit2SharpModule"]-.-&gt;Type
                     click Implementing5
                     "/api/GitVersion/GitVersionLibGit2SharpModule"
-                    Implementing6["GitVersionCoreModule"]-.-&gt;Type click
-                    Implementing6 "/api/GitVersion/GitVersionCoreModule"
-                    Implementing7["GitVersionBuildAgentsModule"]-.-&gt;Type
-                    click Implementing7
-                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+                    Implementing6["GitVersionOutputModule"]-.-&gt;Type click
+                    Implementing6
+                    "/api/GitVersion.Output/GitVersionOutputModule"
+                    Implementing7["VersionStrategyModule"]-.-&gt;Type click
+                    Implementing7
+                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
                   </div>
                 </div>
               </div>
