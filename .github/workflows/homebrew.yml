@@ -61,7 +61,6 @@ jobs:
           brew bump-formula-pr gitversion \
             --url "$url" \
             --sha256 "$sha256" \
-            --fork-org gittools
             --no-audit \
             --no-browse \
             --message "For additional details see https://github.com/GitTools/GitVersion/releases/tag/${version}"
