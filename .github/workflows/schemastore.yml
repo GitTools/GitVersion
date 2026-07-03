@@ -34,11 +34,16 @@ jobs:
       - name: Detect schema version
         id: detect
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.event.after }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            version="${{ inputs.version }}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            version="$INPUT_VERSION"
           else
-            version="$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.event.after }}" -- 'schemas/*/GitVersion.configuration.json' \
+            version="$(git diff --name-only --diff-filter=A "$BEFORE_SHA" "$AFTER_SHA" -- 'schemas/*/GitVersion.configuration.json' \
               | sed -E 's#schemas/([^/]+)/.*#\1#' | sort -V | tail -1)"
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
