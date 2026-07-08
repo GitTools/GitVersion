@@ -127,21 +127,39 @@ public class ConfigurationExtensionsTests : TestBase
     }
 
     [Test]
-    public void EnsureGetBranchSpecificLabelThrowsWhenEnvVarMissing()
+    public void EnsureGetBranchSpecificLabelReturnsLabelTemplateWhenEnvVarMissing()
     {
         var environment = new TestEnvironment();
         // Do not set MISSING_VAR
+        var expectedLabel = "pr-{env:MISSING_VAR}";
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
             .WithBranch(BranchName, builder => builder
-                .WithLabel("pr-{env:MISSING_VAR}")
+                .WithLabel(expectedLabel)
                 .WithRegularExpression(@"^pull[/-]"))
             .Build();
 
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
-        Should.Throw<ArgumentException>(() =>
-            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment);
+        actual.ShouldBe(expectedLabel);
+    }
+
+    [Test]
+    public void EnsureGetBranchSpecificLabelReturnsLabelTemplateWhenPropertyMissing()
+    {
+        var expectedLabel = "{BranchName}";
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch("feature/test", builder => builder
+                .WithLabel("{BranchName}")
+                .WithRegularExpression(@"^features?[\/-]"))
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
+        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, new TestEnvironment());
+        actual.ShouldBe(expectedLabel);
     }
 
     [TestCase("case-00/my-branch", "case-00-my-branch")]
