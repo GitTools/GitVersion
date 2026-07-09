@@ -14,10 +14,6 @@
             "userGid": "1000",
             "upgradePackages": "true"
         },
-        "ghcr.io/devcontainers/features/git": {
-            "version": "os-provided",
-            "ppa": "false"
-        },
         "ghcr.io/devcontainers/features/powershell": {
             "version": "latest"
         },
