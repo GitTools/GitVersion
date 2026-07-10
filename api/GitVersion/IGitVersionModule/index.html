@@ -330,8 +330,15 @@
                     <dd>
                       <ul class="list-unstyled">
                         <li>
-                          <a href="/api/GitVersion/GitVersionCommonModule"
-                            >Git<wbr />Version<wbr />Common<wbr />Module</a
+                          <a
+                            href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                            >Version<wbr />Strategy<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+                            >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -341,20 +348,8 @@
                           >
                         </li>
                         <li>
-                          <a
-                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                            >Version<wbr />Calculation<wbr />Module</a
-                          >
-                        </li>
-                        <li>
                           <a href="/api/GitVersion/GitVersionCoreModule"
                             >GitVersionCoreModule</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-                            >Git<wbr />Version<wbr />Build<wbr />Agents<wbr />Module</a
                           >
                         </li>
                         <li>
@@ -370,8 +365,13 @@
                         </li>
                         <li>
                           <a
-                            href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
-                            >Version<wbr />Strategy<wbr />Module</a
+                            href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                            >Version<wbr />Calculation<wbr />Module</a
+                          >
+                        </li>
+                        <li>
+                          <a href="/api/GitVersion/GitVersionCommonModule"
+                            >Git<wbr />Version<wbr />Common<wbr />Module</a
                           >
                         </li>
                       </ul>
@@ -381,28 +381,28 @@
                 <div class="col-md-6">
                   <div class="mermaid">
                     graph BT Type["IGitVersionModule"] class Type type-node
-                    Implementing0["GitVersionCommonModule"]-.-&gt;Type click
-                    Implementing0 "/api/GitVersion/GitVersionCommonModule"
-                    Implementing1["GitVersionConfigurationModule"]-.-&gt;Type
+                    Implementing0["VersionStrategyModule"]-.-&gt;Type click
+                    Implementing0
+                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                    Implementing1["GitVersionBuildAgentsModule"]-.-&gt;Type
                     click Implementing1
+                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+                    Implementing2["GitVersionConfigurationModule"]-.-&gt;Type
+                    click Implementing2
                     "/api/GitVersion.Configuration/GitVersionConfigurationModule"
-                    Implementing2["VersionCalculationModule"]-.-&gt;Type click
-                    Implementing2
-                    "/api/GitVersion.VersionCalculation/VersionCalculationModule"
                     Implementing3["GitVersionCoreModule"]-.-&gt;Type click
                     Implementing3 "/api/GitVersion/GitVersionCoreModule"
-                    Implementing4["GitVersionBuildAgentsModule"]-.-&gt;Type
+                    Implementing4["GitVersionLibGit2SharpModule"]-.-&gt;Type
                     click Implementing4
-                    "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-                    Implementing5["GitVersionLibGit2SharpModule"]-.-&gt;Type
-                    click Implementing5
                     "/api/GitVersion/GitVersionLibGit2SharpModule"
-                    Implementing6["GitVersionOutputModule"]-.-&gt;Type click
-                    Implementing6
+                    Implementing5["GitVersionOutputModule"]-.-&gt;Type click
+                    Implementing5
                     "/api/GitVersion.Output/GitVersionOutputModule"
-                    Implementing7["VersionStrategyModule"]-.-&gt;Type click
-                    Implementing7
-                    "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                    Implementing6["VersionCalculationModule"]-.-&gt;Type click
+                    Implementing6
+                    "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                    Implementing7["GitVersionCommonModule"]-.-&gt;Type click
+                    Implementing7 "/api/GitVersion/GitVersionCommonModule"
                   </div>
                 </div>
               </div>

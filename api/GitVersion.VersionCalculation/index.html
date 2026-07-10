@@ -121,9 +121,9 @@
         >
           <div id="infobar-headings">
             <h6>On This Page</h6>
-            <p><a href="#EnumTypes">Enum Types</a></p>
-            <p><a href="#ClassTypes">Class Types</a></p>
             <p><a href="#InterfaceTypes">Interface Types</a></p>
+            <p><a href="#ClassTypes">Class Types</a></p>
+            <p><a href="#EnumTypes">Enum Types</a></p>
             <p><a href="#Namespaces">Namespaces</a></p>
             <hr class="infobar-hidden" />
           </div>
@@ -303,116 +303,6 @@
           <h1>GitVersion<wbr />.VersionCalculation <small>Namespace</small></h1>
         </section>
         <section class="content">
-          <h1 id="EnumTypes">Enum Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Enum</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
-                        >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
-                      >
-                    </td>
-                    <td>
-                      Controls whether and how commit messages are used to
-                      determine automatic version increments.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.VersionCalculation/DeploymentMode"
-                        >DeploymentMode</a
-                      >
-                    </td>
-                    <td>
-                      Specifies the deployment strategy used to determine how
-                      the version number changes between releases.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.VersionCalculation/VersionStrategies"
-                        >VersionStrategies</a
-                      >
-                    </td>
-                    <td>
-                      A bitmask that enables or disables individual
-                      version-discovery strategies.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <h1 id="ClassTypes">Class Types</h1>
-          <div class="box">
-            <div class="box-body no-padding table-responsive">
-              <table class="table table-striped table-hover two-cols">
-                <thead>
-                  <tr>
-                    <th>Class</th>
-                    <th>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a href="/api/GitVersion.VersionCalculation/NextVersion"
-                        >NextVersion</a
-                      >
-                    </td>
-                    <td>
-                      Represents the next calculated version together with its
-                      base version and branch configuration.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
-                        >Version<wbr />Calculation<wbr />Module</a
-                      >
-                    </td>
-                    <td>
-                      Registers the version-calculation services including
-                      version strategies, variable provider, deployment-mode
-                      calculators, and increment strategy finder.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a
-                        href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
-                        >Version<wbr />Strategy<wbr />Module</a
-                      >
-                    </td>
-                    <td>
-                      Automatically discovers and registers all concrete
-                      <code class="cs"
-                        ><a
-                          href="/api/GitVersion.VersionCalculation/IVersionStrategy"
-                          >IVersionStrategy</a
-                        ></code
-                      >
-                      implementations found in the current assembly.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           <h1 id="InterfaceTypes">Interface Types</h1>
           <div class="box">
             <div class="box-body no-padding table-responsive">
@@ -538,6 +428,116 @@
                       Implements a strategy for discovering candidate base
                       versions from a specific source (e.g. tags, branch names,
                       merge messages).
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="ClassTypes">Class Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="/api/GitVersion.VersionCalculation/NextVersion"
+                        >NextVersion</a
+                      >
+                    </td>
+                    <td>
+                      Represents the next calculated version together with its
+                      base version and branch configuration.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.VersionCalculation/VersionCalculationModule"
+                        >Version<wbr />Calculation<wbr />Module</a
+                      >
+                    </td>
+                    <td>
+                      Registers the version-calculation services including
+                      version strategies, variable provider, deployment-mode
+                      calculators, and increment strategy finder.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.VersionCalculation/VersionStrategyModule"
+                        >Version<wbr />Strategy<wbr />Module</a
+                      >
+                    </td>
+                    <td>
+                      Automatically discovers and registers all concrete
+                      <code class="cs"
+                        ><a
+                          href="/api/GitVersion.VersionCalculation/IVersionStrategy"
+                          >IVersionStrategy</a
+                        ></code
+                      >
+                      implementations found in the current assembly.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h1 id="EnumTypes">Enum Types</h1>
+          <div class="box">
+            <div class="box-body no-padding table-responsive">
+              <table class="table table-striped table-hover two-cols">
+                <thead>
+                  <tr>
+                    <th>Enum</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode"
+                        >Commit<wbr />Message<wbr />Increment<wbr />Mode</a
+                      >
+                    </td>
+                    <td>
+                      Controls whether and how commit messages are used to
+                      determine automatic version increments.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.VersionCalculation/DeploymentMode"
+                        >DeploymentMode</a
+                      >
+                    </td>
+                    <td>
+                      Specifies the deployment strategy used to determine how
+                      the version number changes between releases.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a
+                        href="/api/GitVersion.VersionCalculation/VersionStrategies"
+                        >VersionStrategies</a
+                      >
+                    </td>
+                    <td>
+                      A bitmask that enables or disables individual
+                      version-discovery strategies.
                     </td>
                   </tr>
                 </tbody>
