@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Invalid label formatting is not ignored
+Previously bad label formatting config would be silently accepted. For example `{Branhc}` (when BranchName is misspelled) or even `{BranchName` (missing a closing brace). This is not ignored now and exceptions will be thrown if formatting problems exist in the label config. This brings it into line with how assembly string formatting is treated.
+
 ### CLI Arguments — POSIX-style Syntax
 
 The command-line interface has been migrated from Windows-style (`/switch` and single-dash `-switch`) arguments to POSIX-style `--long-name` arguments using [System.CommandLine](https://github.com/dotnet/command-line-api).
