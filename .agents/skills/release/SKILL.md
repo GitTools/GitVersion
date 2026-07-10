@@ -38,6 +38,41 @@ gh auth status --hostname github.com   # must be logged in to github.com specifi
 
 If `gh` is missing, stop and tell the user to install it (e.g. `brew install gh` on macOS, or https://cli.github.com/) and run `gh auth login`, then re-run this skill. Do not proceed to Phase 1 until `gh` is present and authenticated.
 
+### Homebrew fork is current
+
+The Homebrew publish workflow uses the `gittools-bot/homebrew-core` fork to open its
+formula PR. GitHub rejects or cannot reliably create that PR when the fork is behind
+`Homebrew/homebrew-core`, so check it **before starting the release**, rather than
+discovering it after the CI pipeline has published all other artifacts.
+
+```bash
+# Confirm the expected fork and obtain the upstream's default branch.
+gh api repos/gittools-bot/homebrew-core --jq \
+  '{fork, default_branch, parent: {full_name: .parent.full_name, default_branch: .parent.default_branch}}'
+
+# `behind_by` must be zero. `ahead_by` may be non-zero if the fork has local PR branches.
+BRANCH=$(gh api repos/Homebrew/homebrew-core --jq '.default_branch')
+gh api "repos/Homebrew/homebrew-core/compare/${BRANCH}...gittools-bot:${BRANCH}" --jq \
+  '{status, ahead_by, behind_by, html_url}'
+```
+
+- `behind_by: 0` → ✅ the fork is ready.
+- `behind_by: >0` → ❌ **Blocker:** `gittools-bot/homebrew-core` is behind upstream.
+  Ask the user whether to update it with GitHub CLI, then run:
+
+  ```bash
+  gh repo sync gittools-bot/homebrew-core \
+    --source Homebrew/homebrew-core \
+    --branch "$BRANCH"
+  ```
+
+  This uses a fast-forward update and must be preferred over `--force`; do not use
+  `--force` unless the user explicitly authorizes replacing the fork's default
+  branch. Re-run the comparison afterwards. Do not proceed to Phase 1 until it
+  reports `behind_by: 0`.
+- If the fork is missing or is not a fork of `Homebrew/homebrew-core`, treat that as
+  a blocker and ask the user to restore/correct the bot fork before proceeding.
+
 ---
 
 ## Phase 1 — Analyse unreleased changes
