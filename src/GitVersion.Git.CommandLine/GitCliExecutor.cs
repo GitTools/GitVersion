@@ -1,0 +1,92 @@
+using GitVersion.Extensions;
+
+namespace GitVersion.Git;
+
+/// <summary>Executes the <c>git</c> command-line executable and captures its output.</summary>
+internal interface IGitCliExecutor
+{
+    /// <summary>Runs <c>git</c> with the given arguments and returns the completed result without throwing on failure.</summary>
+    GitCliResult Execute(string? workingDirectory, IReadOnlyList<string> arguments);
+}
+
+/// <summary>The outcome of a single <c>git</c> invocation.</summary>
+internal sealed record GitCliResult(int ExitCode, string StandardOutput, string StandardError)
+{
+    public bool IsSuccess => ExitCode == 0;
+}
+
+internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliExecutor
+{
+    private readonly ILogger<GitCliExecutor> logger = logger.NotNull();
+
+    public GitCliResult Execute(string? workingDirectory, IReadOnlyList<string> arguments)
+    {
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = "git",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true
+        };
+
+        if (workingDirectory != null)
+        {
+            startInfo.WorkingDirectory = workingDirectory;
+        }
+
+        foreach (var argument in arguments)
+        {
+            startInfo.ArgumentList.Add(argument);
+        }
+
+        // Deterministic, non-interactive invocations: never prompt for credentials
+        // and keep any parsed output locale-independent.
+        startInfo.Environment["GIT_TERMINAL_PROMPT"] = "0";
+        startInfo.Environment["LC_ALL"] = "C";
+
+        this.logger.LogDebug("Executing 'git {Arguments}' in '{WorkingDirectory}'", string.Join(' ', arguments), workingDirectory);
+
+        using var process = new Process();
+        process.StartInfo = startInfo;
+
+        var standardOutput = new StringBuilder();
+        var standardError = new StringBuilder();
+        process.OutputDataReceived += (_, e) =>
+        {
+            if (e.Data != null)
+            {
+                standardOutput.AppendLine(e.Data);
+            }
+        };
+        process.ErrorDataReceived += (_, e) =>
+        {
+            if (e.Data != null)
+            {
+                standardError.AppendLine(e.Data);
+            }
+        };
+
+        try
+        {
+            process.Start();
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or PlatformNotSupportedException)
+        {
+            throw new InvalidOperationException(
+                "The 'git' executable could not be started. Ensure Git is installed and available on the PATH.", ex);
+        }
+
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        process.WaitForExit();
+
+        var result = new GitCliResult(process.ExitCode, standardOutput.ToString(), standardError.ToString());
+        if (!result.IsSuccess)
+        {
+            this.logger.LogDebug("'git {Arguments}' exited with code {ExitCode}: {StandardError}", string.Join(' ', arguments), result.ExitCode, result.StandardError);
+        }
+
+        return result;
+    }
+}
