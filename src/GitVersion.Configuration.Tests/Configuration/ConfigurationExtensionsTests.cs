@@ -127,29 +127,26 @@ public class ConfigurationExtensionsTests : TestBase
     }
 
     [Test]
-    public void EnsureGetBranchSpecificLabelReturnsLabelTemplateWhenEnvVarMissing()
+    public void EnsureGetBranchSpecificLabelThrowsWhenEnvVarMissing()
     {
         var environment = new TestEnvironment();
         // Do not set MISSING_VAR
-        var expectedLabel = "pr-{env:MISSING_VAR}";
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
             .WithBranch(BranchName, builder => builder
-                .WithLabel(expectedLabel)
+                .WithLabel("pr-{env:MISSING_VAR}")
                 .WithRegularExpression(@"^pull[/-]"))
             .Build();
 
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment);
-        actual.ShouldBe(expectedLabel);
+        Should.Throw<ArgumentException>(() =>
+            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, environment));
     }
 
     [Test]
-    public void EnsureGetBranchSpecificLabelReturnsLabelTemplateWhenPropertyMissing()
+    public void EnsureGetBranchSpecificLabelThrowsWhenBranchNamePropertyMissing()
     {
-        var expectedLabel = "{BranchName}";
-
         var configuration = GitFlowConfigurationBuilder.New
             .WithoutBranches()
             .WithBranch("feature/test", builder => builder
@@ -158,8 +155,8 @@ public class ConfigurationExtensionsTests : TestBase
             .Build();
 
         var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName(BranchName));
-        var actual = effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, new TestEnvironment());
-        actual.ShouldBe(expectedLabel);
+        Should.Throw<ArgumentException>(() =>
+            effectiveConfiguration.GetBranchSpecificLabel(ReferenceName.FromBranchName(BranchName), null, new TestEnvironment()));
     }
 
     [TestCase("case-00/my-branch", "case-00-my-branch")]
