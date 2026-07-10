@@ -8,7 +8,11 @@ allowed-tools:
   - Bash(git log *)
   - Bash(git tag *)
   - Bash(git describe *)
+  - Bash(git status *)
+  - Bash(git fetch *)
+  - Bash(git rev-list *)
   - Bash(gh release *)
+  - Bash(gh repo sync *)
   - Bash(gh api *)
   - Bash(gh pr list *)
   - Bash(gh pr view *)
@@ -37,6 +41,23 @@ gh auth status --hostname github.com   # must be logged in to github.com specifi
 ```
 
 If `gh` is missing, stop and tell the user to install it (e.g. `brew install gh` on macOS, or https://cli.github.com/) and run `gh auth login`, then re-run this skill. Do not proceed to Phase 1 until `gh` is present and authenticated.
+
+### Local release branch is safe
+
+Releases must be cut from a clean, current `main` checkout. Run this once and show
+the result in the preflight table:
+
+```bash
+git status --short
+git branch --show-current
+git fetch origin main
+git rev-list --left-right --count HEAD...origin/main
+```
+
+- Require an empty `git status --short`, branch `main`, and `0 0` from `rev-list`.
+- If local changes exist, stop: do not mix release work with unrelated edits.
+- If the branch is behind, fast-forward it before continuing. If it is ahead, stop
+  and ask the user whether those commits are intended for this release.
 
 ### Homebrew fork is current
 
@@ -138,6 +159,25 @@ State the computed version clearly, e.g. **Next release: `6.8.0`**.
 ---
 
 ## Phase 3 — Readiness checklist
+
+Before querying milestones, confirm that the target does not already have a GitHub
+release. An existing release is a hard stop unless the user explicitly asks to
+repair or update that release:
+
+```bash
+gh release view <VERSION> --repo GitTools/GitVersion --json url,isDraft
+```
+
+### Consolidate safe fixes
+
+Run every read-only readiness check first. Present one compact table and one
+numbered list of proposed changes, then ask for **one** confirmation to apply the
+approved safe actions together (for example: create the milestone, move closed
+items from the umbrella milestone, and assign clearly-labelled untracked PRs).
+Do not silently choose a label for an unlabelled or multiply-labelled item: list the
+recommended label and require the user's explicit approval for that semantic choice.
+After applying any moves or assignments, perform the milestone-index settle check
+before entering Phase 4.
 
 Run all four checks in parallel. Collect all results before presenting anything to the user — show a single consolidated report, not incremental output for each check.
 
@@ -401,6 +441,9 @@ echo "listed=$LISTED  milestone.closed_issues=$MILESTONE_CLOSED"
 
 Prefer assigning items to the target milestone **at merge time** over bulk-moving from an umbrella milestone right before release — that avoids the lag window entirely.
 
+At the end of Phase 3, print only the consolidated readiness table, the actions
+applied, and any remaining blocker/warning. Avoid replaying raw API output.
+
 ---
 
 ## Phase 4 — Create the GitHub Release
@@ -440,7 +483,7 @@ Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to
 
 > **Note on GitTools Actions:** all three downstream targets — Homebrew, winget, and GitTools Actions — open a PR that must be verified. If you find a *recent direct commit to `main`* on `GitTools/actions` for this version but no PR, treat that as unexpected and flag it — don't record it as a normal terminal state.
 
-**Scope of monitoring: PR creation only, not merge status.** Once a target has a confirmed PR (any state — `OPEN` is sufficient), mark that target resolved: record its link and exclude it from subsequent polling iterations. Merge status is outside this skill's scope — it depends on third-party reviewers and is not deterministic on any timeline this loop should poll against. Continue polling only the targets that remain unresolved (no PR and no failure signal yet).
+**Scope of monitoring: PR creation only, not merge status.** Once a target has a confirmed PR (any state — `OPEN` is sufficient), mark that target resolved: record its link and exclude it from subsequent polling iterations. A downstream job that explicitly reports a no-op (for example `pull-request-operation = none`) is also resolved; report that no PR was needed. Merge status is outside this skill's scope — it depends on third-party reviewers and is not deterministic on any timeline this loop should poll against. Continue polling only the targets that remain unresolved (no PR, no explicit no-op, and no failure signal yet).
 
 Invoke the `loop` skill via the Skill tool with the following self-paced prompt (substitute the actual version for `<VERSION>`):
 
@@ -460,18 +503,18 @@ Skill({
     ─────────────────────────────────────────────────────
     📦 Homebrew          <url> / not yet created (CI still running) / FAILED: <run url>
     📦 winget            <url> / not yet created (CI still running) / FAILED: <run url>
-    ⚙️  GitTools Actions  <url> / not yet created (CI still running) / FAILED: <run url> / ⚠️ pushed directly to main (unexpected): <commit url>
+    ⚙️  GitTools Actions  <url> / no PR needed (confirmed no-op) / not yet created (CI still running) / FAILED: <run url> / ⚠️ pushed directly to main (unexpected): <commit url>
   Self-pace: use a long fallback (1200s) while CI is still running and nothing has resolved yet.
   If a publish workflow run shows conclusion 'failure', surface it to the user immediately in the next message rather than waiting out the fallback — don't auto-retry a failed publish workflow without asking, since it's a one-way external action (opens a PR/pushes to a third-party repo).
-  Stop the loop (omit ScheduleWakeup) once every target has reached a terminal state: PR confirmed created (any state, don't track to merge) or FAILED-and-reported. A GitTools Actions direct-push-to-main is not a normal terminal state — report it as unexpected (see note above) rather than silently resolving the target on it."
+  Stop the loop (omit ScheduleWakeup) once every target has reached a terminal state: PR confirmed created (any state, don't track to merge), no-op confirmed from its downstream job output (for example `pull-request-operation = none`), or FAILED-and-reported. A GitTools Actions direct-push-to-main is not a normal terminal state — report it as unexpected (see note above) rather than silently resolving the target on it."
 })
 ```
 
 The loop self-paces as follows:
 - While CI is still running and no target has resolved → long fallback interval (~20 min)
-- Once a target's PR is confirmed, that target is excluded from further polling
+- Once a target's PR or explicit no-op is confirmed, that target is excluded from further polling
 - A failed publish workflow run is reported in the next message, not deferred until the fallback interval elapses
-- The loop terminates once every target has reached a terminal state (PR confirmed or failure reported)
+- The loop terminates once every target has reached a terminal state (PR confirmed, no-op confirmed, or failure reported)
 
 **Homebrew publish mechanism:** `.github/workflows/homebrew.yml` runs Homebrew's own `brew bump-formula-pr` CLI. It computes the source tarball SHA-256, forks via the `gittools-bot` org, and commits as the GitTools Bot identity, opening a PR to `Homebrew/homebrew-core`. If the job fails, investigate the actual `brew bump-formula-pr` step output — likely causes are the `HOMEBREW_GITHUB_API_TOKEN` lacking fork/push scope, the `gittools-bot` fork being out of sync, or `brew bump-formula-pr` rejecting the formula (audit/version). Surface the failing run's log to the user.
 
@@ -553,7 +596,7 @@ print('entry found' if '<VERSION>' in data else 'NOT FOUND')
 gh release view <VERSION> --repo GitTools/GitVersion --json body --jq '.body'
 ```
 
-Sanity-check: body is non-empty, lists categorized changes (Breaking change / Features / Bugs / Improvements / Dependencies per `GitReleaseManager.yml` aliases), includes contributors and SHA256 hashes. GitReleaseManager lists **every** milestone item with a single included label — issues *and* PRs alike (dependency-bump PRs labelled `dependencies` get their own `Dependencies` section). A large milestone should produce correspondingly large notes; sparse notes against a full milestone is a **red flag**, not normal.
+Sanity-check: body is non-empty, lists categorized changes (Breaking change / Features / Bugs / Improvements / Dependencies per `GitReleaseManager.yml` aliases), and includes contributors. GitReleaseManager lists **every** milestone item with a single included label — issues *and* PRs alike (dependency-bump PRs labelled `dependencies` get their own `Dependencies` section). A large milestone should produce correspondingly large notes; sparse notes against a full milestone is a **red flag**, not normal. GitHub release assets already expose their SHA-256 digests; do not add a hash section to the release notes.
 
 **Reconcile the rendered item count against the milestone (catches the dropped-PR failure):**
 
@@ -659,10 +702,22 @@ Milestone:   https://github.com/GitTools/GitVersion/milestone/<MILESTONE_NUMBER>
 Downstream PRs:
 📦 Homebrew          <url> / not yet created (<reason>)
 📦 winget            <url> / not yet created (CI still running)
-⚙️  GitTools Actions  <url> / not yet created (CI still running) / ⚠️ pushed directly to main (unexpected): <commit url>
+⚙️  GitTools Actions  <url> / no PR needed (confirmed no-op) / not yet created (CI still running) / ⚠️ pushed directly to main (unexpected): <commit url>
 
 Other issues/PRs touched:
 - [#NUMBER](url) — relabeled <old> → <new> / moved into milestone / etc. (only list non-obvious actions, not every routine milestone assignment)
 ```
 
 Keep this table updated in place (don't re-print a full new one) each time the maintainer asks for status later in the same session — re-run the three `gh pr list` commands above to refresh state rather than assuming nothing changed.
+
+### Local cleanup
+
+Before closing the workflow, remove only temporary files created for release-note
+recovery or verification, then run:
+
+```bash
+git status --short
+```
+
+Report any intentional local change separately (for example, an update to this
+skill). Never delete or reset unrelated user work as part of release cleanup.
