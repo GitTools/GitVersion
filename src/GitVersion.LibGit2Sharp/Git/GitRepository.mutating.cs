@@ -159,10 +159,10 @@ internal partial class GitRepository(ILogger<GitRepository> logger, IGitCliMutat
 
         var network = RepositoryInstance.Network;
         var credentialsProvider = GetCredentialsProvider(auth);
-        var references = credentialsProvider != null
+        var remoteReferences = credentialsProvider != null
             ? network.ListReferences(remote, credentialsProvider)
             : network.ListReferences(remote);
-        return [.. references.Select(r => r.ResolveToDirectReference()).Select(r => new GitRemoteReference(r.CanonicalName, r.TargetIdentifier))];
+        return [.. remoteReferences.Select(r => r.ResolveToDirectReference()).Select(r => new GitRemoteReference(r.CanonicalName, r.TargetIdentifier))];
     }
     private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
         new() { CredentialsProvider = GetCredentialsProvider(auth) };
