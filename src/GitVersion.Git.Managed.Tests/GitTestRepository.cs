@@ -96,13 +96,22 @@ internal sealed class GitTestRepository : IDisposable
     }
 
     /// <summary>
-    /// Stages all changes and creates a commit with a deterministic, unique date. Returns the commit sha.
+    /// Stages all changes and creates a commit with a deterministic date. Returns the commit sha.
     /// </summary>
-    public string Commit(string message)
+    /// <param name="message">The commit message.</param>
+    /// <param name="advanceClock">
+    /// Whether to advance the deterministic clock before committing. Pass <see langword="false"/>
+    /// to create commits sharing the same committer timestamp.
+    /// </param>
+    public string Commit(string message, bool advanceClock = true)
     {
-        this.ticks++;
+        if (advanceClock)
+        {
+            this.ticks++;
+        }
+
         Run("add", "--all");
-        Run("commit", "-q", "--no-verify", "-m", message);
+        Run("commit", "-q", "--no-verify", "--allow-empty", "-m", message);
         return RevParse("HEAD");
     }
 
@@ -132,6 +141,27 @@ internal sealed class GitTestRepository : IDisposable
         {
             File.Delete(messageFile);
         }
+    }
+
+    /// <summary>
+    /// Merges the given commits or branches into the current branch with a deterministic date.
+    /// </summary>
+    public string Merge(string firstBranch, string? secondBranch = null, bool advanceClock = true)
+    {
+        if (advanceClock)
+        {
+            this.ticks++;
+        }
+
+        List<string> arguments = ["merge", "-q", "--no-ff", "--no-edit", firstBranch];
+
+        if (secondBranch is not null)
+        {
+            arguments.Add(secondBranch);
+        }
+
+        Run([.. arguments]);
+        return RevParse("HEAD");
     }
 
     public string RevParse(string reference) => Run("rev-parse", reference);
