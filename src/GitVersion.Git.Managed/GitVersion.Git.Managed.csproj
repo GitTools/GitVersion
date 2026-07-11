@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup Label="RemoveUnusedGlobalUsings">
+        <Using Remove="Microsoft.Extensions.DependencyInjection" />
+        <Using Remove="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Remove="Microsoft.Extensions.Logging" />
+        <Using Remove="Microsoft.Extensions.Logging.Abstractions" />
+        <Using Remove="Microsoft.Extensions.Options" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.Git.Managed.Tests" />
+    </ItemGroup>
+
+</Project>
