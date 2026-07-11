@@ -110,7 +110,9 @@ backend is a natural completion of an existing pattern. Six test files additiona
 
 ```
 src/
-  GitVersion.Git.Managed/          vendored managed reader (no GitVersion.Core dependency)
+  GitVersion.Git.Managed/          vendored managed reader; the raw git-format layers below
+                                   are Core-free, Core is referenced only once the interface
+                                   implementations land (final Phase B step)
     Objects/    GitObjectId (hash-agnostic), pack + .idx v2 readers, delta streams,
                 pack cache, loose-object reader, multi-pack-index reader
     Parsing/    commit parser (author/committer/when/message/encoding), tree parser,
@@ -122,10 +124,12 @@ src/
     Diff/       recursive tree-vs-tree changed-paths diff (no rename detection)
     Status/     .git/index v2–v4 reader, workdir/index status for UncommittedChangesCount
   GitVersion.Git.CommandLine/      git CLI executor (writes + network only)
-  GitVersion.Git/                  thin adapter implementing IGitRepository (managed reader)
-                                   + IMutatingGitRepository (CLI mutator); mirrors the
-                                   current adapter file layout so DI is unchanged
 ```
+
+No separate adapter project: `GitVersion.Git.Managed` implements `IGitRepository` (managed reader)
+and `IMutatingGitRepository` (delegating to the CLI mutator) **directly**, mirroring how
+`GitVersion.LibGit2Sharp` implements the same interfaces over libgit2 today — same file layout,
+so the DI surface is unchanged.
 
 Port-vs-fresh decisions:
 
@@ -206,7 +210,7 @@ If suite time regresses from process spawns, batch history creation with `git fa
 
 ### Phase E — remove LibGit2Sharp · ~1–2 weeks
 Delete `src/GitVersion.LibGit2Sharp` and `new-cli/GitVersion.Core.Libgit2Sharp`; drop the package from
-`Directory.Packages.props`; re-point new-cli source-linking at `GitVersion.Git` + `GitVersion.Git.Managed`
+`Directory.Packages.props`; re-point new-cli source-linking at `GitVersion.Git.Managed`
 (read-only subset). Add a packaging assertion test: **zero `runtimes/**/native/*` entries** in the
 `GitVersion.MsBuild` and `GitVersion.Tool` nupkgs. Document the new runtime requirement: `git` on PATH is needed
 **only** for dynamic-repo/CI-normalization scenarios — pure version calculation on a prepared checkout needs no
@@ -248,7 +252,7 @@ Commit-graph reader (generation numbers for topo sort and merge-base), benchmark
 |---|---|---|
 | A | git-CLI mutator + auth/error/lock mapping | 2–3 weeks |
 | B-pre | interface cleanups | 3–5 days |
-| B | managed reader + adapter + parity harness | 8–12 weeks |
+| B | managed reader + direct interface implementations + parity harness | 8–12 weeks |
 | C | default flip + soak | 1 week + 1 release |
 | D | fixture migration (parallel with B) | 2–3 weeks |
 | E | LibGit2Sharp removal, new-cli re-link, packaging tests | 1–2 weeks |
