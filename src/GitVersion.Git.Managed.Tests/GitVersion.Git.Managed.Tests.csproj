@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Git.Managed\GitVersion.Git.Managed.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="GitVersion.Git" />
+    </ItemGroup>
+
+</Project>
