@@ -11,12 +11,15 @@ internal partial class GitRepository(ILogger<GitRepository> logger, IGitCliMutat
     private readonly IGitCliMutator? cliMutator = cliMutator;
 
     /// <summary>
-    /// Opt-in switch for performing mutating and network operations through the git CLI
-    /// instead of libgit2. See https://github.com/GitTools/GitVersion/issues/5031.
+    /// Selects the Git backend implementation. 'managed' opts into the new implementation stack
+    /// as far as it exists — currently mutating and network operations through the git CLI, with
+    /// the managed reader to follow. The default is 'libgit2' in v7.0 and flips to 'managed' in
+    /// v7.1 (with 'libgit2' as the fallback); both backends ship side by side until libgit2 is
+    /// removed. See https://github.com/GitTools/GitVersion/issues/5031.
     /// </summary>
     private bool UseCliBackend =>
         this.cliMutator is not null
-        && string.Equals(SysEnv.GetEnvironmentVariable("GITVERSION_GIT_BACKEND_MUTATOR"), "cli", StringComparison.OrdinalIgnoreCase);
+        && string.Equals(SysEnv.GetEnvironmentVariable("GITVERSION_GIT_BACKEND"), "managed", StringComparison.OrdinalIgnoreCase);
 
     private string CliWorkingDirectory => RepositoryInstance.Info.WorkingDirectory ?? RepositoryInstance.Info.Path;
 

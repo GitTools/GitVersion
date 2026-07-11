@@ -153,10 +153,28 @@ CLI executor hygiene:
 
 ## 5. Phased migration (every phase shippable)
 
+### Release strategy: one switch, two backends, a public testing window
+
+A single public environment variable — **`GITVERSION_GIT_BACKEND=libgit2|managed`** — selects the entire
+backend. `managed` opts into the new implementation stack as far as it exists at each release (first the
+CLI mutator, later also the managed reader). The version-to-default mapping is explicit:
+
+| Release | Default backend | Opt-in / opt-out |
+|---|---|---|
+| **v7.0** | `libgit2` | `GITVERSION_GIT_BACKEND=managed` to test the new backend |
+| **v7.1** | `managed` | `GITVERSION_GIT_BACKEND=libgit2` to fall back |
+| v7.x (later) | `managed` | libgit2 removed (Phase E) once the fallback has gone several releases unused/regression-free |
+
+Both backends ship side by side throughout the v7.0–v7.x window so users can validate `managed` against
+their real repositories and report issues before libgit2 is dropped. For that whole window, the CI
+unit-test matrix runs the full suite against both backends (`git_backend` dimension in `_unit_tests.yml`) —
+both legs must stay green.
+
 ### Phase A — CLI mutator first (reads stay on libgit2) · ~2–3 weeks
 Replace `GitRepository.mutating.cs` + mutating collection members with `GitVersion.Git.CommandLine`.
-Reads keep using libgit2; the wrapper invalidates its lazy `Repository` handle after each mutation so libgit2
-sees external ref changes. Escape hatch: `GITVERSION_GIT_BACKEND_MUTATOR=cli|libgit2` for one release.
+Reads keep using libgit2; the wrapper drops its cached collection wrappers after each CLI mutation so
+external ref changes become visible (the libgit2 handle itself must not be disposed — wrappers already
+handed out reference its native memory). Selected via `GITVERSION_GIT_BACKEND=managed`.
 This immediately retires the most fragile native code paths (network, SSL, credentials).
 
 ### Phase B-pre — interface cleanups · ~3–5 days
@@ -175,8 +193,10 @@ Backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (default `libgit2
 - **Real-world corpus script**: `gitversion /nocache /output json` diffed across backends on this repo,
   GitReleaseManager, dotnet/runtime, a shallow CI-style clone, and a worktree checkout
 
-### Phase C — default flip · ~1 week + one release soak
-Default `managed`; `libgit2` remains an env-var escape hatch for one minor release. Dual CI matrix stays green.
+### Phase C — default flip in v7.1 · ~1 week + multi-release soak
+**v7.0 ships with default `libgit2`** (managed opt-in); **v7.1 flips the default to `managed`** with
+`GITVERSION_GIT_BACKEND=libgit2` as the fallback while users validate the new backend. The dual-backend
+CI matrix stays green throughout the window.
 
 ### Phase D — fixture migration (parallel with B) · ~2–3 weeks
 `GitVersion.Testing` moves to pure git-CLI writes via the existing `ExecuteGitCmd` pattern:
