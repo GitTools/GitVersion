@@ -5,7 +5,7 @@ namespace GitVersion.Git;
 /// GitVersion uses when querying commit history.
 /// </summary>
 [Flags]
-internal enum GitRevisionSort
+internal enum GitRevisionSortStrategies
 {
     /// <summary>
     /// Git's default ordering: reverse chronological by committer date.

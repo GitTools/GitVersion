@@ -19,7 +19,7 @@ internal sealed class GitRevisionWalkOptions
     /// <summary>
     /// Gets the sort order of the walk.
     /// </summary>
-    public GitRevisionSort Sort { get; init; } = GitRevisionSort.None;
+    public GitRevisionSortStrategies Sort { get; init; } = GitRevisionSortStrategies.None;
 
     /// <summary>
     /// Gets a value indicating whether only the first parent of each commit is followed.

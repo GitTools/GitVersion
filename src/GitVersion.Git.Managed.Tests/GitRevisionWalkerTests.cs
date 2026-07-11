@@ -24,7 +24,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void LinearHistoryMatchesLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateLinearRepository();
 
         AssertWalkParity(repository, new() { Sort = sort }, head: true);
@@ -33,7 +33,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void MergedHistoryMatchesLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateMergedRepository();
 
         AssertWalkParity(repository, new() { Sort = sort }, head: true);
@@ -42,7 +42,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void MergedHistoryWithExcludesMatchesLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateMergedRepository();
         var excluded = repository.RevParse("v0");
 
@@ -56,7 +56,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void EqualCommitterTimestampsMatchLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateEqualTimestampRepository();
 
         AssertWalkParity(repository, new() { Sort = sort }, head: true);
@@ -65,7 +65,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void CrissCrossHistoryMatchesLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateCrissCrossRepository();
 
         AssertWalkParity(repository, new() { Sort = sort }, head: true);
@@ -74,7 +74,7 @@ public class GitRevisionWalkerTests
     [TestCaseSource(nameof(SortCombinations))]
     public void OctopusMergeMatchesLibGit2(string sortName)
     {
-        var sort = Enum.Parse<GitRevisionSort>(sortName);
+        var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateOctopusRepository();
 
         AssertWalkParity(repository, new() { Sort = sort }, head: true);
@@ -107,7 +107,7 @@ public class GitRevisionWalkerTests
         var first = repository.RevParse("HEAD^1^");
         var second = repository.RevParse("HEAD^2");
 
-        var options = new GitRevisionWalkOptions { Sort = GitRevisionSort.Topological | GitRevisionSort.Time };
+        var options = new GitRevisionWalkOptions { Sort = GitRevisionSortStrategies.Topological | GitRevisionSortStrategies.Time };
         options.Include.Add(GitObjectId.Parse(first));
         options.Include.Add(GitObjectId.Parse(second));
 
@@ -232,21 +232,21 @@ public class GitRevisionWalkerTests
         actual.Value.ToString().ShouldBe(expected.Sha);
     }
 
-    private static global::LibGit2Sharp.CommitSortStrategies ToLibGit2Sort(GitRevisionSort sort)
+    private static global::LibGit2Sharp.CommitSortStrategies ToLibGit2Sort(GitRevisionSortStrategies sort)
     {
         var result = global::LibGit2Sharp.CommitSortStrategies.None;
 
-        if (sort.HasFlag(GitRevisionSort.Topological))
+        if (sort.HasFlag(GitRevisionSortStrategies.Topological))
         {
             result |= global::LibGit2Sharp.CommitSortStrategies.Topological;
         }
 
-        if (sort.HasFlag(GitRevisionSort.Time))
+        if (sort.HasFlag(GitRevisionSortStrategies.Time))
         {
             result |= global::LibGit2Sharp.CommitSortStrategies.Time;
         }
 
-        if (sort.HasFlag(GitRevisionSort.Reverse))
+        if (sort.HasFlag(GitRevisionSortStrategies.Reverse))
         {
             result |= global::LibGit2Sharp.CommitSortStrategies.Reverse;
         }

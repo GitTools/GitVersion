@@ -33,7 +33,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
         var walk = new WalkState(this, options);
         var result = walk.Run();
 
-        if (options.Sort.HasFlag(GitRevisionSort.Reverse))
+        if (options.Sort.HasFlag(GitRevisionSortStrategies.Reverse))
         {
             result.Reverse();
         }
@@ -227,12 +227,12 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
                 seeds = LimitList(seeds);
             }
 
-            if (options.Sort.HasFlag(GitRevisionSort.Topological))
+            if (options.Sort.HasFlag(GitRevisionSortStrategies.Topological))
             {
-                return SortInTopologicalOrder(seeds, byTime: options.Sort.HasFlag(GitRevisionSort.Time));
+                return SortInTopologicalOrder(seeds, byTime: options.Sort.HasFlag(GitRevisionSortStrategies.Time));
             }
 
-            if (options.Sort.HasFlag(GitRevisionSort.Time))
+            if (options.Sort.HasFlag(GitRevisionSortStrategies.Time))
             {
                 return EmitByTime(seeds);
             }
@@ -242,7 +242,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
         private (List<WalkNode> Seeds, bool Limited) PrepareSeeds()
         {
-            var limited = options.Sort != GitRevisionSort.None;
+            var limited = options.Sort != GitRevisionSortStrategies.None;
 
             // Pushes prepend to the input list; includes are pushed before hides,
             // and a hide overrides an earlier push of the same commit.
@@ -454,7 +454,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
         }
 
-        private List<WalkNode> EmitByTime(List<WalkNode> seeds)
+        private static List<WalkNode> EmitByTime(List<WalkNode> seeds)
         {
             var queue = new BinaryHeap(byTime: true);
 
@@ -498,53 +498,20 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             return result;
         }
 
-        private List<WalkNode> SortInTopologicalOrder(List<WalkNode> list, bool byTime)
+        private static List<WalkNode> SortInTopologicalOrder(List<WalkNode> list, bool byTime)
         {
             // A commit may only be emitted after all commits in the list which have it as a
             // parent. Ready commits are emitted chronologically when time-sorting, otherwise
             // in the order the limiting pass produced them.
-            foreach (var node in list)
-            {
-                node.InDegree = 1;
-            }
+            ComputeChildCounts(list);
 
-            foreach (var node in list)
-            {
-                foreach (var parent in node.Parents)
-                {
-                    if (parent.InDegree > 0)
-                    {
-                        parent.InDegree++;
-                    }
-                }
-            }
-
-            var queue = new BinaryHeap(byTime);
-
-            foreach (var node in list)
-            {
-                if (node.InDegree == 1)
-                {
-                    queue.Insert(node);
-                }
-            }
-
-            if (!byTime)
-            {
-                queue.Reverse();
-            }
-
+            var queue = CreateReadyQueue(list, byTime);
             var result = new List<WalkNode>();
 
             while (queue.Pop() is { } next)
             {
-                foreach (var parent in next.Parents)
+                foreach (var parent in next.Parents.Where(parent => parent.InDegree > 0))
                 {
-                    if (parent.InDegree == 0)
-                    {
-                        continue;
-                    }
-
                     if (--parent.InDegree == 1)
                     {
                         queue.Insert(parent);
@@ -562,7 +529,39 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             return result;
         }
 
-        private IEnumerable<WalkNode> ParsedParents(WalkNode node)
+        private static void ComputeChildCounts(List<WalkNode> list)
+        {
+            foreach (var node in list)
+            {
+                node.InDegree = 1;
+            }
+
+            foreach (var parent in list.SelectMany(node => node.Parents).Where(parent => parent.InDegree > 0))
+            {
+                parent.InDegree++;
+            }
+        }
+
+        private static BinaryHeap CreateReadyQueue(List<WalkNode> list, bool byTime)
+        {
+            var queue = new BinaryHeap(byTime);
+
+            foreach (var node in list.Where(node => node.InDegree == 1))
+            {
+                queue.Insert(node);
+            }
+
+            // The tips must come out in traversal order; without time-sorting the plain
+            // vector pops from the end, so reverse it to preserve the insertion order.
+            if (!byTime)
+            {
+                queue.Reverse();
+            }
+
+            return queue;
+        }
+
+        private static IEnumerable<WalkNode> ParsedParents(WalkNode node)
         {
             if (!node.Parsed)
             {
