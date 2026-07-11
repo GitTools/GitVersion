@@ -414,7 +414,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
         }
 
-        private void MarkParentsUninteresting(WalkNode node)
+        private static void MarkParentsUninteresting(WalkNode node)
         {
             // Mark all (currently parsed) ancestors uninteresting, chasing first-parent
             // chains and stopping at commits which have not been parsed yet — the limiting
