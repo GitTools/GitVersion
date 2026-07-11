@@ -20,11 +20,17 @@ internal sealed class GitTestRepository : IDisposable
         RepositoryPath = Path.Combine(Path.GetTempPath(), "managed-git-tests", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(RepositoryPath);
         Run("init", "-q", "-b", "main");
+
+        // Use the path exactly as git sees it (symlinks resolved, e.g. /var -> /private/var on
+        // macOS), so paths git writes into gitdir/commondir files compare equal to ours.
+        RepositoryPath = Path.GetFullPath(Run("rev-parse", "--show-toplevel"));
     }
 
     public string RepositoryPath { get; }
 
-    public string ObjectsDirectory => Path.Combine(RepositoryPath, ".git", "objects");
+    public string GitDirectory => Path.Combine(RepositoryPath, ".git");
+
+    public string ObjectsDirectory => Path.Combine(GitDirectory, "objects");
 
     /// <summary>
     /// Gets the date used for the author and the committer of the most recent commit or tag.
@@ -133,6 +139,8 @@ internal sealed class GitTestRepository : IDisposable
     public GitObjectId ResolveId(string reference) => GitObjectId.Parse(RevParse(reference));
 
     public GitObjectStore OpenObjectStore() => new(ObjectsDirectory);
+
+    public GitReferenceStore OpenReferenceStore() => new(GitDirectory);
 
     public void Dispose()
     {

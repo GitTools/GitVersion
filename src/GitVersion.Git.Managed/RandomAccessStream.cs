@@ -13,7 +13,6 @@ internal sealed class RandomAccessStream : Stream
 {
     private readonly SafeFileHandle handle;
     private readonly long length;
-    private long position;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RandomAccessStream"/> class.
@@ -39,11 +38,7 @@ internal sealed class RandomAccessStream : Stream
     public override long Length => this.length;
 
     /// <inheritdoc/>
-    public override long Position
-    {
-        get => this.position;
-        set => this.position = value;
-    }
+    public override long Position { get; set; }
 
     /// <inheritdoc/>
     public override void Flush()
@@ -56,14 +51,14 @@ internal sealed class RandomAccessStream : Stream
     /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
-        var toRead = (int)Math.Min(buffer.Length, this.length - this.position);
+        var toRead = (int)Math.Min(buffer.Length, this.length - Position);
         if (toRead <= 0)
         {
             return 0;
         }
 
-        var read = RandomAccess.Read(this.handle, buffer[..toRead], this.position);
-        this.position += read;
+        var read = RandomAccess.Read(this.handle, buffer[..toRead], Position);
+        Position += read;
         return read;
     }
 
@@ -73,7 +68,7 @@ internal sealed class RandomAccessStream : Stream
         var newPosition = origin switch
         {
             SeekOrigin.Begin => offset,
-            SeekOrigin.Current => this.position + offset,
+            SeekOrigin.Current => Position + offset,
             _ => throw new NotSupportedException()
         };
 
@@ -87,8 +82,8 @@ internal sealed class RandomAccessStream : Stream
             throw new IOException("Attempted to seek before the start or beyond the end of the stream.");
         }
 
-        this.position = newPosition;
-        return this.position;
+        Position = newPosition;
+        return Position;
     }
 
     /// <inheritdoc/>

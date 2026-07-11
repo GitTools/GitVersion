@@ -18,6 +18,8 @@ on:
       - main
       - 'support/*'
       - 'next/*'
+      # gate managed-git phase PRs with the full test matrix pre-merge (#5031)
+      - 'feature/managed-git'
     paths:
       - '**'
       - '!docs/**'
