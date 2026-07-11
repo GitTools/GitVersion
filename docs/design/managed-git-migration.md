@@ -123,13 +123,22 @@ src/
                 merge-base (paint-down-to-common), commit-graph reader (later, optional)
     Diff/       recursive tree-vs-tree changed-paths diff (no rename detection)
     Status/     .git/index v2–v4 reader, workdir/index status for UncommittedChangesCount
-  GitVersion.Git.CommandLine/      git CLI executor (writes + network only)
+    CommandLine/ git CLI executor + mutator (writes + network only) — absorbed from the
+                 interim GitVersion.Git.CommandLine project at the final Phase B step
 ```
 
 No separate adapter project: `GitVersion.Git.Managed` implements `IGitRepository` (managed reader)
 and `IMutatingGitRepository` (delegating to the CLI mutator) **directly**, mirroring how
 `GitVersion.LibGit2Sharp` implements the same interfaces over libgit2 today — same file layout,
 so the DI surface is unchanged.
+
+One-library end state: all git interaction (managed reads + CLI writes) lives in
+`GitVersion.Git.Managed`, just as `GitVersion.LibGit2Sharp` is the single libgit2 library today.
+`GitVersion.Git.CommandLine` exists only as an interim project (created in Phase A so the CLI
+mutator could ship while reads stayed on libgit2); when it folds into `GitVersion.Git.Managed`
+at the final Phase B step, `GitVersion.LibGit2Sharp` re-points its mutator `ProjectReference`
+to `GitVersion.Git.Managed` for the dual-backend window and that reference disappears with the
+project's deletion in Phase E.
 
 Port-vs-fresh decisions:
 
@@ -175,7 +184,8 @@ unit-test matrix runs the full suite against both backends (`git_backend` dimens
 both legs must stay green.
 
 ### Phase A — CLI mutator first (reads stay on libgit2) · ~2–3 weeks
-Replace `GitRepository.mutating.cs` + mutating collection members with `GitVersion.Git.CommandLine`.
+Replace `GitRepository.mutating.cs` + mutating collection members with `GitVersion.Git.CommandLine`
+(an interim project — it merges into `GitVersion.Git.Managed` at the final Phase B step, see §4).
 Reads keep using libgit2; the wrapper drops its cached collection wrappers after each CLI mutation so
 external ref changes become visible (the libgit2 handle itself must not be disposed — wrappers already
 handed out reference its native memory). Selected via `GITVERSION_GIT_BACKEND=managed`.
@@ -188,7 +198,9 @@ typed `CommitFilter` reachable-from members, remove/internalize `ToGitRepository
 ### Phase B — managed reader behind a flag · ~8–12 weeks
 Build `GitVersion.Git.Managed` bottom-up with per-layer unit tests against git-CLI-generated fixture repos
 (loose/packed/mixed objects, packed-refs, worktrees, shallow, multi-pack-index, index v4).
-Backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (default `libgit2`). Validation:
+The final B step takes the `GitVersion.Core` reference, lands the direct `IGitRepository`/
+`IMutatingGitRepository` implementations, absorbs `GitVersion.Git.CommandLine` (see §4), and wires
+backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (default `libgit2`). Validation:
 - **CI matrix**: full integration suites (`GitVersion.Core.Tests`, `GitVersion.App.Tests`) run on both backends,
   three OSes — the suites assert exact SemVer strings over complex histories and are the strongest parity oracle
 - **DualBackendParityTests**: open the same fixture with both backends; deep-equality on ref enumeration,
