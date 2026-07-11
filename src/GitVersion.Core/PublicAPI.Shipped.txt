@@ -200,11 +200,11 @@ GitVersion.Git.BranchCommit.Equals(GitVersion.Git.BranchCommit? other) -> bool
 GitVersion.Git.CommitFilter
 GitVersion.Git.CommitFilter.CommitFilter() -> void
 GitVersion.Git.CommitFilter.CommitFilter(GitVersion.Git.CommitFilter! original) -> void
-GitVersion.Git.CommitFilter.ExcludeReachableFrom.get -> object?
+GitVersion.Git.CommitFilter.ExcludeReachableFrom.get -> GitVersion.Git.ICommitish?
 GitVersion.Git.CommitFilter.ExcludeReachableFrom.init -> void
 GitVersion.Git.CommitFilter.FirstParentOnly.get -> bool
 GitVersion.Git.CommitFilter.FirstParentOnly.init -> void
-GitVersion.Git.CommitFilter.IncludeReachableFrom.get -> object?
+GitVersion.Git.CommitFilter.IncludeReachableFrom.get -> GitVersion.Git.ICommitish?
 GitVersion.Git.CommitFilter.IncludeReachableFrom.init -> void
 GitVersion.Git.CommitFilter.SortBy.get -> GitVersion.Git.CommitSortStrategies
 GitVersion.Git.CommitFilter.SortBy.init -> void
@@ -234,6 +234,7 @@ GitVersion.Git.ICommit.When.get -> System.DateTimeOffset
 GitVersion.Git.ICommitCollection
 GitVersion.Git.ICommitCollection.GetCommitsPriorTo(System.DateTimeOffset olderThan) -> System.Collections.Generic.IEnumerable<GitVersion.Git.ICommit!>!
 GitVersion.Git.ICommitCollection.QueryBy(GitVersion.Git.CommitFilter! commitFilter) -> System.Collections.Generic.IEnumerable<GitVersion.Git.ICommit!>!
+GitVersion.Git.ICommitish
 GitVersion.Git.IGitRepository
 GitVersion.Git.IGitRepository.Branches.get -> GitVersion.Git.IBranchCollection!
 GitVersion.Git.IGitRepository.Commits.get -> GitVersion.Git.ICommitCollection!

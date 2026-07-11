@@ -8,6 +8,7 @@
     <Project Path="GitVersion.BuildAgents/GitVersion.BuildAgents.csproj" />
     <Project Path="GitVersion.Configuration.Tests/GitVersion.Configuration.Tests.csproj" />
     <Project Path="GitVersion.Configuration/GitVersion.Configuration.csproj" />
+    <Project Path="GitVersion.Git.CommandLine/GitVersion.Git.CommandLine.csproj" />
     <Project Path="GitVersion.LibGit2Sharp/GitVersion.LibGit2Sharp.csproj" />
     <Project Path="GitVersion.Output.Tests/GitVersion.Output.Tests.csproj" />
     <Project Path="GitVersion.Output/GitVersion.Output.csproj" />

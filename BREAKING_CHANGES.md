@@ -1,5 +1,25 @@
 ## Unreleased
 
+### Selectable Git backend (libgit2 vs. managed)
+
+GitVersion is migrating away from LibGit2Sharp and its native libgit2 binaries towards a managed implementation combined with the `git` CLI ([#5031](https://github.com/GitTools/GitVersion/issues/5031)). A single environment variable selects the backend:
+
+| Release | Default backend | Switch |
+| ------- | --------------- | ------ |
+| v7.0    | `libgit2`       | `GITVERSION_GIT_BACKEND=managed` to opt in to the new backend |
+| v7.1    | `managed`       | `GITVERSION_GIT_BACKEND=libgit2` to fall back |
+| later   | `managed`       | libgit2 backend removed |
+
+Behavioral notes when using the `managed` backend:
+
+* Mutating and network operations (repository normalization on CI build agents, dynamic repositories via `--url`, checkout, fetch) are performed by invoking the `git` executable, which must be available on the `PATH`. Plain version calculation on an already-prepared checkout does not require it.
+* v7.0 behavior is unchanged unless you opt in. Please test the `managed` backend and report issues — the libgit2 backend will be removed once the new backend has proven itself over several releases.
+
+### Git abstraction API changes (`GitVersion.Core`)
+
+* `CommitFilter.IncludeReachableFrom` and `CommitFilter.ExcludeReachableFrom` are now typed as the new `ICommitish` marker interface (implemented by `ICommit` and `IBranch`) instead of `object?`. Code that assigned other types to these properties no longer compiles; code passing `ICommit`/`IBranch` instances is unaffected.
+* The `GitVersion.LibGit2SharpExtensions` class (the `IRepository.ToGitRepository()` extension) has been removed from the public API of `GitVersion.LibGit2Sharp`.
+
 ### Invalid label formatting is not ignored
 Previously bad label formatting config would be silently accepted. For example `{Branhc}` (when BranchName is misspelled) or even `{BranchName` (missing a closing brace). This is not ignored now and exceptions will be thrown if formatting problems exist in the label config. This brings it into line with how assembly string formatting is treated.
 

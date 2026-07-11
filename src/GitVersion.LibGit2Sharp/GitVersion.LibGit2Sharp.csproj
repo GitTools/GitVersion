@@ -6,6 +6,13 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Git.CommandLine\GitVersion.Git.CommandLine.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
     </ItemGroup>
 
 </Project>

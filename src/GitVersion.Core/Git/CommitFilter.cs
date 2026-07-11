@@ -6,11 +6,11 @@ public record CommitFilter
     /// <summary>Gets a value indicating whether only the first-parent chain should be traversed.</summary>
     public bool FirstParentOnly { get; init; }
 
-    /// <summary>Gets the commit, branch, or tag from which reachable commits are included.</summary>
-    public object? IncludeReachableFrom { get; init; }
+    /// <summary>Gets the commit or branch from which reachable commits are included.</summary>
+    public ICommitish? IncludeReachableFrom { get; init; }
 
-    /// <summary>Gets the commit, branch, or tag whose reachable commits are excluded from the result.</summary>
-    public object? ExcludeReachableFrom { get; init; }
+    /// <summary>Gets the commit or branch whose reachable commits are excluded from the result.</summary>
+    public ICommitish? ExcludeReachableFrom { get; init; }
 
     /// <summary>Gets the ordering strategy applied to the resulting commits.</summary>
     public CommitSortStrategies SortBy { get; init; }
