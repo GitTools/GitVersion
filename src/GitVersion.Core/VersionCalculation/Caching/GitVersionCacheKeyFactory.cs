@@ -40,8 +40,13 @@ internal class GitVersionCacheKeyFactory(
     {
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
 
-        // traverse the directory and get a list of files, use that for GetHash
-        var contents = CalculateDirectoryContents(FileSystemHelper.Path.Combine(dotGitDirectory, "refs"));
+        // traverse the directory and get a list of files, use that for GetHash.
+        // The refs directory may not exist when all refs are packed (e.g. a fresh
+        // clone by recent versions of git writes refs to packed-refs only).
+        var refsPath = FileSystemHelper.Path.Combine(dotGitDirectory, "refs");
+        var contents = this.fileSystem.Directory.Exists(refsPath)
+            ? CalculateDirectoryContents(refsPath)
+            : [];
 
         return GetHash(contents);
     }
