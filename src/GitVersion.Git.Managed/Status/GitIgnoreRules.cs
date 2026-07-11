@@ -94,8 +94,8 @@ internal sealed class GitIgnoreRules
             return null;
         }
 
-        // A pattern containing a slash is anchored to the ignore file's directory;
-        // otherwise it matches at any depth below it.
+        // Patterns containing a slash are anchored to the directory of the ignore file,
+        // while all other patterns match at any depth below it.
         if (!pattern.Contains('/'))
         {
             pattern = "**/" + pattern;
@@ -103,7 +103,12 @@ internal sealed class GitIgnoreRules
 
         pattern = pattern.TrimStart('/');
 
-        return (new Regex("^" + TranslateToRegex(pattern) + "$", RegexOptions.CultureInvariant), directoryOnly, negated);
+        var regex = new Regex(
+            "^" + TranslateToRegex(pattern) + "$",
+            RegexOptions.CultureInvariant,
+            TimeSpan.FromSeconds(1));
+
+        return (regex, directoryOnly, negated);
     }
 
     private static string TrimTrailingSpaces(string line)

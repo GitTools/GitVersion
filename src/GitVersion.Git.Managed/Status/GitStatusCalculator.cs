@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace GitVersion.Git;
@@ -78,7 +79,7 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
         }
     }
 
-    private void CompareIndexWithWorkingDirectory(
+    private static void CompareIndexWithWorkingDirectory(
         string workingDirectory,
         Dictionary<string, GitIndexEntry> indexEntries,
         HashSet<string> changed)
@@ -214,6 +215,7 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
         return isExecutable != entry.IsExecutable;
     }
 
+    [SuppressMessage("Critical Security Hotspot", "S4790:Using weak hashing algorithms is security-sensitive", Justification = "Git object ids are SHA-1 by definition; the hash is used for content identity, not security.")]
     private static GitObjectId HashFile(FileInfo fileInfo)
     {
         var header = Encoding.ASCII.GetBytes($"blob {fileInfo.Length}\0");
