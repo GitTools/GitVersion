@@ -66,10 +66,11 @@ internal sealed class GitReferenceStore
     public GitReference? Resolve(string canonicalName)
     {
         var current = GetReference(canonicalName);
+        var depth = 0;
 
-        for (var depth = 0; current is { IsSymbolic: true }; depth++)
+        while (current is { IsSymbolic: true })
         {
-            if (depth >= MaxSymbolicReferenceDepth)
+            if (++depth > MaxSymbolicReferenceDepth)
             {
                 throw new GitObjectStoreException($"The symbolic reference '{canonicalName}' is nested more than {MaxSymbolicReferenceDepth} levels deep.");
             }
@@ -99,12 +100,10 @@ internal sealed class GitReferenceStore
 
         var references = new SortedDictionary<string, GitReference>(StringComparer.Ordinal);
 
-        foreach (var packed in this.packedReferences.Value.Values)
+        foreach (var packed in this.packedReferences.Value.Values
+                     .Where(reference => reference.CanonicalName.StartsWith(prefix, StringComparison.Ordinal)))
         {
-            if (packed.CanonicalName.StartsWith(prefix, StringComparison.Ordinal))
-            {
-                references[packed.CanonicalName] = packed;
-            }
+            references[packed.CanonicalName] = packed;
         }
 
         var refsRoot = Path.Combine(this.commonDirectory, "refs");
