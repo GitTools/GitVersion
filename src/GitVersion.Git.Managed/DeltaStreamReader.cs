@@ -36,48 +36,53 @@ internal static class DeltaStreamReader
         }
         else
         {
-            if ((instruction & 0b0000_0001) != 0)
-            {
-                value.Offset |= (byte)stream.ReadByte();
-            }
-
-            if ((instruction & 0b0000_0010) != 0)
-            {
-                value.Offset |= (byte)stream.ReadByte() << 8;
-            }
-
-            if ((instruction & 0b0000_0100) != 0)
-            {
-                value.Offset |= (byte)stream.ReadByte() << 16;
-            }
-
-            if ((instruction & 0b0000_1000) != 0)
-            {
-                value.Offset |= (byte)stream.ReadByte() << 24;
-            }
-
-            if ((instruction & 0b0001_0000) != 0)
-            {
-                value.Size = (byte)stream.ReadByte();
-            }
-
-            if ((instruction & 0b0010_0000) != 0)
-            {
-                value.Size |= (byte)stream.ReadByte() << 8;
-            }
-
-            if ((instruction & 0b0100_0000) != 0)
-            {
-                value.Size |= (byte)stream.ReadByte() << 16;
-            }
-
-            // Size zero is automatically converted to 0x10000.
-            if (value.Size == 0)
-            {
-                value.Size = 0x10000;
-            }
+            ReadCopyInstruction(stream, instruction, ref value);
         }
 
         return value;
+    }
+
+    private static void ReadCopyInstruction(Stream stream, byte instruction, ref DeltaInstruction value)
+    {
+        if ((instruction & 0b0000_0001) != 0)
+        {
+            value.Offset |= (byte)stream.ReadByte();
+        }
+
+        if ((instruction & 0b0000_0010) != 0)
+        {
+            value.Offset |= (byte)stream.ReadByte() << 8;
+        }
+
+        if ((instruction & 0b0000_0100) != 0)
+        {
+            value.Offset |= (byte)stream.ReadByte() << 16;
+        }
+
+        if ((instruction & 0b0000_1000) != 0)
+        {
+            value.Offset |= (byte)stream.ReadByte() << 24;
+        }
+
+        if ((instruction & 0b0001_0000) != 0)
+        {
+            value.Size = (byte)stream.ReadByte();
+        }
+
+        if ((instruction & 0b0010_0000) != 0)
+        {
+            value.Size |= (byte)stream.ReadByte() << 8;
+        }
+
+        if ((instruction & 0b0100_0000) != 0)
+        {
+            value.Size |= (byte)stream.ReadByte() << 16;
+        }
+
+        // Size zero is automatically converted to 0x10000.
+        if (value.Size == 0)
+        {
+            value.Size = 0x10000;
+        }
     }
 }

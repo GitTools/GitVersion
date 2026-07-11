@@ -1,41 +1,34 @@
 // Portions derived from Nerdbank.GitVersioning (https://github.com/dotnet/Nerdbank.GitVersioning), MIT License.
 
 using System.Buffers.Binary;
-using System.IO.MemoryMappedFiles;
 
 namespace GitVersion.Git;
 
 /// <summary>
-/// Reads a Git pack index (<c>.idx</c>) file, version 2, using a memory-mapped file.
+/// Reads a Git pack index (<c>.idx</c>) file, version 2.
 /// </summary>
 /// <seealso href="https://git-scm.com/docs/pack-format"/>
-internal sealed unsafe class GitPackIndexReader : IDisposable
+internal sealed class GitPackIndexReader : IDisposable
 {
     private static readonly byte[] Header = [0xff, 0x74, 0x4f, 0x63];
 
-    private readonly MemoryMappedFile file;
-    private readonly MemoryMappedViewAccessor accessor;
+    // The object name table starts at: 4 (header) + 4 (version) + 256 * 4 (fanout table).
+    private const int NameTableStart = 4 + 4 + (256 * 4);
+
+    private readonly FileStream stream;
 
     // The fanout table consists of 256 4-byte network byte order integers.
     // The N-th entry of this table records the number of objects in the corresponding pack,
     // the first byte of whose object name is less than or equal to N.
     private readonly int[] fanoutTable = new int[257];
-    private byte* ptr;
 
     private bool initialized;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GitPackIndexReader"/> class.
     /// </summary>
-    /// <param name="stream">A <see cref="FileStream"/> which points to the index file.</param>
-    public GitPackIndexReader(FileStream stream)
-    {
-        ArgumentNullException.ThrowIfNull(stream);
-
-        this.file = MemoryMappedFile.CreateFromFile(stream, mapName: null, capacity: 0, MemoryMappedFileAccess.Read, HandleInheritability.None, leaveOpen: false);
-        this.accessor = this.file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
-        this.accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref this.ptr);
-    }
+    /// <param name="stream">A <see cref="FileStream"/> which points to the index file. Ownership is transferred to the reader.</param>
+    public GitPackIndexReader(FileStream stream) => this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
     /// <summary>
     /// Gets the offset of a Git object in the pack file.
@@ -51,42 +44,30 @@ internal sealed unsafe class GitPackIndexReader : IDisposable
         Span<byte> objectName = stackalloc byte[hashLength];
         objectId.CopyTo(objectName);
 
-        var packStart = this.fanoutTable[objectName[0]];
-        var packEnd = this.fanoutTable[objectName[0] + 1] - 1;
         var objectCount = this.fanoutTable[256];
 
         // The fanout table is followed by a table of sorted 20-byte SHA-1 object names.
-        // These are packed together without offset values to reduce the cache footprint
-        // of the binary search for a specific object name.
-        // The object names start at: 4 (header) + 4 (version) + 256 * 4 (fanout table).
-        var tableSize = hashLength * (packEnd - packStart + 1);
-        if (tableSize <= 0)
-        {
-            return null;
-        }
+        var low = this.fanoutTable[objectName[0]];
+        var high = this.fanoutTable[objectName[0] + 1] - 1;
 
-        var table = GetSpan(4 + 4 + (256 * 4) + (hashLength * packStart), tableSize);
-
-        var originalPackStart = packStart;
-        packEnd -= originalPackStart;
-        packStart = 0;
-
-        var i = 0;
+        Span<byte> current = stackalloc byte[hashLength];
         var order = -1;
+        var i = 0;
 
-        while (packStart <= packEnd)
+        while (low <= high)
         {
-            i = (packStart + packEnd) / 2;
+            i = (low + high) / 2;
 
-            order = table.Slice(hashLength * i, hashLength).SequenceCompareTo(objectName);
+            this.stream.SafeFileHandle.ReadExactlyAt(NameTableStart + ((long)hashLength * i), current);
+            order = current.SequenceCompareTo(objectName);
 
             if (order < 0)
             {
-                packStart = i + 1;
+                low = i + 1;
             }
             else if (order > 0)
             {
-                packEnd = i - 1;
+                high = i - 1;
             }
             else
             {
@@ -101,11 +82,13 @@ internal sealed unsafe class GitPackIndexReader : IDisposable
 
         // Get the offset value. It's located at:
         // 4 (header) + 4 (version) + 256 * 4 (fanout table) + 20 * objectCount (name table) + 4 * objectCount (CRC32) + 4 * i (offset values)
-        var offsetTableStart = 4 + 4 + (256 * 4) + (hashLength * objectCount) + (4 * objectCount);
-        var offsetBuffer = GetSpan(offsetTableStart + (4 * (i + originalPackStart)), 4);
-        var offset = BinaryPrimitives.ReadUInt32BigEndian(offsetBuffer);
+        var offsetTableStart = NameTableStart + (hashLength * objectCount) + (4 * objectCount);
+        Span<byte> offsetBuffer = stackalloc byte[8];
 
-        if (offsetBuffer[0] < 128)
+        this.stream.SafeFileHandle.ReadExactlyAt(offsetTableStart + (4L * i), offsetBuffer[..4]);
+        var offset = BinaryPrimitives.ReadUInt32BigEndian(offsetBuffer[..4]);
+
+        if ((offset & 0x8000_0000) == 0)
         {
             return offset;
         }
@@ -115,24 +98,12 @@ internal sealed unsafe class GitPackIndexReader : IDisposable
         // "large offsets are encoded as an index into the next table with the msbit set."
         offset &= 0x7FFFFFFF;
 
-        offsetBuffer = GetSpan(offsetTableStart + (4 * objectCount) + (8 * (int)offset), 8);
+        this.stream.SafeFileHandle.ReadExactlyAt(offsetTableStart + (4L * objectCount) + (8L * offset), offsetBuffer);
         return BinaryPrimitives.ReadInt64BigEndian(offsetBuffer);
     }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        if (this.ptr is not null)
-        {
-            this.accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-            this.ptr = null;
-        }
-
-        this.accessor.Dispose();
-        this.file.Dispose();
-    }
-
-    private ReadOnlySpan<byte> GetSpan(long offset, int length) => new(this.ptr + offset, length);
+    public void Dispose() => this.stream.Dispose();
 
     private void Initialize()
     {
@@ -142,7 +113,8 @@ internal sealed unsafe class GitPackIndexReader : IDisposable
         }
 
         const int fanoutTableLength = 256;
-        var value = GetSpan(0, 4 + (4 * fanoutTableLength) + 4);
+        Span<byte> value = stackalloc byte[4 + 4 + (4 * fanoutTableLength)];
+        this.stream.SafeFileHandle.ReadExactlyAt(0, value);
 
         var header = value[..4];
         var version = BinaryPrimitives.ReadInt32BigEndian(value.Slice(4, 4));

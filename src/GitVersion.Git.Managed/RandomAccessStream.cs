@@ -1,29 +1,29 @@
 // Portions derived from Nerdbank.GitVersioning (https://github.com/dotnet/Nerdbank.GitVersioning), MIT License.
 
-using System.IO.MemoryMappedFiles;
+using Microsoft.Win32.SafeHandles;
 
 namespace GitVersion.Git;
 
 /// <summary>
-/// Provides read-only, seekable access to a <see cref="MemoryMappedFile"/>.
+/// Provides read-only, seekable access to a file through a shared <see cref="SafeFileHandle"/>.
+/// Each instance maintains its own position, so multiple streams can read the same file
+/// concurrently without interfering with each other. The handle is not owned by this stream.
 /// </summary>
-internal sealed unsafe class MemoryMappedStream : Stream
+internal sealed class RandomAccessStream : Stream
 {
-    private readonly MemoryMappedViewAccessor accessor;
+    private readonly SafeFileHandle handle;
     private readonly long length;
-    private readonly byte* ptr;
     private long position;
-    private bool disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MemoryMappedStream"/> class.
+    /// Initializes a new instance of the <see cref="RandomAccessStream"/> class.
     /// </summary>
-    /// <param name="accessor">The accessor to the memory mapped stream.</param>
-    public MemoryMappedStream(MemoryMappedViewAccessor accessor)
+    /// <param name="handle">The handle of the file to read. Remains owned by the caller.</param>
+    /// <param name="length">The length of the file.</param>
+    public RandomAccessStream(SafeFileHandle handle, long length)
     {
-        this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
-        this.accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref this.ptr);
-        this.length = this.accessor.Capacity;
+        this.handle = handle ?? throw new ArgumentNullException(nameof(handle));
+        this.length = length;
     }
 
     /// <inheritdoc/>
@@ -56,12 +56,13 @@ internal sealed unsafe class MemoryMappedStream : Stream
     /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        var toRead = (int)Math.Min(buffer.Length, this.length - this.position);
+        if (toRead <= 0)
+        {
+            return 0;
+        }
 
-        var read = (int)Math.Min(buffer.Length, this.length - this.position);
-
-        new ReadOnlySpan<byte>(this.ptr + this.position, read).CopyTo(buffer);
-
+        var read = RandomAccess.Read(this.handle, buffer[..toRead], this.position);
         this.position += read;
         return read;
     }
@@ -69,24 +70,12 @@ internal sealed unsafe class MemoryMappedStream : Stream
     /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
-
-        var newPosition = this.position;
-
-        switch (origin)
+        var newPosition = origin switch
         {
-            case SeekOrigin.Begin:
-                newPosition = offset;
-                break;
-
-            case SeekOrigin.Current:
-                newPosition += offset;
-                break;
-
-            case SeekOrigin.End:
-            default:
-                throw new NotSupportedException();
-        }
+            SeekOrigin.Begin => offset,
+            SeekOrigin.Current => this.position + offset,
+            _ => throw new NotSupportedException()
+        };
 
         if (newPosition > this.length)
         {
@@ -107,16 +96,4 @@ internal sealed unsafe class MemoryMappedStream : Stream
 
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-
-    /// <inheritdoc/>
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && !this.disposed)
-        {
-            this.accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-            this.disposed = true;
-        }
-
-        base.Dispose(disposing);
-    }
 }

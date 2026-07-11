@@ -1,7 +1,6 @@
 // Portions derived from Nerdbank.GitVersioning (https://github.com/dotnet/Nerdbank.GitVersioning), MIT License.
 
 using System.Diagnostics.CodeAnalysis;
-using System.IO.MemoryMappedFiles;
 
 namespace GitVersion.Git;
 
@@ -21,10 +20,8 @@ internal delegate (Stream Stream, string ObjectType)? ResolveGitObject(GitObject
 internal sealed class GitPack : IDisposable
 {
     private readonly ResolveGitObject resolveGitObject;
-    private readonly Func<FileStream> packStream;
-    private readonly Lazy<FileStream> indexStream;
+    private readonly Lazy<FileStream> packStream;
     private readonly GitPackCache cache;
-    private readonly Lazy<(MemoryMappedFile File, MemoryMappedViewAccessor Accessor)?> packFile;
 
     // Maps GitObjectIds to offsets in the git pack.
     private readonly Dictionary<GitObjectId, long> offsets = [];
@@ -41,24 +38,9 @@ internal sealed class GitPack : IDisposable
     public GitPack(ResolveGitObject resolveGitObject, string indexPath, string packPath, GitPackCache? cache = null)
     {
         this.resolveGitObject = resolveGitObject ?? throw new ArgumentNullException(nameof(resolveGitObject));
-        this.indexStream = new(() => File.OpenRead(indexPath));
-        this.packStream = () => File.OpenRead(packPath);
-        this.indexReader = new(() => new GitPackIndexReader(this.indexStream.Value));
+        this.indexReader = new(() => new GitPackIndexReader(File.OpenRead(indexPath)));
+        this.packStream = new(() => File.OpenRead(packPath));
         this.cache = cache ?? new GitPackMemoryCache();
-
-        this.packFile = new(() =>
-        {
-            // On 64-bit processes, we can use memory mapped streams (the address space
-            // will be large enough to map the entire pack file). On 32-bit processes,
-            // we directly access the underlying stream.
-            if (IntPtr.Size <= 4)
-            {
-                return null;
-            }
-
-            var file = MemoryMappedFile.CreateFromFile(this.packStream(), mapName: null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, leaveOpen: false);
-            return (file, file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read));
-        });
     }
 
     /// <summary>
@@ -122,17 +104,17 @@ internal sealed class GitPack : IDisposable
             return (cachedStream, cachedType);
         }
 
-        var packStream = GetPackStream();
+        var packDataStream = GetPackStream();
         Stream objectStream;
         string actualType;
 
         try
         {
-            (objectStream, actualType) = GitPackReader.GetObject(this, packStream, offset, objectType);
+            (objectStream, actualType) = GitPackReader.GetObject(this, packDataStream, offset, objectType);
         }
         catch
         {
-            packStream.Dispose();
+            packDataStream.Dispose();
             throw;
         }
 
@@ -147,10 +129,9 @@ internal sealed class GitPack : IDisposable
             this.indexReader.Value.Dispose();
         }
 
-        if (this.packFile.IsValueCreated && this.packFile.Value is { } mapped)
+        if (this.packStream.IsValueCreated)
         {
-            mapped.Accessor.Dispose();
-            mapped.File.Dispose();
+            this.packStream.Value.Dispose();
         }
 
         this.cache.Dispose();
@@ -173,8 +154,9 @@ internal sealed class GitPack : IDisposable
         return offset;
     }
 
-    private Stream GetPackStream() =>
-        this.packFile.Value is { } mapped
-            ? new MemoryMappedStream(mapped.Accessor)
-            : this.packStream();
+    private Stream GetPackStream()
+    {
+        var file = this.packStream.Value;
+        return new RandomAccessStream(file.SafeFileHandle, file.Length);
+    }
 }

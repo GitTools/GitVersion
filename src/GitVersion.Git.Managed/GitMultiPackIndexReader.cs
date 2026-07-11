@@ -1,5 +1,4 @@
 using System.Buffers.Binary;
-using System.IO.MemoryMappedFiles;
 
 namespace GitVersion.Git;
 
@@ -8,39 +7,33 @@ namespace GitVersion.Git;
 /// of multiple pack files in a single file.
 /// </summary>
 /// <seealso href="https://git-scm.com/docs/gitformat-pack#_multi_pack_index_midx_files_have_the_following_format"/>
-internal sealed unsafe class GitMultiPackIndexReader : IDisposable
+internal sealed class GitMultiPackIndexReader : IDisposable
 {
     private const uint PackNamesChunkId = 0x504E414D;     // "PNAM"
     private const uint OidFanoutChunkId = 0x4F494446;     // "OIDF"
     private const uint OidLookupChunkId = 0x4F49444C;     // "OIDL"
     private const uint ObjectOffsetsChunkId = 0x4F4F4646; // "OOFF"
-    private const uint LargeOffsetsChunkId = 0x4C4F4646;  // "LOFF"
 
     private const int HeaderLength = 12;
     private const int ChunkTableEntryLength = 12;
 
-    private readonly MemoryMappedFile file;
-    private readonly MemoryMappedViewAccessor accessor;
+    private readonly FileStream stream;
     private readonly int oidLength;
     private readonly int[] fanoutTable = new int[256];
-    private readonly Dictionary<uint, long> chunkOffsets = [];
-    private byte* ptr;
+    private readonly Dictionary<uint, (long Offset, long Length)> chunks = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GitMultiPackIndexReader"/> class.
     /// </summary>
-    /// <param name="stream">A <see cref="FileStream"/> which points to the multi-pack-index file.</param>
+    /// <param name="stream">A <see cref="FileStream"/> which points to the multi-pack-index file. Ownership is transferred to the reader.</param>
     public GitMultiPackIndexReader(FileStream stream)
     {
-        ArgumentNullException.ThrowIfNull(stream);
-
-        this.file = MemoryMappedFile.CreateFromFile(stream, mapName: null, capacity: 0, MemoryMappedFileAccess.Read, HandleInheritability.None, leaveOpen: false);
-        this.accessor = this.file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
-        this.accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref this.ptr);
+        this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
         try
         {
-            var header = GetSpan(0, HeaderLength);
+            Span<byte> header = stackalloc byte[HeaderLength];
+            stream.SafeFileHandle.ReadExactlyAt(0, header);
 
             if (!header[..4].SequenceEqual("MIDX"u8))
             {
@@ -69,28 +62,13 @@ internal sealed unsafe class GitMultiPackIndexReader : IDisposable
                 throw new NotSupportedException("Incremental multi-pack-index chains are not supported.");
             }
 
-            var chunkTable = GetSpan(HeaderLength, (chunkCount + 1) * ChunkTableEntryLength);
-
-            for (var i = 0; i < chunkCount; i++)
-            {
-                var entry = chunkTable.Slice(i * ChunkTableEntryLength, ChunkTableEntryLength);
-                var chunkId = BinaryPrimitives.ReadUInt32BigEndian(entry[..4]);
-                var chunkOffset = BinaryPrimitives.ReadInt64BigEndian(entry[4..12]);
-                this.chunkOffsets[chunkId] = chunkOffset;
-            }
-
-            var fanout = GetSpan(GetChunkOffset(OidFanoutChunkId), 256 * 4);
-
-            for (var i = 0; i < 256; i++)
-            {
-                this.fanoutTable[i] = BinaryPrimitives.ReadInt32BigEndian(fanout.Slice(4 * i, 4));
-            }
-
+            ReadChunkTable(chunkCount);
+            ReadFanoutTable();
             PackNames = ReadPackNames((int)packCount);
         }
         catch
         {
-            Dispose();
+            this.stream.Dispose();
             throw;
         }
     }
@@ -99,7 +77,7 @@ internal sealed unsafe class GitMultiPackIndexReader : IDisposable
     /// Gets the names of the pack files indexed by this multi-pack-index, without their
     /// file extension, in the order used by <see cref="GetOffset(GitObjectId)"/>.
     /// </summary>
-    public IReadOnlyList<string> PackNames { get; } = [];
+    public IReadOnlyList<string> PackNames { get; }
 
     /// <summary>
     /// Looks up an object in the multi-pack-index.
@@ -119,28 +97,21 @@ internal sealed unsafe class GitMultiPackIndexReader : IDisposable
         Span<byte> objectName = stackalloc byte[this.oidLength];
         objectId.CopyTo(objectName);
 
-        var start = objectName[0] == 0 ? 0 : this.fanoutTable[objectName[0] - 1];
-        var end = this.fanoutTable[objectName[0]] - 1;
+        var low = objectName[0] == 0 ? 0 : this.fanoutTable[objectName[0] - 1];
+        var high = this.fanoutTable[objectName[0]] - 1;
 
-        if (end < start)
-        {
-            return null;
-        }
+        var oidLookupOffset = GetChunk(OidLookupChunkId).Offset;
 
-        var oidLookupOffset = GetChunkOffset(OidLookupChunkId);
-        var table = GetSpan(oidLookupOffset + ((long)this.oidLength * start), this.oidLength * (end - start + 1));
-
+        Span<byte> current = stackalloc byte[this.oidLength];
         var order = -1;
         var i = 0;
-
-        var low = 0;
-        var high = end - start;
 
         while (low <= high)
         {
             i = (low + high) / 2;
 
-            order = table.Slice(this.oidLength * i, this.oidLength).SequenceCompareTo(objectName);
+            this.stream.SafeFileHandle.ReadExactlyAt(oidLookupOffset + ((long)this.oidLength * i), current);
+            order = current.SequenceCompareTo(objectName);
 
             if (order < 0)
             {
@@ -161,8 +132,9 @@ internal sealed unsafe class GitMultiPackIndexReader : IDisposable
             return null;
         }
 
-        var objectIndex = start + i;
-        var entry = GetSpan(GetChunkOffset(ObjectOffsetsChunkId) + (8L * objectIndex), 8);
+        Span<byte> entry = stackalloc byte[8];
+        this.stream.SafeFileHandle.ReadExactlyAt(GetChunk(ObjectOffsetsChunkId).Offset + (8L * i), entry);
+
         var packIndex = BinaryPrimitives.ReadUInt32BigEndian(entry[..4]);
         var offset = BinaryPrimitives.ReadUInt32BigEndian(entry[4..8]);
 
@@ -175,44 +147,63 @@ internal sealed unsafe class GitMultiPackIndexReader : IDisposable
     }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        if (this.ptr is not null)
-        {
-            this.accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-            this.ptr = null;
-        }
+    public void Dispose() => this.stream.Dispose();
 
-        this.accessor.Dispose();
-        this.file.Dispose();
+    private (long Offset, long Length) GetChunk(uint chunkId) =>
+        this.chunks.TryGetValue(chunkId, out var chunk)
+            ? chunk
+            : throw new GitObjectStoreException($"The multi-pack-index file is missing the required 0x{chunkId:X8} chunk.");
+
+    private void ReadChunkTable(int chunkCount)
+    {
+        // The chunk table has chunkCount + 1 entries; the terminating entry (id 0) records
+        // the offset at which the chunks end, which yields each chunk's length.
+        var table = new byte[(chunkCount + 1) * ChunkTableEntryLength];
+        this.stream.SafeFileHandle.ReadExactlyAt(HeaderLength, table);
+
+        for (var i = 0; i < chunkCount; i++)
+        {
+            var entry = table.AsSpan(i * ChunkTableEntryLength, ChunkTableEntryLength);
+            var chunkId = BinaryPrimitives.ReadUInt32BigEndian(entry[..4]);
+            var chunkOffset = BinaryPrimitives.ReadInt64BigEndian(entry[4..12]);
+            var nextChunkOffset = BinaryPrimitives.ReadInt64BigEndian(table.AsSpan(((i + 1) * ChunkTableEntryLength) + 4, 8));
+            this.chunks[chunkId] = (chunkOffset, nextChunkOffset - chunkOffset);
+        }
     }
 
-    private long GetChunkOffset(uint chunkId) =>
-        this.chunkOffsets.TryGetValue(chunkId, out var offset)
-            ? offset
-            : throw new GitObjectStoreException($"The multi-pack-index file is missing the required 0x{chunkId:X8} chunk.");
+    private void ReadFanoutTable()
+    {
+        Span<byte> fanout = stackalloc byte[256 * 4];
+        this.stream.SafeFileHandle.ReadExactlyAt(GetChunk(OidFanoutChunkId).Offset, fanout);
+
+        for (var i = 0; i < 256; i++)
+        {
+            this.fanoutTable[i] = BinaryPrimitives.ReadInt32BigEndian(fanout.Slice(4 * i, 4));
+        }
+    }
 
     private string[] ReadPackNames(int packCount)
     {
+        var (chunkOffset, chunkLength) = GetChunk(PackNamesChunkId);
+
+        var contents = new byte[chunkLength];
+        this.stream.SafeFileHandle.ReadExactlyAt(chunkOffset, contents);
+
         var names = new string[packCount];
-        var offset = GetChunkOffset(PackNamesChunkId);
+        var span = contents.AsSpan();
 
         for (var i = 0; i < packCount; i++)
         {
-            var length = 0;
-
-            while (GetSpan(offset + length, 1)[0] != 0)
+            var nameEnd = span.IndexOf((byte)0);
+            if (nameEnd < 0)
             {
-                length++;
+                throw new GitObjectStoreException("The multi-pack-index pack name chunk is malformed.");
             }
 
-            var name = Encoding.UTF8.GetString(GetSpan(offset, length));
-            names[i] = Path.GetFileNameWithoutExtension(name);
-            offset += length + 1;
+            names[i] = Path.GetFileNameWithoutExtension(Encoding.UTF8.GetString(span[..nameEnd]));
+            span = span[(nameEnd + 1)..];
         }
 
         return names;
     }
-
-    private ReadOnlySpan<byte> GetSpan(long offset, int length) => new(this.ptr + offset, length);
 }

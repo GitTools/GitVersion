@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-
     <ItemGroup Label="RemoveUnusedGlobalUsings">
         <Using Remove="Microsoft.Extensions.DependencyInjection" />
         <Using Remove="Microsoft.Extensions.DependencyInjection.Extensions" />

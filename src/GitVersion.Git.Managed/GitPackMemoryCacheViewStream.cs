@@ -45,7 +45,7 @@ internal sealed class GitPackMemoryCacheViewStream : Stream
     {
         int read;
 
-        lock (this.baseStream)
+        lock (this.baseStream.SyncRoot)
         {
             if (this.baseStream.Position != this.position)
             {

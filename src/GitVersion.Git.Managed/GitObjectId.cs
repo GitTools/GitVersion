@@ -1,6 +1,7 @@
 // Portions derived from Nerdbank.GitVersioning (https://github.com/dotnet/Nerdbank.GitVersioning), MIT License.
 
 using System.Buffers.Binary;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace GitVersion.Git;
@@ -22,6 +23,7 @@ internal struct GitObjectId : IEquatable<GitObjectId>
     private const string HexDigits = "0123456789abcdef";
     private static readonly byte[] ReverseHexDigits = BuildReverseHexDigits();
 
+    [SuppressMessage("Minor Code Smell", "S3459:Unassigned members should be removed", Justification = "The inline array is written through its span conversion.")]
     private HashBuffer value;
     private byte length;
     private string? sha;
@@ -79,16 +81,17 @@ internal struct GitObjectId : IEquatable<GitObjectId>
 
         var objectId = default(GitObjectId);
         Span<byte> bytes = objectId.value;
+        var byteCount = value.Length / 2;
 
-        for (var i = 0; i < value.Length; i++)
+        for (var i = 0; i < byteCount; i++)
         {
-            var c1 = GetHexValue(value[i++]) << 4;
-            var c2 = GetHexValue(value[i]);
+            var high = GetHexValue(value[2 * i]);
+            var low = GetHexValue(value[(2 * i) + 1]);
 
-            bytes[i >> 1] = (byte)(c1 + c2);
+            bytes[i] = (byte)((high << 4) + low);
         }
 
-        objectId.length = (byte)(value.Length / 2);
+        objectId.length = (byte)byteCount;
         return objectId;
     }
 
@@ -118,16 +121,17 @@ internal struct GitObjectId : IEquatable<GitObjectId>
 
         var objectId = default(GitObjectId);
         Span<byte> bytes = objectId.value;
+        var byteCount = value.Length / 2;
 
-        for (var i = 0; i < value.Length; i++)
+        for (var i = 0; i < byteCount; i++)
         {
-            var c1 = GetHexValue((char)value[i++]) << 4;
-            var c2 = GetHexValue((char)value[i]);
+            var high = GetHexValue((char)value[2 * i]);
+            var low = GetHexValue((char)value[(2 * i) + 1]);
 
-            bytes[i >> 1] = (byte)(c1 + c2);
+            bytes[i] = (byte)((high << 4) + low);
         }
 
-        objectId.length = (byte)(value.Length / 2);
+        objectId.length = (byte)byteCount;
         return objectId;
     }
 

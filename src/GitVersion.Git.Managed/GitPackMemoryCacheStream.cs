@@ -18,6 +18,12 @@ internal sealed class GitPackMemoryCacheStream : Stream
         this.length = this.stream.Length;
     }
 
+    /// <summary>
+    /// Gets the object on which <see cref="GitPackMemoryCacheViewStream"/> instances synchronize
+    /// their access to this shared stream.
+    /// </summary>
+    public object SyncRoot { get; } = new();
+
     /// <inheritdoc/>
     public override bool CanRead => true;
 

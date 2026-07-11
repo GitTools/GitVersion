@@ -46,8 +46,6 @@ internal static class GitTagReader
         string? targetType = null;
         string? name = null;
         GitSignature? tagger = null;
-        ReadOnlySpan<byte> taggerLine = default;
-        var hasTagger = false;
 
         var buffer = tag;
 
@@ -88,19 +86,13 @@ internal static class GitTagReader
             }
             else if (line.StartsWith("tagger "u8))
             {
-                taggerLine = line["tagger "u8.Length..];
-                hasTagger = true;
+                tagger = GitSignature.Parse(line["tagger "u8.Length..]);
             }
         }
 
         if (target is null || targetType is null || name is null)
         {
             throw new GitObjectStoreException($"The tag {sha} is malformed: an object, type or tag header is missing.");
-        }
-
-        if (hasTagger)
-        {
-            tagger = GitSignature.Parse(taggerLine);
         }
 
         return new()
