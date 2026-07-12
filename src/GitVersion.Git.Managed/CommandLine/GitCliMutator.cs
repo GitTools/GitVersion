@@ -2,9 +2,6 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Git;
 
-/// <summary>A remote reference as reported by <c>git ls-remote</c>.</summary>
-internal sealed record GitRemoteReference(string CanonicalName, string TargetSha);
-
 /// <summary>
 /// Performs the mutating and network Git operations GitVersion needs (repository normalization)
 /// by invoking the <c>git</c> command-line executable instead of libgit2.
@@ -15,6 +12,11 @@ internal interface IGitCliMutator
     void Fetch(string workingDirectory, string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth);
     void Checkout(string workingDirectory, string commitOrBranchSpec);
     IReadOnlyList<GitRemoteReference> ListRemoteReferences(string workingDirectory, string remoteName, AuthenticationInfo auth);
+    void SetConfig(string workingDirectory, string key, string value);
+    void AddConfig(string workingDirectory, string key, string value);
+    void RemoveRemote(string workingDirectory, string remoteName);
+    void UpdateReference(string workingDirectory, string name, string targetSha);
+    void CreateSymbolicReference(string workingDirectory, string name, string targetReferenceName);
 }
 
 internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
@@ -95,6 +97,21 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
 
         return references;
     }
+
+    public void SetConfig(string workingDirectory, string key, string value) =>
+        ThrowOnFailure(this.executor.Execute(workingDirectory, ["config", key, value]));
+
+    public void AddConfig(string workingDirectory, string key, string value) =>
+        ThrowOnFailure(this.executor.Execute(workingDirectory, ["config", "--add", key, value]));
+
+    public void RemoveRemote(string workingDirectory, string remoteName) =>
+        ThrowOnFailure(this.executor.Execute(workingDirectory, ["remote", "remove", remoteName]));
+
+    public void UpdateReference(string workingDirectory, string name, string targetSha) =>
+        ThrowOnFailure(this.executor.Execute(workingDirectory, ["update-ref", name, targetSha]));
+
+    public void CreateSymbolicReference(string workingDirectory, string name, string targetReferenceName) =>
+        ThrowOnFailure(this.executor.Execute(workingDirectory, ["symbolic-ref", name, targetReferenceName]));
 
     private static void AddAuthentication(List<string> arguments, string? sourceUrl, AuthenticationInfo auth)
     {

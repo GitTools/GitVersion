@@ -1,0 +1,4 @@
+#nullable enable
+GitVersion.GitVersionManagedGitModule
+GitVersion.GitVersionManagedGitModule.GitVersionManagedGitModule() -> void
+GitVersion.GitVersionManagedGitModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

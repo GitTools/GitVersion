@@ -6,7 +6,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
-        <ProjectReference Include="..\GitVersion.Git.CommandLine\GitVersion.Git.CommandLine.csproj" />
     </ItemGroup>
 
     <ItemGroup>

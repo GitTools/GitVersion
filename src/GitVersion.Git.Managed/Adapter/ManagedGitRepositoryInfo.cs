@@ -1,12 +1,14 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using LibGit2Sharp;
+using SysPath = System.IO.Path;
 
 namespace GitVersion.Git;
 
-public class GitRepositoryInfo : IGitRepositoryInfo
+internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
 {
+    private const string DotGitDirectoryNotFoundMessage = "Cannot find the .git directory";
+
     private readonly IFileSystem fileSystem;
     private readonly GitVersionOptions gitVersionOptions;
 
@@ -15,7 +17,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     private readonly Lazy<string?> gitRootPath;
     private readonly Lazy<string?> projectRootDirectory;
 
-    public GitRepositoryInfo(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+    public ManagedGitRepositoryInfo(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem.NotNull();
         this.gitVersionOptions = options.NotNull().Value;
@@ -41,15 +43,15 @@ public class GitRepositoryInfo : IGitRepositoryInfo
     {
         var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
             ? DynamicGitRepositoryPath
-            : Repository.Discover(this.gitVersionOptions.WorkingDirectory);
+            : Discover(this.gitVersionOptions.WorkingDirectory)?.GitDirectory;
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (gitDirectory.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(gitDirectory))
         {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
+            throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
         }
 
-        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
+        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
         return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
             ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
@@ -62,15 +64,16 @@ public class GitRepositoryInfo : IGitRepositoryInfo
             return this.gitVersionOptions.WorkingDirectory;
         }
 
-        var gitDirectory = Repository.Discover(this.gitVersionOptions.WorkingDirectory);
+        var layout = Discover(this.gitVersionOptions.WorkingDirectory)
+            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
 
-        if (gitDirectory.IsNullOrEmpty())
-        {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
-        }
+        var workingDirectory = layout.WorkingDirectory
+            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
 
-        using var repo = new Repository(gitDirectory);
-        return repo.Info.WorkingDirectory;
+        // Match libgit2's Info.WorkingDirectory, which carries a trailing directory separator.
+        return workingDirectory.EndsWith(SysPath.DirectorySeparatorChar) || workingDirectory.EndsWith('/')
+            ? workingDirectory
+            : workingDirectory + SysPath.DirectorySeparatorChar;
     }
 
     private string? GetGitRootPath()
@@ -81,12 +84,27 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         return rootDirectory;
     }
 
+    /// <summary>
+    /// Discovers the repository containing <paramref name="startPath"/>, returning
+    /// <see langword="null"/> when the path does not exist — matching libgit2's
+    /// <c>Repository.Discover</c>, which never walks up from a nonexistent directory.
+    /// </summary>
+    private static GitRepositoryLayout? Discover(string startPath) =>
+        Directory.Exists(startPath) ? GitRepositoryLayout.TryDiscover(startPath) : null;
+
     private static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
     {
         try
         {
-            using var gitRepository = new Repository(possiblePath);
-            return gitRepository.Network.Remotes.Any(r => r.Url == targetUrl);
+            var layout = GitRepositoryLayout.TryDiscover(possiblePath);
+            if (layout is null)
+            {
+                return false;
+            }
+
+            var configuration = GitConfigurationFile.Load(SysPath.Combine(layout.CommonDirectory, "config"));
+            return configuration.GetSubsections("remote")
+                .Any(remoteName => configuration.GetString("remote", remoteName, "url") == targetUrl);
         }
         catch (Exception)
         {
