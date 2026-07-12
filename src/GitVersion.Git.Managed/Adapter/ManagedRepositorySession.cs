@@ -128,6 +128,29 @@ internal sealed class ManagedRepositorySession : IDisposable
             return TreeDiff.GetChangedPaths(parentTreeId, commit.TreeId);
         });
 
+    /// <summary>
+    /// Returns what libgit2 exposes as a tag's target sha: for an annotated tag the sha of
+    /// the object the tag annotation points at (a single dereference), for a lightweight
+    /// tag the ref target itself.
+    /// </summary>
+    public string GetTagTargetSha(GitReference reference)
+    {
+        var targetId = reference.ObjectId
+            ?? throw new InvalidOperationException($"The tag '{reference.CanonicalName}' does not point at an object.");
+
+        if (!ObjectStore.TryGetObject(targetId, out var stream, out var objectType))
+        {
+            throw new InvalidOperationException($"The object '{targetId}' does not exist in the repository.");
+        }
+
+        using (stream)
+        {
+            return objectType == GitObjectTypes.Tag
+                ? GitTagReader.Read(stream, targetId).Target.ToString()
+                : targetId.ToString();
+        }
+    }
+
     public ICommit PeelToCommit(GitReference reference)
     {
         if (reference.PeeledObjectId is { } peeledId)
