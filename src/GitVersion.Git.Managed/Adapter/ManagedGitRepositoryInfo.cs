@@ -7,6 +7,8 @@ namespace GitVersion.Git;
 
 internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
 {
+    private const string DotGitDirectoryNotFoundMessage = "Cannot find the .git directory";
+
     private static readonly char[] DirectorySeparators = ['/', '\\'];
 
     private readonly IFileSystem fileSystem;
@@ -72,12 +74,12 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
             : Discover(this.gitVersionOptions.WorkingDirectory)?.GitDirectory;
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (gitDirectory.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(gitDirectory))
         {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
+            throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
         }
 
-        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
+        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
         return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
             ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
@@ -91,10 +93,10 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
         }
 
         var layout = Discover(this.gitVersionOptions.WorkingDirectory)
-            ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
+            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
 
         var workingDirectory = layout.WorkingDirectory
-            ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
+            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
 
         // Match libgit2's Info.WorkingDirectory, which carries a trailing directory separator.
         return workingDirectory.EndsWith(SysPath.DirectorySeparatorChar) || workingDirectory.EndsWith('/')

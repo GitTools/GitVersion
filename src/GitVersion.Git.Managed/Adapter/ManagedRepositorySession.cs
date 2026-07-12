@@ -10,6 +10,8 @@ namespace GitVersion.Git;
 /// </summary>
 internal sealed class ManagedRepositorySession : IDisposable
 {
+    private const string RemoteSectionName = "remote";
+
     private readonly ManagedGitRepository repository;
     private readonly ConcurrentDictionary<string, ManagedCommit> commits = new();
     private readonly ConcurrentDictionary<string, IReadOnlyList<string>> diffPathsCache = new();
@@ -211,10 +213,10 @@ internal sealed class ManagedRepositorySession : IDisposable
     }
 
     private IReadOnlyList<ManagedRemote> ReadRemotes() =>
-        [.. Configuration.GetSubsections("remote")
+        [.. Configuration.GetSubsections(RemoteSectionName)
             .Select(name => new ManagedRemote(
                 name,
-                Configuration.GetString("remote", name, "url") ?? string.Empty,
-                Configuration.GetAll("remote", name, "fetch"),
-                Configuration.GetAll("remote", name, "push")))];
+                Configuration.GetString(RemoteSectionName, name, "url") ?? string.Empty,
+                Configuration.GetAll(RemoteSectionName, name, "fetch"),
+                Configuration.GetAll(RemoteSectionName, name, "push")))];
 }
