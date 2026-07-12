@@ -9,8 +9,6 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
 {
     private const string DotGitDirectoryNotFoundMessage = "Cannot find the .git directory";
 
-    private static readonly char[] DirectorySeparators = ['/', '\\'];
-
     private readonly IFileSystem fileSystem;
     private readonly GitVersionOptions gitVersionOptions;
 
@@ -38,33 +36,7 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
     private string? GetDynamicGitRepositoryPath()
     {
         var repositoryInfo = this.gitVersionOptions.RepositoryInfo;
-        if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace())
-        {
-            return null;
-        }
-
-        var targetUrl = repositoryInfo.TargetUrl;
-        var clonePath = repositoryInfo.ClonePath;
-
-        var userTemp = clonePath ?? FileSystemHelper.Path.GetTempPath();
-        var repositoryName = targetUrl.Split(DirectorySeparators)[^1].Replace(".git", string.Empty);
-        var possiblePath = FileSystemHelper.Path.Combine(userTemp, repositoryName);
-
-        // Verify that the existing directory is ok for us to use
-        if (this.fileSystem.Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
-        {
-            var i = 1;
-            var originalPath = possiblePath;
-            bool possiblePathExists;
-            do
-            {
-                possiblePath = $"{originalPath}_{i++}";
-                possiblePathExists = this.fileSystem.Directory.Exists(possiblePath);
-            } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
-        }
-
-        var repositoryPath = FileSystemHelper.Path.Combine(possiblePath, ".git");
-        return repositoryPath;
+        return DynamicRepositoryPath.Get(this.fileSystem, repositoryInfo.TargetUrl, repositoryInfo.ClonePath, GitRepoHasMatchingRemote);
     }
 
     private string? GetDotGitDirectory()

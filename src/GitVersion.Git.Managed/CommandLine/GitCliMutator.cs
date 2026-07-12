@@ -2,9 +2,6 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Git;
 
-/// <summary>A remote reference as reported by <c>git ls-remote</c>.</summary>
-internal sealed record GitRemoteReference(string CanonicalName, string TargetSha);
-
 /// <summary>
 /// Performs the mutating and network Git operations GitVersion needs (repository normalization)
 /// by invoking the <c>git</c> command-line executable instead of libgit2.
