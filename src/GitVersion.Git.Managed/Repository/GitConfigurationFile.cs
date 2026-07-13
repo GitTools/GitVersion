@@ -127,14 +127,62 @@ internal sealed class GitConfigurationFile
 
     private static string ParseValue(string raw)
     {
-        var value = StripComment(raw).Trim();
-
-        if (value.StartsWith('"') && value.EndsWith('"') && value.Length >= 2)
+        // git config values are unescaped regardless of whether they are quoted: backslash
+        // escapes (\\, \", \n, \t, \b) and double-quoted spans are processed inline, so an
+        // unquoted Windows path stored as D:\\a\\repo decodes back to D:\a\repo. Comments
+        // (# or ;) and trailing whitespace are only significant outside quotes.
+        var i = 0;
+        while (i < raw.Length && raw[i] is ' ' or '\t')
         {
-            value = value[1..^1].Replace("\\\\", "\\").Replace("\\\"", "\"");
+            i++;
         }
 
-        return value;
+        var result = new StringBuilder(raw.Length - i);
+        var inQuotes = false;
+        var contentEnd = 0;
+
+        for (; i < raw.Length; i++)
+        {
+            var current = raw[i];
+
+            if (current == '\\')
+            {
+                if (i + 1 >= raw.Length)
+                {
+                    break;
+                }
+
+                var next = raw[++i];
+                result.Append(next switch
+                {
+                    '\\' => '\\',
+                    '"' => '"',
+                    'n' => '\n',
+                    't' => '\t',
+                    'b' => '\b',
+                    _ => next
+                });
+                contentEnd = result.Length;
+            }
+            else if (current == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (!inQuotes && current is '#' or ';')
+            {
+                break;
+            }
+            else
+            {
+                result.Append(current);
+                if (inQuotes || current is not (' ' or '\t'))
+                {
+                    contentEnd = result.Length;
+                }
+            }
+        }
+
+        return result.ToString(0, contentEnd);
     }
 
     private static string StripComment(string value)
