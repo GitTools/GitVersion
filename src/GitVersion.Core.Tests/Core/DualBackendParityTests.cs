@@ -184,17 +184,17 @@ public class DualBackendParityTests : TestBase
     public void UncommittedChangesCountIsIdenticalOnBothBackends()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var signature = new LibGit2Sharp.Signature("unit test", "test@example.com", DateTimeOffset.Now);
+        var signature = new Signature("unit test", "test@example.com", DateTimeOffset.Now);
 
         var trackedFile = FileSystemHelper.Path.Combine(fixture.RepositoryPath, "tracked.txt");
         File.WriteAllText(trackedFile, "one");
-        LibGit2Sharp.Commands.Stage(fixture.Repository, "tracked.txt");
-        fixture.Repository.Commit("add tracked file", signature, signature, new LibGit2Sharp.CommitOptions());
+        Commands.Stage(fixture.Repository, "tracked.txt");
+        fixture.Repository.Commit("add tracked file", signature, signature, new CommitOptions());
 
         File.WriteAllText(trackedFile, "two");
         File.WriteAllText(FileSystemHelper.Path.Combine(fixture.RepositoryPath, "untracked.txt"), "new");
         File.WriteAllText(FileSystemHelper.Path.Combine(fixture.RepositoryPath, "staged.txt"), "staged");
-        LibGit2Sharp.Commands.Stage(fixture.Repository, "staged.txt");
+        Commands.Stage(fixture.Repository, "staged.txt");
 
         using var backends = OpenBothBackends(fixture);
         backends.Managed.UncommittedChangesCount().ShouldBe(backends.LibGit2.UncommittedChangesCount());
@@ -219,7 +219,7 @@ public class DualBackendParityTests : TestBase
     {
         using var fixture = CreateComplexFixture();
         var detachAt = fixture.Repository.Head.Tip.Parents.First();
-        LibGit2Sharp.Commands.Checkout(fixture.Repository, detachAt);
+        Commands.Checkout(fixture.Repository, detachAt);
 
         using var backends = OpenBothBackends(fixture);
 
@@ -328,7 +328,7 @@ public class DualBackendParityTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("only commit");
         fixture.ApplyTag("lightweight");
-        fixture.Repository.Tags.Add("annotated", fixture.Repository.Head.Tip, new LibGit2Sharp.Signature("unit test", "test@example.com", DateTimeOffset.Now), "the same commit, annotated");
+        fixture.Repository.Tags.Add("annotated", fixture.Repository.Head.Tip, new Signature("unit test", "test@example.com", DateTimeOffset.Now), "the same commit, annotated");
 
         using var backends = OpenBothBackends(fixture);
 
@@ -385,12 +385,12 @@ public class DualBackendParityTests : TestBase
     public void IndexVersionFourBehavesIdenticallyOnBothBackends()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var signature = new LibGit2Sharp.Signature("unit test", "test@example.com", DateTimeOffset.Now);
+        var signature = new Signature("unit test", "test@example.com", DateTimeOffset.Now);
 
         var trackedFile = FileSystemHelper.Path.Combine(fixture.RepositoryPath, "tracked.txt");
         File.WriteAllText(trackedFile, "one");
-        LibGit2Sharp.Commands.Stage(fixture.Repository, "tracked.txt");
-        fixture.Repository.Commit("add tracked file", signature, signature, new LibGit2Sharp.CommitOptions());
+        Commands.Stage(fixture.Repository, "tracked.txt");
+        fixture.Repository.Commit("add tracked file", signature, signature, new CommitOptions());
 
         GitTestExtensions.ExecuteGitCmd($"-C {fixture.RepositoryPath} update-index --index-version 4", ".");
         File.WriteAllText(trackedFile, "two");
@@ -445,7 +445,7 @@ public class DualBackendParityTests : TestBase
         fixture.Checkout("main");
         fixture.MakeACommit("main two");
         fixture.MergeNoFF("develop");
-        fixture.Repository.Tags.Add("v2.0.0", fixture.Repository.Head.Tip, new LibGit2Sharp.Signature("unit test", "test@example.com", DateTimeOffset.Now), "an annotated tag");
+        fixture.Repository.Tags.Add("v2.0.0", fixture.Repository.Head.Tip, new Signature("unit test", "test@example.com", DateTimeOffset.Now), "an annotated tag");
         fixture.BranchTo("feature/complex");
         fixture.MakeACommit("feature one");
         fixture.Checkout("develop");
@@ -461,8 +461,8 @@ public class DualBackendParityTests : TestBase
     private static RepositoryFixtureBase CreateCrissCrossFixture()
     {
         var fixture = new EmptyRepositoryFixture();
-        var signature = new LibGit2Sharp.Signature("unit test", "test@example.com", DateTimeOffset.Now);
-        var mergeOptions = new LibGit2Sharp.MergeOptions { FastForwardStrategy = LibGit2Sharp.FastForwardStrategy.NoFastForward };
+        var signature = new Signature("unit test", "test@example.com", DateTimeOffset.Now);
+        var mergeOptions = new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward };
 
         fixture.MakeACommit("base");
         fixture.BranchTo("develop");

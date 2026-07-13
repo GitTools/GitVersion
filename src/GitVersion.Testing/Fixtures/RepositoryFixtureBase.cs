@@ -1,7 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
 using Shouldly;
 
 namespace GitVersion.Testing;
@@ -11,12 +10,12 @@ namespace GitVersion.Testing;
 /// </summary>
 public abstract class RepositoryFixtureBase : IDisposable
 {
-    protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
+    protected RepositoryFixtureBase(Func<string, TestRepository> repositoryBuilder)
         : this(repositoryBuilder(FileSystemHelper.Path.GetRepositoryTempPath()))
     {
     }
 
-    protected RepositoryFixtureBase(Repository repository)
+    protected RepositoryFixtureBase(TestRepository repository)
     {
         SequenceDiagram = new();
         Repository = repository.ShouldNotBeNull();
@@ -24,9 +23,9 @@ public abstract class RepositoryFixtureBase : IDisposable
         Repository.Config.Set("user.email", "test@email.com");
     }
 
-    public Repository Repository { get; }
+    public TestRepository Repository { get; }
 
-    public string RepositoryPath => Repository.Info.WorkingDirectory.TrimEnd('\\');
+    public string RepositoryPath => Repository.Path;
 
     public SequenceDiagram SequenceDiagram { get; }
 
@@ -67,7 +66,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         Console.WriteLine(SequenceDiagram.GetDiagram());
     }
 
-    public void Checkout(string branch) => Commands.Checkout(Repository, branch);
+    public void Checkout(string branch) => Repository.Checkout(branch);
 
     public void Remove(string branch)
     {
@@ -100,14 +99,14 @@ public abstract class RepositoryFixtureBase : IDisposable
     {
         SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
         var branch = Repository.CreateBranch(branchName);
-        Commands.Checkout(Repository, branch);
+        Repository.Checkout(branch);
     }
 
     public void BranchToFromTag(string branchName, string fromTag, string onBranch, string? @as = null)
     {
         SequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
         var branch = Repository.CreateBranch(branchName);
-        Commands.Checkout(Repository, branch);
+        Repository.Checkout(branch);
     }
 
     public string MakeACommit()
@@ -160,17 +159,17 @@ public abstract class RepositoryFixtureBase : IDisposable
     public LocalRepositoryFixture CloneRepository()
     {
         var localPath = FileSystemHelper.Path.GetRepositoryTempPath();
-        Repository.Clone(RepositoryPath, localPath);
+        var localRepository = TestRepository.Clone(RepositoryPath, localPath);
         Console.WriteLine($"Cloned repository to '{localPath}' from '{RepositoryPath}'");
-        return new LocalRepositoryFixture(new Repository(localPath));
+        return new(localRepository);
     }
 
-    protected static Repository CreateNewRepository(string path, string branchName, int commits = 0)
+    protected static TestRepository CreateNewRepository(string path, string branchName, int commits = 0)
     {
         Init(path, branchName);
         Console.WriteLine("Created git repository at '{0}'", path);
 
-        var repository = new Repository(path);
+        var repository = new TestRepository(path);
         if (commits > 0)
         {
             repository.MakeCommits(commits);
@@ -188,5 +187,8 @@ public abstract class RepositoryFixtureBase : IDisposable
     }
 
     public void Fetch(string remote, FetchOptions? options = null)
-        => Commands.Fetch(Repository, remote, [], options, null);
+    {
+        _ = options;
+        Repository.Fetch(remote);
+    }
 }

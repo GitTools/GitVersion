@@ -344,7 +344,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("C");
         fixture.MakeACommit("D");
 
-        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+        var ignoredPath = fixture.Repository.DiffPaths(commitA, commitB).First();
 
         var configuration = TrunkBasedConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
@@ -364,7 +364,7 @@ public class IgnoreCommitScenarios : TestBase
         var commitC = fixture.Repository.MakeACommit("C");
         fixture.MakeACommit("D");
 
-        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitC.Tree).Select(element => element.Path).First();
+        var ignoredPath = fixture.Repository.DiffPaths(commitA, commitC).First();
 
         var configuration = TrunkBasedConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
@@ -384,7 +384,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.MakeACommit("C");
         fixture.MakeACommit("D");
 
-        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+        var ignoredPath = fixture.Repository.DiffPaths(commitA, commitB).First();
 
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
@@ -404,7 +404,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.ApplyTag("1.0.0");
         fixture.MakeACommit("C");
 
-        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+        var ignoredPath = fixture.Repository.DiffPaths(commitA, commitB).First();
 
         var configuration = TrunkBasedConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })
@@ -424,7 +424,7 @@ public class IgnoreCommitScenarios : TestBase
         fixture.ApplyTag("1.0.0");
         fixture.MakeACommit("C");
 
-        var ignoredPath = fixture.Repository.Diff.Compare<LibGit2Sharp.TreeChanges>(commitA.Tree, commitB.Tree).Select(element => element.Path).First();
+        var ignoredPath = fixture.Repository.DiffPaths(commitA, commitB).First();
 
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithIgnoreConfiguration(new IgnoreConfiguration { Paths = { ignoredPath } })

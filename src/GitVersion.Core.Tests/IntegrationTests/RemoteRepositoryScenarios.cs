@@ -1,6 +1,5 @@
 using GitVersion.Agents;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
 
@@ -22,10 +21,10 @@ public class RemoteRepositoryScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture(
             path =>
             {
-                Repository.Init(path);
+                RepositoryFixtureBase.Init(path);
                 Console.WriteLine("Created git repository at '{0}'", path);
 
-                var repo = new Repository(path);
+                var repo = new TestRepository(path);
                 repo.MakeCommits(5);
 
                 repo.CreateBranch("develop");
@@ -78,7 +77,7 @@ public class RemoteRepositoryScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("0.0.1-6");
         fixture.AssertFullSemver("0.0.1-5", repository: fixture.LocalRepositoryFixture.Repository);
-        var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new(DateTime.Now));
+        var buildSignature = Generate.SignatureNow();
         Commands.Pull(fixture.LocalRepositoryFixture.Repository, buildSignature, new());
         fixture.AssertFullSemver("0.0.1-6", repository: fixture.LocalRepositoryFixture.Repository);
     }
@@ -121,7 +120,7 @@ public class RemoteRepositoryScenarios : TestBase
         local.AssertFullSemver("1.0.2-bug-hotfix.1+1");
     }
 
-    private static void CopyRemoteBranchesToHeads(Repository repository)
+    private static void CopyRemoteBranchesToHeads(TestRepository repository)
     {
         foreach (var branch in repository.Branches)
         {
@@ -130,10 +129,10 @@ public class RemoteRepositoryScenarios : TestBase
                 continue;
             }
 
-            var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
-            if (repository.Branches[localName] == null)
+            var localName = branch.FriendlyName[(branch.FriendlyName.IndexOf('/') + 1)..];
+            if (localName != "HEAD" && repository.Branches[localName] == null)
             {
-                repository.CreateBranch(localName, branch.FriendlyName);
+                repository.Branches.Add(localName, branch.FriendlyName);
             }
         }
     }

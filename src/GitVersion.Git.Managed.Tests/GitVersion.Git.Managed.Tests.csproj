@@ -5,6 +5,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Used directly by parity tests that compare the managed backend against libgit2. -->
+        <PackageReference Include="LibGit2Sharp" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Using Include="GitVersion.Git" />
     </ItemGroup>
 

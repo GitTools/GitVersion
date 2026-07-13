@@ -5,7 +5,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
 

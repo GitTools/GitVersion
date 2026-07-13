@@ -1,6 +1,4 @@
 using GitVersion.Helpers;
-using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
 
 namespace GitVersion.Testing;
 
@@ -22,18 +20,18 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     /// <para>Creates a repo with a develop branch off main which is a single commit ahead of main</para>
     /// <para>The initial setup actions will be performed before branching develop</para>
     /// </summary>
-    public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction, string branchName = "main") :
+    public BaseGitFlowRepositoryFixture(Action<TestRepository> initialMainAction, string branchName = "main") :
         base(branchName) => SetupRepo(initialMainAction);
 
-    private void SetupRepo(Action<IRepository> initialMainAction)
+    private void SetupRepo(Action<TestRepository> initialMainAction)
     {
-        var randomFile = FileSystemHelper.Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
+        var randomFile = FileSystemHelper.Path.Combine(Repository.Path, Guid.NewGuid().ToString());
         FileSystemHelper.File.WriteAllText(randomFile, string.Empty);
-        Commands.Stage(Repository, randomFile);
+        Repository.Stage(randomFile);
 
         initialMainAction(Repository);
 
-        Commands.Checkout(Repository, Repository.CreateBranch("develop"));
+        Repository.Checkout(Repository.CreateBranch("develop"));
         Repository.MakeACommit();
     }
 }

@@ -1,5 +1,3 @@
-using LibGit2Sharp;
-
 namespace GitVersion.Testing;
 
 /// <summary>
@@ -8,7 +6,7 @@ namespace GitVersion.Testing;
 public static class Generate
 {
     /// <summary>
-    /// Create a libgit2sharp signature at VirtualTime.Now
+    /// Create a signature at VirtualTime.Now
     /// </summary>
     public static Signature SignatureNow()
     {
@@ -17,7 +15,7 @@ public static class Generate
     }
 
     /// <summary>
-    /// Creates a libgit2sharp signature at the specified time
+    /// Creates a signature at the specified time
     /// </summary>
     private static Signature Signature(DateTimeOffset dateTimeOffset) => new("A. U. Thor", "thor@valhalla.asgard.com", dateTimeOffset);
 }

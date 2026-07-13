@@ -2,7 +2,6 @@ using GitVersion.Agents;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
 using GitVersion.Tests;
-using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
 
@@ -38,7 +37,7 @@ public class TagCheckoutInBuildAgentTests
         using var fixture = new EmptyRepositoryFixture();
         var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
-        using (var remoteRepository = new Repository(remoteRepositoryPath))
+        using (var remoteRepository = new TestRepository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");
             remoteRepository.Config.Set("user.email", "test@email.com");

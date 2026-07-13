@@ -6,7 +6,6 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation.Caching;
-using LibGit2Sharp;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace GitVersion.Tests;
@@ -115,8 +114,7 @@ public class GitVersionExecutorTests : TestBase
         try
         {
             // create a branch and a new worktree for it
-            var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            fixture.Repository.Worktrees.Add("worktree", worktreePath, false);
 
             const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
@@ -329,8 +327,7 @@ public class GitVersionExecutorTests : TestBase
         try
         {
             // create a branch and a new worktree for it
-            var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            fixture.Repository.Worktrees.Add("worktree", worktreePath, false);
 
             const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
@@ -385,8 +382,7 @@ public class GitVersionExecutorTests : TestBase
         try
         {
             // create a branch and a new worktree for it
-            var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            fixture.Repository.Worktrees.Add("worktree", worktreePath, false);
 
             var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreePath };
 

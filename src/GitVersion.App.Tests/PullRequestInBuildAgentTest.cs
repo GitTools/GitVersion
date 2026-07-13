@@ -5,7 +5,6 @@ using GitVersion.Helpers;
 using GitVersion.Output;
 using GitVersion.Testing.Extensions;
 using GitVersion.Tests;
-using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
 
@@ -174,7 +173,7 @@ public class PullRequestInBuildAgentTest
     {
         var remoteRepositoryPath = FileSystemHelper.Path.GetRepositoryTempPath();
         RepositoryFixtureBase.Init(remoteRepositoryPath);
-        using var remoteRepository = new Repository(remoteRepositoryPath);
+        using var remoteRepository = new TestRepository(remoteRepositoryPath);
         remoteRepository.Config.Set("user.name", "Test");
         remoteRepository.Config.Set("user.email", "test@email.com");
         fixture.Repository.Network.Remotes.Add("origin", remoteRepositoryPath);
@@ -184,11 +183,11 @@ public class PullRequestInBuildAgentTest
         var branch = remoteRepository.CreateBranch("FeatureBranch");
         Commands.Checkout(remoteRepository, branch);
         remoteRepository.MakeCommits(2);
-        Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
+        Commands.Checkout(remoteRepository, remoteRepository.Head.Tip);
         //Emulate merge commit
         var mergeCommitSha = remoteRepository.MakeACommit().Sha;
         Commands.Checkout(remoteRepository, TestBase.MainBranch); // HEAD cannot be pointing at the merge commit
-        remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
+        remoteRepository.Refs.Add(pullRequestRef, mergeCommitSha);
 
         // Checkout PR commit
         Commands.Fetch(fixture.Repository, "origin", [], new FetchOptions(), null);

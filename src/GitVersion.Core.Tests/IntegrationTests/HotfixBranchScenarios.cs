@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
 
@@ -53,7 +52,7 @@ public class HotfixBranchScenarios : TestBase
         });
         // Merge hotfix branch to support
         var branch = fixture.Repository.CreateBranch(
-            "support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target
+            "support-1.1", fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target
         );
         Commands.Checkout(fixture.Repository, branch);
         fixture.AssertFullSemver("1.1.0");
@@ -80,7 +79,7 @@ public class HotfixBranchScenarios : TestBase
         // Merge hotfix branch to support
         fixture.Checkout(MainBranch);
         var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
-        fixture.Repository.CreateBranch("support-1.1", (Commit)tag.Target);
+        fixture.Repository.CreateBranch("support-1.1", tag.Target);
         fixture.Checkout("support-1.1");
         fixture.AssertFullSemver("1.1.0");
 

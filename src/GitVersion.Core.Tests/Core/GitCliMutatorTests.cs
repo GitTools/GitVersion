@@ -1,7 +1,6 @@
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests;
 
@@ -56,7 +55,7 @@ public class GitCliMutatorTests : TestBase
         {
             CreateMutator().Clone(fixture.RepositoryPath, targetPath, new AuthenticationInfo());
 
-            using var clonedRepository = new Repository(targetPath);
+            using var clonedRepository = new TestRepository(targetPath);
             clonedRepository.Head.Tip.ShouldNotBeNull();
             Directory.EnumerateFileSystemEntries(targetPath)
                 .Where(entry => FileSystemHelper.Path.GetFileName(entry) != ".git")

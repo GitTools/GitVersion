@@ -1,7 +1,6 @@
 using GitVersion.Output.OutputGenerator;
 using GitVersion.Testing.Extensions;
 using GitVersion.Tests;
-using LibGit2Sharp;
 
 namespace GitVersion.Output.Tests;
 

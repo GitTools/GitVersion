@@ -1,5 +1,3 @@
-using LibGit2Sharp;
-
 namespace GitVersion.Testing;
 
 /// <summary>
@@ -9,7 +7,7 @@ namespace GitVersion.Testing;
 /// </summary>
 public class RemoteRepositoryFixture : RepositoryFixtureBase
 {
-    public RemoteRepositoryFixture(Func<string, Repository> builder)
+    public RemoteRepositoryFixture(Func<string, TestRepository> builder)
         : base(builder) => LocalRepositoryFixture = CloneRepository();
 
     public RemoteRepositoryFixture(string branchName = "main")

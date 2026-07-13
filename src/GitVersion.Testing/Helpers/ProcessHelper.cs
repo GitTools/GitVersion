@@ -6,70 +6,53 @@ namespace GitVersion.Testing;
 
 public static partial class ProcessHelper
 {
-    private static readonly object LockObject = new();
+    // Guards only the Windows-global SetErrorMode state (a no-op on other platforms). It deliberately
+    // does NOT serialize Process.Start: the fixtures spawn a great many short-lived git processes from
+    // parallel test fixtures, so serializing spawns here would collapse that parallelism.
+    private static readonly object ErrorModeLock = new();
 
     // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
     private static Process? Start(ProcessStartInfo startInfo)
     {
         Process? process;
 
-        lock (LockObject)
+        ChangeErrorMode errorMode;
+        lock (ErrorModeLock)
         {
-            using (new ChangeErrorMode(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox))
+            errorMode = new(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox);
+        }
+
+        try
+        {
+            process = Process.Start(startInfo);
+        }
+        catch (Win32Exception exception)
+        {
+            switch ((NativeErrorCode)exception.NativeErrorCode)
             {
-                try
-                {
-                    process = Process.Start(startInfo);
-                }
-                catch (Win32Exception exception)
-                {
-                    switch ((NativeErrorCode)exception.NativeErrorCode)
-                    {
-                        case NativeErrorCode.Success:
-                            // Success is not a failure.
-                            break;
+                case NativeErrorCode.Success:
+                    // Success is not a failure.
+                    break;
 
-                        case NativeErrorCode.FileNotFound:
-                            throw new FileNotFoundException($"The executable file '{startInfo.FileName}' could not be found.",
-                                startInfo.FileName,
-                                exception);
+                case NativeErrorCode.FileNotFound:
+                    throw new FileNotFoundException($"The executable file '{startInfo.FileName}' could not be found.",
+                        startInfo.FileName,
+                        exception);
 
-                        case NativeErrorCode.PathNotFound:
-                            throw new DirectoryNotFoundException($"The path to the executable file '{startInfo.FileName}' could not be found.",
-                                exception);
-                        default:
-                            throw new ArgumentOutOfRangeException($"The error code '{exception.NativeErrorCode}' is not supported.", nameof(exception));
-                    }
+                case NativeErrorCode.PathNotFound:
+                    throw new DirectoryNotFoundException($"The path to the executable file '{startInfo.FileName}' could not be found.",
+                        exception);
+                default:
+                    throw new ArgumentOutOfRangeException($"The error code '{exception.NativeErrorCode}' is not supported.", nameof(exception));
+            }
 
-                    throw;
-                }
-
-                try
-                {
-                    if (process != null)
-                    {
-                        process.PriorityClass = ProcessPriorityClass.Idle;
-                    }
-                }
-                catch
-                {
-                    // NOTE: It seems like in some situations, setting the priority class will throw a Win32Exception
-                    // with the error code set to "Success", which I think we can safely interpret as a success and
-                    // not an exception.
-                    //
-                    // See: https://travis-ci.org/GitTools/GitVersion/jobs/171288284#L2026
-                    // And: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681382.aspx
-                    //
-                    // There's also the case where the process might be killed before we try to adjust its priority
-                    // class, in which case it will throw an InvalidOperationException. What we ideally should do
-                    // is start the process in a "suspended" state, adjust the priority class, then resume it, but
-                    // that's not possible in pure .NET.
-                    //
-                    // See: https://travis-ci.org/GitTools/GitVersion/jobs/166709203#L2278
-                    // And: http://www.codeproject.com/Articles/230005/Launch-a-process-suspended
-                    //
-                    // -- @asbjornu
-                }
+            throw;
+        }
+        finally
+        {
+            lock (ErrorModeLock)
+            {
+                ((IDisposable)errorMode).Dispose();
             }
         }
 
@@ -80,21 +63,43 @@ public static partial class ProcessHelper
     public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, string args, string workingDirectory, params KeyValuePair<string, string?>[] environmentalVariables)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exe);
-        ArgumentNullException.ThrowIfNull(output);
 
         var psi = new ProcessStartInfo
         {
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            RedirectStandardInput = true,
-            WindowStyle = ProcessWindowStyle.Hidden,
-            CreateNoWindow = true,
-            ErrorDialog = false,
-            WorkingDirectory = workingDirectory,
             FileName = exe,
             Arguments = args
         };
+        return Run(output, errorOutput, input, psi, workingDirectory, environmentalVariables);
+    }
+
+    /// <summary>
+    ///     Runs the executable passing each argument verbatim (no shell quoting required).
+    /// </summary>
+    public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, IReadOnlyCollection<string> args, string workingDirectory, params KeyValuePair<string, string?>[] environmentalVariables)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(exe);
+
+        var psi = new ProcessStartInfo { FileName = exe };
+        foreach (var arg in args)
+        {
+            psi.ArgumentList.Add(arg);
+        }
+
+        return Run(output, errorOutput, input, psi, workingDirectory, environmentalVariables);
+    }
+
+    private static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, ProcessStartInfo psi, string workingDirectory, params KeyValuePair<string, string?>[] environmentalVariables)
+    {
+        ArgumentNullException.ThrowIfNull(output);
+
+        psi.UseShellExecute = false;
+        psi.RedirectStandardError = true;
+        psi.RedirectStandardOutput = true;
+        psi.RedirectStandardInput = true;
+        psi.WindowStyle = ProcessWindowStyle.Hidden;
+        psi.CreateNoWindow = true;
+        psi.ErrorDialog = false;
+        psi.WorkingDirectory = workingDirectory;
         foreach (var (key, value) in environmentalVariables)
         {
             var psiEnvironmentVariables = psi.EnvironmentVariables;

@@ -6,7 +6,6 @@ using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Testing.Extensions;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests;
 
@@ -72,38 +71,19 @@ public static class GitRepositoryTestingExtensions
             => DumpGraph(repository.Path, writer, maxCommits);
     }
 
-    extension(IRepository repository)
+    extension(TestRepository repository)
     {
-        public void DumpGraph(Action<string>? writer = null, int? maxCommits = null)
-            => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
-    }
-
-    extension(LibGit2Sharp.RemoteCollection remotes)
-    {
-        public void RenameRemote(string oldName, string newName)
+        public IGitRepository ToGitRepository()
         {
-            if (oldName.IsEquivalentTo(newName))
-            {
-                return;
-            }
-
-            if (remotes.Any(remote => remote.Name == newName))
-            {
-                throw new InvalidOperationException($"A remote with the name '{newName}' already exists.");
-            }
-            if (remotes.All(remote => remote.Name != oldName))
-            {
-                throw new InvalidOperationException($"A remote with the name '{oldName}' does not exist.");
-            }
-            remotes.Add(newName, remotes[oldName].Url);
-            remotes.Remove(oldName);
+            using var libGit2Repository = new LibGit2Sharp.Repository(repository.Path);
+            return libGit2Repository.ToGitRepository();
         }
     }
 
     extension(RepositoryFixtureBase fixture)
     {
         public GitVersionVariables GetVersion(IGitVersionConfiguration? configuration = null,
-                                              IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+                                              TestRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
         {
             repository ??= fixture.Repository;
             configuration ??= GitFlowConfigurationBuilder.New.Build();
@@ -111,7 +91,7 @@ public static class GitRepositoryTestingExtensions
             var overrideConfiguration = new Dictionary<object, object?>();
             var options = Options.Create(new GitVersionOptions
             {
-                WorkingDirectory = repository.Info.WorkingDirectory,
+                WorkingDirectory = repository.Path,
                 ConfigurationInfo = { OverrideConfiguration = overrideConfiguration },
                 RepositoryInfo =
                 {
@@ -159,7 +139,7 @@ public static class GitRepositoryTestingExtensions
         }
 
         public void AssertFullSemver(string fullSemver,
-                                     IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+                                     IGitVersionConfiguration? configuration = null, TestRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
         {
             repository ??= fixture.Repository;
 
