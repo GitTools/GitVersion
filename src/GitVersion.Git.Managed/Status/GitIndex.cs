@@ -31,6 +31,16 @@ internal sealed record GitIndexEntry(
     /// Gets a value indicating whether the entry's file mode has the executable bit set.
     /// </summary>
     public bool IsExecutable => (Mode & 0b001_000_000) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the entry is a symbolic link (mode <c>120000</c>).
+    /// </summary>
+    public bool IsSymbolicLink => (Mode & 0b1111_000_000_000_000) == 0b1010_000_000_000_000;
+
+    /// <summary>
+    /// Gets a value indicating whether the entry is a gitlink/submodule (mode <c>160000</c>).
+    /// </summary>
+    public bool IsGitLink => (Mode & 0b1111_000_000_000_000) == 0b1110_000_000_000_000;
 }
 
 /// <summary>

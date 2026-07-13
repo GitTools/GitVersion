@@ -16,6 +16,7 @@ internal sealed class ManagedRepositorySession : IDisposable
     private readonly ConcurrentDictionary<string, ManagedCommit> commits = new();
     private readonly ConcurrentDictionary<string, IReadOnlyList<string>> diffPathsCache = new();
     private readonly Lazy<GitConfigurationFile> configuration;
+    private readonly Lazy<IReadOnlyList<ManagedBranch>> branches;
     private readonly Lazy<Dictionary<string, ManagedBranch>> branchesByCanonicalName;
     private readonly Lazy<IReadOnlyList<ManagedTag>> tags;
     private readonly Lazy<IReadOnlyList<ManagedReference>> references;
@@ -31,9 +32,10 @@ internal sealed class ManagedRepositorySession : IDisposable
         TreeDiff = new(ObjectStore);
         StatusCalculator = new(layout, ObjectStore);
         this.configuration = new(() => GitConfigurationFile.Load(Path.Combine(Layout.CommonDirectory, "config")));
-        this.branchesByCanonicalName = new(ReadBranches);
-        this.tags = new(() => [.. ReferenceStore.EnumerateReferences("refs/tags/").Select(reference => new ManagedTag(reference, this.repository))]);
-        this.references = new(() => [.. ReferenceStore.EnumerateReferences("refs/").Select(reference => new ManagedReference(reference))]);
+        this.branches = new(ReadBranches);
+        this.branchesByCanonicalName = new(() => this.branches.Value.ToDictionary(branch => branch.Name.Canonical, StringComparer.Ordinal));
+        this.tags = new(() => [.. EnumerateStoreReferencesInLibGit2Order("refs/tags/").Select(reference => new ManagedTag(reference, this.repository))]);
+        this.references = new(() => [.. EnumerateStoreReferencesInLibGit2Order("refs/").Select(reference => new ManagedReference(reference))]);
         this.remotes = new(ReadRemotes);
     }
 
@@ -45,7 +47,7 @@ internal sealed class ManagedRepositorySession : IDisposable
     public GitStatusCalculator StatusCalculator { get; }
     public GitConfigurationFile Configuration => this.configuration.Value;
 
-    public IReadOnlyList<ManagedBranch> Branches => [.. this.branchesByCanonicalName.Value.Values];
+    public IReadOnlyList<ManagedBranch> Branches => this.branches.Value;
     public IReadOnlyList<ManagedTag> Tags => this.tags.Value;
     public IReadOnlyList<ManagedReference> References => this.references.Value;
     public IReadOnlyList<ManagedRemote> Remotes => this.remotes.Value;
@@ -88,7 +90,19 @@ internal sealed class ManagedRepositorySession : IDisposable
         ReferenceStore.GetReference(canonicalName) is { } reference ? new ManagedReference(reference) : null;
 
     public IEnumerable<IReference> EnumerateReferences(string prefix) =>
-        ReferenceStore.EnumerateReferences(prefix).Select(reference => new ManagedReference(reference));
+        EnumerateStoreReferencesInLibGit2Order(prefix).Select(reference => new ManagedReference(reference));
+
+    /// <summary>
+    /// Enumerates references the way libgit2's refdb iterates them: loose references first
+    /// (in name order), then the packed references that are not shadowed by a loose one
+    /// (in name order). The store itself yields git's globally sorted for-each-ref order.
+    /// </summary>
+    private IEnumerable<GitReference> EnumerateStoreReferencesInLibGit2Order(string prefix)
+    {
+        var references = ReferenceStore.EnumerateReferences(prefix).ToList();
+        return references.Where(reference => !reference.IsPacked)
+            .Concat(references.Where(reference => reference.IsPacked));
+    }
 
     public ManagedCommit GetCommit(GitObjectId objectId) =>
         TryGetCommit(objectId)
@@ -219,17 +233,25 @@ internal sealed class ManagedRepositorySession : IDisposable
 
     public void Dispose() => ObjectStore.Dispose();
 
-    private Dictionary<string, ManagedBranch> ReadBranches()
+    private IReadOnlyList<ManagedBranch> ReadBranches()
     {
-        var branches = new Dictionary<string, ManagedBranch>(StringComparer.Ordinal);
+        // libgit2's branch iterator walks the whole refdb once (loose first, then packed)
+        // and filters to branch namespaces, so local and remote-tracking branches interleave
+        // in that reference order.
+        var branches = new List<ManagedBranch>();
 
-        foreach (var reference in ReferenceStore.EnumerateReferences(ReferenceName.LocalBranchPrefix)
-                     .Concat(ReferenceStore.EnumerateReferences(ReferenceName.RemoteTrackingBranchPrefix)))
+        foreach (var reference in EnumerateStoreReferencesInLibGit2Order("refs/"))
         {
+            if (!reference.CanonicalName.StartsWith(ReferenceName.LocalBranchPrefix, StringComparison.Ordinal)
+                && !reference.CanonicalName.StartsWith(ReferenceName.RemoteTrackingBranchPrefix, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             var objectId = reference.ObjectId
                 ?? (reference.IsSymbolic ? ReferenceStore.Resolve(reference.CanonicalName)?.ObjectId : null);
             var tip = objectId is { } id ? TryGetCommit(id) : null;
-            branches[reference.CanonicalName] = new(new(reference.CanonicalName), tip, this.repository);
+            branches.Add(new(new(reference.CanonicalName), tip, this.repository));
         }
 
         return branches;
