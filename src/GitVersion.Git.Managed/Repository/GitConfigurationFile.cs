@@ -161,13 +161,13 @@ internal sealed class GitConfigurationFile
                 continue;
             }
 
-            if (!inQuotes && current is '#' or ';')
+            if (!inQuotes && IsCommentStart(current))
             {
                 break;
             }
 
             result.Append(current);
-            if (inQuotes || current is not (' ' or '\t'))
+            if (inQuotes || !IsWhitespace(current))
             {
                 contentEnd = result.Length;
             }
@@ -179,13 +179,17 @@ internal sealed class GitConfigurationFile
     private static int SkipLeadingWhitespace(string raw)
     {
         var index = 0;
-        while (index < raw.Length && raw[index] is ' ' or '\t')
+        while (index < raw.Length && IsWhitespace(raw[index]))
         {
             index++;
         }
 
         return index;
     }
+
+    private static bool IsWhitespace(char value) => value is ' ' or '\t';
+
+    private static bool IsCommentStart(char value) => value is '#' or ';';
 
     private static char DecodeEscape(char escaped) => escaped switch
     {

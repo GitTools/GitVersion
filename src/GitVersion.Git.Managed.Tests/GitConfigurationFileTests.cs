@@ -7,7 +7,9 @@ public class GitConfigurationFileTests
 {
     private static GitConfigurationFile Load(string content)
     {
-        var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), $"gitconfig-{Guid.NewGuid():N}");
+        var directory = FileSystemHelper.Path.GetRepositoryTempPath();
+        System.IO.Directory.CreateDirectory(directory);
+        var path = FileSystemHelper.Path.Combine(directory, "config");
         File.WriteAllText(path, content);
         try
         {
@@ -15,7 +17,7 @@ public class GitConfigurationFileTests
         }
         finally
         {
-            File.Delete(path);
+            FileSystemHelper.Directory.DeleteDirectory(directory);
         }
     }
 
