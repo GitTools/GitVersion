@@ -99,9 +99,9 @@ internal sealed class ManagedRepositorySession : IDisposable
     /// </summary>
     private IEnumerable<GitReference> EnumerateStoreReferencesInLibGit2Order(string prefix)
     {
-        var references = ReferenceStore.EnumerateReferences(prefix).ToList();
-        return references.Where(reference => !reference.IsPacked)
-            .Concat(references.Where(reference => reference.IsPacked));
+        var storeReferences = ReferenceStore.EnumerateReferences(prefix).ToList();
+        return storeReferences.Where(reference => !reference.IsPacked)
+            .Concat(storeReferences.Where(reference => reference.IsPacked));
     }
 
     public ManagedCommit GetCommit(GitObjectId objectId) =>
@@ -238,7 +238,7 @@ internal sealed class ManagedRepositorySession : IDisposable
         // libgit2's branch iterator walks the whole refdb once (loose first, then packed)
         // and filters to branch namespaces, so local and remote-tracking branches interleave
         // in that reference order.
-        var branches = new List<ManagedBranch>();
+        var result = new List<ManagedBranch>();
 
         foreach (var reference in EnumerateStoreReferencesInLibGit2Order("refs/"))
         {
@@ -251,10 +251,10 @@ internal sealed class ManagedRepositorySession : IDisposable
             var objectId = reference.ObjectId
                 ?? (reference.IsSymbolic ? ReferenceStore.Resolve(reference.CanonicalName)?.ObjectId : null);
             var tip = objectId is { } id ? TryGetCommit(id) : null;
-            branches.Add(new(new(reference.CanonicalName), tip, this.repository));
+            result.Add(new(new(reference.CanonicalName), tip, this.repository));
         }
 
-        return branches;
+        return result;
     }
 
     private IReadOnlyList<ManagedRemote> ReadRemotes() =>
