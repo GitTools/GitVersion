@@ -7,7 +7,7 @@ public class GitConfigurationFileTests
 {
     private static GitConfigurationFile Load(string content)
     {
-        var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPathLegacy(), $"gitconfig-{Guid.NewGuid():N}");
+        var path = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), $"gitconfig-{Guid.NewGuid():N}");
         File.WriteAllText(path, content);
         try
         {

@@ -131,59 +131,69 @@ internal sealed class GitConfigurationFile
         // escapes (\\, \", \n, \t, \b) and double-quoted spans are processed inline, so an
         // unquoted Windows path stored as D:\\a\\repo decodes back to D:\a\repo. Comments
         // (# or ;) and trailing whitespace are only significant outside quotes.
-        var i = 0;
-        while (i < raw.Length && raw[i] is ' ' or '\t')
-        {
-            i++;
-        }
-
-        var result = new StringBuilder(raw.Length - i);
+        var index = SkipLeadingWhitespace(raw);
+        var result = new StringBuilder(raw.Length - index);
         var inQuotes = false;
         var contentEnd = 0;
 
-        for (; i < raw.Length; i++)
+        while (index < raw.Length)
         {
-            var current = raw[i];
+            var current = raw[index];
 
             if (current == '\\')
             {
-                if (i + 1 >= raw.Length)
+                if (index + 1 >= raw.Length)
                 {
                     break;
                 }
 
-                var next = raw[++i];
-                result.Append(next switch
-                {
-                    '\\' => '\\',
-                    '"' => '"',
-                    'n' => '\n',
-                    't' => '\t',
-                    'b' => '\b',
-                    _ => next
-                });
+                result.Append(DecodeEscape(raw[index + 1]));
                 contentEnd = result.Length;
+                index += 2;
+                continue;
             }
-            else if (current == '"')
+
+            index++;
+
+            if (current == '"')
             {
                 inQuotes = !inQuotes;
+                continue;
             }
-            else if (!inQuotes && current is '#' or ';')
+
+            if (!inQuotes && current is '#' or ';')
             {
                 break;
             }
-            else
+
+            result.Append(current);
+            if (inQuotes || current is not (' ' or '\t'))
             {
-                result.Append(current);
-                if (inQuotes || current is not (' ' or '\t'))
-                {
-                    contentEnd = result.Length;
-                }
+                contentEnd = result.Length;
             }
         }
 
         return result.ToString(0, contentEnd);
     }
+
+    private static int SkipLeadingWhitespace(string raw)
+    {
+        var index = 0;
+        while (index < raw.Length && raw[index] is ' ' or '\t')
+        {
+            index++;
+        }
+
+        return index;
+    }
+
+    private static char DecodeEscape(char escaped) => escaped switch
+    {
+        'n' => '\n',
+        't' => '\t',
+        'b' => '\b',
+        _ => escaped // covers \\ and \" and is lenient for any other escape
+    };
 
     private static string StripComment(string value)
     {
