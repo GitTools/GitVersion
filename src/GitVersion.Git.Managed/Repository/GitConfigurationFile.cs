@@ -127,15 +127,77 @@ internal sealed class GitConfigurationFile
 
     private static string ParseValue(string raw)
     {
-        var value = StripComment(raw).Trim();
+        // git config values are unescaped regardless of whether they are quoted: backslash
+        // escapes (\\, \", \n, \t, \b) and double-quoted spans are processed inline, so an
+        // unquoted Windows path stored as D:\\a\\repo decodes back to D:\a\repo. Comments
+        // (# or ;) and trailing whitespace are only significant outside quotes.
+        var index = SkipLeadingWhitespace(raw);
+        var result = new StringBuilder(raw.Length - index);
+        var inQuotes = false;
+        var contentEnd = 0;
 
-        if (value.StartsWith('"') && value.EndsWith('"') && value.Length >= 2)
+        while (index < raw.Length)
         {
-            value = value[1..^1].Replace("\\\\", "\\").Replace("\\\"", "\"");
+            var current = raw[index];
+
+            if (current == '\\')
+            {
+                if (index + 1 >= raw.Length)
+                {
+                    break;
+                }
+
+                result.Append(DecodeEscape(raw[index + 1]));
+                contentEnd = result.Length;
+                index += 2;
+                continue;
+            }
+
+            index++;
+
+            if (current == '"')
+            {
+                inQuotes = !inQuotes;
+                continue;
+            }
+
+            if (!inQuotes && IsCommentStart(current))
+            {
+                break;
+            }
+
+            result.Append(current);
+            if (inQuotes || !IsWhitespace(current))
+            {
+                contentEnd = result.Length;
+            }
         }
 
-        return value;
+        return result.ToString(0, contentEnd);
     }
+
+    private static int SkipLeadingWhitespace(string raw)
+    {
+        var index = 0;
+        while (index < raw.Length && IsWhitespace(raw[index]))
+        {
+            index++;
+        }
+
+        return index;
+    }
+
+    private static bool IsWhitespace(char value) => value is ' ' or '\t';
+
+    private static bool IsCommentStart(char value) => value is '#' or ';';
+
+    private static char DecodeEscape(char escaped) => escaped switch
+    {
+        'n' => '\n',
+        't' => '\t',
+        'b' => '\b',
+        _ => escaped // covers \\ and \" and is lenient for any other escape
+    };
 
     private static string StripComment(string value)
     {
