@@ -41,9 +41,9 @@ public class GitConfigurationFileTests
     [Test]
     public void KeepsForwardSlashPathUnchanged()
     {
-        var config = Load("[remote \"origin\"]\n\turl = /tmp/repositories/repo\n");
+        var config = Load("[remote \"origin\"]\n\turl = /srv/git/repositories/project.git\n");
 
-        config.GetString("remote", "origin", "url").ShouldBe("/tmp/repositories/repo");
+        config.GetString("remote", "origin", "url").ShouldBe("/srv/git/repositories/project.git");
     }
 
     [Test]
