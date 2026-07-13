@@ -208,7 +208,8 @@ internal sealed class GitReferenceStore
                 {
                     CanonicalName = peeled.CanonicalName,
                     ObjectId = peeled.ObjectId,
-                    PeeledObjectId = GitObjectId.Parse(line[1..])
+                    PeeledObjectId = GitObjectId.Parse(line[1..]),
+                    IsPacked = true
                 };
                 continue;
             }
@@ -224,7 +225,8 @@ internal sealed class GitReferenceStore
             references[name] = new()
             {
                 CanonicalName = name,
-                ObjectId = GitObjectId.Parse(line[..separator])
+                ObjectId = GitObjectId.Parse(line[..separator]),
+                IsPacked = true
             };
             previousName = name;
         }

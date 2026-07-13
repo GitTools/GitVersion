@@ -28,6 +28,12 @@ internal sealed class GitReference
     public GitObjectId? PeeledObjectId { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether this reference was read from the <c>packed-refs</c>
+    /// file (as opposed to a loose reference file).
+    /// </summary>
+    public bool IsPacked { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether this is a symbolic reference.
     /// </summary>
     public bool IsSymbolic => SymbolicTargetName is not null;
