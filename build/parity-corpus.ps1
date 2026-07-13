@@ -102,11 +102,13 @@ function Invoke-GitVersion {
     $errorSummary = ''
     if ($process.ExitCode -ne 0) {
         $errorSummary = ($stderr + "`n" + $stdout).Trim() -split '\r?\n' |
-            Where-Object { $_ } | Select-Object -First 1
+            Where-Object { $_ } |
+            Select-Object -First 1
         if (-not $errorSummary -and (Test-Path $logFile)) {
             $errorSummary = Get-Content $logFile |
                 Where-Object { $_ -match 'EROR' -or $_ -match 'Exception' } |
-                Select-Object -First 2 | Join-String -Separator ' '
+                Select-Object -First 2 |
+                Join-String -Separator ' '
         }
     }
     Remove-Item $logFile -ErrorAction SilentlyContinue
@@ -154,7 +156,7 @@ function Get-VariantPath {
 
     $fullDir = Join-Path $RepoCacheDir 'full'
     if (-not (Test-Path (Join-Path $fullDir '.git'))) {
-        Write-Host "  cloning $Source -> $fullDir"
+        Write-Verbose "cloning $Source -> $fullDir"
         $null = Invoke-Git @('clone', '--quiet', $Source, $fullDir)
     }
     if ($Variant -eq 'full') { return $fullDir }
@@ -164,7 +166,7 @@ function Get-VariantPath {
         if (-not (Test-Path (Join-Path $shallowDir '.git'))) {
             # Derive the shallow clone from the local full clone: deterministic and offline.
             $fullUri = ([System.Uri]::new($fullDir)).AbsoluteUri
-            Write-Host "  creating shallow clone -> $shallowDir"
+            Write-Verbose "creating shallow clone -> $shallowDir"
             $null = Invoke-Git @('clone', '--quiet', '--depth', '1', $fullUri, $shallowDir)
         }
         return $shallowDir
@@ -173,7 +175,7 @@ function Get-VariantPath {
     # worktree
     $worktreeDir = Join-Path $RepoCacheDir 'worktree'
     if (-not (Test-Path (Join-Path $worktreeDir '.git'))) {
-        Write-Host "  creating linked worktree -> $worktreeDir"
+        Write-Verbose "creating linked worktree -> $worktreeDir"
         $null = Invoke-Git @('-C', $fullDir, 'worktree', 'prune')
         $null = Invoke-Git @('-C', $fullDir, 'worktree', 'add', '--detach', $worktreeDir)
     }
@@ -282,7 +284,8 @@ foreach ($source in $Repos) {
 Write-Host '=== Summary ==='
 $results |
     Format-Table Repo, Variant, Result, Libgit2Ms, ManagedMs, Detail -AutoSize |
-    Out-String -Width 500 | Write-Host
+    Out-String -Width 500 |
+    Write-Host
 
 $failures = @($results | Where-Object Result -eq 'DIFF')
 $errors = @($results | Where-Object Result -eq 'ERROR')
