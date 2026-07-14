@@ -48,7 +48,9 @@ jobs:
           GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
         with:
           shell: pwsh
-          timeout_minutes: 30
+          # Raised from 30 to 60 while the git-CLI test fixtures (managed-git migration, #5031)
+          # run ~3x slower on the macOS/Windows runners. Revert once the fixture speedup lands.
+          timeout_minutes: 60
           max_attempts: 3
           retry_on: error
           command: 'dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }}'
