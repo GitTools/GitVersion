@@ -112,6 +112,12 @@ internal sealed class GitReferenceStore
         {
             foreach (var file in Directory.EnumerateFiles(refsRoot, "*", SearchOption.AllDirectories))
             {
+                // Skip transient lock files created while git updates a reference, matching git/libgit2.
+                if (file.EndsWith(".lock", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
                 var canonicalName = RefsPrefix + Path.GetRelativePath(refsRoot, file).Replace(Path.DirectorySeparatorChar, '/');
 
                 if (!canonicalName.StartsWith(prefix, StringComparison.Ordinal))

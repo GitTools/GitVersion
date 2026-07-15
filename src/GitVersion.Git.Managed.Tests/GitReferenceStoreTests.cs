@@ -44,6 +44,22 @@ public class GitReferenceStoreTests
     }
 
     [Test]
+    public void EnumerationSkipsTransientLockFiles()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile("file.txt", "content\n");
+        var sha = repository.Commit("a commit");
+
+        // Simulate git being in the middle of updating a reference.
+        File.WriteAllText(Path.Combine(repository.GitDirectory, "refs", "heads", "main.lock"), sha + "\n");
+
+        var references = repository.OpenReferenceStore().EnumerateReferences().ToList();
+
+        references.ShouldNotContain(reference => reference.CanonicalName.EndsWith(".lock"));
+        references.ShouldHaveSingleItem().CanonicalName.ShouldBe("refs/heads/main");
+    }
+
+    [Test]
     public void ReadsPackedRefsIncludingPeeledTargets()
     {
         using var repository = new GitTestRepository();
