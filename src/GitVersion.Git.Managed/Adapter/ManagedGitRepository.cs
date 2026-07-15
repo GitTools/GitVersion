@@ -64,9 +64,12 @@ internal sealed partial class ManagedGitRepository
         otherCommit = otherCommit.NotNull();
 
         var session = Session;
-        var mergeBase = session.Walker.FindMergeBase(GitObjectId.Parse(commit.Sha), GitObjectId.Parse(otherCommit.Sha));
+        var mergeBase = session.Walker.FindMergeBase(ResolveObjectId(commit), ResolveObjectId(otherCommit));
         return mergeBase is { } id ? session.GetCommit(id) : null;
     }
+
+    private static GitObjectId ResolveObjectId(ICommit commit) =>
+        commit is ManagedCommit managed ? managed.ObjectId : GitObjectId.Parse(commit.Sha);
 
     public int UncommittedChangesCount()
     {

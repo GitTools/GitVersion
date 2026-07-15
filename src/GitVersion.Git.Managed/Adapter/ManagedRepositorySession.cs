@@ -13,8 +13,8 @@ internal sealed class ManagedRepositorySession : IDisposable
     private const string RemoteSectionName = "remote";
 
     private readonly ManagedGitRepository repository;
-    private readonly ConcurrentDictionary<string, ManagedCommit> commits = new();
-    private readonly ConcurrentDictionary<string, IReadOnlyList<string>> diffPathsCache = new();
+    private readonly ConcurrentDictionary<GitObjectId, ManagedCommit> commits = new();
+    private readonly ConcurrentDictionary<GitObjectId, IReadOnlyList<string>> diffPathsCache = new();
     private readonly Lazy<GitConfigurationFile> configuration;
     private readonly Lazy<IReadOnlyList<ManagedBranch>> branches;
     private readonly Lazy<Dictionary<string, ManagedBranch>> branchesByCanonicalName;
@@ -110,33 +110,23 @@ internal sealed class ManagedRepositorySession : IDisposable
 
     public ManagedCommit? TryGetCommit(GitObjectId objectId)
     {
-        var key = objectId.ToString();
-
-        if (this.commits.TryGetValue(key, out var existing))
+        if (this.commits.TryGetValue(objectId, out var existing))
         {
             return existing;
         }
 
-        if (!ObjectStore.TryGetObject(objectId, GitObjectTypes.Commit, out var stream))
-        {
-            return null;
-        }
-
-        GitCommit innerCommit;
-
-        using (stream)
-        {
-            innerCommit = GitCommitReader.Read(stream, objectId);
-        }
-
-        return this.commits.GetOrAdd(key, _ => new(innerCommit, this.repository));
+        // The walker's parsed-commit cache is the single parse per session; walks
+        // load most commits first, so wrapping reuses those parses.
+        return Walker.TryLoadCommit(objectId) is { } innerCommit
+            ? WrapCommit(innerCommit)
+            : null;
     }
 
     public ManagedCommit WrapCommit(GitCommit innerCommit) =>
-        this.commits.GetOrAdd(innerCommit.Sha.ToString(), _ => new(innerCommit, this.repository));
+        this.commits.GetOrAdd(innerCommit.Sha, _ => new(innerCommit, this.repository));
 
     public IReadOnlyList<string> GetDiffPaths(ManagedCommit commit) =>
-        this.diffPathsCache.GetOrAdd(commit.Sha, _ =>
+        this.diffPathsCache.GetOrAdd(commit.ObjectId, _ =>
         {
             GitObjectId? parentTreeId = commit.FirstParentId is { } parentId ? TryGetCommit(parentId)?.TreeId : null;
             return TreeDiff.GetChangedPaths(parentTreeId, commit.TreeId);

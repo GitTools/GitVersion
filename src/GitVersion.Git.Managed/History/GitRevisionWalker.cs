@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 namespace GitVersion.Git;
 
 /// <summary>
@@ -19,7 +21,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
     private const int Slop = 5;
 
     private readonly GitObjectStore objectStore = objectStore ?? throw new ArgumentNullException(nameof(objectStore));
-    private readonly Dictionary<GitObjectId, GitCommit?> commitCache = [];
+    private readonly ConcurrentDictionary<GitObjectId, GitCommit?> commitCache = new();
 
     /// <summary>
     /// Walks the commits described by <paramref name="options"/> and returns them in order.
@@ -216,6 +218,15 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
         return false;
     }
 
+    /// <summary>
+    /// Loads a commit through the walker's parsed-commit cache, or returns
+    /// <see langword="null"/> when the object does not exist. The cache is shared with the
+    /// adapter layer so each commit is read and parsed at most once per session.
+    /// </summary>
+    /// <param name="id">The id of the commit.</param>
+    /// <returns>The commit, or <see langword="null"/>.</returns>
+    public GitCommit? TryLoadCommit(GitObjectId id) => TryLoad(id);
+
     private GitCommit? TryLoad(GitObjectId id)
     {
         if (this.commitCache.TryGetValue(id, out var cached))
@@ -233,8 +244,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
         }
 
-        this.commitCache[id] = commit;
-        return commit;
+        return this.commitCache.GetOrAdd(id, commit);
     }
 
     /// <summary>
