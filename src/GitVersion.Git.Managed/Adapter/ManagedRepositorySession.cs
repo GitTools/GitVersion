@@ -28,7 +28,9 @@ internal sealed class ManagedRepositorySession : IDisposable
         Layout = layout.NotNull();
         ObjectStore = layout.CreateObjectStore();
         ReferenceStore = layout.CreateReferenceStore();
-        Walker = new(ObjectStore);
+        // Shallow boundaries are part of the snapshot: the walker grafts the commits listed
+        // in .git/shallow as parentless, the way git and libgit2 treat them.
+        Walker = new(ObjectStore, layout.ReadShallowCommits().ToHashSet());
         TreeDiff = new(ObjectStore);
         StatusCalculator = new(layout, ObjectStore);
         this.configuration = new(() => GitConfigurationFile.Load(Path.Combine(Layout.CommonDirectory, "config")));

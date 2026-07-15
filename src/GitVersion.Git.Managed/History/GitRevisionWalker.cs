@@ -11,16 +11,21 @@ namespace GitVersion.Git;
 /// by the test suite.
 /// </summary>
 /// <remarks>
-/// Missing parent objects (e.g. beyond a shallow-clone boundary) terminate traversal at
-/// that point instead of failing the walk.
+/// Shallow-clone boundaries are honored the way git and libgit2 honor the <c>.git/shallow</c>
+/// grafts: commits in <paramref name="shallowCommits"/> are treated as parentless, even when
+/// their parent objects happen to be reachable through the object store. A parent that fails
+/// to load and is not explained by a shallow boundary indicates a corrupt or incomplete
+/// repository and fails the walk with a <see cref="GitObjectStoreException"/>, matching
+/// libgit2, instead of silently truncating history.
 /// </remarks>
-internal sealed class GitRevisionWalker(GitObjectStore objectStore)
+internal sealed class GitRevisionWalker(GitObjectStore objectStore, IReadOnlySet<GitObjectId>? shallowCommits = null)
 {
     // The number of uninteresting commits to look at after running out of interesting ones,
     // matching git's slop heuristic for clock-skewed histories.
     private const int Slop = 5;
 
     private readonly GitObjectStore objectStore = objectStore ?? throw new ArgumentNullException(nameof(objectStore));
+    private readonly IReadOnlySet<GitObjectId> shallowCommits = shallowCommits ?? new HashSet<GitObjectId>();
     private readonly ConcurrentDictionary<GitObjectId, GitCommit?> commitCache = new();
 
     /// <summary>
@@ -81,10 +86,12 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
         {
             var id = stack.Pop();
 
-            if (!reachable.Add(id) || TryLoad(id) is not { } commit)
+            if (!reachable.Add(id))
             {
                 continue;
             }
+
+            var commit = LoadParent(id);
 
             foreach (var parentId in firstParentOnly ? commit.Parents.Take(1) : commit.Parents)
             {
@@ -191,6 +198,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
             foreach (var parentId in commit.Parents)
             {
+                walker.LoadParent(parentId);
                 Enqueue(parentId, paint);
             }
         }
@@ -257,10 +265,30 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             {
                 commit = GitCommitReader.Read(stream, id);
             }
+
+            if (this.shallowCommits.Contains(id))
+            {
+                // Apply the shallow graft: the boundary commit is parentless even when its
+                // parent objects are present (e.g. via alternates), matching git and libgit2.
+                commit = commit.WithoutParents();
+            }
         }
 
         return this.commitCache.GetOrAdd(id, commit);
     }
+
+    /// <summary>
+    /// Loads a parent commit, failing the walk when the object is missing: with shallow
+    /// boundaries grafted away in <see cref="TryLoad"/>, a missing parent means the
+    /// repository is corrupt or incomplete, and truncating history there would silently
+    /// produce a wrong version.
+    /// </summary>
+    /// <param name="id">The id of the parent commit.</param>
+    /// <returns>The parent commit.</returns>
+    /// <exception cref="GitObjectStoreException">The parent object does not exist.</exception>
+    private GitCommit LoadParent(GitObjectId id) =>
+        TryLoad(id)
+            ?? throw new GitObjectStoreException($"The parent commit '{id}' could not be found in the repository; the object database is corrupt or incomplete.") { ObjectNotFound = true };
 
     /// <summary>
     /// The per-walk engine. Mirrors libgit2's revwalk phases: seed preparation, the
@@ -400,7 +428,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
                 foreach (var parent in ParsedParents(commit))
                 {
                     parent.Uninteresting = true;
-                    Parse(parent);
+                    ParseParent(parent);
 
                     if (parent.Parents.Count > 0)
                     {
@@ -416,9 +444,9 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
             foreach (var parent in ParsedParents(commit))
             {
-                Parse(parent);
+                ParseParent(parent);
 
-                if (parent.Parsed && !parent.Seen)
+                if (!parent.Seen)
                 {
                     parent.Seen = true;
                     InsertByDate(list, parent);
@@ -648,11 +676,22 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
         private void Parse(WalkNode node)
         {
-            if (node.Parsed || walker.TryLoad(node.Id) is not { } commit)
+            if (!node.Parsed && walker.TryLoad(node.Id) is { } commit)
             {
-                return;
+                Populate(node, commit);
             }
+        }
 
+        private void ParseParent(WalkNode node)
+        {
+            if (!node.Parsed)
+            {
+                Populate(node, walker.LoadParent(node.Id));
+            }
+        }
+
+        private void Populate(WalkNode node, GitCommit commit)
+        {
             node.Commit = commit;
             node.Time = commit.CommitterWhen.ToUnixTimeSeconds();
             node.Parents.AddRange(commit.Parents.Select(LookupNode));
