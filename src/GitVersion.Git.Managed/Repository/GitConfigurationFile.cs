@@ -84,6 +84,25 @@ internal sealed class GitConfigurationFile
     }
 
     /// <summary>
+    /// Gets the effective value of a boolean key using git's boolean semantics,
+    /// or <see langword="null"/> when the key is not present or not a valid boolean.
+    /// </summary>
+    public bool? GetBoolean(string section, string? subsection, string key) =>
+        GetString(section, subsection, key) switch
+        {
+            null => null,
+            "" => false,
+            var value when value.Equals("true", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("yes", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("on", StringComparison.OrdinalIgnoreCase) => true,
+            var value when value.Equals("false", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("no", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("off", StringComparison.OrdinalIgnoreCase) => false,
+            var value when long.TryParse(value, out var number) => number != 0,
+            _ => null
+        };
+
+    /// <summary>
     /// Gets all values of a multi-valued key, in file order.
     /// </summary>
     public IReadOnlyList<string> GetAll(string section, string? subsection, string key) =>

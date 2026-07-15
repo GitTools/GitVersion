@@ -11,11 +11,11 @@ internal sealed class GitIgnoreRules
 {
     private readonly List<(Regex Pattern, bool DirectoryOnly, bool Negated)> rules = [];
 
-    private GitIgnoreRules(IEnumerable<string> lines)
+    private GitIgnoreRules(IEnumerable<string> lines, bool ignoreCase)
     {
         foreach (var line in lines)
         {
-            if (ParseLine(line) is { } rule)
+            if (ParseLine(line, ignoreCase) is { } rule)
             {
                 this.rules.Add(rule);
             }
@@ -26,15 +26,17 @@ internal sealed class GitIgnoreRules
     /// Loads the rules from an ignore file, or returns <see langword="null"/> when the file does not exist.
     /// </summary>
     /// <param name="path">The path of the ignore file.</param>
+    /// <param name="ignoreCase">Whether patterns match case-insensitively (<c>core.ignorecase</c>).</param>
     /// <returns>The parsed rules, if the file exists.</returns>
-    public static GitIgnoreRules? Load(string path) => File.Exists(path) ? new(File.ReadLines(path)) : null;
+    public static GitIgnoreRules? Load(string path, bool ignoreCase) => File.Exists(path) ? new(File.ReadLines(path), ignoreCase) : null;
 
     /// <summary>
     /// Parses ignore rules from text lines.
     /// </summary>
     /// <param name="lines">The lines of an ignore file.</param>
+    /// <param name="ignoreCase">Whether patterns match case-insensitively (<c>core.ignorecase</c>).</param>
     /// <returns>The parsed rules.</returns>
-    public static GitIgnoreRules Parse(IEnumerable<string> lines) => new(lines);
+    public static GitIgnoreRules Parse(IEnumerable<string> lines, bool ignoreCase) => new(lines, ignoreCase);
 
     /// <summary>
     /// Determines whether this source decides the ignored state of the given path.
@@ -66,7 +68,7 @@ internal sealed class GitIgnoreRules
         return null;
     }
 
-    private static (Regex Pattern, bool DirectoryOnly, bool Negated)? ParseLine(string line)
+    private static (Regex Pattern, bool DirectoryOnly, bool Negated)? ParseLine(string line, bool ignoreCase)
     {
         var pattern = TrimTrailingSpaces(line);
 
@@ -103,9 +105,12 @@ internal sealed class GitIgnoreRules
 
         pattern = pattern.TrimStart('/');
 
+        // git matches ignore patterns case-insensitively when core.ignorecase is set
+        // (the default in repositories created on case-insensitive filesystems).
+        var regexOptions = RegexOptions.CultureInvariant | (ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
         var regex = new Regex(
             "^" + TranslateToRegex(pattern) + "$",
-            RegexOptions.CultureInvariant,
+            regexOptions,
             TimeSpan.FromSeconds(1));
 
         return (regex, directoryOnly, negated);
