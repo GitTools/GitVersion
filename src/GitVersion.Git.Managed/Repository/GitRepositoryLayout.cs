@@ -117,6 +117,16 @@ internal sealed class GitRepositoryLayout
             throw new NotSupportedException("Repositories using the reftable reference storage format are not supported yet.");
         }
 
+        // SHA-256 repositories declare extensions.objectformat in their config. The managed
+        // reader only implements SHA-1 pack indexes so far; fail clearly at open instead of
+        // deep inside an object lookup (parity: libgit2 cannot read them either).
+        var objectFormat = GitConfigurationFile.Load(Path.Combine(commonDirectory, "config"))
+            .GetString("extensions", null, "objectformat");
+        if (objectFormat is not null && !objectFormat.Equals("sha1", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"Repositories using the '{objectFormat}' object format are not supported yet.");
+        }
+
         return new()
         {
             GitDirectory = gitDirectory,

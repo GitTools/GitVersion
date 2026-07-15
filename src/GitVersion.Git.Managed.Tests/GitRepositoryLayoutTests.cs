@@ -23,6 +23,26 @@ public class GitRepositoryLayoutTests
     }
 
     [Test]
+    public void RejectsSha256RepositoriesWithAClearMessage()
+    {
+        using var directory = new TempDirectory();
+        Directory.CreateDirectory(directory.FullPath);
+
+        using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "git",
+            ArgumentList = { "init", "-q", "--object-format=sha256", directory.FullPath },
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        });
+        process!.WaitForExit();
+        process.ExitCode.ShouldBe(0, "git init --object-format=sha256 should succeed");
+
+        var exception = Should.Throw<NotSupportedException>(() => GitRepositoryLayout.Discover(directory.FullPath));
+        exception.Message.ShouldContain("sha256");
+    }
+
+    [Test]
     public void ReturnsNullOutsideOfARepository()
     {
         using var directory = new TempDirectory();
