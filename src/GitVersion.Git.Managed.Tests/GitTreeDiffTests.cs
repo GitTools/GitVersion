@@ -72,6 +72,30 @@ public class GitTreeDiffTests
     }
 
     [Test]
+    public void ChangedPathsAlignEntriesByRawByteOrderNotUtf16Order()
+    {
+        // "\uE000" (EE 80 80 in UTF-8) sorts after "\U0001F600" (F0 9F 98 80) in UTF-16
+        // code units (0xD83D < 0xE000) but before it in git's raw unsigned byte order
+        // (0xEE < 0xF0). Comparing the decoded strings misaligns the two-pointer merge
+        // and reports the unchanged emoji file as changed.
+        using var repository = new GitTestRepository();
+        repository.WriteFile("\uE000.txt", "private use\n");
+        repository.WriteFile("\U0001F600.txt", "emoji\n");
+        var first = repository.ResolveId(repository.Commit("both files"));
+
+        File.Delete(Path.Combine(repository.RepositoryPath, "\uE000.txt"));
+        var second = repository.ResolveId(repository.Commit("delete the private-use file"));
+
+        using var store = repository.OpenObjectStore();
+        var treeDiff = new GitTreeDiff(store);
+
+        treeDiff.GetChangedPaths(store.GetCommit(first).Tree, store.GetCommit(second).Tree)
+            .ShouldBe(["\uE000.txt"]);
+
+        AssertDiffPathsParityForAllCommits(repository);
+    }
+
+    [Test]
     public void IdenticalTreesProduceNoChangedPaths()
     {
         using var repository = new GitTestRepository();

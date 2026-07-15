@@ -49,8 +49,8 @@ internal static class GitTreeReader
         while (!contents.IsEmpty)
         {
             // Format: [mode] [file/folder name]\0[object id of the referenced blob or tree]
-            var (name, mode, sha, entryLength) = ReadEntry(contents);
-            entries.Add(new(name, mode, sha));
+            var (name, nameBytes, mode, sha, entryLength) = ReadEntry(contents);
+            entries.Add(new(name, nameBytes, mode, sha));
             contents = contents[entryLength..];
         }
 
@@ -61,7 +61,7 @@ internal static class GitTreeReader
         };
     }
 
-    internal static (string Name, string Mode, GitObjectId Sha, int EntryLength) ReadEntry(ReadOnlySpan<byte> contents)
+    internal static (string Name, byte[] NameBytes, string Mode, GitObjectId Sha, int EntryLength) ReadEntry(ReadOnlySpan<byte> contents)
     {
         const int hashLength = GitObjectId.Sha1Size;
 
@@ -74,9 +74,13 @@ internal static class GitTreeReader
         }
 
         var mode = Encoding.UTF8.GetString(contents[..modeEnd]);
-        var name = GitTextDecoder.Decode(contents[(modeEnd + 1)..nameEnd]);
+        // Keep a stable copy of the raw name bytes: the source span may be backed by a
+        // pooled buffer, and the decoded name (UTF-8 with a Latin-1 fallback) does not
+        // always round-trip back to the on-disk bytes git sorts entries by.
+        var nameBytes = contents[(modeEnd + 1)..nameEnd].ToArray();
+        var name = GitTextDecoder.Decode(nameBytes);
         var sha = GitObjectId.Parse(contents.Slice(nameEnd + 1, hashLength));
 
-        return (name, mode, sha, nameEnd + 1 + hashLength);
+        return (name, nameBytes, mode, sha, nameEnd + 1 + hashLength);
     }
 }
