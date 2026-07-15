@@ -48,6 +48,12 @@ internal class GitVersionCacheKeyFactory(
             ? CalculateDirectoryContents(refsPath)
             : [];
 
+        // Refs may live partially or entirely in packed-refs instead of loose files
+        // under refs/, so its content must contribute to the hash for packed ref
+        // updates (e.g. a fetched tag) to invalidate the cache.
+        var packedRefsPath = FileSystemHelper.Path.Combine(dotGitDirectory, "packed-refs");
+        AddFileContents([packedRefsPath], contents);
+
         return GetHash(contents);
     }
 
