@@ -67,7 +67,17 @@ internal static class PullRequestBranchOperations
                               Remote Refs:
                               {RemoteRefsList}
                               """, remoteRefsList);
-        var refs = remoteTips.Where(r => r.TargetSha == headTipSha).ToList();
+        // The advertised HEAD symref (which libgit2 resolves into a duplicate of the
+        // default branch's direct reference) and peeled "^{}" tag entries are not
+        // candidate tips: they would make the same commit appear twice and trip the
+        // single-match check below. Filtering here keeps both backends' candidate
+        // sets identical regardless of how their listing behaves.
+        var refs = remoteTips
+            .Where(r => r.CanonicalName.StartsWith("refs/", StringComparison.Ordinal)
+                && !r.CanonicalName.EndsWith("^{}", StringComparison.Ordinal))
+            .DistinctBy(r => r.CanonicalName)
+            .Where(r => r.TargetSha == headTipSha)
+            .ToList();
 
         switch (refs.Count)
         {
