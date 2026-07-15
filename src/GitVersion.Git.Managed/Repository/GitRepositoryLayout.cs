@@ -64,23 +64,46 @@ internal sealed class GitRepositoryLayout
 
         for (var current = Path.GetFullPath(startPath); current is not null; current = Path.GetDirectoryName(current))
         {
-            var dotGit = Path.Combine(current, GitDirectoryOrFileName);
-
-            if (Directory.Exists(dotGit))
+            if (TryOpenExact(current) is { } layout)
             {
-                return FromGitDirectory(dotGit, current);
+                return layout;
             }
+        }
 
-            if (File.Exists(dotGit))
-            {
-                return FromGitDirectory(ResolveGitDirFile(dotGit), current);
-            }
+        return null;
+    }
 
-            if (IsGitDirectory(current))
-            {
-                // A bare repository, or the .git directory itself.
-                return FromGitDirectory(current, workingDirectory: null);
-            }
+    /// <summary>
+    /// Opens the repository at exactly <paramref name="path"/> (a working directory with a
+    /// <c>.git</c> entry, or a git directory itself) without walking up the hierarchy —
+    /// the equivalent of libgit2's <c>new Repository(path)</c> as opposed to its discovery.
+    /// </summary>
+    /// <param name="path">The path of the repository.</param>
+    /// <returns>The layout of the repository, or <see langword="null"/> when the path is not itself a repository.</returns>
+    public static GitRepositoryLayout? TryOpen(string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        return TryOpenExact(Path.GetFullPath(path));
+    }
+
+    private static GitRepositoryLayout? TryOpenExact(string current)
+    {
+        var dotGit = Path.Combine(current, GitDirectoryOrFileName);
+
+        if (Directory.Exists(dotGit))
+        {
+            return FromGitDirectory(dotGit, current);
+        }
+
+        if (File.Exists(dotGit))
+        {
+            return FromGitDirectory(ResolveGitDirFile(dotGit), current);
+        }
+
+        if (IsGitDirectory(current))
+        {
+            // A bare repository, or the .git directory itself.
+            return FromGitDirectory(current, workingDirectory: null);
         }
 
         return null;

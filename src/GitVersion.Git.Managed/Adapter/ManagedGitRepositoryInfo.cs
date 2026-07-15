@@ -96,7 +96,10 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
-            var layout = GitRepositoryLayout.TryDiscover(possiblePath);
+            // Only possiblePath itself may be the repository, matching the libgit2 backend's
+            // `new Repository(possiblePath)`; discovery walking up the hierarchy would match
+            // an enclosing repository and hand a nonexistent .git path to the caller.
+            var layout = GitRepositoryLayout.TryOpen(possiblePath);
             if (layout is null)
             {
                 return false;

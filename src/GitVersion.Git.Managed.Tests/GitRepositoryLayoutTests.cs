@@ -23,6 +23,20 @@ public class GitRepositoryLayoutTests
     }
 
     [Test]
+    public void TryOpenDoesNotWalkUpToAnEnclosingRepository()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile("nested/dir/file.txt", "content\n");
+        repository.Commit("a commit");
+
+        var nested = Path.Combine(repository.RepositoryPath, "nested", "dir");
+
+        GitRepositoryLayout.TryOpen(nested).ShouldBeNull();
+        GitRepositoryLayout.TryOpen(repository.RepositoryPath).ShouldNotBeNull();
+        GitRepositoryLayout.TryOpen(repository.GitDirectory).ShouldNotBeNull();
+    }
+
+    [Test]
     public void RejectsSha256RepositoriesWithAClearMessage()
     {
         using var directory = new TempDirectory();
