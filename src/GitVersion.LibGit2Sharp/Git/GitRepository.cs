@@ -46,20 +46,6 @@ internal sealed partial class GitRepository
         this.repositoryLazy = new(() => new Repository(gitDirectory));
     }
 
-    /// <summary>
-    /// Drops the cached collection wrappers so that changes made outside this instance
-    /// (e.g. by the git CLI) become visible. The libgit2 repository itself re-reads refs
-    /// and objects from disk on demand, so it must not be disposed here — wrapper objects
-    /// already handed out still reference its native memory.
-    /// </summary>
-    internal void ResetCachedCollections()
-    {
-        this.tags = null;
-        this.commits = null;
-        this.remotes = null;
-        this.references = null;
-    }
-
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
         commit = commit.NotNull();

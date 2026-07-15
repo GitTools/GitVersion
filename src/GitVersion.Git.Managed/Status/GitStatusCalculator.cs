@@ -13,6 +13,9 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 {
     private readonly GitRepositoryLayout layout = layout ?? throw new ArgumentNullException(nameof(layout));
     private readonly GitTreeDiff treeDiff = new(objectStore);
+    private readonly Lazy<bool> ignoreCase = new(() =>
+        GitConfigurationFile.Load(Path.Combine(layout.CommonDirectory, "config"))
+            .GetBoolean("core", null, "ignorecase") ?? false);
 
     /// <summary>
     /// Counts the paths which differ between the given HEAD tree, the index, and the
@@ -238,30 +241,31 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 
         // Shallowest sources first: the user's global excludes file, then the repository's
         // info/exclude, then the per-directory .gitignore chain added while walking.
-        if (ResolveGlobalExcludesFile() is { } globalExcludesFile && GitIgnoreRules.Load(globalExcludesFile) is { } globalRules)
+        if (ResolveGlobalExcludesFile() is { } globalExcludesFile && GitIgnoreRules.Load(globalExcludesFile, this.ignoreCase.Value) is { } globalRules)
         {
             ignoreSources.Add(("", globalRules));
         }
 
-        if (GitIgnoreRules.Load(Path.Combine(this.layout.CommonDirectory, "info", "exclude")) is { } excludeRules)
+        if (GitIgnoreRules.Load(Path.Combine(this.layout.CommonDirectory, "info", "exclude"), this.ignoreCase.Value) is { } excludeRules)
         {
             ignoreSources.Add(("", excludeRules));
         }
 
-        WalkDirectory(workingDirectory, relativePrefix: "", ignoreSources, indexEntries, untracked);
+        WalkDirectory(workingDirectory, relativePrefix: "", this.ignoreCase.Value, ignoreSources, indexEntries, untracked);
         return untracked;
     }
 
     private static void WalkDirectory(
         string directory,
         string relativePrefix,
+        bool ignoreCase,
         List<(string BasePrefix, GitIgnoreRules Rules)> ignoreSources,
         Dictionary<string, GitIndexEntry> indexEntries,
         List<string> untracked)
     {
         var addedSource = false;
 
-        if (GitIgnoreRules.Load(Path.Combine(directory, ".gitignore")) is { } rules)
+        if (GitIgnoreRules.Load(Path.Combine(directory, ".gitignore"), ignoreCase) is { } rules)
         {
             ignoreSources.Add((relativePrefix, rules));
             addedSource = true;
@@ -290,7 +294,7 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 
                 if (isDirectory)
                 {
-                    WalkDirectory(entryPath, relativePath + "/", ignoreSources, indexEntries, untracked);
+                    WalkDirectory(entryPath, relativePath + "/", ignoreCase, ignoreSources, indexEntries, untracked);
                 }
                 else if (!indexEntries.ContainsKey(relativePath))
                 {

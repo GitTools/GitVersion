@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace GitVersion.Git.Managed.Tests;
 
 [TestFixture]
@@ -20,6 +22,41 @@ public class GitRepositoryLayoutTests
             layout.ObjectsDirectory.ShouldBe(Path.GetFullPath(repository.ObjectsDirectory));
             layout.IsShallow.ShouldBeFalse();
         }
+    }
+
+    [Test]
+    public void TryOpenDoesNotWalkUpToAnEnclosingRepository()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile("nested/dir/file.txt", "content\n");
+        repository.Commit("a commit");
+
+        var nested = Path.Combine(repository.RepositoryPath, "nested", "dir");
+
+        GitRepositoryLayout.TryOpen(nested).ShouldBeNull();
+        GitRepositoryLayout.TryOpen(repository.RepositoryPath).ShouldNotBeNull();
+        GitRepositoryLayout.TryOpen(repository.GitDirectory).ShouldNotBeNull();
+    }
+
+    [Test]
+    [SuppressMessage("Minor Vulnerability", "S4036:Searching OS commands in PATH is security-sensitive", Justification = "git is deliberately resolved from the PATH, exactly like the production CLI executor and the other test fixtures.")]
+    public void RejectsSha256RepositoriesWithAClearMessage()
+    {
+        using var directory = new TempDirectory();
+        Directory.CreateDirectory(directory.FullPath);
+
+        using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "git",
+            ArgumentList = { "init", "-q", "--object-format=sha256", directory.FullPath },
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        });
+        process!.WaitForExit();
+        process.ExitCode.ShouldBe(0, "git init --object-format=sha256 should succeed");
+
+        var exception = Should.Throw<NotSupportedException>(() => GitRepositoryLayout.Discover(directory.FullPath));
+        exception.Message.ShouldContain("sha256");
     }
 
     [Test]

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 
 namespace GitVersion.Git;
@@ -19,7 +20,7 @@ internal interface IGitCliMutator
     void CreateSymbolicReference(string workingDirectory, string name, string targetReferenceName);
 }
 
-internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
+internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
 {
     private readonly ILogger<GitCliMutator> logger = logger.NotNull();
     private readonly IGitCliExecutor executor = executor.NotNull();
@@ -34,7 +35,7 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
         arguments.AddRange(["clone", "--no-checkout", sourceUrl, workdirPath]);
 
         var result = this.executor.Execute(null, arguments);
-        ThrowOnFailure(result);
+        ThrowOnFailure(result, isNetworkOperation: true);
         this.logger.LogInformation("Cloned repository '{SourceUrl}' into '{WorkdirPath}'", sourceUrl, workdirPath);
     }
 
@@ -46,7 +47,7 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
         arguments.AddRange(refSpecs);
 
         var result = this.executor.Execute(workingDirectory, arguments);
-        ThrowOnFailure(result);
+        ThrowOnFailure(result, isNetworkOperation: true);
     }
 
     public void Checkout(string workingDirectory, string commitOrBranchSpec)
@@ -70,7 +71,7 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
         arguments.AddRange(["ls-remote", "--quiet", remoteName]);
 
         var result = this.executor.Execute(workingDirectory, arguments);
-        ThrowOnFailure(result);
+        ThrowOnFailure(result, isNetworkOperation: true);
 
         var references = new List<GitRemoteReference>();
         foreach (var line in result.StandardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
@@ -129,7 +130,7 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
         arguments.AddRange(["-c", $"{scope}.extraHeader=Authorization: Basic {credentials}"]);
     }
 
-    private static void ThrowOnFailure(GitCliResult result)
+    private static void ThrowOnFailure(GitCliResult result, bool isNetworkOperation = false)
     {
         if (result.IsSuccess)
         {
@@ -137,26 +138,44 @@ internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecut
         }
 
         var message = result.StandardError;
-        if (message.Contains(".lock", StringComparison.Ordinal) && message.Contains("Unable to create", StringComparison.OrdinalIgnoreCase))
+        if (IsLockContention(message))
         {
             throw new LockedFileException(message);
         }
 
-        if (message.Contains("401") || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
+        // HTTP status classification only applies to commands that talk to a remote;
+        // a local ref or pathspec can legitimately contain "401"/"404" in its name.
+        if (isNetworkOperation)
         {
-            throw new InvalidOperationException("Unauthorized: Incorrect username/password");
-        }
+            if (message.Contains("401") || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Unauthorized: Incorrect username/password");
+            }
 
-        if (message.Contains("403"))
-        {
-            throw new InvalidOperationException("Forbidden: Possibly Incorrect username/password");
-        }
+            if (message.Contains("403"))
+            {
+                throw new InvalidOperationException("Forbidden: Possibly Incorrect username/password");
+            }
 
-        if (message.Contains("404") || message.Contains("Repository not found", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidOperationException("Not found: The repository was not found");
+            // "Repository not found" is GitHub's server-side banner; other hosts produce
+            // git's own "fatal: repository '<url>' not found" with the URL in between.
+            if (message.Contains("404")
+                || message.Contains("Repository not found", StringComparison.OrdinalIgnoreCase)
+                || RepositoryNotFoundRegex().IsMatch(message))
+            {
+                throw new InvalidOperationException("Not found: The repository was not found");
+            }
         }
 
         throw new InvalidOperationException($"Git command failed with exit code {result.ExitCode}: {message}");
     }
+
+    private static bool IsLockContention(string message) =>
+        (message.Contains(".lock", StringComparison.Ordinal) && message.Contains("Unable to create", StringComparison.OrdinalIgnoreCase))
+        || message.Contains("could not lock", StringComparison.OrdinalIgnoreCase)
+        || message.Contains("cannot lock ref", StringComparison.OrdinalIgnoreCase)
+        || message.Contains("Another git process seems to be running", StringComparison.OrdinalIgnoreCase);
+
+    [GeneratedRegex(@"repository '[^']*' not found", RegexOptions.IgnoreCase)]
+    private static partial Regex RepositoryNotFoundRegex();
 }

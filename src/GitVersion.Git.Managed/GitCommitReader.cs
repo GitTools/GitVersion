@@ -109,9 +109,11 @@ internal static class GitCommitReader
             Sha = sha,
             Tree = tree.Value,
             Parents = parents,
-            Author = GitSignature.Parse(authorLine, encodingName),
-            Committer = GitSignature.Parse(committerLine, encodingName),
-            Message = GitTextDecoder.Decode(buffer, encodingName)
+            CommitterWhen = GitSignature.ParseWhen(committerLine),
+            RawAuthor = authorLine.ToArray(),
+            RawCommitter = committerLine.ToArray(),
+            RawMessage = buffer.ToArray(),
+            EncodingName = encodingName
         };
     }
 }

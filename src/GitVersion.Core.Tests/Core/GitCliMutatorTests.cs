@@ -33,6 +33,47 @@ public class GitCliMutatorTests : TestBase
     }
 
     [Test]
+    [NonParallelizable]
+    public void CheckoutIgnoresAnInheritedGitDirEnvironmentVariable()
+    {
+        // git exports GIT_DIR when running hooks; the executor must scrub it so
+        // mutations target the working-directory repository, as libgit2 did.
+        using var otherFixture = new EmptyRepositoryFixture();
+        otherFixture.Repository.MakeACommit();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.Repository.CreateBranch("only-here");
+
+        System.Environment.SetEnvironmentVariable("GIT_DIR", FileSystemHelper.Path.Combine(otherFixture.RepositoryPath, ".git"));
+        try
+        {
+            CreateMutator().Checkout(fixture.RepositoryPath, "only-here");
+        }
+        finally
+        {
+            System.Environment.SetEnvironmentVariable("GIT_DIR", null);
+        }
+
+        fixture.Repository.Head.FriendlyName.ShouldBe("only-here");
+    }
+
+    [Test]
+    public void CheckoutFailureIsNotMisclassifiedAsAnHttpError()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+
+        // The failing spec echoes "404" in stderr; only network operations may map
+        // HTTP status codes, so the real pathspec error must surface unchanged.
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateMutator().Checkout(fixture.RepositoryPath, "fix-404-page"));
+
+        exception.Message.ShouldContain("fix-404-page");
+        exception.Message.ShouldNotContain("The repository was not found");
+    }
+
+    [Test]
     public void FetchBringsNewRemoteCommitsIntoTheLocalRepository()
     {
         using var fixture = new RemoteRepositoryFixture();
@@ -75,6 +116,59 @@ public class GitCliMutatorTests : TestBase
         var targetPath = FileSystemHelper.Path.GetRepositoryTempPath();
 
         Should.Throw<InvalidOperationException>(() => CreateMutator().Clone(missingSource, targetPath, new AuthenticationInfo()));
+    }
+
+    [Test]
+    public void CloneOfMissingHttpRepositoryMapsGitsNotFoundPhrasing()
+    {
+        // Non-GitHub hosts produce "fatal: repository '<url>' not found" (no "404",
+        // no contiguous "Repository not found"); the message contract must still hold.
+        using var server = new HttpNotFoundServer();
+        var targetPath = FileSystemHelper.Path.GetRepositoryTempPath();
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateMutator().Clone($"{server.Url}/missing/repo.git", targetPath, new AuthenticationInfo()));
+
+        exception.Message.ShouldBe("Not found: The repository was not found");
+    }
+
+    private sealed class HttpNotFoundServer : IDisposable
+    {
+        private readonly System.Net.HttpListener listener = new();
+        public string Url { get; }
+
+        public HttpNotFoundServer()
+        {
+            var port = GetFreePort();
+            Url = $"http://127.0.0.1:{port}";
+            this.listener.Prefixes.Add($"{Url}/");
+            this.listener.Start();
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                while (this.listener.IsListening)
+                {
+                    try
+                    {
+                        var context = await this.listener.GetContextAsync().ConfigureAwait(false);
+                        context.Response.StatusCode = 404;
+                        context.Response.Close();
+                    }
+                    catch (Exception ex) when (ex is System.Net.HttpListenerException or ObjectDisposedException)
+                    {
+                        return;
+                    }
+                }
+            });
+        }
+
+        private static int GetFreePort()
+        {
+            using var socket = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            socket.Start();
+            return ((System.Net.IPEndPoint)socket.LocalEndpoint).Port;
+        }
+
+        public void Dispose() => this.listener.Stop();
     }
 
     [Test]

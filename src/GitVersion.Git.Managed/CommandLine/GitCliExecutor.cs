@@ -45,6 +45,20 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
         startInfo.Environment["GIT_TERMINAL_PROMPT"] = "0";
         startInfo.Environment["LC_ALL"] = "C";
 
+        // The repository is targeted via the working directory alone, like libgit2
+        // targets it via the discovered path. Inherited repo-targeting variables
+        // (git exports GIT_DIR when running hooks) would redirect the invocation
+        // to a different repository than the one the managed reader discovered.
+        string[] repoTargetingVariables =
+        [
+            "GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR",
+            "GIT_NAMESPACE", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES"
+        ];
+        foreach (var variable in repoTargetingVariables)
+        {
+            startInfo.Environment.Remove(variable);
+        }
+
         this.logger.LogDebug("Executing 'git {Arguments}' in '{WorkingDirectory}'", string.Join(' ', arguments), workingDirectory);
 
         using var process = new Process();

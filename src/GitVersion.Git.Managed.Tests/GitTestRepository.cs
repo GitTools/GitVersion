@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Git.Managed.Tests;
 
 /// <summary>
@@ -176,7 +178,9 @@ internal sealed class GitTestRepository : IDisposable
     {
         try
         {
-            Directory.Delete(RepositoryPath, recursive: true);
+            // Git marks pack and loose-object files read-only; a bare recursive delete
+            // fails on them on Windows. The helper resets attributes before deleting.
+            FileSystemHelper.Directory.DeleteDirectory(RepositoryPath);
         }
         catch (IOException)
         {

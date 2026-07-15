@@ -30,6 +30,14 @@ internal static class GitPackReader
                         var baseObjectRelativeOffset = ReadVariableLengthInteger(stream);
                         var baseObjectOffset = offset - baseObjectRelativeOffset;
 
+                        // The base of an ofs-delta always precedes the delta in the pack; a zero
+                        // relative offset would recurse into this same object until the stack
+                        // overflows, and a negative target would seek outside the pack.
+                        if (baseObjectOffset <= 0 || baseObjectOffset >= offset)
+                        {
+                            throw new GitObjectStoreException($"The deltified object at offset {offset} has an invalid base object offset {baseObjectOffset}.");
+                        }
+
                         var deltaStream = new GitZLibStream(stream, decompressedSize);
                         var (baseStream, baseType) = pack.GetObject(baseObjectOffset, objectType);
 

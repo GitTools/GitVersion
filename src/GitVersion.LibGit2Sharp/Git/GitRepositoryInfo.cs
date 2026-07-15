@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
 using LibGit2Sharp;
 
 namespace GitVersion.Git;
@@ -37,49 +36,31 @@ public class GitRepositoryInfo : IGitRepositoryInfo
         return DynamicRepositoryPath.Get(this.fileSystem, repositoryInfo.TargetUrl, repositoryInfo.ClonePath, GitRepoHasMatchingRemote);
     }
 
-    private string? GetDotGitDirectory()
-    {
-        var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
-            ? DynamicGitRepositoryPath
-            : Repository.Discover(this.gitVersionOptions.WorkingDirectory);
+    private string? GetDotGitDirectory() =>
+        RepositoryPathResolution.ResolveDotGitDirectory(
+            this.fileSystem,
+            DynamicGitRepositoryPath,
+            this.gitVersionOptions.WorkingDirectory,
+            Repository.Discover);
 
-        gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (gitDirectory.IsNullOrEmpty())
-        {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
-        }
+    private string GetProjectRootDirectory() =>
+        RepositoryPathResolution.ResolveProjectRootDirectory(
+            DynamicGitRepositoryPath,
+            this.gitVersionOptions.WorkingDirectory,
+            static workingDirectory =>
+            {
+                var gitDirectory = Repository.Discover(workingDirectory);
+                if (gitDirectory.IsNullOrEmpty())
+                {
+                    return null;
+                }
 
-        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException("Cannot find the .git directory");
-        return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
-            ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
-            : gitDirectory;
-    }
+                using var repo = new Repository(gitDirectory);
+                return repo.Info.WorkingDirectory;
+            });
 
-    private string GetProjectRootDirectory()
-    {
-        if (!DynamicGitRepositoryPath.IsNullOrWhiteSpace())
-        {
-            return this.gitVersionOptions.WorkingDirectory;
-        }
-
-        var gitDirectory = Repository.Discover(this.gitVersionOptions.WorkingDirectory);
-
-        if (gitDirectory.IsNullOrEmpty())
-        {
-            throw new DirectoryNotFoundException("Cannot find the .git directory");
-        }
-
-        using var repo = new Repository(gitDirectory);
-        return repo.Info.WorkingDirectory;
-    }
-
-    private string? GetGitRootPath()
-    {
-        var isDynamicRepo = !DynamicGitRepositoryPath.IsNullOrWhiteSpace();
-        var rootDirectory = isDynamicRepo ? DotGitDirectory : ProjectRootDirectory;
-
-        return rootDirectory;
-    }
+    private string? GetGitRootPath() =>
+        RepositoryPathResolution.ResolveGitRootPath(DynamicGitRepositoryPath, DotGitDirectory, ProjectRootDirectory);
 
     private static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
     {

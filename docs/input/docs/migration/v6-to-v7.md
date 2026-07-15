@@ -81,7 +81,7 @@ For current command details and examples, see [CLI Arguments](/docs/usage/cli/ar
 
 ## Git backend
 
-GitVersion v7 introduces a fully managed Git backend as an alternative to the native LibGit2Sharp (libgit2) implementation. The backend is selected with the `GITVERSION_GIT_BACKEND` environment variable.
+GitVersion v7 introduces a fully managed Git backend as an alternative to the native LibGit2Sharp (libgit2) implementation. The backend is selected with the `GITVERSION_GIT_BACKEND` environment variable. Any value other than `libgit2` or `managed` (case-insensitive) is an error: GitVersion fails fast instead of silently running the default backend.
 
 :::{.alert .alert-info}
 In v7.0 the `libgit2` backend remains the **default** — behaviour is unchanged unless you opt in. Set `GITVERSION_GIT_BACKEND=managed` to try the managed backend and help validate it. In v7.1 the default flips to `managed`, with `GITVERSION_GIT_BACKEND=libgit2` available as a fallback. Both backends ship side by side for several releases before libgit2 is removed.

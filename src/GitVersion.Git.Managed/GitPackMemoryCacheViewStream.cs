@@ -11,9 +11,13 @@ internal sealed class GitPackMemoryCacheViewStream : Stream
     private readonly GitPackMemoryCacheStream baseStream;
 
     private long position;
+    private bool disposed;
 
-    public GitPackMemoryCacheViewStream(GitPackMemoryCacheStream baseStream) =>
+    public GitPackMemoryCacheViewStream(GitPackMemoryCacheStream baseStream)
+    {
         this.baseStream = baseStream ?? throw new ArgumentNullException(nameof(baseStream));
+        this.baseStream.AddReference();
+    }
 
     /// <inheritdoc/>
     public override bool CanRead => true;
@@ -76,4 +80,16 @@ internal sealed class GitPackMemoryCacheViewStream : Stream
 
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && !this.disposed)
+        {
+            this.disposed = true;
+            this.baseStream.Release();
+        }
+
+        base.Dispose(disposing);
+    }
 }

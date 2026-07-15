@@ -95,6 +95,36 @@ public class GitStatusCalculatorTests
     }
 
     [Test]
+    public void HonorsCoreIgnoreCaseForIgnorePatterns()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile(".gitignore", "BIN/\n*.LOG\n");
+        repository.Commit("commit");
+        repository.Run("config", "core.ignorecase", "true");
+
+        repository.WriteFile("bin/out.txt", "ignored\n");   // ignored by BIN/ under ignorecase
+        repository.WriteFile("noise.log", "ignored\n");     // ignored by *.LOG under ignorecase
+        repository.WriteFile("kept.txt", "untracked\n");
+
+        AssertParity(repository, expectedCount: 1);
+    }
+
+    [Test]
+    public void MatchesIgnorePatternsCaseSensitivelyWhenIgnoreCaseIsOff()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile(".gitignore", "BIN/\n*.LOG\n");
+        repository.Commit("commit");
+        repository.Run("config", "core.ignorecase", "false");
+
+        repository.WriteFile("bin/out.txt", "kept\n");
+        repository.WriteFile("noise.log", "kept\n");
+        repository.WriteFile("kept.txt", "untracked\n");
+
+        AssertParity(repository, expectedCount: 3);
+    }
+
+    [Test]
     public void CountsExecutableBitChanges()
     {
         if (OperatingSystem.IsWindows())

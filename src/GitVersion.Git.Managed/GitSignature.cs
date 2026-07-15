@@ -21,6 +21,29 @@ internal readonly record struct GitSignature(string Name, string Email, DateTime
     /// <returns>The parsed <see cref="GitSignature"/>.</returns>
     public static GitSignature Parse(ReadOnlySpan<byte> value, string? encodingName = null)
     {
+        var (emailStart, emailEnd) = FindEmailDelimiters(value);
+
+        var name = value[..Math.Max(emailStart - 1, 0)];
+        var email = value[(emailStart + 1)..emailEnd];
+        var when = ParseTime(value[Math.Min(emailEnd + 2, value.Length)..]);
+
+        return new(GitTextDecoder.Decode(name, encodingName), GitTextDecoder.Decode(email, encodingName), when);
+    }
+
+    /// <summary>
+    /// Parses only the timestamp of a signature line value, without decoding the name
+    /// or the e-mail address into strings.
+    /// </summary>
+    /// <param name="value">The signature value (excluding the <c>author</c>/<c>committer</c>/<c>tagger</c> prefix).</param>
+    /// <returns>The date and time of the action, including the recorded UTC offset.</returns>
+    public static DateTimeOffset ParseWhen(ReadOnlySpan<byte> value)
+    {
+        var (_, emailEnd) = FindEmailDelimiters(value);
+        return ParseTime(value[Math.Min(emailEnd + 2, value.Length)..]);
+    }
+
+    private static (int EmailStart, int EmailEnd) FindEmailDelimiters(ReadOnlySpan<byte> value)
+    {
         var emailStart = value.IndexOf((byte)'<');
         var emailEnd = value.IndexOf((byte)'>');
 
@@ -29,10 +52,11 @@ internal readonly record struct GitSignature(string Name, string Email, DateTime
             throw new GitObjectStoreException("A signature line is malformed: no e-mail address found.");
         }
 
-        var name = value[..Math.Max(emailStart - 1, 0)];
-        var email = value[(emailStart + 1)..emailEnd];
-        var time = value[Math.Min(emailEnd + 2, value.Length)..];
+        return (emailStart, emailEnd);
+    }
 
+    private static DateTimeOffset ParseTime(ReadOnlySpan<byte> time)
+    {
         var offsetStart = time.IndexOf((byte)' ');
         if (offsetStart < 0)
         {
@@ -51,7 +75,7 @@ internal readonly record struct GitSignature(string Name, string Email, DateTime
             when = when.ToOffset(offset);
         }
 
-        return new(GitTextDecoder.Decode(name, encodingName), GitTextDecoder.Decode(email, encodingName), when);
+        return when;
     }
 
     private static bool TryParseOffset(ReadOnlySpan<byte> value, out TimeSpan offset)

@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 namespace GitVersion.Git;
 
 /// <summary>
@@ -19,7 +21,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
     private const int Slop = 5;
 
     private readonly GitObjectStore objectStore = objectStore ?? throw new ArgumentNullException(nameof(objectStore));
-    private readonly Dictionary<GitObjectId, GitCommit?> commitCache = [];
+    private readonly ConcurrentDictionary<GitObjectId, GitCommit?> commitCache = new();
 
     /// <summary>
     /// Walks the commits described by <paramref name="options"/> and returns them in order.
@@ -95,52 +97,96 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
     private List<GitObjectId> PaintDownToCommon(GitObjectId first, GitObjectId second)
     {
-        const int flagFirst = 1;
-        const int flagSecond = 2;
-        const int flagStale = 4;
-        const int flagBoth = flagFirst | flagSecond;
+        var walk = new PaintDownWalk(this);
+        walk.Enqueue(first, PaintDownWalk.FlagFirst);
+        walk.Enqueue(second, PaintDownWalk.FlagSecond);
+        return walk.Run();
+    }
 
-        var flags = new Dictionary<GitObjectId, int>();
-        var candidates = new List<GitObjectId>();
-        var queue = new PriorityQueue<GitCommit, (long Time, long Sequence)>(TimeDescendingComparer.Instance);
-        var sequence = 0L;
+    /// <summary>
+    /// The paint-down-to-common walk of <c>git merge-base</c>: descend from both tips in
+    /// date order, painting each commit with the tips that reach it; commits reached by
+    /// both are candidates, and everything below a candidate is stale. The number of
+    /// queued non-stale entries is tracked incrementally: libgit2 rescans its whole queue
+    /// per iteration to decide whether anything interesting remains, which is quadratic
+    /// on the hottest path of version calculation. The count is equivalent to that scan.
+    /// </summary>
+    private sealed class PaintDownWalk(GitRevisionWalker walker)
+    {
+        public const int FlagFirst = 1;
+        public const int FlagSecond = 2;
+        private const int FlagStale = 4;
+        private const int FlagBoth = FlagFirst | FlagSecond;
 
-        void Enqueue(GitObjectId id, int newFlags)
+        private readonly Dictionary<GitObjectId, int> flags = [];
+        private readonly Dictionary<GitObjectId, int> queuedCounts = [];
+        private readonly List<GitObjectId> candidates = [];
+        private readonly PriorityQueue<GitCommit, (long Time, long Sequence)> queue = new(TimeDescendingComparer.Instance);
+        private long sequence;
+        private int interesting;
+
+        public List<GitObjectId> Run()
         {
-            var current = flags.GetValueOrDefault(id);
+            while (this.interesting > 0)
+            {
+                Process(this.queue.Dequeue());
+            }
 
-            if ((current | newFlags) == current)
+            return this.candidates;
+        }
+
+        public void Enqueue(GitObjectId id, int newFlags)
+        {
+            var current = this.flags.GetValueOrDefault(id);
+            var updated = current | newFlags;
+
+            if (updated == current)
             {
                 return;
             }
 
-            flags[id] = current | newFlags;
+            this.flags[id] = updated;
 
-            if (TryLoad(id) is { } commit)
+            if ((current & FlagStale) == 0 && (updated & FlagStale) != 0)
             {
-                queue.Enqueue(commit, (commit.Committer.When.ToUnixTimeSeconds(), sequence++));
+                MarkQueuedEntriesStale(id);
+            }
+
+            if (walker.TryLoad(id) is { } commit)
+            {
+                this.queue.Enqueue(commit, (commit.CommitterWhen.ToUnixTimeSeconds(), this.sequence++));
+                this.queuedCounts[id] = this.queuedCounts.GetValueOrDefault(id) + 1;
+
+                if ((updated & FlagStale) == 0)
+                {
+                    this.interesting++;
+                }
             }
         }
 
-        Enqueue(first, flagFirst);
-        Enqueue(second, flagSecond);
-
-        while (queue.UnorderedItems.Any(entry => (flags[entry.Element.Sha] & flagStale) == 0))
+        private void Process(GitCommit commit)
         {
-            var commit = queue.Dequeue();
-            var commitFlags = flags[commit.Sha];
-            var paint = commitFlags & flagBoth;
+            var commitFlags = this.flags[commit.Sha];
+            this.queuedCounts[commit.Sha]--;
 
-            if (paint == flagBoth)
+            if ((commitFlags & FlagStale) == 0)
             {
-                if ((commitFlags & flagStale) == 0)
+                this.interesting--;
+            }
+
+            var paint = commitFlags & FlagBoth;
+
+            if (paint == FlagBoth)
+            {
+                if ((commitFlags & FlagStale) == 0)
                 {
-                    candidates.Add(commit.Sha);
-                    flags[commit.Sha] = commitFlags | flagStale;
+                    this.candidates.Add(commit.Sha);
+                    this.flags[commit.Sha] = commitFlags | FlagStale;
+                    MarkQueuedEntriesStale(commit.Sha);
                 }
 
                 // Everything below a common commit is stale: it cannot be a better candidate.
-                paint |= flagStale;
+                paint |= FlagStale;
             }
 
             foreach (var parentId in commit.Parents)
@@ -149,7 +195,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
         }
 
-        return candidates;
+        private void MarkQueuedEntriesStale(GitObjectId id) => this.interesting -= this.queuedCounts.GetValueOrDefault(id);
     }
 
     private GitObjectId? RemoveRedundantCandidates(List<GitObjectId> candidates)
@@ -187,6 +233,15 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
         return false;
     }
 
+    /// <summary>
+    /// Loads a commit through the walker's parsed-commit cache, or returns
+    /// <see langword="null"/> when the object does not exist. The cache is shared with the
+    /// adapter layer so each commit is read and parsed at most once per session.
+    /// </summary>
+    /// <param name="id">The id of the commit.</param>
+    /// <returns>The commit, or <see langword="null"/>.</returns>
+    public GitCommit? TryLoadCommit(GitObjectId id) => TryLoad(id);
+
     private GitCommit? TryLoad(GitObjectId id)
     {
         if (this.commitCache.TryGetValue(id, out var cached))
@@ -204,8 +259,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
         }
 
-        this.commitCache[id] = commit;
-        return commit;
+        return this.commitCache.GetOrAdd(id, commit);
     }
 
     /// <summary>
@@ -268,6 +322,13 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             foreach (var node in userInput)
             {
                 Parse(node);
+
+                // A pushed or hidden commit whose object cannot be looked up fails the
+                // walk in libgit2, too; an unparsed seed would be emitted as a null commit.
+                if (!node.Parsed)
+                {
+                    throw new GitObjectStoreException($"The commit '{node.Id}' could not be found in the repository.") { ObjectNotFound = true };
+                }
 
                 if (node.Uninteresting)
                 {
@@ -593,7 +654,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
 
             node.Commit = commit;
-            node.Time = commit.Committer.When.ToUnixTimeSeconds();
+            node.Time = commit.CommitterWhen.ToUnixTimeSeconds();
             node.Parents.AddRange(commit.Parents.Select(LookupNode));
             node.Parsed = true;
         }

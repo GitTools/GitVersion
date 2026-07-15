@@ -1,14 +1,11 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
 using SysPath = System.IO.Path;
 
 namespace GitVersion.Git;
 
 internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
 {
-    private const string DotGitDirectoryNotFoundMessage = "Cannot find the .git directory";
-
     private readonly IFileSystem fileSystem;
     private readonly GitVersionOptions gitVersionOptions;
 
@@ -39,50 +36,33 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
         return DynamicRepositoryPath.Get(this.fileSystem, repositoryInfo.TargetUrl, repositoryInfo.ClonePath, GitRepoHasMatchingRemote);
     }
 
-    private string? GetDotGitDirectory()
-    {
-        var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
-            ? DynamicGitRepositoryPath
-            : Discover(this.gitVersionOptions.WorkingDirectory)?.GitDirectory;
+    private string? GetDotGitDirectory() =>
+        RepositoryPathResolution.ResolveDotGitDirectory(
+            this.fileSystem,
+            DynamicGitRepositoryPath,
+            this.gitVersionOptions.WorkingDirectory,
+            static workingDirectory => Discover(workingDirectory)?.GitDirectory);
 
-        gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (string.IsNullOrEmpty(gitDirectory))
-        {
-            throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
-        }
+    private string GetProjectRootDirectory() =>
+        RepositoryPathResolution.ResolveProjectRootDirectory(
+            DynamicGitRepositoryPath,
+            this.gitVersionOptions.WorkingDirectory,
+            static workingDirectory =>
+            {
+                var repositoryWorkingDirectory = Discover(workingDirectory)?.WorkingDirectory;
+                if (repositoryWorkingDirectory is null)
+                {
+                    return null;
+                }
 
-        var directoryInfo = this.fileSystem.Directory.GetParent(gitDirectory) ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
-        return gitDirectory.Contains(FileSystemHelper.Path.Combine(".git", "worktrees"))
-            ? this.fileSystem.Directory.GetParent(directoryInfo.FullName)?.FullName
-            : gitDirectory;
-    }
+                // Match libgit2's Info.WorkingDirectory, which carries a trailing directory separator.
+                return repositoryWorkingDirectory.EndsWith(SysPath.DirectorySeparatorChar) || repositoryWorkingDirectory.EndsWith('/')
+                    ? repositoryWorkingDirectory
+                    : repositoryWorkingDirectory + SysPath.DirectorySeparatorChar;
+            });
 
-    private string GetProjectRootDirectory()
-    {
-        if (!DynamicGitRepositoryPath.IsNullOrWhiteSpace())
-        {
-            return this.gitVersionOptions.WorkingDirectory;
-        }
-
-        var layout = Discover(this.gitVersionOptions.WorkingDirectory)
-            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
-
-        var workingDirectory = layout.WorkingDirectory
-            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
-
-        // Match libgit2's Info.WorkingDirectory, which carries a trailing directory separator.
-        return workingDirectory.EndsWith(SysPath.DirectorySeparatorChar) || workingDirectory.EndsWith('/')
-            ? workingDirectory
-            : workingDirectory + SysPath.DirectorySeparatorChar;
-    }
-
-    private string? GetGitRootPath()
-    {
-        var isDynamicRepo = !DynamicGitRepositoryPath.IsNullOrWhiteSpace();
-        var rootDirectory = isDynamicRepo ? DotGitDirectory : ProjectRootDirectory;
-
-        return rootDirectory;
-    }
+    private string? GetGitRootPath() =>
+        RepositoryPathResolution.ResolveGitRootPath(DynamicGitRepositoryPath, DotGitDirectory, ProjectRootDirectory);
 
     /// <summary>
     /// Discovers the repository containing <paramref name="startPath"/>, returning
@@ -96,7 +76,10 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
-            var layout = GitRepositoryLayout.TryDiscover(possiblePath);
+            // Only possiblePath itself may be the repository, matching the libgit2 backend's
+            // `new Repository(possiblePath)`; discovery walking up the hierarchy would match
+            // an enclosing repository and hand a nonexistent .git path to the caller.
+            var layout = GitRepositoryLayout.TryOpen(possiblePath);
             if (layout is null)
             {
                 return false;
