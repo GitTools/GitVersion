@@ -43,10 +43,11 @@ public class GitRepositoryInfo : IGitRepositoryInfo
             this.gitVersionOptions.WorkingDirectory,
             Repository.Discover);
 
-    private string GetProjectRootDirectory() =>
+    private string? GetProjectRootDirectory() =>
         RepositoryPathResolution.ResolveProjectRootDirectory(
             DynamicGitRepositoryPath,
             this.gitVersionOptions.WorkingDirectory,
+            Repository.Discover,
             static workingDirectory =>
             {
                 var gitDirectory = Repository.Discover(workingDirectory);

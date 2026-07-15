@@ -43,10 +43,11 @@ internal sealed class ManagedGitRepositoryInfo : IGitRepositoryInfo
             this.gitVersionOptions.WorkingDirectory,
             static workingDirectory => Discover(workingDirectory)?.GitDirectory);
 
-    private string GetProjectRootDirectory() =>
+    private string? GetProjectRootDirectory() =>
         RepositoryPathResolution.ResolveProjectRootDirectory(
             DynamicGitRepositoryPath,
             this.gitVersionOptions.WorkingDirectory,
+            static workingDirectory => Discover(workingDirectory)?.GitDirectory,
             static workingDirectory =>
             {
                 var repositoryWorkingDirectory = Discover(workingDirectory)?.WorkingDirectory;

@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
@@ -268,6 +269,33 @@ public class DualBackendParityTests : TestBase
 
         backends.Managed.Path.ShouldBe(backends.LibGit2.Path);
         backends.Managed.WorkingDirectory.ShouldBe(backends.LibGit2.WorkingDirectory);
+    }
+
+    [Test]
+    public void BareRepositoryHasNullProjectRootDirectoryOnBothBackends()
+    {
+        var barePath = FileSystemHelper.Path.GetRepositoryTempPath();
+        LibGit2Sharp.Repository.Init(barePath, isBare: true);
+        try
+        {
+            var fileSystem = new FileSystem();
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = barePath });
+
+            IGitRepositoryInfo libGit2Info = new GitRepositoryInfo(fileSystem, options);
+            IGitRepositoryInfo managedInfo = new ManagedGitRepositoryInfo(fileSystem, options);
+
+            // Discovery succeeds for a bare repository, but there is no working directory:
+            // the project root is legitimately null and resolving it must not throw.
+            libGit2Info.ProjectRootDirectory.ShouldBeNull();
+            managedInfo.ProjectRootDirectory.ShouldBeNull();
+
+            managedInfo.DotGitDirectory.ShouldNotBeNull();
+            managedInfo.DotGitDirectory.ShouldBe(libGit2Info.DotGitDirectory);
+        }
+        finally
+        {
+            FileSystemHelper.Directory.DeleteDirectory(barePath);
+        }
     }
 
     [Test]
