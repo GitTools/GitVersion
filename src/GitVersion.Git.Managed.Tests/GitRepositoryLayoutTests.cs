@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace GitVersion.Git.Managed.Tests;
 
 [TestFixture]
@@ -37,6 +39,7 @@ public class GitRepositoryLayoutTests
     }
 
     [Test]
+    [SuppressMessage("Minor Vulnerability", "S4036:Searching OS commands in PATH is security-sensitive", Justification = "git is deliberately resolved from the PATH, exactly like the production CLI executor and the other test fixtures.")]
     public void RejectsSha256RepositoriesWithAClearMessage()
     {
         using var directory = new TempDirectory();

@@ -29,12 +29,12 @@ internal static class RepositoryPathResolution
         string workingDirectory,
         Func<string, string?> discoverGitDirectory)
     {
-        var gitDirectory = !dynamicGitRepositoryPath.IsNullOrWhiteSpace()
-            ? dynamicGitRepositoryPath
-            : discoverGitDirectory(workingDirectory);
+        var gitDirectory = (!dynamicGitRepositoryPath.IsNullOrWhiteSpace()
+                ? dynamicGitRepositoryPath
+                : discoverGitDirectory(workingDirectory))
+            ?.TrimEnd('/', '\\');
 
-        gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (gitDirectory.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(gitDirectory))
         {
             throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
         }
