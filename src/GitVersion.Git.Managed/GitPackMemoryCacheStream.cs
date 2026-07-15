@@ -11,11 +11,32 @@ internal sealed class GitPackMemoryCacheStream : Stream
     private readonly Stream stream;
     private readonly MemoryStream cacheStream = new();
     private readonly long length;
+    private int referenceCount = 1;
+    private bool released;
 
     public GitPackMemoryCacheStream(Stream stream)
     {
         this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
         this.length = this.stream.Length;
+    }
+
+    /// <summary>
+    /// Registers an additional consumer (a <see cref="GitPackMemoryCacheViewStream"/>) of
+    /// this stream. The underlying data is only disposed once the cache has evicted the
+    /// entry and the last consumer has released it.
+    /// </summary>
+    public void AddReference() => Interlocked.Increment(ref this.referenceCount);
+
+    /// <summary>
+    /// Releases one consumer's reference, disposing the underlying streams when none remain.
+    /// </summary>
+    public void Release()
+    {
+        if (Interlocked.Decrement(ref this.referenceCount) == 0)
+        {
+            this.stream.Dispose();
+            this.cacheStream.Dispose();
+        }
     }
 
     /// <summary>
@@ -96,10 +117,10 @@ internal sealed class GitPackMemoryCacheStream : Stream
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
-        if (disposing)
+        if (disposing && !this.released)
         {
-            this.stream.Dispose();
-            this.cacheStream.Dispose();
+            this.released = true;
+            Release();
         }
 
         base.Dispose(disposing);
