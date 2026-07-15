@@ -133,7 +133,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
 
             if (TryLoad(id) is { } commit)
             {
-                queue.Enqueue(commit, (commit.Committer.When.ToUnixTimeSeconds(), sequence++));
+                queue.Enqueue(commit, (commit.CommitterWhen.ToUnixTimeSeconds(), sequence++));
                 queuedCounts[id] = queuedCounts.GetValueOrDefault(id) + 1;
 
                 if ((updated & flagStale) == 0)
@@ -629,7 +629,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             }
 
             node.Commit = commit;
-            node.Time = commit.Committer.When.ToUnixTimeSeconds();
+            node.Time = commit.CommitterWhen.ToUnixTimeSeconds();
             node.Parents.AddRange(commit.Parents.Select(LookupNode));
             node.Parsed = true;
         }

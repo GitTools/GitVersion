@@ -23,7 +23,7 @@ internal sealed class ManagedCommit : ICommit
                 .Cast<ICommit>()]);
         Id = new ManagedObjectId(innerCommit.Sha);
         Sha = Id.Sha;
-        When = innerCommit.Committer.When;
+        When = innerCommit.CommitterWhen;
     }
 
     internal GitObjectId ObjectId => this.innerCommit.Sha;
