@@ -144,17 +144,39 @@ internal sealed class GitTreeDiff(GitObjectStore objectStore)
 
     private static int CompareTreeNames(GitTreeEntry left, GitTreeEntry right)
     {
+        // Git sorts tree entries by their raw unsigned bytes, not by the decoded
+        // strings: UTF-16 comparison inverts e.g. U+E000..U+FFFF versus surrogate
+        // pairs, and Latin-1-fallback names do not round-trip through the string.
+        var leftName = left.NameBytes.Span;
+        var rightName = right.NameBytes.Span;
+
         // Entries with the same name align even when their type differs, so a
         // file-to-directory change on one name is detected as such.
-        if (left.Name == right.Name)
+        if (leftName.SequenceEqual(rightName))
         {
             return 0;
         }
 
-        // Git's canonical tree order: directory names sort as if they ended with '/'.
-        var leftName = left.IsTree ? left.Name + "/" : left.Name;
-        var rightName = right.IsTree ? right.Name + "/" : right.Name;
+        var commonLength = Math.Min(leftName.Length, rightName.Length);
+        var comparison = leftName[..commonLength].SequenceCompareTo(rightName[..commonLength]);
 
-        return string.CompareOrdinal(leftName, rightName);
+        if (comparison != 0)
+        {
+            return comparison;
+        }
+
+        // One name is a prefix of the other. Git's canonical tree order: directory
+        // names sort as if they ended with '/', while an exhausted file name ends.
+        return NextByte(leftName, commonLength, left.IsTree) - NextByte(rightName, commonLength, right.IsTree);
+    }
+
+    private static int NextByte(ReadOnlySpan<byte> name, int index, bool isTree)
+    {
+        if (index < name.Length)
+        {
+            return name[index];
+        }
+
+        return isTree ? (byte)'/' : 0;
     }
 }

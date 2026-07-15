@@ -32,9 +32,10 @@ internal sealed class GitTree
 /// Represents an individual entry in a Git tree.
 /// </summary>
 /// <param name="name">The name of the entry.</param>
+/// <param name="nameBytes">The raw name bytes of the entry, exactly as stored in the tree object.</param>
 /// <param name="mode">The file mode of the entry, as stored in the tree object (octal, without leading zeros), e.g. <c>100644</c> or <c>40000</c>.</param>
 /// <param name="sha">The Git object id of the blob or tree of the entry.</param>
-internal sealed class GitTreeEntry(string name, string mode, GitObjectId sha)
+internal sealed class GitTreeEntry(string name, ReadOnlyMemory<byte> nameBytes, string mode, GitObjectId sha)
 {
     private const string TreeMode = "40000";
 
@@ -42,6 +43,13 @@ internal sealed class GitTreeEntry(string name, string mode, GitObjectId sha)
     /// Gets the name of the entry.
     /// </summary>
     public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets the raw name bytes of the entry, exactly as stored in the tree object.
+    /// Git sorts and aligns tree entries by these bytes; <see cref="Name"/> is a decoded
+    /// form (UTF-8 with a Latin-1 fallback) which does not always round-trip to them.
+    /// </summary>
+    public ReadOnlyMemory<byte> NameBytes { get; } = nameBytes;
 
     /// <summary>
     /// Gets the file mode of the entry, as stored in the tree object (octal, without leading zeros),

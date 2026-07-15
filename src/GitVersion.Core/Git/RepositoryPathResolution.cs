@@ -48,14 +48,17 @@ internal static class RepositoryPathResolution
     /// <summary>
     /// Resolves the project root: the working directory itself for dynamic repositories,
     /// otherwise the discovered repository's working directory (with a trailing separator,
-    /// as libgit2 reports it).
+    /// as libgit2 reports it) — <see langword="null"/> for bare repositories, which have none.
+    /// Throws only when repository discovery itself fails.
     /// </summary>
     /// <param name="dynamicGitRepositoryPath">The dynamic repository path, when configured.</param>
     /// <param name="workingDirectory">The working directory to discover from.</param>
-    /// <param name="resolveRepositoryWorkingDirectory">Resolves the working directory of the repository containing a path, or <see langword="null"/>.</param>
-    public static string ResolveProjectRootDirectory(
+    /// <param name="discoverGitDirectory">Discovers the git directory containing a path, or <see langword="null"/>.</param>
+    /// <param name="resolveRepositoryWorkingDirectory">Resolves the working directory of the repository containing a path, or <see langword="null"/> when the repository is bare.</param>
+    public static string? ResolveProjectRootDirectory(
         string? dynamicGitRepositoryPath,
         string workingDirectory,
+        Func<string, string?> discoverGitDirectory,
         Func<string, string?> resolveRepositoryWorkingDirectory)
     {
         if (!dynamicGitRepositoryPath.IsNullOrWhiteSpace())
@@ -63,8 +66,13 @@ internal static class RepositoryPathResolution
             return workingDirectory;
         }
 
-        return resolveRepositoryWorkingDirectory(workingDirectory)
-            ?? throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
+        if (discoverGitDirectory(workingDirectory).IsNullOrEmpty())
+        {
+            throw new DirectoryNotFoundException(DotGitDirectoryNotFoundMessage);
+        }
+
+        // Discovery succeeded; a null working directory means the repository is bare.
+        return resolveRepositoryWorkingDirectory(workingDirectory);
     }
 
     /// <summary>

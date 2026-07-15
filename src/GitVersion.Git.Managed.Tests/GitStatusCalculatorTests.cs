@@ -79,6 +79,19 @@ public class GitStatusCalculatorTests
     }
 
     [Test]
+    public void TreatsNonBoundaryConsecutiveAsterisksAsSlashExcluding()
+    {
+        using var repository = new GitTestRepository();
+        repository.WriteFile(".gitignore", "out**txt\n");
+        repository.Commit("commit");
+
+        repository.WriteFile("output.txt", "ignored\n");       // matched by out**txt
+        repository.WriteFile("out/nested/file.txt", "kept\n"); // ** without a boundary must not cross '/'
+
+        AssertParity(repository, expectedCount: 1);
+    }
+
+    [Test]
     public void RespectsInfoExclude()
     {
         using var repository = new GitTestRepository();
@@ -141,6 +154,28 @@ public class GitStatusCalculatorTests
         File.SetUnixFileMode(scriptPath, File.GetUnixFileMode(scriptPath) | UnixFileMode.UserExecute);
 
         AssertParity(repository, expectedCount: 1);
+    }
+
+    [Test]
+    public void CountsAnUntrackedDirectorySymbolicLinkAsASingleEntry()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            Assert.Ignore("Creating symbolic links requires elevated privileges on Windows.");
+            return;
+        }
+
+        using var repository = new GitTestRepository();
+        repository.WriteFile("target/one.txt", "one\n");
+        repository.WriteFile("target/two.txt", "two\n");
+        repository.Commit("commit");
+
+        // A symbolic link to a directory is a single untracked entry (its blob is the raw
+        // link target), and a self-referencing link must not cause unbounded recursion.
+        Directory.CreateSymbolicLink(Path.Combine(repository.RepositoryPath, "link"), "target");
+        Directory.CreateSymbolicLink(Path.Combine(repository.RepositoryPath, "self"), ".");
+
+        AssertParity(repository, expectedCount: 2);
     }
 
     [Test]

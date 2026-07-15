@@ -6,6 +6,10 @@
         <PackageReference Include="System.IO.Abstractions" />
     </ItemGroup>
     <ItemGroup>
+        <!-- src/GitVersion.Core gets this via src/Directory.Build.props; the source-linked Git/ files rely on it -->
+        <Using Include="Microsoft.Extensions.Logging" />
+    </ItemGroup>
+    <ItemGroup>
         <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IEnvironment.cs" Link="Infrastructure\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Core\RegexPatterns.cs" Link="%(Filename)%(Extension)" />

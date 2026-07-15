@@ -186,8 +186,50 @@ public class GitRevisionWalkerTests
         var options = new GitRevisionWalkOptions();
         options.Include.Add(layout.CreateReferenceStore().ResolveToObjectId("HEAD")!.Value);
 
-        // The walk stops at the shallow boundary instead of failing on the missing parent.
-        new GitRevisionWalker(store).Walk(options).Count.ShouldBe(2);
+        // The commits listed in .git/shallow are grafted parentless, so the walk stops
+        // exactly at the boundary instead of chasing the missing parents.
+        new GitRevisionWalker(store, layout.ReadShallowCommits().ToHashSet()).Walk(options).Count.ShouldBe(2);
+    }
+
+    [Test]
+    public void TheShallowBoundaryWinsOverPresentParentObjects()
+    {
+        // A .git/shallow file naming a mid-history commit of a full repository: the parent
+        // objects exist, but git and libgit2 honor the graft and stop at the boundary anyway.
+        using var repository = CreateLinearRepository();
+        var boundary = repository.RevParse("HEAD~2");
+        File.WriteAllText(Path.Combine(repository.GitDirectory, "shallow"), boundary + "\n");
+
+        var layout = GitRepositoryLayout.Discover(repository.RepositoryPath);
+        using var store = layout.CreateObjectStore();
+
+        var options = new GitRevisionWalkOptions();
+        options.Include.Add(repository.ResolveId("HEAD"));
+
+        var walked = new GitRevisionWalker(store, layout.ReadShallowCommits().ToHashSet()).Walk(options);
+
+        walked.Count.ShouldBe(3);
+        walked[^1].Sha.ShouldBe(GitObjectId.Parse(boundary));
+        walked[^1].Parents.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void AMissingParentObjectFailsTheWalkInsteadOfTruncatingHistory()
+    {
+        using var repository = CreateLinearRepository();
+        var missingParent = repository.RevParse("HEAD~2");
+        DeleteLooseObject(repository, missingParent);
+
+        using var store = repository.OpenObjectStore();
+        var options = new GitRevisionWalkOptions();
+        options.Include.Add(repository.ResolveId("HEAD"));
+
+        // Without a shallow boundary explaining the gap, the repository is corrupt: libgit2
+        // fails the walk on a missing parent, and truncating silently would yield a wrong version.
+        var exception = Should.Throw<GitObjectStoreException>(() => new GitRevisionWalker(store).Walk(options));
+
+        exception.ObjectNotFound.ShouldBeTrue();
+        exception.Message.ShouldContain(missingParent);
     }
 
     [Test]
@@ -266,6 +308,15 @@ public class GitRevisionWalkerTests
         }
 
         return result;
+    }
+
+    private static void DeleteLooseObject(GitTestRepository repository, string sha)
+    {
+        // Git marks loose object files read-only; reset the attribute so the delete
+        // succeeds on Windows.
+        var path = Path.Combine(repository.ObjectsDirectory, sha[..2], sha[2..]);
+        File.SetAttributes(path, FileAttributes.Normal);
+        File.Delete(path);
     }
 
     private static GitTestRepository CreateLinearRepository()

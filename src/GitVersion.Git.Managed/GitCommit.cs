@@ -69,6 +69,27 @@ internal sealed class GitCommit
     /// </summary>
     public string Message => this.message ??= GitTextDecoder.Decode(RawMessage, EncodingName);
 
+    /// <summary>
+    /// Creates a copy of this commit with no parents. Used to apply shallow-clone grafts:
+    /// commits at the <c>.git/shallow</c> boundary are exposed as parentless the way git and
+    /// libgit2 expose them, regardless of the parent headers stored in the object.
+    /// </summary>
+    /// <returns>The parentless copy, or this instance when it already has no parents.</returns>
+    public GitCommit WithoutParents() =>
+        Parents.Count == 0
+            ? this
+            : new()
+            {
+                Sha = Sha,
+                Tree = Tree,
+                Parents = [],
+                CommitterWhen = CommitterWhen,
+                RawAuthor = RawAuthor,
+                RawCommitter = RawCommitter,
+                RawMessage = RawMessage,
+                EncodingName = EncodingName
+            };
+
     /// <inheritdoc/>
     public override string ToString() => $"Git Commit: {Sha}";
 }

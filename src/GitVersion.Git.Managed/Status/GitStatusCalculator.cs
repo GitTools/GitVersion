@@ -273,9 +273,9 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 
         try
         {
-            foreach (var entryPath in Directory.EnumerateFileSystemEntries(directory).Order(StringComparer.Ordinal))
+            foreach (var entry in new DirectoryInfo(directory).EnumerateFileSystemInfos().OrderBy(entry => entry.Name, StringComparer.Ordinal))
             {
-                var name = Path.GetFileName(entryPath);
+                var name = entry.Name;
 
                 if (relativePrefix.Length == 0 && name == ".git")
                 {
@@ -283,7 +283,10 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
                 }
 
                 var relativePath = relativePrefix + name;
-                var isDirectory = Directory.Exists(entryPath);
+
+                // A symbolic link is a single file-like entry whose blob is the link target.
+                // It is never descended into, matching git — and preventing link loops.
+                var isDirectory = entry is DirectoryInfo && (entry.Attributes & FileAttributes.ReparsePoint) == 0;
 
                 if (IsIgnored(ignoreSources, relativePath, isDirectory))
                 {
@@ -294,7 +297,7 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 
                 if (isDirectory)
                 {
-                    WalkDirectory(entryPath, relativePath + "/", ignoreCase, ignoreSources, indexEntries, untracked);
+                    WalkDirectory(entry.FullName, relativePath + "/", ignoreCase, ignoreSources, indexEntries, untracked);
                 }
                 else if (!indexEntries.ContainsKey(relativePath))
                 {
