@@ -156,7 +156,9 @@ internal sealed class GitIgnoreRules
             switch (current)
             {
                 case '*' when i + 1 < pattern.Length && pattern[i + 1] == '*':
-                    regex.Append(".*");
+                    // Consecutive asterisks that are not at a path boundary act as
+                    // regular asterisks, per the gitignore specification.
+                    regex.Append("[^/]*");
                     i += 2;
                     break;
 
