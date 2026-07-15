@@ -101,34 +101,62 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
         const int flagBoth = flagFirst | flagSecond;
 
         var flags = new Dictionary<GitObjectId, int>();
+        var queuedCounts = new Dictionary<GitObjectId, int>();
         var candidates = new List<GitObjectId>();
         var queue = new PriorityQueue<GitCommit, (long Time, long Sequence)>(TimeDescendingComparer.Instance);
         var sequence = 0L;
 
+        // The number of queued entries whose commit is not (yet) stale, tracked
+        // incrementally: libgit2 rescans its whole queue per iteration to decide
+        // whether anything interesting remains, which is quadratic on the hottest
+        // path of version calculation. The count is equivalent to that scan.
+        var interesting = 0;
+
+        void MarkQueuedEntriesStale(GitObjectId id) => interesting -= queuedCounts.GetValueOrDefault(id);
+
         void Enqueue(GitObjectId id, int newFlags)
         {
             var current = flags.GetValueOrDefault(id);
+            var updated = current | newFlags;
 
-            if ((current | newFlags) == current)
+            if (updated == current)
             {
                 return;
             }
 
-            flags[id] = current | newFlags;
+            flags[id] = updated;
+
+            if ((current & flagStale) == 0 && (updated & flagStale) != 0)
+            {
+                MarkQueuedEntriesStale(id);
+            }
 
             if (TryLoad(id) is { } commit)
             {
                 queue.Enqueue(commit, (commit.Committer.When.ToUnixTimeSeconds(), sequence++));
+                queuedCounts[id] = queuedCounts.GetValueOrDefault(id) + 1;
+
+                if ((updated & flagStale) == 0)
+                {
+                    interesting++;
+                }
             }
         }
 
         Enqueue(first, flagFirst);
         Enqueue(second, flagSecond);
 
-        while (queue.UnorderedItems.Any(entry => (flags[entry.Element.Sha] & flagStale) == 0))
+        while (interesting > 0)
         {
             var commit = queue.Dequeue();
             var commitFlags = flags[commit.Sha];
+            queuedCounts[commit.Sha]--;
+
+            if ((commitFlags & flagStale) == 0)
+            {
+                interesting--;
+            }
+
             var paint = commitFlags & flagBoth;
 
             if (paint == flagBoth)
@@ -137,6 +165,7 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
                 {
                     candidates.Add(commit.Sha);
                     flags[commit.Sha] = commitFlags | flagStale;
+                    MarkQueuedEntriesStale(commit.Sha);
                 }
 
                 // Everything below a common commit is stale: it cannot be a better candidate.
