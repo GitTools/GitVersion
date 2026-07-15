@@ -3,7 +3,7 @@ using LibGit2Sharp;
 
 namespace GitVersion;
 
-internal static class LibGit2SharpExtensions
+public static class LibGit2SharpExtensions
 {
     extension(IRepository repository)
     {

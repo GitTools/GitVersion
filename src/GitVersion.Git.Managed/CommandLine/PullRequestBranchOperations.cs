@@ -1,9 +1,10 @@
 namespace GitVersion.Git;
 
 /// <summary>
-/// The backend-agnostic part of turning a pull-request ref into a real local branch:
-/// finding the remote tip that points at HEAD and checking out a fake local branch for it.
-/// Both Git backends drive this with their own way of listing remote references.
+/// The Git-plumbing-independent part of turning a pull-request ref into a real local
+/// branch: finding the remote tip that points at HEAD and checking out a fake local
+/// branch for it. The managed backend drives this with its own way of listing remote
+/// references.
 /// </summary>
 internal static class PullRequestBranchOperations
 {

@@ -34,38 +34,17 @@ internal sealed class CommitCollection : ICommitCollection
             IncludeReachableFrom = includeReachableFrom,
             ExcludeReachableFrom = excludeReachableFrom,
             FirstParentOnly = commitFilter.FirstParentOnly,
-            SortBy = GetSortStrategies(commitFilter.SortBy)
+            SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy
         };
         var commitLog = ((IQueryableCommitLog)this.innerCollection).QueryBy(filter);
         return new CommitCollection(commitLog, this.diff, this.repositoryCache);
 
-        static object? GetReacheableFrom(ICommitish? item) =>
+        static object? GetReacheableFrom(object? item) =>
             item switch
             {
                 Commit c => (LibGit2Sharp.Commit)c,
                 Branch b => (LibGit2Sharp.Branch)b,
                 _ => null
             };
-
-        static LibGit2Sharp.CommitSortStrategies GetSortStrategies(CommitSortStrategies sortBy)
-        {
-            var result = LibGit2Sharp.CommitSortStrategies.None;
-            if (sortBy.HasFlag(CommitSortStrategies.Topological))
-            {
-                result |= LibGit2Sharp.CommitSortStrategies.Topological;
-            }
-
-            if (sortBy.HasFlag(CommitSortStrategies.Time))
-            {
-                result |= LibGit2Sharp.CommitSortStrategies.Time;
-            }
-
-            if (sortBy.HasFlag(CommitSortStrategies.Reverse))
-            {
-                result |= LibGit2Sharp.CommitSortStrategies.Reverse;
-            }
-
-            return result;
-        }
     }
 }

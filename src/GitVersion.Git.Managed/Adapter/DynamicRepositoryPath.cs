@@ -6,8 +6,8 @@ namespace GitVersion.Git;
 
 /// <summary>
 /// Computes the path of the dynamically created Git repository used for remote-URL
-/// scenarios. Both Git backends share this logic and differ only in how they check
-/// whether an existing directory is a repository with a matching remote.
+/// scenarios. The managed backend supplies its own way of checking whether an existing
+/// directory is a repository with a matching remote.
 /// </summary>
 internal static class DynamicRepositoryPath
 {

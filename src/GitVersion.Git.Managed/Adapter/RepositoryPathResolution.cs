@@ -5,10 +5,10 @@ using GitVersion.Helpers;
 namespace GitVersion.Git;
 
 /// <summary>
-/// The backend-agnostic part of resolving the repository paths GitVersion works with
-/// (<see cref="IGitRepositoryInfo"/>): the dot-git directory with its worktree handling,
-/// the project root, and the git root. Each Git backend supplies its own repository
-/// discovery and working-directory resolution.
+/// The part of resolving the repository paths GitVersion works with
+/// (<see cref="IGitRepositoryInfo"/>) that is independent of Git plumbing: the dot-git
+/// directory with its worktree handling, the project root, and the git root. The managed
+/// backend supplies its own repository discovery and working-directory resolution.
 /// </summary>
 internal static class RepositoryPathResolution
 {

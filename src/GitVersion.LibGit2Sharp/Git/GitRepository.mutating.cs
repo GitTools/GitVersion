@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
@@ -47,16 +48,75 @@ internal partial class GitRepository(ILogger<GitRepository> logger) : IMutatingG
         RepositoryExtensions.RunSafe(() =>
             Commands.Fetch((Repository)RepositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
     public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) => RepositoryExtensions.RunSafe(() =>
-        PullRequestBranchOperations.CreateBranchForPullRequestBranch(this, this.logger, remoteName => ListRemoteReferences(auth, remoteName)));
-    private List<GitRemoteReference> ListRemoteReferences(AuthenticationInfo auth, string remoteName)
+    {
+        this.logger.LogInformation("Fetching remote refs to see if there is a pull request ref");
+
+        // FIX ME: What to do when Tip is null?
+        if (Head.Tip == null)
+        {
+            return;
+        }
+
+        var headTipSha = Head.Tip.Sha;
+        var remote = RepositoryInstance.Network.Remotes.Single();
+        var reference = GetPullRequestReference(auth, remote, headTipSha);
+        var canonicalName = reference.CanonicalName;
+        var referenceName = ReferenceName.Parse(reference.CanonicalName);
+        this.logger.LogInformation("Found remote tip '{CanonicalName}' pointing at the commit '{HeadTipSha}'.", canonicalName, headTipSha);
+
+        if (referenceName.IsTag)
+        {
+            this.logger.LogInformation("Checking out tag '{CanonicalName}'", canonicalName);
+            Checkout(reference.Target.Sha);
+        }
+        else if (referenceName.IsPullRequest)
+        {
+            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
+
+            this.logger.LogInformation("Creating fake local branch '{FakeBranchName}'.", fakeBranchName);
+            References.Add(fakeBranchName, headTipSha);
+
+            this.logger.LogInformation("Checking local branch '{FakeBranchName}' out.", fakeBranchName);
+            Checkout(fakeBranchName);
+        }
+        else
+        {
+            var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
+            throw new WarningException(message);
+        }
+    });
+    private DirectReference GetPullRequestReference(AuthenticationInfo auth, LibGit2Sharp.Remote remote, string headTipSha)
     {
         var network = RepositoryInstance.Network;
-        var remote = network.Remotes[remoteName];
         var credentialsProvider = GetCredentialsProvider(auth);
-        var remoteReferences = credentialsProvider != null
-            ? network.ListReferences(remote, credentialsProvider)
-            : network.ListReferences(remote);
-        return [.. remoteReferences.Select(r => r.ResolveToDirectReference()).Select(r => new GitRemoteReference(r.CanonicalName, r.TargetIdentifier))];
+        var remoteTips = (credentialsProvider != null
+                ? network.ListReferences(remote, credentialsProvider)
+                : network.ListReferences(remote))
+            .Select(r => r.ResolveToDirectReference()).ToList();
+
+        var remoteRefsList = string.Join(FileSystemHelper.Path.NewLine, remoteTips.Select(r => r.CanonicalName));
+        this.logger.LogInformation("""
+                                   Remote Refs:
+                                   {RemoteRefsList}
+                                   """, remoteRefsList);
+        var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
+
+        switch (refs.Count)
+        {
+            case 0:
+                {
+                    var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
+                    throw new WarningException(message);
+                }
+            case > 1:
+                {
+                    var names = string.Join(", ", refs.Select(r => r.CanonicalName));
+                    var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
+                    throw new WarningException(message);
+                }
+        }
+
+        return refs[0];
     }
     private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
         new() { CredentialsProvider = GetCredentialsProvider(auth) };

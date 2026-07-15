@@ -16,7 +16,9 @@ internal enum GitBackend
 /// <summary>
 /// The single place where <c>GITVERSION_GIT_BACKEND</c> is interpreted: every composition
 /// root selects the backend through this class so production and tests cannot drift, and
-/// the v7.1 default flip is a one-line change.
+/// the v7.1 default flip is a one-line change. This is configuration, not Git logic — it
+/// names no backend internals, so it lives at the composition seam that every root already
+/// shares rather than inside one of the backend assemblies.
 /// </summary>
 internal static class GitBackendSelector
 {
