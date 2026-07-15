@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace GitVersion.Git;
 
 /// <summary>
@@ -68,14 +66,22 @@ internal static class PullRequestBranchOperations
                               {RemoteRefsList}
                               """, remoteRefsList);
         // The advertised HEAD symref (which libgit2 resolves into a duplicate of the
-        // default branch's direct reference) and peeled "^{}" tag entries are not
-        // candidate tips: they would make the same commit appear twice and trip the
-        // single-match check below. Filtering here keeps both backends' candidate
-        // sets identical regardless of how their listing behaves.
+        // default branch's direct reference) is not a candidate tip: it would make the
+        // same commit appear twice and trip the single-match check below. Peeled "^{}"
+        // entries are folded into their base ref instead of contributing their own
+        // candidate: an annotated tag's ref carries the tag-object sha, so only the
+        // peeled entry's commit sha can ever match a detached HEAD tip. Grouping here
+        // keeps both backends' candidate sets identical regardless of how their
+        // listing behaves.
+        const string peeledSuffix = "^{}";
         var refs = remoteTips
-            .Where(r => r.CanonicalName.StartsWith("refs/", StringComparison.Ordinal)
-                && !r.CanonicalName.EndsWith("^{}", StringComparison.Ordinal))
-            .DistinctBy(r => r.CanonicalName)
+            .Where(r => r.CanonicalName.StartsWith("refs/", StringComparison.Ordinal))
+            .GroupBy(r => r.CanonicalName.EndsWith(peeledSuffix, StringComparison.Ordinal)
+                ? r.CanonicalName[..^peeledSuffix.Length]
+                : r.CanonicalName)
+            .Select(g => new GitRemoteReference(
+                g.Key,
+                (g.FirstOrDefault(r => r.CanonicalName.EndsWith(peeledSuffix, StringComparison.Ordinal)) ?? g.First()).TargetSha))
             .Where(r => r.TargetSha == headTipSha)
             .ToList();
 

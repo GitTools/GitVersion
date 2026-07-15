@@ -85,10 +85,11 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
             var sha = line[..separator];
             var name = line[(separator + 1)..];
 
-            // Skip peeled entries ("<ref>^{}") and the symbolic HEAD advertisement: neither is
-            // part of libgit2's ListReferences result that this replaces, and HEAD would show up
-            // as a duplicate of the branch it points at.
-            if (name.EndsWith("^{}", StringComparison.Ordinal) || !name.StartsWith("refs/", StringComparison.Ordinal))
+            // Skip the symbolic HEAD advertisement: it is not part of libgit2's ListReferences
+            // result that this replaces, and it would show up as a duplicate of the branch it
+            // points at. Peeled entries ("<ref>^{}") are kept: they carry an annotated tag's
+            // commit sha, which PullRequestBranchOperations folds into the base tag ref.
+            if (!name.StartsWith("refs/", StringComparison.Ordinal))
             {
                 continue;
             }

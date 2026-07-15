@@ -26,6 +26,8 @@ public class PullRequestBranchOperationsTests : TestBase
     [Test]
     public void PeeledAndDuplicateEntriesAreNotCandidateTips()
     {
+        const string tagObjectSha = "1111111111111111111111111111111111111111";
+        const string otherCommitSha = "2222222222222222222222222222222222222222";
         var repository = CreateRepository();
 
         PullRequestBranchOperations.CreateBranchForPullRequestBranch(
@@ -35,10 +37,32 @@ public class PullRequestBranchOperationsTests : TestBase
             [
                 new("refs/pull/2/merge", HeadTipSha),
                 new("refs/pull/2/merge", HeadTipSha),      // duplicate (e.g. a resolved symref)
-                new("refs/tags/v1.0.0^{}", HeadTipSha)     // peeled tag entry
+                new("refs/tags/v1.0.0", tagObjectSha),     // annotated tag pointing elsewhere
+                new("refs/tags/v1.0.0^{}", otherCommitSha) // its peeled entry
             ]);
 
         repository.References.Received().Add("refs/heads/pull/2/merge", HeadTipSha);
+    }
+
+    [Test]
+    public void AnnotatedTagIsMatchedThroughItsPeeledEntry()
+    {
+        // A detached HEAD at an annotated tag's commit: the tag ref itself carries the
+        // tag-object sha, so only the peeled "^{}" entry points at the head tip. It must
+        // fold into the base tag ref and take the tag checkout path.
+        const string tagObjectSha = "1111111111111111111111111111111111111111";
+        var repository = CreateRepository();
+
+        PullRequestBranchOperations.CreateBranchForPullRequestBranch(
+            repository,
+            NullLogger.Instance,
+            _ =>
+            [
+                new("refs/tags/v1.0.0", tagObjectSha),
+                new("refs/tags/v1.0.0^{}", HeadTipSha)
+            ]);
+
+        repository.Received().Checkout(HeadTipSha);
     }
 
     [Test]
