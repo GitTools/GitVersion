@@ -269,6 +269,13 @@ internal sealed class GitRevisionWalker(GitObjectStore objectStore)
             {
                 Parse(node);
 
+                // libgit2's revwalk push/hide fails when the commit cannot be looked up;
+                // flowing an unparsed seed through the walk would emit a null commit.
+                if (!node.Parsed)
+                {
+                    throw new GitObjectStoreException($"The commit '{node.Id}' could not be found in the repository.") { ObjectNotFound = true };
+                }
+
                 if (node.Uninteresting)
                 {
                     MarkParentsUninteresting(node);

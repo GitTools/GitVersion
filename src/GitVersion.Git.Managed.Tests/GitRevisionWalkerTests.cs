@@ -190,6 +190,20 @@ public class GitRevisionWalkerTests
         new GitRevisionWalker(store).Walk(options).Count.ShouldBe(2);
     }
 
+    [Test]
+    public void WalkingFromAMissingCommitFails()
+    {
+        using var repository = CreateLinearRepository();
+        using var store = repository.OpenObjectStore();
+
+        var options = new GitRevisionWalkOptions();
+        options.Include.Add(GitObjectId.Parse("0123456789012345678901234567890123456789"));
+
+        // libgit2's revwalk push fails on a missing commit; emitting a walk
+        // containing a null commit instead would blow up far from the cause.
+        Should.Throw<GitObjectStoreException>(() => new GitRevisionWalker(store).Walk(options));
+    }
+
     private static void AssertWalkParity(GitTestRepository repository, GitRevisionWalkOptions options, bool head, string? excludeSha = null)
     {
         if (head)
