@@ -46,37 +46,37 @@ internal static class DeltaStreamReader
     {
         if ((instruction & 0b0000_0001) != 0)
         {
-            value.Offset |= (byte)stream.ReadByte();
+            value.Offset |= ReadByteOrThrow(stream);
         }
 
         if ((instruction & 0b0000_0010) != 0)
         {
-            value.Offset |= (byte)stream.ReadByte() << 8;
+            value.Offset |= ReadByteOrThrow(stream) << 8;
         }
 
         if ((instruction & 0b0000_0100) != 0)
         {
-            value.Offset |= (byte)stream.ReadByte() << 16;
+            value.Offset |= ReadByteOrThrow(stream) << 16;
         }
 
         if ((instruction & 0b0000_1000) != 0)
         {
-            value.Offset |= (byte)stream.ReadByte() << 24;
+            value.Offset |= ReadByteOrThrow(stream) << 24;
         }
 
         if ((instruction & 0b0001_0000) != 0)
         {
-            value.Size = (byte)stream.ReadByte();
+            value.Size = ReadByteOrThrow(stream);
         }
 
         if ((instruction & 0b0010_0000) != 0)
         {
-            value.Size |= (byte)stream.ReadByte() << 8;
+            value.Size |= ReadByteOrThrow(stream) << 8;
         }
 
         if ((instruction & 0b0100_0000) != 0)
         {
-            value.Size |= (byte)stream.ReadByte() << 16;
+            value.Size |= ReadByteOrThrow(stream) << 16;
         }
 
         // Size zero is automatically converted to 0x10000.
@@ -84,5 +84,13 @@ internal static class DeltaStreamReader
         {
             value.Size = 0x10000;
         }
+    }
+
+    private static int ReadByteOrThrow(Stream stream)
+    {
+        var value = stream.ReadByte();
+        return value == -1
+            ? throw new EndOfStreamException("The delta stream ended in the middle of a copy instruction.")
+            : value;
     }
 }
