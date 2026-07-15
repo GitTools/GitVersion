@@ -33,6 +33,32 @@ public class GitCliMutatorTests : TestBase
     }
 
     [Test]
+    [NonParallelizable]
+    public void CheckoutIgnoresAnInheritedGitDirEnvironmentVariable()
+    {
+        // git exports GIT_DIR when running hooks; the executor must scrub it so
+        // mutations target the working-directory repository, as libgit2 did.
+        using var otherFixture = new EmptyRepositoryFixture();
+        otherFixture.Repository.MakeACommit();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.Repository.CreateBranch("only-here");
+
+        System.Environment.SetEnvironmentVariable("GIT_DIR", FileSystemHelper.Path.Combine(otherFixture.RepositoryPath, ".git"));
+        try
+        {
+            CreateMutator().Checkout(fixture.RepositoryPath, "only-here");
+        }
+        finally
+        {
+            System.Environment.SetEnvironmentVariable("GIT_DIR", null);
+        }
+
+        fixture.Repository.Head.FriendlyName.ShouldBe("only-here");
+    }
+
+    [Test]
     public void CheckoutFailureIsNotMisclassifiedAsAnHttpError()
     {
         using var fixture = new EmptyRepositoryFixture();
