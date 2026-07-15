@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Output;
 
 namespace GitVersion.Tests;
@@ -10,9 +11,9 @@ public class GitVersionCoreTestModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        var gitBackend = SysEnv.GetEnvironmentVariable("GITVERSION_GIT_BACKEND");
-        var useManagedBackend = string.Equals(gitBackend, "managed", StringComparison.OrdinalIgnoreCase);
-        services.AddModule(useManagedBackend ? new GitVersionManagedGitModule() : new GitVersionLibGit2SharpModule());
+        services.AddModule(GitBackendSelector.Resolve() == GitBackend.Managed
+            ? new GitVersionManagedGitModule()
+            : new GitVersionLibGit2SharpModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionOutputModule());
         services.AddModule(new GitVersionConfigurationModule());
