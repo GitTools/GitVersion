@@ -170,6 +170,13 @@ internal sealed class GitTreeDiff(GitObjectStore objectStore)
         return NextByte(leftName, commonLength, left.IsTree) - NextByte(rightName, commonLength, right.IsTree);
     }
 
-    private static int NextByte(ReadOnlySpan<byte> name, int index, bool isTree) =>
-        index < name.Length ? name[index] : isTree ? (byte)'/' : 0;
+    private static int NextByte(ReadOnlySpan<byte> name, int index, bool isTree)
+    {
+        if (index < name.Length)
+        {
+            return name[index];
+        }
+
+        return isTree ? (byte)'/' : 0;
+    }
 }

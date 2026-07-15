@@ -284,8 +284,8 @@ internal sealed class GitStatusCalculator(GitRepositoryLayout layout, GitObjectS
 
                 var relativePath = relativePrefix + name;
 
-                // A symbolic link is a single file-like entry whose blob is the link target;
-                // it is never descended into, matching git — and preventing link loops.
+                // A symbolic link is a single file-like entry whose blob is the link target.
+                // It is never descended into, matching git — and preventing link loops.
                 var isDirectory = entry is DirectoryInfo && (entry.Attributes & FileAttributes.ReparsePoint) == 0;
 
                 if (IsIgnored(ignoreSources, relativePath, isDirectory))
