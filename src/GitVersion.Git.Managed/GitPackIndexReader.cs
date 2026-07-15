@@ -82,7 +82,7 @@ internal sealed class GitPackIndexReader : IDisposable
 
         // Get the offset value. It's located at:
         // 4 (header) + 4 (version) + 256 * 4 (fanout table) + 20 * objectCount (name table) + 4 * objectCount (CRC32) + 4 * i (offset values)
-        var offsetTableStart = NameTableStart + (hashLength * objectCount) + (4 * objectCount);
+        var offsetTableStart = NameTableStart + (((long)hashLength + 4) * objectCount);
         Span<byte> offsetBuffer = stackalloc byte[8];
 
         this.stream.SafeFileHandle.ReadExactlyAt(offsetTableStart + (4L * i), offsetBuffer[..4]);
@@ -131,7 +131,15 @@ internal sealed class GitPackIndexReader : IDisposable
 
         for (var i = 1; i <= fanoutTableLength; i++)
         {
-            this.fanoutTable[i] = BinaryPrimitives.ReadInt32BigEndian(value.Slice(4 + (4 * i), 4));
+            // The on-disk fanout entries are unsigned 32-bit integers.
+            var entry = BinaryPrimitives.ReadUInt32BigEndian(value.Slice(4 + (4 * i), 4));
+
+            if (entry > int.MaxValue)
+            {
+                throw new GitObjectStoreException($"The pack index file has a fanout entry of {entry} objects, which exceeds the supported maximum of {int.MaxValue}.");
+            }
+
+            this.fanoutTable[i] = (int)entry;
         }
 
         this.initialized = true;
