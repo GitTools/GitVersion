@@ -9,8 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- The dual-backend parity tests open the libgit2 backend directly. -->
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,7 @@
-using GitVersion.Git;
-
-namespace GitVersion.Tests;
+namespace GitVersion.Git.Managed.Tests;
 
 [TestFixture]
-public class PullRequestBranchOperationsTests : TestBase
+public class PullRequestBranchOperationsTests
 {
     private const string HeadTipSha = "0123456789012345678901234567890123456789";
 
