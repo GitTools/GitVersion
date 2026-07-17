@@ -151,20 +151,20 @@ publish PRs (Homebrew, winget, GitTools Actions), and verifying published artifa
 
 All three supported coding agents resolve to the same skill file, with different invocation mechanics:
 
-- **Claude Code** has native skill support. Open a session in the repo root and run:
+* **Claude Code** has native skill support. Open a session in the repo root and run:
 
-  ```
+  ```text
   /release
   ```
 
   or ask the assistant to run the `release` skill directly if slash commands aren't available in your client.
 
-- **GitHub Copilot** reads [`.github/copilot-instructions.md`](.github/copilot-instructions.md), which points to `AGENTS.md`.
+* **GitHub Copilot** reads [`.github/copilot-instructions.md`](.github/copilot-instructions.md), which points to `AGENTS.md`.
   Ask Copilot Chat (or the Copilot coding agent) to perform a GitVersion release; it should follow the pointer to
   `AGENTS.md` and from there to the skill file. If it doesn't pick up the pointer on its own, explicitly ask it to
   read `.agents/skills/release/SKILL.md` and follow its phases in order.
 
-- **Codex CLI** reads `AGENTS.md` automatically as repo-specific guidance. Ask it to perform a GitVersion release;
+* **Codex CLI** reads `AGENTS.md` automatically as repo-specific guidance. Ask it to perform a GitVersion release;
   it should follow the `AGENTS.md` pointer to `.agents/skills/release/SKILL.md`. As with Copilot, you can also
   reference the skill file path directly if it doesn't follow the pointer unprompted.
 
@@ -180,13 +180,13 @@ wait for downstream PRs to merge — once a PR is confirmed created it's linked 
 NuGet packages are published to nuget.org using [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing),
 which replaces long-lived API keys with short-lived, identity-based tokens issued by GitHub Actions OIDC.
 
-**How it works:**
+#### How it works
 
 1. The publish workflow requests a GitHub OIDC token scoped to `https://www.nuget.org`.
 2. That token is exchanged with the nuget.org token service for a short-lived API key.
 3. Packages are pushed using that short-lived key — no long-lived secret is stored or rotated.
 
-**One-time setup on nuget.org:**
+#### One-time setup on nuget.org
 
 Trusted Publishing is configured once for the repository and workflow — not per package. A single trusted
 publisher entry covers every package pushed by the same workflow run.
@@ -211,13 +211,13 @@ publisher entry covers every package pushed by the same workflow run.
 > registered fields exactly. A mismatch on any field (e.g. wrong workflow file name) will cause the token
 > exchange to fail and the publish step will fall back to the static `NUGET_API_KEY`.
 
-**Verification and troubleshooting:**
+#### Verification and troubleshooting
 
-- If the OIDC token exchange fails the workflow falls back to a static `NUGET_API_KEY` environment variable
+* If the OIDC token exchange fails the workflow falls back to a static `NUGET_API_KEY` environment variable
   loaded from 1Password via the `gittools/cicd/nuget-creds@v1` action. Check the "Publishing to Nuget.org" log
   group for error details.
-- The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
-- If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
+* The publish job requires `id-token: write` permission, which is declared in `.github/workflows/_publish.yml`.
+* If a package fails to publish with a permissions error, verify that nuget.org Trusted Publishing is configured
   and that the owner, repository, and workflow file name match exactly.
 
 ## Code Style
