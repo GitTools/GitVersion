@@ -124,6 +124,8 @@ internal class GitVersionExecutor(
         {
             this.logger.LogInformation("Working directory: {WorkingDirectory}", workingDirectory);
         }
+
+        this.logger.LogInformation("Git backend: {GitBackend}", GitBackendSelector.ResolveName());
     }
 
     private bool VerifyAndDisplayConfiguration(GitVersionOptions gitVersionOptions)

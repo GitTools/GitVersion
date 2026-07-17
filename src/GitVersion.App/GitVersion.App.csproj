@@ -28,6 +28,7 @@
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Git.Managed\GitVersion.Git.Managed.csproj" />
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />

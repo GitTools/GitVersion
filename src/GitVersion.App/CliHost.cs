@@ -1,6 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.Output;
 using Serilog;
 using Serilog.Core;
@@ -33,7 +34,9 @@ internal static class CliHost
         services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionOutputModule());
 
-        services.AddModule(new GitVersionLibGit2SharpModule());
+        services.AddModule(GitBackendSelector.Resolve() == GitBackend.Managed
+            ? new GitVersionManagedGitModule()
+            : new GitVersionLibGit2SharpModule());
 
         var envValue = SysEnv.GetEnvironmentVariable("GITVERSION_USE_V6_ARGUMENT_PARSER");
         var useLegacyParser = string.Equals(envValue, "true", StringComparison.OrdinalIgnoreCase);
