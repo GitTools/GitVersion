@@ -41,8 +41,19 @@ internal class GitVersionCacheKeyFactory(
     {
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
 
-        // traverse the directory and get a list of files, use that for GetHash
-        var contents = CalculateDirectoryContents(FileSystemHelper.Path.Combine(dotGitDirectory, "refs"));
+        // traverse the directory and get a list of files, use that for GetHash.
+        // The refs directory may not exist when all refs are packed (e.g. a fresh
+        // clone by recent versions of git writes refs to packed-refs only).
+        var refsPath = FileSystemHelper.Path.Combine(dotGitDirectory, "refs");
+        var contents = this.fileSystem.Directory.Exists(refsPath)
+            ? CalculateDirectoryContents(refsPath)
+            : [];
+
+        // Refs may live partially or entirely in packed-refs instead of loose files
+        // under refs/, so its content must contribute to the hash for packed ref
+        // updates (e.g. a fetched tag) to invalidate the cache.
+        var packedRefsPath = FileSystemHelper.Path.Combine(dotGitDirectory, "packed-refs");
+        AddFileContents([packedRefsPath], contents);
 
         return GetHash([.. contents]);
     }
