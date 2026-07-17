@@ -1,7 +1,7 @@
 namespace GitVersion.Git;
 
 /// <summary>Represents a Git branch, exposing its tip commit and tracking information.</summary>
-public interface IBranch : IEquatable<IBranch?>, IComparable<IBranch>, INamedReference
+public interface IBranch : IEquatable<IBranch?>, IComparable<IBranch>, INamedReference, ICommitish
 {
     /// <summary>Gets the most recent commit on this branch, or <see langword="null"/> for an empty branch.</summary>
     ICommit? Tip { get; }

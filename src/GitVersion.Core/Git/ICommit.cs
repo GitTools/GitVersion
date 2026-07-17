@@ -1,7 +1,7 @@
 namespace GitVersion.Git;
 
 /// <summary>Represents a single Git commit.</summary>
-public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>
+public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>, ICommitish
 {
     /// <summary>Gets the direct parent commits of this commit.</summary>
     IReadOnlyList<ICommit> Parents { get; }
