@@ -72,7 +72,7 @@ public class GitRepositoryInfo : IGitRepositoryInfo
             : Repository.Discover(this.gitVersionOptions.WorkingDirectory);
 
         gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-        if (gitDirectory.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(gitDirectory))
         {
             throw new DirectoryNotFoundException("Cannot find the .git directory");
         }
