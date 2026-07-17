@@ -78,3 +78,29 @@ gitversion --url https://github.com/org/repo.git --branch main --username user -
 ```
 
 For current command details and examples, see [CLI Arguments](/docs/usage/cli/arguments).
+
+## Git backend
+
+GitVersion v7 introduces a fully managed Git backend as an alternative to the native LibGit2Sharp (libgit2) implementation. The backend is selected with the `GITVERSION_GIT_BACKEND` environment variable. When the variable is not set (or empty), the release's default backend is used — you never need to set it. Setting it to any value other than `libgit2` or `managed` (case-insensitive) is an error: GitVersion fails fast instead of silently running the default backend with a typo unnoticed.
+
+:::{.alert .alert-info}
+In v7.0 the `libgit2` backend remains the **default** — behaviour is unchanged unless you opt in. Set `GITVERSION_GIT_BACKEND=managed` to try the managed backend and help validate it. In v7.1 the default flips to `managed`, with `GITVERSION_GIT_BACKEND=libgit2` available as a fallback. Both backends ship side by side for several releases before libgit2 is removed.
+:::
+
+- `libgit2` — the native, libgit2-based backend (default in v7.0).
+- `managed` — a managed implementation for all read/history operations, combined with the `git` command-line executable for network and write operations (clone, fetch, checkout, and CI repository normalization).
+
+:::{.alert .alert-warning}
+When using the `managed` backend, the `git` executable must be available on the `PATH` **only** for the network/normalization scenarios above (dynamic repositories, build-agent normalization). Plain version calculation on an already-prepared checkout does not require `git` on the `PATH`.
+:::
+
+## Environment variables
+
+The environment variables relevant to migrating from v6 to v7:
+
+| Variable                            | Purpose                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `GITVERSION_GIT_BACKEND`            | Selects the Git backend: `libgit2` (default in v7.0) or `managed`. See [Git backend](#git-backend).                 |
+| `GITVERSION_USE_V6_ARGUMENT_PARSER` | Set to `true` to temporarily restore the legacy v6 (`/switch`) argument parser. Removed in a future release.        |
+| `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
+| `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |
