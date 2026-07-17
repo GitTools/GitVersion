@@ -78,7 +78,7 @@ public static class GitRepositoryTestingExtensions
             => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
     }
 
-    extension(RemoteCollection remotes)
+    extension(LibGit2Sharp.RemoteCollection remotes)
     {
         public void RenameRemote(string oldName, string newName)
         {

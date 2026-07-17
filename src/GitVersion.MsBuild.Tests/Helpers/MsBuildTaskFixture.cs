@@ -1,4 +1,3 @@
-using GitVersion.Agents;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Mocks;
@@ -39,45 +38,9 @@ public class MsBuildTaskFixture(RepositoryFixtureBase fixture)
 
     private T UsingEnv<T>(Func<T> func)
     {
-        ResetEnvironment();
-        SetEnvironmentVariables(this.environmentVariables);
-
-        try
-        {
-            return func();
-        }
-        finally
-        {
-            ResetEnvironment();
-        }
-    }
-
-    private static void ResetEnvironment()
-    {
-        var environmentalVariables = new Dictionary<string, string?>
-        {
-            { TeamCity.EnvironmentVariableName, null },
-            { AppVeyor.EnvironmentVariableName, null },
-            { TravisCi.EnvironmentVariableName, null },
-            { Jenkins.EnvironmentVariableName, null },
-            { AzurePipelines.EnvironmentVariableName, null },
-            { GitHubActions.EnvironmentVariableName, null },
-            { SpaceAutomation.EnvironmentVariableName, null }
-        };
-
-        SetEnvironmentVariables([.. environmentalVariables]);
-    }
-
-    private static void SetEnvironmentVariables(KeyValuePair<string, string?>[]? envs)
-    {
-        if (envs == null)
-        {
-            return;
-        }
-
-        foreach (var (key, value) in envs)
-        {
-            SysEnv.SetEnvironmentVariable(key, value);
-        }
+        // The task reads the process-wide environment to detect the build agent, so serialize the
+        // whole set/execute/reset window against every other environment-sensitive fixture.
+        using var environment = MsBuildProcessEnvironment.Enter(this.environmentVariables);
+        return func();
     }
 }
