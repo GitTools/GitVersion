@@ -50,7 +50,15 @@ public class MsBuildExeFixture
             }
         }
 
-        var results = analyzer.Build(environmentOptions);
+        // The MSBuild child process inherits the current process environment, so a build-agent
+        // variable set by a concurrent MsBuildTaskFixture (e.g. TF_BUILD) would otherwise leak into
+        // it and be wrongly detected. Entering the scope serializes against those fixtures and
+        // resets the process environment so the child starts from a clean, non-CI baseline.
+        IAnalyzerResults results;
+        using (MsBuildProcessEnvironment.Enter())
+        {
+            results = analyzer.Build(environmentOptions);
+        }
 
         return new MsBuildExeFixtureResult(this.fixture)
         {
