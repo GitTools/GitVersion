@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   unit_test:
-    name: ${{ matrix.os }} - net${{ matrix.dotnet_version }}
+    name: ${{ matrix.os }} - net${{ matrix.dotnet_version }} - ${{ matrix.git_backend }}
     permissions:
       id-token: write
     strategy:
@@ -24,6 +24,9 @@ jobs:
       matrix:
         os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
+        # Run the suite against both Git backends until libgit2 is removed,
+        # see https://github.com/GitTools/GitVersion/issues/5031
+        git_backend: [ libgit2, managed ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,6 +44,8 @@ jobs:
 
       - name: '[Unit Test]'
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        env:
+          GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
         with:
           shell: pwsh
           timeout_minutes: 30
@@ -60,6 +65,7 @@ jobs:
         with:
           files: artifacts/test-results/**/results.xml
           report_type: 'test_results'
+          flags: ${{ matrix.git_backend }}
           use_oidc: true
 
       - name: Upload Coverage
@@ -68,4 +74,5 @@ jobs:
         with:
           directory: artifacts/test-results
           report_type: 'coverage'
+          flags: ${{ matrix.git_backend }}
           use_oidc: true
