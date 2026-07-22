@@ -1,7 +1,6 @@
 using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Tests;
@@ -10,20 +9,17 @@ namespace GitVersion.Tests;
 public class VariableProviderTests : TestBase
 {
     private IVariableProvider variableProvider = null!;
-    private List<string> logMessages = null!;
+    private readonly DateTimeOffset commitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture);
 
     [SetUp]
     public void Setup()
     {
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
-        this.logMessages = [];
+        List<string> logMessages = [];
 
-        var sp = ConfigureServices(services =>
-        {
-            var log = new Log(new TestLogAppender(this.logMessages.Add));
-            services.AddSingleton<ILog>(log);
-        });
+        var loggerFactory = new TestLoggerFactory(logMessages.Add);
+        var sp = ConfigureServices(services => loggerFactory.RegisterWith(services));
 
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
@@ -42,7 +38,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -68,7 +64,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -92,7 +88,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -118,7 +114,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -144,7 +140,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceDistance = 5,
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -169,7 +165,7 @@ public class VariableProviderTests : TestBase
                 Branch = "pull/2/merge",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -194,7 +190,7 @@ public class VariableProviderTests : TestBase
                 Branch = "feature",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -219,7 +215,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -244,7 +240,7 @@ public class VariableProviderTests : TestBase
                 VersionSourceSha = "versionSourceSha",
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -281,7 +277,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 5,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 
@@ -308,7 +304,7 @@ public class VariableProviderTests : TestBase
                 Sha = "commitSha",
                 ShortSha = "commitShortSha",
                 VersionSourceDistance = 42,
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture)
+                CommitDate = this.commitDate
             }
         };
 

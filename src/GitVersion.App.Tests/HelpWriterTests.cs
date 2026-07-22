@@ -9,7 +9,7 @@ public class HelpWriterTests : TestBase
 
     public HelpWriterTests()
     {
-        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
+        var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule(useLegacyParser: true)));
         this.helpWriter = sp.GetRequiredService<IHelpWriter>();
     }
 
@@ -28,7 +28,7 @@ public class HelpWriterTests : TestBase
 
             { nameof(Arguments.Diag) , "/diag" },
             { nameof(Arguments.LogFilePath) , "/l" },
-            { nameof(Arguments.Verbosity), "/verbosity" },
+            { "verbosity", "/verbosity" },
             { nameof(Arguments.Output) , "/output" },
             { nameof(Arguments.OutputFile) , "/outputfile" },
             { nameof(Arguments.ShowVariable), "/showvariable" },

@@ -16,7 +16,7 @@ public class JsonOutputOnBuildServerTest
 
         var env = new KeyValuePair<string, string?>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json", environments: env);
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " --output json", environments: env);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldStartWith("{");
@@ -32,7 +32,7 @@ public class JsonOutputOnBuildServerTest
 
         var env = new KeyValuePair<string, string?>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json /output buildserver", environments: env);
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " --output json --output buildserver", environments: env);
 
         result.ExitCode.ShouldBe(0);
         const string expectedVersion = "0.0.1-5";
@@ -52,7 +52,8 @@ public class JsonOutputOnBuildServerTest
 
         var env = new KeyValuePair<string, string?>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: $" /output json /output buildserver /output file /outputfile {outputFile}", environments: env);
+        var outputFileArg = string.IsNullOrEmpty(outputFile) ? "" : $" --output-file {outputFile}";
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: $" --output json --output buildserver --output file{outputFileArg}", environments: env);
 
         result.ExitCode.ShouldBe(0);
         const string expectedVersion = "0.0.1-5";
