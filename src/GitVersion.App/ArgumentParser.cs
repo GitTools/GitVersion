@@ -118,6 +118,25 @@ internal class ArgumentParser(
         arguments.AllowShallow = parseResult.GetValue(options.AllowShallow);
         arguments.UpdateWixVersionFile = parseResult.GetValue(options.UpdateWixVersionFile);
 
+        MapOutputOptions(arguments, parseResult, options);
+        MapConfigurationOptions(arguments, parseResult, options);
+        MapTargetPathAndVerbosity(arguments, parseResult, options);
+
+        MapUpdateAssemblyInfoOption(arguments, parseResult, options);
+        MapUpdateProjectFilesOption(arguments, parseResult, options);
+        MapEnsureAssemblyInfoOption(arguments, parseResult, options);
+
+        if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+        {
+            throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
+        }
+
+        MapRemoteOptions(arguments, parseResult, options);
+        ApplyDefaults(arguments, parseResult, options);
+    }
+
+    private static void MapOutputOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
         if (parseResult.GetValue(options.Output) is { } outputs)
         {
             foreach (var output in outputs)
@@ -130,7 +149,10 @@ internal class ArgumentParser(
         {
             arguments.OutputFile = outputFile;
         }
+    }
 
+    private static void MapConfigurationOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
         if (parseResult.GetValue(options.ShowVariable) is { } showVariable)
         {
             ParseShowVariable(arguments, showVariable);
@@ -150,7 +172,10 @@ internal class ArgumentParser(
         {
             ParseOverrideConfig(arguments, overrideConfigs);
         }
+    }
 
+    private void MapTargetPathAndVerbosity(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
         if (parseResult.GetValue(options.TargetPath) is { } targetPath)
         {
             arguments.TargetPath = targetPath;
@@ -164,69 +189,82 @@ internal class ArgumentParser(
         {
             this.loggingLevelSwitch.MinimumLevel = VerbosityMaps[ParseVerbosity(verbosity)];
         }
+    }
 
-        if (parseResult.GetResult(options.UpdateAssemblyInfo) is { Implicit: false })
+    private static void MapUpdateAssemblyInfoOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
+        if (parseResult.GetResult(options.UpdateAssemblyInfo) is not { Implicit: false })
         {
-            var values = parseResult.GetValue(options.UpdateAssemblyInfo);
-            if (values is [var single] && (single.Equals("false", StringComparison.OrdinalIgnoreCase) || single.Equals("0", StringComparison.Ordinal)))
-            {
-                arguments.UpdateAssemblyInfo = false;
-            }
-            else
-            {
-                arguments.UpdateAssemblyInfo = true;
-                if (values != null)
-                {
-                    foreach (var file in values.Where(f => !f.IsTrue()))
-                    {
-                        arguments.UpdateAssemblyInfoFileName.Add(file);
-                    }
-                }
-            }
-
-            if (arguments.UpdateProjectFiles)
-            {
-                throw new WarningException("Cannot specify both --update-project-files and --update-assembly-info in the same run. Please rerun GitVersion with only one parameter");
-            }
+            return;
         }
 
-        if (parseResult.GetResult(options.UpdateProjectFiles) is { Implicit: false })
+        var values = parseResult.GetValue(options.UpdateAssemblyInfo);
+        if (values is [var single] && (single.Equals("false", StringComparison.OrdinalIgnoreCase) || single.Equals("0", StringComparison.Ordinal)))
         {
-            arguments.UpdateProjectFiles = true;
-            if (parseResult.GetValue(options.UpdateProjectFiles) is { } projectFiles)
+            arguments.UpdateAssemblyInfo = false;
+        }
+        else
+        {
+            arguments.UpdateAssemblyInfo = true;
+            if (values != null)
             {
-                foreach (var file in projectFiles.Where(f => !f.IsTrue()))
+                foreach (var file in values.Where(f => !f.IsTrue()))
                 {
                     arguments.UpdateAssemblyInfoFileName.Add(file);
                 }
             }
-
-            if (arguments.UpdateAssemblyInfo)
-            {
-                throw new WarningException("Cannot specify both --update-assembly-info and --update-project-files in the same run. Please rerun GitVersion with only one parameter");
-            }
-
-            if (arguments.EnsureAssemblyInfo)
-            {
-                throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
-            }
         }
 
-        if (parseResult.GetValue(options.EnsureAssemblyInfo))
+        if (arguments.UpdateProjectFiles)
         {
-            arguments.EnsureAssemblyInfo = true;
+            throw new WarningException("Cannot specify both --update-project-files and --update-assembly-info in the same run. Please rerun GitVersion with only one parameter");
+        }
+    }
 
-            if (arguments.UpdateProjectFiles)
+    private static void MapUpdateProjectFilesOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
+        if (parseResult.GetResult(options.UpdateProjectFiles) is not { Implicit: false })
+        {
+            return;
+        }
+
+        arguments.UpdateProjectFiles = true;
+        if (parseResult.GetValue(options.UpdateProjectFiles) is { } projectFiles)
+        {
+            foreach (var file in projectFiles.Where(f => !f.IsTrue()))
             {
-                throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
+                arguments.UpdateAssemblyInfoFileName.Add(file);
             }
         }
 
-        if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+        if (arguments.UpdateAssemblyInfo)
         {
-            throw new WarningException("Can't specify multiple assembly info files when using --ensure-assembly-info, either use a single assembly info file or do not specify --ensure-assembly-info and create assembly info files manually");
+            throw new WarningException("Cannot specify both --update-assembly-info and --update-project-files in the same run. Please rerun GitVersion with only one parameter");
         }
 
+        if (arguments.EnsureAssemblyInfo)
+        {
+            throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
+        }
+    }
+
+    private static void MapEnsureAssemblyInfoOption(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
+        if (!parseResult.GetValue(options.EnsureAssemblyInfo))
+        {
+            return;
+        }
+
+        arguments.EnsureAssemblyInfo = true;
+
+        if (arguments.UpdateProjectFiles)
+        {
+            throw new WarningException("Cannot specify --ensure-assembly-info with --update-project-files: please ensure your project file exists before attempting to update it");
+        }
+    }
+
+    private static void MapRemoteOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
         if (parseResult.GetValue(options.Url) is { } url)
         {
             arguments.TargetUrl = url;
@@ -256,7 +294,10 @@ internal class ArgumentParser(
         {
             arguments.ClonePath = dynRepo;
         }
+    }
 
+    private void ApplyDefaults(Arguments arguments, ParseResult parseResult, CommandOptions options)
+    {
         if (arguments.Output.Count == 0)
         {
             arguments.Output.Add(OutputType.Json);
