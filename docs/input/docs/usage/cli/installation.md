@@ -25,7 +25,10 @@ Example: `dotnet tool install GitVersion.Tool --global --version 6.*`
 If you want to pin to a specific version of GitVersion, you can find the available
 versions of [`GitVersion.Tool` on NuGet](https://www.nuget.org/packages/GitVersion.Tool/).
 
-This should work on all operating systems supported by .NET Core.
+GitVersion v7 uses .NET 10 RID-specific tool packages. The install command must
+run with the .NET 10 SDK; NuGet then selects the package for the current
+platform automatically. GitVersion ships dedicated packages for Windows x64 and
+ARM64, Linux x64 and ARM64 (including musl), and Apple Silicon macOS.
 
 To run call
 
@@ -90,7 +93,7 @@ When using these commands, you must specify the package name `GitVersion.Tool` r
 Note that local tools use `dotnet gitversion` (without the hyphen), while the
 global tool uses `dotnet-gitversion` (with a hyphen).
 
-This should work on all operating systems supported by .NET Core.
+The same .NET 10 SDK and platform requirements as the global tool apply.
 
 ### Homebrew
 
