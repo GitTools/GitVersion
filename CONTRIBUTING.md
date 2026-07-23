@@ -131,11 +131,11 @@ We use Cake for our build and deployment process. The way the release process is
 
 1. We build releasable artifacts with GitHub Actions
 2. We create a milestone for the release if it's not already created. Our milestones are named using the semver.
-   For example `7.0.0`
+   For example `5.12.0` or `6.0.0-beta.2`
 3. We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
 4. We check that all the issues and pull requests that are going to be included in the release have a label assigned,
    otherwise it will fail the release.
-5. We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `7.0.0`
+5. We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
 6. We specify if the release is a pre-release or latest release in the GitHub UI.
 7. We publish the release.
 8. The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew

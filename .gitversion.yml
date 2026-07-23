@@ -4,6 +4,6 @@ mode: ManualDeployment
 next-version: 7.0.0
 branches:
   main:
-    label: rc
+    label: alpha
   support:
     label: beta
