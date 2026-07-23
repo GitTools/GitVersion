@@ -2,7 +2,11 @@
 
 ### .NET 8 and .NET 9 target frameworks removed
 
-GitVersion now targets .NET 10 only. The CLI, global tool, and `GitVersion.MsBuild` require a .NET 10 runtime. The MSBuild integration continues to support projects targeting earlier frameworks through its `dotnet --roll-forward Major` launcher, provided .NET 10 is installed.
+GitVersion now targets .NET 10 only. The CLI, global tool, and `GitVersion.MsBuild` require a .NET 10 runtime. The MSBuild integration continues to support projects targeting earlier frameworks through its `dotnet exec --roll-forward Major` launcher, provided .NET 10 is installed.
+
+### RID-specific global-tool packages
+
+GitVersion now packages `GitVersion.Tool` per runtime identifier. Install it with the .NET 10 SDK as before; NuGet automatically selects the dedicated package for Windows x64 and ARM64, Linux x64 and ARM64 (including musl), or Apple Silicon macOS.
 
 ### Intel macOS artifacts removed
 

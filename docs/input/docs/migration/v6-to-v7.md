@@ -12,7 +12,7 @@ GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-ar
 
 ## .NET 8 and .NET 9 target frameworks removed
 
-GitVersion v7 targets .NET 10 only. Install the .NET 10 runtime to use the CLI, global tool, or `GitVersion.MsBuild`. The MSBuild integration can still run in projects targeting earlier frameworks through its `dotnet --roll-forward Major` launcher, provided .NET 10 is installed.
+GitVersion v7 targets .NET 10 only. Install the .NET 10 runtime to use the CLI, global tool, or `GitVersion.MsBuild`. The MSBuild integration can still run in projects targeting earlier frameworks through its `dotnet exec --roll-forward Major` launcher, provided .NET 10 is installed.
 
 ## RID-specific global-tool packages
 
