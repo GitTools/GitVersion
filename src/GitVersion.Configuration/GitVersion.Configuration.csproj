@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="SharpYaml" />
-        <PackageReference Include="System.Collections.Immutable" />
     </ItemGroup>
 
     <ItemGroup>

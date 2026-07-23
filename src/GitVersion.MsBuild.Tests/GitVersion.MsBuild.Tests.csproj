@@ -16,7 +16,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.IO.Redist" />
         <PackageReference Include="MSBuild.ProjectCreation" />
-        <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
     <ItemGroup>
