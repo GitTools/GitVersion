@@ -1,18 +1,65 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(grep -E \"\\\\.cs$\")",
-      "Bash(dotnet --version)",
-      "Bash(dotnet build *)",
-      "Bash(dotnet test *)",
-      "Bash(dotnet clean *)",
-      "Bash(dotnet restore *)",
-      "Bash(dotnet format *)"
-    ]
-  },
-  "enabledPlugins": {
-    "csharp-lsp@claude-plugins-official": true,
-    "dotnet-test@dotnet-agent-skills": true,
-    "dotnet-upgrade@dotnet-agent-skills": true
-  }
+    "permissions": {
+        "allow": [
+            "Bash(grep -E \"\\\\.cs$\")",
+            "Bash(dotnet --version)",
+            "Bash(dotnet build *)",
+            "Bash(dotnet test *)",
+            "Bash(dotnet clean *)",
+            "Bash(dotnet restore *)",
+            "Bash(dotnet format *)"
+        ]
+    },
+    "enabledPlugins": {
+        "csharp-lsp@claude-plugins-official": true,
+        "dotnet-test@dotnet-agent-skills": true,
+        "dotnet-upgrade@dotnet-agent-skills": true
+    },
+    "hooks": {
+        "SessionStart": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jbcontext index --silent",
+                        "async": true
+                    }
+                ]
+            }
+        ],
+        "SessionEnd": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jbcontext index --silent",
+                        "async": true
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash|Grep",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jbcontext hook pre-tool-use"
+                    }
+                ]
+            }
+        ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jbcontext hook user-prompt-submit"
+                    }
+                ]
+            }
+        ]
+    }
 }

@@ -1,0 +1,32 @@
+[features]
+hooks = true
+
+# jbcontext-hook:SessionStart:start
+[[hooks.SessionStart]]
+matcher = "startup|resume"
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "sh -c 'jbcontext index --silent >/dev/null 2>&1 &'"
+statusMessage = "jbcontext: kicking off background index"
+timeout = 5
+# jbcontext-hook:SessionStart:end
+
+# jbcontext-hook:PreToolUse:start
+[[hooks.PreToolUse]]
+matcher = "Bash|Find|rg"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "jbcontext hook pre-tool-use --agent codex"
+timeout = 5
+# jbcontext-hook:PreToolUse:end
+
+# jbcontext-hook:UserPromptSubmit:start
+[[hooks.UserPromptSubmit]]
+
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = "jbcontext hook user-prompt-submit --agent codex"
+timeout = 5
+# jbcontext-hook:UserPromptSubmit:end

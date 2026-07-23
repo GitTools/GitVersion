@@ -1,0 +1,29 @@
+# Managed by jbcontext setup-agent
+# Regenerate: `jbcontext setup-agent --agent codex --rules`.
+# Remove:     `jbcontext remove-agent --agent codex --rules`.
+# To customize, delete the first line — setup-agent then treats this file as
+# user-owned and never rewrites or removes it.
+#
+# Allows the CLI's read-only query commands to run outside the Codex sandbox: they need
+# network egress, the OS keychain, and the JetBrains daemon socket, all blocked in-sandbox.
+
+prefix_rule(
+    pattern = ["jbcontext", "search"],
+    decision = "allow",
+    justification = "jbcontext search is read-only; it needs network, keychain and JetBrains-daemon access that the Codex sandbox blocks",
+    match = ["jbcontext search user authentication flow"],
+)
+
+prefix_rule(
+    pattern = ["jbcontext", "repos"],
+    decision = "allow",
+    justification = "jbcontext repos is read-only; it needs network, keychain and JetBrains-daemon access that the Codex sandbox blocks",
+    match = ["jbcontext repos grazie-platform"],
+)
+
+prefix_rule(
+    pattern = ["jbcontext", "find-repositories"],
+    decision = "allow",
+    justification = "jbcontext find-repositories is read-only; it needs network, keychain and JetBrains-daemon access that the Codex sandbox blocks",
+    match = ["jbcontext find-repositories grazie-platform"],
+)
