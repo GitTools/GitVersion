@@ -17,9 +17,9 @@ dotnet tool install --global GitVersion.Tool
 ```
 
 :::{.alert .alert-info}
-**Hint:** To install an older version of GitVersion.Tool, use the --version flag of dotnet tool install
+**Hint:** To install a specific version of GitVersion.Tool, use the --version flag of dotnet tool install
 
-Example: `dotnet tool install GitVersion.Tool --global --version 6.*`
+Example: `dotnet tool install GitVersion.Tool --global --version 7.0.0`
 :::
 
 If you want to pin to a specific version of GitVersion, you can find the available
@@ -57,7 +57,7 @@ source control.
 :::{.alert .alert-info}
 **Hint:** To install a specific version of GitVersion.Tool as a local tool, use the --version flag
 
-Example: `dotnet tool install GitVersion.Tool --version 6.*`
+Example: `dotnet tool install GitVersion.Tool --version 7.0.0`
 :::
 
 To restore tools specified in the manifest (for example, after cloning the

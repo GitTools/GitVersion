@@ -39,7 +39,7 @@ If you're using `PackageReference` style NuGet dependencies (VS 2017+), add
 dependency of your package:
 
 ```xml
-<PackageReference Include="GitVersion.MsBuild" Version="6.0.0">
+<PackageReference Include="GitVersion.MsBuild" Version="7.0.0">
   <PrivateAssets>All</PrivateAssets>
 </PackageReference>
 ```
