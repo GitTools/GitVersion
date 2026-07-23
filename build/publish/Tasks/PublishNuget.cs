@@ -68,7 +68,9 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
     {
         ArgumentNullException.ThrowIfNull(context.Version);
         var nugetVersion = context.Version.NugetVersion;
-        foreach (var (packageName, filePath, _) in context.Packages.Where(x => !x.IsChocoPackage))
+        foreach (var (packageName, filePath, _) in context.Packages
+                     .Where(x => !x.IsChocoPackage)
+                     .OrderBy(x => x.PackageName.Equals("gitversion.tool", StringComparison.OrdinalIgnoreCase)))
         {
             context.Information($"Package {packageName}, version {nugetVersion} is being published.");
             context.DotNetNuGetPush(filePath.FullPath,

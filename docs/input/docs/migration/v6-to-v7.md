@@ -14,6 +14,13 @@ GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-ar
 
 GitVersion v7 targets .NET 10 only. Install the .NET 10 runtime to use the CLI, global tool, or `GitVersion.MsBuild`. The MSBuild integration can still run in projects targeting earlier frameworks through its `dotnet --roll-forward Major` launcher, provided .NET 10 is installed.
 
+## RID-specific global-tool packages
+
+GitVersion v7 packages `GitVersion.Tool` per runtime identifier. Install it with
+the .NET 10 SDK as before; NuGet automatically selects the dedicated package for
+Windows x64 and ARM64, Linux x64 and ARM64 (including musl), or Apple Silicon
+macOS.
+
 ## `CommitsSinceVersionSource` output variable removed
 
 `CommitsSinceVersionSource` is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild `GetVersion` task. It can no longer be used in custom format strings.
