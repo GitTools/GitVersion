@@ -27,7 +27,6 @@ public class GitVersionExecutorTests : TestBase
           "BranchName": "feature/test",
           "BuildMetaData": null,
           "CommitDate": "2015-11-10T00:00:00.000Z",
-          "CommitsSinceVersionSource": 19,
           "EscapedBranchName": "feature-test",
           "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
           "FullSemVer": "4.10.3-test.19",

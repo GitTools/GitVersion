@@ -20,10 +20,6 @@ public class GetVersion : GitVersionTaskBase
     public string CommitDate { get; set; } = null!;
 
     [Output]
-    [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
-    public string CommitsSinceVersionSource { get; set; } = null!;
-
-    [Output]
     public string EscapedBranchName { get; set; } = null!;
 
     [Output]

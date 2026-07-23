@@ -19,8 +19,6 @@ GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.CommitDate.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.CommitDate.set -> void
-GitVersion.MsBuild.Tasks.GetVersion.CommitsSinceVersionSource.get -> string!
-GitVersion.MsBuild.Tasks.GetVersion.CommitsSinceVersionSource.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.FullBuildMetaData.get -> string!

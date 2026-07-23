@@ -19,10 +19,6 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
     public string? CommitDate { get; set; }
 
-    [JsonPropertyDescription("The number of commits since the version source.")]
-    [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
-    public int? CommitsSinceVersionSource { get; set; }
-
     [JsonPropertyDescription("Equal to BranchName, but with / replaced with -.")]
     public string? EscapedBranchName { get; set; }
 

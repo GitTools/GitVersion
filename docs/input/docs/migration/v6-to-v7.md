@@ -6,6 +6,12 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## `CommitsSinceVersionSource` output variable removed
+
+`CommitsSinceVersionSource` is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild `GetVersion` task. It can no longer be used in custom format strings.
+
+Use `VersionSourceDistance` instead; it has the same value.
+
 ## CLI Arguments - POSIX-style syntax
 
 GitVersion now uses POSIX-style command-line arguments powered by System.CommandLine.

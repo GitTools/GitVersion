@@ -251,14 +251,6 @@ public class VariableProviderTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
-
-        configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}")
-            .Build();
-        preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
-        variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
-
-        variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -314,15 +306,6 @@ public class VariableProviderTests : TestBase
             .Build();
         var preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
-
-        variables.InformationalVersion.ShouldBe("1.2.3-0042");
-
-        configuration = GitFlowConfigurationBuilder.New
-            .WithTagPreReleaseWeight(0)
-            .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}")
-            .Build();
-        preReleaseWeight = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop")).PreReleaseWeight;
-        variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.InformationalVersion.ShouldBe("1.2.3-0042");
     }

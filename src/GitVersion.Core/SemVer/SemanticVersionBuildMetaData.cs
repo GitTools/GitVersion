@@ -37,9 +37,6 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
     /// <summary>Gets or initializes the SHA of the source tag commit.</summary>
     public string? VersionSourceSha { get; init; }
 
-    /// <summary>Gets the number of commits since the version source (alias for <see cref="VersionSourceDistance"/>).</summary>
-    public long CommitsSinceVersionSource => VersionSourceDistance;
-
     /// <summary>Gets or initializes the number of commits between the version source tag and the current commit.</summary>
     public long VersionSourceDistance { get; init; }
 

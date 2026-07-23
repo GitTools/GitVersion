@@ -363,9 +363,5 @@ public class StringFormatWithExtensionTests
         var target = "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}";
         var actual = target.FormatWith(semanticVersion, this.environment);
         Assert.That(actual, Is.EqualTo(expected));
-
-        target = "{Major}.{Minor}.{Patch}-{CommitsSinceVersionSource:0000}";
-        actual = target.FormatWith(semanticVersion, this.environment);
-        Assert.That(actual, Is.EqualTo(expected));
     }
 }

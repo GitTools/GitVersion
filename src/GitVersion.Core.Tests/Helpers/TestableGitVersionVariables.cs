@@ -8,7 +8,6 @@ internal record TestableGitVersionVariables() : GitVersionVariables(
     BranchName: "",
     BuildMetaData: "",
     CommitDate: "",
-    CommitsSinceVersionSource: "",
     EscapedBranchName: "",
     FullBuildMetaData: "",
     FullSemVer: "",
