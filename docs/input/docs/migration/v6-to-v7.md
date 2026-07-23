@@ -10,6 +10,10 @@ This document summarizes the relevant breaking changes when migrating from GitVe
 
 GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64`) is now the only supported macOS target. Intel Mac users should continue using the last GitVersion v6 release that shipped an `osx-x64` artifact.
 
+## .NET 8 and .NET 9 target frameworks removed
+
+GitVersion v7 targets .NET 10 only. Install the .NET 10 runtime to use the CLI, global tool, or `GitVersion.MsBuild`. The MSBuild integration can still run in projects targeting earlier frameworks through its `dotnet --roll-forward Major` launcher, provided .NET 10 is installed.
+
 ## `CommitsSinceVersionSource` output variable removed
 
 `CommitsSinceVersionSource` is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild `GetVersion` task. It can no longer be used in custom format strings.

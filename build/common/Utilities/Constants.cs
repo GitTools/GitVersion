@@ -7,7 +7,7 @@ public static class Constants
     public const string Repository = "GitVersion";
 
     public const string DotnetLtsLatest = "10.0";
-    public static readonly string[] DotnetVersions = [DotnetLtsLatest, "9.0", "8.0"];
+    public static readonly string[] DotnetVersions = [DotnetLtsLatest];
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
