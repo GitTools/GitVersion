@@ -11,7 +11,7 @@ public class BuildContext(ICakeContext context) : BuildContextBase(context)
     {
         [PlatformFamily.Windows] = ["win-x64", "win-arm64"],
         [PlatformFamily.Linux] = ["linux-x64", "linux-musl-x64", "linux-arm64", "linux-musl-arm64"],
-        [PlatformFamily.OSX] = ["osx-x64", "osx-arm64"],
+        [PlatformFamily.OSX] = ["osx-arm64"],
     };
 
     public bool EnabledUnitTests { get; set; }

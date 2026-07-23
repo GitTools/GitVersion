@@ -1,5 +1,13 @@
 ## Unreleased
 
+### Intel macOS artifacts removed
+
+GitVersion no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64`) is now the only supported macOS target. Intel Mac users should continue using the last GitVersion v6 release that shipped an `osx-x64` artifact.
+
+### `CommitsSinceVersionSource` output variable removed
+
+`CommitsSinceVersionSource` is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild `GetVersion` task. It can no longer be used in custom format strings. Use `VersionSourceDistance` instead; it has the same value.
+
 ### Invalid label formatting is not ignored
 Previously bad label formatting config would be silently accepted. For example `{Branhc}` (when BranchName is misspelled) or even `{BranchName` (missing a closing brace). This is not ignored now and exceptions will be thrown if formatting problems exist in the label config. This brings it into line with how assembly string formatting is treated.
 

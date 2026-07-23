@@ -6,6 +6,10 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## Intel macOS artifacts removed
+
+GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64`) is now the only supported macOS target. Intel Mac users should continue using the last GitVersion v6 release that shipped an `osx-x64` artifact.
+
 ## `CommitsSinceVersionSource` output variable removed
 
 `CommitsSinceVersionSource` is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild `GetVersion` task. It can no longer be used in custom format strings.
