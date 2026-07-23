@@ -1,7 +1,7 @@
 ARG REGISTRY='docker.io'
 ARG DISTRO='debian.12'
-ARG DOTNET_VERSION='8.0'
-ARG VERSION='6.7.0'
+ARG DOTNET_VERSION='10.0'
+ARG VERSION='7.0.0'
 
 FROM $REGISTRY/gittools/build-images:$DISTRO-sdk-$DOTNET_VERSION AS installer
 ARG nugetFolder
