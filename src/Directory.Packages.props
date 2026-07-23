@@ -3,9 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <PropertyGroup>
-    <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net8.0' ">17.11.48</MicrosoftBuildVersion>
-    <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net9.0' ">17.14.28</MicrosoftBuildVersion>
-    <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net10.0' ">18.8.2</MicrosoftBuildVersion>
+    <MicrosoftBuildVersion>18.8.2</MicrosoftBuildVersion>
     <MicrosoftCodeAnalysisVersion>5.6.0</MicrosoftCodeAnalysisVersion>
   </PropertyGroup>
   <ItemGroup>

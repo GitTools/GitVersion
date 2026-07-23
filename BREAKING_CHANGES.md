@@ -1,5 +1,9 @@
 ## Unreleased
 
+### .NET 8 and .NET 9 target frameworks removed
+
+GitVersion now targets .NET 10 only. The CLI, global tool, and `GitVersion.MsBuild` require a .NET 10 runtime. The MSBuild integration continues to support projects targeting earlier frameworks through its `dotnet --roll-forward Major` launcher, provided .NET 10 is installed.
+
 ### Intel macOS artifacts removed
 
 GitVersion no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64`) is now the only supported macOS target. Intel Mac users should continue using the last GitVersion v6 release that shipped an `osx-x64` artifact.
