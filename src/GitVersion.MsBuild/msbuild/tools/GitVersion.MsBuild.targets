@@ -44,7 +44,6 @@
             <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
             <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
             <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
-            <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
             <Output TaskParameter="EscapedBranchName" PropertyName="GitVersion_EscapedBranchName" />
             <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
             <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
@@ -87,7 +86,6 @@
             <DefineConstants Condition=" '$(GitVersion_BranchName)' != '' ">GitVersion_BranchName=$(GitVersion_BranchName);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_EscapedBranchName)' != '' ">GitVersion_EscapedBranchName=$(GitVersion_EscapedBranchName);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_FullBuildMetaData)' != '' ">GitVersion_FullBuildMetaData=$(GitVersion_FullBuildMetaData);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_FullSemVer)' != '' ">GitVersion_FullSemVer=$(GitVersion_FullSemVer);$(DefineConstants)</DefineConstants>

@@ -44,7 +44,6 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             BranchName: semverFormatValues.BranchName,
             BuildMetaData: semverFormatValues.BuildMetaData,
             CommitDate: semverFormatValues.CommitDate,
-            CommitsSinceVersionSource: semverFormatValues.VersionSourceDistance,
             EscapedBranchName: semverFormatValues.EscapedBranchName,
             FullBuildMetaData: semverFormatValues.FullBuildMetaData,
             FullSemVer: semverFormatValues.FullSemVer,

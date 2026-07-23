@@ -80,10 +80,6 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     /// <summary>Gets the SHA of the source tag commit.</summary>
     public string? VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 
-    /// <summary>Gets the number of commits since the version source.</summary>
-    [Obsolete("CommitsSinceVersionSource has been deprecated. Use VersionSourceDistance instead.")]
-    public string CommitsSinceVersionSource => semver.BuildMetaData.VersionSourceDistance.ToString(CultureInfo.InvariantCulture);
-
     /// <summary>Gets the number of commits between the version source tag and the current commit.</summary>
     public string VersionSourceDistance => semver.BuildMetaData.VersionSourceDistance.ToString(CultureInfo.InvariantCulture);
 
