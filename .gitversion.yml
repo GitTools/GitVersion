@@ -1,6 +1,7 @@
 # $schema: https://gitversion.net/schemas/6.4/GitVersion.configuration.json
 workflow: GitFlow/v1
 mode: ManualDeployment
+next-version: 7.0.0
 branches:
   main:
     label: rc
