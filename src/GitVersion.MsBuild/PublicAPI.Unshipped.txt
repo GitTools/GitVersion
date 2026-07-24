@@ -1,1 +1,3 @@
 #nullable enable
+GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.set -> void

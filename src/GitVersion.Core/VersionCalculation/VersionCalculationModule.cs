@@ -10,7 +10,8 @@ public class VersionCalculationModule : IGitVersionModule
     {
         services.AddModule(new VersionStrategyModule());
 
-        services.AddSingleton<IVariableProvider, VariableProvider>();
+        services.AddSingleton<VariableProvider>();
+        services.AddSingleton<IVariableProvider>(sp => sp.GetRequiredService<VariableProvider>());
         services.AddSingleton<IDeploymentModeCalculator, ContinuousDeploymentVersionCalculator>();
         services.AddSingleton<IDeploymentModeCalculator, ContinuousDeliveryVersionCalculator>();
         services.AddSingleton<IDeploymentModeCalculator, ManualDeploymentVersionCalculator>();

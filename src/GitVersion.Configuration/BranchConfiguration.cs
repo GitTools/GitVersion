@@ -1,6 +1,7 @@
 using GitVersion.Configuration.Attributes;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
+using static GitVersion.Configuration.ConfigurationConstants;
 
 namespace GitVersion.Configuration;
 
@@ -13,6 +14,11 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonPropertyName("label")]
     [JsonPropertyDescription("The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).")]
     public string? Label { get; set; }
+
+    [JsonPropertyName("custom-version-format")]
+    [JsonPropertyDescription($"Specifies the format of CustomVersion. Defaults to '{DefaultCustomVersionFormat}'.")]
+    [JsonPropertyDefault($"'{DefaultCustomVersionFormat}'")]
+    public string? CustomVersionFormat { get; set; }
 
     [JsonPropertyName("increment")]
     [JsonPropertyDescription("The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.")]
@@ -84,6 +90,7 @@ internal record BranchConfiguration : IBranchConfiguration
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
+            CustomVersionFormat = CustomVersionFormat ?? configuration.CustomVersionFormat,
             PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrement.OfMergedBranch,
@@ -110,6 +117,7 @@ internal record BranchConfiguration : IBranchConfiguration
             Increment = Increment == IncrementStrategy.Inherit ? configuration.Increment : Increment,
             DeploymentMode = DeploymentMode ?? configuration.DeploymentMode,
             Label = Label ?? configuration.Label,
+            CustomVersionFormat = CustomVersionFormat ?? configuration.CustomVersionFormat,
             PreventIncrement = new PreventIncrementConfiguration
             {
                 OfMergedBranch = PreventIncrement.OfMergedBranch ?? configuration.PreventIncrementOfMergedBranch,

@@ -22,6 +22,7 @@ internal static class ConfigurationConstants
         VersionStrategies.VersionInBranchName
     ];
     public const string DefaultAssemblyInformationalFormat = "{InformationalVersion}";
+    public const string DefaultCustomVersionFormat = "{SemVer}";
     public const string DefaultCommitDateFormat = "yyyy-MM-dd";
     public const string BranchNamePlaceholder = "{BranchName}";
     public const string PullRequestNumberPlaceholder = "{Number}";

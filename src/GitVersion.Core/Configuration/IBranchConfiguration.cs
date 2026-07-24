@@ -12,6 +12,9 @@ public interface IBranchConfiguration
     /// <summary>Gets the pre-release label applied to versions produced on this branch.</summary>
     string? Label { get; }
 
+    /// <summary>Gets the format string used to compute the custom version output on this branch.</summary>
+    string? CustomVersionFormat => null;
+
     /// <summary>Gets the version field that is incremented when creating a new release from this branch.</summary>
     IncrementStrategy Increment { get; }
 

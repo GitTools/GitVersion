@@ -11,6 +11,23 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
 
     public GitVersionVariables GetVariablesFor(
         SemanticVersion semanticVersion, IGitVersionConfiguration configuration, int preReleaseWeight)
+        => GetVariablesFor(semanticVersion, configuration, preReleaseWeight, configuration.CustomVersionFormat);
+
+    internal GitVersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion,
+        IGitVersionConfiguration configuration,
+        EffectiveConfiguration effectiveConfiguration)
+        => GetVariablesFor(
+            semanticVersion,
+            configuration,
+            effectiveConfiguration.PreReleaseWeight,
+            effectiveConfiguration.CustomVersionFormat);
+
+    private GitVersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion,
+        IGitVersionConfiguration configuration,
+        int preReleaseWeight,
+        string? customVersionFormat)
     {
         semanticVersion.NotNull();
         configuration.NotNull();
@@ -22,6 +39,13 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             semverFormatValues,
             semverFormatValues.InformationalVersion,
             "AssemblyInformationalVersion"
+        );
+
+        var customVersion = CheckAndFormatString(
+            customVersionFormat,
+            semverFormatValues,
+            semverFormatValues.SemVer,
+            "CustomVersionFormat"
         );
 
         var assemblyFileSemVer = CheckAndFormatString(
@@ -44,6 +68,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             BranchName: semverFormatValues.BranchName,
             BuildMetaData: semverFormatValues.BuildMetaData,
             CommitDate: semverFormatValues.CommitDate,
+            CustomVersion: customVersion,
             EscapedBranchName: semverFormatValues.EscapedBranchName,
             FullBuildMetaData: semverFormatValues.FullBuildMetaData,
             FullSemVer: semverFormatValues.FullSemVer,
