@@ -52,14 +52,16 @@ public class GitVersionExecutorTests : TestBase
         }
         """;
 
+    private const string TargetUrl = "https://github.com/GitTools/FakeRepository.git";
+    private const string TargetBranch = "master";
+
     [Test]
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();
-        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
-        const string targetBranch = $"refs/head/{MainBranch}";
+        const string targetBranch = $"refs/head/{TargetBranch}";
 
-        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = targetBranch }, WorkingDirectory = fixture.RepositoryPath, Settings = { NoNormalize = false } };
+        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = TargetUrl, TargetBranch = targetBranch }, WorkingDirectory = fixture.RepositoryPath, Settings = { NoNormalize = false } };
 
         var environment = new TestEnvironment();
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
@@ -92,9 +94,7 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void GitPreparerShouldNotFailWhenTargetPathNotInitialized()
     {
-        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
-
-        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl }, WorkingDirectory = string.Empty };
+        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = TargetUrl }, WorkingDirectory = string.Empty };
         Should.NotThrow(() =>
         {
             this.sp = GetServiceProvider(gitVersionOptions);
@@ -117,9 +117,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
-
-            var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = MainBranch }, WorkingDirectory = worktreePath };
+            var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = TargetUrl, TargetBranch = TargetBranch }, WorkingDirectory = worktreePath };
 
             this.sp = GetServiceProvider(gitVersionOptions);
 
@@ -331,9 +329,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
-
-            var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl }, WorkingDirectory = worktreePath };
+            var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = TargetUrl }, WorkingDirectory = worktreePath };
 
             this.sp = GetServiceProvider(gitVersionOptions);
             var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
@@ -349,9 +345,8 @@ public class GitVersionExecutorTests : TestBase
     public void GetProjectRootDirectoryNoWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
-        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = targetUrl }, WorkingDirectory = fixture.RepositoryPath };
+        var gitVersionOptions = new GitVersionOptions { RepositoryInfo = { TargetUrl = TargetUrl }, WorkingDirectory = fixture.RepositoryPath };
 
         this.sp = GetServiceProvider(gitVersionOptions);
         var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
