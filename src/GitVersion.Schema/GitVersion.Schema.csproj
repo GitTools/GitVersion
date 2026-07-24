@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <AssemblyName>schema</AssemblyName>
     </PropertyGroup>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <DefineConstants>GITVERSION_OUTPUT</DefineConstants>
     </PropertyGroup>
 

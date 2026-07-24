@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <PackageId>GitVersion.MsBuild</PackageId>
         <Title>GitVersionMsBuild</Title>
         <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <OutputType>Library</OutputType>
         <RootNamespace>Common</RootNamespace>
     </PropertyGroup>

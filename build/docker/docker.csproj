@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <AssemblyName>docker</AssemblyName>
         <RootNamespace>Docker</RootNamespace>
     </PropertyGroup>

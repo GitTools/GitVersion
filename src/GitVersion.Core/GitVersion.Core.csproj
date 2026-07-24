@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Nullable>enable</Nullable>
         <RootNamespace>GitVersion</RootNamespace>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
 
