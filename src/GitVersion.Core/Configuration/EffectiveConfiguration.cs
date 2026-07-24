@@ -64,6 +64,7 @@ public record EffectiveConfiguration
         AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
+        CustomVersionFormat = configuration.CustomVersionFormat;
         DeploymentMode = branchConfiguration.DeploymentMode.Value;
         TagPrefixPattern = configuration.TagPrefixPattern;
         VersionInBranchPattern = configuration.VersionInBranchPattern;
@@ -119,6 +120,9 @@ public record EffectiveConfiguration
 
     /// <summary>Gets the format string used to compute the assembly file version.</summary>
     public string? AssemblyFileVersioningFormat { get; }
+
+    /// <summary>Gets the format string used to compute the custom version output.</summary>
+    public string? CustomVersionFormat { get; }
 
     /// <summary>Gets the regex pattern that identifies tag prefixes to strip when parsing version tags.</summary>
     public string? TagPrefixPattern { get; }

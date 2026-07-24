@@ -24,6 +24,13 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             "AssemblyInformationalVersion"
         );
 
+        var customVersion = CheckAndFormatString(
+            configuration.CustomVersionFormat,
+            semverFormatValues,
+            semverFormatValues.SemVer,
+            "CustomVersionFormat"
+        );
+
         var assemblyFileSemVer = CheckAndFormatString(
             configuration.AssemblyFileVersioningFormat,
             semverFormatValues,
@@ -44,6 +51,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             BranchName: semverFormatValues.BranchName,
             BuildMetaData: semverFormatValues.BuildMetaData,
             CommitDate: semverFormatValues.CommitDate,
+            CustomVersion: customVersion,
             EscapedBranchName: semverFormatValues.EscapedBranchName,
             FullBuildMetaData: semverFormatValues.FullBuildMetaData,
             FullSemVer: semverFormatValues.FullSemVer,

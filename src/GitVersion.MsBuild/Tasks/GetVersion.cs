@@ -20,6 +20,9 @@ public class GetVersion : GitVersionTaskBase
     public string CommitDate { get; set; } = null!;
 
     [Output]
+    public string CustomVersion { get; set; } = null!;
+
+    [Output]
     public string EscapedBranchName { get; set; } = null!;
 
     [Output]

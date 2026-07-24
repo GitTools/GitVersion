@@ -23,6 +23,9 @@ public interface IGitVersionConfiguration : IBranchConfiguration
     /// <summary>Gets the format string used to compute the assembly file version.</summary>
     string? AssemblyFileVersioningFormat { get; }
 
+    /// <summary>Gets the format string used to compute the custom version output.</summary>
+    string? CustomVersionFormat { get; }
+
     /// <summary>Gets the regex pattern that identifies tag prefixes to strip when parsing version tags.</summary>
     string? TagPrefixPattern { get; }
 
