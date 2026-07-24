@@ -30,3 +30,6 @@ type = "command"
 command = "jbcontext hook user-prompt-submit --agent codex"
 timeout = 5
 # jbcontext-hook:UserPromptSubmit:end
+
+[mcp_servers.rider]
+url = "http://127.0.0.1:64482/stream"
