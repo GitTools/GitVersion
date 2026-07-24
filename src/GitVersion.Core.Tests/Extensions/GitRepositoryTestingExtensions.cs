@@ -133,7 +133,7 @@ public static class GitRepositoryTestingExtensions
 
                 sp.DiscoverRepository();
 
-                var variableProvider = sp.GetRequiredService<IVariableProvider>();
+                var variableProvider = sp.GetRequiredService<VariableProvider>();
                 var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
                 var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 
@@ -142,7 +142,7 @@ public static class GitRepositoryTestingExtensions
                 var semanticVersion = nextVersionCalculator.FindVersion();
 
                 var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(context.CurrentBranch.Name);
-                return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration.PreReleaseWeight);
+                return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration);
             }
             catch (Exception)
             {

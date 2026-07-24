@@ -440,6 +440,13 @@ public class LegacyArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
+            "custom-version-format=\"{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}\"",
+            new GitVersionConfiguration
+            {
+                CustomVersionFormat = "{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}"
+            }
+        );
+        yield return new TestCaseData(
             "mode=ContinuousDelivery",
             new GitVersionConfiguration
             {

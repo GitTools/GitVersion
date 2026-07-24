@@ -4,6 +4,7 @@
   "BranchName": "develop",
   "BuildMetaData": null,
   "CommitDate": "2014-03-06",
+  "CustomVersion": "1.2.3-unstable.8",
   "EscapedBranchName": "develop",
   "FullBuildMetaData": "Branch.develop.Sha.commitSha",
   "FullSemVer": "1.2.3-unstable.8",

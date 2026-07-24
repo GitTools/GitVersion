@@ -27,6 +27,7 @@ public class GitVersionExecutorTests : TestBase
           "BranchName": "feature/test",
           "BuildMetaData": null,
           "CommitDate": "2015-11-10T00:00:00.000Z",
+          "CustomVersion": "4.10.3-test.19",
           "EscapedBranchName": "feature-test",
           "FullBuildMetaData": "Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f",
           "FullSemVer": "4.10.3-test.19",
@@ -205,6 +206,33 @@ public class GitVersionExecutorTests : TestBase
 
         var cachedDirectoryTimestampAfter = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
         cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override configuration was set");
+    }
+
+    [Test]
+    public void CustomVersionUsesBranchSpecificFormat()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.0.0");
+        fixture.Repository.CreateBranch("feature/custom-format");
+        fixture.Checkout("feature/custom-format");
+        fixture.Repository.MakeACommit();
+
+        var configurationBuilder = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("global-{SemVer}");
+        configurationBuilder.WithBranch("feature")
+            .WithCustomVersionFormat("feature-{SemVer}");
+        var overrideConfiguration = new ConfigurationHelper(configurationBuilder.Build()).Dictionary;
+        var gitVersionOptions = new GitVersionOptions
+        {
+            WorkingDirectory = fixture.RepositoryPath,
+            ConfigurationInfo = { OverrideConfiguration = overrideConfiguration }
+        };
+
+        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
+
+        var versionVariables = gitVersionCalculator.CalculateVersionVariables();
+
+        versionVariables.CustomVersion.ShouldStartWith("feature-");
     }
 
     [Test]

@@ -4,6 +4,7 @@
   "BranchName": "feature1",
   "BuildMetaData": 5,
   "CommitDate": "2014-03-06",
+  "CustomVersion": "1.2.0-unstable.4",
   "EscapedBranchName": "feature1",
   "FullBuildMetaData": "5.Branch.feature1.Sha.commitSha",
   "FullSemVer": "1.2.0-unstable.4+5",

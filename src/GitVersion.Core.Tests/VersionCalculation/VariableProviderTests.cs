@@ -9,6 +9,7 @@ namespace GitVersion.Tests;
 public class VariableProviderTests : TestBase
 {
     private IVariableProvider variableProvider = null!;
+    private VariableProvider effectiveVariableProvider = null!;
     private readonly DateTimeOffset commitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z", CultureInfo.InvariantCulture);
 
     [SetUp]
@@ -22,6 +23,7 @@ public class VariableProviderTests : TestBase
         var sp = ConfigureServices(services => loggerFactory.RegisterWith(services));
 
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
+        this.effectiveVariableProvider = sp.GetRequiredService<VariableProvider>();
     }
 
     [Test]
@@ -278,6 +280,79 @@ public class VariableProviderTests : TestBase
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight);
 
         variables.ToJson().ShouldMatchApproved(x => x.SubFolder("Approved"));
+    }
+
+    [Test]
+    public void CustomVersionSupportsPep440FormatForIssue2065()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 0,
+            Minor = 6,
+            Patch = 3,
+            PreReleaseTag = new("beta", 10, true),
+            BuildMetaData = new()
+        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}")
+            .Build();
+
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight: 0);
+
+        variables.CustomVersion.ShouldBe("0.6.3beta10");
+    }
+
+    [Test]
+    public void CustomVersionFormatCanBeConfiguredPerBranch()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            BuildMetaData = new()
+        };
+        var configurationBuilder = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("{SemVer}-global");
+        configurationBuilder.WithBranch("feature")
+            .WithCustomVersionFormat("{SemVer}-feature");
+        var configuration = configurationBuilder.Build();
+        var featureConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/example"));
+        var mainConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+
+        var featureVariables = this.effectiveVariableProvider.GetVariablesFor(semanticVersion, configuration, featureConfiguration);
+        var mainVariables = this.effectiveVariableProvider.GetVariablesFor(semanticVersion, configuration, mainConfiguration);
+
+        featureVariables.CustomVersion.ShouldBe("1.2.3-feature");
+        mainVariables.CustomVersion.ShouldBe("1.2.3-global");
+    }
+
+    [Test]
+    public void CustomVersionSupportsMonotonicallyIncreasingIntegerFormatForIssue3340()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("{Major:00}{Minor:00}{Patch:000}")
+            .Build();
+        var patchVersion = this.variableProvider.GetVariablesFor(new SemanticVersion
+        {
+            Major = 0,
+            Minor = 0,
+            Patch = 123,
+            BuildMetaData = new()
+        }, configuration, preReleaseWeight: 0);
+        var minorVersion = this.variableProvider.GetVariablesFor(new SemanticVersion
+        {
+            Major = 0,
+            Minor = 1,
+            Patch = 0,
+            BuildMetaData = new()
+        }, configuration, preReleaseWeight: 0);
+
+        patchVersion.CustomVersion.ShouldBe("0000123");
+        minorVersion.CustomVersion.ShouldBe("0001000");
+        var patchVersionCode = long.Parse(patchVersion.CustomVersion!, CultureInfo.InvariantCulture);
+        var minorVersionCode = long.Parse(minorVersion.CustomVersion!, CultureInfo.InvariantCulture);
+        minorVersionCode.ShouldBeGreaterThan(patchVersionCode);
     }
 
     [Test]
