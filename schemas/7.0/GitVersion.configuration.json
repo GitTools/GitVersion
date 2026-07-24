@@ -168,6 +168,14 @@
         null
       ]
     },
+    "custom-version-format": {
+      "description": "Specifies the format of CustomVersion. Defaults to '{SemVer}'.",
+      "default": "'{SemVer}'",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "mode": {
       "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
       "enum": [

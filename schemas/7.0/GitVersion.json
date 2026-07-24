@@ -40,6 +40,13 @@
         "string"
       ]
     },
+    "CustomVersion": {
+      "description": "A custom version computed from custom-version-format. Defaults to SemVer.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "EscapedBranchName": {
       "description": "Equal to BranchName, but with / replaced with -.",
       "type": [
