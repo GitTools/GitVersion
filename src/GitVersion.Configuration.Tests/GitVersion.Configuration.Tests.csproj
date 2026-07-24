@@ -1,4 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />

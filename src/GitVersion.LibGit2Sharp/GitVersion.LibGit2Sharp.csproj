@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
     </ItemGroup>
