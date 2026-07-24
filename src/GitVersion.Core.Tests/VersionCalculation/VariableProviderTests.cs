@@ -281,6 +281,54 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
+    public void CustomVersionSupportsPep440FormatForIssue2065()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 0,
+            Minor = 6,
+            Patch = 3,
+            PreReleaseTag = new("beta", 10, true),
+            BuildMetaData = new()
+        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}")
+            .Build();
+
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight: 0);
+
+        variables.CustomVersion.ShouldBe("0.6.3beta10");
+    }
+
+    [Test]
+    public void CustomVersionSupportsMonotonicallyIncreasingIntegerFormatForIssue3340()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithCustomVersionFormat("{Major:00}{Minor:00}{Patch:000}")
+            .Build();
+        var patchVersion = this.variableProvider.GetVariablesFor(new SemanticVersion
+        {
+            Major = 0,
+            Minor = 0,
+            Patch = 123,
+            BuildMetaData = new()
+        }, configuration, preReleaseWeight: 0);
+        var minorVersion = this.variableProvider.GetVariablesFor(new SemanticVersion
+        {
+            Major = 0,
+            Minor = 1,
+            Patch = 0,
+            BuildMetaData = new()
+        }, configuration, preReleaseWeight: 0);
+
+        patchVersion.CustomVersion.ShouldBe("0000123");
+        minorVersion.CustomVersion.ShouldBe("0001000");
+        var patchVersionCode = long.Parse(patchVersion.CustomVersion!, CultureInfo.InvariantCulture);
+        var minorVersionCode = long.Parse(minorVersion.CustomVersion!, CultureInfo.InvariantCulture);
+        minorVersionCode.ShouldBeGreaterThan(patchVersionCode);
+    }
+
+    [Test]
     public void Format_Allows_CSharp_FormatStrings()
     {
         var semanticVersion = new SemanticVersion

@@ -5,6 +5,37 @@ description: Using C# format strings in GitVersion configuration
 
 GitVersion supports C# format strings in configuration, allowing you to apply standard .NET formatting and custom transformations to version properties. This enhancement provides more flexibility and control over how version information is displayed and used throughout your build process.
 
+## Custom Version Output
+
+Set `custom-version-format` to add a `CustomVersion` value to GitVersion's
+output without changing the meaning of any existing version variable. It uses
+the same version and environment variable formatting described below and
+defaults to `{SemVer}`.
+
+For example, a PEP 440-compatible pre-release version can omit SemVer's dash and
+separator:
+
+```yaml
+custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'
+# 0.6.3-beta.10 becomes CustomVersion 0.6.3beta10
+```
+
+A fixed-width numeric format can provide an increasing integer version for
+platforms such as Android:
+
+```yaml
+custom-version-format: '{Major:00}{Minor:00}{Patch:000}'
+# 0.0.123 becomes 0000123; 0.1.0 becomes 0001000
+```
+
+Choose widths that are large enough for each version component and keep the
+result within the target platform's integer limit. If the CI system owns the
+monotonically increasing build number, it can be exposed directly instead:
+
+```yaml
+custom-version-format: '{env:ANDROID_VERSION_CODE}'
+```
+
 ## Overview
 
 The custom formatter functionality introduces several new formatters that can be used in GitVersion configuration files and templates:
