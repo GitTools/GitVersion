@@ -243,6 +243,32 @@ public class ConfigurationProviderTests : TestBase
     }
 
     [Test]
+    public void CanReadCustomVersionFormat()
+    {
+        const string text = "custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        configuration.CustomVersionFormat.ShouldBe("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}");
+    }
+
+    [Test]
+    public void CanOverrideCustomVersionFormat()
+    {
+        const string text = "custom-version-format: '{SemVer}'";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        var overrideConfiguration = new Dictionary<object, object?>
+        {
+            ["custom-version-format"] = "{Major:00}{Minor:00}{Patch:000}"
+        };
+
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
+
+        configuration.CustomVersionFormat.ShouldBe("{Major:00}{Minor:00}{Patch:000}");
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
@@ -251,6 +277,7 @@ public class ConfigurationProviderTests : TestBase
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe(null);
+        configuration.CustomVersionFormat.ShouldBe(null);
         configuration.Branches["develop"].Label.ShouldBe("alpha");
         configuration.Branches["release"].Label.ShouldBe("beta");
         configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern);
@@ -381,6 +408,7 @@ public class ConfigurationProviderTests : TestBase
         configuration.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
         configuration.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
         configuration.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
+        configuration.CustomVersionFormat.ShouldBe(expectedConfig.CustomVersionFormat);
         configuration.TagPrefixPattern.ShouldBe(expectedConfig.TagPrefixPattern);
         configuration.NextVersion.ShouldBe(expectedConfig.NextVersion);
         configuration.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
