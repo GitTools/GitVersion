@@ -162,7 +162,7 @@ $nugetVersion = $versionInfo.NuGetVersion
 msbuild MyProj.sln
 
 # Only create nuget package for stable
-if ($versionInfo.PreReleaseTag -eq '')
+if ($versionInfo.PreReleaseLabel -eq '')
 {
     Write-Host
     Write-Host "Creating a release" -ForegroundColor Magenta

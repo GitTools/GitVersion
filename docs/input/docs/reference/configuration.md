@@ -999,7 +999,7 @@ This indicates that this branch is a main branch. By default `main` and `support
 
 ### pre-release-weight
 
-Provides a way to translate the `PreReleaseLabel` ([variables][variables]) to a numeric
+Provides a way to translate the `PreReleaseLabelName` ([variables][variables]) to a numeric
 value in order to avoid version collisions across different branches. For
 example, a release branch created after "1.2.3-alpha.55" results in
 "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the

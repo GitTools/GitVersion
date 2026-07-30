@@ -1,5 +1,18 @@
 ## Unreleased
 
+### Pre-release output variables renamed
+
+The pre-release output variables now use SemVer label terminology consistently:
+
+| Previous variable | Replacement | Example value |
+| --- | --- | --- |
+| `PreReleaseTag` | `PreReleaseLabel` | `beta.99` |
+| `PreReleaseTagWithDash` | `PreReleaseLabelWithDash` | `-beta.99` |
+| `PreReleaseLabel` | `PreReleaseLabelName` | `beta` |
+| `PreReleaseLabelWithDash` | `PreReleaseLabelNameWithDash` | `-beta` |
+
+The change applies to JSON output, formatting variables, build-agent environment variables, generated version-information files, and `GitVersion.MsBuild` outputs. `PreReleaseNumber` is unchanged.
+
 ### .NET 8 and .NET 9 target frameworks removed
 
 GitVersion now targets .NET 10 only. The CLI, global tool, and `GitVersion.MsBuild` require a .NET 10 runtime. The MSBuild integration continues to support projects targeting earlier frameworks through its `dotnet exec --roll-forward Major` launcher, provided .NET 10 is installed.
