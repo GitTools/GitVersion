@@ -1,6 +1,5 @@
 using System.Globalization;
 using GitVersion.Configuration;
-using GitVersion.Git;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Tests;
@@ -37,7 +36,7 @@ public class JsonVersionBuilderTests : TestBase
 
         var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
         var configuration = EmptyConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }

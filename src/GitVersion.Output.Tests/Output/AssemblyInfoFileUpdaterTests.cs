@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
-using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
@@ -466,7 +465,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         SemanticVersion semanticVersion, IGitVersionConfiguration? configuration = null)
     {
         configuration ??= EmptyConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         return this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
     }
 }

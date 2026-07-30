@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
-using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output.WixUpdater;
 using GitVersion.Tests;
@@ -50,7 +49,7 @@ internal class WixFileTests : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var configuration = EmptyConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, effectiveConfiguration);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
@@ -89,7 +88,7 @@ internal class WixFileTests : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var configuration = EmptyConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, effectiveConfiguration);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();

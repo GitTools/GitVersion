@@ -43,7 +43,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("unstable"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -69,7 +69,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("unstable"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -93,7 +93,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -119,7 +119,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -145,7 +145,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -170,7 +170,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("pull-request"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
@@ -195,7 +195,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.FullSemVer.ShouldBe("1.2.3-feature.5");
@@ -220,7 +220,7 @@ public class VariableProviderTests : TestBase
         };
 
         var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -247,7 +247,7 @@ public class VariableProviderTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
             .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{VersionSourceDistance}.Branch.{BranchName}.Sha.{ShortSha}")
             .Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
@@ -291,7 +291,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = new()
         };
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
 
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
@@ -312,7 +312,7 @@ public class VariableProviderTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithCustomVersionFormat("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}")
             .Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
 
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
@@ -355,7 +355,7 @@ public class VariableProviderTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithCustomVersionFormat("{Major:00}{Minor:00}{Patch:000}")
             .Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var patchVersion = this.variableProvider.GetVariablesFor(new SemanticVersion
         {
             Major = 0,
@@ -402,7 +402,7 @@ public class VariableProviderTests : TestBase
             .WithTagPreReleaseWeight(0)
             .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}")
             .Build();
-        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.InformationalVersion.ShouldBe("1.2.3-0042");

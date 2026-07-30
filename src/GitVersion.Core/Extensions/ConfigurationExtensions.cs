@@ -9,10 +9,10 @@ internal static class ConfigurationExtensions
 {
     extension(IGitVersionConfiguration configuration)
     {
-        public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
+        public EffectiveConfiguration GetEffectiveConfiguration()
         {
-            var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name, parentConfiguration);
-            return new EffectiveBranchConfiguration(effectiveConfiguration, branch);
+            var branchConfiguration = configuration.GetEmptyBranchConfiguration();
+            return new EffectiveConfiguration(configuration, branchConfiguration);
         }
 
         public EffectiveConfiguration GetEffectiveConfiguration(ReferenceName branchName, EffectiveConfiguration? parentConfiguration = null)
@@ -24,6 +24,12 @@ internal static class ConfigurationExtensions
                 fallbackConfiguration = parentConfiguration;
             }
             return new EffectiveConfiguration(configuration, branchConfiguration, fallbackConfiguration);
+        }
+
+        public EffectiveBranchConfiguration GetEffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration? parentConfiguration = null)
+        {
+            var effectiveConfiguration = GetEffectiveConfiguration(configuration, branch.Name, parentConfiguration);
+            return new EffectiveBranchConfiguration(effectiveConfiguration, branch);
         }
 
         public IBranchConfiguration GetBranchConfiguration(IBranch branch)
