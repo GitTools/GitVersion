@@ -456,14 +456,14 @@ GitVersion.OutputVariables.GitVersionVariables.Patch.get -> string!
 GitVersion.OutputVariables.GitVersionVariables.Patch.init -> void
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabel.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabel.init -> void
+GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelName.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelName.init -> void
+GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelNameWithDash.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelNameWithDash.init -> void
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelWithDash.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseLabelWithDash.init -> void
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseNumber.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.PreReleaseNumber.init -> void
-GitVersion.OutputVariables.GitVersionVariables.PreReleaseTag.get -> string?
-GitVersion.OutputVariables.GitVersionVariables.PreReleaseTag.init -> void
-GitVersion.OutputVariables.GitVersionVariables.PreReleaseTagWithDash.get -> string?
-GitVersion.OutputVariables.GitVersionVariables.PreReleaseTagWithDash.init -> void
 GitVersion.OutputVariables.GitVersionVariables.SemVer.get -> string!
 GitVersion.OutputVariables.GitVersionVariables.SemVer.init -> void
 GitVersion.OutputVariables.GitVersionVariables.Sha.get -> string?
@@ -580,10 +580,10 @@ GitVersion.SemanticVersionFormatValues.MajorMinorPatch.get -> string!
 GitVersion.SemanticVersionFormatValues.Minor.get -> string!
 GitVersion.SemanticVersionFormatValues.Patch.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseLabel.get -> string!
+GitVersion.SemanticVersionFormatValues.PreReleaseLabelName.get -> string!
+GitVersion.SemanticVersionFormatValues.PreReleaseLabelNameWithDash.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseLabelWithDash.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseNumber.get -> string!
-GitVersion.SemanticVersionFormatValues.PreReleaseTag.get -> string!
-GitVersion.SemanticVersionFormatValues.PreReleaseTagWithDash.get -> string!
 GitVersion.SemanticVersionFormatValues.SemanticVersionFormatValues(GitVersion.SemanticVersion! semver, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> void
 GitVersion.SemanticVersionFormatValues.SemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.Sha.get -> string?

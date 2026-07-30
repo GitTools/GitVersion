@@ -310,13 +310,50 @@ public class VariableProviderTests : TestBase
             BuildMetaData = new()
         };
         var configuration = GitFlowConfigurationBuilder.New
-            .WithCustomVersionFormat("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}")
+            .WithCustomVersionFormat("{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}")
             .Build();
         var effectiveConfiguration = configuration.GetEffectiveConfiguration();
 
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         variables.CustomVersion.ShouldBe("0.6.3beta10");
+    }
+
+    [TestCase("beta", 99, "beta", "99", "beta.99", "-beta", "-beta.99")]
+    [TestCase("", 99, "", "99", "99", "", "-99")]
+    [TestCase(null, null, "", "", "", "", "")]
+    public void ProvidesUnambiguousPreReleaseVariables(
+        string? labelName, long? number,
+        string expectedLabelName, string expectedNumber, string expectedLabel,
+        string expectedLabelNameWithDash, string expectedLabelWithDash)
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = labelName is null && number is null
+                ? SemanticVersionPreReleaseTag.Empty
+                : new(labelName ?? string.Empty, number, true),
+            BuildMetaData = new()
+        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
+
+        variables.PreReleaseLabelName.ShouldBe(expectedLabelName);
+        variables.PreReleaseLabelNameWithDash.ShouldBe(expectedLabelNameWithDash);
+        variables.PreReleaseNumber.ShouldBe(expectedNumber);
+        variables.PreReleaseLabel.ShouldBe(expectedLabel);
+        variables.PreReleaseLabelWithDash.ShouldBe(expectedLabelWithDash);
+
+        var roundTrippedVariables = variables.ToJson().ToGitVersionVariables();
+        roundTrippedVariables.PreReleaseLabelName.ShouldBe(expectedLabelName);
+        roundTrippedVariables.PreReleaseLabelNameWithDash.ShouldBe(expectedLabelNameWithDash);
+        roundTrippedVariables.PreReleaseNumber.ShouldBe(expectedNumber);
+        roundTrippedVariables.PreReleaseLabel.ShouldBe(expectedLabel);
+        roundTrippedVariables.PreReleaseLabelWithDash.ShouldBe(expectedLabelWithDash);
     }
 
     [Test]

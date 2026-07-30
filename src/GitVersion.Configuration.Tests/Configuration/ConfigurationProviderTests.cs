@@ -245,12 +245,12 @@ public class ConfigurationProviderTests : TestBase
     [Test]
     public void CanReadCustomVersionFormat()
     {
-        const string text = "custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'";
+        const string text = "custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.CustomVersionFormat.ShouldBe("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}");
+        configuration.CustomVersionFormat.ShouldBe("{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}");
     }
 
     [Test]
@@ -260,14 +260,14 @@ public class ConfigurationProviderTests : TestBase
                             custom-version-format: '{SemVer}'
                             branches:
                               feature:
-                                custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'
+                                custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
                             """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.CustomVersionFormat.ShouldBe("{SemVer}");
-        configuration.Branches["feature"].CustomVersionFormat.ShouldBe("{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}");
+        configuration.Branches["feature"].CustomVersionFormat.ShouldBe("{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}");
     }
 
     [Test]

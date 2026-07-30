@@ -15,10 +15,10 @@
   <?define Minor="2"?>
   <?define Patch="3"?>
   <?define PreReleaseLabel=""?>
+  <?define PreReleaseLabelName=""?>
+  <?define PreReleaseLabelNameWithDash=""?>
   <?define PreReleaseLabelWithDash=""?>
   <?define PreReleaseNumber=""?>
-  <?define PreReleaseTag=""?>
-  <?define PreReleaseTagWithDash=""?>
   <?define SemVer="1.2.3"?>
   <?define Sha="commitSha"?>
   <?define ShortSha="commitShortSha"?>

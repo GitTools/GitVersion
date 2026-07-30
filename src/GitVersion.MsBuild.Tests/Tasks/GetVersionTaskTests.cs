@@ -35,6 +35,11 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("2");
         result.Task.Patch.ShouldBe("4");
         result.Task.MajorMinorPatch.ShouldBe("1.2.4");
+        result.Task.PreReleaseLabelName.ShouldBe(string.Empty);
+        result.Task.PreReleaseLabelNameWithDash.ShouldBe(string.Empty);
+        result.Task.PreReleaseNumber.ShouldBe("1");
+        result.Task.PreReleaseLabel.ShouldBe("1");
+        result.Task.PreReleaseLabelWithDash.ShouldBe("-1");
         result.Task.FullSemVer.ShouldBe("1.2.4-1");
     }
 
@@ -51,6 +56,11 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("0");
         result.Task.Patch.ShouldBe("1");
         result.Task.MajorMinorPatch.ShouldBe("1.0.1");
+        result.Task.PreReleaseLabelName.ShouldBe(string.Empty);
+        result.Task.PreReleaseLabelNameWithDash.ShouldBe(string.Empty);
+        result.Task.PreReleaseNumber.ShouldBe("1");
+        result.Task.PreReleaseLabel.ShouldBe("1");
+        result.Task.PreReleaseLabelWithDash.ShouldBe("-1");
         result.Task.FullSemVer.ShouldBe("1.0.1-1");
     }
 

@@ -104,7 +104,21 @@
       ]
     },
     "PreReleaseLabel": {
-      "description": "The pre-release label is the name of the pre-release.",
+      "description": "The full pre-release label, including the PreReleaseNumber when present.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "PreReleaseLabelName": {
+      "description": "The name of the pre-release label, without the PreReleaseNumber.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "PreReleaseLabelNameWithDash": {
+      "description": "The pre-release label name prefixed with a dash.",
       "type": [
         "null",
         "string"
@@ -124,22 +138,8 @@
         "integer"
       ]
     },
-    "PreReleaseTag": {
-      "description": "The pre-release tag is the pre-release label suffixed by the PreReleaseNumber.",
-      "type": [
-        "null",
-        "string"
-      ]
-    },
-    "PreReleaseTagWithDash": {
-      "description": "The pre-release tag prefixed with a dash.",
-      "type": [
-        "null",
-        "string"
-      ]
-    },
     "SemVer": {
-      "description": "The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.",
+      "description": "The semantic version number, including PreReleaseLabelWithDash for pre-release version numbers.",
       "type": [
         "null",
         "string"
