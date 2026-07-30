@@ -142,7 +142,7 @@ public static class GitRepositoryTestingExtensions
                 var semanticVersion = nextVersionCalculator.FindVersion();
 
                 var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(context.CurrentBranch.Name);
-                return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration.PreReleaseWeight);
+                return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, effectiveConfiguration);
             }
             catch (Exception)
             {

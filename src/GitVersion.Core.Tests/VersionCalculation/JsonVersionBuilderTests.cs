@@ -35,7 +35,9 @@ public class JsonVersionBuilderTests : TestBase
         var serviceProvider = ConfigureServices();
 
         var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
         variables.ToJson().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

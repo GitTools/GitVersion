@@ -8,6 +8,19 @@ public class ConfigurationExtensionsTests : TestBase
 {
     private const string BranchName = "pull-request";
 
+    [Test]
+    public void EnsureGetEffectiveConfigurationWithoutBranchUsesEmptyBranchConfiguration()
+    {
+        var configuration = EmptyConfigurationBuilder.New
+            .WithCustomVersionFormat("{SemVer}-custom")
+            .Build();
+
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+
+        effectiveConfiguration.CustomVersionFormat.ShouldBe("{SemVer}-custom");
+        effectiveConfiguration.PreReleaseWeight.ShouldBe(0);
+    }
+
     [TestCase("release/2.0.0",
         "refs/heads/release/2.0.0", "release/2.0.0", "release/2.0.0",
         true, false, false, false, true)]

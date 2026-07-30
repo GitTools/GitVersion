@@ -12,6 +12,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? assemblyInformationalFormat;
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
+    private string? customVersionFormat;
     private string? tagPrefix;
     private string? versionInBranchPattern;
     private string? nextVersion;
@@ -126,6 +127,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public TConfigurationBuilder WithAssemblyFileVersioningFormat(string? value)
     {
         this.assemblyFileVersioningFormat = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public TConfigurationBuilder WithCustomVersionFormat(string? value)
+    {
+        this.customVersionFormat = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -329,6 +336,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
         WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
         WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
+        WithCustomVersionFormat(value.CustomVersionFormat);
         WithTagPrefixPattern(value.TagPrefixPattern);
         WithVersionInBranchPattern(value.VersionInBranchPattern);
         WithNextVersion(value.NextVersion);
@@ -387,6 +395,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             AssemblyInformationalFormat = this.assemblyInformationalFormat,
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
+            CustomVersionFormat = this.customVersionFormat,
             TagPrefixPattern = this.tagPrefix,
             VersionInBranchPattern = this.versionInBranchPattern,
             NextVersion = this.nextVersion,

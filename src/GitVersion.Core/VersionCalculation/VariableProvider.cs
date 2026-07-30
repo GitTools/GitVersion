@@ -10,18 +10,29 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
     private readonly IEnvironment environment = environment.NotNull();
 
     public GitVersionVariables GetVariablesFor(
-        SemanticVersion semanticVersion, IGitVersionConfiguration configuration, int preReleaseWeight)
+        SemanticVersion semanticVersion,
+        IGitVersionConfiguration configuration,
+        EffectiveConfiguration effectiveConfiguration)
     {
         semanticVersion.NotNull();
         configuration.NotNull();
+        effectiveConfiguration.NotNull();
 
-        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration, preReleaseWeight);
+        var semverFormatValues = new SemanticVersionFormatValues(
+            semanticVersion, configuration, effectiveConfiguration.PreReleaseWeight);
 
         var informationalVersion = CheckAndFormatString(
             configuration.AssemblyInformationalFormat,
             semverFormatValues,
             semverFormatValues.InformationalVersion,
             "AssemblyInformationalVersion"
+        );
+
+        var customVersion = CheckAndFormatString(
+            effectiveConfiguration.CustomVersionFormat,
+            semverFormatValues,
+            string.Empty,
+            "CustomVersionFormat"
         );
 
         var assemblyFileSemVer = CheckAndFormatString(
@@ -44,6 +55,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             BranchName: semverFormatValues.BranchName,
             BuildMetaData: semverFormatValues.BuildMetaData,
             CommitDate: semverFormatValues.CommitDate,
+            CustomVersion: customVersion,
             EscapedBranchName: semverFormatValues.EscapedBranchName,
             FullBuildMetaData: semverFormatValues.FullBuildMetaData,
             FullSemVer: semverFormatValues.FullSemVer,

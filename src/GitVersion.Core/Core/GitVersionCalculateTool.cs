@@ -48,7 +48,7 @@ internal class GitVersionCalculateTool(
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
         EffectiveConfiguration effectiveConfiguration = new(Context.Configuration, branchConfiguration);
         versionVariables = this.variableProvider.GetVariablesFor(
-            semanticVersion, Context.Configuration, effectiveConfiguration.PreReleaseWeight);
+            semanticVersion, Context.Configuration, effectiveConfiguration);
 
         if (gitVersionOptions.Settings.NoCache)
         {

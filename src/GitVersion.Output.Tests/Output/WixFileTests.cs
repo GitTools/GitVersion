@@ -48,7 +48,9 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, effectiveConfiguration);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
@@ -85,7 +87,9 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, EmptyConfigurationBuilder.New.Build(), 0);
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, effectiveConfiguration);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 

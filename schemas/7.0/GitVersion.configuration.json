@@ -66,6 +66,13 @@
               null
             ]
           },
+          "custom-version-format": {
+            "description": "Specifies the format of CustomVersion.",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "mode": {
             "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
             "enum": [
@@ -166,6 +173,13 @@
         "Disabled",
         "MergeMessageOnly",
         null
+      ]
+    },
+    "custom-version-format": {
+      "description": "Specifies the format of CustomVersion.",
+      "type": [
+        "null",
+        "string"
       ]
     },
     "mode": {

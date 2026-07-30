@@ -9,6 +9,7 @@ internal class BranchConfigurationBuilder
 
     private DeploymentMode? deploymentMode;
     private string? label;
+    private string? customVersionFormat;
     private IncrementStrategy increment;
     private bool? preventIncrementOfMergedBranch;
     private bool? preventIncrementWhenBranchMerged;
@@ -37,6 +38,12 @@ internal class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithLabel(string? value)
     {
         this.label = value;
+        return this;
+    }
+
+    public virtual BranchConfigurationBuilder WithCustomVersionFormat(string? value)
+    {
+        this.customVersionFormat = value;
         return this;
     }
 
@@ -140,6 +147,7 @@ internal class BranchConfigurationBuilder
     {
         WithDeploymentMode(value.DeploymentMode);
         WithLabel(value.Label);
+        WithCustomVersionFormat(value.CustomVersionFormat);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranch(value.PreventIncrement.OfMergedBranch);
         WithPreventIncrementWhenBranchMerged(value.PreventIncrement.WhenBranchMerged);
@@ -161,6 +169,7 @@ internal class BranchConfigurationBuilder
     {
         DeploymentMode = this.deploymentMode,
         Label = this.label,
+        CustomVersionFormat = this.customVersionFormat,
         Increment = this.increment,
         RegularExpression = this.regularExpression,
         TracksReleaseBranches = this.tracksReleaseBranches,

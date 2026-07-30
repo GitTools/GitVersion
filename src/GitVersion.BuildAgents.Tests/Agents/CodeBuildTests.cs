@@ -87,8 +87,10 @@ public sealed class CodeBuildTests : TestBase
         };
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         this.buildServer.WithPropertyFile(file);
 

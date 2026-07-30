@@ -127,17 +127,18 @@ Following options are supported:
 5. `assembly-versioning-scheme`
 6. `commit-date-format`
 7. `commit-message-incrementing`
-8. `label`
-9. `increment`
-10. `major-version-bump-message`
-11. `minor-version-bump-message`
-12. `mode`
-13. `next-version`
-14. `no-bump-message`
-15. `patch-version-bump-message`
-16. `tag-prefix`
-17. `tag-pre-release-weight`
-18. `update-build-number`
+8. `custom-version-format`
+9. `label`
+10. `increment`
+11. `major-version-bump-message`
+12. `minor-version-bump-message`
+13. `mode`
+14. `next-version`
+15. `no-bump-message`
+16. `patch-version-bump-message`
+17. `tag-prefix`
+18. `tag-pre-release-weight`
+19. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 

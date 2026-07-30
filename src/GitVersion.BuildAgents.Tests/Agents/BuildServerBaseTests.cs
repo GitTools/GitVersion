@@ -38,7 +38,9 @@ public class BuildServerBaseTests : TestBase
             }
         };
 
-        var variables = this.buildServer.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration();
+        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
         var buildAgent = this.sp.GetRequiredService<BuildAgent>();
         buildAgent.WriteIntegration(writes.Add, variables);
 

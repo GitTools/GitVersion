@@ -89,8 +89,10 @@ public class GitVersionInfoGeneratorTests : TestBase
         var (directory, fileName, fullPath) = CreateTempOutputPath(fileSystem, fileExtension);
         try
         {
+            var configuration = EmptyConfigurationBuilder.New.Build();
+            var effectiveConfiguration = configuration.GetEffectiveConfiguration();
             var variables = sp.GetRequiredService<IVariableProvider>()
-                .GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+                .GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
             using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
             generator.Execute(variables, new(directory, fileName, targetNamespace));
