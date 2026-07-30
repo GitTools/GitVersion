@@ -63,22 +63,64 @@ public class ExecCmdLineArgumentTest
         requestedCommitResult.Output!.Trim().ShouldBe(requestedCommit);
     }
 
-    [Theory]
-    [TestCase("", "INFO")]
-    [TestCase("--verbosity NORMAL", "INFO")]
-    [TestCase("--verbosity quiet", "")]
-    public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
+    [TestCase(false, "", true)]
+    [TestCase(false, "--verbosity NORMAL", true)]
+    [TestCase(false, "--verbosity quiet", false)]
+    [TestCase(true, "", true)]
+    [TestCase(true, "/verbosity NORMAL", true)]
+    [TestCase(true, "/verbosity quiet", false)]
+    public void CheckBuildServerVerbosityConsole(bool useLegacyParser, string verbosityArgument, bool expectInformation)
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.2.3");
         fixture.MakeACommit();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath,
-            $""" {verbosityArg} --output buildserver --log-file "/tmp/path" """, false);
+        var environment = new KeyValuePair<string, string?>(
+            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+        var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
+        var targetPathArgument = useLegacyParser ? $" \"{fixture.RepositoryPath}\"" : string.Empty;
+        var outputArguments = useLegacyParser
+            ? "-output buildserver -l console"
+            : "--output buildserver --log-file console";
+
+        var result = GitVersionHelper.ExecuteIn(workingDirectory,
+            $"{targetPathArgument} {verbosityArgument} {outputArguments}", false, environment);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldNotBeNull();
-        result.Output.ShouldContain(expectedOutput);
+        if (expectInformation)
+        {
+            result.Output.ShouldContain("INFO");
+        }
+        else
+        {
+            result.Output.ShouldNotContain("INFO");
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void VerboseVerbosityIncludesDebugOutput(bool useLegacyParser)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.2.3");
+        fixture.MakeACommit();
+
+        var environment = new KeyValuePair<string, string?>(
+            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+        var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
+        var targetPathArgument = useLegacyParser ? $" \"{fixture.RepositoryPath}\"" : string.Empty;
+        var verbosityArgument = useLegacyParser ? "/verbosity Verbose" : "--verbosity verbose";
+        var outputArguments = useLegacyParser
+            ? "-nocache -output buildserver -l console"
+            : "--no-cache --output buildserver --log-file console";
+
+        var result = GitVersionHelper.ExecuteIn(workingDirectory,
+            $"{targetPathArgument} {verbosityArgument} {outputArguments}", false, environment);
+
+        result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
+        result.Output.ShouldContain("DBUG");
     }
 
     [Test]
