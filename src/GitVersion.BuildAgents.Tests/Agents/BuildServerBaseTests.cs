@@ -2,6 +2,7 @@ using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.OutputVariables;
 using GitVersion.Tests;
 using GitVersion.VersionCalculation;
@@ -38,7 +39,9 @@ public class BuildServerBaseTests : TestBase
             }
         };
 
-        var variables = this.buildServer.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
         var buildAgent = this.sp.GetRequiredService<BuildAgent>();
         buildAgent.WriteIntegration(writes.Add, variables);
 

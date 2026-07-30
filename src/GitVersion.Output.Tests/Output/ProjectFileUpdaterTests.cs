@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using System.Xml.Linq;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
@@ -143,9 +144,8 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
-        );
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -175,7 +175,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -208,7 +208,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -242,7 +242,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = GetVariablesFor(SemanticVersion.Parse("2.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -322,11 +322,19 @@ public class ProjectFileUpdaterTests : TestBase
         });
 
         var configuration = EmptyConfigurationBuilder.New.WithAssemblyVersioningScheme(versioningScheme).Build();
-        var variables = this.variableProvider.GetVariablesFor(version, configuration, 0);
+        var variables = GetVariablesFor(version, configuration);
 
         var fileSystem = Substitute.For<IFileSystem>();
         fileSystem.File.Returns(file);
         fileSystem.FileInfo.Returns(new FileSystem().FileInfo);
         verify?.Invoke(fileSystem, variables);
+    }
+
+    private GitVersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion, IGitVersionConfiguration? configuration = null)
+    {
+        configuration ??= EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        return this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
     }
 }

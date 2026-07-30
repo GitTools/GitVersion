@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.IO.Abstractions;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output.GitVersionInfo;
 using GitVersion.Tests;
@@ -89,8 +90,10 @@ public class GitVersionInfoGeneratorTests : TestBase
         var (directory, fileName, fullPath) = CreateTempOutputPath(fileSystem, fileExtension);
         try
         {
+            var configuration = EmptyConfigurationBuilder.New.Build();
+            var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
             var variables = sp.GetRequiredService<IVariableProvider>()
-                .GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+                .GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
             using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
             generator.Execute(variables, new(directory, fileName, targetNamespace));

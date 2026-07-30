@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Agents;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Tests;
 using GitVersion.VersionCalculation;
@@ -149,8 +150,10 @@ public class BitBucketPipelinesTests : TestBase
         };
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
+        var configuration = EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
 
         this.buildServer.WithPropertyFile(propertyFile);
         this.buildServer.WithPowershellFile(ps1File);

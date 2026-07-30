@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
+using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
@@ -43,8 +44,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
         var fullPath = FileSystemHelper.Path.Combine(this.workingDir, assemblyInfoFile);
 
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
@@ -59,9 +60,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         var assemblyInfoFile = FileSystemHelper.Path.Combine("src", "Project", "Properties", $"VersionAssemblyInfo.{fileExtension}");
         var fullPath = FileSystemHelper.Path.Combine(this.workingDir, assemblyInfoFile);
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
-        );
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
@@ -75,7 +75,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     public void ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo(string fileExtension)
     {
         var assemblyInfoFiles = new HashSet<string> { "AssemblyInfo." + fileExtension, FileSystemHelper.Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension) };
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0);
+        var variables = GetVariablesFor(SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, [.. assemblyInfoFiles]));
@@ -94,9 +94,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         var assemblyInfoFile = "NoVersionAssemblyInfo." + fileExtension;
         var fullPath = FileSystemHelper.Path.Combine(this.workingDir, assemblyInfoFile);
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
-        );
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, assemblyInfoFile));
@@ -111,9 +110,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         const string assemblyInfoFile = "VersionAssemblyInfo.js";
         var fullPath = FileSystemHelper.Path.Combine(this.workingDir, assemblyInfoFile);
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
-        );
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, true, assemblyInfoFile));
@@ -127,9 +125,8 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         this.fileSystem = Substitute.For<IFileSystem>();
 
         string[] assemblyInfoFiles = [];
-        var variables = this.variableProvider.GetVariablesFor(
-            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern), EmptyConfigurationBuilder.New.Build(), 0
-        );
+        var variables = GetVariablesFor(
+            SemanticVersion.Parse("1.0.0", RegexPatterns.Configuration.DefaultTagPrefixRegexPattern));
 
         using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.logger, this.fileSystem);
         assemblyInfoFileUpdater.Execute(variables, new(this.workingDir, false, [.. assemblyInfoFiles]));
@@ -457,11 +454,19 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         });
 
         var configuration = EmptyConfigurationBuilder.New.WithAssemblyVersioningScheme(versioningScheme).Build();
-        var variables = this.variableProvider.GetVariablesFor(version, configuration, 0);
+        var variables = GetVariablesFor(version, configuration);
 
         this.fileSystem = Substitute.For<IFileSystem>();
         this.fileSystem.File.Returns(file);
         this.fileSystem.FileInfo.Returns(new FileSystem().FileInfo);
         verify?.Invoke(this.fileSystem, variables);
+    }
+
+    private GitVersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion, IGitVersionConfiguration? configuration = null)
+    {
+        configuration ??= EmptyConfigurationBuilder.New.Build();
+        var effectiveConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        return this.variableProvider.GetVariablesFor(semanticVersion, configuration, effectiveConfiguration);
     }
 }

@@ -10,7 +10,7 @@ namespace GitVersion;
 internal class GitVersionCalculateTool(
     ILogger<GitVersionCalculateTool> logger,
     INextVersionCalculator nextVersionCalculator,
-    VariableProvider variableProvider,
+    IVariableProvider variableProvider,
     IGitPreparer gitPreparer,
     IGitVersionCacheProvider gitVersionCacheProvider,
     IOptions<GitVersionOptions> options,
@@ -20,7 +20,7 @@ internal class GitVersionCalculateTool(
     private readonly ILogger<GitVersionCalculateTool> logger = logger.NotNull();
     private readonly IGitVersionCacheProvider gitVersionCacheProvider = gitVersionCacheProvider.NotNull();
     private readonly INextVersionCalculator nextVersionCalculator = nextVersionCalculator.NotNull();
-    private readonly VariableProvider variableProvider = variableProvider.NotNull();
+    private readonly IVariableProvider variableProvider = variableProvider.NotNull();
     private readonly IGitPreparer gitPreparer = gitPreparer.NotNull();
 
     private readonly IOptions<GitVersionOptions> options = options.NotNull();

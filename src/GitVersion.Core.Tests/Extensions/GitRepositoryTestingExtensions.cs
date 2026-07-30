@@ -133,7 +133,7 @@ public static class GitRepositoryTestingExtensions
 
                 sp.DiscoverRepository();
 
-                var variableProvider = sp.GetRequiredService<VariableProvider>();
+                var variableProvider = sp.GetRequiredService<IVariableProvider>();
                 var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
                 var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 

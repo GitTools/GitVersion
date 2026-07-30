@@ -1,6 +1,8 @@
 #nullable enable
 GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?
+GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.EffectiveConfiguration! effectiveConfiguration) -> GitVersion.OutputVariables.GitVersionVariables!
+*REMOVED*GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.OutputVariables.GitVersionVariables.CustomVersion.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CustomVersion.init -> void
 GitVersion.OutputVariables.GitVersionVariables.Deconstruct(out string? AssemblySemFileVer, out string? AssemblySemVer, out string? BranchName, out string? BuildMetaData, out string? CommitDate, out string? CustomVersion, out string? EscapedBranchName, out string? FullBuildMetaData, out string! FullSemVer, out string? InformationalVersion, out string! Major, out string! MajorMinorPatch, out string! Minor, out string! Patch, out string? PreReleaseLabel, out string? PreReleaseLabelWithDash, out string? PreReleaseNumber, out string? PreReleaseTag, out string? PreReleaseTagWithDash, out string! SemVer, out string? Sha, out string? ShortSha, out string? UncommittedChanges, out string? VersionSourceDistance, out string? VersionSourceIncrement, out string? VersionSourceSemVer, out string? VersionSourceSha, out string! WeightedPreReleaseNumber) -> void

@@ -10,10 +10,6 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
     private readonly IEnvironment environment = environment.NotNull();
 
     public GitVersionVariables GetVariablesFor(
-        SemanticVersion semanticVersion, IGitVersionConfiguration configuration, int preReleaseWeight)
-        => GetVariablesFor(semanticVersion, configuration, preReleaseWeight, configuration.CustomVersionFormat);
-
-    internal GitVersionVariables GetVariablesFor(
         SemanticVersion semanticVersion,
         IGitVersionConfiguration configuration,
         EffectiveConfiguration effectiveConfiguration)
