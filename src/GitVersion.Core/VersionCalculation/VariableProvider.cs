@@ -13,22 +13,13 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         SemanticVersion semanticVersion,
         IGitVersionConfiguration configuration,
         EffectiveConfiguration effectiveConfiguration)
-        => GetVariablesFor(
-            semanticVersion,
-            configuration,
-            effectiveConfiguration.PreReleaseWeight,
-            effectiveConfiguration.CustomVersionFormat);
-
-    private GitVersionVariables GetVariablesFor(
-        SemanticVersion semanticVersion,
-        IGitVersionConfiguration configuration,
-        int preReleaseWeight,
-        string? customVersionFormat)
     {
         semanticVersion.NotNull();
         configuration.NotNull();
+        effectiveConfiguration.NotNull();
 
-        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration, preReleaseWeight);
+        var semverFormatValues = new SemanticVersionFormatValues(
+            semanticVersion, configuration, effectiveConfiguration.PreReleaseWeight);
 
         var informationalVersion = CheckAndFormatString(
             configuration.AssemblyInformationalFormat,
@@ -38,7 +29,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         );
 
         var customVersion = CheckAndFormatString(
-            customVersionFormat,
+            effectiveConfiguration.CustomVersionFormat,
             semverFormatValues,
             string.Empty,
             "CustomVersionFormat"
