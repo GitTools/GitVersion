@@ -14,11 +14,12 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
         branch.NotNull();
         configuration.NotNull();
 
-        return GetEffectiveConfigurationsRecursive(branch, configuration, null, []);
+        return GetEffectiveConfigurationsRecursive(branch, configuration, null, [], resolvePullRequestTarget: true);
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
-        IBranch branch, IGitVersionConfiguration configuration, IBranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+        IBranch branch, IGitVersionConfiguration configuration, IBranchConfiguration? childBranchConfiguration,
+        HashSet<IBranch> traversedBranches, bool resolvePullRequestTarget)
     {
         if (!traversedBranches.Add(branch))
         {
@@ -39,6 +40,10 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
 
         // At this point we need to check if source branches are available.
         IBranch[] sourceBranches = [.. this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches)];
+        if (resolvePullRequestTarget && GetPullRequestTargetBranch(branch, configuration) is { } targetBranch)
+        {
+            sourceBranches = [targetBranch];
+        }
 
         if (sourceBranches.Length == 0)
         {
@@ -59,10 +64,49 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
         foreach (var sourceBranch in sourceBranches)
         {
             foreach (var effectiveConfiguration
-                in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches))
+                in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches, resolvePullRequestTarget: false))
             {
                 yield return effectiveConfiguration;
             }
         }
     }
+
+    private IBranch? GetPullRequestTargetBranch(IBranch branch, IGitVersionConfiguration configuration)
+    {
+        if (!IsPullRequestBranch(branch, configuration)
+            || branch.Tip is not { } tip
+            || !MergeMessage.TryParse(tip, configuration, out var mergeMessage)
+            || !mergeMessage.IsMergedPullRequest
+            || string.IsNullOrWhiteSpace(mergeMessage.TargetBranch))
+        {
+            return null;
+        }
+
+        var targetBranch = new SourceBranchFinder(this.repositoryStore.Branches, configuration)
+            .FindSourceBranchesOf(branch)
+            .Where(candidate => candidate.Name.EquivalentTo(mergeMessage.TargetBranch))
+            .MinBy(candidate => candidate.IsRemote);
+
+        if (targetBranch is null)
+        {
+            this.logger.LogDebug(
+                "Pull request target branch '{TargetBranch}' was not found among the allowed source branches for '{Branch}'.",
+                mergeMessage.TargetBranch, branch
+            );
+        }
+        else
+        {
+            this.logger.LogDebug(
+                "Using pull request target branch '{TargetBranch}' as the source branch for '{Branch}'.",
+                targetBranch, branch
+            );
+        }
+
+        return targetBranch;
+    }
+
+    private static bool IsPullRequestBranch(IBranch branch, IGitVersionConfiguration configuration) =>
+        branch.Name.IsPullRequest
+        || configuration.Branches.TryGetValue(ConfigurationConstants.PullRequestBranchKey, out var pullRequestConfiguration)
+        && pullRequestConfiguration.IsMatch(branch.Name.WithoutOrigin);
 }

@@ -13,6 +13,13 @@ public static class GitTestExtensions
         public Commit MakeACommit(string? commitMessage = null) => CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
         public void MergeNoFF(string branch) => MergeNoFF(repository, branch, Generate.SignatureNow());
 
+        public Commit MergeNoFF(string branch, string message)
+        {
+            repository.MergeNoFF(branch);
+            var signature = Generate.SignatureNow();
+            return repository.Commit(message, signature, signature, new CommitOptions { AmendPreviousCommit = true });
+        }
+
         public void MergeNoFF(string branch, Signature sig) => repository.Merge(repository.Branches[branch], sig, new MergeOptions
         {
             FastForwardStrategy = FastForwardStrategy.NoFastForward
