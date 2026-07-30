@@ -30,9 +30,10 @@ internal class GitVersionCacheKeyFactory(
         var gitSystemHash = GetGitSystemHash();
         var configFileHash = GetConfigFileHash();
         var repositorySnapshotHash = GetRepositorySnapshotHash();
+        var repositoryTargetHash = GetRepositoryTargetHash();
         var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
 
-        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, overrideConfigHash);
+        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash);
         return new(compositeHash);
     }
 
@@ -172,6 +173,17 @@ internal class GitVersionCacheKeyFactory(
 
         var hash = string.Join(":", head.Name.Canonical, head.Tip.Sha);
         return GetHash(hash);
+    }
+
+    private string GetRepositoryTargetHash()
+    {
+        var repoInfo = this.options.Value.RepositoryInfo;
+        if (repoInfo.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
+
+        return GetHash(repoInfo.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
     }
 
     private string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)

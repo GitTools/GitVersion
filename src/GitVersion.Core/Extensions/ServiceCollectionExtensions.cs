@@ -1,6 +1,7 @@
 using System.Globalization;
 using GitVersion.Logging;
 using Serilog;
+using Serilog.Core;
 
 namespace GitVersion.Extensions;
 
@@ -26,8 +27,9 @@ public static class ServiceCollectionExtensions
             serviceCollection.AddSerilog((services, loggerConfig) =>
             {
                 var options = services.GetRequiredService<IOptions<GitVersionOptions>>().Value;
+                var loggingLevelSwitch = services.GetRequiredService<LoggingLevelSwitch>();
 
-                ConfigureLogger(loggerConfig, options);
+                ConfigureLogger(loggerConfig, options, loggingLevelSwitch);
             });
             return serviceCollection;
         }
@@ -40,13 +42,15 @@ public static class ServiceCollectionExtensions
             serviceProvider.GetServices<TService>().Single(t => t?.GetType() == typeof(TType));
     }
 
-    private static void ConfigureLogger(LoggerConfiguration loggerConfig, GitVersionOptions gitVersionOptions)
+    private static void ConfigureLogger(LoggerConfiguration loggerConfig, GitVersionOptions gitVersionOptions,
+        LoggingLevelSwitch loggingLevelSwitch)
     {
         const string outputTemplate = "{Level:u4} [{Timestamp:yy-MM-dd HH:mm:ss:ff}] {Indent}{Message:lj}{NewLine}{Exception}";
         const string logDestination = "console";
         var formatProvider = CultureInfo.InvariantCulture;
 
         loggerConfig
+            .MinimumLevel.ControlledBy(loggingLevelSwitch)
             .Enrich.With<SensitiveDataEnricher>()
             .Enrich.With<IndentationEnricher>();
 
