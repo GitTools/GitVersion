@@ -1,6 +1,6 @@
 ---
 name: context-search
-description: "Explore and understand unfamiliar codebases using semantic code search"
+description: "Semantic code search for discovering and understanding code by meaning rather than keywords.\n- Use this skill when you need to find code whose location you don't already know - e.g., when the task asks 'where is X', 'how does Y work', or describes behavior or intent without naming exact symbols.\n- When not to use: if you already know the relevant file, class, or symbol (use direct navigation or keyword search instead), or for non-code-discovery tasks such as git operations, builds, tests, or reviewing an existing diff."
 argument-hint: query
 
 ---

@@ -9,7 +9,7 @@ matcher = "startup|resume"
 type = "command"
 command = "sh -c 'jbcontext index --silent >/dev/null 2>&1 &'"
 statusMessage = "jbcontext: kicking off background index"
-timeout = 5
+timeout = 2
 # jbcontext-hook:SessionStart:end
 
 # jbcontext-hook:PreToolUse:start
@@ -19,7 +19,7 @@ matcher = "Bash|Find|rg"
 [[hooks.PreToolUse.hooks]]
 type = "command"
 command = "jbcontext hook pre-tool-use --agent codex"
-timeout = 5
+timeout = 2
 # jbcontext-hook:PreToolUse:end
 
 # jbcontext-hook:UserPromptSubmit:start
@@ -28,7 +28,7 @@ timeout = 5
 [[hooks.UserPromptSubmit.hooks]]
 type = "command"
 command = "jbcontext hook user-prompt-submit --agent codex"
-timeout = 5
+timeout = 2
 # jbcontext-hook:UserPromptSubmit:end
 
 [mcp_servers.rider]
