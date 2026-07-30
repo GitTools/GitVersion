@@ -36,6 +36,33 @@ public class ExecCmdLineArgumentTest
                     """);
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CommitArgumentUsesRequestedCommitWhenCacheExists(bool useLegacyParser)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        var requestedCommit = fixture.MakeACommit();
+        var headCommit = fixture.MakeACommit();
+
+        var environment = new KeyValuePair<string, string?>(
+            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+        var showVariableArgument = useLegacyParser ? "-showvariable" : "--show-variable";
+        var commitArgument = useLegacyParser ? "-c" : "--commit";
+        var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
+        var targetPathArgument = useLegacyParser ? $" \"{fixture.RepositoryPath}\"" : string.Empty;
+
+        var headResult = GitVersionHelper.ExecuteIn(workingDirectory,
+            $"{targetPathArgument} {showVariableArgument} Sha", false, environment);
+        var requestedCommitResult = GitVersionHelper.ExecuteIn(workingDirectory,
+            $"{targetPathArgument} {commitArgument} {requestedCommit} {showVariableArgument} Sha", false, environment);
+
+        headResult.ExitCode.ShouldBe(0);
+        headResult.Output!.Trim().ShouldBe(headCommit);
+        requestedCommitResult.ExitCode.ShouldBe(0);
+        requestedCommitResult.Output!.Trim().ShouldBe(requestedCommit);
+    }
+
     [Theory]
     [TestCase("", "INFO")]
     [TestCase("--verbosity NORMAL", "INFO")]
