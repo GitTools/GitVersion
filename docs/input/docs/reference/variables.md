@@ -51,7 +51,7 @@ Each property of the above JSON document is described in the below table.
 |                `BranchName` | The name of the checked out Git branch.                                                                                                                                    |
 |             `BuildMetaData` | The build metadata, usually representing number of commits since the `VersionSourceSha`. Despite its name, will not increment for every build.                             |
 |                `CommitDate` | The ISO-8601 formatted date of the commit identified by `Sha`.                                                                                                             |
-|             `CustomVersion` | A custom version configured with `custom-version-format`. Defaults to `SemVer`.                                                                                            |
+|             `CustomVersion` | A custom version configured with `custom-version-format`. Empty when no format is configured.                                                                              |
 |         `EscapedBranchName` | Equal to `BranchName`, but with `/` replaced with `-`.                                                                                                                     |
 |         `FullBuildMetaData` | The `BuildMetaData` suffixed with `BranchName` and `Sha`.                                                                                                                  |
 |                `FullSemVer` | The full, SemVer 2.0 compliant version number.                                                                                                                             |

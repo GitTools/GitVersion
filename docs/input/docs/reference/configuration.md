@@ -523,9 +523,9 @@ The default value is `{InformationalVersion}`.
 
 Specifies the format of the `CustomVersion` output variable.
 Follows the same formatting semantics as `assembly-file-versioning-format` and
-can use version variables or environment variables. The default value is
-`{SemVer}`. It can be configured globally and overridden for individual
-branches under `branches`.
+can use version variables or environment variables. `CustomVersion` is empty
+when no format is configured. The format can be configured globally and
+overridden for individual branches under `branches`.
 
 ### mode
 

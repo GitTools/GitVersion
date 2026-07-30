@@ -44,7 +44,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         var customVersion = CheckAndFormatString(
             customVersionFormat,
             semverFormatValues,
-            semverFormatValues.SemVer,
+            string.Empty,
             "CustomVersionFormat"
         );
 

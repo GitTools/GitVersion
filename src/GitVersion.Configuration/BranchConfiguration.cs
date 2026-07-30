@@ -1,7 +1,6 @@
 using GitVersion.Configuration.Attributes;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
-using static GitVersion.Configuration.ConfigurationConstants;
 
 namespace GitVersion.Configuration;
 
@@ -16,8 +15,7 @@ internal record BranchConfiguration : IBranchConfiguration
     public string? Label { get; set; }
 
     [JsonPropertyName("custom-version-format")]
-    [JsonPropertyDescription($"Specifies the format of CustomVersion. Defaults to '{DefaultCustomVersionFormat}'.")]
-    [JsonPropertyDefault($"'{DefaultCustomVersionFormat}'")]
+    [JsonPropertyDescription("Specifies the format of CustomVersion.")]
     public string? CustomVersionFormat { get; set; }
 
     [JsonPropertyName("increment")]

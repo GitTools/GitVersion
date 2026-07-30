@@ -67,8 +67,7 @@
             ]
           },
           "custom-version-format": {
-            "description": "Specifies the format of CustomVersion. Defaults to '{SemVer}'.",
-            "default": "'{SemVer}'",
+            "description": "Specifies the format of CustomVersion.",
             "type": [
               "null",
               "string"
@@ -177,8 +176,7 @@
       ]
     },
     "custom-version-format": {
-      "description": "Specifies the format of CustomVersion. Defaults to '{SemVer}'.",
-      "default": "'{SemVer}'",
+      "description": "Specifies the format of CustomVersion.",
       "type": [
         "null",
         "string"

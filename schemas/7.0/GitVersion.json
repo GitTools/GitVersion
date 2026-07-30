@@ -41,7 +41,7 @@
       ]
     },
     "CustomVersion": {
-      "description": "A custom version computed from custom-version-format. Defaults to SemVer.",
+      "description": "A custom version computed from custom-version-format when configured.",
       "type": [
         "null",
         "string"

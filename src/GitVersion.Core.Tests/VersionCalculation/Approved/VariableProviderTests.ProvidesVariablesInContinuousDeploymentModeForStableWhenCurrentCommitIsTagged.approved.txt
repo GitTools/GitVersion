@@ -4,7 +4,7 @@
   "BranchName": "",
   "BuildMetaData": 5,
   "CommitDate": "2014-03-06",
-  "CustomVersion": "1.2.3",
+  "CustomVersion": "",
   "EscapedBranchName": "",
   "FullBuildMetaData": "5.Sha.commitSha",
   "FullSemVer": "1.2.3+5",

@@ -19,7 +19,7 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
     public string? CommitDate { get; set; }
 
-    [JsonPropertyDescription("A custom version computed from custom-version-format. Defaults to SemVer.")]
+    [JsonPropertyDescription("A custom version computed from custom-version-format when configured.")]
     public string? CustomVersion { get; set; }
 
     [JsonPropertyDescription("Equal to BranchName, but with / replaced with -.")]

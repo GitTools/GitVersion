@@ -283,6 +283,23 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
+    public void CustomVersionIsEmptyWhenFormatIsNotConfigured()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            BuildMetaData = new()
+        };
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, preReleaseWeight: 0);
+
+        variables.CustomVersion.ShouldBeEmpty();
+    }
+
+    [Test]
     public void CustomVersionSupportsPep440FormatForIssue2065()
     {
         var semanticVersion = new SemanticVersion
@@ -316,15 +333,20 @@ public class VariableProviderTests : TestBase
             .WithCustomVersionFormat("{SemVer}-global");
         configurationBuilder.WithBranch("feature")
             .WithCustomVersionFormat("{SemVer}-feature");
+        configurationBuilder.WithBranch("release")
+            .WithCustomVersionFormat(string.Empty);
         var configuration = configurationBuilder.Build();
         var featureConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("feature/example"));
         var mainConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
+        var releaseConfiguration = configuration.GetEffectiveConfiguration(ReferenceName.FromBranchName("release/1.2.3"));
 
         var featureVariables = this.effectiveVariableProvider.GetVariablesFor(semanticVersion, configuration, featureConfiguration);
         var mainVariables = this.effectiveVariableProvider.GetVariablesFor(semanticVersion, configuration, mainConfiguration);
+        var releaseVariables = this.effectiveVariableProvider.GetVariablesFor(semanticVersion, configuration, releaseConfiguration);
 
         featureVariables.CustomVersion.ShouldBe("1.2.3-feature");
         mainVariables.CustomVersion.ShouldBe("1.2.3-global");
+        releaseVariables.CustomVersion.ShouldBeEmpty();
     }
 
     [Test]

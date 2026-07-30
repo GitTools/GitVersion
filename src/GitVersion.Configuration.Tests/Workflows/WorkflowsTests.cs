@@ -18,6 +18,8 @@ public class WorkflowsTests
     {
         var configuration = configurationBuilder.Build();
 
+        configuration.CustomVersionFormat.ShouldBeNull();
+
         var serializedConfiguration = this.serializer.Serialize(configuration);
         var segments = workflow.Split("/");
         var folderName = segments[0];

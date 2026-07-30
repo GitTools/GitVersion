@@ -10,9 +10,9 @@ GitVersion supports C# format strings in configuration, allowing you to apply st
 Set `custom-version-format` to add a `CustomVersion` value to GitVersion's
 output without changing the meaning of any existing version variable. It uses
 the same version and environment variable formatting described below and
-defaults to `{SemVer}`. Define it at the top level to use one format for every
-branch, or override it within a branch configuration when different deployment
-modes require different formats.
+is empty unless a format is configured. Define it at the top level to use one
+format for every branch, or override it within a branch configuration when
+different deployment modes require different formats.
 
 For example, a PEP 440-compatible pre-release version can omit SemVer's dash and
 separator:
