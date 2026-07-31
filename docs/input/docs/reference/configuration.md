@@ -541,6 +541,11 @@ The special value `Inherit` means that GitVersion should find the parent branch
 (i.e. the branch where the current branch was branched from), and use its values
 for [increment](#increment) or other branch related properties.
 
+For a synthetic pull request merge ref, GitVersion uses the `TargetBranch`
+captured from the merge commit message as the immediate parent when it matches
+an allowed source branch. If the message has no matching target, GitVersion
+falls back to Git ancestry, as it does for ordinary branches.
+
 ### tag-prefix
 
 A regular expression which is used to trim Git tags before processing (e.g.,

@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
@@ -7,6 +8,8 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class PullRequestScenarios : TestBase
 {
+    private const string AzureDevOpsMergeMessage = "Merge pull request 2 from hotfix/v1.0.2 into support/v1.0.x";
+
     /// <summary>
     /// GitHubFlow - Pull requests (increment major on main and minor on feature)
     /// </summary>
@@ -137,5 +140,72 @@ public class PullRequestScenarios : TestBase
         fixture.Repository.CreatePullRequestRef("release/2.0.0", MainBranch, normalise: true);
 
         fixture.AssertFullSemver("2.0.0-PullRequest2.4");
+    }
+
+    [Test]
+    public void PullRequestInheritsSupportConfigurationWhenLocalAndRemoteBranchesExist()
+    {
+        var configuration = GetHotfixToSupportConfiguration();
+
+        using var remote = new EmptyRepositoryFixture("master");
+        remote.Repository.MakeATaggedCommit("v1.0.0");
+        remote.BranchTo("support/v1.0.x");
+        remote.Repository.MakeATaggedCommit("v1.0.1");
+        remote.Checkout("master");
+        remote.Repository.MakeACommit("Merged PR 1: new feature");
+        remote.Checkout("support/v1.0.x");
+        remote.BranchTo("hotfix/v1.0.2");
+        remote.Repository.MakeACommit();
+        remote.Checkout("support/v1.0.x");
+        remote.BranchTo("pull/2/merge");
+        remote.Repository.MergeNoFF("hotfix/v1.0.2", AzureDevOpsMergeMessage);
+
+        using var local = remote.CloneRepository();
+        CopyRemoteBranchesToHeads(local.Repository);
+        local.Checkout("pull/2/merge");
+
+        local.AssertFullSemver("1.0.2-alpha-pr2.2", configuration);
+    }
+
+    [Test]
+    public void PullRequestWithoutRemoteBranchesKeepsHotfixToSupportVersion()
+    {
+        var configuration = GetHotfixToSupportConfiguration();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("v1.0.0");
+        fixture.BranchTo("support/v1.0.x");
+        fixture.BranchTo("hotfix/v1.0.1");
+        fixture.Repository.MakeACommit();
+        fixture.Checkout("support/v1.0.x");
+        fixture.BranchTo("pull/2/merge");
+        fixture.Repository.MergeNoFF("hotfix/v1.0.1", "Merge pull request 2 from hotfix/v1.0.1 into support/v1.0.x");
+
+        fixture.AssertFullSemver("1.0.1-alpha-pr2.2", configuration);
+    }
+
+    private static IGitVersionConfiguration GetHotfixToSupportConfiguration() => GitFlowConfigurationBuilder.New
+        .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+        .WithBranch("main", b => b
+            .WithIncrement(IncrementStrategy.Minor)
+            .WithLabel("beta")
+        ).WithBranch("pull-request", b => b
+            .WithIncrement(IncrementStrategy.Inherit)
+            .WithLabel("alpha-pr{Number}")
+        ).WithBranch("support", b => b
+            .WithIncrement(IncrementStrategy.Patch)
+            .WithLabel("beta")
+        ).Build();
+
+    private static void CopyRemoteBranchesToHeads(Repository repository)
+    {
+        foreach (var branch in repository.Branches.Where(branch => branch.IsRemote).ToArray())
+        {
+            var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", string.Empty);
+            if (repository.Branches[localName] is null)
+            {
+                repository.CreateBranch(localName, branch.Tip);
+            }
+        }
     }
 }

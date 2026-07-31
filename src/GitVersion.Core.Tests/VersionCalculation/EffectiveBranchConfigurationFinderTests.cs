@@ -370,4 +370,122 @@ public class EffectiveBranchConfigurationFinderTests
         actual[0].Branch.ShouldBe(developBranchMock);
         actual[0].Value.Increment.ShouldBe(developBranchIncrement);
     }
+
+    [Test]
+    public void Pull_request_merge_target_selects_local_support_branch_from_multiple_candidates()
+    {
+        // Arrange
+        var pullRequestBranch = CreatePullRequestBranch("Merge pull request 2 from hotfix/v1.0.2 into support/v1.0.x");
+        var mainBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var localSupportBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/support/v1.0.x", GitRepositoryTestingExtensions.CreateMockCommit());
+        var remoteSupportBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/remotes/origin/support/v1.0.x", GitRepositoryTestingExtensions.CreateMockCommit());
+        remoteSupportBranch.IsRemote.Returns(true);
+        var configuration = GetPullRequestConfiguration();
+        var repositoryStore = Substitute.For<IRepositoryStore>();
+        SetBranches(repositoryStore, mainBranch, remoteSupportBranch, localSupportBranch);
+        repositoryStore.GetSourceBranches(pullRequestBranch, configuration, Arg.Any<HashSet<IBranch>>())
+            .Returns([mainBranch]);
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStore);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(pullRequestBranch, configuration).ToArray();
+
+        // Assert
+        actual.ShouldHaveSingleItem().Branch.ShouldBe(localSupportBranch);
+        actual[0].Value.Increment.ShouldBe(IncrementStrategy.Patch);
+    }
+
+    [Test]
+    public void Pull_request_merge_target_accepts_remote_only_branch()
+    {
+        // Arrange
+        var pullRequestBranch = CreatePullRequestBranch("Merge pull request 2 from hotfix/v1.0.2 into support/v1.0.x");
+        var mainBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var remoteSupportBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/remotes/origin/support/v1.0.x", GitRepositoryTestingExtensions.CreateMockCommit());
+        remoteSupportBranch.IsRemote.Returns(true);
+        var configuration = GetPullRequestConfiguration();
+        var repositoryStore = Substitute.For<IRepositoryStore>();
+        SetBranches(repositoryStore, mainBranch, remoteSupportBranch);
+        repositoryStore.GetSourceBranches(pullRequestBranch, configuration, Arg.Any<HashSet<IBranch>>())
+            .Returns([mainBranch]);
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStore);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(pullRequestBranch, configuration).ToArray();
+
+        // Assert
+        actual.ShouldHaveSingleItem().Branch.ShouldBe(remoteSupportBranch);
+    }
+
+    [TestCase("Merge pull request 2 from hotfix/v1.0.2", "refs/pull/2/merge")]
+    [TestCase("Merge pull request 2 from hotfix/v1.0.2 into release/v1.0.x", "refs/pull/2/merge")]
+    [TestCase("Merge pull request 2 from hotfix/v1.0.2 into support/v1.0.x", "refs/heads/feature/foo")]
+    public void Pull_request_target_falls_back_to_all_source_candidates_when_it_cannot_disambiguate(string message, string branchName)
+    {
+        // Arrange
+        var branch = CreateMergeBranch(branchName, message);
+        var mainBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var supportBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/support/v1.0.x", GitRepositoryTestingExtensions.CreateMockCommit());
+        var configuration = GetPullRequestConfiguration();
+        var repositoryStore = Substitute.For<IRepositoryStore>();
+        SetBranches(repositoryStore, mainBranch, supportBranch);
+        repositoryStore.GetSourceBranches(branch, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranch, supportBranch]);
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStore);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(branch, configuration).ToArray();
+
+        // Assert
+        actual.Select(x => x.Branch).ShouldBe([mainBranch, supportBranch]);
+    }
+
+    [Test]
+    public void Pull_request_target_continues_inheriting_from_selected_branch()
+    {
+        // Arrange
+        var pullRequestBranch = CreatePullRequestBranch("Merge pull request 2 from hotfix/v1.0.2 into support/v1.0.x");
+        var supportBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/support/v1.0.x", GitRepositoryTestingExtensions.CreateMockCommit());
+        var mainBranch = GitRepositoryTestingExtensions.CreateMockBranch("refs/heads/main", GitRepositoryTestingExtensions.CreateMockCommit());
+        var configuration = GetPullRequestConfiguration(supportIncrement: IncrementStrategy.Inherit);
+        var repositoryStore = Substitute.For<IRepositoryStore>();
+        SetBranches(repositoryStore, mainBranch, supportBranch);
+        repositoryStore.GetSourceBranches(pullRequestBranch, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranch]);
+        repositoryStore.GetSourceBranches(supportBranch, configuration, Arg.Any<HashSet<IBranch>>()).Returns([mainBranch]);
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(NullLogger<EffectiveBranchConfigurationFinder>.Instance, repositoryStore);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(pullRequestBranch, configuration).ToArray();
+
+        // Assert
+        actual.ShouldHaveSingleItem().Branch.ShouldBe(mainBranch);
+        actual[0].Value.Increment.ShouldBe(IncrementStrategy.Minor);
+    }
+
+    private static IBranch CreatePullRequestBranch(string message) => CreateMergeBranch("refs/pull/2/merge", message);
+
+    private static void SetBranches(IRepositoryStore repositoryStore, params IBranch[] branches)
+    {
+        var branchCollection = Substitute.For<IBranchCollection>();
+        branchCollection.MockCollectionReturn(branches);
+        repositoryStore.Branches.Returns(branchCollection);
+    }
+
+    private static IBranch CreateMergeBranch(string branchName, string message)
+    {
+        var mergeCommit = GitRepositoryTestingExtensions.CreateMockCommit();
+        mergeCommit.Message.Returns(message);
+        mergeCommit.IsMergeCommit.Returns(true);
+        return GitRepositoryTestingExtensions.CreateMockBranch(branchName, mergeCommit);
+    }
+
+    private static IGitVersionConfiguration GetPullRequestConfiguration(IncrementStrategy supportIncrement = IncrementStrategy.Patch) =>
+        GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithIncrement(IncrementStrategy.Minor))
+            .WithBranch("pull-request", builder => builder.WithIncrement(IncrementStrategy.Inherit))
+            .WithBranch("support", builder => builder.WithIncrement(supportIncrement))
+            .Build();
 }
