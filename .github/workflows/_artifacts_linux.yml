@@ -56,8 +56,13 @@ jobs:
       - name: Set up Docker
         uses: ./.github/actions/docker-setup
 
-      - name: '[Test Artifacts]'
+      # Run both backends concurrently in the same job (GitHub Actions parallel steps).
+      # Each ArtifactsTest sub-test runs in ephemeral --rm containers, so the runs are independent.
+      - name: '[Test Artifacts] (libgit2)'
+        background: true
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        env:
+          GITVERSION_GIT_BACKEND: libgit2
         with:
           shell: pwsh
           timeout_minutes: 30
@@ -68,3 +73,22 @@ jobs:
                   --target=ArtifactsTest --arch=${{ inputs.arch }} `
                   --dotnet_version=${{ matrix.dotnet_version }} `
                   --docker_distro=${{ matrix.docker_distro }}
+
+      - name: '[Test Artifacts] (managed)'
+        background: true
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        env:
+          GITVERSION_GIT_BACKEND: managed
+        with:
+          shell: pwsh
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            dotnet run/artifacts.dll `
+                  --target=ArtifactsTest --arch=${{ inputs.arch }} `
+                  --dotnet_version=${{ matrix.dotnet_version }} `
+                  --docker_distro=${{ matrix.docker_distro }}
+
+      - name: Wait for artifact backend tests
+        wait-all:

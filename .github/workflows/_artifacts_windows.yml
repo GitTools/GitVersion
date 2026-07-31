@@ -34,8 +34,23 @@ jobs:
           name: nuget
           path: ${{ github.workspace }}/artifacts/packages/nuget
 
-      - name: '[Test Artifacts]'
+      # In-process tests share a single package install directory, so the two backends
+      # run sequentially here (not as parallel background steps).
+      - name: '[Test Artifacts] (libgit2)'
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        env:
+          GITVERSION_GIT_BACKEND: libgit2
+        with:
+          shell: pwsh
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+
+      - name: '[Test Artifacts] (managed)'
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        env:
+          GITVERSION_GIT_BACKEND: managed
         with:
           shell: pwsh
           timeout_minutes: 30
