@@ -39,10 +39,10 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore
 
       - name: Set up Docker
-        uses: ./.github/actions/docker-setup
+        uses: $/.github/actions/docker-setup
 
       - name: Load DockerHub credentials
         if: inputs.publish_manifests
@@ -52,7 +52,7 @@ jobs:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Docker Manifests
-        uses: ./.github/actions/docker-manifests
+        uses: $/.github/actions/docker-manifests
         if: inputs.publish_manifests
         with:
           docker_distro: ${{ matrix.docker_distro }}

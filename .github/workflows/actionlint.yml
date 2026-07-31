@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/workflows/**'
       - '.github/actions/**'
+      - '.github/actionlint.yaml'
 
   pull_request:
     branches:
@@ -20,6 +21,7 @@ on:
     paths:
       - '.github/workflows/**'
       - '.github/actions/**'
+      - '.github/actionlint.yaml'
 
 permissions:
   contents: read
