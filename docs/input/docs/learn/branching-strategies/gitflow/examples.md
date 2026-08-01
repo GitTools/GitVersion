@@ -46,7 +46,7 @@ created from a `develop`, `release`, `main`, `support` or `hotfix` branch.
 
 ### Create feature branch from main
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromMainBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromMainBranch.svg)
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `main` is `2.0.0-5`.
@@ -56,7 +56,7 @@ configured to use _continuous deployment_ the version would be `2.0.0`.
 
 ### Create feature branch from develop
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromDevelopBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_FeatureFromDevelopBranch.svg)
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `develop` is
@@ -73,11 +73,11 @@ Hotfix branches are used when you need to do a _patch_ release in the
 
 ### Create hotfix branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_HotfixBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_HotfixBranch.svg)
 
 ### Create hotfix branch with version number
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedHotfixBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedHotfixBranch.svg)
 
 ## Release Branches
 
@@ -98,15 +98,15 @@ branch or the release branch.
 
 ### Create release branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_ReleaseBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_ReleaseBranch.svg)
 
 ### Create release branch with version
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedReleaseBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_VersionedReleaseBranch.svg)
 
 ## Develop Branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_DevelopBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_DevelopBranch.svg)
 
 ## Support Branches
 
@@ -117,7 +117,7 @@ majors, then name your branch `support/<major>.x` (i.e `support/1.x`), to
 support minors use `support/<major>.<minor>.x` or `support/<major>.<minor>.0`.
 (i.e `support/1.3.x` or `support/1.3.0`)
 
-![GitFlow](/docs/img/DocumentationSamplesForGitFlow_SupportBranch.png)
+![GitFlow](/docs/img/DocumentationSamplesForGitFlow_SupportBranch.svg)
 
 :::{.alert .alert-info}
 Depending on what you name your support branch, you may or may not need a
@@ -133,7 +133,10 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 
 ### Source
 
-See `DocumentationSamplesForGitFlow.cs`. To update, modify then run test.
+The diagrams are generated from `DocumentationSamplesForGitFlow.cs`. After
+changing a scenario, run `npm run diagrams:sources` followed by
+`npm run diagrams:generate`, inspect the updated SVG, and commit both the
+Mermaid source and generated image.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
 

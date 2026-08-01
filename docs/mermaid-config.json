@@ -1,0 +1,16 @@
+{
+  "deterministicIds": true,
+  "deterministicIDSeed": "gitversion-docs",
+  "fontFamily": "Arial, sans-serif",
+  "securityLevel": "strict",
+  "sequence": {
+    "diagramMarginX": 20,
+    "diagramMarginY": 20,
+    "messageMargin": 24,
+    "mirrorActors": false,
+    "noteMargin": 12,
+    "useMaxWidth": true,
+    "wrap": true
+  },
+  "theme": "neutral"
+}

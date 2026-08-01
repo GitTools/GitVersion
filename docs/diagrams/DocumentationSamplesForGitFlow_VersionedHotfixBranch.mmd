@@ -1,0 +1,59 @@
+sequenceDiagram
+    activate main
+    main->>main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    create participant hotfix as hotfix/2.2.1
+    main->>hotfix: branch from main
+    activate hotfix
+    deactivate main
+    rect rgb(211, 211, 211)
+        Note over hotfix: 2.2.1-beta.1+0
+    end
+    hotfix->>hotfix: commit
+    rect rgb(211, 211, 211)
+        Note over hotfix: 2.2.1-beta.1+1
+    end
+    activate main
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.1-1
+    end
+    main->>main: tag 2.2.1
+    rect rgb(211, 211, 211)
+        Note over main: 2.2.1
+    end
+    main->>hotfix: merge
+    deactivate main
+    rect rgb(211, 211, 211)
+        Note over hotfix: 2.2.2-beta.1+2
+    end
+    hotfix->>hotfix: Commit '+semver: major'
+    rect rgb(211, 211, 211)
+        Note over hotfix: 3.0.0-beta.1+3
+    end
+    hotfix->>hotfix: tag 3.0.1-beta.1
+    rect rgb(211, 211, 211)
+        Note over hotfix: 3.0.1-beta.2+0
+    end
+    hotfix->>hotfix: commit
+    rect rgb(211, 211, 211)
+        Note over hotfix: 3.0.1-beta.2+1
+    end
+    hotfix->>main: merge
+    Note over hotfix: Hotfix branches should<br/>be deleted once merged
+    destroy hotfix
+    main--xhotfix: delete branch
+    rect rgb(211, 211, 211)
+        Note over main: 3.0.1-5
+    end
+    activate main
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 3.0.1-6
+    end
+    main->>main: tag 3.0.1
+    rect rgb(211, 211, 211)
+        Note over main: 3.0.1
+    end
