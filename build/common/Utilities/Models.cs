@@ -24,13 +24,13 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
         var nugetVersion = gitVersion.SemVer;
         var chocolateyVersion = gitVersion.MajorMinorPatch;
 
-        if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag))
+        if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseLabel))
         {
-            // Chocolatey does not support pre-release tags with dots, so we replace them with dashes
-            // if the pre-release tag is a number, we add a "a" prefix to the pre-release tag
+            // Chocolatey does not support pre-release labels with dots, so we replace them with dashes
+            // if the pre-release label name is a number, we add an "a" prefix to the pre-release label
             // the trick should be removed when Chocolatey supports semver 2.0
-            var prefix = int.TryParse(gitVersion.PreReleaseLabel, out _) ? "a" : string.Empty;
-            chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseTag?.Replace(".", "-")}";
+            var prefix = int.TryParse(gitVersion.PreReleaseLabelName, out _) ? "a" : string.Empty;
+            chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseLabel?.Replace(".", "-")}";
         }
 
         if (gitVersion.BuildMetaData is not null)

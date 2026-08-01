@@ -11,7 +11,8 @@ public class FormatArgumentTests : TestBase
     [TestCase("{SemVer}", "1.1.0-foo.1")]
     [TestCase("{Major}.{Minor}", "1.1")]
     [TestCase("{Major}.{Minor}.{Patch}", "1.1.0")]
-    [TestCase("{Major}.{Minor}.{Patch}.{PreReleaseTag}", "1.1.0.foo.1")]
+    [TestCase("{Major}.{Minor}.{Patch}.{PreReleaseLabel}", "1.1.0.foo.1")]
+    [TestCase("{PreReleaseLabelName}", "foo")]
     public void ShouldOutputFormatTests(string format, string expectedValue)
     {
         using var fixture = CreateTestRepository();
@@ -69,7 +70,10 @@ public class FormatArgumentTests : TestBase
     [TestCase("Major", "'1'")]
     [TestCase("MajorMinorPatch", "'1.1.0'")]
     [TestCase("SemVer", "'1.1.0-foo.1'")]
-    [TestCase("PreReleaseTagWithDash", "'-foo.1'")]
+    [TestCase("PreReleaseLabel", "'foo.1'")]
+    [TestCase("PreReleaseLabelName", "'foo'")]
+    [TestCase("PreReleaseLabelWithDash", "'-foo.1'")]
+    [TestCase("PreReleaseLabelNameWithDash", "'-foo'")]
     [TestCase("AssemblySemFileVer", "'1.1.0.0'")]
     [TestCase("BranchName", "'feature/foo'")]
     [TestCase("FullSemVer", "'1.1.0-foo.1+1'")]
@@ -130,10 +134,11 @@ public class FormatArgumentTests : TestBase
     [TestCase("SemVer", "'0.0.1-1'")]
     [TestCase("BuildMetaData", "''")]
     [TestCase("AssemblySemVer", "'0.0.1.0'")]
-    [TestCase("PreReleaseTagWithDash", "'-1'")]
+    [TestCase("PreReleaseLabel", "'1'")]
+    [TestCase("PreReleaseLabelWithDash", "'-1'")]
     [TestCase("BranchName", "'main'")]
-    [TestCase("PreReleaseLabel", "''")]
-    [TestCase("PreReleaseLabelWithDash", "''")]
+    [TestCase("PreReleaseLabelName", "''")]
+    [TestCase("PreReleaseLabelNameWithDash", "''")]
     public void ShouldOutputAllDotEnvEntriesEvenForMinimalRepositories(string variableName, string expectedValue)
     {
         using var fixture = CreateMinimalTestRepository();

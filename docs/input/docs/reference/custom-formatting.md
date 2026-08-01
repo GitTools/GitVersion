@@ -18,7 +18,7 @@ For example, a PEP 440-compatible pre-release version can omit SemVer's dash and
 separator:
 
 ```yaml
-custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'
+custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
 # 0.6.3-beta.10 becomes CustomVersion 0.6.3beta10
 ```
 
@@ -28,7 +28,7 @@ For example, a branch-specific format can override the global default:
 custom-version-format: '{SemVer}'
 branches:
   feature:
-    custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabel:l}{PreReleaseNumber}'
+    custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
 ```
 
 A fixed-width numeric format can provide an increasing integer version for
@@ -64,7 +64,7 @@ You can now use standard .NET numeric format strings with version components:
 
 ```yaml
 # GitVersion.yml
-assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabel}"
+assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabelName}"
 ```
 
 **Supported Numeric Formats:**
@@ -114,7 +114,7 @@ branches:
   feature:
     label: "{BranchName:c}"  # Converts to PascalCase
 
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabel:l}.{VersionSourceDistance:0000}"
+assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabelName:l}.{VersionSourceDistance:0000}"
 ```
 
 **Template Usage:**

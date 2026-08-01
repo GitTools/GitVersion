@@ -25,11 +25,11 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "MajorMinorPatch": "3.22.11",
     "Minor": 22,
     "Patch": 11,
-    "PreReleaseLabel": "beta",
-    "PreReleaseLabelWithDash": "-beta",
+    "PreReleaseLabelName": "beta",
+    "PreReleaseLabelNameWithDash": "-beta",
     "PreReleaseNumber": 99,
-    "PreReleaseTag": "beta.99",
-    "PreReleaseTagWithDash": "-beta.99",
+    "PreReleaseLabel": "beta.99",
+    "PreReleaseLabelWithDash": "-beta.99",
     "SemVer": "3.22.11-beta.99",
     "Sha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "ShortSha": "28c8531",
@@ -60,12 +60,12 @@ Each property of the above JSON document is described in the below table.
 |           `MajorMinorPatch` | `Major`, `Minor` and `Patch` joined together, separated by `.`.                                                                                                            |
 |                     `Minor` | The minor version. Should be incremented on new features.                                                                                                                  |
 |                     `Patch` | The patch version. Should be incremented on bug fixes.                                                                                                                     |
-|           `PreReleaseLabel` | The pre-release label.                                                                                                                                                     |
-|   `PreReleaseLabelWithDash` | The pre-release label prefixed with a dash.                                                                                                                                |
+|       `PreReleaseLabelName` | The name of the pre-release label, without the `PreReleaseNumber`.                                                                                                         |
+| `PreReleaseLabelNameWithDash` | The pre-release label name prefixed with a dash.                                                                                                                         |
 |          `PreReleaseNumber` | The pre-release number.                                                                                                                                                    |
-|             `PreReleaseTag` | The pre-release tag is the pre-release label suffixed by the `PreReleaseNumber`.                                                                                           |
-|     `PreReleaseTagWithDash` | The pre-release tag prefixed with a dash.                                                                                                                                  |
-|                    `SemVer` | The semantical version number, including `PreReleaseTagWithDash` for pre-release version numbers.                                                                          |
+|           `PreReleaseLabel` | The full pre-release label, including the `PreReleaseNumber` when present.                                                                                                  |
+|   `PreReleaseLabelWithDash` | The pre-release label prefixed with a dash.                                                                                                                                |
+|                    `SemVer` | The semantic version number, including `PreReleaseLabelWithDash` for pre-release version numbers.                                                                          |
 |                       `Sha` | The SHA of the Git commit.                                                                                                                                                 |
 |                  `ShortSha` | The `Sha` limited to 7 characters.                                                                                                                                         |
 |        `UncommittedChanges` | The number of uncommitted changes present in the repository.                                                                                                               |

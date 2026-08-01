@@ -112,7 +112,7 @@
             ]
           },
           "pre-release-weight": {
-            "description": "Provides a way to translate the PreReleaseLabel to a number.",
+            "description": "Provides a way to translate the PreReleaseLabelName to a number.",
             "type": [
               "null",
               "integer"
@@ -293,7 +293,7 @@
       ]
     },
     "pre-release-weight": {
-      "description": "Provides a way to translate the PreReleaseLabel to a number.",
+      "description": "Provides a way to translate the PreReleaseLabelName to a number.",
       "type": [
         "null",
         "integer"

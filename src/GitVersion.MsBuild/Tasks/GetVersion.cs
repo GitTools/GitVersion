@@ -47,19 +47,19 @@ public class GetVersion : GitVersionTaskBase
     public string Patch { get; set; } = null!;
 
     [Output]
-    public string PreReleaseLabel { get; set; } = null!;
+    public string PreReleaseLabelName { get; set; } = null!;
 
     [Output]
-    public string PreReleaseLabelWithDash { get; set; } = null!;
+    public string PreReleaseLabelNameWithDash { get; set; } = null!;
 
     [Output]
     public string PreReleaseNumber { get; set; } = null!;
 
     [Output]
-    public string PreReleaseTag { get; set; } = null!;
+    public string PreReleaseLabel { get; set; } = null!;
 
     [Output]
-    public string PreReleaseTagWithDash { get; set; } = null!;
+    public string PreReleaseLabelWithDash { get; set; } = null!;
 
     [Output]
     public string SemVer { get; set; } = null!;

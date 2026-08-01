@@ -50,11 +50,11 @@
             <Output TaskParameter="MajorMinorPatch" PropertyName="GitVersion_MajorMinorPatch" />
             <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
             <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />
+            <Output TaskParameter="PreReleaseLabelName" PropertyName="GitVersion_PreReleaseLabelName" />
+            <Output TaskParameter="PreReleaseLabelNameWithDash" PropertyName="GitVersion_PreReleaseLabelNameWithDash" />
+            <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
             <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
             <Output TaskParameter="PreReleaseLabelWithDash" PropertyName="GitVersion_PreReleaseLabelWithDash" />
-            <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
-            <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
-            <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
             <Output TaskParameter="SemVer" PropertyName="GitVersion_SemVer" />
             <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
             <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
@@ -69,7 +69,7 @@
         <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
             <Version>$(GitVersion_SemVer)</Version>
             <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
-            <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseTag)</VersionSuffix>
+            <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseLabel)</VersionSuffix>
             <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_FullSemVer)</PackageVersion>
             <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
             <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
@@ -92,11 +92,11 @@
             <DefineConstants Condition=" '$(GitVersion_MajorMinorPatch)' != '' ">GitVersion_MajorMinorPatch=$(GitVersion_MajorMinorPatch);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_Minor)' != '' ">GitVersion_Minor=$(GitVersion_Minor);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_Patch)' != '' ">GitVersion_Patch=$(GitVersion_Patch);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelName)' != '' ">GitVersion_PreReleaseLabelName=$(GitVersion_PreReleaseLabelName);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelNameWithDash)' != '' ">GitVersion_PreReleaseLabelNameWithDash=$(GitVersion_PreReleaseLabelNameWithDash);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseLabel)' != '' ">GitVersion_PreReleaseLabel=$(GitVersion_PreReleaseLabel);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelWithDash)' != '' ">GitVersion_PreReleaseLabelWithDash=$(GitVersion_PreReleaseLabelWithDash);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_PreReleaseTag)' != '' ">GitVersion_PreReleaseTag=$(GitVersion_PreReleaseTag);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_PreReleaseTagWithDash)' != '' ">GitVersion_PreReleaseTagWithDash=$(GitVersion_PreReleaseTagWithDash);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_SemVer)' != '' ">GitVersion_SemVer=$(GitVersion_SemVer);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>

@@ -46,22 +46,22 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The patch version. Should be incremented on bug fixes.")]
     public int? Patch { get; set; }
 
-    [JsonPropertyDescription("The pre-release label is the name of the pre-release.")]
+    [JsonPropertyDescription("The name of the pre-release label, without the PreReleaseNumber.")]
+    public string? PreReleaseLabelName { get; set; }
+
+    [JsonPropertyDescription("The pre-release label name prefixed with a dash.")]
+    public string? PreReleaseLabelNameWithDash { get; set; }
+
+    [JsonPropertyDescription("The pre-release number is the number of commits since the last version bump.")]
+    public int? PreReleaseNumber { get; set; }
+
+    [JsonPropertyDescription("The full pre-release label, including the PreReleaseNumber when present.")]
     public string? PreReleaseLabel { get; set; }
 
     [JsonPropertyDescription("The pre-release label prefixed with a dash.")]
     public string? PreReleaseLabelWithDash { get; set; }
 
-    [JsonPropertyDescription("The pre-release number is the number of commits since the last version bump.")]
-    public int? PreReleaseNumber { get; set; }
-
-    [JsonPropertyDescription("The pre-release tag is the pre-release label suffixed by the PreReleaseNumber.")]
-    public string? PreReleaseTag { get; set; }
-
-    [JsonPropertyDescription("The pre-release tag prefixed with a dash.")]
-    public string? PreReleaseTagWithDash { get; set; }
-
-    [JsonPropertyDescription("The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.")]
+    [JsonPropertyDescription("The semantic version number, including PreReleaseLabelWithDash for pre-release version numbers.")]
     public string? SemVer { get; set; }
 
     [JsonPropertyDescription("The SHA of the Git commit.")]

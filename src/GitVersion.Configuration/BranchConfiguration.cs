@@ -76,7 +76,7 @@ internal record BranchConfiguration : IBranchConfiguration
     public bool? IsMainBranch { get; set; }
 
     [JsonPropertyName("pre-release-weight")]
-    [JsonPropertyDescription("Provides a way to translate the PreReleaseLabel to a number.")]
+    [JsonPropertyDescription("Provides a way to translate the PreReleaseLabelName to a number.")]
     public int? PreReleaseWeight { get; set; }
 
     public virtual IBranchConfiguration Inherit(IBranchConfiguration configuration)

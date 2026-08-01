@@ -77,14 +77,14 @@ public sealed class GitVersion
     public int? Patch { get; set; }
 
     /// <summary>
-    /// Gets or sets the pre-release label. The pre-release label is the name of the pre-release.
+    /// Gets or sets the pre-release label name without the numeric identifier.
     /// </summary>
-    public string? PreReleaseLabel { get; set; }
+    public string? PreReleaseLabelName { get; set; }
 
     /// <summary>
-    /// Gets or sets the pre-release label with dash. The pre-release label prefixed with a dash.
+    /// Gets or sets the pre-release label name prefixed with a dash.
     /// </summary>
-    public string? PreReleaseLabelWithDash { get; set; }
+    public string? PreReleaseLabelNameWithDash { get; set; }
 
     /// <summary>
     /// Gets or sets the pre-release number. The pre-release number is the number of commits since the last version bump.
@@ -92,17 +92,17 @@ public sealed class GitVersion
     public int? PreReleaseNumber { get; set; }
 
     /// <summary>
-    /// Gets or sets the pre-release tag. The pre-release tag is the pre-release label suffixed by the PreReleaseNumber.
+    /// Gets or sets the full pre-release label, including the PreReleaseNumber when present.
     /// </summary>
-    public string? PreReleaseTag { get; set; }
+    public string? PreReleaseLabel { get; set; }
 
     /// <summary>
-    /// Gets or sets the pre-release tag with dash. The pre-release tag prefixed with a dash.
+    /// Gets or sets the pre-release label prefixed with a dash.
     /// </summary>
-    public string? PreReleaseTagWithDash { get; set; }
+    public string? PreReleaseLabelWithDash { get; set; }
 
     /// <summary>
-    /// Gets or sets the Semantic Version. The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.
+    /// Gets or sets the Semantic Version. The semantic version number, including PreReleaseLabelWithDash for pre-release version numbers.
     /// </summary>
     public string? SemVer { get; set; }
 

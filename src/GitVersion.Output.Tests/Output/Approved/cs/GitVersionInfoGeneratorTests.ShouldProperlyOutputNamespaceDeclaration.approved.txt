@@ -28,11 +28,11 @@ namespace My.Custom.Namespace
         public const string MajorMinorPatch = "1.2.3";
         public const string Minor = "2";
         public const string Patch = "3";
-        public const string PreReleaseLabel = "unstable";
-        public const string PreReleaseLabelWithDash = "-unstable";
+        public const string PreReleaseLabel = "unstable.4";
+        public const string PreReleaseLabelName = "unstable";
+        public const string PreReleaseLabelNameWithDash = "-unstable";
+        public const string PreReleaseLabelWithDash = "-unstable.4";
         public const string PreReleaseNumber = "4";
-        public const string PreReleaseTag = "unstable.4";
-        public const string PreReleaseTagWithDash = "-unstable.4";
         public const string SemVer = "1.2.3-unstable.4";
         public const string Sha = "commitSha";
         public const string ShortSha = "commitShortSha";

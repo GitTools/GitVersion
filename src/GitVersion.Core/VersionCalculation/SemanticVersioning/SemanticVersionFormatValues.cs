@@ -16,20 +16,20 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     /// <summary>Gets the patch version component as a string.</summary>
     public string Patch => semver.Patch.ToString();
 
-    /// <summary>Gets the full pre-release tag (e.g. <c>beta.1</c>).</summary>
-    public string PreReleaseTag => semver.PreReleaseTag.ToString();
+    /// <summary>Gets the pre-release label name without the numeric identifier (e.g. <c>beta</c>).</summary>
+    public string PreReleaseLabelName => semver.PreReleaseTag.Name;
 
-    /// <summary>Gets the pre-release tag prefixed with a dash (e.g. <c>-beta.1</c>), or empty string when there is no tag.</summary>
-    public string PreReleaseTagWithDash => PreReleaseTag.WithPrefixIfNotNullOrEmpty("-");
-
-    /// <summary>Gets the pre-release label without the numeric identifier (e.g. <c>beta</c>).</summary>
-    public string PreReleaseLabel => semver.PreReleaseTag.Name;
-
-    /// <summary>Gets the pre-release label prefixed with a dash (e.g. <c>-beta</c>), or empty string when there is no label.</summary>
-    public string PreReleaseLabelWithDash => PreReleaseLabel.WithPrefixIfNotNullOrEmpty("-");
+    /// <summary>Gets the pre-release label name prefixed with a dash (e.g. <c>-beta</c>), or empty string when there is no label name.</summary>
+    public string PreReleaseLabelNameWithDash => PreReleaseLabelName.WithPrefixIfNotNullOrEmpty("-");
 
     /// <summary>Gets the numeric pre-release identifier as a string, or empty string when absent.</summary>
     public string PreReleaseNumber => semver.PreReleaseTag.Number?.ToString() ?? string.Empty;
+
+    /// <summary>Gets the full pre-release label (e.g. <c>beta.1</c>).</summary>
+    public string PreReleaseLabel => semver.PreReleaseTag.ToString();
+
+    /// <summary>Gets the pre-release label prefixed with a dash (e.g. <c>-beta.1</c>), or empty string when there is no label.</summary>
+    public string PreReleaseLabelWithDash => PreReleaseLabel.WithPrefixIfNotNullOrEmpty("-");
 
     /// <summary>Gets the pre-release number adjusted by the configured pre-release weight.</summary>
     public string WeightedPreReleaseNumber => semver.PreReleaseTag.Number.HasValue
