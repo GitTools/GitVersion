@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/dotnet@sha256:be5bd898d964c0d081cb22285c2318e488882103702c8831418fdd59218fd5dd
+FROM mcr.microsoft.com/devcontainers/dotnet@sha256:0ad11caaa728e35cbc46b0592dd11ca0df8111e565a96471024a795f4d412c7c
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
