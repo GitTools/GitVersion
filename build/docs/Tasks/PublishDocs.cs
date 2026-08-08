@@ -88,6 +88,15 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(schemaTargetDir);
         context.CopyDirectory(Paths.Schemas, schemaTargetDir);
 
+        // gh-pages needs its own copy of this workflow so that a push to gh-pages
+        // can trigger it directly (GitHub resolves push-triggered workflows using
+        // the file as it exists on the pushed branch, not on the default branch).
+        var workflowsTargetDir = publishFolder.Combine(".github").Combine("workflows");
+        context.EnsureDirectoryExists(workflowsTargetDir);
+        context.CopyFile(
+            Paths.Root.CombineWithFilePath(".github/workflows/schemastore.yml"),
+            workflowsTargetDir.CombineWithFilePath("schemastore.yml"));
+
         if (!context.GitHasUncommitedChanges(publishFolder))
         {
             return;
