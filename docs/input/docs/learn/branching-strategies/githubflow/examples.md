@@ -45,7 +45,7 @@ created from a `main` or `release` branch.
 
 ### Create feature branch from main
 
-![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_FeatureBranch.png)
+![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_FeatureBranch.svg)
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `main` is `2.0.0-5`.
@@ -73,11 +73,11 @@ branch or the release branch.
 
 ### Create release branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_ReleaseBranch.png)
+![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_ReleaseBranch.svg)
 
 ### Create release branch with version
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.png)
+![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.svg)
 
 ## To Contribute
 
@@ -85,7 +85,10 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 
 ### Source
 
-See `DocumentationSamplesForGitHubFlow.cs`. To update, modify then run test.
+The diagrams are generated from `DocumentationSamplesForGitHubFlow.cs`. After
+changing a scenario, run `npm run diagrams:sources` followed by
+`npm run diagrams:generate`, inspect the updated SVG, and commit both the
+Mermaid source and generated image.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
 

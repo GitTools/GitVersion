@@ -1,0 +1,69 @@
+sequenceDiagram
+    participant main
+    participant develop
+    activate main
+    main->>main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    main->>develop: branch from main
+    activate develop
+    deactivate main
+    rect rgb(211, 211, 211)
+        Note over develop: 1.3.0-alpha.0
+    end
+    create participant feature as feature/foo
+    develop->>feature: branch from develop
+    activate feature
+    deactivate develop
+    rect rgb(211, 211, 211)
+        Note over feature: 1.3.0-foo.1+0
+    end
+    feature->>feature: commit
+    rect rgb(211, 211, 211)
+        Note over feature: 1.3.0-foo.1+1
+    end
+    activate main
+    main->>main: Commit '+semver: minor'
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.0-1
+    end
+    main->>main: tag 1.3.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.0
+    end
+    main->>develop: merge
+    deactivate main
+    activate develop
+    rect rgb(211, 211, 211)
+        Note over develop: 1.4.0-alpha.1
+    end
+    develop->>feature: merge
+    deactivate develop
+    rect rgb(211, 211, 211)
+        Note over feature: 1.4.0-foo.1+3
+    end
+    feature->>feature: Commit '+semver: major'
+    rect rgb(211, 211, 211)
+        Note over feature: 2.0.0-foo.1+4
+    end
+    feature->>feature: tag 2.1.0-foo.1
+    rect rgb(211, 211, 211)
+        Note over feature: 2.1.0-foo.2+0
+    end
+    feature->>feature: commit
+    rect rgb(211, 211, 211)
+        Note over feature: 2.1.0-foo.2+1
+    end
+    feature->>develop: merge
+    Note over feature: Feature branches should<br/>be deleted once merged
+    destroy feature
+    develop--xfeature: delete branch
+    rect rgb(211, 211, 211)
+        Note over develop: 2.1.0-alpha.6
+    end
+    activate develop
+    develop->>develop: commit
+    rect rgb(211, 211, 211)
+        Note over develop: 2.1.0-alpha.7
+    end

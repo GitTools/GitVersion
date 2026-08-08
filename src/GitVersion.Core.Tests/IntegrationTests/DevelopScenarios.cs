@@ -244,7 +244,7 @@ public class DevelopScenarios : TestBase
         fixture.MergeNoFF("release/1.2.0");
         fixture.MakeACommit("commit in develop - 6");
         fixture.AssertFullSemver("1.3.0-alpha.6");
-        fixture.SequenceDiagram.Destroy("release/1.2.0");
+        fixture.SequenceDiagram.Destroy("release/1.2.0", "develop");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
         const string expectedFullSemVer = "1.3.0-alpha.6";
@@ -277,7 +277,7 @@ public class DevelopScenarios : TestBase
         fixture.AssertFullSemver("1.3.0-alpha.1");
         fixture.MergeNoFF("release/1.2.0");
         fixture.AssertFullSemver("1.3.0-alpha.2");
-        fixture.SequenceDiagram.Destroy("release/1.2.0");
+        fixture.SequenceDiagram.Destroy("release/1.2.0", "develop");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
         const string expectedFullSemVer = "1.3.0-alpha.2";
