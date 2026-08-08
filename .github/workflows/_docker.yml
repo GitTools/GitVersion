@@ -16,18 +16,21 @@ on:
       publish_images:
         required: true
         type: boolean
+      dockerhub_oidc_connection_id:
+        required: true
+        type: string
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
 
-permissions:
-  packages: write
-
 jobs:
-  docker:
+  test:
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
+    if: inputs.publish_images == false
     runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -57,28 +60,55 @@ jobs:
         uses: ./.github/actions/docker-setup
 
       - name: Docker Test
-        if: success() && inputs.publish_images == false
         uses: ./.github/actions/docker-test
         with:
           arch: ${{ inputs.arch }}
           docker_distro: ${{ matrix.docker_distro }}
           dotnet_version: ${{ matrix.dotnet_version }}
 
-      - name: Load DockerHub credentials
-        id: dockerhub-creds
-        if: success() && inputs.publish_images
-        uses: gittools/cicd/dockerhub-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
+  publish:
+    name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
+    if: inputs.publish_images
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        docker_distro: ${{ fromJson(inputs.docker_distros) }}
+        dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
-          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: ./.github/actions/cache-restore
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        name: Download nuget packages
+        with:
+          name: nuget
+          path: ${{ github.workspace }}/artifacts/packages/nuget
+
+      - name: Set up Docker
+        uses: ./.github/actions/docker-setup
 
       - name: Docker Publish
-        if: success() && inputs.publish_images
         uses: ./.github/actions/docker-publish
         with:
           arch: ${{ inputs.arch }}
           docker_distro: ${{ matrix.docker_distro }}
           dotnet_version: ${{ matrix.dotnet_version }}
-          docker_registry_username: ${{ steps.dockerhub-creds.outputs.docker_username }}
-          docker_registry_password: ${{ steps.dockerhub-creds.outputs.docker_password }}
+          dockerhub_organization: gittools
+          dockerhub_oidc_connection_id: ${{ inputs.dockerhub_oidc_connection_id }}
           github_registry_username: ${{ github.repository_owner }}
           github_registry_password: ${{ github.token }}
