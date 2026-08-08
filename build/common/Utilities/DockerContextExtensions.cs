@@ -260,6 +260,14 @@ public static class DockerContextExtensions
                 ];
             }
 
+            // Forward the selected Git backend into the container so the same image/package is
+            // exercised against both libgit2 and managed (set per-step in CI). Absent = libgit2 default.
+            var gitBackend = context.EnvironmentVariable("GITVERSION_GIT_BACKEND");
+            if (!string.IsNullOrWhiteSpace(gitBackend))
+            {
+                settings.Env = [.. settings.Env ?? [], $"GITVERSION_GIT_BACKEND={gitBackend}"];
+            }
+
             return settings;
         }
     }
