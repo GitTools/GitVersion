@@ -44,7 +44,7 @@ jobs:
     name: Prepare
     permissions:
       contents: read
-    uses: ./.github/workflows/_prepare.yml
+    uses: $/.github/workflows/_prepare.yml
 
   publish_flags:
     name: Publish Flags
@@ -69,7 +69,7 @@ jobs:
     needs: [ prepare ]
     permissions:
       contents: read
-    uses: ./.github/workflows/_build.yml
+    uses: $/.github/workflows/_build.yml
 
   unit_test:
     name: Test
@@ -77,7 +77,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: ./.github/workflows/_unit_tests.yml
+    uses: $/.github/workflows/_unit_tests.yml
     with:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
@@ -88,7 +88,7 @@ jobs:
     needs: [ build ]
     permissions:
       contents: read
-    uses: ./.github/workflows/_artifacts_windows.yml
+    uses: $/.github/workflows/_artifacts_windows.yml
 
   artifacts_linux_test:
     needs: [ prepare, build ]
@@ -103,7 +103,7 @@ jobs:
             runner: ubuntu-24.04
           - arch: arm64
             runner: ubuntu-24.04-arm
-    uses: ./.github/workflows/_artifacts_linux.yml
+    uses: $/.github/workflows/_artifacts_linux.yml
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
@@ -125,7 +125,7 @@ jobs:
           - arch: arm64
             runner: ubuntu-24.04-arm
 
-    uses: ./.github/workflows/_docker.yml
+    uses: $/.github/workflows/_docker.yml
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
@@ -140,7 +140,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: ./.github/workflows/_docker_manifests.yml
+    uses: $/.github/workflows/_docker_manifests.yml
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
@@ -154,7 +154,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: ./.github/workflows/_publish.yml
+    uses: $/.github/workflows/_publish.yml
     with:
       publish_packages: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
     secrets: inherit
@@ -184,14 +184,14 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore
 
       - name: Restore Artifacts
-        uses: ./.github/actions/artifacts-restore
+        uses: $/.github/actions/artifacts-restore
 
       - name: Attestation
         if: env.CAN_PUBLISH == 'true'
-        uses: ./.github/actions/artifacts-attest
+        uses: $/.github/actions/artifacts-attest
 
       - name: Load DockerHub credentials
         id: dockerhub-creds

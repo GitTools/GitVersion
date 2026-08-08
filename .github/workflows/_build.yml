@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore
 
       - name: '[Build]'
         shell: pwsh
