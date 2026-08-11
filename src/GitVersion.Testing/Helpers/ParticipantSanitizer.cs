@@ -4,7 +4,7 @@ namespace GitVersion.Testing.Helpers;
 public static class ParticipantSanitizer
 {
     /// <summary>
-    /// Converts a participant identifier to a standardized format that won't break PlantUml.
+    /// Converts a participant identifier to a standardized format that won't break Mermaid.
     /// </summary>
     /// <param name="participant">The participant identifier to convert. This value cannot be null, empty, or consist only of whitespace.</param>
     public static string SanitizeParticipant(string participant)

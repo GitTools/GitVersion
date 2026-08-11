@@ -71,8 +71,9 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void Remove(string branch)
     {
+        var sourceBranch = Repository.Head.FriendlyName;
         Repository.Branches.Remove(branch);
-        SequenceDiagram.Destroy(branch);
+        SequenceDiagram.Destroy(branch, sourceBranch);
     }
 
     public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}", ".");
@@ -125,7 +126,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         var participant = SequenceDiagram.GetParticipant(Repository.Head.FriendlyName);
         if (commitMsg.Length < 40)
         {
-            SequenceDiagram.DiagramBuilder.AppendLineFormat("{0} -> {0}: Commit '{1}'", participant, commitMsg);
+            SequenceDiagram.MakeACommit(participant, commitMsg);
         }
         else
         {

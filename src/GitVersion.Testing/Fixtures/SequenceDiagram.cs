@@ -4,10 +4,11 @@ using GitVersion.Testing.Internal;
 namespace GitVersion.Testing;
 
 /// <summary>
-/// Creates an abstraction over a PlantUML Sequence diagram to draw a sequence diagram of a git repository being created
+/// Creates an abstraction over a Mermaid sequence diagram to draw a sequence diagram of a git repository being created.
 /// </summary>
 public class SequenceDiagram
 {
+    private const int IndentationSize = 4;
     private readonly Dictionary<string, string> participants = [];
 
     /// <summary>
@@ -16,7 +17,7 @@ public class SequenceDiagram
     public SequenceDiagram()
     {
         DiagramBuilder = new StringBuilder();
-        DiagramBuilder.AppendLine("@startuml");
+        DiagramBuilder.AppendLine("sequenceDiagram");
     }
 
     public StringBuilder DiagramBuilder { get; }
@@ -24,59 +25,72 @@ public class SequenceDiagram
     /// <summary>
     /// Activates a branch/participant in the sequence diagram
     /// </summary>
-    public void Activate(string branch) => DiagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
+    public void Activate(string branch) => AppendLineFormat("activate {0}", GetParticipant(branch));
 
     /// <summary>
     /// Deactivates a branch/participant in the sequence diagram
     /// </summary>
-    public void Deactivate(string branch) => DiagramBuilder.AppendLineFormat("deactivate {0}", GetParticipant(branch));
+    public void Deactivate(string branch) => AppendLineFormat("deactivate {0}", GetParticipant(branch));
 
     /// <summary>
-    /// Destroys a branch/participant in the sequence diagram
+    /// Destroys a branch/participant in the sequence diagram.
     /// </summary>
-    public void Destroy(string branch) => DiagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
+    public void Destroy(string branch, string from)
+    {
+        var participant = GetParticipant(branch);
+        var source = GetParticipant(from);
+
+        AppendLineFormat("destroy {0}", participant);
+        AppendLineFormat("{0}--x{1}: delete branch", source, participant);
+    }
 
     /// <summary>
     /// Creates a participant in the sequence diagram
     /// </summary>
-    public void Participant(string participant, string? @as = null)
+    public void Participant(string participant, string? @as = null) => Participant(participant, @as, prefix: null);
+
+    private void Participant(string participant, string? @as, string? prefix)
     {
         var cleanParticipant = ParticipantSanitizer.SanitizeParticipant(@as ?? participant);
         this.participants.Add(participant, cleanParticipant);
         if (participant == cleanParticipant)
         {
-            DiagramBuilder.AppendLineFormat("participant {0}", participant);
+            AppendLineFormat("{0}participant {1}", prefix, participant);
         }
         else
         {
-            DiagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, cleanParticipant);
+            AppendLineFormat("{0}participant {1} as {2}", prefix, cleanParticipant, EscapeText(participant));
         }
     }
 
     /// <summary>
-    /// Appends a divider with specified text to the sequence diagram
-    /// </summary>
-    public void Divider(string text) => DiagramBuilder.AppendLineFormat("== {0} ==", text);
-
-    /// <summary>
     /// Appends a note over one or many participants to the sequence diagram
     /// </summary>
-    public void NoteOver(string noteText, string startParticipant, string? endParticipant = null, string? prefix = null, string? color = null) =>
-        DiagramBuilder.AppendLineFormat(
-            prefix + """
-                     note over {0}{1}{2}
-                       {3}
-                     end note
-                     """,
+    public void NoteOver(string noteText, string startParticipant, string? endParticipant = null, string? color = null)
+    {
+        if (color is not null)
+        {
+            AppendLineFormat("rect {0}", ToMermaidColor(color));
+        }
+
+        AppendLineFormat(
+            color is null ? 1 : 2,
+            "Note over {0}{1}: {2}",
             GetParticipant(startParticipant),
-            endParticipant == null ? null : ", " + GetParticipant(endParticipant),
-            color == null ? null : " " + color,
-            noteText.Replace("\n", "\n  "));
+            endParticipant == null ? null : "," + GetParticipant(endParticipant),
+            EscapeText(noteText));
+
+        if (color is not null)
+        {
+            AppendLine("end");
+        }
+    }
 
     /// <summary>
     /// Appends applying a tag to the specified branch/participant to the sequence diagram
     /// </summary>
-    public void ApplyTag(string tag, string toBranch) => DiagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
+    public void ApplyTag(string tag, string toBranch) =>
+        AppendLineFormat("{0}->>{0}: tag {1}", GetParticipant(toBranch), EscapeText(tag));
 
     /// <summary>
     /// Appends branching from a branch to another branch, @as can override the participant name
@@ -85,14 +99,13 @@ public class SequenceDiagram
     {
         if (!this.participants.ContainsKey(branchName))
         {
-            DiagramBuilder.Append("create ");
-            Participant(branchName, @as);
+            Participant(branchName, @as, "create ");
         }
 
-        DiagramBuilder.AppendLineFormat(
-            "{0} -> {1}: branch from {2}",
+        AppendLineFormat(
+            "{0}->>{1}: branch from {2}",
             GetParticipant(currentName),
-            GetParticipant(branchName), currentName);
+            GetParticipant(branchName), EscapeText(currentName));
     }
 
     /// <summary>
@@ -102,32 +115,73 @@ public class SequenceDiagram
     {
         if (!this.participants.ContainsKey(branchName))
         {
-            DiagramBuilder.Append("create ");
-            Participant(branchName, @as);
+            Participant(branchName, @as, "create ");
         }
 
-        DiagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
+        AppendLineFormat(
+            "{0}->>{1}: branch from tag ({2})",
+            GetParticipant(onBranch),
+            GetParticipant(branchName),
+            EscapeText(fromTag));
     }
 
     /// <summary>
     /// Appends a commit on the target participant/branch to the sequence diagram
     /// </summary>
-    public void MakeACommit(string toParticipant) => DiagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
+    public void MakeACommit(string toParticipant) => AppendLineFormat("{0}->>{0}: commit", GetParticipant(toParticipant));
+
+    public void MakeACommit(string toParticipant, string commitMessage) =>
+        AppendLineFormat("{0}->>{0}: Commit '{1}'", GetParticipant(toParticipant), EscapeText(commitMessage));
 
     /// <summary>
     /// Append a merge to the sequence diagram
     /// </summary>
-    public void Merge(string from, string to) => DiagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
+    public void Merge(string from, string to) => AppendLineFormat("{0}->>{1}: merge", GetParticipant(from), GetParticipant(to));
 
     public string GetParticipant(string branch) => this.participants.GetValueOrDefault(branch, branch);
 
     /// <summary>
-    /// Ends the sequence diagram
+    /// Ends the sequence diagram. Mermaid sequence diagrams do not require a closing directive.
     /// </summary>
-    public void End() => DiagramBuilder.AppendLine("@enduml");
+    public void End()
+    {
+    }
 
     /// <summary>
-    /// returns the plantUML representation of the Sequence Diagram
+    /// Returns the Mermaid representation of the sequence diagram.
     /// </summary>
-    public string GetDiagram() => DiagramBuilder.ToString();
+    public string GetDiagram() => DiagramBuilder.ToString().ReplaceLineEndings("\n");
+
+    private void AppendLine(string text, int indentationLevel = 1)
+    {
+        DiagramBuilder.Append(' ', IndentationSize * indentationLevel);
+        DiagramBuilder.AppendLine(text);
+    }
+
+    private void AppendLineFormat(string format, params object?[] args) => AppendLineFormat(1, format, args);
+
+    private void AppendLineFormat(int indentationLevel, string format, params object?[] args)
+    {
+        DiagramBuilder.Append(' ', IndentationSize * indentationLevel);
+        DiagramBuilder.AppendLineFormat(format, args);
+    }
+
+    private static string EscapeText(string text) => text
+        .Replace("\r\n", "<br/>")
+        .Replace("\r", "<br/>")
+        .Replace("\n", "<br/>")
+        .Replace(";", "#59;");
+
+    private static string ToMermaidColor(string color)
+    {
+        if (color is ['#', _, _, _, _, _, _]
+            && int.TryParse(color.AsSpan(1, 2), System.Globalization.NumberStyles.HexNumber, null, out var red)
+            && int.TryParse(color.AsSpan(3, 2), System.Globalization.NumberStyles.HexNumber, null, out var green)
+            && int.TryParse(color.AsSpan(5, 2), System.Globalization.NumberStyles.HexNumber, null, out var blue))
+        {
+            return $"rgb({red}, {green}, {blue})";
+        }
+
+        return color;
+    }
 }
