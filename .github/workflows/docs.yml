@@ -8,6 +8,7 @@ on:
     branches:
       - main
     paths:
+      - build/docs/**
       - docs/**
       - package*.json
       - markdownlint.json
@@ -18,6 +19,7 @@ on:
     branches:
       - main
     paths:
+      - build/docs/**
       - docs/**
       - package*.json
       - markdownlint.json
@@ -60,21 +62,6 @@ jobs:
           path: tools
           key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
-      - name: Get npm cache directory
-        shell: bash
-        id: cache-node-dir
-        run: |
-          cacheDir=$(npm config get cache)
-          echo "dir=$cacheDir" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Node Modules
-        id: cache-node
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.cache-node-dir.outputs.dir }}
-          key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-          restore-keys: node-${{ runner.os }}
-
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
@@ -105,6 +92,21 @@ jobs:
 
       - name: Restore State
         uses: ./.github/actions/cache-restore
+
+      - name: Get npm cache directory
+        shell: bash
+        id: cache-node-dir
+        run: |
+          cacheDir=$(npm config get cache)
+          echo "dir=$cacheDir" >> "$GITHUB_OUTPUT"
+
+      - name: Restore npm cache
+        id: cache-node
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.cache-node-dir.outputs.dir }}
+          key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+          restore-keys: node-${{ runner.os }}
 
       - name: '[Build Documentation]'
         shell: pwsh
@@ -151,6 +153,21 @@ jobs:
 
       - name: Restore State
         uses: ./.github/actions/cache-restore
+
+      - name: Get npm cache directory
+        shell: bash
+        id: cache-node-dir
+        run: |
+          cacheDir=$(npm config get cache)
+          echo "dir=$cacheDir" >> "$GITHUB_OUTPUT"
+
+      - name: Restore npm cache
+        id: cache-node
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.cache-node-dir.outputs.dir }}
+          key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+          restore-keys: node-${{ runner.os }}
 
       - name: '[Build Schemas]'
         shell: pwsh
