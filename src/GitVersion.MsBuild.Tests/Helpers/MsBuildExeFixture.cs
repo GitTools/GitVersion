@@ -1,5 +1,6 @@
 using Buildalyzer;
 using Buildalyzer.Environment;
+using Buildalyzer.IO;
 using GitVersion.Helpers;
 using GitVersion.Tests;
 using Microsoft.Build.Framework;
@@ -33,7 +34,9 @@ public class MsBuildExeFixture
 
     public MsBuildExeFixtureResult Execute()
     {
-        var analyzer = this.manager.GetProject(this.projectPath);
+        var projectFilePath = IOPath.Parse(this.projectPath);
+        var analyzer = this.manager.GetProject(projectFilePath);
+        Assert.IsNotNull(analyzer, $"Project {projectFilePath} could not be found in the AnalyzerManager.");
 
         var output = new StringWriter();
         analyzer.AddBuildLogger(new ConsoleLogger(LoggerVerbosity.Normal, output.Write, null, null));
