@@ -2,6 +2,7 @@ using Cake.Git;
 using Cake.Npx;
 using Cake.Wyam;
 using Common.Utilities;
+using Docs.Utilities;
 
 namespace Docs.Tasks;
 
@@ -22,6 +23,7 @@ public sealed class PublishDocs : FrostingTask<BuildContext>
 [TaskName(nameof(PublishDocsInternal))]
 [TaskDescription("Published the docs changes to docs specific branch")]
 [IsDependentOn(typeof(Clean))]
+[IsDependentOn(typeof(ValidateMermaidDiagrams))]
 public sealed class PublishDocsInternal : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
@@ -80,6 +82,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         {
             context.WyamSettings.OutputPath = publishFolder;
             context.WyamSettings.NoClean = true;
+            context.StageMermaidRuntimeForWyam();
             context.Wyam(context.WyamSettings);
             context.Npx("prettier", arguments: "--write **/*.html", configureSettings: settings => settings.WorkingDirectory = publishFolder);
         }

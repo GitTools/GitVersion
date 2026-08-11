@@ -1,11 +1,13 @@
 using Cake.Wyam;
 using Common.Utilities;
+using Docs.Utilities;
 
 namespace Docs.Tasks;
 
 [TaskName(nameof(PreviewDocs))]
 [TaskDescription("Run a local server with docs in preview")]
 [IsDependentOn(typeof(Clean))]
+[IsDependentOn(typeof(ValidateMermaidDiagrams))]
 public sealed class PreviewDocs : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
@@ -23,6 +25,7 @@ public sealed class PreviewDocs : FrostingTask<BuildContext>
             var schemaTargetDir = Paths.ArtifactsDocs.Combine("preview").Combine("schemas");
             context.EnsureDirectoryExists(schemaTargetDir);
             context.CopyDirectory(Paths.Schemas, schemaTargetDir);
+            context.StageMermaidRuntimeForWyam();
 
             context.WyamSettings.Preview = true;
             context.WyamSettings.Watch = true;

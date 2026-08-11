@@ -25,9 +25,11 @@ GitVersion has three distinct steps for calculating versions in v3.
 
 Visually it looks something like this:
 
-![Version Calculation](https://www.plantuml.com/plantuml/png/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00)
+<pre class="mermaid" aria-label="Version calculation diagram">
+^"../../../diagrams/version-calculation.mmd"
+</pre>
 
-[Edit Diagram](https://www.plantuml.com/plantuml/uml/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00)
+[View diagram source](https://github.com/GitTools/GitVersion/blob/main/docs/diagrams/version-calculation.mmd)
 
 **\*** Some strategies allow the version to be incremented, others don't. More
 info below.

@@ -45,7 +45,9 @@ created from a `main` or `release` branch.
 
 ### Create feature branch from main
 
-![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_FeatureBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow feature branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_FeatureBranch.mmd"
+</pre>
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `main` is `2.0.0-5`.
@@ -73,11 +75,15 @@ branch or the release branch.
 
 ### Create release branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_ReleaseBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow release branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_ReleaseBranch.mmd"
+</pre>
 
 ### Create release branch with version
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow versioned release branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.mmd"
+</pre>
 
 ## To Contribute
 
@@ -85,7 +91,10 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 
 ### Source
 
-See `DocumentationSamplesForGitHubFlow.cs`. To update, modify then run test.
+The diagrams are generated from `DocumentationSamplesForGitHubFlow.cs`. After
+changing a scenario, run the `GenerateMermaidSources` Cake task, inspect the
+updated Mermaid source, and run the `ValidateMermaidDiagrams` Cake task before
+committing it.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
 

@@ -118,6 +118,32 @@ main .col-sm-6 {
     margin: 4rem 0 6rem 0;
 }
 
+.mermaid text.messageText:has(+ path.messageLine0),
+.mermaid text.messageText:has(+ path.messageLine1) {
+    transform: translate(20px, -10px);
+}
+
+.mermaid text.messageText:has(+ line.messageLine0),
+.mermaid text.messageText:has(+ line.messageLine1) {
+    transform: translateY(-10px);
+}
+
+.mermaid .note {
+    fill: #d3d3d3 !important;
+    stroke: #777 !important;
+    stroke-width: 1px;
+}
+
+.mermaid .noteText,
+.mermaid .noteText > tspan {
+    fill: #000 !important;
+}
+
+.mermaid rect.rect[fill="rgb(211, 211, 211)"] {
+    fill: transparent;
+    stroke: none;
+}
+
 
 .table thead tr {
     background-color: @purple;
