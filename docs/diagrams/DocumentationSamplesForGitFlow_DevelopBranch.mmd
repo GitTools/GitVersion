@@ -1,0 +1,94 @@
+sequenceDiagram
+    participant main
+    participant develop
+    activate main
+    main->>main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    main->>develop: branch from main
+    deactivate main
+    activate develop
+    rect rgb(211, 211, 211)
+        Note over develop: 1.3.0-alpha.0
+    end
+    develop->>develop: commit
+    rect rgb(211, 211, 211)
+        Note over develop: 1.3.0-alpha.1
+    end
+    create participant release as release/1.3.0
+    develop->>release: branch from develop
+    deactivate develop
+    activate release
+    rect rgb(211, 211, 211)
+        Note over release: 1.3.0-beta.1+1
+    end
+    release->>release: commit
+    rect rgb(211, 211, 211)
+        Note over release: 1.3.0-beta.1+2
+    end
+    activate develop
+    rect rgb(211, 211, 211)
+        Note over develop: 1.4.0-alpha.0
+    end
+    release->>develop: merge
+    rect rgb(211, 211, 211)
+        Note over develop: 1.4.0-alpha.2
+    end
+    activate main
+    release->>main: merge
+    Note over release: Release branches should<br/>be deleted once merged
+    destroy release
+    main--xrelease: delete branch
+    main->>main: tag 1.3.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.0
+    end
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.1-1
+    end
+    main->>main: tag 1.3.1
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.1
+    end
+    main->>develop: merge
+    deactivate main
+    rect rgb(211, 211, 211)
+        Note over develop: 1.4.0-alpha.2
+    end
+    develop->>develop: Commit '+semver: major'
+    rect rgb(211, 211, 211)
+        Note over develop: 2.0.0-alpha.3
+    end
+    develop->>develop: tag 2.1.0-alpha.1
+    rect rgb(211, 211, 211)
+        Note over develop: 2.1.0-alpha.1
+    end
+    develop->>develop: commit
+    rect rgb(211, 211, 211)
+        Note over develop: 2.1.0-alpha.2
+    end
+    create participant pull as pull/2/merge
+    main->>pull: branch from main
+    activate pull
+    develop->>pull: merge
+    rect rgb(211, 211, 211)
+        Note over pull: 2.1.0-PullRequest2.5
+    end
+    destroy pull
+    main--xpull: delete branch
+    develop->>main: merge
+    deactivate develop
+    rect rgb(211, 211, 211)
+        Note over main: 2.1.0-5
+    end
+    activate main
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 2.1.0-6
+    end
+    main->>main: tag 2.1.0
+    rect rgb(211, 211, 211)
+        Note over main: 2.1.0
+    end

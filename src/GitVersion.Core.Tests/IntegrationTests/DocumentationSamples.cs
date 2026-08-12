@@ -32,8 +32,8 @@ public class DocumentationSamples : TestBase
         // Merge into develop
         fixture.Checkout("develop");
         fixture.MergeNoFF(branchName);
-        fixture.SequenceDiagram.Destroy(branchName);
         fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.SequenceDiagram.Destroy(branchName, "develop");
         fixture.AssertFullSemver("1.3.0-alpha.3");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
@@ -64,9 +64,9 @@ public class DocumentationSamples : TestBase
         // Merge into develop
         fixture.Checkout("develop");
         fixture.MergeNoFF("pull/2/merge");
-        fixture.SequenceDiagram.Destroy("pull/2/merge");
         fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
                                          "be deleted once merged", "pull/2/merge");
+        fixture.SequenceDiagram.Destroy("pull/2/merge", "develop");
         fixture.AssertFullSemver("1.3.0-alpha.3");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
@@ -94,8 +94,8 @@ public class DocumentationSamples : TestBase
         fixture.AssertFullSemver("1.2.1-beta.2+0");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("hotfix/1.2.1");
-        fixture.SequenceDiagram.Destroy("hotfix/1.2.1");
         fixture.SequenceDiagram.NoteOver("Hotfix branches are deleted once merged", "hotfix/1.2.1");
+        fixture.SequenceDiagram.Destroy("hotfix/1.2.1", MainBranch);
         fixture.ApplyTag("1.2.1");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
@@ -143,8 +143,8 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.3.0");
         fixture.Checkout("develop");
         fixture.MergeNoFF("release/1.3.0");
-        fixture.SequenceDiagram.Destroy("release/1.3.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.3.0");
+        fixture.SequenceDiagram.Destroy("release/1.3.0", MainBranch);
 
         fixture.Checkout(MainBranch);
         fixture.ApplyTag("1.3.0");
@@ -198,8 +198,8 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/2.0.0");
         fixture.Checkout("develop");
         fixture.MergeNoFF("release/2.0.0");
-        fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
+        fixture.SequenceDiagram.Destroy("release/2.0.0", MainBranch);
 
         fixture.Checkout(MainBranch);
         fixture.AssertFullSemver("2.0.0-4");
@@ -246,8 +246,8 @@ public class DocumentationSamples : TestBase
         fixture.AssertFullSemver("1.3.1-beta.2+0");
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF("hotfix/1.3.1");
-        fixture.SequenceDiagram.Destroy("hotfix/1.3.1");
         fixture.SequenceDiagram.NoteOver("Hotfix branches are deleted once merged", "hotfix/1.3.1");
+        fixture.SequenceDiagram.Destroy("hotfix/1.3.1", MainBranch);
         fixture.AssertFullSemver("1.3.1-4");
         fixture.ApplyTag("1.3.1");
         fixture.AssertFullSemver("1.3.1");
@@ -289,8 +289,8 @@ public class DocumentationSamples : TestBase
         fixture.AssertFullSemver("1.4.0-beta.2+0");
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF("release/1.4.0");
-        fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
+        fixture.SequenceDiagram.Destroy("release/1.4.0", MainBranch);
         fixture.AssertFullSemver("1.4.0-3");
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
@@ -322,8 +322,8 @@ public class DocumentationSamples : TestBase
         // Merge into main
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF(branchName);
-        fixture.SequenceDiagram.Destroy(branchName);
         fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.SequenceDiagram.Destroy(branchName, MainBranch);
         fixture.AssertFullSemver("1.2.1-3");
     }
 
@@ -351,9 +351,9 @@ public class DocumentationSamples : TestBase
         // Merge into main
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("pull/2/merge");
-        fixture.SequenceDiagram.Destroy("pull/2/merge");
         fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
                                          "be deleted once merged", "pull/2/merge");
+        fixture.SequenceDiagram.Destroy("pull/2/merge", MainBranch);
         fixture.AssertFullSemver("1.2.1-3");
     }
 
@@ -389,8 +389,8 @@ public class DocumentationSamples : TestBase
         // Complete release
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("release/2.0.0");
-        fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
+        fixture.SequenceDiagram.Destroy("release/2.0.0", MainBranch);
 
         fixture.AssertFullSemver("2.0.0-4");
         fixture.ApplyTag("2.0.0");

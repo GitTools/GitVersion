@@ -68,8 +68,8 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge feature into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("2.0.0-5", configuration);
 
         // Commit on main branch
@@ -78,6 +78,10 @@ public class DocumentationSamplesForGitHubFlow
         fixture.AssertFullSemver("2.0.0-6", configuration);
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0", configuration);
+        DocumentationDiagramWriter.Write(
+            fixture.SequenceDiagram,
+            $"{nameof(DocumentationSamplesForGitHubFlow)}_{nameof(FeatureBranch)}",
+            withPullRequestIntoMain);
     }
 
     [TestCase(false)]
@@ -141,14 +145,18 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge feature into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("2.0.0-5", configuration);
 
         // Commit on main branch
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.1-1", configuration);
+        DocumentationDiagramWriter.Write(
+            fixture.SequenceDiagram,
+            $"{nameof(DocumentationSamplesForGitHubFlow)}_{nameof(FeatureBranchWithMainline)}",
+            withPullRequestIntoMain);
     }
 
     [TestCase(false)]
@@ -211,8 +219,8 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge release into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Release branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("1.3.1-5", configuration);
 
         // Commit on main branch
@@ -221,6 +229,10 @@ public class DocumentationSamplesForGitHubFlow
         fixture.AssertFullSemver("1.3.1-6", configuration);
         fixture.ApplyTag("1.3.1");
         fixture.AssertFullSemver("1.3.1", configuration);
+        DocumentationDiagramWriter.Write(
+            fixture.SequenceDiagram,
+            $"{nameof(DocumentationSamplesForGitHubFlow)}_{nameof(ReleaseBranch)}",
+            withPullRequestIntoMain);
     }
 
     [TestCase(false)]
@@ -284,8 +296,8 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge release into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Release branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("1.3.1-5", configuration);
 
         // Commit on main branch
@@ -354,8 +366,8 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge release into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Release branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("2.3.1-5", configuration);
 
         // Commit on main branch
@@ -364,6 +376,10 @@ public class DocumentationSamplesForGitHubFlow
         fixture.AssertFullSemver("2.3.1-6", configuration);
         fixture.ApplyTag("2.3.1");
         fixture.AssertFullSemver("2.3.1", configuration);
+        DocumentationDiagramWriter.Write(
+            fixture.SequenceDiagram,
+            $"{nameof(DocumentationSamplesForGitHubFlow)}_{nameof(VersionedReleaseBranch)}",
+            withPullRequestIntoMain);
     }
 
     [TestCase(false)]
@@ -427,8 +443,8 @@ public class DocumentationSamplesForGitHubFlow
 
         // Merge release into main branch
         fixture.MergeNoFF(branchName);
-        fixture.Remove(branchName);
         fixture.SequenceDiagram.NoteOver("Release branches should\r\nbe deleted once merged", branchName);
+        fixture.Remove(branchName);
         fixture.AssertFullSemver("2.2.1-5", configuration);
 
         // Commit on main branch

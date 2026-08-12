@@ -45,13 +45,31 @@ created from a `main` or `release` branch.
 
 ### Create feature branch from main
 
-![GitHubFlow](/docs/img/DocumentationSamplesForGitHubFlow_FeatureBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow feature branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_FeatureBranch.mmd"
+</pre>
 
 :::{.alert .alert-info}
 After the feature branch is merged, the version on `main` is `2.0.0-5`.
 This is due to `main` running in _continuous delivery_ mode. If `main` was
 configured to use _continuous deployment_ the version would be `2.0.0`.
 :::
+
+### Mainline version strategy comparison
+
+The same feature branch history produces different versions when the
+[Mainline version strategy](/docs/reference/modes/mainline) is
+used. In particular, the final untagged commit on `main` becomes `2.0.1-1`
+rather than `2.0.0-6`:
+
+<pre class="mermaid" aria-label="GitHubFlow feature branch using the Mainline version strategy diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_FeatureBranchWithMainline.mmd"
+</pre>
+
+The other Mainline integration scenarios use the same branch histories as the
+release examples below, so they are not repeated here. See
+[`DocumentationSamplesForGitHubFlow.cs`](https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForGitHubFlow.cs)
+for the complete executable scenarios and their expected versions.
 
 ## Release Branches
 
@@ -73,11 +91,15 @@ branch or the release branch.
 
 ### Create release branch
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_ReleaseBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow release branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_ReleaseBranch.mmd"
+</pre>
 
 ### Create release branch with version
 
-![GitFlow](/docs/img/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.png)
+<pre class="mermaid" aria-label="GitHubFlow versioned release branch diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitHubFlow_VersionedReleaseBranch.mmd"
+</pre>
 
 ## To Contribute
 
@@ -85,7 +107,10 @@ See [contributing examples](/docs/learn/branching-strategies/contribute-examples
 
 ### Source
 
-See `DocumentationSamplesForGitHubFlow.cs`. To update, modify then run test.
+The diagrams are generated from `DocumentationSamplesForGitHubFlow.cs`. After
+changing a scenario, run the `GenerateMermaidSources` Cake task, inspect the
+updated Mermaid source, and run the `ValidateMermaidDiagrams` Cake task before
+committing it.
 
 [continuous-deployment]: /docs/reference/modes/continuous-deployment
 

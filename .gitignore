@@ -119,6 +119,7 @@ config.wyam.hash
 config.wyam.packages.xml
 /tests/integration/build
 docs/output
+/docs/theme/assets/js/mermaid.min.js
 
 # NPM
 node_modules
