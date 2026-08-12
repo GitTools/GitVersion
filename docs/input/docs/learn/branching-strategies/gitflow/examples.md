@@ -56,6 +56,22 @@ This is due to `main` running in _continuous delivery_ mode. If `main` was
 configured to use _continuous deployment_ the version would be `2.0.0`.
 :::
 
+### Mainline version strategy comparison
+
+The same feature branch history produces different versions when the
+[Mainline version strategy](/docs/reference/modes/mainline) is
+used. In particular, the final untagged commit on `main` becomes `2.0.1-1`
+rather than `2.0.0-6`:
+
+<pre class="mermaid" aria-label="GitFlow feature branch from main using the Mainline version strategy diagram">
+^"../../../../../diagrams/DocumentationSamplesForGitFlow_FeatureFromMainBranchWithMainline.mmd"
+</pre>
+
+The other Mainline integration scenarios use the same branch histories as the
+examples below, so they are not repeated here. See
+[`DocumentationSamplesForGitFlow.cs`](https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForGitFlow.cs)
+for the complete executable scenarios and their expected versions.
+
 ### Create feature branch from develop
 
 <pre class="mermaid" aria-label="GitFlow feature branch from develop diagram">

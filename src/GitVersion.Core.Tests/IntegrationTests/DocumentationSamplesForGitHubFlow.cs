@@ -153,6 +153,10 @@ public class DocumentationSamplesForGitHubFlow
         fixture.SequenceDiagram.Activate("main");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.0.1-1", configuration);
+        DocumentationDiagramWriter.Write(
+            fixture.SequenceDiagram,
+            $"{nameof(DocumentationSamplesForGitHubFlow)}_{nameof(FeatureBranchWithMainline)}",
+            withPullRequestIntoMain);
     }
 
     [TestCase(false)]
