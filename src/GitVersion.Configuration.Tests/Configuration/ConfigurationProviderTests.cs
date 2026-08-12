@@ -97,6 +97,30 @@ public class ConfigurationProviderTests : TestBase
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 
+    [Test]
+    public void CanConfigureVersionBumpOverrideMessage()
+    {
+        const string text = @"override-version-bump-message: 'override:\s?(?<increment>none|patch|minor|major)'";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        configuration.OverrideVersionBumpMessage.ShouldBe(@"override:\s?(?<increment>none|patch|minor|major)");
+    }
+
+    [Test]
+    public void VersionBumpOverrideMessageRequiresIncrementGroup()
+    {
+        const string text = @"override-version-bump-message: '=semver:\s?(none|patch|minor|major)'";
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+
+        var exception = Should.Throw<ConfigurationException>(
+            () => this.configurationProvider.ProvideForDirectory(this.repoPath));
+
+        exception.Message.ShouldBe(
+            "The 'override-version-bump-message' regular expression must contain a named group called 'increment'.");
+    }
+
     [Test(Description = "This test proves the configuration validation will fail early with a helpful message when a branch listed in source-branches has no configuration.")]
     public void SourceBranchesValidationShouldFailWhenMatchingBranchConfigurationIsMissing()
     {
@@ -432,6 +456,7 @@ public class ConfigurationProviderTests : TestBase
         configuration.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
         configuration.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
         configuration.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
+        configuration.OverrideVersionBumpMessage.ShouldBe(expectedConfig.OverrideVersionBumpMessage);
         configuration.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
         configuration.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
         configuration.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);

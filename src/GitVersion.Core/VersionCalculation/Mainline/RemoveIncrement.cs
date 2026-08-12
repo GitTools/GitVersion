@@ -4,6 +4,8 @@ internal sealed class RemoveIncrement : IContextPostEnricher
 {
     public void Enrich(MainlineCommit commit, MainlineContext context)
     {
+        context.IncrementOverride = null;
+
         if (!commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
         {
             return;

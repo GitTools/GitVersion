@@ -503,6 +503,13 @@ public class LegacyArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
+            "override-version-bump-message=\"override: (?<increment>none|patch|minor|major)\"",
+            new GitVersionConfiguration
+            {
+                OverrideVersionBumpMessage = "override: (?<increment>none|patch|minor|major)"
+            }
+        );
+        yield return new TestCaseData(
             "tag-pre-release-weight=2",
             new GitVersionConfiguration
             {

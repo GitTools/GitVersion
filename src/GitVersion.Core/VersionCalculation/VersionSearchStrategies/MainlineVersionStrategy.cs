@@ -437,6 +437,7 @@ internal sealed class MainlineVersionStrategy(
         {
             TargetLabel = targetLabel
         };
+        var hasBaseVersionOperator = false;
 
         foreach (var commit in iteration.Commits)
         {
@@ -450,7 +451,23 @@ internal sealed class MainlineVersionStrategy(
             {
                 foreach (var item in incrementer.GetIncrements(iteration, commit, context))
                 {
-                    yield return item;
+                    if (item is BaseVersionOperand)
+                    {
+                        hasBaseVersionOperator = false;
+                    }
+
+                    // Only suppress subsequent operators for an explicit '=semver: none' override.
+                    if (item is not BaseVersionOperator
+                        || context.IncrementOverride is null or not VersionField.None
+                        || !hasBaseVersionOperator)
+                    {
+                        yield return item;
+                    }
+
+                    if (item is BaseVersionOperator)
+                    {
+                        hasBaseVersionOperator = true;
+                    }
                 }
             }
 

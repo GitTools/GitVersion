@@ -135,10 +135,11 @@ Following options are supported:
 13. `mode`
 14. `next-version`
 15. `no-bump-message`
-16. `patch-version-bump-message`
-17. `tag-prefix`
-18. `tag-pre-release-weight`
-19. `update-build-number`
+16. `override-version-bump-message`
+17. `patch-version-bump-message`
+18. `tag-prefix`
+19. `tag-pre-release-weight`
+20. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 

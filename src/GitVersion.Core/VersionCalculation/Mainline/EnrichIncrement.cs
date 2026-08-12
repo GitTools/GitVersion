@@ -15,7 +15,15 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             ? VersionField.None
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
         commit.Increment = incrementForcedByCommit;
-        context.Increment = context.Increment.Consolidate(incrementForcedByBranch, incrementForcedByCommit);
+        context.IncrementOverride = commit.IsDummy
+            || effectiveConfiguration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled
+            || (effectiveConfiguration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly
+                && !commit.Value.IsMergeCommit)
+                ? null
+                : VersionBumpMessageParser.GetIncrementOverride(
+                    commit.Message, effectiveConfiguration.OverrideVersionBumpMessage);
+        context.Increment = context.IncrementOverride
+            ?? context.Increment.Consolidate(incrementForcedByBranch, incrementForcedByCommit);
 
         if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
         {

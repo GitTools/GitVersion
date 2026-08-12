@@ -283,6 +283,15 @@
         "string"
       ]
     },
+    "override-version-bump-message": {
+      "format": "regex",
+      "description": "The regular expression to match commit messages that override the calculated version increment. The expression must contain a named group called 'increment'. Defaults to '=semver:\\s?(?<increment>none|patch|minor|major)'",
+      "default": "=semver:\\s?(?<increment>none|patch|minor|major)",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "patch-version-bump-message": {
       "format": "regex",
       "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",

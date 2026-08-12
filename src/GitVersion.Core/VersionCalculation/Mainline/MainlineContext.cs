@@ -20,6 +20,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public VersionField Increment { get; set; }
 
+    public VersionField? IncrementOverride { get; set; }
+
     public ICommit? BaseVersionSource { get; set; }
 
     public HashSet<SemanticVersion> AlternativeSemanticVersions { get; } = [];

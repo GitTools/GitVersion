@@ -111,6 +111,7 @@ internal static partial class RegexPatterns
             new(VersionCalculation.DefaultMinorRegexPattern, VersionCalculation.DefaultMinorRegex),
             new(VersionCalculation.DefaultPatchRegexPattern, VersionCalculation.DefaultPatchRegex),
             new(VersionCalculation.DefaultNoBumpRegexPattern, VersionCalculation.DefaultNoBumpRegex),
+            new(VersionCalculation.DefaultOverrideRegexPattern, VersionCalculation.DefaultOverrideRegex),
             new(SemanticVersion.ParseStrictRegexPattern, SemanticVersion.ParseStrictRegex),
             new(SemanticVersion.ParseLooseRegexPattern, SemanticVersion.ParseLooseRegex),
             new(SemanticVersion.ParseBuildMetaDataRegexPattern, SemanticVersion.ParseBuildMetaDataRegex),
@@ -308,6 +309,9 @@ internal static partial class RegexPatterns
         [StringSyntax(StringSyntaxAttribute.Regex)]
         internal const string DefaultNoBumpRegexPattern = @"\+semver:\s?(none|skip)";
 
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string DefaultOverrideRegexPattern = @"=semver:\s?(?<increment>none|patch|minor|major)";
+
         [GeneratedRegex(DefaultMajorRegexPattern, Options)]
         public static partial Regex DefaultMajorRegex { get; }
 
@@ -319,6 +323,9 @@ internal static partial class RegexPatterns
 
         [GeneratedRegex(DefaultNoBumpRegexPattern, Options)]
         public static partial Regex DefaultNoBumpRegex { get; }
+
+        [GeneratedRegex(DefaultOverrideRegexPattern, Options)]
+        public static partial Regex DefaultOverrideRegex { get; }
     }
 
     internal static partial class SemanticVersion

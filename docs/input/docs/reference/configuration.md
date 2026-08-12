@@ -65,6 +65,7 @@ major-version-bump-message: "\\+semver:\\s?(breaking|major)"
 minor-version-bump-message: "\\+semver:\\s?(feature|minor)"
 patch-version-bump-message: "\\+semver:\\s?(fix|patch)"
 no-bump-message: "\\+semver:\\s?(none|skip)"
+override-version-bump-message: "=semver:\\s?(?<increment>none|patch|minor|major)"
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -209,7 +210,7 @@ ignore:
   sha: []
   paths: []
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L167' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L168' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -241,6 +242,7 @@ major-version-bump-message: "\\+semver:\\s?(breaking|major)"
 minor-version-bump-message: "\\+semver:\\s?(feature|minor)"
 patch-version-bump-message: "\\+semver:\\s?(fix|patch)"
 no-bump-message: "\\+semver:\\s?(none|skip)"
+override-version-bump-message: "=semver:\\s?(?<increment>none|patch|minor|major)"
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -334,7 +336,7 @@ ignore:
   sha: []
   paths: []
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -366,6 +368,7 @@ major-version-bump-message: "\\+semver:\\s?(breaking|major)"
 minor-version-bump-message: "\\+semver:\\s?(feature|minor)"
 patch-version-bump-message: "\\+semver:\\s?(fix|patch)"
 no-bump-message: "\\+semver:\\s?(none|skip)"
+override-version-bump-message: "=semver:\\s?(?<increment>none|patch|minor|major)"
 tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
@@ -444,7 +447,7 @@ ignore:
   sha: []
   paths: []
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L101' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -584,6 +587,25 @@ none` and `+semver: skip`
 
 When a commit matches **both** the `no-bump-message` **and** any combination of
 the `version-bump-message`, `no-bump-message` takes precedence and no increment is applied.
+
+### override-version-bump-message
+
+The regex to match a commit message that overrides the increment used at that
+point in the calculation, including the branch's configured increment. The
+regex must contain a named group called `increment` whose value is `none`,
+`patch`, `minor`, or `major`. The default is
+`=semver:\s?(?<increment>none|patch|minor|major)`.
+
+For example, when a branch is configured with `increment: Patch`, a commit
+containing `=semver: none` keeps the current version and a commit containing
+`=semver: minor` selects a minor increment. Unlike `+semver` messages, the
+override can lower the configured increment. An override also discards earlier
+commit-message increments when the selected version strategy calculates a
+single increment for the range. Mainline applies the override at that commit,
+so increments from earlier commits remain in effect.
+
+When a commit matches both this pattern and another bump-message pattern, the
+override takes precedence. This setting follows `commit-message-incrementing`.
 
 ### tag-pre-release-weight
 

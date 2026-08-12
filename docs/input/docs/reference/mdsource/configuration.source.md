@@ -186,6 +186,25 @@ none` and `+semver: skip`
 When a commit matches **both** the `no-bump-message` **and** any combination of
 the `version-bump-message`, `no-bump-message` takes precedence and no increment is applied.
 
+### override-version-bump-message
+
+The regex to match a commit message that overrides the increment used at that
+point in the calculation, including the branch's configured increment. The
+regex must contain a named group called `increment` whose value is `none`,
+`patch`, `minor`, or `major`. The default is
+`=semver:\s?(?<increment>none|patch|minor|major)`.
+
+For example, when a branch is configured with `increment: Patch`, a commit
+containing `=semver: none` keeps the current version and a commit containing
+`=semver: minor` selects a minor increment. Unlike `+semver` messages, the
+override can lower the configured increment. An override also discards earlier
+commit-message increments when the selected version strategy calculates a
+single increment for the range. Mainline applies the override at that commit,
+so increments from earlier commits remain in effect.
+
+When a commit matches both this pattern and another bump-message pattern, the
+override takes precedence. This setting follows `commit-message-incrementing`.
+
 ### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the

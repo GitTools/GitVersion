@@ -35,15 +35,16 @@ internal class IncrementStrategyFinder(
 
         // don't increment for less than the branch configuration increment, if the absence of commit messages would have
         // still resulted in an increment of configuration.Increment
-        if (shouldIncrement && commitMessageIncrement < defaultIncrement)
+        if (shouldIncrement && !commitMessageIncrement.Value.IsOverride
+            && commitMessageIncrement.Value.Increment < defaultIncrement)
         {
             return defaultIncrement;
         }
 
-        return commitMessageIncrement.Value;
+        return commitMessageIncrement.Value.Increment;
     }
 
-    private VersionField? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
+    private CommitMessageIncrement? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
     {
         commits.NotNull();
 
@@ -52,17 +53,32 @@ internal class IncrementStrategyFinder(
         var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
         var noBumpRegex = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
 
-        var increments = commits
-            .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, noBumpRegex))
-            .Where(v => v != null)
-            .ToList();
+        CommitMessageIncrement? result = null;
+        foreach (var commit in commits.Reverse())
+        {
+            var incrementOverride = VersionBumpMessageParser.GetIncrementOverride(
+                commit.Message, configuration.OverrideVersionBumpMessage);
+            if (incrementOverride.HasValue)
+            {
+                result = new(incrementOverride.Value, IsOverride: true);
+                continue;
+            }
 
-        return increments.Count != 0
-            ? increments.Max()
-            : null;
+            var increment = GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, noBumpRegex);
+            if (!increment.HasValue)
+            {
+                continue;
+            }
+
+            result = result.HasValue
+                ? result.Value with { Increment = result.Value.Increment.Consolidate(increment) }
+                : new(increment.Value, IsOverride: false);
+        }
+
+        return result;
     }
 
-    private VersionField? FindCommitMessageIncrement(
+    private CommitMessageIncrement? FindCommitMessageIncrement(
         EffectiveConfiguration configuration, ICommit? baseVersionSource, ICommit currentCommit, string? label)
     {
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
@@ -94,7 +110,7 @@ internal class IncrementStrategyFinder(
             ? defaultRegex
             : RegexPatterns.Cache.GetOrAdd(messageRegex);
 
-    private Dictionary<string, ICommit>.ValueCollection GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
+    private IReadOnlyCollection<ICommit> GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)
     {
         var targetShas = new Lazy<HashSet<string>>(() =>
@@ -127,7 +143,7 @@ internal class IncrementStrategyFinder(
             }
         }
 
-        return commitLog.Values;
+        return [.. intermediateCommits.Where(commit => commitLog.ContainsKey(commit.Sha))];
     }
 
     /// <summary>
@@ -244,4 +260,6 @@ internal class IncrementStrategyFinder(
 
         return GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, none) ?? VersionField.None;
     }
+
+    private readonly record struct CommitMessageIncrement(VersionField Increment, bool IsOverride);
 }
