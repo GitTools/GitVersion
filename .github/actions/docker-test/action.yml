@@ -10,12 +10,17 @@ inputs:
   dotnet_version:
     description: '.net version'
     default: '8.0'
+  git_backend:
+    description: 'Git backend to exercise (libgit2 or managed)'
+    default: 'libgit2'
 
 runs:
   using: 'composite'
   steps:
     - name: '[Docker Build & Test] DockerHub'
       uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+      env:
+        GITVERSION_GIT_BACKEND: ${{ inputs.git_backend }}
       with:
         shell: pwsh
         timeout_minutes: 30
@@ -28,6 +33,8 @@ runs:
 
     - name: '[Docker Build & Test] GitHub'
       uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+      env:
+        GITVERSION_GIT_BACKEND: ${{ inputs.git_backend }}
       with:
         shell: pwsh
         timeout_minutes: 30
