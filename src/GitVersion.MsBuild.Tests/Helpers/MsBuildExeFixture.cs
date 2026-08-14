@@ -4,7 +4,6 @@ using Buildalyzer.IO;
 using GitVersion.Helpers;
 using GitVersion.Tests;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities.ProjectCreation;
 
 namespace GitVersion.MsBuild.Tests.Helpers;
@@ -39,7 +38,7 @@ public class MsBuildExeFixture
         Assert.IsNotNull(analyzer, $"Project {projectFilePath} could not be found in the AnalyzerManager.");
 
         var output = new StringWriter();
-        analyzer.AddBuildLogger(new ConsoleLogger(LoggerVerbosity.Normal, output.Write, null, null));
+        analyzer.AddBuildLogger(new MessageLogger(output));
 
         var environmentOptions = new EnvironmentOptions { DesignTime = false };
         environmentOptions.TargetsToBuild.Clear();
@@ -77,5 +76,17 @@ public class MsBuildExeFixture
         extendProject(project);
 
         project.Save();
+    }
+
+    private sealed class MessageLogger(StringWriter output) : Microsoft.Build.Framework.ILogger
+    {
+        public LoggerVerbosity Verbosity { get; set; }
+        public string? Parameters { get; set; }
+
+        public void Initialize(IEventSource eventSource) => eventSource.MessageRaised += (_, e) => output.WriteLine(e.Message);
+
+        public void Shutdown()
+        {
+        }
     }
 }
