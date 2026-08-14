@@ -40,7 +40,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: '[Unit Test]'
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0

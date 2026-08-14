@@ -10,6 +10,9 @@ on:
       publish_manifests:
         required: true
         type: boolean
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN:
+        required: false
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -39,10 +42,10 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: Set up Docker
-        uses: ./.github/actions/docker-setup
+        uses: $/.github/actions/docker-setup # NOSONAR -- $/ resolves to the running commit.
 
       - name: Load DockerHub credentials
         if: inputs.publish_manifests
@@ -52,7 +55,7 @@ jobs:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Docker Manifests
-        uses: ./.github/actions/docker-manifests
+        uses: $/.github/actions/docker-manifests # NOSONAR -- $/ resolves to the running commit.
         if: inputs.publish_manifests
         with:
           docker_distro: ${{ matrix.docker_distro }}

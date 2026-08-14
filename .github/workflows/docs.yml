@@ -91,7 +91,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: Get npm cache directory
         shell: bash
@@ -152,7 +152,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: Get npm cache directory
         shell: bash
