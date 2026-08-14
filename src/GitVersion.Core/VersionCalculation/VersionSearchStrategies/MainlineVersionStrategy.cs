@@ -446,29 +446,14 @@ internal sealed class MainlineVersionStrategy(
                 item.Enrich(iteration, commit, context);
             }
 
-            foreach (var incrementer in TrunkIncrementerCollection
-                .Where(element => element.MatchPrecondition(iteration, commit, context)))
+            foreach (var item in GetCommitIncrements(iteration, commit, context))
             {
-                foreach (var item in incrementer.GetIncrements(iteration, commit, context))
+                if (ShouldIncludeIncrement(item, context.IncrementOverride, hasBaseVersionOperator))
                 {
-                    if (item is BaseVersionOperand)
-                    {
-                        hasBaseVersionOperator = false;
-                    }
-
-                    // Only suppress subsequent operators for an explicit '=semver: none' override.
-                    if (item is not BaseVersionOperator
-                        || context.IncrementOverride is null or not VersionField.None
-                        || !hasBaseVersionOperator)
-                    {
-                        yield return item;
-                    }
-
-                    if (item is BaseVersionOperator)
-                    {
-                        hasBaseVersionOperator = true;
-                    }
+                    yield return item;
                 }
+
+                hasBaseVersionOperator = UpdateOperatorState(item, hasBaseVersionOperator);
             }
 
             foreach (var item in TrunkContextPostEnricherCollection)
@@ -477,4 +462,25 @@ internal sealed class MainlineVersionStrategy(
             }
         }
     }
+
+    private static IEnumerable<IBaseVersionIncrement> GetCommitIncrements(MainlineIteration iteration,
+        MainlineCommit commit, MainlineContext context)
+        => TrunkIncrementerCollection
+            .Where(element => element.MatchPrecondition(iteration, commit, context))
+            .SelectMany(incrementer => incrementer.GetIncrements(iteration, commit, context));
+
+    // Only suppress subsequent operators for an explicit '=semver: none' override.
+    private static bool ShouldIncludeIncrement(IBaseVersionIncrement item, VersionField? incrementOverride,
+        bool hasBaseVersionOperator)
+        => item is not BaseVersionOperator
+            || incrementOverride is not VersionField.None
+            || !hasBaseVersionOperator;
+
+    private static bool UpdateOperatorState(IBaseVersionIncrement item, bool hasBaseVersionOperator)
+        => item switch
+        {
+            BaseVersionOperand => false,
+            BaseVersionOperator => true,
+            _ => hasBaseVersionOperator
+        };
 }
