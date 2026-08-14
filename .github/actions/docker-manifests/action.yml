@@ -7,11 +7,11 @@ inputs:
   dotnet_version:
     description: '.net version'
     required: true
-  docker_registry_username:
-    description: 'DockerHub Registry Username'
+  dockerhub_organization:
+    description: 'Docker Hub organization'
     required: true
-  docker_registry_password:
-    description: 'DockerHub Registry Password'
+  dockerhub_oidc_connection_id:
+    description: 'Docker Hub OIDC connection ID'
     required: true
   github_registry_username:
     description: 'GitHub Registry Username'
@@ -24,10 +24,11 @@ runs:
   using: 'composite'
   steps:
     - name: Login to DockerHub
-      uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+      uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+      env:
+        DOCKERHUB_OIDC_CONNECTIONID: ${{ inputs.dockerhub_oidc_connection_id }}
       with:
-        username: ${{ inputs.docker_registry_username }}
-        password: ${{ inputs.docker_registry_password }}
+        username: ${{ inputs.dockerhub_organization }}
 
     - name: '[Docker Publish Manifests] DockerHub'
       shell: pwsh
@@ -40,7 +41,7 @@ runs:
               --docker_distro=$env:DOCKER_DISTRO --docker_registry dockerhub
 
     - name: Login to GitHub
-      uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+      uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
       with:
         registry: ghcr.io
         username: ${{ inputs.github_registry_username }}
