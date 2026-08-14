@@ -35,7 +35,7 @@ internal class IncrementStrategyFinder(
 
         // don't increment for less than the branch configuration increment, if the absence of commit messages would have
         // still resulted in an increment of configuration.Increment
-        if (shouldIncrement && !commitMessageIncrement.Value.IsOverride
+        if (shouldIncrement && !commitMessageIncrement.Value.SuppressBranchIncrement
             && commitMessageIncrement.Value.Increment < defaultIncrement)
         {
             return defaultIncrement;
@@ -52,19 +52,20 @@ internal class IncrementStrategyFinder(
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
         var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
         var noBumpRegex = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
+        var versionBumpResetRegex = TryGetRegexOrDefault(
+            configuration.VersionBumpResetMessage, RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegex);
 
         CommitMessageIncrement? result = null;
         foreach (var commit in commits.Reverse())
         {
-            var incrementOverride = VersionBumpMessageParser.GetIncrementOverride(
-                commit.Message, configuration.OverrideVersionBumpMessage);
-            if (incrementOverride.HasValue)
+            var increment = GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, noBumpRegex);
+            var isVersionBumpReset = versionBumpResetRegex.IsMatch(commit.Message);
+            if (isVersionBumpReset)
             {
-                result = new(incrementOverride.Value, IsOverride: true);
+                result = new(increment ?? VersionField.None, SuppressBranchIncrement: true);
                 continue;
             }
 
-            var increment = GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, noBumpRegex);
             if (!increment.HasValue)
             {
                 continue;
@@ -72,7 +73,7 @@ internal class IncrementStrategyFinder(
 
             result = result.HasValue
                 ? result.Value with { Increment = result.Value.Increment.Consolidate(increment) }
-                : new(increment.Value, IsOverride: false);
+                : new(increment.Value, SuppressBranchIncrement: false);
         }
 
         return result;
@@ -261,5 +262,5 @@ internal class IncrementStrategyFinder(
         return GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, none) ?? VersionField.None;
     }
 
-    private readonly record struct CommitMessageIncrement(VersionField Increment, bool IsOverride);
+    private readonly record struct CommitMessageIncrement(VersionField Increment, bool SuppressBranchIncrement);
 }

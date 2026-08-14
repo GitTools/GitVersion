@@ -437,7 +437,6 @@ internal sealed class MainlineVersionStrategy(
         {
             TargetLabel = targetLabel
         };
-        var hasBaseVersionOperator = false;
 
         foreach (var commit in iteration.Commits)
         {
@@ -446,14 +445,13 @@ internal sealed class MainlineVersionStrategy(
                 item.Enrich(iteration, commit, context);
             }
 
-            foreach (var item in GetCommitIncrements(iteration, commit, context))
+            foreach (var incrementer in TrunkIncrementerCollection
+                .Where(element => element.MatchPrecondition(iteration, commit, context)))
             {
-                if (ShouldIncludeIncrement(item, context.IncrementOverride, hasBaseVersionOperator))
+                foreach (var item in incrementer.GetIncrements(iteration, commit, context))
                 {
                     yield return item;
                 }
-
-                hasBaseVersionOperator = UpdateOperatorState(item, hasBaseVersionOperator);
             }
 
             foreach (var item in TrunkContextPostEnricherCollection)
@@ -462,25 +460,4 @@ internal sealed class MainlineVersionStrategy(
             }
         }
     }
-
-    private static IEnumerable<IBaseVersionIncrement> GetCommitIncrements(MainlineIteration iteration,
-        MainlineCommit commit, MainlineContext context)
-        => TrunkIncrementerCollection
-            .Where(element => element.MatchPrecondition(iteration, commit, context))
-            .SelectMany(incrementer => incrementer.GetIncrements(iteration, commit, context));
-
-    // Only suppress subsequent operators for an explicit '=semver: none' override.
-    private static bool ShouldIncludeIncrement(IBaseVersionIncrement item, VersionField? incrementOverride,
-        bool hasBaseVersionOperator)
-        => item is not BaseVersionOperator
-            || incrementOverride is not VersionField.None
-            || !hasBaseVersionOperator;
-
-    private static bool UpdateOperatorState(IBaseVersionIncrement item, bool hasBaseVersionOperator)
-        => item switch
-        {
-            BaseVersionOperand => false,
-            BaseVersionOperator => true,
-            _ => hasBaseVersionOperator
-        };
 }

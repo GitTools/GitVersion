@@ -16,7 +16,7 @@ internal sealed class TrunkBasedConfigurationBuilder : ConfigurationBuilderBase<
             MajorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMajorRegexPattern,
             MinorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMinorRegexPattern,
             NoBumpMessage = RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern,
-            OverrideVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultOverrideRegexPattern,
+            VersionBumpResetMessage = RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern,
             PatchVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultPatchRegexPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = [

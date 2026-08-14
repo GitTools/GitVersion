@@ -513,10 +513,10 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "override-version-bump-message=\"override: (?<increment>none|patch|minor|major)\"",
+            "version-bump-reset-message=\"baseline:\"",
             new GitVersionConfiguration
             {
-                OverrideVersionBumpMessage = "override: (?<increment>none|patch|minor|major)"
+                VersionBumpResetMessage = "baseline:"
             }
         );
         yield return new TestCaseData(

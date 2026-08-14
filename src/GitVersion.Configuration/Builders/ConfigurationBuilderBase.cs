@@ -20,7 +20,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? minorVersionBumpMessage;
     private string? patchVersionBumpMessage;
     private string? noBumpMessage;
-    private string? overrideVersionBumpMessage;
+    private string? versionBumpResetMessage;
     private int? tagPreReleaseWeight;
     private IgnoreConfiguration ignore = new();
     private string? commitDateFormat;
@@ -179,9 +179,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public TConfigurationBuilder WithOverrideVersionBumpMessage(string? value)
+    public TConfigurationBuilder WithVersionBumpResetMessage(string? value)
     {
-        this.overrideVersionBumpMessage = value;
+        this.versionBumpResetMessage = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -351,7 +351,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
         WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
         WithNoBumpMessage(value.NoBumpMessage);
-        WithOverrideVersionBumpMessage(value.OverrideVersionBumpMessage);
+        WithVersionBumpResetMessage(value.VersionBumpResetMessage);
         WithTagPreReleaseWeight(value.TagPreReleaseWeight);
         WithIgnoreConfiguration(value.Ignore);
         WithCommitDateFormat(value.CommitDateFormat);
@@ -411,7 +411,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             MinorVersionBumpMessage = this.minorVersionBumpMessage,
             PatchVersionBumpMessage = this.patchVersionBumpMessage,
             NoBumpMessage = this.noBumpMessage,
-            OverrideVersionBumpMessage = this.overrideVersionBumpMessage,
+            VersionBumpResetMessage = this.versionBumpResetMessage,
             TagPreReleaseWeight = this.tagPreReleaseWeight,
             Ignore = this.ignore,
             CommitDateFormat = this.commitDateFormat,
@@ -476,8 +476,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     private static void ValidateConfiguration(IGitVersionConfiguration configuration)
     {
-        ValidateOverrideVersionBumpMessage(configuration.OverrideVersionBumpMessage);
-
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
             var helpUrl = $"{FileSystemHelper.Path.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
@@ -493,22 +491,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             {
                 throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
             }
-        }
-    }
-
-    private static void ValidateOverrideVersionBumpMessage(string? pattern)
-    {
-        if (pattern is null)
-        {
-            return;
-        }
-
-        var regex = RegexPatterns.Cache.GetOrAdd(pattern);
-        if (!regex.GetGroupNames().Contains(VersionBumpMessageParser.IncrementGroupName))
-        {
-            throw new ConfigurationException(
-                "The 'override-version-bump-message' regular expression must contain a named group called 'increment'."
-            );
         }
     }
 

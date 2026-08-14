@@ -20,7 +20,7 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public VersionField Increment { get; set; }
 
-    public VersionField? IncrementOverride { get; set; }
+    public bool SuppressBranchIncrement { get; set; }
 
     public ICommit? BaseVersionSource { get; set; }
 

@@ -82,11 +82,11 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyFormat(Format.Regex)]
     public string? NoBumpMessage { get; set; }
 
-    [JsonPropertyName("override-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages that override the calculated version increment. The expression must contain a named group called 'increment'. Defaults to '{RegexPatterns.VersionCalculation.DefaultOverrideRegexPattern}'")]
-    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultOverrideRegexPattern)]
+    [JsonPropertyName("version-bump-reset-message")]
+    [JsonPropertyDescription($"The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern}'")]
+    [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
-    public string? OverrideVersionBumpMessage { get; set; }
+    public string? VersionBumpResetMessage { get; set; }
 
     [JsonPropertyName("tag-pre-release-weight")]
     [JsonPropertyDescription($"The pre-release weight in case of tagged commits. Defaults to {StringDefaultTagPreReleaseWeight}.")]

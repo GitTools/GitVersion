@@ -1,8 +1,8 @@
 #nullable enable
 GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> string?
-GitVersion.Configuration.EffectiveConfiguration.OverrideVersionBumpMessage.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?
-GitVersion.Configuration.IGitVersionConfiguration.OverrideVersionBumpMessage.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.EffectiveConfiguration! effectiveConfiguration) -> GitVersion.OutputVariables.GitVersionVariables!
 *REMOVED*GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.OutputVariables.GitVersionVariables.CustomVersion.get -> string?

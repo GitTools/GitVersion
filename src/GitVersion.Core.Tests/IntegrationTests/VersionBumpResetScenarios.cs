@@ -5,7 +5,7 @@ using GitVersion.VersionCalculation;
 namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
-public class VersionBumpOverrideScenarios
+public class VersionBumpResetScenarios
 {
     [TestCase(
         Workflow.TrunkBased,
@@ -63,7 +63,7 @@ public class VersionBumpOverrideScenarios
         "message three +semver: minor",
         "1.1.0-3"
     )]
-    public void VersionBumpOverrideResetsTheCalculatedIncrement(
+    public void VersionBumpResetResetsTheCalculatedIncrement(
         Workflow workflow, string firstMessage, string secondMessage, string thirdMessage, string expectedVersion)
     {
         var configuration = BuildConfiguration(workflow, IncrementStrategy.Patch);
@@ -89,7 +89,7 @@ public class VersionBumpOverrideScenarios
     [TestCase(Workflow.GitHubFlow, "=semver: patch", "1.0.1-1")]
     [TestCase(Workflow.GitHubFlow, "=semver: minor", "1.1.0-1")]
     [TestCase(Workflow.GitHubFlow, "=semver: major", "2.0.0-1")]
-    public void VersionBumpOverrideCanLowerOrRaiseTheConfiguredIncrement(
+    public void VersionBumpResetCanLowerOrRaiseTheConfiguredIncrement(
         Workflow workflow, string commitMessage, string expectedVersion)
     {
         var configuration = BuildConfiguration(workflow, IncrementStrategy.Major);
@@ -104,29 +104,15 @@ public class VersionBumpOverrideScenarios
     [TestCase(Workflow.TrunkBased)]
     [TestCase(Workflow.GitFlow)]
     [TestCase(Workflow.GitHubFlow)]
-    public void VersionBumpOverrideTakesPrecedenceWithinACommit(Workflow workflow)
+    public void VersionBumpResetUsesTheConfiguredPattern(Workflow workflow)
     {
-        var configuration = BuildConfiguration(workflow, IncrementStrategy.Patch);
-
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeACommit("+semver: major =semver: patch");
-
-        fixture.AssertFullSemver("1.0.1-1", configuration);
-    }
-
-    [TestCase(Workflow.TrunkBased)]
-    [TestCase(Workflow.GitFlow)]
-    [TestCase(Workflow.GitHubFlow)]
-    public void VersionBumpOverrideUsesTheConfiguredPattern(Workflow workflow)
-    {
-        const string pattern = @"bump-override:\s?(?<increment>none|patch|minor|major)";
+        const string pattern = "baseline:";
         var configuration = BuildConfiguration(
-            workflow, IncrementStrategy.Patch, overrideVersionBumpMessage: pattern);
+            workflow, IncrementStrategy.Patch, versionBumpResetMessage: pattern);
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
-        fixture.MakeACommit("bump-override: none");
+        fixture.MakeACommit("baseline: =semver: none");
 
         fixture.AssertFullSemver("1.0.0-1", configuration);
     }
@@ -134,7 +120,7 @@ public class VersionBumpOverrideScenarios
     [TestCase(Workflow.TrunkBased)]
     [TestCase(Workflow.GitFlow)]
     [TestCase(Workflow.GitHubFlow)]
-    public void VersionBumpOverrideHonorsDisabledCommitMessageIncrementing(Workflow workflow)
+    public void VersionBumpResetHonorsDisabledCommitMessageIncrementing(Workflow workflow)
     {
         var configuration = BuildConfiguration(
             workflow, IncrementStrategy.Patch, CommitMessageIncrementMode.Disabled);
@@ -150,14 +136,14 @@ public class VersionBumpOverrideScenarios
         Workflow workflow,
         IncrementStrategy increment,
         CommitMessageIncrementMode commitMessageIncrementing = CommitMessageIncrementMode.Enabled,
-        string? overrideVersionBumpMessage = null) => workflow switch
+        string? versionBumpResetMessage = null) => workflow switch
         {
             Workflow.TrunkBased => BuildConfiguration(
-                TrunkBasedConfigurationBuilder.New, increment, commitMessageIncrementing, overrideVersionBumpMessage),
+                TrunkBasedConfigurationBuilder.New, increment, commitMessageIncrementing, versionBumpResetMessage),
             Workflow.GitFlow => BuildConfiguration(
-                GitFlowConfigurationBuilder.New, increment, commitMessageIncrementing, overrideVersionBumpMessage),
+                GitFlowConfigurationBuilder.New, increment, commitMessageIncrementing, versionBumpResetMessage),
             Workflow.GitHubFlow => BuildConfiguration(
-                GitHubFlowConfigurationBuilder.New, increment, commitMessageIncrementing, overrideVersionBumpMessage),
+                GitHubFlowConfigurationBuilder.New, increment, commitMessageIncrementing, versionBumpResetMessage),
             _ => throw new ArgumentOutOfRangeException(nameof(workflow), workflow, null)
         };
 
@@ -165,12 +151,12 @@ public class VersionBumpOverrideScenarios
         ConfigurationBuilderBase<TConfigurationBuilder> builder,
         IncrementStrategy increment,
         CommitMessageIncrementMode commitMessageIncrementing,
-        string? overrideVersionBumpMessage)
+        string? versionBumpResetMessage)
         where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
     {
-        if (overrideVersionBumpMessage is not null)
+        if (versionBumpResetMessage is not null)
         {
-            builder.WithOverrideVersionBumpMessage(overrideVersionBumpMessage);
+            builder.WithVersionBumpResetMessage(versionBumpResetMessage);
         }
 
         return builder.WithBranch("main", branchBuilder => branchBuilder

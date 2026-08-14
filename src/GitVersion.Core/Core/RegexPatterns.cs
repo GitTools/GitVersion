@@ -111,7 +111,7 @@ internal static partial class RegexPatterns
             new(VersionCalculation.DefaultMinorRegexPattern, VersionCalculation.DefaultMinorRegex),
             new(VersionCalculation.DefaultPatchRegexPattern, VersionCalculation.DefaultPatchRegex),
             new(VersionCalculation.DefaultNoBumpRegexPattern, VersionCalculation.DefaultNoBumpRegex),
-            new(VersionCalculation.DefaultOverrideRegexPattern, VersionCalculation.DefaultOverrideRegex),
+            new(VersionCalculation.DefaultVersionBumpResetRegexPattern, VersionCalculation.DefaultVersionBumpResetRegex),
             new(SemanticVersion.ParseStrictRegexPattern, SemanticVersion.ParseStrictRegex),
             new(SemanticVersion.ParseLooseRegexPattern, SemanticVersion.ParseLooseRegex),
             new(SemanticVersion.ParseBuildMetaDataRegexPattern, SemanticVersion.ParseBuildMetaDataRegex),
@@ -298,19 +298,19 @@ internal static partial class RegexPatterns
     internal static partial class VersionCalculation
     {
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string DefaultMajorRegexPattern = @"\+semver:\s?(breaking|major)";
+        internal const string DefaultMajorRegexPattern = @"[+=]semver:\s?(breaking|major)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string DefaultMinorRegexPattern = @"\+semver:\s?(feature|minor)";
+        internal const string DefaultMinorRegexPattern = @"[+=]semver:\s?(feature|minor)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string DefaultPatchRegexPattern = @"\+semver:\s?(fix|patch)";
+        internal const string DefaultPatchRegexPattern = @"[+=]semver:\s?(fix|patch)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string DefaultNoBumpRegexPattern = @"\+semver:\s?(none|skip)";
+        internal const string DefaultNoBumpRegexPattern = @"[+=]semver:\s?(none|skip)";
 
         [StringSyntax(StringSyntaxAttribute.Regex)]
-        internal const string DefaultOverrideRegexPattern = @"=semver:\s?(?<increment>none|patch|minor|major)";
+        internal const string DefaultVersionBumpResetRegexPattern = @"=semver:";
 
         [GeneratedRegex(DefaultMajorRegexPattern, Options)]
         public static partial Regex DefaultMajorRegex { get; }
@@ -324,8 +324,8 @@ internal static partial class RegexPatterns
         [GeneratedRegex(DefaultNoBumpRegexPattern, Options)]
         public static partial Regex DefaultNoBumpRegex { get; }
 
-        [GeneratedRegex(DefaultOverrideRegexPattern, Options)]
-        public static partial Regex DefaultOverrideRegex { get; }
+        [GeneratedRegex(DefaultVersionBumpResetRegexPattern, Options)]
+        public static partial Regex DefaultVersionBumpResetRegex { get; }
     }
 
     internal static partial class SemanticVersion

@@ -4,13 +4,12 @@ internal sealed class RemoveIncrement : IContextPostEnricher
 {
     public void Enrich(MainlineCommit commit, MainlineContext context)
     {
-        context.IncrementOverride = null;
-
         if (!commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
         {
             return;
         }
 
+        context.SuppressBranchIncrement = false;
         context.Increment = VersionField.None;
         context.Label = null;
         context.AlternativeSemanticVersions.Clear();
