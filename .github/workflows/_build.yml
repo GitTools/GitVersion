@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: '[Build]'
         shell: pwsh

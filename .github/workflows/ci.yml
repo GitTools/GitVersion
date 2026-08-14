@@ -44,7 +44,7 @@ jobs:
     name: Prepare
     permissions:
       contents: read
-    uses: ./.github/workflows/_prepare.yml
+    uses: $/.github/workflows/_prepare.yml # NOSONAR -- $/ resolves to the running commit.
 
   publish_flags:
     name: Publish Flags
@@ -69,7 +69,7 @@ jobs:
     needs: [ prepare ]
     permissions:
       contents: read
-    uses: ./.github/workflows/_build.yml
+    uses: $/.github/workflows/_build.yml # NOSONAR -- $/ resolves to the running commit.
 
   unit_test:
     name: Test
@@ -77,18 +77,17 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: ./.github/workflows/_unit_tests.yml
+    uses: $/.github/workflows/_unit_tests.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
-    secrets: inherit
 
   artifacts_windows_test:
     name: Artifacts Windows
     needs: [ build ]
     permissions:
       contents: read
-    uses: ./.github/workflows/_artifacts_windows.yml
+    uses: $/.github/workflows/_artifacts_windows.yml # NOSONAR -- $/ resolves to the running commit.
 
   artifacts_linux_test:
     needs: [ prepare, build ]
@@ -103,7 +102,7 @@ jobs:
             runner: ubuntu-24.04
           - arch: arm64
             runner: ubuntu-24.04-arm
-    uses: ./.github/workflows/_artifacts_linux.yml
+    uses: $/.github/workflows/_artifacts_linux.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
@@ -125,14 +124,15 @@ jobs:
           - arch: arm64
             runner: ubuntu-24.04-arm
 
-    uses: ./.github/workflows/_docker.yml
+    uses: $/.github/workflows/_docker.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_images: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
-    secrets: inherit
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
   docker_linux_manifests:
     needs: [ prepare, docker_linux_images, publish_flags ]
@@ -140,12 +140,13 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: ./.github/workflows/_docker_manifests.yml
+    uses: $/.github/workflows/_docker_manifests.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_manifests: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
-    secrets: inherit
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
   publish:
     name: Publish
@@ -154,10 +155,11 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: ./.github/workflows/_publish.yml
+    uses: $/.github/workflows/_publish.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       publish_packages: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
-    secrets: inherit
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
   release:
     name: Release
@@ -184,14 +186,14 @@ jobs:
           fetch-depth: 0
 
       - name: Restore State
-        uses: ./.github/actions/cache-restore
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: Restore Artifacts
-        uses: ./.github/actions/artifacts-restore
+        uses: $/.github/actions/artifacts-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: Attestation
         if: env.CAN_PUBLISH == 'true'
-        uses: ./.github/actions/artifacts-attest
+        uses: $/.github/actions/artifacts-attest # NOSONAR -- $/ resolves to the running commit.
 
       - name: Load DockerHub credentials
         id: dockerhub-creds
