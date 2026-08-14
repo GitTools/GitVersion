@@ -59,40 +59,72 @@ git rev-list --left-right --count HEAD...origin/main
 - If the branch is behind, fast-forward it before continuing. If it is ahead, stop
   and ask the user whether those commits are intended for this release.
 
-### Homebrew fork is current
+### Downstream publishing forks are current
 
-The Homebrew publish workflow uses the `gittools-bot/homebrew-core` fork to open its
-formula PR. GitHub rejects or cannot reliably create that PR when the fork is behind
-`Homebrew/homebrew-core`, so check it **before starting the release**, rather than
-discovering it after the CI pipeline has published all other artifacts.
+The publish workflows use bot-owned forks to open their downstream PRs:
+
+- `.github/workflows/homebrew.yml` authenticates as `gittools-bot`, so Homebrew
+  creates or reuses `gittools-bot/homebrew-core` for PRs to
+  `Homebrew/homebrew-core`.
+- `.github/workflows/winget.yml` sets `custom-fork-owner: gittools-bot`, so Komac
+  uses `gittools-bot/winget-pkgs` for PRs to `microsoft/winget-pkgs`.
+
+GitHub rejects or cannot reliably create those PRs when either fork has drifted
+from its upstream default branch. Check both forks **before starting the release**,
+rather than discovering the problem after the CI pipeline has published all other
+artifacts.
 
 ```bash
-# Confirm the expected fork and obtain the upstream's default branch.
+# Confirm the expected fork and inspect both default branches.
 gh api repos/gittools-bot/homebrew-core --jq \
   '{fork, default_branch, parent: {full_name: .parent.full_name, default_branch: .parent.default_branch}}'
 
-# `behind_by` must be zero. `ahead_by` may be non-zero if the fork has local PR branches.
-BRANCH=$(gh api repos/Homebrew/homebrew-core --jq '.default_branch')
-gh api "repos/Homebrew/homebrew-core/compare/${BRANCH}...gittools-bot:${BRANCH}" --jq \
+# Compare upstream's default branch with the same branch in the fork. PR branches
+# do not affect this comparison, so both `ahead_by` and `behind_by` must be zero.
+HOMEBREW_BRANCH=$(gh api repos/gittools-bot/homebrew-core --jq '.parent.default_branch')
+gh api "repos/Homebrew/homebrew-core/compare/${HOMEBREW_BRANCH}...gittools-bot:${HOMEBREW_BRANCH}" --jq \
+  '{status, ahead_by, behind_by, html_url}'
+
+# Confirm the fork selected by `custom-fork-owner` and compare the parent's
+# default branch.
+gh api repos/gittools-bot/winget-pkgs --jq \
+  '{fork, default_branch, parent: {full_name: .parent.full_name, default_branch: .parent.default_branch}}'
+
+WINGET_BRANCH=$(gh api repos/gittools-bot/winget-pkgs --jq '.parent.default_branch')
+gh api "repos/microsoft/winget-pkgs/compare/${WINGET_BRANCH}...gittools-bot:${WINGET_BRANCH}" --jq \
   '{status, ahead_by, behind_by, html_url}'
 ```
 
-- `behind_by: 0` → ✅ the fork is ready.
-- `behind_by: >0` → ❌ **Blocker:** `gittools-bot/homebrew-core` is behind upstream.
-  Ask the user whether to update it with GitHub CLI, then run:
+- Each fork's `default_branch` must equal its parent's `default_branch`. A mismatch
+  is a ❌ **blocker:** show it and ask the user to correct the fork configuration;
+  do not change a repository's default branch automatically.
+- Matching default branches plus `ahead_by: 0` and `behind_by: 0` for both forks →
+  ✅ the downstream forks are ready. Include both results in the preflight table.
+- `behind_by: >0` with `ahead_by: 0` → ❌ **Blocker:** the named fork is behind
+  upstream. Ask the user whether to update it with GitHub CLI, then run the
+  corresponding command:
 
   ```bash
   gh repo sync gittools-bot/homebrew-core \
     --source Homebrew/homebrew-core \
-    --branch "$BRANCH"
+    --branch "$HOMEBREW_BRANCH"
+
+  gh repo sync gittools-bot/winget-pkgs \
+    --source microsoft/winget-pkgs \
+    --branch "$WINGET_BRANCH"
   ```
 
   This uses a fast-forward update and must be preferred over `--force`; do not use
   `--force` unless the user explicitly authorizes replacing the fork's default
-  branch. Re-run the comparison afterwards. Do not proceed to Phase 1 until it
-  reports `behind_by: 0`.
-- If the fork is missing or is not a fork of `Homebrew/homebrew-core`, treat that as
-  a blocker and ask the user to restore/correct the bot fork before proceeding.
+  branch. Re-run the metadata and comparison checks afterwards.
+- `ahead_by: >0` (including a diverged fork) → ❌ **Blocker:** the fork's mirrored
+  upstream branch contains commits not present upstream. Show the comparison and
+  ask the user how to reconcile it; do not use `--force` automatically.
+- If either fork is missing, or its parent is not the expected upstream repository,
+  treat that as a blocker and ask the user to restore/correct the bot fork before
+  proceeding.
+
+Do not proceed to Phase 1 until both forks report `ahead_by: 0` and `behind_by: 0`.
 
 ---
 
@@ -126,6 +158,10 @@ gh pr list --repo GitTools/GitVersion --state merged --json number,title,labels 
 | Any PR/commit with label `breaking change` or message containing `BREAKING` | **major** |
 | Any PR/commit with label `feature` or prefix `feat:` | **minor** |
 | Only `bug`, `improvement`, `documentation`, `dependencies`, `build` | **patch** |
+
+The `feat:` prefix match is a starting signal, not an automatic verdict — read the PR before counting it toward minor. A `feat:`-prefixed change to CI/build tooling, docs generation, or repo automation (e.g. `feat(ci): sync schema to SchemaStore`) doesn't change GitVersion's own CLI/library behavior for end users and should usually be weighed as `improvement`-equivalent instead. Reserve minor for `feat:` commits that add or change behavior end users of the tool/library actually observe.
+
+**Cutoff precision:** every "since last release" comparison in this skill must use the release's exact `publishedAt` timestamp (with time, e.g. `2026-06-30T21:02:48Z`), never a date-only approximation (`2026-06-30`). `gh pr list --search "merged:>=<date>"` treats a bare date as midnight UTC, silently pulling in PRs merged earlier the same calendar day that are already part of the prior release — inflating the unreleased-changes list. Always source the cutoff from `gh release list --repo GitTools/GitVersion --limit 1 --json publishedAt --jq '.[0].publishedAt'` and pass that full string straight through, exactly as Phase 3d already does.
 
 Present a concise summary: how many PRs, what categories, the breaking/feature/patch breakdown, and your suggested bump type.
 
@@ -439,6 +475,21 @@ echo "listed=$LISTED  milestone.closed_issues=$MILESTONE_CLOSED"
 - If `LISTED == MILESTONE_CLOSED` → ✅ index is consistent; safe to proceed.
 - If `LISTED < MILESTONE_CLOSED` → ⚠️ index still settling. Wait ~30–60s and re-check; do **not** create the release (Phase 4) until they match, or GRM will miss the lagging items.
 
+**Use a bounded bash retry loop for this, not the Monitor tool.** The settle check is a one-shot condition, not a stream of events — in practice it clears within 30–90s. A Monitor with a fixed timeout can time out and report "no event" even though the condition already true by the time you check manually afterward (this happened mid-lag on a real run: a 180s Monitor timed out, but a manual re-check moments later showed the index already consistent). Poll inline instead:
+
+```bash
+for i in 1 2 3 4 5; do
+  LISTED=$(gh api "repos/GitTools/GitVersion/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+    | python3 -c "import sys, json; print(sum(len(pg) for pg in json.load(sys.stdin)))")
+  MILESTONE_CLOSED=$(gh api repos/GitTools/GitVersion/milestones/<MILESTONE_NUMBER> --jq '.closed_issues')
+  echo "attempt $i: listed=$LISTED  milestone.closed_issues=$MILESTONE_CLOSED"
+  [ "$LISTED" = "$MILESTONE_CLOSED" ] && break
+  sleep 30
+done
+```
+
+If it still hasn't converged after 5 attempts (~2.5 min), tell the user the index is taking longer than usual and ask whether to keep waiting or proceed anyway (proceeding risks the dropped-item failure caught in 6d).
+
 Prefer assigning items to the target milestone **at merge time** over bulk-moving from an umbrella milestone right before release — that avoids the lag window entirely.
 
 At the end of Phase 3, print only the consolidated readiness table, the actions
@@ -473,6 +524,8 @@ Provide the release URL: `https://github.com/GitTools/GitVersion/releases/tag/<V
 gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
 ```
 
+> **Known benign failure: version-drift on stale queued CI runs.** If a `push`-triggered `CI` run for `main` was already queued (e.g. from the PR merge that immediately preceded this release) and hasn't executed yet when the tag is created, GitVersion recalculates mid-run once the new tag becomes visible — but an earlier pipeline stage in that same run may have already produced an artifact filename using the pre-tag version. The result is a spurious failure like `tar: /native/gitversion-linux-x64-<VERSION>.tar.gz: Cannot open: No such file or directory` on that specific stale `push` run, even though the actual `repository_dispatch`-triggered release build (started after the tag existed) succeeds normally. If you see a `push`-event `CI` run fail immediately after/around release creation, check its `createdAt` against the tag creation time and compare it against the `repository_dispatch` `CI` run before treating it as a real regression — it's very likely this race, not a defect introduced by the release.
+
 ---
 
 ## Phase 5 — Monitor downstream PRs
@@ -482,6 +535,15 @@ Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to
 **"Not yet created" is an ambiguous status — checking PR existence alone does not disambiguate it.** It could mean the publish CI is still running, *or* that the publish workflow already ran and failed. A loop that only searches for PRs will report "not yet created" for the full 40-minute window even when the underlying job failed minutes in. Always cross-check the actual workflow run conclusion alongside the PR search; do not rely on elapsed time alone to infer failure.
 
 > **Note on GitTools Actions:** all three downstream targets — Homebrew, winget, and GitTools Actions — open a PR that must be verified. If you find a *recent direct commit to `main`* on `GitTools/actions` for this version but no PR, treat that as unexpected and flag it — don't record it as a normal terminal state.
+
+> **GitTools Actions legitimately produces no PR for patch releases — this is expected, not pending.** `GitTools/actions`'s `update-gitversion-version` workflow only rewrites `Major.Minor`-scoped version references in its docs/workflows (e.g. `6.8`, `6.9` — never the patch digit). For a release that doesn't change `Major.Minor` (a patch bump, e.g. `6.8.0` → `6.8.1`), the computed old/new tag are identical, so `peter-evans/create-pull-request` correctly finds "no changes" and opens nothing. Don't leave this target polling indefinitely waiting for a PR that will never come. To confirm this is the legitimate no-op case (rather than a silent failure) check the `GitTools/actions` run triggered by the dispatch:
+> ```bash
+> gh run list --repo GitTools/actions --limit 3 --json databaseId,name,event,status,conclusion,createdAt --jq '.[] | select(.event=="repository_dispatch")'
+> # then, on that run's job log, look for:
+> #   Branch 'update/gitversion-<VERSION>' is not ahead of base 'main' and will not be created
+> #   pull-request-operation = none
+> ```
+> If you see `pull-request-operation = none` and the release's `Major.Minor` matches the previous release's, mark this target resolved as "no PR needed (patch release, major.minor unchanged)" — not "not yet created."
 
 **Scope of monitoring: PR creation only, not merge status.** Once a target has a confirmed PR (any state — `OPEN` is sufficient), mark that target resolved: record its link and exclude it from subsequent polling iterations. A downstream job that explicitly reports a no-op (for example `pull-request-operation = none`) is also resolved; report that no PR was needed. Merge status is outside this skill's scope — it depends on third-party reviewers and is not deterministic on any timeline this loop should poll against. Continue polling only the targets that remain unresolved (no PR, no explicit no-op, and no failure signal yet).
 
@@ -517,6 +579,12 @@ The loop self-paces as follows:
 - The loop terminates once every target has reached a terminal state (PR confirmed, no-op confirmed, or failure reported)
 
 **Homebrew publish mechanism:** `.github/workflows/homebrew.yml` runs Homebrew's own `brew bump-formula-pr` CLI. It computes the source tarball SHA-256, forks via the `gittools-bot` org, and commits as the GitTools Bot identity, opening a PR to `Homebrew/homebrew-core`. If the job fails, investigate the actual `brew bump-formula-pr` step output — likely causes are the `HOMEBREW_GITHUB_API_TOKEN` lacking fork/push scope, the `gittools-bot` fork being out of sync, or `brew bump-formula-pr` rejecting the formula (audit/version). Surface the failing run's log to the user.
+
+> **Known error signature — stale fork.** If the job log shows the branch push to `GitTools/homebrew-core-1` succeeding, immediately followed by:
+> ```
+> ##[error]Unable to open pull request for Homebrew/homebrew-core: Validation Failed: [{"resource" => "PullRequest", "field" => "head", "code" => "invalid"}]!
+> ```
+> this is GitHub rejecting the PR head because the `gittools-bot` fork (`GitTools/homebrew-core-1`) has diverged from `Homebrew/homebrew-core` (its recorded fork parent relationship or default branch is stale). This is a one-way external action against a third-party repo — do not auto-retry. Report the exact error to the user and let them sync/re-fork before manually re-running the `Publish to Homebrew` workflow.
 
 ---
 
@@ -611,8 +679,23 @@ RENDERED=$(gh release view <VERSION> --repo GitTools/GitVersion --json body --jq
 echo "expected≈$EXPECTED  rendered=$RENDERED"
 ```
 
-- If `RENDERED` is roughly `EXPECTED` → ✅ notes are complete.
-- If `RENDERED` is far below `EXPECTED` (e.g. 2 vs 86) → ❌ GRM ran against a stale milestone index and dropped items (see the Phase 3 settle check). **Fix:** the milestone listing is now consistent, so regenerate the notes in place — `dotnet tool restore && dotnet gitreleasemanager create -m <VERSION> -o GitTools -r GitVersion --token "$(gh auth token)"` (`allow-update-to-published: true` in `GitReleaseManager.yml` lets it update the published release). Then re-run this reconciliation to confirm.
+- If `RENDERED` is roughly `EXPECTED` or slightly higher → ✅ notes are complete. `RENDERED` naturally runs a bit above `EXPECTED`: an issue resolved by a PR gets two references in the body (`#issue` and `!pr`, e.g. "resolved in !5008"), so a milestone with several issue+PR pairs will render more distinct references than the raw item count.
+- If `RENDERED` is far below `EXPECTED` (e.g. 2 vs 86, or ~half with entire label sections like `Dependencies`/`Bug` missing) → ❌ GRM ran against a stale milestone index and dropped items (see the Phase 3 settle check).
+
+  **Fix:** regenerate the release notes in place after the milestone listing is
+  consistent. `allow-update-to-published: true` in `GitReleaseManager.yml` lets
+  GitReleaseManager update the published release:
+
+  ```bash
+  dotnet tool restore && \
+    dotnet gitreleasemanager create -m <VERSION> -o GitTools -r GitVersion \
+      --token "$(gh auth token)"
+  ```
+
+  Then re-run the reconciliation above. This is a public-facing edit to a
+  published release — confirm with the user before regenerating, same as any other
+  Phase 4-equivalent action. If the confirmation question goes unanswered, do not
+  proceed on a timeout; wait for an explicit answer.
 
 ### 6e. Docs schema published (major/minor releases only)
 
