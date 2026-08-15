@@ -6,6 +6,7 @@ GitVersion.Configuration.IGitVersionConfiguration.VersionBumpResetMessage.get ->
 GitVersion.VersionCalculation.CommitMessageIncrement
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement() -> void
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement(GitVersion.VersionField Increment, bool VersionBumpNeedsToBeReset) -> void
+GitVersion.VersionCalculation.CommitMessageIncrement.Consolidate(GitVersion.VersionCalculation.CommitMessageIncrement other) -> GitVersion.VersionCalculation.CommitMessageIncrement
 GitVersion.VersionCalculation.CommitMessageIncrement.Deconstruct(out GitVersion.VersionField Increment, out bool VersionBumpNeedsToBeReset) -> void
 GitVersion.VersionCalculation.CommitMessageIncrement.Equals(GitVersion.VersionCalculation.CommitMessageIncrement other) -> bool
 GitVersion.VersionCalculation.CommitMessageIncrement.Increment.get -> GitVersion.VersionField

@@ -132,6 +132,20 @@ public class VersionBumpResetScenarios
         fixture.AssertFullSemver("1.0.1-1", configuration);
     }
 
+    [TestCase(Workflow.TrunkBased)]
+    [TestCase(Workflow.GitFlow)]
+    [TestCase(Workflow.GitHubFlow)]
+    public void VersionBumpResetRequiresAValidIncrement(Workflow workflow)
+    {
+        var configuration = BuildConfiguration(workflow, IncrementStrategy.Patch);
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit("=semver: I FORGOT THE VERSION INCREMENT");
+
+        fixture.AssertFullSemver("1.0.1-1", configuration);
+    }
+
     [Test]
     public void VersionBumpResetDiscardsEarlierBranchIncrementBeforeMerge()
     {

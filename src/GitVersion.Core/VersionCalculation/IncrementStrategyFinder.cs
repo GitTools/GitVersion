@@ -66,9 +66,7 @@ internal class IncrementStrategyFinder(
             }
 
             result = result.HasValue
-                ? new(
-                    result.Value.Increment.Consolidate(commitMessageIncrement.Value.Increment),
-                    result.Value.VersionBumpNeedsToBeReset || commitMessageIncrement.Value.VersionBumpNeedsToBeReset)
+                ? result.Value.Consolidate(commitMessageIncrement.Value)
                 : commitMessageIncrement;
 
             if (commitMessageIncrement.Value.VersionBumpNeedsToBeReset)
@@ -112,7 +110,7 @@ internal class IncrementStrategyFinder(
             ? defaultRegex
             : RegexPatterns.Cache.GetOrAdd(messageRegex);
 
-    private IReadOnlyCollection<ICommit> GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
+    private Dictionary<string, ICommit>.ValueCollection GetCommitHistory(string? tagPrefix, SemanticVersionFormat semanticVersionFormat,
         ICommit? baseVersionSource, ICommit currentCommit, string? label, IIgnoreConfiguration ignore)
     {
         var targetShas = new Lazy<HashSet<string>>(() =>
@@ -145,7 +143,7 @@ internal class IncrementStrategyFinder(
             }
         }
 
-        return [.. intermediateCommits.Where(commit => commitLog.ContainsKey(commit.Sha))];
+        return commitLog.Values;
     }
 
     /// <summary>
@@ -194,11 +192,12 @@ internal class IncrementStrategyFinder(
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
         {
             var increment = GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, noBumpRegex);
-            var versionBumpNeedsToBeReset = versionBumpResetRegex.IsMatch(commit.Message);
+            if (!increment.HasValue)
+            {
+                return null;
+            }
 
-            return increment.HasValue || versionBumpNeedsToBeReset
-                ? new(increment ?? VersionField.None, versionBumpNeedsToBeReset)
-                : null;
+            return new(increment.Value, versionBumpResetRegex.IsMatch(commit.Message));
         });
 
     private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex)
