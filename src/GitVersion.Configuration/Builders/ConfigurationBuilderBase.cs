@@ -20,6 +20,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? minorVersionBumpMessage;
     private string? patchVersionBumpMessage;
     private string? noBumpMessage;
+    private string? versionBumpResetMessage;
     private int? tagPreReleaseWeight;
     private IgnoreConfiguration ignore = new();
     private string? commitDateFormat;
@@ -175,6 +176,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public TConfigurationBuilder WithNoBumpMessage(string? value)
     {
         this.noBumpMessage = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public TConfigurationBuilder WithVersionBumpResetMessage(string? value)
+    {
+        this.versionBumpResetMessage = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -344,6 +351,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
         WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
         WithNoBumpMessage(value.NoBumpMessage);
+        WithVersionBumpResetMessage(value.VersionBumpResetMessage);
         WithTagPreReleaseWeight(value.TagPreReleaseWeight);
         WithIgnoreConfiguration(value.Ignore);
         WithCommitDateFormat(value.CommitDateFormat);
@@ -403,6 +411,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             MinorVersionBumpMessage = this.minorVersionBumpMessage,
             PatchVersionBumpMessage = this.patchVersionBumpMessage,
             NoBumpMessage = this.noBumpMessage,
+            VersionBumpResetMessage = this.versionBumpResetMessage,
             TagPreReleaseWeight = this.tagPreReleaseWeight,
             Ignore = this.ignore,
             CommitDateFormat = this.commitDateFormat,

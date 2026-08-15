@@ -11,11 +11,21 @@ internal sealed class EnrichIncrement : IContextPreEnricher
     {
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
-        var incrementForcedByCommit = commit.IsDummy
-            ? VersionField.None
+        var commitMessageIncrement = commit.IsDummy
+            ? default
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
-        commit.Increment = incrementForcedByCommit;
-        context.Increment = context.Increment.Consolidate(incrementForcedByBranch, incrementForcedByCommit);
+        commit.Increment = commitMessageIncrement.Increment;
+        if (commitMessageIncrement.VersionBumpNeedsToBeReset)
+        {
+            context.Increment = VersionField.None;
+            context.SuppressBranchIncrement = true;
+        }
+
+        context.Increment = context.Increment.Consolidate(commitMessageIncrement.Increment);
+        if (!context.SuppressBranchIncrement)
+        {
+            context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
+        }
 
         if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
         {
@@ -32,7 +42,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         context.ForceIncrement |= effectiveConfiguration.IsMainBranch || commit.IsPredecessorTheLastCommitOnTrunk(context.Configuration);
     }
 
-    private static VersionField GetIncrementForcedByCommit(
+    private static CommitMessageIncrement GetIncrementForcedByCommit(
         MainlineContext context, ICommit commit, EffectiveConfiguration configuration)
     {
         context.NotNull();
@@ -43,9 +53,10 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         {
             CommitMessageIncrementMode.Enabled
                 => context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration),
-            CommitMessageIncrementMode.Disabled => VersionField.None,
+            CommitMessageIncrementMode.Disabled => default,
             CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
-                ? context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration) : VersionField.None,
+                ? context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration)
+                : default,
             _ => throw new InvalidEnumArgumentException(
                 nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
             )

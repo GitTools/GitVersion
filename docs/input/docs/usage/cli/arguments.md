@@ -139,6 +139,7 @@ Following options are supported:
 17. `tag-prefix`
 18. `tag-pre-release-weight`
 19. `update-build-number`
+20. `version-bump-reset-message`
 
 Read more about [Configuration](/docs/reference/configuration).
 

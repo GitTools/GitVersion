@@ -64,15 +64,25 @@ Adding `+semver: breaking` or `+semver: major` will cause the major version to
 be increased, `+semver: feature` or `+semver: minor` will bump minor and
 `+semver: patch` or `+semver: fix` will bump the patch.
 
+The configured branch increment acts as the minimum for these `+semver`
+messages. To reset that baseline instead, use `=semver: none`, `=semver:
+patch`, `=semver: minor`, or `=semver: major`. This is useful, for example,
+when a branch normally increments patch but a documentation-only commit should
+keep the current version. The `=` form resets earlier commit-message increments
+in the calculation range and suppresses the configured branch increment from
+that point.
+
 #### Configuration
 
 The feature is enabled by default but can be disabled via configuration, the
 regex we use can be changed:
 
 ```yaml
-major-version-bump-message: '\+semver:\s?(breaking|major)'
-minor-version-bump-message: '\+semver:\s?(feature|minor)'
-patch-version-bump-message: '\+semver:\s?(fix|patch)'
+major-version-bump-message: '[+=]semver:\s?(breaking|major)'
+minor-version-bump-message: '[+=]semver:\s?(feature|minor)'
+patch-version-bump-message: '[+=]semver:\s?(fix|patch)'
+no-bump-message: '[+=]semver:\s?(none|skip)'
+version-bump-reset-message: '=semver:'
 commit-message-incrementing: Enabled
 ```
 

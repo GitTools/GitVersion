@@ -503,6 +503,13 @@ public class LegacyArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
+            "version-bump-reset-message=\"baseline:\"",
+            new GitVersionConfiguration
+            {
+                VersionBumpResetMessage = "baseline:"
+            }
+        );
+        yield return new TestCaseData(
             "tag-pre-release-weight=2",
             new GitVersionConfiguration
             {

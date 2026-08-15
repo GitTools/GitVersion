@@ -14,5 +14,5 @@ public interface IIncrementStrategyFinder
     IEnumerable<ICommit> GetMergedCommits(ICommit mergeCommit, int index, IIgnoreConfiguration ignore);
 
     /// <summary>Returns the version field increment forced by a commit message keyword in <paramref name="commit"/>.</summary>
-    VersionField GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration);
+    CommitMessageIncrement GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration);
 }

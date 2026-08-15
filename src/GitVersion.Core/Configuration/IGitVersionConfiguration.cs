@@ -44,6 +44,9 @@ public interface IGitVersionConfiguration : IBranchConfiguration
     /// <summary>Gets the commit message pattern that suppresses any version bump.</summary>
     string? NoBumpMessage { get; }
 
+    /// <summary>Gets the commit message pattern that resets the version bump baseline.</summary>
+    string? VersionBumpResetMessage { get; }
+
     /// <summary>Gets the pre-release weight applied to tagged commits when calculating the weighted pre-release number.</summary>
     int? TagPreReleaseWeight { get; }
 

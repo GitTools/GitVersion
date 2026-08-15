@@ -244,8 +244,8 @@
     },
     "major-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '\\+semver:\\s?(breaking|major)'",
-      "default": "\\+semver:\\s?(breaking|major)",
+      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '[+=]semver:\\s?(breaking|major)'",
+      "default": "[+=]semver:\\s?(breaking|major)",
       "type": [
         "null",
         "string"
@@ -260,8 +260,8 @@
     },
     "minor-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '\\+semver:\\s?(feature|minor)'",
-      "default": "\\+semver:\\s?(feature|minor)",
+      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '[+=]semver:\\s?(feature|minor)'",
+      "default": "[+=]semver:\\s?(feature|minor)",
       "type": [
         "null",
         "string"
@@ -276,8 +276,17 @@
     },
     "no-bump-message": {
       "format": "regex",
-      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '\\+semver:\\s?(none|skip)'",
-      "default": "\\+semver:\\s?(none|skip)",
+      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '[+=]semver:\\s?(none|skip)'",
+      "default": "[+=]semver:\\s?(none|skip)",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "version-bump-reset-message": {
+      "format": "regex",
+      "description": "The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '=semver:'",
+      "default": "=semver:",
       "type": [
         "null",
         "string"
@@ -285,8 +294,8 @@
     },
     "patch-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '\\+semver:\\s?(fix|patch)'",
-      "default": "\\+semver:\\s?(fix|patch)",
+      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '[+=]semver:\\s?(fix|patch)'",
+      "default": "[+=]semver:\\s?(fix|patch)",
       "type": [
         "null",
         "string"

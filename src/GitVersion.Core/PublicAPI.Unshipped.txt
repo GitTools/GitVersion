@@ -1,7 +1,21 @@
 #nullable enable
 GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.VersionBumpResetMessage.get -> string?
+GitVersion.VersionCalculation.CommitMessageIncrement
+GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement() -> void
+GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement(GitVersion.VersionField Increment, bool VersionBumpNeedsToBeReset) -> void
+GitVersion.VersionCalculation.CommitMessageIncrement.Consolidate(GitVersion.VersionCalculation.CommitMessageIncrement other) -> GitVersion.VersionCalculation.CommitMessageIncrement
+GitVersion.VersionCalculation.CommitMessageIncrement.Deconstruct(out GitVersion.VersionField Increment, out bool VersionBumpNeedsToBeReset) -> void
+GitVersion.VersionCalculation.CommitMessageIncrement.Equals(GitVersion.VersionCalculation.CommitMessageIncrement other) -> bool
+GitVersion.VersionCalculation.CommitMessageIncrement.Increment.get -> GitVersion.VersionField
+GitVersion.VersionCalculation.CommitMessageIncrement.Increment.init -> void
+GitVersion.VersionCalculation.CommitMessageIncrement.VersionBumpNeedsToBeReset.get -> bool
+GitVersion.VersionCalculation.CommitMessageIncrement.VersionBumpNeedsToBeReset.init -> void
+GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForcedByCommit(GitVersion.Git.ICommit! commit, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> GitVersion.VersionCalculation.CommitMessageIncrement
 GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.Configuration.EffectiveConfiguration! effectiveConfiguration) -> GitVersion.OutputVariables.GitVersionVariables!
+*REMOVED*GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForcedByCommit(GitVersion.Git.ICommit! commit, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> GitVersion.VersionField
 *REMOVED*GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Configuration.IGitVersionConfiguration! configuration, int preReleaseWeight) -> GitVersion.OutputVariables.GitVersionVariables!
 GitVersion.OutputVariables.GitVersionVariables.CustomVersion.get -> string?
 GitVersion.OutputVariables.GitVersionVariables.CustomVersion.init -> void
@@ -40,3 +54,8 @@ static GitVersion.Extensions.StringExtensions.NotNullOrEmpty(this string? value,
 static GitVersion.Extensions.StringExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace) -> string!
 static GitVersion.Extensions.StringExtensions.WithPrefixIfNotNullOrEmpty(this string! input, string! prefix) -> string!
+static GitVersion.VersionCalculation.CommitMessageIncrement.operator !=(GitVersion.VersionCalculation.CommitMessageIncrement left, GitVersion.VersionCalculation.CommitMessageIncrement right) -> bool
+static GitVersion.VersionCalculation.CommitMessageIncrement.operator ==(GitVersion.VersionCalculation.CommitMessageIncrement left, GitVersion.VersionCalculation.CommitMessageIncrement right) -> bool
+override GitVersion.VersionCalculation.CommitMessageIncrement.GetHashCode() -> int
+~override GitVersion.VersionCalculation.CommitMessageIncrement.Equals(object obj) -> bool
+~override GitVersion.VersionCalculation.CommitMessageIncrement.ToString() -> string

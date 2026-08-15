@@ -16,6 +16,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             MajorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMajorRegexPattern,
             MinorVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultMinorRegexPattern,
             NoBumpMessage = RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern,
+            VersionBumpResetMessage = RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern,
             PatchVersionBumpMessage = RegexPatterns.VersionCalculation.DefaultPatchRegexPattern,
             SemanticVersionFormat = ConfigurationConstants.DefaultSemanticVersionFormat,
             VersionStrategies = ConfigurationConstants.DefaultVersionStrategies,

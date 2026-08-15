@@ -81,6 +81,7 @@ public record EffectiveConfiguration
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
+        VersionBumpResetMessage = configuration.VersionBumpResetMessage;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing.Value;
         Ignore = configuration.Ignore;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
@@ -169,6 +170,9 @@ public record EffectiveConfiguration
 
     /// <summary>Gets the commit message pattern that suppresses any version bump.</summary>
     public string? NoBumpMessage { get; }
+
+    /// <summary>Gets the commit message pattern that resets the version bump baseline.</summary>
+    public string? VersionBumpResetMessage { get; }
 
     /// <summary>Gets the mode that controls how commit messages are used to determine version increments.</summary>
     public CommitMessageIncrementMode CommitMessageIncrementing { get; }
