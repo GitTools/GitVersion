@@ -132,6 +132,37 @@ public class VersionBumpResetScenarios
         fixture.AssertFullSemver("1.0.1-1", configuration);
     }
 
+    [Test]
+    public void VersionBumpResetDiscardsEarlierBranchIncrementBeforeMerge()
+    {
+        var configuration = BuildConfiguration(Workflow.TrunkBased, IncrementStrategy.Minor);
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit("message one +semver: major");
+        fixture.MakeACommit("message two =semver: none");
+        fixture.MakeACommit("message three +semver: patch");
+        fixture.MergeTo("main");
+
+        fixture.AssertFullSemver("1.0.1-4", configuration);
+    }
+
+    [TestCase(Workflow.GitFlow)]
+    [TestCase(Workflow.GitHubFlow)]
+    public void VersionBumpResetStopsCommitHistoryAtTheMostRecentReset(Workflow workflow)
+    {
+        var configuration = BuildConfiguration(workflow, IncrementStrategy.Minor);
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit("message one +semver: major");
+        fixture.MakeACommit("message two =semver: none");
+        fixture.MakeACommit("message three +semver: patch");
+
+        fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
     private static IGitVersionConfiguration BuildConfiguration(
         Workflow workflow,
         IncrementStrategy increment,

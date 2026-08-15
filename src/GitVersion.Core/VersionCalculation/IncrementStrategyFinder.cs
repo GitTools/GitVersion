@@ -10,7 +10,7 @@ internal class IncrementStrategyFinder(
     ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
     : IIncrementStrategyFinder
 {
-    private readonly Dictionary<string, VersionField?> commitIncrementCache = [];
+    private readonly Dictionary<string, CommitMessageIncrement?> commitIncrementCache = [];
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
 
@@ -35,7 +35,7 @@ internal class IncrementStrategyFinder(
 
         // don't increment for less than the branch configuration increment, if the absence of commit messages would have
         // still resulted in an increment of configuration.Increment
-        if (shouldIncrement && !commitMessageIncrement.Value.SuppressBranchIncrement
+        if (shouldIncrement && !commitMessageIncrement.Value.VersionBumpNeedsToBeReset
             && commitMessageIncrement.Value.Increment < defaultIncrement)
         {
             return defaultIncrement;
@@ -56,24 +56,25 @@ internal class IncrementStrategyFinder(
             configuration.VersionBumpResetMessage, RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegex);
 
         CommitMessageIncrement? result = null;
-        foreach (var commit in commits.Reverse())
+        foreach (var commit in commits)
         {
-            var increment = GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, noBumpRegex);
-            var isVersionBumpReset = versionBumpResetRegex.IsMatch(commit.Message);
-            if (isVersionBumpReset)
-            {
-                result = new(increment ?? VersionField.None, SuppressBranchIncrement: true);
-                continue;
-            }
-
-            if (!increment.HasValue)
+            var commitMessageIncrement = GetIncrementFromCommit(
+                commit, majorRegex, minorRegex, patchRegex, noBumpRegex, versionBumpResetRegex);
+            if (!commitMessageIncrement.HasValue)
             {
                 continue;
             }
 
             result = result.HasValue
-                ? result.Value with { Increment = result.Value.Increment.Consolidate(increment) }
-                : new(increment.Value, SuppressBranchIncrement: false);
+                ? new(
+                    result.Value.Increment.Consolidate(commitMessageIncrement.Value.Increment),
+                    result.Value.VersionBumpNeedsToBeReset || commitMessageIncrement.Value.VersionBumpNeedsToBeReset)
+                : commitMessageIncrement;
+
+            if (commitMessageIncrement.Value.VersionBumpNeedsToBeReset)
+            {
+                break;
+            }
         }
 
         return result;
@@ -188,9 +189,17 @@ internal class IncrementStrategyFinder(
         this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
             [.. this.repositoryStore.GetCommitsReacheableFromHead(headCommit, ignore)]);
 
-    private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex) =>
+    private CommitMessageIncrement? GetIncrementFromCommit(
+        ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex, Regex versionBumpResetRegex) =>
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
-            GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, noBumpRegex));
+        {
+            var increment = GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, noBumpRegex);
+            var versionBumpNeedsToBeReset = versionBumpResetRegex.IsMatch(commit.Message);
+
+            return increment.HasValue || versionBumpNeedsToBeReset
+                ? new(increment ?? VersionField.None, versionBumpNeedsToBeReset)
+                : null;
+        });
 
     private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex)
     {
@@ -249,7 +258,7 @@ internal class IncrementStrategyFinder(
         return parents.Single();
     }
 
-    public VersionField GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration)
+    public CommitMessageIncrement GetIncrementForcedByCommit(ICommit commit, IGitVersionConfiguration configuration)
     {
         commit.NotNull();
         configuration.NotNull();
@@ -258,9 +267,9 @@ internal class IncrementStrategyFinder(
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultMinorRegex);
         var patchRegex = TryGetRegexOrDefault(configuration.PatchVersionBumpMessage, RegexPatterns.VersionCalculation.DefaultPatchRegex);
         var none = TryGetRegexOrDefault(configuration.NoBumpMessage, RegexPatterns.VersionCalculation.DefaultNoBumpRegex);
+        var versionBumpResetRegex = TryGetRegexOrDefault(
+            configuration.VersionBumpResetMessage, RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegex);
 
-        return GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, none) ?? VersionField.None;
+        return GetIncrementFromCommit(commit, majorRegex, minorRegex, patchRegex, none, versionBumpResetRegex) ?? default;
     }
-
-    private readonly record struct CommitMessageIncrement(VersionField Increment, bool SuppressBranchIncrement);
 }
