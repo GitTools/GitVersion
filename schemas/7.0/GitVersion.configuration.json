@@ -201,6 +201,10 @@
         "sha": {
           "description": "A sequence of SHAs to be excluded from the version calculations.",
           "$ref": "#/$defs/hashSetOfString"
+        },
+        "tags": {
+          "description": "A sequence of regular expressions matching friendly tag names to be excluded as version sources.",
+          "$ref": "#/$defs/hashSetOfString"
         }
       }
     },

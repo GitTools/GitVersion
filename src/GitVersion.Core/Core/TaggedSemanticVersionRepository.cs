@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -9,11 +10,11 @@ namespace GitVersion;
 internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVersionRepository> logger, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {
     private readonly ILogger<TaggedSemanticVersionRepository> logger = logger.NotNull();
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat, string), IReadOnlyList<SemanticVersionWithTag>>
         taggedSemanticVersionsOfBranchCache = new();
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<(ICommit Key, SemanticVersionWithTag Value)>>
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat, string), IReadOnlyList<(ICommit Key, SemanticVersionWithTag Value)>>
         taggedSemanticVersionsOfMergeTargetCache = new();
-    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
+    private readonly ConcurrentDictionary<(string, SemanticVersionFormat, string), IReadOnlyList<SemanticVersionWithTag>>
         taggedSemanticVersionsCache = new();
 
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -25,7 +26,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = this.taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format, GetIgnoreCacheKey(ignore)), _ =>
         {
             isCached = false;
             return [.. GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When)];
@@ -67,7 +68,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = this.taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format, GetIgnoreCacheKey(ignore)), _ =>
         {
             isCached = false;
             return [.. GetElements().Distinct().OrderByDescending(element => element.Key.When)];
@@ -108,7 +109,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         tagPrefix ??= string.Empty;
 
         var isCached = true;
-        var result = this.taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
+        var result = this.taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format, GetIgnoreCacheKey(ignore)), _ =>
         {
             isCached = false;
             return [.. GetElements().OrderByDescending(element => element.Tag.Commit.When)];
@@ -134,4 +135,14 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             }
         }
     }
+
+    private static string GetIgnoreCacheKey(IIgnoreConfiguration ignore)
+        => string.Join('\u001f',
+            ignore.Before?.UtcTicks.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
+            Serialize(ignore.Paths),
+            Serialize(ignore.Shas),
+            Serialize(ignore.Tags));
+
+    private static string Serialize(IEnumerable<string> values)
+        => string.Join('\u001e', values.Order(StringComparer.Ordinal).Select(value => $"{value.Length}:{value}"));
 }

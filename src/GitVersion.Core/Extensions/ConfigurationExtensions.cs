@@ -104,7 +104,9 @@ internal static class ConfigurationExtensions
             ignoreConfig.NotNull();
             source.NotNull();
 
-            return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element.Commit, ignoreConfig)) : source;
+            return !ignoreConfig.IsEmpty
+                ? source.Where(element => ShouldBeIncluded(element.Commit, ignoreConfig) && !IsTagIgnored(element.Name.Friendly, ignoreConfig))
+                : source;
         }
 
         public IEnumerable<ICommit> Filter(ICommit[] source)
@@ -112,11 +114,14 @@ internal static class ConfigurationExtensions
             ignoreConfig.NotNull();
             source.NotNull();
 
-            return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIgnored(element, ignoreConfig)) : source;
+            return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIncluded(element, ignoreConfig)) : source;
         }
     }
 
-    private static bool ShouldBeIgnored(ICommit commit, IIgnoreConfiguration ignore)
+    private static bool IsTagIgnored(string tagName, IIgnoreConfiguration ignore)
+        => ignore.Tags.Any(expression => RegexPatterns.Cache.GetOrAdd(expression).IsMatch(tagName));
+
+    private static bool ShouldBeIncluded(ICommit commit, IIgnoreConfiguration ignore)
         => !ignore.ToFilters().Any(filter => filter.Exclude(commit, out _));
 
     extension(EffectiveConfiguration configuration)

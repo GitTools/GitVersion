@@ -317,6 +317,23 @@ ignore:
     - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
 ```
 
+#### tags
+
+A sequence of regular expressions matching tag names that should not be used as
+[version sources][version-sources]. Patterns are matched case-insensitively
+against the friendly tag name without the `refs/tags/` prefix. Multiple patterns
+use OR semantics, and `^` and `$` can be used to anchor a match.
+
+```yaml
+ignore:
+  tags:
+    - ^experimental-
+    - ^v0\.
+```
+
+Ignoring a tag does not ignore the commit it points to. The commit remains part
+of version calculation and can still be reached through other references.
+
 ### increment
 
 The part of the SemVer to increment when GitVersion detects it needs to be

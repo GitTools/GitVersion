@@ -176,6 +176,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -210,7 +211,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L168' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L169' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -302,6 +303,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -336,7 +338,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -417,6 +419,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -447,7 +450,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -718,6 +721,23 @@ ignore:
     - e7bc24c0f34728a25c9187b8d0b041d935763e3a
     - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
 ```
+
+#### tags
+
+A sequence of regular expressions matching tag names that should not be used as
+[version sources][version-sources]. Patterns are matched case-insensitively
+against the friendly tag name without the `refs/tags/` prefix. Multiple patterns
+use OR semantics, and `^` and `$` can be used to anchor a match.
+
+```yaml
+ignore:
+  tags:
+    - ^experimental-
+    - ^v0\.
+```
+
+Ignoring a tag does not ignore the commit it points to. The commit remains part
+of version calculation and can still be reached through other references.
 
 ### increment
 

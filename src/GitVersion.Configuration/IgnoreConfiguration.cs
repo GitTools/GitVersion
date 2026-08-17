@@ -30,6 +30,12 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
     public HashSet<string> Shas { get; set; } = [];
 
+    IReadOnlySet<string> IIgnoreConfiguration.Tags => Tags;
+
+    [JsonPropertyName("tags")]
+    [JsonPropertyDescription("A sequence of regular expressions matching friendly tag names to be excluded as version sources.")]
+    public HashSet<string> Tags { get; set; } = [];
+
     [JsonIgnore]
-    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0;
+    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0 && Tags.Count == 0;
 }
