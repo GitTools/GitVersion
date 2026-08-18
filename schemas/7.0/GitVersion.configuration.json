@@ -73,15 +73,6 @@
               "string"
             ]
           },
-          "mode": {
-            "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
-            "enum": [
-              "ManualDeployment",
-              "ContinuousDelivery",
-              "ContinuousDeployment",
-              null
-            ]
-          },
           "increment": {
             "description": "The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.",
             "$ref": "#/$defs/incrementStrategy"
@@ -109,6 +100,15 @@
             "type": [
               "null",
               "string"
+            ]
+          },
+          "mode": {
+            "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+            "enum": [
+              "ManualDeployment",
+              "ContinuousDelivery",
+              "ContinuousDeployment",
+              null
             ]
           },
           "pre-release-weight": {
@@ -180,15 +180,6 @@
       "type": [
         "null",
         "string"
-      ]
-    },
-    "mode": {
-      "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
-      "enum": [
-        "ManualDeployment",
-        "ContinuousDelivery",
-        "ContinuousDeployment",
-        null
       ]
     },
     "ignore": {
@@ -267,6 +258,15 @@
         "string"
       ]
     },
+    "mode": {
+      "description": "The deployment mode for this branch. Can be 'ManualDeployment', 'ContinuousDelivery', 'ContinuousDeployment'.",
+      "enum": [
+        "ManualDeployment",
+        "ContinuousDelivery",
+        "ContinuousDeployment",
+        null
+      ]
+    },
     "next-version": {
       "description": "Allows you to bump the next version explicitly. Useful for bumping main or a feature branch with breaking changes",
       "type": [
@@ -278,15 +278,6 @@
       "format": "regex",
       "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '[+=]semver:\\s?(none|skip)'",
       "default": "[+=]semver:\\s?(none|skip)",
-      "type": [
-        "null",
-        "string"
-      ]
-    },
-    "version-bump-reset-message": {
-      "format": "regex",
-      "description": "The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '=semver:'",
-      "default": "=semver:",
       "type": [
         "null",
         "string"
@@ -332,6 +323,29 @@
       "description": "The source branches for this branch.",
       "$ref": "#/$defs/hashSetOfString"
     },
+    "strategies": {
+      "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
+      "type": "array",
+      "items": {
+        "enum": [
+          "None",
+          "Fallback",
+          "ConfiguredNextVersion",
+          "MergeMessage",
+          "TaggedCommit",
+          "TrackReleaseBranches",
+          "VersionInBranchName",
+          "Mainline"
+        ]
+      }
+    },
+    "tag-pre-release-weight": {
+      "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
     "tag-prefix": {
       "format": "regex",
       "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
@@ -339,13 +353,6 @@
       "type": [
         "null",
         "string"
-      ]
-    },
-    "tag-pre-release-weight": {
-      "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
-      "type": [
-        "null",
-        "integer"
       ]
     },
     "track-merge-message": {
@@ -374,6 +381,15 @@
       "default": "true",
       "type": "boolean"
     },
+    "version-bump-reset-message": {
+      "format": "regex",
+      "description": "The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '=semver:'",
+      "default": "=semver:",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "version-in-branch-pattern": {
       "format": "regex",
       "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
@@ -382,22 +398,6 @@
         "null",
         "string"
       ]
-    },
-    "strategies": {
-      "description": "Specifies which version strategies (one or more) will be used to determine the next version. Following values are available: 'ConfiguredNextVersion', 'MergeMessage', 'TaggedCommit', 'TrackReleaseBranches', 'VersionInBranchName' and 'Mainline'.",
-      "type": "array",
-      "items": {
-        "enum": [
-          "None",
-          "Fallback",
-          "ConfiguredNextVersion",
-          "MergeMessage",
-          "TaggedCommit",
-          "TrackReleaseBranches",
-          "VersionInBranchName",
-          "Mainline"
-        ]
-      }
     },
     "workflow": {
       "description": "The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'",

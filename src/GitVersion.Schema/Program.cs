@@ -38,7 +38,7 @@ var schema = builder.FromType<GitVersionConfiguration>(configuration).Build();
 
 var fileName = Path.Combine(schemasDirectory, schemaVersion, "GitVersion.configuration.json");
 Console.WriteLine($"Writing schema to {fileName}");
-schema.WriteToFile(fileName);
+schema.WriteToFile(fileName, orderPropertiesByName: true);
 
 configuration.PropertyNameResolver = PropertyNameResolvers.AsDeclared;
 
