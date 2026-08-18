@@ -11,14 +11,14 @@ internal class GitVersionTaskExecutor(
     IFileSystem fileSystem,
     IGitVersionOutputTool gitVersionOutputTool,
     IVersionVariableSerializer serializer,
-    IConfigurationProvider configurationProvider,
+    Lazy<IGitVersionConfiguration> configuration,
     IOptions<GitVersionOptions> options)
     : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
     private readonly IGitVersionOutputTool gitVersionOutputTool = gitVersionOutputTool.NotNull();
     private readonly IVersionVariableSerializer serializer = serializer.NotNull();
-    private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly Lazy<IGitVersionConfiguration> configuration = configuration.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
     public void GetVersion(GetVersion task)
@@ -103,10 +103,7 @@ internal class GitVersionTaskExecutor(
     {
         var versionVariables = GitVersionVariables(task);
 
-        var gitVersionOptions = this.options.Value;
-        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
-
-        this.gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
+        this.gitVersionOutputTool.OutputVariables(versionVariables, this.configuration.Value.UpdateBuildNumber);
     }
 
     private GitVersionVariables GitVersionVariables(GitVersionTaskBase task) => this.serializer.FromFile(task.VersionFile);
