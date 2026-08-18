@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    inputs:
+      packages:
+        required: true
+        type: string
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -12,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [ Executable, MsBuildFull ]
+        package: ${{ fromJson(inputs.packages) }}
 
     steps:
       - name: Harden the runner (Audit all outbound calls)

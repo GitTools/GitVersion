@@ -53,6 +53,7 @@ jobs:
       contents: read
     outputs:
       can_publish: ${{ steps.flags.outputs.can_publish }}
+      run_full_validation: ${{ steps.flags.outputs.run_full_validation }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
@@ -62,7 +63,9 @@ jobs:
       - name: Resolve publish flag
         id: flags
         shell: bash
-        run: echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
+          echo "run_full_validation=${{ github.repository == 'GitTools/GitVersion' && (github.ref_name == 'main' || github.event_name == 'merge_group' || github.event_name == 'repository_dispatch') }}" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build & Package
@@ -84,13 +87,15 @@ jobs:
 
   artifacts_windows_test:
     name: Artifacts Windows
-    needs: [ build ]
+    needs: [ build, publish_flags ]
     permissions:
       contents: read
     uses: $/.github/workflows/_artifacts_windows.yml # NOSONAR -- $/ resolves to the running commit.
+    with:
+      packages: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && '["Executable", "MsBuildFull"]' || '["Executable"]' }}
 
   artifacts_linux_test:
-    needs: [ prepare, build ]
+    needs: [ prepare, build, publish_flags ]
     name: Artifacts Linux (${{ matrix.arch }})
     permissions:
       contents: read
@@ -106,7 +111,7 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
-      docker_distros: ${{ needs.prepare.outputs.docker_distros }}
+      docker_distros: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && needs.prepare.outputs.docker_distros || '["ubuntu.24.04"]' }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
 
   docker_linux_images:
@@ -129,7 +134,7 @@ jobs:
     with:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
-      docker_distros: ${{ needs.prepare.outputs.docker_distros }}
+      docker_distros: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && needs.prepare.outputs.docker_distros || '["ubuntu.24.04"]' }}
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_images: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
       dockerhub_oidc_connection_id: ${{ vars.DOCKERHUB_OIDC_CONNECTIONID }}
@@ -137,6 +142,7 @@ jobs:
   docker_linux_manifests:
     needs: [ prepare, docker_linux_images, publish_flags ]
     name: Docker Manifests
+    if: fromJson(needs.publish_flags.outputs.can_publish)
     permissions:
       contents: read
       id-token: write
@@ -164,6 +170,7 @@ jobs:
   release:
     name: Release
     needs: [ publish, docker_linux_manifests ]
+    if: ${{ always() && needs.publish.result == 'success' && (needs.docker_linux_manifests.result == 'success' || needs.docker_linux_manifests.result == 'skipped') }}
     runs-on: windows-2025-vs2026
     permissions:
       contents: write
