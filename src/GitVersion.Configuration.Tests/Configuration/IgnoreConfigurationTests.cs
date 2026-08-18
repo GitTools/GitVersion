@@ -16,17 +16,17 @@ public class IgnoreConfigurationTests : TestBase
         const string yaml =
             """
             ignore:
-                sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
                 commits-before: 2015-10-23T12:23:15
+                sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
             """;
 
         var configuration = this.serializer.ReadConfiguration(yaml);
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
+        configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15", CultureInfo.InvariantCulture));
         configuration.Ignore.Shas.ShouldNotBeEmpty();
         configuration.Ignore.Shas.ShouldBe(["b6c0c9fda88830ebcd563e500a5a7da5a1658e98"]);
-        configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15", CultureInfo.InvariantCulture));
     }
 
     [Test]
@@ -57,8 +57,9 @@ public class IgnoreConfigurationTests : TestBase
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
-        configuration.Ignore.Shas.ShouldBeEmpty();
         configuration.Ignore.Before.ShouldBe(null);
+        configuration.Ignore.Paths.ShouldBeEmpty();
+        configuration.Ignore.Shas.ShouldBeEmpty();
     }
 
     [Test]

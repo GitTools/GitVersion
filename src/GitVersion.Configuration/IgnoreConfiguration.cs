@@ -17,13 +17,6 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
         set => Before = value is null ? null : DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
     }
 
-    [JsonIgnore]
-    IReadOnlySet<string> IIgnoreConfiguration.Shas => Shas;
-
-    [JsonPropertyName("sha")]
-    [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
-    public HashSet<string> Shas { get; set; } = [];
-
     IReadOnlySet<string> IIgnoreConfiguration.Paths => Paths;
 
     [JsonPropertyName("paths")]
@@ -31,5 +24,12 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     public HashSet<string> Paths { get; set; } = [];
 
     [JsonIgnore]
-    public bool IsEmpty => Before == null && Shas.Count == 0 && Paths.Count == 0;
+    IReadOnlySet<string> IIgnoreConfiguration.Shas => Shas;
+
+    [JsonPropertyName("sha")]
+    [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
+    public HashSet<string> Shas { get; set; } = [];
+
+    [JsonIgnore]
+    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0;
 }

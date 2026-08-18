@@ -4,6 +4,12 @@ namespace GitVersion.Configuration;
 
 internal class ConfigurationSerializer : IConfigurationSerializer
 {
+    private static readonly HashSet<string> PreserveKeyOrderFor =
+    [
+        "branches",
+        "merge-message-formats"
+    ];
+
     private static readonly ConfigurationYamlContext GeneratedContext = ConfigurationYamlContext.Default;
 
     private static readonly YamlSerializerOptions SerializerOptions = new()
@@ -37,7 +43,11 @@ internal class ConfigurationSerializer : IConfigurationSerializer
     }
 
     public string Serialize(object graph)
-        => YamlSerializer.Serialize(graph, SerializerOptions);
+    {
+        var yaml = YamlSerializer.Serialize(graph, SerializerOptions);
+        var configuration = YamlSerializer.Deserialize<Dictionary<string, object?>>(yaml, SerializerOptions) ?? [];
+        return YamlSerializer.Serialize(OrderProperties(configuration), SerializerOptions);
+    }
 
     public IGitVersionConfiguration? ReadConfiguration(string input) => Deserialize<GitVersionConfiguration?>(input);
 
@@ -75,6 +85,31 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
         return result;
     }
+
+    private static Dictionary<string, object?> OrderProperties(
+        IReadOnlyDictionary<string, object?> source,
+        bool orderKeys = true)
+    {
+        IEnumerable<KeyValuePair<string, object?>> entries = orderKeys
+            ? source.OrderBy(element => element.Key, StringComparer.Ordinal)
+            : source;
+        Dictionary<string, object?> result = [];
+
+        foreach (var (key, value) in entries)
+        {
+            result[key] = OrderValue(value, orderKeys: !PreserveKeyOrderFor.Contains(key));
+        }
+
+        return result;
+    }
+
+    private static object? OrderValue(object? value, bool orderKeys) => value switch
+    {
+        IReadOnlyDictionary<string, object?> dictionary => OrderProperties(dictionary, orderKeys),
+        IDictionary<string, object?> dictionary => OrderProperties(new Dictionary<string, object?>(dictionary), orderKeys),
+        IList list => list.Cast<object?>().Select(item => OrderValue(item, orderKeys: true)).ToList(),
+        _ => value
+    };
 
     private sealed class HyphenatedJsonNamingPolicy : JsonNamingPolicy
     {

@@ -1,33 +1,105 @@
-mode: ContinuousDelivery
-label: "{BranchName}"
+assembly-file-versioning-scheme: MajorMinorPatch
+assembly-versioning-scheme: MajorMinorPatch
+branches:
+  main:
+    increment: Patch
+    is-main-branch: true
+    is-release-branch: false
+    is-source-branch-for: []
+    label: ''
+    pre-release-weight: 55000
+    prevent-increment:
+      of-merged-branch: true
+    regex: "^master$|^main$"
+    source-branches: []
+    track-merge-message: true
+    track-merge-target: false
+    tracks-release-branches: false
+  release:
+    increment: Patch
+    is-main-branch: false
+    is-release-branch: true
+    is-source-branch-for: []
+    label: beta
+    mode: ManualDeployment
+    pre-release-weight: 30000
+    prevent-increment:
+      of-merged-branch: true
+      when-branch-merged: false
+      when-current-commit-tagged: false
+    regex: "^releases?[\\/-](?<BranchName>.+)"
+    source-branches:
+      - main
+    track-merge-message: true
+    track-merge-target: false
+    tracks-release-branches: false
+  feature:
+    increment: Inherit
+    is-main-branch: false
+    is-source-branch-for: []
+    label: "{BranchName}"
+    mode: ManualDeployment
+    pre-release-weight: 30000
+    prevent-increment:
+      when-current-commit-tagged: false
+    regex: "^features?[\\/-](?<BranchName>.+)"
+    source-branches:
+      - main
+      - release
+    track-merge-message: true
+  pull-request:
+    increment: Inherit
+    is-source-branch-for: []
+    label: "PullRequest{Number}"
+    mode: ContinuousDelivery
+    pre-release-weight: 30000
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
+    source-branches:
+      - main
+      - release
+      - feature
+    track-merge-message: true
+  unknown:
+    increment: Inherit
+    is-main-branch: false
+    is-source-branch-for: []
+    label: "{BranchName}"
+    mode: ManualDeployment
+    prevent-increment:
+      when-current-commit-tagged: false
+    regex: "(?<BranchName>.+)"
+    source-branches:
+      - main
+      - release
+      - feature
+      - pull-request
+    track-merge-message: false
+commit-date-format: yyyy-MM-dd
+commit-message-incrementing: Enabled
+ignore:
+  paths: []
+  sha: []
 increment: Inherit
+is-main-branch: false
+is-release-branch: false
+is-source-branch-for: []
+label: "{BranchName}"
+major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+merge-message-formats: {}
+minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+mode: ContinuousDelivery
+no-bump-message: "[+=]semver:\\s?(none|skip)"
+patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
 prevent-increment:
   of-merged-branch: false
   when-branch-merged: false
   when-current-commit-tagged: true
-track-merge-target: false
-track-merge-message: true
-commit-message-incrementing: Enabled
 regex: ''
-source-branches: []
-is-source-branch-for: []
-tracks-release-branches: false
-is-release-branch: false
-is-main-branch: false
-assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatch
-tag-prefix: "[vV]?"
-version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
-major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
-minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
-patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
-no-bump-message: "[+=]semver:\\s?(none|skip)"
-version-bump-reset-message: "=semver:"
-tag-pre-release-weight: 60000
-commit-date-format: yyyy-MM-dd
-merge-message-formats: {}
-update-build-number: true
 semantic-version-format: Strict
+source-branches: []
 strategies:
   - Fallback
   - ConfiguredNextVersion
@@ -35,83 +107,11 @@ strategies:
   - TaggedCommit
   - TrackReleaseBranches
   - VersionInBranchName
-branches:
-  main:
-    label: ''
-    increment: Patch
-    prevent-increment:
-      of-merged-branch: true
-    track-merge-target: false
-    track-merge-message: true
-    regex: "^master$|^main$"
-    source-branches: []
-    is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
-  release:
-    mode: ManualDeployment
-    label: beta
-    increment: Patch
-    prevent-increment:
-      of-merged-branch: true
-      when-branch-merged: false
-      when-current-commit-tagged: false
-    track-merge-target: false
-    track-merge-message: true
-    regex: "^releases?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-    is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: true
-    is-main-branch: false
-    pre-release-weight: 30000
-  feature:
-    mode: ManualDeployment
-    label: "{BranchName}"
-    increment: Inherit
-    prevent-increment:
-      when-current-commit-tagged: false
-    track-merge-message: true
-    regex: "^features?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-      - release
-    is-source-branch-for: []
-    is-main-branch: false
-    pre-release-weight: 30000
-  pull-request:
-    mode: ContinuousDelivery
-    label: "PullRequest{Number}"
-    increment: Inherit
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    track-merge-message: true
-    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
-    source-branches:
-      - main
-      - release
-      - feature
-    is-source-branch-for: []
-    pre-release-weight: 30000
-  unknown:
-    mode: ManualDeployment
-    label: "{BranchName}"
-    increment: Inherit
-    prevent-increment:
-      when-current-commit-tagged: false
-    track-merge-message: false
-    regex: "(?<BranchName>.+)"
-    source-branches:
-      - main
-      - release
-      - feature
-      - pull-request
-    is-source-branch-for: []
-    is-main-branch: false
-ignore:
-  sha: []
-  paths: []
+tag-pre-release-weight: 60000
+tag-prefix: "[vV]?"
+track-merge-message: true
+track-merge-target: false
+tracks-release-branches: false
+update-build-number: true
+version-bump-reset-message: "=semver:"
+version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
