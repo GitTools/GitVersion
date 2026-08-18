@@ -55,8 +55,11 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             PathType = DotNetTestPathType.Project,
             Framework = $"net{framework}",
+            // UnitTest depends on Build, which restores the complete solution.
+            // Each test project must still rebuild with ContinuousIntegrationBuild=false
+            // so its snapshot tests retain their expected source paths.
             NoBuild = false,
-            NoRestore = false,
+            NoRestore = true,
             Configuration = context.MsBuildConfiguration,
             MSBuildSettings = new()
         };
