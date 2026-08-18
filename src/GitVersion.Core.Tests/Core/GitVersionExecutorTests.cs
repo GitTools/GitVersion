@@ -54,6 +54,27 @@ public class GitVersionExecutorTests : TestBase
         """;
 
     [Test]
+    public void ResolvedConfiguration_IsCreatedOncePerExecution()
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var configurationProvider = Substitute.For<IConfigurationProvider>();
+        configurationProvider.Provide(Arg.Any<IReadOnlyDictionary<object, object?>?>()).Returns(configuration);
+        var options = Options.Create(new GitVersionOptions());
+        var serviceProvider = ConfigureServices(services =>
+        {
+            services.RemoveAll<IConfigurationProvider>();
+            services.AddSingleton(configurationProvider);
+            services.AddSingleton(options);
+        });
+
+        var actual = serviceProvider.GetRequiredService<Lazy<IGitVersionConfiguration>>();
+
+        _ = actual.Value;
+        _ = actual.Value;
+        configurationProvider.Received(1).Provide(options.Value.ConfigurationInfo.OverrideConfiguration);
+    }
+
+    [Test]
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();

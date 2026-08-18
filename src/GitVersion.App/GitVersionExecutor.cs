@@ -13,6 +13,7 @@ internal class GitVersionExecutor(
     IConsole console,
     IConfigurationFileLocator configurationFileLocator,
     IConfigurationProvider configurationProvider,
+    Lazy<IGitVersionConfiguration> configuration,
     IConfigurationSerializer configurationSerializer,
     IGitVersionCalculateTool gitVersionCalculateTool,
     IGitVersionOutputTool gitVersionOutputTool,
@@ -26,6 +27,7 @@ internal class GitVersionExecutor(
 
     private readonly IConfigurationFileLocator configurationFileLocator = configurationFileLocator.NotNull();
     private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly Lazy<IGitVersionConfiguration> configuration = configuration.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
 
     private readonly IGitVersionCalculateTool gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
@@ -64,9 +66,7 @@ internal class GitVersionExecutor(
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
-
-            this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber);
+            this.gitVersionOutputTool.OutputVariables(variables, this.configuration.Value.UpdateBuildNumber);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
             this.gitVersionOutputTool.UpdateWixVersionFile(variables);
         }
@@ -140,9 +140,9 @@ internal class GitVersionExecutor(
             this.configurationFileLocator.Verify(gitVersionOptions.WorkingDirectory, this.repositoryInfo.ProjectRootDirectory);
         }
 
-        var configuration = this.configurationProvider.Provide();
-        var configurationString = this.configurationSerializer.Serialize(configuration);
-        this.console.WriteLine(configurationString);
+        var configurationValue = this.configurationProvider.Provide();
+        var serializedConfiguration = this.configurationSerializer.Serialize(configurationValue);
+        this.console.WriteLine(serializedConfiguration);
         return true;
     }
 }

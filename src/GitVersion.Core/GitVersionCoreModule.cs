@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
@@ -21,6 +22,12 @@ public class GitVersionCoreModule : IGitVersionModule
         services.AddSingleton<IBranchRepository, BranchRepository>();
 
         services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
+        services.AddSingleton(sp => new Lazy<IGitVersionConfiguration>(() =>
+        {
+            var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
+            var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
+            return configurationProvider.Provide(options.Value.ConfigurationInfo.OverrideConfiguration);
+        }));
         services.AddSingleton(sp =>
         {
             var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();

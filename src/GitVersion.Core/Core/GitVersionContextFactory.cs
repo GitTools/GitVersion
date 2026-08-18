@@ -4,13 +4,13 @@ using GitVersion.Extensions;
 namespace GitVersion;
 
 internal class GitVersionContextFactory(
-    IConfigurationProvider configurationProvider,
+    Lazy<IGitVersionConfiguration> configuration,
     IRepositoryStore repositoryStore,
     ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
     IOptions<GitVersionOptions> options)
     : IGitVersionContextFactory
 {
-    private readonly IConfigurationProvider configurationProvider = configurationProvider.NotNull();
+    private readonly Lazy<IGitVersionConfiguration> configuration = configuration.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
@@ -18,13 +18,12 @@ internal class GitVersionContextFactory(
     public GitVersionContext Create()
     {
         var gitVersionOptions = this.options.Value;
-        var overrideConfiguration = gitVersionOptions.ConfigurationInfo.OverrideConfiguration;
-        var configuration = this.configurationProvider.Provide(overrideConfiguration);
+        var effectiveConfiguration = this.configuration.Value;
 
         var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch)
             ?? throw new InvalidOperationException("Need a branch to operate on");
         var currentCommit = this.repositoryStore.GetCurrentCommit(
-            currentBranch, gitVersionOptions.RepositoryInfo.CommitId, configuration.Ignore
+            currentBranch, gitVersionOptions.RepositoryInfo.CommitId, effectiveConfiguration.Ignore
         ) ?? throw new GitVersionException("No commits found on the current branch.");
         if (currentBranch.IsDetachedHead)
         {
@@ -35,12 +34,12 @@ internal class GitVersionContextFactory(
         }
 
         var isCurrentCommitTagged = this.taggedSemanticVersionRepository.GetTaggedSemanticVersions(
-            tagPrefix: configuration.TagPrefixPattern,
-            format: configuration.SemanticVersionFormat,
-            ignore: configuration.Ignore
+            tagPrefix: effectiveConfiguration.TagPrefixPattern,
+            format: effectiveConfiguration.SemanticVersionFormat,
+            ignore: effectiveConfiguration.Ignore
         ).Contains(currentCommit);
         var numberOfUncommittedChanges = this.repositoryStore.UncommittedChangesCount;
 
-        return new(currentBranch, currentCommit, configuration, isCurrentCommitTagged, numberOfUncommittedChanges);
+        return new(currentBranch, currentCommit, effectiveConfiguration, isCurrentCommitTagged, numberOfUncommittedChanges);
     }
 }
