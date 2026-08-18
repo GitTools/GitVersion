@@ -53,6 +53,14 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', '**/*.csproj', '**/*.props', '**/*.targets', 'NuGet.config', 'nuget.config') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Build 'new-cli' solution
         run: dotnet build ./new-cli
 
