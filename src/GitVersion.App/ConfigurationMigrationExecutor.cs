@@ -46,7 +46,26 @@ internal class ConfigurationMigrationExecutor(
             this.logger.LogWarning("Replacing '{ConfigurationFile}'. Comments cannot be preserved during migration.", inputFile);
         }
 
-        this.fileSystem.File.WriteAllText(outputFile, migrated);
+        WriteAtomically(outputFile, migrated);
         return 0;
+    }
+
+    private void WriteAtomically(string outputFile, string migrated)
+    {
+        var directory = this.fileSystem.Path.GetDirectoryName(outputFile)!;
+        var temporaryFile = this.fileSystem.Path.Combine(directory, $".{this.fileSystem.Path.GetFileName(outputFile)}.{Guid.NewGuid():N}.tmp");
+
+        try
+        {
+            this.fileSystem.File.WriteAllText(temporaryFile, migrated);
+            this.fileSystem.File.Move(temporaryFile, outputFile, overwrite: true);
+        }
+        finally
+        {
+            if (this.fileSystem.File.Exists(temporaryFile))
+            {
+                this.fileSystem.File.Delete(temporaryFile);
+            }
+        }
     }
 }
