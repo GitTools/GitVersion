@@ -12,6 +12,9 @@ public interface IIgnoreConfiguration
     /// <summary>Gets the set of commit SHAs that should be excluded from version calculation.</summary>
     IReadOnlySet<string> Shas { get; }
 
+    /// <summary>Gets the regular expressions matching tag names that should be excluded as version sources.</summary>
+    IReadOnlySet<string> Tags { get; }
+
     /// <summary>Gets a value indicating whether this configuration contains no ignore rules.</summary>
     bool IsEmpty { get; }
 }

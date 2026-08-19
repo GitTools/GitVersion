@@ -85,7 +85,7 @@ internal sealed class MainlineVersionStrategy(
             configuration: branchConfiguration
         );
 
-        var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits.ToArray());
+        var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits);
 
         var taggedSemanticVersion = TaggedSemanticVersions.OfBranch;
         if (branchConfiguration.TrackMergeTarget == true)

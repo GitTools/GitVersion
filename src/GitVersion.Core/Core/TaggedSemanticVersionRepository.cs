@@ -49,7 +49,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             {
                 var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format, ignore);
 
-                foreach (var commit in ignore.Filter(branch.Commits.ToArray()))
+                foreach (var commit in ignore.Filter(branch.Commits))
                 {
                     foreach (var semanticVersion in semanticVersions[commit])
                     {
@@ -89,7 +89,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             using (this.logger.StartIndentedScope($"Getting tagged semantic versions by track merge target '{branch.Name.Canonical}'. " +
                                       $"TagPrefix: {tagPrefix} and Format: {format}"))
             {
-                var shaHashSet = new HashSet<string>(ignore.Filter(branch.Commits.ToArray()).Select(element => element.Id.Sha));
+                var shaHashSet = new HashSet<string>(ignore.Filter(branch.Commits).Select(element => element.Id.Sha));
 
                 foreach (var semanticVersion in GetTaggedSemanticVersions(tagPrefix, format, ignore).SelectMany(v => v))
                 {
@@ -125,7 +125,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         {
             this.logger.LogInformation("Getting tagged semantic versions. TagPrefix: {TagPrefix} and Format: {Format}", tagPrefix, format);
 
-            foreach (var tag in ignore.Filter(this.repositoryStore.Tags.ToArray()))
+            foreach (var tag in ignore.Filter(this.repositoryStore.Tags))
             {
                 if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {

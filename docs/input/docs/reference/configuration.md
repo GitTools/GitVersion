@@ -176,6 +176,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -210,7 +211,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L168' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L169' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -302,6 +303,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -336,7 +338,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -417,6 +419,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false
@@ -447,10 +450,18 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
+
+:::{.alert .alert-info}
+**Regular expression matching**
+
+Unless stated otherwise, regular expressions in GitVersion configuration are
+matched case-insensitively. To require case-sensitive matching, prefix the
+expression with `(?-i)`, for example `(?-i)^experimental-`.
+:::
 
 ### assembly-file-versioning-format
 
@@ -691,8 +702,9 @@ A commit having changes only in `/ProjectB/*` path would be ignored. A commit ha
 * `/ProductA/*` and `/ProductB/*` and `/LibraryC/*`
 
 :::
-Note: The `ignore.paths` configuration is case-sensitive.
-This can lead to unexpected behavior on case-insensitive file systems, such as Windows. To ensure consistent matching regardless of case, you can prefix your regular expressions with the case-insensitive flag `(?i)`. For example, `(?i)^docs\/` will match both `docs/` and `Docs/`.
+Note: The `ignore.paths` configuration is case-insensitive. To require
+case-sensitive path matching, prefix the regular expression with `(?-i)`. For
+example, `(?-i)^docs\/` matches `docs/` but not `Docs/`.
 :::
 
 ::: {.alert .alert-warning}
@@ -718,6 +730,24 @@ ignore:
     - e7bc24c0f34728a25c9187b8d0b041d935763e3a
     - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
 ```
+
+#### tags
+
+A sequence of regular expressions matching tag names that should not be used as
+[version sources][version-sources]. Patterns are matched case-insensitively
+against the friendly tag name without the `refs/tags/` prefix. Multiple patterns
+use OR semantics, and `^` and `$` can be used to anchor a match. To require
+case-sensitive matching, prefix a pattern with `(?-i)`.
+
+```yaml
+ignore:
+  tags:
+    - ^experimental-
+    - ^v0\.
+```
+
+Ignoring a tag does not ignore the commit it points to. The commit remains part
+of version calculation and can still be reached through other references.
 
 ### increment
 

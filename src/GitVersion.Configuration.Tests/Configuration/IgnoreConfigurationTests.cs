@@ -49,6 +49,34 @@ public class IgnoreConfigurationTests : TestBase
     }
 
     [Test]
+    public void CanDeserializeCompactTagsSequence()
+    {
+        const string yaml = "ignore:\n  tags: ['^preview-', '^v0\\.']";
+
+        var configuration = this.serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.Ignore.Tags.ShouldBe(["^preview-", "^v0\\."]);
+    }
+
+    [Test]
+    public void CanDeserializeMultilineTagsSequence()
+    {
+        const string yaml =
+            """
+            ignore:
+                tags:
+                    - ^preview-
+                    - ^v0\.
+            """;
+
+        var configuration = this.serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.Ignore.Tags.ShouldBe(["^preview-", "^v0\\."]);
+    }
+
+    [Test]
     public void WhenNotInConfigShouldHaveDefaults()
     {
         const string yaml = "next-version: 1.0";
@@ -60,6 +88,47 @@ public class IgnoreConfigurationTests : TestBase
         configuration.Ignore.Before.ShouldBe(null);
         configuration.Ignore.Paths.ShouldBeEmpty();
         configuration.Ignore.Shas.ShouldBeEmpty();
+        configuration.Ignore.Tags.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void IsEmpty_WhenTagPatternIsConfigured_ReturnsFalse()
+    {
+        var ignoreConfig = new IgnoreConfiguration { Tags = ["^preview-"] };
+
+        ignoreConfig.IsEmpty.ShouldBeFalse();
+    }
+
+    [Test]
+    public void InvalidIgnoreTagExpression_ThrowsConfigurationExceptionWithPropertyAndPattern()
+    {
+        const string invalidExpression = "[invalid";
+
+        var exception = Should.Throw<ConfigurationException>(() => GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Tags = [invalidExpression] })
+            .Build());
+
+        exception.Message.ShouldContain("ignore.tags");
+        exception.Message.ShouldContain(invalidExpression);
+    }
+
+    [Test]
+    public void Serialize_IgnoreTagPatterns_UsesTagsPropertyName()
+    {
+        var ignoreConfig = new IgnoreConfiguration { Tags = ["^preview-"] };
+
+        var yaml = this.serializer.Serialize(ignoreConfig);
+
+        yaml.ShouldContain("tags:");
+        yaml.ShouldContain("^preview-");
+    }
+
+    [Test]
+    public void IgnoreConfigurationBuilder_WithTags_PreservesCollection()
+    {
+        var ignoreConfig = IgnoreConfigurationBuilder.New.WithTags("^preview-", "^v0\\.").Build();
+
+        ignoreConfig.Tags.ShouldBe(["^preview-", "^v0\\."]);
     }
 
     [Test]

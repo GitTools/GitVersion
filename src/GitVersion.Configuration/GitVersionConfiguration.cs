@@ -35,13 +35,13 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? AssemblyFileVersioningFormat { get; set; }
 
     [JsonPropertyName("tag-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixRegexPattern}'")]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to '{RegexPatterns.Configuration.DefaultTagPrefixRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? TagPrefixPattern { get; set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
-    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern}'.")]
+    [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '{RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.Configuration.DefaultVersionInBranchRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? VersionInBranchPattern { get; set; }
@@ -59,31 +59,31 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     private string? nextVersion;
 
     [JsonPropertyName("major-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMajorRegexPattern}'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a major version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMajorRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMajorRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MajorVersionBumpMessage { get; set; }
 
     [JsonPropertyName("minor-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMinorRegexPattern}'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a minor version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultMinorRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultMinorRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? MinorVersionBumpMessage { get; set; }
 
     [JsonPropertyName("patch-version-bump-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultPatchRegexPattern}'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages with to perform a patch version increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultPatchRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultPatchRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? PatchVersionBumpMessage { get; set; }
 
     [JsonPropertyName("no-bump-message")]
-    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern}'")]
+    [JsonPropertyDescription($"Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '{RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultNoBumpRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? NoBumpMessage { get; set; }
 
     [JsonPropertyName("version-bump-reset-message")]
-    [JsonPropertyDescription($"The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern}'")]
+    [JsonPropertyDescription($"The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '{RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern}'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyDefault(RegexPatterns.VersionCalculation.DefaultVersionBumpResetRegexPattern)]
     [JsonPropertyFormat(Format.Regex)]
     public string? VersionBumpResetMessage { get; set; }
@@ -99,7 +99,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     public string? CommitDateFormat { get; set; }
 
     [JsonPropertyName("merge-message-formats")]
-    [JsonPropertyDescription("Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.")]
+    [JsonPropertyDescription("Custom regular expression merge message formats to enable identification of merge messages that do not follow the built-in conventions. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     public Dictionary<string, string> MergeMessageFormats { get; set; } = [];
 
     [JsonIgnore]

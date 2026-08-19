@@ -20,7 +20,7 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     IReadOnlySet<string> IIgnoreConfiguration.Paths => Paths;
 
     [JsonPropertyName("paths")]
-    [JsonPropertyDescription("A sequence of file paths to be excluded from the version calculations.")]
+    [JsonPropertyDescription("A sequence of regular expressions matching file paths to be excluded from the version calculations. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     public HashSet<string> Paths { get; set; } = [];
 
     [JsonIgnore]
@@ -30,6 +30,12 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
     public HashSet<string> Shas { get; set; } = [];
 
+    IReadOnlySet<string> IIgnoreConfiguration.Tags => Tags;
+
+    [JsonPropertyName("tags")]
+    [JsonPropertyDescription("A sequence of regular expressions matching friendly tag names to be excluded as version sources. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
+    public HashSet<string> Tags { get; set; } = [];
+
     [JsonIgnore]
-    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0;
+    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0 && Tags.Count == 0;
 }

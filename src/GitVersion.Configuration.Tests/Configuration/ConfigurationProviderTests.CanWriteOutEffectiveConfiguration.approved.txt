@@ -133,6 +133,7 @@ commit-message-incrementing: Enabled
 ignore:
   paths: []
   sha: []
+  tags: []
 increment: Inherit
 is-main-branch: false
 is-release-branch: false

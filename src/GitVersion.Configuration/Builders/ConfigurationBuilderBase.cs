@@ -476,6 +476,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     private static void ValidateConfiguration(IGitVersionConfiguration configuration)
     {
+        ValidateIgnoreExpressions("ignore.tags", configuration.Ignore.Tags);
+
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
             var helpUrl = $"{FileSystemHelper.Path.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
@@ -490,6 +492,23 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             if (missingSourceBranches.Length != 0)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
+            }
+        }
+    }
+
+    private static void ValidateIgnoreExpressions(string propertyName, IEnumerable<string> expressions)
+    {
+        foreach (var expression in expressions)
+        {
+            try
+            {
+                _ = RegexPatterns.Cache.GetOrAdd(expression);
+            }
+            catch (ArgumentException exception)
+            {
+                throw new ConfigurationException(
+                    $"Configuration property '{propertyName}' contains invalid regular expression '{expression}'.",
+                    exception);
             }
         }
     }
