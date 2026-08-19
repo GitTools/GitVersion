@@ -127,6 +127,15 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
+    public void TargetPathAllowsDirectoryNamedConfig()
+    {
+        var arguments = this.argumentParser.ParseArguments("--target-path config");
+
+        arguments.TargetPath.ShouldBe("config");
+        arguments.IsConfigurationMigration.ShouldBeFalse();
+    }
+
+    [Test]
     public void EmptyMeansUseCurrentDirectory()
     {
         var arguments = this.argumentParser.ParseArguments("");
