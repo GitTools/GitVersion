@@ -1,0 +1,50 @@
+name: PR History
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'support/*'
+      - 'next/*'
+  merge_group:
+    types: [ checks_requested ]
+
+permissions:
+  contents: read
+
+jobs:
+  linear-history:
+    name: Linear PR History
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout pull request head
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify pull request history is linear
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          merge_base=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          merge_commits=$(git rev-list --merges "$merge_base..$HEAD_SHA")
+
+          if [[ -n "$merge_commits" ]]; then
+            echo "PR branches must be rebased and must not contain merge commits."
+            git log --oneline --merges "$merge_base..$HEAD_SHA"
+            exit 1
+          fi
+
+      - name: Confirm merge group history
+        if: github.event_name == 'merge_group'
+        run: echo "GitHub validates linear branch relationships before creating a merge group."
