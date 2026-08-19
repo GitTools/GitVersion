@@ -62,6 +62,16 @@ internal class ArgumentParser(
             return new Arguments { IsVersion = true };
         }
 
+        if (parseResult.CommandResult.Command == options.ConfigCommand)
+        {
+            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config migrate'.");
+        }
+
+        if (parseResult.CommandResult.Command == options.Migrate)
+        {
+            return MapMigrationValues(parseResult, options);
+        }
+
         var arguments = new Arguments();
         AddAuthentication(arguments);
         MapParsedValues(arguments, parseResult, options);
@@ -78,6 +88,12 @@ internal class ArgumentParser(
 
     private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options)
     {
+        if (parseResult.CommandResult.Command == options.ConfigCommand
+            && parseResult.Errors.Any(error => error.Message.Contains("Required command was not provided", StringComparison.Ordinal)))
+        {
+            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config migrate'.");
+        }
+
         if (parseResult.Errors.Count > 0)
         {
             var message = parseResult.Errors[0].Message;
@@ -133,6 +149,34 @@ internal class ArgumentParser(
 
         MapRemoteOptions(arguments, parseResult, options);
         ApplyDefaults(arguments, parseResult, options);
+    }
+
+    private static Arguments MapMigrationValues(ParseResult parseResult, CommandOptions options)
+    {
+        var outputFile = parseResult.GetValue(options.MigrationOutputFile);
+        var inPlace = parseResult.GetValue(options.InPlace);
+        var force = parseResult.GetValue(options.Force);
+        if (outputFile is not null && inPlace)
+        {
+            throw new WarningException("Cannot use --output together with --in-place.");
+        }
+
+        if (force && outputFile is null)
+        {
+            throw new WarningException("--force can only be used together with --output.");
+        }
+
+        return new Arguments
+        {
+            IsConfigurationMigration = true,
+            MigrationInputFile = parseResult.GetValue(options.MigrationInputFile),
+            MigrationOutputFile = outputFile,
+            MigrationInPlace = inPlace,
+            MigrationForce = force,
+            TargetPath = parseResult.GetValue(options.TargetPath)
+                         ?? parseResult.GetValue(options.Path)
+                         ?? SysEnv.CurrentDirectory
+        };
     }
 
     private static void MapOutputOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
@@ -451,6 +495,17 @@ internal class ArgumentParser(
         {
             Description = "By default dynamic repositories will be cloned to %tmp%. Use this option to override"
         };
+        var configCommand = new Command("config", "Manages GitVersion configuration.");
+        var migrate = new Command("migrate", "Migrates a v6 configuration document to the v7 structure.");
+        var migrationInputFile = new Option<string?>("--config") { Description = "Path to the configuration file to migrate." };
+        var migrationOutputFile = new Option<string?>("--output") { Description = "Path to write the migrated configuration document." };
+        var inPlace = new Option<bool>("--in-place") { Description = "Replace the input configuration file." };
+        var force = new Option<bool>("--force") { Description = "Allow --output to replace an existing file." };
+        migrate.Options.Add(migrationInputFile);
+        migrate.Options.Add(migrationOutputFile);
+        migrate.Options.Add(inPlace);
+        migrate.Options.Add(force);
+        configCommand.Subcommands.Add(migrate);
 
         var rootCommand = new RootCommand("Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.")
         {
@@ -481,6 +536,11 @@ internal class ArgumentParser(
             commit,
             dynamicRepoLocation
         };
+        rootCommand.Subcommands.Add(configCommand);
+
+        // System.CommandLine requires an action on the root command so normal version calculation
+        // remains a valid invocation while subcommands provide their own parsing paths.
+        rootCommand.SetAction(_ => { });
 
         // Configure the built-in help system to wrap at 260 characters to avoid too small help messages
         var helpOption = rootCommand.Options.SingleOfType<HelpOption>();
@@ -497,7 +557,10 @@ internal class ArgumentParser(
             VerbosityOption: verbosity, UpdateAssemblyInfo: updateAssemblyInfo, UpdateProjectFiles: updateProjectFiles,
             EnsureAssemblyInfo: ensureAssemblyInfo, UpdateWixVersionFile: updateWixVersionFile,
             Url: url, Branch: branch, Username: username, Password: password,
-            Commit: commit, DynamicRepoLocation: dynamicRepoLocation
+            Commit: commit, DynamicRepoLocation: dynamicRepoLocation,
+            ConfigCommand: configCommand, Migrate: migrate,
+            MigrationInputFile: migrationInputFile, MigrationOutputFile: migrationOutputFile,
+            InPlace: inPlace, Force: force
         ));
     }
 
@@ -621,6 +684,12 @@ internal class ArgumentParser(
         Option<string?> Username,
         Option<string?> Password,
         Option<string?> Commit,
-        Option<string?> DynamicRepoLocation
+        Option<string?> DynamicRepoLocation,
+        Command ConfigCommand,
+        Command Migrate,
+        Option<string?> MigrationInputFile,
+        Option<string?> MigrationOutputFile,
+        Option<bool> InPlace,
+        Option<bool> Force
     );
 }

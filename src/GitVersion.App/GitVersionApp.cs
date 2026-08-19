@@ -5,10 +5,12 @@ namespace GitVersion;
 internal class GitVersionApp(
     IHostApplicationLifetime applicationLifetime,
     IGitVersionExecutor gitVersionExecutor,
+    IConfigurationMigrationExecutor configurationMigrationExecutor,
     IOptions<GitVersionOptions> options)
 {
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
+    private readonly IConfigurationMigrationExecutor configurationMigrationExecutor = configurationMigrationExecutor.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
     public Task RunAsync(CancellationToken _)
@@ -19,6 +21,10 @@ internal class GitVersionApp(
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
             {
                 SysEnv.ExitCode = 0;
+            }
+            else if (gitVersionOptions.ConfigurationMigrationInfo.IsMigration)
+            {
+                SysEnv.ExitCode = this.configurationMigrationExecutor.Execute(gitVersionOptions);
             }
             else
             {
