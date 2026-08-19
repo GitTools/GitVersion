@@ -2,6 +2,7 @@ using System.Globalization;
 using GitVersion.Logging;
 using Serilog;
 using Serilog.Core;
+using Serilog.Events;
 
 namespace GitVersion.Extensions;
 
@@ -57,6 +58,15 @@ public static class ServiceCollectionExtensions
         if (ShouldLogToConsole())
         {
             loggerConfig.WriteTo.Console(outputTemplate: outputTemplate, formatProvider: formatProvider);
+        }
+        else
+        {
+            // Keep warnings visible without mixing them into machine-readable stdout.
+            // Errors already have an explicit stderr path in the CLI executors.
+            loggerConfig.WriteTo.Logger(warnings => warnings
+                .Filter.ByIncludingOnly(logEvent => logEvent.Level == LogEventLevel.Warning)
+                .WriteTo.Console(outputTemplate: outputTemplate, formatProvider: formatProvider,
+                    standardErrorFromLevel: LogEventLevel.Warning));
         }
 
         if (ShouldLogToFile())

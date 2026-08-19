@@ -21,6 +21,17 @@ public class ConfigurationVersionSelectorTests : TestBase
         ConfigurationVersionSelector.Resolve().ShouldBe(isV6 ? ConfigurationVersion.V6 : ConfigurationVersion.V7);
     }
 
+    [TestCase(null, false)]
+    [TestCase("v6", true)]
+    [TestCase(" V6 ", true)]
+    [TestCase("v7", false)]
+    public void IdentifiesExplicitV6Selection(string? value, bool expected)
+    {
+        using var scope = new EnvironmentVariableScope(value);
+
+        ConfigurationVersionSelector.IsExplicitV6().ShouldBe(expected);
+    }
+
     [TestCase("6")]
     [TestCase("7")]
     [TestCase("true")]

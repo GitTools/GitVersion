@@ -24,6 +24,8 @@ public static class GitVersionHelper
     {
         var executable = ExecutableHelper.DotNetExecutable;
         var output = new StringBuilder();
+        var standardOutput = new StringBuilder();
+        var standardError = new StringBuilder();
 
         var environmentalVariables = new Dictionary<string, string?>
         {
@@ -53,8 +55,22 @@ public static class GitVersionHelper
             var workingDirectory = arguments.WorkingDirectory ?? FileSystemHelper.Path.GetCurrentDirectory();
 
             exitCode = ProcessHelper.Run(
-                s => output.AppendLine(s),
-                s => output.AppendLine(s),
+                s =>
+                {
+                    standardOutput.AppendLine(s);
+                    lock (output)
+                    {
+                        output.AppendLine(s);
+                    }
+                },
+                s =>
+                {
+                    standardError.AppendLine(s);
+                    lock (output)
+                    {
+                        output.AppendLine(s);
+                    }
+                },
                 null,
                 executable,
                 args,
@@ -79,7 +95,11 @@ public static class GitVersionHelper
 
         if (arguments.LogFile.IsNullOrWhiteSpace() || !FileSystemHelper.File.Exists(arguments.LogFile))
         {
-            return new(exitCode, output.ToString());
+            return new(exitCode, output.ToString())
+            {
+                StandardOutput = standardOutput.ToString(),
+                StandardError = standardError.ToString()
+            };
         }
 
         var logContents = FileSystemHelper.File.ReadAllText(arguments.LogFile);
@@ -90,6 +110,10 @@ public static class GitVersionHelper
         Console.WriteLine();
         Console.WriteLine("-------------------------------------------------------");
 
-        return new(exitCode, output.ToString(), logContents);
+        return new(exitCode, output.ToString(), logContents)
+        {
+            StandardOutput = standardOutput.ToString(),
+            StandardError = standardError.ToString()
+        };
     }
 }

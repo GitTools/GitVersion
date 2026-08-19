@@ -155,7 +155,47 @@ public class ConfigurationVersionIntegrationTests
 
         v6Result.ExitCode.ShouldBe(0);
         v7Result.ExitCode.ShouldBe(0);
-        GetFullSemVer(v7Result.Output!).ShouldBe(GetFullSemVer(v6Result.Output!));
+        GetFullSemVer(v7Result.StandardOutput!).ShouldBe(GetFullSemVer(v6Result.StandardOutput!));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ExplicitV6WarningUsesStandardErrorOnceWithoutContaminatingJson(bool logToFile)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        var configurationPath = Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
+        File.WriteAllText(configurationPath, "next-version: 2.0.0");
+
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " --no-cache", logToFile,
+            new KeyValuePair<string, string?>(ConfigurationVersionSelector.EnvironmentVariableName, "v6"));
+
+        result.ExitCode.ShouldBe(0);
+        GetFullSemVer(result.StandardOutput!).ShouldBe("2.0.0-1");
+        result.StandardError.ShouldNotBeNull();
+        result.StandardError.Split("temporary v6 compatibility mode").Length.ShouldBe(2);
+        result.StandardError.ShouldContain(configurationPath);
+        result.StandardError.ShouldContain("GitVersion 7.1");
+        result.StandardError.ShouldContain("gitversion config migrate");
+        result.StandardError.ShouldContain("GITVERSION_CONFIGURATION_VERSION=v7");
+        if (logToFile)
+        {
+            result.Log.ShouldNotBeNull();
+            result.Log.ShouldContain("temporary v6 compatibility mode");
+        }
+    }
+
+    [Test]
+    public void ExplicitV6WithoutUserConfigurationDoesNotWarnOnStandardError()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+
+        var result = Execute(fixture.RepositoryPath, "v6");
+
+        result.ExitCode.ShouldBe(0);
+        result.StandardError.ShouldBeEmpty();
+        GetFullSemVer(result.StandardOutput!).ShouldNotBeNullOrEmpty();
     }
 
     [TestCase("v6", false)]

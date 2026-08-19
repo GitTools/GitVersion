@@ -45,7 +45,6 @@ internal class ConfigurationMigrationExecutor(
 
         if (overwritesExistingFile)
         {
-            Console.Error.WriteLine($"Replacing '{outputFile}'. Comments cannot be preserved during migration.");
             this.logger.LogWarning("Replacing '{ConfigurationFile}'. Comments cannot be preserved during migration.", outputFile);
         }
 

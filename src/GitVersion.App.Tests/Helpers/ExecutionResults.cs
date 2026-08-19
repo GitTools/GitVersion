@@ -9,6 +9,8 @@ public class ExecutionResults(int exitCode, string? output, string? logContents 
     public int ExitCode { get; } = exitCode;
     public string? Output { get; } = output;
     public string? Log { get; init; } = logContents;
+    public string? StandardOutput { get; init; }
+    public string? StandardError { get; init; }
 
     public GitVersionVariables? OutputVariables
     {

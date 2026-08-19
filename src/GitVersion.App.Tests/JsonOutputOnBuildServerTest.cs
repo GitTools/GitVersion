@@ -19,8 +19,9 @@ public class JsonOutputOnBuildServerTest
         var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " --output json", environments: env);
 
         result.ExitCode.ShouldBe(0);
-        result.Output.ShouldStartWith("{");
-        result.Output.TrimEnd().ShouldEndWith("}");
+        result.StandardOutput.ShouldNotBeNull();
+        using var json = JsonDocument.Parse(result.StandardOutput);
+        json.RootElement.GetProperty("FullSemVer").GetString().ShouldBe("0.0.1-5");
     }
 
     [Test]
