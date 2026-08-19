@@ -444,6 +444,45 @@ public class ConfigurationProviderTests : TestBase
         logMessages.ShouldContain(message => message.Contains("gitversion config migrate", StringComparison.Ordinal));
     }
 
+    [TestCase(null)]
+    [TestCase("v7")]
+    public void DoesNotWarnWhenV6IsNotExplicitlySelected(string? configurationVersion)
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, configurationVersion);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: "");
+        var logMessages = new List<string>();
+        var loggerFactory = new TestLoggerFactory(logMessages.Add);
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            loggerFactory.RegisterWith(services);
+        });
+        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
+
+        this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
+    }
+
+    [Test]
+    public void DoesNotWarnForExplicitV6BuiltInDefaults()
+    {
+        var logMessages = new List<string>();
+        var loggerFactory = new TestLoggerFactory(logMessages.Add);
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            loggerFactory.RegisterWith(services);
+        });
+        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
+
+        this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
+    }
+
     [Test]
     public void ShouldUseSpecifiedSourceBranchesForDevelop()
     {
