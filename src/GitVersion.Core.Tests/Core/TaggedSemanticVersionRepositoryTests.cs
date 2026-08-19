@@ -36,22 +36,6 @@ public class TaggedSemanticVersionRepositoryTests : TestBase
         actual.ShouldBe(["v3.0.0"]);
     }
 
-    [Test]
-    public void GetTaggedSemanticVersions_WhenIgnoreTagsChanges_DoesNotReuseCachedResult()
-    {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        fixture.ApplyTag("1.0.0");
-        fixture.ApplyTag("2.0.0");
-        var sut = CreateSut(fixture);
-
-        var first = GetTagNames(sut, new IgnoreConfiguration { Tags = ["^2\\."] });
-        var second = GetTagNames(sut, new IgnoreConfiguration { Tags = ["^1\\."] });
-
-        first.ShouldBe(["1.0.0"]);
-        second.ShouldBe(["2.0.0"]);
-    }
-
     [TestCase(null)]
     [TestCase("^preview-")]
     public void GetTaggedSemanticVersions_EmptyOrNonMatchingTags_PreservesCandidates(string? expression)

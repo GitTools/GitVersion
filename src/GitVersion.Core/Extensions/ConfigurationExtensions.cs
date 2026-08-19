@@ -99,7 +99,7 @@ internal static class ConfigurationExtensions
             }
         }
 
-        public IEnumerable<ITag> Filter(ITag[] source)
+        public IEnumerable<ITag> Filter(IEnumerable<ITag> source)
         {
             ignoreConfig.NotNull();
             source.NotNull();
@@ -109,7 +109,7 @@ internal static class ConfigurationExtensions
                 : source;
         }
 
-        public IEnumerable<ICommit> Filter(ICommit[] source)
+        public IEnumerable<ICommit> Filter(IEnumerable<ICommit> source)
         {
             ignoreConfig.NotNull();
             source.NotNull();

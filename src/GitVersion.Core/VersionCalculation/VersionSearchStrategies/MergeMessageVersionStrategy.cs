@@ -33,7 +33,7 @@ internal sealed class MergeMessageVersionStrategy(ILogger<MergeMessageVersionStr
             yield break;
         }
 
-        foreach (var commit in configuration.Value.Ignore.Filter(Context.CurrentBranchCommits.ToArray()))
+        foreach (var commit in configuration.Value.Ignore.Filter(Context.CurrentBranchCommits))
         {
             if (!MergeMessage.TryParse(commit, Context.Configuration, out var mergeMessage)
                 || mergeMessage.Version is null

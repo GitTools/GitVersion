@@ -60,7 +60,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
             this.logger.LogInformation("Using latest commit on specified branch");
         }
 
-        commits = ignore.Filter(commits.ToArray());
+        commits = ignore.Filter(commits);
         return commits.FirstOrDefault();
     }
 
