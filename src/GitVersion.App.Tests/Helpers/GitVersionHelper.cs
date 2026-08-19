@@ -57,17 +57,17 @@ public static class GitVersionHelper
             exitCode = ProcessHelper.Run(
                 s =>
                 {
-                    standardOutput.AppendLine(s);
                     lock (output)
                     {
+                        standardOutput.AppendLine(s);
                         output.AppendLine(s);
                     }
                 },
                 s =>
                 {
-                    standardError.AppendLine(s);
                     lock (output)
                     {
+                        standardError.AppendLine(s);
                         output.AppendLine(s);
                     }
                 },

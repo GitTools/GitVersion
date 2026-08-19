@@ -1,3 +1,5 @@
+using SharpYaml;
+
 namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
@@ -102,6 +104,29 @@ public class ConfigurationMigrationServiceTests
     }
 
     [Test]
+    public void MigratesConfiguredValuesWithoutAddingDefaults()
+    {
+        const string input = """
+                             workflow: GitHubFlow/v1
+                             mode: ContinuousDeployment
+                             update-build-number: false
+                             branches:
+                               main:
+                                 increment: Minor
+                                 pre-release-weight: 42
+                             """;
+
+        var result = this.migrationService.Migrate(input);
+
+        result.ShouldContain("workflow: GitHubFlow/v1");
+        result.ShouldContain("mode: ContinuousDeployment");
+        result.ShouldContain("update-build-number: false");
+        result.ShouldContain("increment: Minor");
+        result.ShouldContain("pre-release-weight: 42");
+        result.ShouldNotContain("tag-prefix:");
+    }
+
+    [Test]
     public void RejectsMixedConfiguration()
     {
         const string input = """
@@ -110,5 +135,33 @@ public class ConfigurationMigrationServiceTests
                              """;
 
         Should.Throw<ConfigurationException>(() => this.migrationService.Migrate(input));
+    }
+
+    [Test]
+    public void RejectsMalformedYaml()
+    {
+        const string input = "branches: [";
+
+        Should.Throw<YamlException>(() => this.migrationService.Migrate(input));
+    }
+
+    [TestCase("update-build-number: not-a-boolean")]
+    [TestCase("output:\n  update-build-number: not-a-boolean")]
+    [TestCase("branches:\n  main:\n    increment: Invalid")]
+    [TestCase("calculation:\n  branches:\n    main:\n      increment: Invalid")]
+    [TestCase("unknown-setting: true")]
+    [TestCase("calculation:\n  unknown-setting: true")]
+    public void RejectsInvalidSettings(string input) =>
+        Should.Throw<YamlException>(() => this.migrationService.Migrate(input));
+
+    [TestCase("output:\n  increment: Major", "calculation.increment")]
+    [TestCase("calculation:\n  branches:\n    main:\n      pre-release-weight: 42", "output.branches.<branch>.pre-release-weight")]
+    [TestCase("output: []", "must be a mapping")]
+    [TestCase("calculation:\n  branches: []", "must be a mapping")]
+    public void RejectsInvalidNestedStructure(string input, string diagnostic)
+    {
+        var exception = Should.Throw<ConfigurationException>(() => this.migrationService.Migrate(input));
+
+        exception.Message.ShouldContain(diagnostic);
     }
 }

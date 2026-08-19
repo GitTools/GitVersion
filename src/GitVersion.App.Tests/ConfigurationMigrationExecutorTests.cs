@@ -36,4 +36,39 @@ public class ConfigurationMigrationExecutorTests
             directory.Delete(recursive: true);
         }
     }
+
+    [TestCase("workflow: GitHubFlow/v1\nnext-version: 2.0.0")]
+    [TestCase("calculation:\n  workflow: GitHubFlow/v1\n  next-version: 2.0.0")]
+    public void InPlaceMigrationWritesWorkflowAtRootAndIsIdempotent(string input)
+    {
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var inputFile = Path.Combine(directory.FullName, "GitVersion.yml");
+            File.WriteAllText(inputFile, input);
+            var executor = new ConfigurationMigrationExecutor(
+                new FileSystem(),
+                new TestConsoleAdapter(new StringBuilder()),
+                new TestLogger<ConfigurationMigrationExecutor>(),
+                Substitute.For<IConfigurationFileLocator>(),
+                new ConfigurationMigrationService(new ConfigurationSerializer()));
+            var options = new GitVersionOptions { WorkingDirectory = directory.FullName };
+            options.ConfigurationMigrationInfo.IsMigration = true;
+            options.ConfigurationMigrationInfo.InputFile = inputFile;
+            options.ConfigurationMigrationInfo.InPlace = true;
+
+            executor.Execute(options).ShouldBe(0);
+
+            var migrated = File.ReadAllText(inputFile);
+            migrated.ShouldContain("workflow: GitHubFlow/v1");
+            migrated.ShouldNotContain("  workflow:");
+            migrated.ShouldContain("  next-version: 2.0.0");
+            executor.Execute(options).ShouldBe(0);
+            File.ReadAllText(inputFile).ShouldBe(migrated);
+        }
+        finally
+        {
+            directory.Delete(recursive: true);
+        }
+    }
 }

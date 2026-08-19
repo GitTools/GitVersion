@@ -55,8 +55,9 @@ public class ConfigurationVersionIntegrationTests
                 logToFile: false);
 
             forceResult.ExitCode.ShouldBe(0);
-            forceResult.Output.ShouldNotBeNull();
-            forceResult.Output.ShouldContain("Comments cannot be preserved during migration.");
+            forceResult.StandardError.ShouldNotBeNull();
+            forceResult.StandardError.Split("Comments cannot be preserved during migration.").Length.ShouldBe(2);
+            forceResult.StandardOutput.ShouldBeEmpty();
             var forcedOutput = await File.ReadAllTextAsync(outputPath);
             forcedOutput.ShouldContain("calculation:");
         }
@@ -112,6 +113,29 @@ public class ConfigurationVersionIntegrationTests
     }
 
     [Test]
+    public async Task ConfigMigrateRejectsInvalidInputWithoutReplacingFile()
+    {
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            const string input = "output:\n  increment: Major";
+            var configurationPath = Path.Combine(directory.FullName, ConfigurationFileLocator.DefaultFileName);
+            await File.WriteAllTextAsync(configurationPath, input);
+
+            var result = await new ProgramFixture(directory.FullName).Run("config", "migrate", "--in-place");
+
+            result.ExitCode.ShouldBe(1);
+            result.Output.ShouldBeEmpty();
+            (await File.ReadAllTextAsync(configurationPath)).ShouldBe(input);
+            Directory.GetFiles(directory.FullName).ShouldBe([configurationPath]);
+        }
+        finally
+        {
+            directory.Delete(recursive: true);
+        }
+    }
+
+    [Test]
     public async Task ConfigMigrateInPlaceMigratesExplicitConfigurationOutsideGitRepository()
     {
         var directory = Directory.CreateTempSubdirectory();
@@ -127,8 +151,9 @@ public class ConfigurationVersionIntegrationTests
                 logToFile: false);
 
             result.ExitCode.ShouldBe(0);
-            result.Output.ShouldNotBeNull();
-            result.Output.ShouldContain("Comments cannot be preserved during migration.");
+            result.StandardError.ShouldNotBeNull();
+            result.StandardError.Split("Comments cannot be preserved during migration.").Length.ShouldBe(2);
+            result.StandardOutput.ShouldBeEmpty();
             var migratedConfiguration = await File.ReadAllTextAsync(configurationPath);
             migratedConfiguration.ShouldContain("calculation:");
         }
@@ -230,6 +255,62 @@ public class ConfigurationVersionIntegrationTests
             result.Log.ShouldNotBeNull();
             result.Log.ShouldContain("temporary v6 compatibility mode");
         }
+    }
+
+    [TestCase("v6", "")]
+    [TestCase("v7", "")]
+    [TestCase("v6", "workflow: GitHubFlow/v1")]
+    [TestCase("v7", "workflow: GitHubFlow/v1")]
+    public void CalculatesVersionWithSharedRootConfiguration(string version, string configuration)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        File.WriteAllText(Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName), configuration);
+
+        var result = Execute(fixture.RepositoryPath, version);
+
+        result.ExitCode.ShouldBe(0);
+        GetFullSemVer(result.StandardOutput!).ShouldNotBeNullOrEmpty();
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void RootWorkflowAppliesDefaultsToBothSectionsAndPreservesOverrides(bool hasOverrides)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var configuration = "workflow: GitHubFlow/v1";
+        if (hasOverrides)
+        {
+            configuration += """
+
+                             calculation:
+                               tag-prefix: custom-
+                               branches:
+                                 main:
+                                   increment: Major
+                             output:
+                               assembly-versioning-scheme: None
+                               branches:
+                                 main:
+                                   pre-release-weight: 42
+                             """;
+        }
+        File.WriteAllText(Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName), configuration);
+
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " --show-config", logToFile: false,
+            new KeyValuePair<string, string?>(ConfigurationVersionSelector.EnvironmentVariableName, "v7"));
+
+        result.ExitCode.ShouldBe(0);
+        result.Output.ShouldNotBeNull();
+        result.Output.ShouldContain("workflow: GitHubFlow/v1");
+        result.Output.ShouldNotContain("  workflow:");
+        var document = new ConfigurationSerializer().Deserialize<Dictionary<object, object?>>(result.Output);
+        var effective = new ConfigurationHelper(ConfigurationDocumentMapper.Flatten(document)).Configuration;
+        effective.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        effective.TagPrefixPattern.ShouldBe(hasOverrides ? "custom-" : "[vV]?");
+        effective.AssemblyVersioningScheme.ShouldBe(hasOverrides ? AssemblyVersioningScheme.None : AssemblyVersioningScheme.MajorMinorPatch);
+        effective.Branches["main"].Increment.ShouldBe(hasOverrides ? IncrementStrategy.Major : IncrementStrategy.Patch);
+        effective.Branches["main"].PreReleaseWeight.ShouldBe(hasOverrides ? 42 : 55000);
     }
 
     [Test]
