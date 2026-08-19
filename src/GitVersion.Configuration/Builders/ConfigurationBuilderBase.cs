@@ -338,45 +338,47 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public TConfigurationBuilder WithConfiguration(IGitVersionConfiguration value)
     {
-        WithAssemblyVersioningScheme(value.AssemblyVersioningScheme);
-        WithAssemblyFileVersioningScheme(value.AssemblyFileVersioningScheme);
-        WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
-        WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
-        WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
-        WithCustomVersionFormat(value.CustomVersionFormat);
-        WithTagPrefixPattern(value.TagPrefixPattern);
-        WithVersionInBranchPattern(value.VersionInBranchPattern);
-        WithNextVersion(value.NextVersion);
-        WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
-        WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
-        WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
-        WithNoBumpMessage(value.NoBumpMessage);
-        WithVersionBumpResetMessage(value.VersionBumpResetMessage);
-        WithTagPreReleaseWeight(value.TagPreReleaseWeight);
-        WithIgnoreConfiguration(value.Ignore);
-        WithCommitDateFormat(value.CommitDateFormat);
-        WithUpdateBuildNumber(value.UpdateBuildNumber);
-        WithSemanticVersionFormat(value.SemanticVersionFormat);
-        WithVersionStrategy(value.VersionStrategy);
-        WithMergeMessageFormats(value.MergeMessageFormats);
+        var calculation = value.Calculation;
+        var output = value.Output;
+        WithAssemblyVersioningScheme(output.AssemblyVersioningScheme);
+        WithAssemblyFileVersioningScheme(output.AssemblyFileVersioningScheme);
+        WithAssemblyInformationalFormat(output.AssemblyInformationalFormat);
+        WithAssemblyVersioningFormat(output.AssemblyVersioningFormat);
+        WithAssemblyFileVersioningFormat(output.AssemblyFileVersioningFormat);
+        WithCustomVersionFormat(output.CustomVersionFormat);
+        WithTagPrefixPattern(calculation.TagPrefixPattern);
+        WithVersionInBranchPattern(calculation.VersionInBranchPattern);
+        WithNextVersion(calculation.NextVersion);
+        WithMajorVersionBumpMessage(calculation.MajorVersionBumpMessage);
+        WithMinorVersionBumpMessage(calculation.MinorVersionBumpMessage);
+        WithPatchVersionBumpMessage(calculation.PatchVersionBumpMessage);
+        WithNoBumpMessage(calculation.NoBumpMessage);
+        WithVersionBumpResetMessage(calculation.VersionBumpResetMessage);
+        WithTagPreReleaseWeight(output.TagPreReleaseWeight);
+        WithIgnoreConfiguration(calculation.Ignore);
+        WithCommitDateFormat(output.CommitDateFormat);
+        WithUpdateBuildNumber(output.UpdateBuildNumber);
+        WithSemanticVersionFormat(calculation.SemanticVersionFormat);
+        WithVersionStrategy(calculation.VersionStrategy);
+        WithMergeMessageFormats(calculation.MergeMessageFormats);
         foreach (var (name, branchConfiguration) in value.Branches)
         {
             WithBranch(name).WithConfiguration(branchConfiguration);
         }
-        WithDeploymentMode(value.DeploymentMode);
-        WithLabel(value.Label);
-        WithIncrement(value.Increment);
-        WithPreventIncrementOfMergedBranch(value.PreventIncrement.OfMergedBranch);
-        WithPreventIncrementWhenBranchMerged(value.PreventIncrement.WhenBranchMerged);
-        WithPreventIncrementWhenCurrentCommitTagged(value.PreventIncrement.WhenCurrentCommitTagged);
-        WithTrackMergeTarget(value.TrackMergeTarget);
-        WithTrackMergeMessage(value.TrackMergeMessage);
-        WithCommitMessageIncrementing(value.CommitMessageIncrementing);
-        WithRegularExpression(value.RegularExpression);
-        WithTracksReleaseBranches(value.TracksReleaseBranches);
-        WithIsReleaseBranch(value.IsReleaseBranch);
-        WithIsMainBranch(value.IsMainBranch);
-        WithPreReleaseWeight(value.PreReleaseWeight);
+        WithDeploymentMode(calculation.DeploymentMode);
+        WithLabel(calculation.Label);
+        WithIncrement(calculation.Increment);
+        WithPreventIncrementOfMergedBranch(calculation.PreventIncrement.OfMergedBranch);
+        WithPreventIncrementWhenBranchMerged(calculation.PreventIncrement.WhenBranchMerged);
+        WithPreventIncrementWhenCurrentCommitTagged(calculation.PreventIncrement.WhenCurrentCommitTagged);
+        WithTrackMergeTarget(calculation.TrackMergeTarget);
+        WithTrackMergeMessage(calculation.TrackMergeMessage);
+        WithCommitMessageIncrementing(calculation.CommitMessageIncrementing);
+        WithRegularExpression(calculation.RegularExpression);
+        WithTracksReleaseBranches(calculation.TracksReleaseBranches);
+        WithIsReleaseBranch(calculation.IsReleaseBranch);
+        WithIsMainBranch(calculation.IsMainBranch);
+        WithPreReleaseWeight(output.PreReleaseWeight);
         return (TConfigurationBuilder)this;
     }
 

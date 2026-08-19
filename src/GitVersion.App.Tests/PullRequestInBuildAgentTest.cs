@@ -151,9 +151,11 @@ public class PullRequestInBuildAgentTest
 
     private const string GitLabMergeRequestPullRequestConfig = """
         workflow: GitFlow/v1
-        branches:
-          pull-request:
-            regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
+        calculation:
+          branches:
+            pull-request:
+              regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
+        output: {}
         """;
 
     private static async Task VerifyGitLabMergeRequestVersionIsCalculatedProperly(string mergeRequestRef, Dictionary<string, string> env)

@@ -36,7 +36,11 @@ public class WriteVersionInfoTest : TestTaskBase
     public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
     {
         var task = new WriteVersionInfoToBuildLog();
-        const string content = "update-build-number: false";
+        const string content = """
+                               calculation: {}
+                               output:
+                                 update-build-number: false
+                               """;
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber, content);
 

@@ -18,6 +18,7 @@ public class GitVersionExecutorTests : TestBase
     private IFileSystem fileSystem = null!;
     private GitVersionCacheProvider gitVersionCacheProvider = null!;
     private IServiceProvider sp = null!;
+    private string? originalConfigurationVersion;
 
     private const string versionCacheFileContent =
         """
@@ -52,6 +53,17 @@ public class GitVersionExecutorTests : TestBase
           "WeightedPreReleaseNumber": 19
         }
         """;
+
+    [SetUp]
+    public void SetupConfigurationVersion()
+    {
+        this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+    }
+
+    [TearDown]
+    public void RestoreConfigurationVersion() =>
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
 
     [Test]
     public void ResolvedConfiguration_IsCreatedOncePerExecution()
