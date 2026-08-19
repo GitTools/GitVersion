@@ -67,6 +67,30 @@ public class ConfigurationVersionIntegrationTests
     }
 
     [Test]
+    public async Task ConfigMigrateLeavesNoTemporaryFileAfterWritingOutput()
+    {
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var configurationPath = Path.Combine(directory.FullName, ConfigurationFileLocator.DefaultFileName);
+            await File.WriteAllTextAsync(configurationPath, "next-version: 2.0.0");
+
+            var result = await new ProgramFixture(directory.FullName).Run("config", "migrate", "--output", "GitVersion.v7.yml");
+
+            result.ExitCode.ShouldBe(0);
+            var files = Directory.GetFiles(directory.FullName).Select(Path.GetFileName).ToArray();
+            files.Length.ShouldBe(2);
+            files.ShouldContain(ConfigurationFileLocator.DefaultFileName);
+            files.ShouldContain("GitVersion.v7.yml");
+            files.ShouldNotContain(file => file!.StartsWith(".", StringComparison.Ordinal));
+        }
+        finally
+        {
+            directory.Delete(recursive: true);
+        }
+    }
+
+    [Test]
     public async Task ConfigMigrateInPlaceMigratesExplicitConfigurationOutsideGitRepository()
     {
         var directory = Directory.CreateTempSubdirectory();
@@ -108,6 +132,29 @@ public class ConfigurationVersionIntegrationTests
             var migratedConfiguration = await File.ReadAllTextAsync(configurationPath);
             migratedConfiguration.ShouldContain("calculation:");
             migratedConfiguration.ShouldContain("next-version: 2.0.0");
+        }
+        finally
+        {
+            directory.Delete(recursive: true);
+        }
+    }
+
+    [Test]
+    public async Task ConfigMigrateDoesNotEmitLegacyFallbackWarning()
+    {
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var configurationPath = Path.Combine(directory.FullName, ConfigurationFileLocator.DefaultFileName);
+            await File.WriteAllTextAsync(configurationPath, "next-version: 2.0.0");
+            var fixture = new ProgramFixture(directory.FullName);
+            fixture.WithEnv(new KeyValuePair<string, string>(ConfigurationVersionSelector.EnvironmentVariableName, "v6"));
+
+            var result = await fixture.Run("config", "migrate");
+
+            result.ExitCode.ShouldBe(0);
+            result.Output!.ShouldNotContain("temporary v6 compatibility mode");
+            result.Log!.ShouldNotContain("temporary v6 compatibility mode");
         }
         finally
         {
