@@ -43,16 +43,27 @@ internal class ConfigurationProvider(
     private IGitVersionConfiguration ProvideConfiguration(string? configFile,
                                                           IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var overrideConfigurationFromFile = ReadOverrideConfiguration(configFile);
+        var configurationVersion = ConfigurationVersionSelector.Resolve();
+        this.logger.LogInformation("Configuration version: {ConfigurationVersion}", ConfigurationVersionSelector.ResolveName());
+        var configurationFromFile = ReadOverrideConfiguration(configFile);
+        var overrideConfigurationFromFile = configurationFromFile is null
+            ? null
+            : ConfigurationDocumentMapper.Normalize(configurationFromFile, configurationVersion, "configuration file");
+        var normalizedOverrideConfiguration = overrideConfiguration is null
+            ? null
+            : ConfigurationDocumentMapper.NormalizeInternal(overrideConfiguration, "runtime override configuration");
 
-        var workflow = GetWorkflow(overrideConfiguration, overrideConfigurationFromFile);
+        var workflow = GetWorkflow(normalizedOverrideConfiguration, overrideConfigurationFromFile);
 
         IConfigurationBuilder configurationBuilder = (workflow is null)
             ? GitFlowConfigurationBuilder.New
             : ConfigurationBuilder.New;
 
-        var overrideConfigurationFromWorkflow = WorkflowManager.GetOverrideConfiguration(workflow);
-        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration }
+        var workflowConfiguration = WorkflowManager.GetOverrideConfiguration(workflow);
+        var overrideConfigurationFromWorkflow = workflowConfiguration is null
+            ? null
+            : ConfigurationDocumentMapper.NormalizeInternal(workflowConfiguration, "embedded workflow");
+        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, normalizedOverrideConfiguration }
                      .OfType<IReadOnlyDictionary<object, object?>>())
         {
             configurationBuilder.AddOverride(item);

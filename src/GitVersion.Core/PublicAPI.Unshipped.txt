@@ -2,10 +2,54 @@
 GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?
+GitVersion.Configuration.ICalculationBranchConfiguration
+GitVersion.Configuration.ICalculationBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
+GitVersion.Configuration.ICalculationBranchConfiguration.DeploymentMode.get -> GitVersion.VersionCalculation.DeploymentMode?
+GitVersion.Configuration.ICalculationBranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
+GitVersion.Configuration.ICalculationBranchConfiguration.IsMainBranch.get -> bool?
+GitVersion.Configuration.ICalculationBranchConfiguration.IsReleaseBranch.get -> bool?
+GitVersion.Configuration.ICalculationBranchConfiguration.IsSourceBranchFor.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.ICalculationBranchConfiguration.Label.get -> string?
+GitVersion.Configuration.ICalculationBranchConfiguration.PreventIncrement.get -> GitVersion.Configuration.IPreventIncrementConfiguration!
+GitVersion.Configuration.ICalculationBranchConfiguration.RegularExpression.get -> string?
+GitVersion.Configuration.ICalculationBranchConfiguration.SourceBranches.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.ICalculationBranchConfiguration.TrackMergeMessage.get -> bool?
+GitVersion.Configuration.ICalculationBranchConfiguration.TrackMergeTarget.get -> bool?
+GitVersion.Configuration.ICalculationBranchConfiguration.TracksReleaseBranches.get -> bool?
+GitVersion.Configuration.ICalculationConfiguration
+GitVersion.Configuration.ICalculationConfiguration.Branches.get -> System.Collections.Generic.IReadOnlyDictionary<string!, GitVersion.Configuration.ICalculationBranchConfiguration!>!
+GitVersion.Configuration.ICalculationConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
+GitVersion.Configuration.ICalculationConfiguration.MajorVersionBumpMessage.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.MergeMessageFormats.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+GitVersion.Configuration.ICalculationConfiguration.MinorVersionBumpMessage.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.NextVersion.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.NoBumpMessage.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.PatchVersionBumpMessage.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
+GitVersion.Configuration.ICalculationConfiguration.TagPrefixPattern.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.VersionBumpResetMessage.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.VersionInBranchPattern.get -> string?
+GitVersion.Configuration.ICalculationConfiguration.VersionStrategy.get -> GitVersion.VersionCalculation.VersionStrategies
+GitVersion.Configuration.ICalculationConfiguration.Workflow.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.Calculation.get -> GitVersion.Configuration.ICalculationConfiguration!
+GitVersion.Configuration.IGitVersionConfiguration.Output.get -> GitVersion.Configuration.IOutputConfiguration!
 GitVersion.Configuration.IGitVersionConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IIgnoreConfiguration.Branches.get -> System.Collections.Generic.IReadOnlySet<string!>!
 GitVersion.Configuration.IIgnoreConfiguration.Tags.get -> System.Collections.Generic.IReadOnlySet<string!>!
 GitVersion.Git.ReferenceName.WithoutRemote.get -> string!
+GitVersion.Configuration.IOutputBranchConfiguration
+GitVersion.Configuration.IOutputBranchConfiguration.CustomVersionFormat.get -> string?
+GitVersion.Configuration.IOutputBranchConfiguration.PreReleaseWeight.get -> int?
+GitVersion.Configuration.IOutputConfiguration
+GitVersion.Configuration.IOutputConfiguration.AssemblyFileVersioningFormat.get -> string?
+GitVersion.Configuration.IOutputConfiguration.AssemblyFileVersioningScheme.get -> GitVersion.Configuration.AssemblyFileVersioningScheme?
+GitVersion.Configuration.IOutputConfiguration.AssemblyInformationalFormat.get -> string?
+GitVersion.Configuration.IOutputConfiguration.AssemblyVersioningFormat.get -> string?
+GitVersion.Configuration.IOutputConfiguration.AssemblyVersioningScheme.get -> GitVersion.Configuration.AssemblyVersioningScheme?
+GitVersion.Configuration.IOutputConfiguration.Branches.get -> System.Collections.Generic.IReadOnlyDictionary<string!, GitVersion.Configuration.IOutputBranchConfiguration!>!
+GitVersion.Configuration.IOutputConfiguration.CommitDateFormat.get -> string?
+GitVersion.Configuration.IOutputConfiguration.TagPreReleaseWeight.get -> int?
+GitVersion.Configuration.IOutputConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.VersionCalculation.CommitMessageIncrement
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement() -> void
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement(GitVersion.VersionField Increment, bool VersionBumpNeedsToBeReset) -> void

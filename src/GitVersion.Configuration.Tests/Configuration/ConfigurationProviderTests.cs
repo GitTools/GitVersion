@@ -7,15 +7,19 @@ using GitVersion.VersionCalculation;
 namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
+[NonParallelizable]
 public class ConfigurationProviderTests : TestBase
 {
     private string repoPath = null!;
     private ConfigurationProvider configurationProvider = null!;
     private IFileSystem fileSystem = null!;
+    private string? originalConfigurationVersion;
 
     [SetUp]
     public void Setup()
     {
+        this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
         this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
@@ -23,6 +27,116 @@ public class ConfigurationProviderTests : TestBase
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+    }
+
+    [TearDown]
+    public void TearDown() =>
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
+
+    [Test]
+    public void ProvidesNestedV7ConfigurationAndMergesOutputOnlyWorkflowBranch()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        const string text = """
+                            calculation:
+                              workflow: GitFlow/v1
+                              tag-prefix: custom-
+                            output:
+                              update-build-number: false
+                              branches:
+                                develop:
+                                  custom-version-format: '{SemVer}'
+                                  pre-release-weight: 42
+                            """;
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        configuration.Calculation.TagPrefixPattern.ShouldBe("custom-");
+        configuration.Output.UpdateBuildNumber.ShouldBeFalse();
+        configuration.Calculation.Branches.ShouldContainKey("develop");
+        configuration.Output.Branches["develop"].CustomVersionFormat.ShouldBe("{SemVer}");
+        configuration.Output.Branches["develop"].PreReleaseWeight.ShouldBe(42);
+    }
+
+    [Test]
+    public void ResolvesEquivalentV6AndV7Configuration()
+    {
+        const string v6 = """
+                          tag-prefix: custom-
+                          update-build-number: false
+                          branches:
+                            main:
+                              increment: Major
+                              pre-release-weight: 42
+                          """;
+        const string v7 = """
+                          calculation:
+                            tag-prefix: custom-
+                            branches:
+                              main:
+                                increment: Major
+                          output:
+                            update-build-number: false
+                            branches:
+                              main:
+                                pre-release-weight: 42
+                          """;
+
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        IGitVersionConfiguration legacy;
+        using (this.fileSystem.SetupConfigFile(path: this.repoPath, text: v6))
+        {
+            legacy = this.configurationProvider.ProvideForDirectory(this.repoPath);
+        }
+
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        using (this.fileSystem.SetupConfigFile(path: this.repoPath, text: v7))
+        {
+            var nested = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+            ConfigurationSerializer.SerializeLegacy(nested).ShouldBe(ConfigurationSerializer.SerializeLegacy(legacy));
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase("GitFlow/v1")]
+    [TestCase("GitHubFlow/v1")]
+    [TestCase("TrunkBased/preview1")]
+    public void V7SerializationRoundTripsDefaultsAndBuiltInWorkflows(string? workflow)
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        using var configurationFile = workflow is null
+            ? null
+            : this.fileSystem.SetupConfigFile(path: this.repoPath, text: $"workflow: {workflow}");
+        var legacy = this.configurationProvider.ProvideForDirectory(this.repoPath);
+
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        var nestedYaml = new ConfigurationSerializer().Serialize(legacy);
+        var roundTrip = ConfigurationSerializer.ReadConfiguration(nestedYaml);
+
+        nestedYaml.ShouldContain("calculation:");
+        nestedYaml.ShouldContain("output:");
+        roundTrip.ShouldNotBeNull();
+        ConfigurationSerializer.SerializeLegacy(roundTrip)
+            .ShouldBe(ConfigurationSerializer.SerializeLegacy(legacy));
+    }
+
+    [Test]
+    public void RejectsMixedV7Configuration()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        const string text = """
+                            calculation:
+                              tag-prefix: custom-
+                            update-build-number: false
+                            """;
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+
+        var exception = Should.Throw<ConfigurationException>(() =>
+            this.configurationProvider.ProvideForDirectory(this.repoPath));
+
+        exception.Message.ShouldContain("mixes the v6 flat configuration structure");
     }
 
     [Test]
