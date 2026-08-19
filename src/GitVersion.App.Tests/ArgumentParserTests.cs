@@ -9,19 +9,137 @@ using GitVersion.VersionCalculation;
 namespace GitVersion.App.Tests;
 
 [TestFixture]
+[NonParallelizable]
 public class ArgumentParserTests : TestBase
 {
     private IEnvironment environment = null!;
     private IArgumentParser argumentParser = null!;
     private IFileSystem fileSystem = null!;
+    private string? originalConfigurationVersion;
 
     [SetUp]
     public void SetUp()
     {
+        this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
         var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
+    }
+
+    [TearDown]
+    public void TearDown() =>
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
+
+    [Test]
+    public void OverrideConfigSupportsNestedV7RootAndBranchPaths()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        var arguments = this.argumentParser.ParseArguments(
+            "--override-config calculation.tag-prefix=custom- " +
+            "--override-config calculation.branches.main.increment=Major " +
+            "--override-config output.branches.main.pre-release-weight=42");
+
+        var normalized = ConfigurationDocumentMapper.Normalize(
+            arguments.OverrideConfiguration!, ConfigurationVersion.V7, "test override");
+        ConfigurationHelper configurationHelper = new(normalized);
+        var configuration = configurationHelper.Configuration;
+        configuration.TagPrefixPattern.ShouldBe("custom-");
+        configuration.Branches["main"].Increment.ShouldBe(IncrementStrategy.Major);
+        configuration.Branches["main"].PreReleaseWeight.ShouldBe(42);
+    }
+
+    [Test]
+    public void OverrideConfigPreservesV7BranchNameCasing()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        var arguments = this.argumentParser.ParseArguments(
+            "--override-config Calculation.Branches.ReleaseCandidate.Increment=Major");
+
+        var normalized = ConfigurationDocumentMapper.Normalize(
+            arguments.OverrideConfiguration!, ConfigurationVersion.V7, "test override");
+        ConfigurationHelper configurationHelper = new(normalized);
+        configurationHelper.Configuration.Branches["ReleaseCandidate"].Increment.ShouldBe(IncrementStrategy.Major);
+    }
+
+    [Test]
+    public void OverrideConfigRejectsDottedV7BranchNameWithClearDiagnostic()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments(
+                "--override-config calculation.branches.release.1.increment=Major"));
+
+        exception.Message.ShouldContain("Branch name 'release.1' contains '.'");
+        exception.Message.ShouldContain("Use a configuration file instead");
+    }
+
+    [Test]
+    public void OverrideConfigRejectsV6PathInV7WithReplacement()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("--override-config tag-prefix=custom-"));
+
+        exception.Message.ShouldContain("calculation.tag-prefix");
+        exception.Message.ShouldContain("config migrate");
+    }
+
+    [Test]
+    public void OverrideConfigRejectsPropertyInWrongV7SectionWithReplacement()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("--override-config calculation.update-build-number=false"));
+
+        exception.Message.ShouldContain("output.update-build-number");
+    }
+
+    [Test]
+    public void OverrideConfigSupportsV6BranchPath()
+    {
+        var arguments = this.argumentParser.ParseArguments("--override-config branches.main.increment=Major");
+
+        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
+        configurationHelper.Configuration.Branches["main"].Increment.ShouldBe(IncrementStrategy.Major);
+    }
+
+    [Test]
+    public void OverrideConfigPreservesV6BranchNameCasing()
+    {
+        var arguments = this.argumentParser.ParseArguments(
+            "--override-config Branches.ReleaseCandidate.Increment=Major");
+
+        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
+        configurationHelper.Configuration.Branches["ReleaseCandidate"].Increment.ShouldBe(IncrementStrategy.Major);
+    }
+
+    [Test]
+    public void OverrideConfigRejectsV7PathInV6WithReplacement()
+    {
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("--override-config output.update-build-number=false"));
+
+        exception.Message.ShouldContain("update-build-number");
+        exception.Message.ShouldContain("config migrate");
+    }
+
+    [Test]
+    public void OverrideConfigBatchValidationDoesNotApplyAnyValues()
+    {
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        var parser = new OverrideConfigurationOptionParser();
+
+        Should.Throw<WarningException>(() => parser.SetValues(
+            ["calculation.tag-prefix=custom-", "tag-prefix=legacy"], "--override-config"));
+
+        parser.GetOverrideConfiguration().ShouldBeEmpty();
     }
 
     [Test]

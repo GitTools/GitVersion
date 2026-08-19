@@ -32,8 +32,9 @@ internal class GitVersionCacheKeyFactory(
         var repositorySnapshotHash = GetRepositorySnapshotHash();
         var repositoryTargetHash = GetRepositoryTargetHash();
         var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
+        var configurationVersionHash = GetHash(ConfigurationVersionSelector.ResolveName());
 
-        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash);
+        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash, configurationVersionHash);
         return new(compositeHash);
     }
 
