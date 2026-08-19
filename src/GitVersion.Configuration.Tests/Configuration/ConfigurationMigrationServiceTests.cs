@@ -1,3 +1,5 @@
+using SharpYaml;
+
 namespace GitVersion.Configuration.Tests;
 
 [TestFixture]
@@ -45,6 +47,29 @@ public class ConfigurationMigrationServiceTests
     }
 
     [Test]
+    public void MigratesConfiguredValuesWithoutAddingDefaults()
+    {
+        const string input = """
+                             workflow: GitHubFlow/v1
+                             mode: ContinuousDeployment
+                             update-build-number: false
+                             branches:
+                               main:
+                                 increment: Minor
+                                 pre-release-weight: 42
+                             """;
+
+        var result = this.migrationService.Migrate(input);
+
+        result.ShouldContain("workflow: GitHubFlow/v1");
+        result.ShouldContain("mode: ContinuousDeployment");
+        result.ShouldContain("update-build-number: false");
+        result.ShouldContain("increment: Minor");
+        result.ShouldContain("pre-release-weight: 42");
+        result.ShouldNotContain("tag-prefix:");
+    }
+
+    [Test]
     public void RejectsMixedConfiguration()
     {
         const string input = """
@@ -53,5 +78,13 @@ public class ConfigurationMigrationServiceTests
                              """;
 
         Should.Throw<ConfigurationException>(() => this.migrationService.Migrate(input));
+    }
+
+    [Test]
+    public void RejectsMalformedYaml()
+    {
+        const string input = "branches: [";
+
+        Should.Throw<YamlException>(() => this.migrationService.Migrate(input));
     }
 }
