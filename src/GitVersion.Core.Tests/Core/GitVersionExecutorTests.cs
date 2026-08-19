@@ -66,6 +66,23 @@ public class GitVersionExecutorTests : TestBase
         System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
 
     [Test]
+    public void ConfigurationVersionChangeInvalidatesCache()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        var options = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
+        _ = GetGitVersionCalculator(options);
+        var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
+
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        var v6Key = cacheKeyFactory.Create(null);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        var v7Key = cacheKeyFactory.Create(null);
+
+        v7Key.ShouldNotBe(v6Key);
+    }
+
+    [Test]
     public void ResolvedConfiguration_IsCreatedOncePerExecution()
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
