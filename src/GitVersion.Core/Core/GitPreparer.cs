@@ -14,6 +14,7 @@ internal class GitPreparer(
     IEnvironment environment,
     ICurrentBuildAgent buildAgent,
     IOptions<GitVersionOptions> options,
+    Lazy<IGitVersionConfiguration> configuration,
     IMutatingGitRepository repository,
     IGitRepositoryInfo repositoryInfo,
     Lazy<GitVersionContext> versionContext)
@@ -24,6 +25,7 @@ internal class GitPreparer(
     private readonly IEnvironment environment = environment.NotNull();
     private readonly IMutatingGitRepository repository = repository.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private readonly Lazy<IGitVersionConfiguration> configuration = configuration.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
     private readonly ICurrentBuildAgent buildAgent = buildAgent.NotNull();
     private readonly RetryAction<LockedFileException> retryAction = new();
@@ -146,7 +148,7 @@ internal class GitPreparer(
         using (this.logger.StartIndentedScope($"Normalizing git directory for branch '{targetBranch}'"))
         {
             // Normalize (download branches) before using the branch
-            NormalizeGitDirectory(this.options.Value.Settings.NoFetch || this.buildAgent.PreventFetch(), targetBranch, isDynamicRepository);
+            NormalizeGitDirectory(this.options.Value.Settings.NoFetch || this.buildAgent.PreventFetch(), targetBranch, isDynamicRepository, this.configuration.Value.Ignore);
         }
     }
 
@@ -156,7 +158,7 @@ internal class GitPreparer(
     /// This is designed to be run *only on the build server* which checks out repositories in different ways.
     /// It is not recommended to run normalization against a local repository
     /// </summary>
-    private void NormalizeGitDirectory(bool noFetch, string? currentBranchName, bool isDynamicRepository)
+    private void NormalizeGitDirectory(bool noFetch, string? currentBranchName, bool isDynamicRepository, IIgnoreConfiguration ignoreConfiguration)
     {
         var authentication = this.options.Value.AuthenticationInfo;
         // Need to ensure the HEAD does not move, this is essentially a BugCheck
@@ -169,7 +171,7 @@ internal class GitPreparer(
         EnsureRepositoryHeadDuringNormalisation(nameof(FetchRemotesIfRequired), expectedSha);
         EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureLocalBranchExistsForCurrentBranch), expectedSha);
-        CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
+        CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name, currentBranchName, ignoreConfiguration);
         EnsureRepositoryHeadDuringNormalisation(nameof(CreateOrUpdateLocalBranchesFromRemoteTrackingOnes), expectedSha);
 
         var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
@@ -337,7 +339,8 @@ internal class GitPreparer(
         throw new WarningException(message);
     }
 
-    private void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(string remoteName)
+    private void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(
+        string remoteName, string? currentBranchName, IIgnoreConfiguration ignoreConfiguration)
     {
         var prefix = $"refs/remotes/{remoteName}/";
         var remoteHeadCanonicalName = $"{prefix}HEAD";
@@ -352,8 +355,8 @@ internal class GitPreparer(
             var branchName = remoteTrackingReferenceName[prefix.Length..];
             var localReferenceName = ReferenceName.FromBranchName(branchName);
 
-            // We do not want to touch our current branch
-            if (this.repository.Head.Name.EquivalentTo(branchName))
+            if (ShouldSkipRemoteTrackingReference(
+                    branchName, localReferenceName, remoteTrackingReferenceName, currentBranchName, ignoreConfiguration))
             {
                 continue;
             }
@@ -384,6 +387,28 @@ internal class GitPreparer(
                 this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
             }
         }
+    }
+
+    private bool ShouldSkipRemoteTrackingReference(
+        string branchName,
+        ReferenceName localReferenceName,
+        string remoteTrackingReferenceName,
+        string? currentBranchName,
+        IIgnoreConfiguration ignoreConfiguration)
+    {
+        // We do not want to touch our current branch.
+        if (this.repository.Head.Name.EquivalentTo(branchName) || localReferenceName.EquivalentTo(currentBranchName))
+        {
+            return true;
+        }
+
+        if (!ignoreConfiguration.IsBranchIgnored(localReferenceName))
+        {
+            return false;
+        }
+
+        this.logger.LogInformation("Skipping ignored remote tracking branch '{RemoteTrackingReferenceName}'.", remoteTrackingReferenceName);
+        return true;
     }
 
     public void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string? currentBranch)
