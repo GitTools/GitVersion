@@ -371,7 +371,7 @@ internal class ArgumentParser(
         };
         var overrideConfig = new Option<string[]>("--override-config")
         {
-            Description = "Overrides GitVersion config values inline (key=value pairs e.g. --override-config tag-prefix=Foo)",
+            Description = "Overrides GitVersion config values inline (key=value pairs e.g. --override-config workflow=GitHubFlow/v1)",
             AllowMultipleArgumentsPerToken = false,
             Arity = ArgumentArity.ZeroOrMore
         };
@@ -591,24 +591,7 @@ internal class ArgumentParser(
         }
 
         var parser = new OverrideConfigurationOptionParser();
-
-        foreach (var keyValueOption in values)
-        {
-            var keyAndValue = QuotedStringHelpers.SplitUnquoted(keyValueOption, '=');
-            if (keyAndValue.Length != 2)
-            {
-                throw new WarningException($"Could not parse --override-config option: {keyValueOption}. Ensure it is in format 'key=value'.");
-            }
-
-            var optionKey = keyAndValue[0].ToLowerInvariant();
-            if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
-            {
-                throw new WarningException($"Could not parse --override-config option: {keyValueOption}. Unsupported key '{optionKey}'.");
-            }
-
-            parser.SetValue(optionKey, keyAndValue[1]);
-        }
-
+        parser.SetValues(values, "--override-config");
         arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 

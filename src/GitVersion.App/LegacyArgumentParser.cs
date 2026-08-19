@@ -511,25 +511,7 @@ internal class LegacyArgumentParser(
         }
 
         var parser = new OverrideConfigurationOptionParser();
-
-        // key=value
-        foreach (var keyValueOption in values)
-        {
-            var keyAndValue = QuotedStringHelpers.SplitUnquoted(keyValueOption, '=');
-            if (keyAndValue.Length != 2)
-            {
-                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'.");
-            }
-
-            var optionKey = keyAndValue[0].ToLowerInvariant();
-            if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
-            {
-                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported key '{optionKey}'.");
-            }
-
-            parser.SetValue(optionKey, keyAndValue[1]);
-        }
-
+        parser.SetValues(values, "/overrideconfig");
         arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 
