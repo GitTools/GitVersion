@@ -117,6 +117,25 @@ gitversion --url https://github.com/org/repo.git --branch main --username user -
 
 For current command details and examples, see [CLI Arguments](/docs/usage/cli/arguments).
 
+## Configuration migration
+
+GitVersion v7 stores settings under `calculation` and `output`. Convert an
+existing flat v6 YAML document with the POSIX-only migration command:
+
+```shell
+gitversion config migrate
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+```
+
+The first command discovers `GitVersion.yml` and emits v7 YAML to stdout.
+`--output` requires `--force` to replace an existing file and cannot be used
+with `--in-place`. In-place migration warns because comments cannot be
+preserved. The command does not need a Git repository and migrating its v7
+output again is idempotent. In v7.0, you can temporarily validate a flat file
+with `GITVERSION_CONFIGURATION_VERSION=v6`; GitVersion warns once for that
+fallback.
+
 ## Git backend
 
 GitVersion v7 introduces a fully managed Git backend as an alternative to the native LibGit2Sharp (libgit2) implementation. The backend is selected with the `GITVERSION_GIT_BACKEND` environment variable. When the variable is not set (or empty), the release's default backend is used — you never need to set it. Setting it to any value other than `libgit2` or `managed` (case-insensitive) is an error: GitVersion fails fast instead of silently running the default backend with a typo unnoticed.
@@ -138,7 +157,8 @@ The environment variables relevant to migrating from v6 to v7:
 
 | Variable                            | Purpose                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `GITVERSION_GIT_BACKEND`            | Selects the Git backend: `libgit2` (default in v7.0) or `managed`. See [Git backend](#git-backend).                 |
+| `GITVERSION_CONFIGURATION_VERSION`   | Selects the configuration layout: `v7` (default) or temporary flat `v6` fallback.                                   |
+| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `libgit2` (default in v7.0) or `managed`. See [Git backend](#git-backend).                 |
 | `GITVERSION_USE_V6_ARGUMENT_PARSER` | Set to `true` to temporarily restore the legacy v6 (`/switch`) argument parser. Removed in a future release.        |
 | `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
 | `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |

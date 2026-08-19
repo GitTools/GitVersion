@@ -107,9 +107,35 @@ GitVersion [path]
                     GitVersion to not calculate your version as expected.
 ```
 
+## Configuration migration
+
+The POSIX parser exposes a `config migrate` subcommand for converting a v6
+configuration document to the v7 `calculation`/`output` layout:
+
+```shell
+gitversion config migrate
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+```
+
+It discovers a supported configuration filename when `--config` is omitted and
+writes YAML to stdout unless `--output` or `--in-place` is selected. `--output`
+will not replace an existing file without `--force`; it cannot be combined with
+`--in-place`. Replacing a file warns that comments are not preserved. The
+command does not require a Git repository and is unavailable when
+`GITVERSION_USE_V6_ARGUMENT_PARSER=true` selects the legacy parser.
+
 ## Override config
 
 `--override-config key=value` will override appropriate `key` from 'GitVersion.yml', 'GitVersion.yaml', '.GitVersion.yml' or '.GitVersion.yaml'.
+
+With the v7 default configuration layout, use a version-aware nested key. For
+example, `calculation.tag-prefix=custom`,
+`calculation.branches.main.increment=Patch`, and
+`output.branches.main.pre-release-weight=55000`. Flat v6 keys are rejected in
+v7 mode with their nested replacement. Set
+`GITVERSION_CONFIGURATION_VERSION=v6` only while validating a legacy file in
+v7.0.
 
 To specify multiple options add multiple `--override-config key=value` entries:
 `--override-config key1=value1 --override-config key2=value2`.
