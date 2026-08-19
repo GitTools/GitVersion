@@ -106,6 +106,27 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
+    public void ConfigMigrateParsesItsInputAndOutputOptions()
+    {
+        var arguments = this.argumentParser.ParseArguments(
+            "config migrate --config GitVersion.yml --output GitVersion.v7.yml --force");
+
+        arguments.IsConfigurationMigration.ShouldBeTrue();
+        arguments.MigrationInputFile.ShouldBe("GitVersion.yml");
+        arguments.MigrationOutputFile.ShouldBe("GitVersion.v7.yml");
+        arguments.MigrationForce.ShouldBeTrue();
+    }
+
+    [Test]
+    public void ConfigMigrateRejectsOutputAndInPlaceTogether()
+    {
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("config migrate --output GitVersion.v7.yml --in-place"));
+
+        exception.Message.ShouldBe("Cannot use --output together with --in-place.");
+    }
+
+    [Test]
     public void EmptyMeansUseCurrentDirectory()
     {
         var arguments = this.argumentParser.ParseArguments("");

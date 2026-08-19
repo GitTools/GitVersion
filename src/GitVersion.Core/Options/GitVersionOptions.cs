@@ -17,6 +17,9 @@ public class GitVersionOptions
     /// <summary>Gets the settings that control how the GitVersion configuration file is located and applied.</summary>
     public ConfigurationInfo ConfigurationInfo { get; } = new();
 
+    /// <summary>Gets the settings that control configuration migration.</summary>
+    public ConfigurationMigrationInfo ConfigurationMigrationInfo { get; } = new();
+
     /// <summary>Gets the repository-targeting settings (URL, branch, commit, clone path).</summary>
     public RepositoryInfo RepositoryInfo { get; } = new();
 
