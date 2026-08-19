@@ -21,6 +21,72 @@ found that is generally what is needed when using GitFlow.
 To see the effective configuration (defaults and overrides), you can run
 `gitversion --show-config`.
 
+## v7 configuration layout
+
+GitVersion v7 separates version **calculation** from version **output**. Put
+calculation settings under `calculation` and settings that format or publish
+the calculated version under `output`:
+
+```yaml
+calculation:
+  workflow: GitHubFlow/v1
+  branches:
+    main:
+      increment: Patch
+output:
+  update-build-number: true
+  branches:
+    main:
+      pre-release-weight: 55000
+```
+
+`calculation.branches` contains branch-discovery and version-calculation
+settings. `output.branches` contains branch-specific output settings. A branch
+may appear in either section or both; GitVersion combines both sections into
+one effective branch configuration.
+
+| v6 flat setting | v7 location |
+| --- | --- |
+| `assembly-file-versioning-format`, `assembly-file-versioning-scheme`, `assembly-informational-format`, `assembly-versioning-format`, `assembly-versioning-scheme`, `commit-date-format`, `custom-version-format`, `pre-release-weight`, `tag-pre-release-weight`, `update-build-number` | `output.<setting>` |
+| Every other root setting, including `branches`, `ignore`, `next-version`, `strategies`, `tag-prefix`, and `workflow` | `calculation.<setting>` |
+| Branch `custom-version-format`, `pre-release-weight` | `output.branches.<branch>.<setting>` |
+| Every other branch setting, including `increment`, `label`, `mode`, `regex`, and `source-branches` | `calculation.branches.<branch>.<setting>` |
+
+In v7, `gitversion --show-config` emits this nested structure. The temporary
+v6 flat format can be selected only with
+`GITVERSION_CONFIGURATION_VERSION=v6` in v7.0; GitVersion warns when it loads
+a user configuration that way.
+
+### Migrating an existing configuration
+
+Use the POSIX-only migration command to convert a v6 document without opening
+a repository:
+
+```shell
+# Discover GitVersion.yml in the target/current directory and write YAML to stdout
+gitversion config migrate
+
+# Select an input explicitly, write a new file, or replace that input
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+```
+
+`--output` refuses to overwrite an existing file unless `--force` is supplied;
+`--output` and `--in-place` cannot be combined. `--in-place` warns because
+comments cannot be preserved. The command is deterministic: migrating an
+already nested v7 document produces the same YAML again.
+
+### Overriding v7 configuration
+
+`--override-config` uses the selected configuration structure. With the v7
+default, use nested keys such as
+`--override-config calculation.tag-prefix='[vV]?'` and
+`--override-config output.update-build-number=false`. Branch overrides follow
+the same ownership map, for example
+`calculation.branches.main.increment=Patch` and
+`output.branches.main.pre-release-weight=55000`. Flat v6 keys are rejected in
+v7 mode with their nested replacement.
+
 ## Global configuration
 
 The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:
@@ -494,6 +560,8 @@ expression with `(?-i)`, for example `(?-i)^experimental-`.
 
 ### assembly-file-versioning-format
 
+This is an `output` setting: `output.assembly-file-versioning-format`.
+
 Specifies the format of `AssemblyFileVersion` and
 overwrites the value of `assembly-file-versioning-scheme`.
 
@@ -502,16 +570,21 @@ or a process-scoped environment variable (when prefixed with `env:`).  For examp
 
 ```yaml
 # use a variable if non-null or a fallback value otherwise
-assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
 
 # use an environment variable or raise an error if not available
-assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
 
 # use an environment variable if available or a fallback value otherwise
-assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
 ```
 
 ### assembly-file-versioning-scheme
+
+This is an `output` setting: `output.assembly-file-versioning-scheme`.
 
 When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion
 how to treat the `AssemblyFileVersion` attribute. Note: you can use `None` to
@@ -521,17 +594,23 @@ skip updating the `AssemblyFileVersion` while still updating the
 
 ### assembly-informational-format
 
+This is an `output` setting: `output.assembly-informational-format`.
+
 Specifies the format of `AssemblyInformationalVersion`.
 Follows the same formatting semantics as `assembly-file-versioning-format`.
 The default value is `{InformationalVersion}`.
 
 ### assembly-versioning-format
 
+This is an `output` setting: `output.assembly-versioning-format`.
+
 Specifies the format of `AssemblyVersion` and
 overwrites the value of `assembly-versioning-scheme`.
 Follows the same formatting semantics as `assembly-file-versioning-format`.
 
 ### assembly-versioning-scheme
+
+This is an `output` setting: `output.assembly-versioning-scheme`.
 
 When updating assembly info, `assembly-versioning-scheme` tells GitVersion how
 to treat the `AssemblyVersion` attribute. Useful to lock the major when using
@@ -582,22 +661,26 @@ a named capture group called `Number`.
 **Example usage:**
 
 ```yaml
-branches:
-  pull-request:
-    mode: ContinuousDelivery
-    label: PullRequest{Number}
-    increment: Inherit
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    track-merge-message: true
-    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
-    source-branches:
-    - main
-    - release
-    - feature
-    is-source-branch-for: []
-    pre-release-weight: 30000
+calculation:
+  branches:
+    pull-request:
+      mode: ContinuousDelivery
+      label: PullRequest{Number}
+      increment: Inherit
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      track-merge-message: true
+      regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
+      source-branches:
+      - main
+      - release
+      - feature
+      is-source-branch-for: []
+output:
+  branches:
+    pull-request:
+      pre-release-weight: 30000
 ```
 
 ### mode
@@ -605,6 +688,9 @@ branches:
 Same as for the [global configuration, explained above](#mode).
 
 ### pre-release-weight
+
+This is an output setting: `output.pre-release-weight` globally or
+`output.branches.<branch>.pre-release-weight` for a branch.
 
 Provides a way to translate the `PreReleaseLabelName` ([variables][variables]) to a numeric
 value in order to avoid version collisions across different branches. For
@@ -658,6 +744,8 @@ Indicates this branch config represents develop in GitFlow.
 
 ### commit-date-format
 
+This is an `output` setting: `output.commit-date-format`.
+
 Sets the format which will be used to format the `CommitDate` output variable.
 
 ### commit-message-incrementing
@@ -667,6 +755,9 @@ in the commit message. See the `*-version-bump-message` options above for
 details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
 ### custom-version-format
+
+This is an `output` setting: `output.custom-version-format` globally or
+`output.branches.<branch>.custom-version-format` for a branch.
 
 Specifies the format of the `CustomVersion` output variable.
 Follows the same formatting semantics as `assembly-file-versioning-format` and
@@ -695,10 +786,11 @@ semantics, and `^` and `$` can be used to anchor a match. To require
 case-sensitive matching, prefix a pattern with `(?-i)`.
 
 ```yaml
-ignore:
-  branches:
-    - ^experimental/
-    - ^release/legacy$
+calculation:
+  ignore:
+    branches:
+      - ^experimental/
+      - ^release/legacy$
 ```
 
 The current branch and an explicitly requested target branch remain available
@@ -727,9 +819,10 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 A sequence of regular expressions that represent paths in the repository. Commits that modify these paths will be excluded from version calculations. For example, to filter out commits that belong to `docs`:
 
 ```yaml
-ignore:
-  paths:
-    - ^docs\/
+calculation:
+  ignore:
+    paths:
+      - ^docs\/
 ```
 
 ##### *Monorepo*
@@ -740,17 +833,19 @@ As an example, consider a monorepo consisting of subdirectories for `ProjectA`, 
 * Specific match on `/ProjectB/*`:
 
 ```yaml
-ignore:
-  paths:
-    - `^\/ProductB\/.*`
+calculation:
+  ignore:
+    paths:
+      - `^\/ProductB\/.*`
 ```
 
 * Negative lookahead on anything other than `/ProjectA/*` and `/LibraryC/*`:
 
 ```yaml
-ignore:
-  paths:
-    - `^(?!\/ProductA\/|\/LibraryC\/).*`
+calculation:
+  ignore:
+    paths:
+      - `^(?!\/ProductA\/|\/LibraryC\/).*`
 ```
 
 A commit having changes only in `/ProjectB/*` path would be ignored. A commit having changes in the following paths wouldn't be ignored:
@@ -779,17 +874,19 @@ there is a rogue commit in history yielding a bad version. You can use either
 style below:
 
 ```yaml
-ignore:
-  sha: [e7bc24c0f34728a25c9187b8d0b041d935763e3a, 764e16321318f2fdb9cdeaa56d1156a1cba307d7]
+calculation:
+  ignore:
+    sha: [e7bc24c0f34728a25c9187b8d0b041d935763e3a, 764e16321318f2fdb9cdeaa56d1156a1cba307d7]
 ```
 
 or
 
 ```yaml
-ignore:
-  sha:
-    - e7bc24c0f34728a25c9187b8d0b041d935763e3a
-    - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
+calculation:
+  ignore:
+    sha:
+      - e7bc24c0f34728a25c9187b8d0b041d935763e3a
+      - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
 ```
 
 #### tags
@@ -801,10 +898,11 @@ use OR semantics, and `^` and `$` can be used to anchor a match. To require
 case-sensitive matching, prefix a pattern with `(?-i)`.
 
 ```yaml
-ignore:
-  tags:
-    - ^experimental-
-    - ^v0\.
+calculation:
+  ignore:
+    tags:
+      - ^experimental-
+      - ^v0\.
 ```
 
 Ignoring a tag does not ignore the commit it points to. The commit remains part
@@ -838,23 +936,25 @@ branch.
 A complete example:
 
 ```yaml
-branches:
-  unstable:
-    regex: ...
-    is-source-branch-for: ['main', 'develop', 'feature', 'hotfix', 'support']
+calculation:
+  branches:
+    unstable:
+      regex: ...
+      is-source-branch-for: ['main', 'develop', 'feature', 'hotfix', 'support']
 ```
 
 Without this configuration value you would have to do:
 
 ```yaml
-branches:
-  unstable:
-    regex:
-  feature:
-    source-branches: ['unstable', 'develop', 'feature', 'hotfix', 'support']
-  release:
-    source-branches: ['unstable', 'develop']
-  etc...
+calculation:
+  branches:
+    unstable:
+      regex:
+    feature:
+      source-branches: ['unstable', 'develop', 'feature', 'hotfix', 'support']
+    release:
+      source-branches: ['unstable', 'develop']
+    etc...
 ```
 
 ### major-version-bump-message
@@ -1038,7 +1138,12 @@ Configures GitVersion to update the build number or not when running on a build 
 
 ## Branch configuration
 
-Then we have branch specific configuration, which looks something like this:
+The following **v4 migration example** illustrates the change from regular-expression
+keys to named branch configurations. It uses the legacy flat layout and is retained
+only for that historical migration context; it is not a valid v7 configuration. For
+new v7 configuration, place branch calculation settings under `calculation.branches`
+and branch output settings under `output.branches`, as shown in the [v7 configuration
+layout](#v7-configuration-layout).
 
 :::{.alert .alert-info}
 **Note**
@@ -1046,8 +1151,7 @@ Then we have branch specific configuration, which looks something like this:
 v4 changed from using regexes for keys, to named configs
 :::
 
-If you have branch specific configuration upgrading to v4 will force you to
-upgrade.
+If you have branch-specific configuration, upgrading to v4 required this change.
 
 ```yaml
 workflow: 'GitHubFlow/v1'

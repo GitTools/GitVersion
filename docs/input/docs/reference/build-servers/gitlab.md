@@ -29,11 +29,12 @@ After repository normalisation the friendly branch name becomes
 GitLab's namespace (the default `pull-requests|pull|pr` pattern does not):
 
 ```yaml
-workflow: GitFlow/v1
-branches:
-  pull-request:
-    regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
-    label: PullRequest{Number}
+calculation:
+  branches:
+    pull-request:
+      label: PullRequest{Number}
+      regex: ^merge-requests/(?<Number>\d+)/(head|merge)$
+  workflow: GitFlow/v1
 ```
 
 `CI_COMMIT_REF_NAME` still contains the source branch name (for example

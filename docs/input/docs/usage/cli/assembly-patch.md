@@ -71,7 +71,7 @@ Will iterate through each file and update known attributes (`AssemblyVersion`,
 
 ## Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 
-`GitVersion.exe --output json --override-config tag-prefix=custom`
+`GitVersion.exe --output json --override-config calculation.tag-prefix=custom`
 
 ## Writing version metadata in WiX format
 
