@@ -78,12 +78,13 @@ The feature is enabled by default but can be disabled via configuration, the
 regex we use can be changed:
 
 ```yaml
-major-version-bump-message: '[+=]semver:\s?(breaking|major)'
-minor-version-bump-message: '[+=]semver:\s?(feature|minor)'
-patch-version-bump-message: '[+=]semver:\s?(fix|patch)'
-no-bump-message: '[+=]semver:\s?(none|skip)'
-version-bump-reset-message: '=semver:'
-commit-message-incrementing: Enabled
+calculation:
+  commit-message-incrementing: Enabled
+  major-version-bump-message: '[+=]semver:\s?(breaking|major)'
+  minor-version-bump-message: '[+=]semver:\s?(feature|minor)'
+  no-bump-message: '[+=]semver:\s?(none|skip)'
+  patch-version-bump-message: '[+=]semver:\s?(fix|patch)'
+  version-bump-reset-message: '=semver:'
 ```
 
 The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly`
@@ -99,10 +100,11 @@ If you want to use the [Conventional Commits][conventional-commits] standard,
 you can leverage this feature as follows:
 
 ```yaml
-mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
-major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
-minor-version-bump-message: "^(feat)(\\([\\w\\s-,/\\\\]*\\))?:"
-patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:"
+calculation:
+  major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
+  minor-version-bump-message: "^(feat)(\\([\\w\\s-,/\\\\]*\\))?:"
+  mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
+  patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:"
 ```
 
 This will ensure that your version gets bumped according to the commits you've

@@ -10,33 +10,36 @@ GitVersion supports C# format strings in configuration, allowing you to apply st
 Set `custom-version-format` to add a `CustomVersion` value to GitVersion's
 output without changing the meaning of any existing version variable. It uses
 the same version and environment variable formatting described below and
-is empty unless a format is configured. Define it at the top level to use one
-format for every branch, or override it within a branch configuration when
-different deployment modes require different formats.
+is empty unless a format is configured. Define it under `output` to use one
+format for every branch, or override it within `output.branches` when different
+deployment modes require different formats.
 
 For example, a PEP 440-compatible pre-release version can omit SemVer's dash and
 separator:
 
 ```yaml
-custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
-# 0.6.3-beta.10 becomes CustomVersion 0.6.3beta10
+output:
+  custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
+  # 0.6.3-beta.10 becomes CustomVersion 0.6.3beta10
 ```
 
 For example, a branch-specific format can override the global default:
 
 ```yaml
-custom-version-format: '{SemVer}'
-branches:
-  feature:
-    custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
+output:
+  branches:
+    feature:
+      custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
+  custom-version-format: '{SemVer}'
 ```
 
 A fixed-width numeric format can provide an increasing integer version for
 platforms such as Android:
 
 ```yaml
-custom-version-format: '{Major:00}{Minor:00}{Patch:000}'
-# 0.0.123 becomes 0000123; 0.1.0 becomes 0001000
+output:
+  custom-version-format: '{Major:00}{Minor:00}{Patch:000}'
+  # 0.0.123 becomes 0000123; 0.1.0 becomes 0001000
 ```
 
 Choose widths that are large enough for each version component and keep the
@@ -44,7 +47,8 @@ result within the target platform's integer limit. If the CI system owns the
 monotonically increasing build number, it can be exposed directly instead:
 
 ```yaml
-custom-version-format: '{env:ANDROID_VERSION_CODE}'
+output:
+  custom-version-format: '{env:ANDROID_VERSION_CODE}'
 ```
 
 ## Overview
@@ -64,7 +68,8 @@ You can now use standard .NET numeric format strings with version components:
 
 ```yaml
 # GitVersion.yml
-assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabelName}"
+output:
+  assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabelName}"
 ```
 
 **Supported Numeric Formats:**
@@ -82,7 +87,8 @@ assembly-informational-format: "{Major}.{Minor}.{Patch:F2}-{PreReleaseLabelName}
 When working with date-related properties like `CommitDate`:
 
 ```yaml
-assembly-informational-format: "Build-{SemVer}-{CommitDate:yyyy-MM-dd}"
+output:
+  assembly-informational-format: "Build-{SemVer}-{CommitDate:yyyy-MM-dd}"
 ```
 
 **Common Date Format Specifiers:**
@@ -110,19 +116,21 @@ GitVersion introduces custom format specifiers for string case transformations t
 
 ```yaml
 # GitVersion.yml configuration
-branches:
-  feature:
-    label: "{BranchName:c}"  # Converts to PascalCase
-
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabelName:l}.{VersionSourceDistance:0000}"
+calculation:
+  branches:
+    feature:
+      label: "{BranchName:c}"  # Converts to PascalCase
+output:
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{PreReleaseLabelName:l}.{VersionSourceDistance:0000}"
 ```
 
 **Template Usage:**
 
 ```yaml
 # Using format strings in templates
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
-assembly-informational-format: "{SemVer}-{BranchName:l}"
+output:
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
+  assembly-informational-format: "{SemVer}-{BranchName:l}"
 ```
 
 ## Examples
@@ -133,38 +141,42 @@ Based on actual test cases from the implementation:
 
 ```yaml
 # Zero-padded commit count
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
-# Result: "1.2.3-0042"
+output:
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
+  # Result: "1.2.3-0042"
 ```
 
 ### String Case Transformations
 
 ```yaml
-branches:
-  feature:
-    label: "{BranchName:c}"  # PascalCase: "feature-branch" → "FeatureBranch"
-  hotfix:
-    label: "hotfix-{BranchName:l}"  # Lowercase: "HOTFIX-BRANCH" → "hotfix-branch"
+calculation:
+  branches:
+    feature:
+      label: "{BranchName:c}"  # PascalCase: "feature-branch" → "FeatureBranch"
+    hotfix:
+      label: "hotfix-{BranchName:l}"  # Lowercase: "HOTFIX-BRANCH" → "hotfix-branch"
 ```
 
 ### Date and Time Formatting
 
 ```yaml
-assembly-informational-format: "{SemVer}-build-{CommitDate:yyyy-MM-dd}"
-# Result: "1.2.3-build-2021-01-01"
+output:
+  assembly-informational-format: "{SemVer}-build-{CommitDate:yyyy-MM-dd}"
+  # Result: "1.2.3-build-2021-01-01"
 ```
 
 ### Numeric Formatting
 
 ```yaml
-# Currency format (uses InvariantCulture)
-assembly-informational-format: "Cost-{Major:C}"  # Result: "Cost-¤1.00"
+output:
+  # Currency format (uses InvariantCulture)
+  assembly-informational-format: "Cost-{Major:C}"  # Result: "Cost-¤1.00"
 
-# Percentage format
-assembly-informational-format: "Progress-{Minor:P}"  # Result: "Progress-200.00 %"
+  # Percentage format
+  assembly-informational-format: "Progress-{Minor:P}"  # Result: "Progress-200.00 %"
 
-# Thousands separator
-assembly-informational-format: "Build-{VersionSourceDistance:N0}"  # Result: "Build-1,234"
+  # Thousands separator
+  assembly-informational-format: "Build-{VersionSourceDistance:N0}"  # Result: "Build-1,234"
 ```
 
 ## Configuration Integration
@@ -175,17 +187,19 @@ The format strings are used in GitVersion configuration files through various fo
 
 ```yaml
 # GitVersion.yml
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
-assembly-versioning-format: "{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}"
-assembly-file-versioning-format: "{MajorMinorPatch}.{VersionSourceDistance}"
+output:
+  assembly-file-versioning-format: "{MajorMinorPatch}.{VersionSourceDistance}"
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
+  assembly-versioning-format: "{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}"
 ```
 
 ### Environment Variable Integration
 
 ```yaml
 # Using environment variables with fallbacks
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{env:RELEASE_STAGE ?? 'dev'}"
-assembly-informational-format: "{SemVer}+{env:BUILD_ID ?? 'local'}"
+output:
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{env:RELEASE_STAGE ?? 'dev'}"
+  assembly-informational-format: "{SemVer}+{env:BUILD_ID ?? 'local'}"
 ```
 
 ### Real-World Integration Examples
@@ -193,16 +207,18 @@ assembly-informational-format: "{SemVer}+{env:BUILD_ID ?? 'local'}"
 Based on the actual test implementation:
 
 ```yaml
-# Example from VariableProviderTests.cs
-assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
-# Result: "1.2.3-0042" when VersionSourceDistance = 42
+calculation:
+  # Branch-specific formatting
+  branches:
+    feature:
+      label: "{BranchName:c}"  # PascalCase conversion
+    hotfix:
+      label: "hotfix.{VersionSourceDistance:00}"
 
-# Branch-specific formatting
-branches:
-  feature:
-    label: "{BranchName:c}"  # PascalCase conversion
-  hotfix:
-    label: "hotfix.{VersionSourceDistance:00}"
+output:
+  # Example from VariableProviderTests.cs
+  assembly-informational-format: "{Major}.{Minor}.{Patch}-{VersionSourceDistance:0000}"
+  # Result: "1.2.3-0042" when VersionSourceDistance = 42
 ```
 
 ## Invariant Culture Formatting
