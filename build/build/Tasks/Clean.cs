@@ -17,5 +17,6 @@ public sealed class Clean : FrostingTask<BuildContext>
         context.CleanDirectory(Paths.Native);
         context.CleanDirectory(Paths.Packages);
         context.CleanDirectory(Paths.Artifacts);
+        context.CleanDirectory(Paths.Tools);
     }
 }

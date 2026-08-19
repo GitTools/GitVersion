@@ -7,6 +7,12 @@ namespace GitVersion.Configuration;
 
 internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionConfiguration
 {
+    [JsonIgnore]
+    public ICalculationConfiguration Calculation => new CalculationConfiguration(this);
+
+    [JsonIgnore]
+    public IOutputConfiguration Output => new OutputConfiguration(this);
+
     [JsonPropertyName("workflow")]
     [JsonPropertyDescription("The base template of the configuration to use. Possible values are: 'GitFlow/v1' or 'GitHubFlow/v1'")]
     public string? Workflow { get; set; }
@@ -148,4 +154,52 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
         Label = BranchNamePlaceholder,
         Increment = IncrementStrategy.Inherit
     };
+
+    private sealed class CalculationConfiguration(GitVersionConfiguration configuration) : ICalculationConfiguration
+    {
+        public string? Workflow => configuration.Workflow;
+        public string? TagPrefixPattern => configuration.TagPrefixPattern;
+        public string? VersionInBranchPattern => configuration.VersionInBranchPattern;
+        public string? NextVersion => configuration.NextVersion;
+        public string? MajorVersionBumpMessage => configuration.MajorVersionBumpMessage;
+        public string? MinorVersionBumpMessage => configuration.MinorVersionBumpMessage;
+        public string? PatchVersionBumpMessage => configuration.PatchVersionBumpMessage;
+        public string? NoBumpMessage => configuration.NoBumpMessage;
+        public string? VersionBumpResetMessage => configuration.VersionBumpResetMessage;
+        public IReadOnlyDictionary<string, string> MergeMessageFormats => configuration.MergeMessageFormats;
+        public SemanticVersionFormat SemanticVersionFormat => configuration.SemanticVersionFormat;
+        public VersionStrategies VersionStrategy => ((IGitVersionConfiguration)configuration).VersionStrategy;
+        public IReadOnlyDictionary<string, ICalculationBranchConfiguration> Branches
+            => configuration.Branches.ToDictionary(element => element.Key, ICalculationBranchConfiguration (element) => element.Value);
+        public IIgnoreConfiguration Ignore => configuration.Ignore;
+        public DeploymentMode? DeploymentMode => configuration.DeploymentMode;
+        public string? Label => configuration.Label;
+        public IncrementStrategy Increment => configuration.Increment;
+        public IPreventIncrementConfiguration PreventIncrement => configuration.PreventIncrement;
+        public bool? TrackMergeTarget => configuration.TrackMergeTarget;
+        public bool? TrackMergeMessage => configuration.TrackMergeMessage;
+        public CommitMessageIncrementMode? CommitMessageIncrementing => configuration.CommitMessageIncrementing;
+        public string? RegularExpression => configuration.RegularExpression;
+        public IReadOnlyCollection<string> SourceBranches => configuration.SourceBranches;
+        public IReadOnlyCollection<string> IsSourceBranchFor => configuration.IsSourceBranchFor;
+        public bool? TracksReleaseBranches => configuration.TracksReleaseBranches;
+        public bool? IsReleaseBranch => configuration.IsReleaseBranch;
+        public bool? IsMainBranch => configuration.IsMainBranch;
+    }
+
+    private sealed class OutputConfiguration(GitVersionConfiguration configuration) : IOutputConfiguration
+    {
+        public AssemblyVersioningScheme? AssemblyVersioningScheme => configuration.AssemblyVersioningScheme;
+        public AssemblyFileVersioningScheme? AssemblyFileVersioningScheme => configuration.AssemblyFileVersioningScheme;
+        public string? AssemblyInformationalFormat => configuration.AssemblyInformationalFormat;
+        public string? AssemblyVersioningFormat => configuration.AssemblyVersioningFormat;
+        public string? AssemblyFileVersioningFormat => configuration.AssemblyFileVersioningFormat;
+        public int? TagPreReleaseWeight => configuration.TagPreReleaseWeight;
+        public string? CommitDateFormat => configuration.CommitDateFormat;
+        public bool UpdateBuildNumber => configuration.UpdateBuildNumber;
+        public IReadOnlyDictionary<string, IOutputBranchConfiguration> Branches
+            => configuration.Branches.ToDictionary(element => element.Key, IOutputBranchConfiguration (element) => element.Value);
+        public string? CustomVersionFormat => configuration.CustomVersionFormat;
+        public int? PreReleaseWeight => configuration.PreReleaseWeight;
+    }
 }

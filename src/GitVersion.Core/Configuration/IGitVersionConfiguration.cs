@@ -5,6 +5,12 @@ namespace GitVersion.Configuration;
 /// <summary>Represents the top-level GitVersion configuration, extending branch-level configuration with global settings.</summary>
 public interface IGitVersionConfiguration : IBranchConfiguration
 {
+    /// <summary>Gets the settings that participate in semantic-version calculation.</summary>
+    ICalculationConfiguration Calculation { get; }
+
+    /// <summary>Gets the settings that affect rendered version output.</summary>
+    IOutputConfiguration Output { get; }
+
     /// <summary>Gets the name of the workflow preset (e.g. <c>GitFlow/v1</c> or <c>GitHubFlow/v1</c>) used as a base configuration.</summary>
     string? Workflow { get; }
 

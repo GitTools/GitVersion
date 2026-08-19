@@ -32,8 +32,9 @@ The following supported workflow configurations are available in GitVersion and 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
 ```yaml
-workflow: GitHubFlow/v1
-tag-prefix: '[abc]'
+calculation:
+  workflow: GitHubFlow/v1
+  tag-prefix: '[abc]'
 ```
 
 The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
