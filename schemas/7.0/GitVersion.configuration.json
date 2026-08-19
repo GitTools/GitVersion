@@ -124,7 +124,7 @@
           },
           "regex": {
             "format": "regex",
-            "description": "The regular expression pattern to use to match this branch.",
+            "description": "The regular expression pattern to use to match this branch. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
             "type": [
               "null",
               "string"
@@ -195,7 +195,7 @@
           ]
         },
         "paths": {
-          "description": "A sequence of file paths to be excluded from the version calculations.",
+          "description": "A sequence of regular expressions matching file paths to be excluded from the version calculations. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
           "$ref": "#/$defs/hashSetOfString"
         },
         "sha": {
@@ -203,7 +203,7 @@
           "$ref": "#/$defs/hashSetOfString"
         },
         "tags": {
-          "description": "A sequence of regular expressions matching friendly tag names to be excluded as version sources.",
+          "description": "A sequence of regular expressions matching friendly tag names to be excluded as version sources. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
           "$ref": "#/$defs/hashSetOfString"
         }
       }
@@ -239,7 +239,7 @@
     },
     "major-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '[+=]semver:\\s?(breaking|major)'",
+      "description": "The regular expression to match commit messages with to perform a major version increment. Defaults to '[+=]semver:\\s?(breaking|major)'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "[+=]semver:\\s?(breaking|major)",
       "type": [
         "null",
@@ -247,7 +247,7 @@
       ]
     },
     "merge-message-formats": {
-      "description": "Custom merge message formats to enable identification of merge messages that do not follow the built-in conventions.",
+      "description": "Custom regular expression merge message formats to enable identification of merge messages that do not follow the built-in conventions. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "type": "object",
       "additionalProperties": {
         "type": "string"
@@ -255,7 +255,7 @@
     },
     "minor-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '[+=]semver:\\s?(feature|minor)'",
+      "description": "The regular expression to match commit messages with to perform a minor version increment. Defaults to '[+=]semver:\\s?(feature|minor)'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "[+=]semver:\\s?(feature|minor)",
       "type": [
         "null",
@@ -280,7 +280,7 @@
     },
     "no-bump-message": {
       "format": "regex",
-      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '[+=]semver:\\s?(none|skip)'",
+      "description": "Used to tell GitVersion not to increment when in Mainline development mode. Defaults to '[+=]semver:\\s?(none|skip)'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "[+=]semver:\\s?(none|skip)",
       "type": [
         "null",
@@ -289,7 +289,7 @@
     },
     "patch-version-bump-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '[+=]semver:\\s?(fix|patch)'",
+      "description": "The regular expression to match commit messages with to perform a patch version increment. Defaults to '[+=]semver:\\s?(fix|patch)'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "[+=]semver:\\s?(fix|patch)",
       "type": [
         "null",
@@ -309,7 +309,7 @@
     },
     "regex": {
       "format": "regex",
-      "description": "The regular expression pattern to use to match this branch.",
+      "description": "The regular expression pattern to use to match this branch. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "type": [
         "null",
         "string"
@@ -352,7 +352,7 @@
     },
     "tag-prefix": {
       "format": "regex",
-      "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'",
+      "description": "A regular expression which is used to trim Git tags before processing. Defaults to '[vV]?'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "[vV]?",
       "type": [
         "null",
@@ -387,7 +387,7 @@
     },
     "version-bump-reset-message": {
       "format": "regex",
-      "description": "The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '=semver:'",
+      "description": "The regular expression to match commit messages that reset the version bump baseline and suppress the configured branch increment. Defaults to '=semver:'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "=semver:",
       "type": [
         "null",
@@ -396,7 +396,7 @@
     },
     "version-in-branch-pattern": {
       "format": "regex",
-      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'.",
+      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). Defaults to '(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*'. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
       "default": "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*",
       "type": [
         "null",

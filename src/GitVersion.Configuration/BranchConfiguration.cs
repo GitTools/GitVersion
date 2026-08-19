@@ -42,7 +42,7 @@ internal record BranchConfiguration : IBranchConfiguration
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
     [JsonPropertyName("regex")]
-    [JsonPropertyDescription("The regular expression pattern to use to match this branch.")]
+    [JsonPropertyDescription("The regular expression pattern to use to match this branch. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
     [JsonPropertyFormat(Format.Regex)]
     public string? RegularExpression { get; set; }
 
