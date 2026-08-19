@@ -250,6 +250,38 @@ the search for a [version source][version-sources], not when calculating other
 parts of the version number, such as build metadata.
 :::
 
+#### branches
+
+A sequence of regular expressions matching branch names that should not be
+used as [version sources][version-sources]. Patterns are matched
+case-insensitively against the friendly branch name. For remote-tracking
+branches, the remote name is removed first, so the same pattern matches both
+`release/legacy` and `upstream/release/legacy`. Multiple patterns use OR
+semantics, and `^` and `$` can be used to anchor a match. To require
+case-sensitive matching, prefix a pattern with `(?-i)`.
+
+```yaml
+ignore:
+  branches:
+    - ^experimental/
+    - ^release/legacy$
+```
+
+The current branch and an explicitly requested target branch remain available
+for version calculation even when they match an ignore pattern. During dynamic
+repository normalization, ignored remote-tracking branches are not created or
+updated as local branches, except when the ignored branch is the requested
+target. Ignoring a branch does not exclude commits that are also reachable from
+other references.
+
+Ignored branches remain available as parent branches when GitVersion resolves
+an inherited branch configuration. This preserves the branching configuration
+model without making the ignored reference eligible for auxiliary main-branch
+or release-branch version-source discovery.
+
+Branch exclusions are applied after remote references are fetched. They do not
+prevent GitVersion from fetching an ignored branch from its remote.
+
 #### commits-before
 
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:

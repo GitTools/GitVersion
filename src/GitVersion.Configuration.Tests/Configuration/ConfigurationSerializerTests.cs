@@ -1,5 +1,3 @@
-using GitVersion.VersionCalculation;
-
 namespace GitVersion.Configuration.Tests;
 
 [TestFixture]

@@ -5,24 +5,35 @@ using GitVersion.Git;
 
 namespace GitVersion;
 
-internal class SourceBranchFinder(IEnumerable<IBranch> excludedBranches, IGitVersionConfiguration configuration)
+internal class SourceBranchFinder(
+    IEnumerable<IBranch> excludedBranches,
+    IGitVersionConfiguration configuration,
+    bool excludeIgnoredBranches)
 {
     private readonly IGitVersionConfiguration configuration = configuration.NotNull();
     private readonly IEnumerable<IBranch> excludedBranches = excludedBranches.NotNull();
 
     public IEnumerable<IBranch> FindSourceBranchesOf(IBranch branch)
     {
-        var predicate = new SourceBranchPredicate(branch, this.configuration);
+        var predicate = new SourceBranchPredicate(branch, this.configuration, excludeIgnoredBranches);
         return this.excludedBranches.Where(predicate.IsSourceBranch);
     }
 
-    private sealed class SourceBranchPredicate(IBranch branch, IGitVersionConfiguration configuration)
+    private sealed class SourceBranchPredicate(
+        IBranch branch,
+        IGitVersionConfiguration configuration,
+        bool excludeIgnoredBranches)
     {
         private readonly IEnumerable<Regex> sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
 
         public bool IsSourceBranch(INamedReference sourceBranchCandidate)
         {
             if (Equals(sourceBranchCandidate, branch))
+            {
+                return false;
+            }
+
+            if (excludeIgnoredBranches && configuration.Ignore.IsBranchIgnored(sourceBranchCandidate.Name))
             {
                 return false;
             }

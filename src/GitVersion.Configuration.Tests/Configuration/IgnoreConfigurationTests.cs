@@ -49,6 +49,17 @@ public class IgnoreConfigurationTests : TestBase
     }
 
     [Test]
+    public void CanDeserializeCompactBranchesSequence()
+    {
+        const string yaml = "ignore:\n  branches: ['^legacy/', '^release/old$']";
+
+        var configuration = this.serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.Ignore.Branches.ShouldBe(["^legacy/", "^release/old$"]);
+    }
+
+    [Test]
     public void CanDeserializeCompactTagsSequence()
     {
         const string yaml = "ignore:\n  tags: ['^preview-', '^v0\\.']";
@@ -57,6 +68,26 @@ public class IgnoreConfigurationTests : TestBase
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.Tags.ShouldBe(["^preview-", "^v0\\."]);
+    }
+
+    [Test]
+    public void CanDeserializeMultilineBranchesAndTagsSequences()
+    {
+        const string yaml =
+            """
+            ignore:
+                branches:
+                    - ^legacy/
+                    - ^release/old$
+                tags:
+                    - ^preview-
+            """;
+
+        var configuration = this.serializer.ReadConfiguration(yaml);
+
+        configuration.ShouldNotBeNull();
+        configuration.Ignore.Branches.ShouldBe(["^legacy/", "^release/old$"]);
+        configuration.Ignore.Tags.ShouldBe(["^preview-"]);
     }
 
     [Test]
@@ -86,9 +117,18 @@ public class IgnoreConfigurationTests : TestBase
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
         configuration.Ignore.Before.ShouldBe(null);
+        configuration.Ignore.Branches.ShouldBeEmpty();
         configuration.Ignore.Paths.ShouldBeEmpty();
         configuration.Ignore.Shas.ShouldBeEmpty();
         configuration.Ignore.Tags.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void IsEmpty_WhenBranchPatternIsConfigured_ReturnsFalse()
+    {
+        var ignoreConfig = new IgnoreConfiguration { Branches = ["^legacy/"] };
+
+        ignoreConfig.IsEmpty.ShouldBeFalse();
     }
 
     [Test]
@@ -97,6 +137,19 @@ public class IgnoreConfigurationTests : TestBase
         var ignoreConfig = new IgnoreConfiguration { Tags = ["^preview-"] };
 
         ignoreConfig.IsEmpty.ShouldBeFalse();
+    }
+
+    [Test]
+    public void InvalidIgnoreBranchExpression_ThrowsConfigurationExceptionWithPropertyAndPattern()
+    {
+        const string invalidExpression = "[invalid";
+
+        var exception = Should.Throw<ConfigurationException>(() => GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = [invalidExpression] })
+            .Build());
+
+        exception.Message.ShouldContain("ignore.branches");
+        exception.Message.ShouldContain(invalidExpression);
     }
 
     [Test]
@@ -113,6 +166,17 @@ public class IgnoreConfigurationTests : TestBase
     }
 
     [Test]
+    public void Serialize_IgnoreBranchPatterns_UsesBranchesPropertyName()
+    {
+        var ignoreConfig = new IgnoreConfiguration { Branches = ["^legacy/"] };
+
+        var yaml = this.serializer.Serialize(ignoreConfig);
+
+        yaml.ShouldContain("branches:");
+        yaml.ShouldContain("^legacy/");
+    }
+
+    [Test]
     public void Serialize_IgnoreTagPatterns_UsesTagsPropertyName()
     {
         var ignoreConfig = new IgnoreConfiguration { Tags = ["^preview-"] };
@@ -121,6 +185,14 @@ public class IgnoreConfigurationTests : TestBase
 
         yaml.ShouldContain("tags:");
         yaml.ShouldContain("^preview-");
+    }
+
+    [Test]
+    public void IgnoreConfigurationBuilder_WithBranches_PreservesCollection()
+    {
+        var ignoreConfig = IgnoreConfigurationBuilder.New.WithBranches("^legacy/", "^release/old$").Build();
+
+        ignoreConfig.Branches.ShouldBe(["^legacy/", "^release/old$"]);
     }
 
     [Test]

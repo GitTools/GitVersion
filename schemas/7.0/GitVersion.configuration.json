@@ -186,6 +186,10 @@
       "description": "The header property for the ignore configuration.",
       "type": "object",
       "properties": {
+        "branches": {
+          "description": "A sequence of regular expressions matching branch names without the remote prefix to be excluded as version sources. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.",
+          "$ref": "#/$defs/hashSetOfString"
+        },
         "commits-before": {
           "format": "date-time",
           "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",

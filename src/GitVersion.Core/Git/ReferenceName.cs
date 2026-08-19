@@ -38,6 +38,7 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
 
         Friendly = Shorten();
         WithoutOrigin = RemoveOrigin();
+        WithoutRemote = RemoveRemote();
     }
 
     /// <summary>Parses <paramref name="canonicalName"/> as a canonical Git reference name, throwing when the input is not a valid canonical form.</summary>
@@ -65,6 +66,9 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
 
     /// <summary>Gets the friendly name with the <c>origin/</c> prefix removed for remote-tracking branches.</summary>
     public string WithoutOrigin { get; }
+
+    /// <summary>Gets the friendly name with the remote name removed for remote-tracking branches.</summary>
+    public string WithoutRemote { get; }
 
     /// <summary>Gets a value indicating whether this is a local branch reference.</summary>
     public bool IsLocalBranch { get; }
@@ -150,6 +154,20 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
         if (IsRemoteBranch && !IsPullRequest && Friendly.StartsWith(OriginPrefix, StringComparison.Ordinal))
         {
             return Friendly[OriginPrefix.Length..];
+        }
+
+        return Friendly;
+    }
+
+    private string RemoveRemote()
+    {
+        if (IsRemoteBranch && !IsPullRequest)
+        {
+            var separatorIndex = Friendly.IndexOf('/');
+            if (separatorIndex >= 0)
+            {
+                return Friendly[(separatorIndex + 1)..];
+            }
         }
 
         return Friendly;

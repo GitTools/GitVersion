@@ -3,7 +3,9 @@ GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> strin
 GitVersion.Configuration.EffectiveConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.VersionBumpResetMessage.get -> string?
+GitVersion.Configuration.IIgnoreConfiguration.Branches.get -> System.Collections.Generic.IReadOnlySet<string!>!
 GitVersion.Configuration.IIgnoreConfiguration.Tags.get -> System.Collections.Generic.IReadOnlySet<string!>!
+GitVersion.Git.ReferenceName.WithoutRemote.get -> string!
 GitVersion.VersionCalculation.CommitMessageIncrement
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement() -> void
 GitVersion.VersionCalculation.CommitMessageIncrement.CommitMessageIncrement(GitVersion.VersionField Increment, bool VersionBumpNeedsToBeReset) -> void

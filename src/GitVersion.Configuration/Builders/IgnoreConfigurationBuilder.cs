@@ -6,6 +6,8 @@ internal sealed class IgnoreConfigurationBuilder
 
     private DateTimeOffset? before;
 
+    private HashSet<string> branches = [];
+
     private HashSet<string> shas = [];
 
     private HashSet<string> tags = [];
@@ -13,6 +15,24 @@ internal sealed class IgnoreConfigurationBuilder
     public IgnoreConfigurationBuilder WithBefore(DateTimeOffset? value)
     {
         this.before = value;
+        return this;
+    }
+
+    public IgnoreConfigurationBuilder WithBranches(IEnumerable<string> values)
+    {
+        WithBranches(new HashSet<string>(values));
+        return this;
+    }
+
+    public IgnoreConfigurationBuilder WithBranches(params string[] values)
+    {
+        WithBranches(new HashSet<string>(values));
+        return this;
+    }
+
+    public IgnoreConfigurationBuilder WithBranches(HashSet<string> value)
+    {
+        this.branches = value;
         return this;
     }
 
@@ -55,6 +75,7 @@ internal sealed class IgnoreConfigurationBuilder
     public IIgnoreConfiguration Build() => new IgnoreConfiguration
     {
         Before = this.before,
+        Branches = this.branches,
         Shas = this.shas,
         Tags = this.tags
     };

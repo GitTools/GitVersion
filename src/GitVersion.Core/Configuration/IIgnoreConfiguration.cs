@@ -6,6 +6,9 @@ public interface IIgnoreConfiguration
     /// <summary>Gets the cut-off date before which commits are ignored; <see langword="null"/> means no date filter is applied.</summary>
     DateTimeOffset? Before { get; }
 
+    /// <summary>Gets the regular expressions matching branch names that should be excluded as version sources.</summary>
+    IReadOnlySet<string> Branches { get; }
+
     /// <summary>Gets the set of file paths whose changes should be ignored during version calculation.</summary>
     IReadOnlySet<string> Paths { get; }
 

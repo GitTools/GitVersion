@@ -117,7 +117,8 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
         var referenceLookup = this.repository.References.ToLookup(r => r.TargetIdentifier);
 
-        var commitBranches = FindCommitBranchesBranchedFrom(branch, configuration, excludedBranches).ToHashSet();
+        var commitBranches = FindCommitBranchesBranchedFrom(
+            branch, configuration, excludedBranches, excludeIgnoredBranches: false).ToHashSet();
 
         var ignore = CollectIgnoredMergeCommitBranches(branch, commitBranches);
 
@@ -214,7 +215,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
             }
 
             var possibleBranches =
-                new MergeCommitFinder(this, configuration, excludedBranches, this.logger)
+                new MergeCommitFinder(this, configuration, excludedBranches, this.logger, excludeIgnoredBranches: true)
                     .FindMergeCommitsFor(branch)
                     .ToList();
 
@@ -239,7 +240,8 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
     public IEnumerable<BranchCommit> FindCommitBranchesBranchedFrom(
             IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
-        => FindCommitBranchesBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+        => FindCommitBranchesBranchedFrom(
+            branch, configuration, excludedBranches, excludeIgnoredBranches: true);
 
     public IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore)
     {
@@ -301,13 +303,17 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
     private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
     private List<BranchCommit> FindCommitBranchesBranchedFrom(
-        IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+        IBranch branch,
+        IGitVersionConfiguration configuration,
+        IEnumerable<IBranch> excludedBranches,
+        bool excludeIgnoredBranches)
     {
         using (this.logger.StartIndentedScope($"Finding branches source of '{branch}'"))
         {
             if (branch.Tip != null)
             {
-                return [.. new MergeCommitFinder(this, configuration, excludedBranches, this.logger).FindMergeCommitsFor(branch)];
+                return [.. new MergeCommitFinder(
+                    this, configuration, excludedBranches, this.logger, excludeIgnoredBranches).FindMergeCommitsFor(branch)];
             }
 
             this.logger.LogWarning("Branch {Branch} has no tip.", branch);
