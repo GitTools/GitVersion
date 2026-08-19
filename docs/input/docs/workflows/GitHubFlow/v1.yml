@@ -80,6 +80,7 @@ branches:
 commit-date-format: yyyy-MM-dd
 commit-message-incrementing: Enabled
 ignore:
+  branches: []
   paths: []
   sha: []
   tags: []

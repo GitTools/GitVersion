@@ -8,7 +8,8 @@ internal class MergeCommitFinder(
     IRepositoryStore repositoryStore,
     IGitVersionConfiguration configuration,
     IEnumerable<IBranch> excludedBranches,
-    ILogger logger)
+    ILogger logger,
+    bool excludeIgnoredBranches)
 {
     private readonly IEnumerable<IBranch> branches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -37,7 +38,7 @@ internal class MergeCommitFinder(
 
     private IEnumerable<BranchCommit> FindMergeBases(IBranch branch)
     {
-        var sourceBranches = new SourceBranchFinder(this.branches, this.configuration)
+        var sourceBranches = new SourceBranchFinder(this.branches, this.configuration, excludeIgnoredBranches)
             .FindSourceBranchesOf(branch);
 
         foreach (var sourceBranch in sourceBranches)

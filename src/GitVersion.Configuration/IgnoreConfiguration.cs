@@ -17,6 +17,12 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
         set => Before = value is null ? null : DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
     }
 
+    IReadOnlySet<string> IIgnoreConfiguration.Branches => Branches;
+
+    [JsonPropertyName("branches")]
+    [JsonPropertyDescription("A sequence of regular expressions matching branch names without the remote prefix to be excluded as version sources. Matching is case-insensitive by default; use (?-i) to enable case-sensitive matching.")]
+    public HashSet<string> Branches { get; set; } = [];
+
     IReadOnlySet<string> IIgnoreConfiguration.Paths => Paths;
 
     [JsonPropertyName("paths")]
@@ -37,5 +43,5 @@ internal record IgnoreConfiguration : IIgnoreConfiguration
     public HashSet<string> Tags { get; set; } = [];
 
     [JsonIgnore]
-    public bool IsEmpty => Before == null && Paths.Count == 0 && Shas.Count == 0 && Tags.Count == 0;
+    public bool IsEmpty => Before == null && Branches.Count == 0 && Paths.Count == 0 && Shas.Count == 0 && Tags.Count == 0;
 }

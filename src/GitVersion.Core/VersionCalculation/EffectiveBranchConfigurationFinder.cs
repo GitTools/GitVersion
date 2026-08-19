@@ -82,7 +82,7 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
             return null;
         }
 
-        var targetBranch = new SourceBranchFinder(this.repositoryStore.Branches, configuration)
+        var targetBranch = new SourceBranchFinder(this.repositoryStore.Branches, configuration, excludeIgnoredBranches: false)
             .FindSourceBranchesOf(branch)
             .Where(candidate => candidate.Name.EquivalentTo(mergeMessage.TargetBranch))
             .MinBy(candidate => candidate.IsRemote);

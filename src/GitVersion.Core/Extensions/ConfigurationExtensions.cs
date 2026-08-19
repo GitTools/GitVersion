@@ -116,6 +116,15 @@ internal static class ConfigurationExtensions
 
             return !ignoreConfig.IsEmpty ? source.Where(element => ShouldBeIncluded(element, ignoreConfig)) : source;
         }
+
+        public bool IsBranchIgnored(ReferenceName branchName)
+        {
+            ignoreConfig.NotNull();
+            branchName.NotNull();
+
+            return ignoreConfig.Branches.Any(expression =>
+                RegexPatterns.Cache.GetOrAdd(expression).IsMatch(branchName.WithoutRemote));
+        }
     }
 
     private static bool IsTagIgnored(string tagName, IIgnoreConfiguration ignore)

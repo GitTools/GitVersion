@@ -26,6 +26,11 @@ internal sealed class BranchRepository(IRepositoryStore repositoryStore) : IBran
                 continue;
             }
 
+            if (configuration.Ignore.IsBranchIgnored(branch.Name))
+            {
+                continue;
+            }
+
             var branchConfiguration = configuration.GetBranchConfiguration(branch.Name);
             if (predicate(branchConfiguration))
             {

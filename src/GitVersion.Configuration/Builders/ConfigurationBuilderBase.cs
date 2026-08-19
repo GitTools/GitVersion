@@ -476,6 +476,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     private static void ValidateConfiguration(IGitVersionConfiguration configuration)
     {
+        ValidateIgnoreExpressions("ignore.branches", configuration.Ignore.Branches);
         ValidateIgnoreExpressions("ignore.tags", configuration.Ignore.Tags);
 
         foreach (var (name, branchConfiguration) in configuration.Branches)

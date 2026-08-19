@@ -174,6 +174,7 @@ branches:
 commit-date-format: yyyy-MM-dd
 commit-message-incrementing: Enabled
 ignore:
+  branches: []
   paths: []
   sha: []
   tags: []
@@ -211,7 +212,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L169' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L170' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -301,6 +302,7 @@ branches:
 commit-date-format: yyyy-MM-dd
 commit-message-incrementing: Enabled
 ignore:
+  branches: []
   paths: []
   sha: []
   tags: []
@@ -338,7 +340,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L119' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -417,6 +419,7 @@ branches:
 commit-date-format: yyyy-MM-dd
 commit-message-incrementing: Enabled
 ignore:
+  branches: []
   paths: []
   sha: []
   tags: []
@@ -450,7 +453,7 @@ update-build-number: true
 version-bump-reset-message: "=semver:"
 version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L104' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
@@ -654,6 +657,38 @@ The header property for the `ignore` configuration.
 the search for a [version source][version-sources], not when calculating other
 parts of the version number, such as build metadata.
 :::
+
+#### branches
+
+A sequence of regular expressions matching branch names that should not be
+used as [version sources][version-sources]. Patterns are matched
+case-insensitively against the friendly branch name. For remote-tracking
+branches, the remote name is removed first, so the same pattern matches both
+`release/legacy` and `upstream/release/legacy`. Multiple patterns use OR
+semantics, and `^` and `$` can be used to anchor a match. To require
+case-sensitive matching, prefix a pattern with `(?-i)`.
+
+```yaml
+ignore:
+  branches:
+    - ^experimental/
+    - ^release/legacy$
+```
+
+The current branch and an explicitly requested target branch remain available
+for version calculation even when they match an ignore pattern. During dynamic
+repository normalization, ignored remote-tracking branches are not created or
+updated as local branches, except when the ignored branch is the requested
+target. Ignoring a branch does not exclude commits that are also reachable from
+other references.
+
+Ignored branches remain available as parent branches when GitVersion resolves
+an inherited branch configuration. This preserves the branching configuration
+model without making the ignored reference eligible for auxiliary main-branch
+or release-branch version-source discovery.
+
+Branch exclusions are applied after remote references are fetched. They do not
+prevent GitVersion from fetching an ignored branch from its remote.
 
 #### commits-before
 

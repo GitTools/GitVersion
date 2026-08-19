@@ -1,4 +1,5 @@
 using GitVersion.Agents;
+using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
 using LibGit2Sharp;
 
@@ -69,6 +70,99 @@ public class RemoteRepositoryScenarios : TestBase
 
         fixture.AssertFullSemver("1.0.0-beta.1+10");
         fixture.AssertFullSemver("1.0.0-beta.1+10", repository: fixture.LocalRepositoryFixture.Repository);
+    }
+
+    [Test]
+    public void GivenIgnoredRemoteBranch_WhenNormalizing_DoesNotCreateOrUpdateItsLocalBranch()
+    {
+        using var fixture = new RemoteRepositoryFixture(
+            path =>
+            {
+                Repository.Init(path);
+                var repository = new Repository(path);
+                repository.MakeCommits(2);
+                repository.CreateBranch("legacy/old");
+                repository.CreateBranch("feature/keep");
+                return repository;
+            });
+
+        var localRepository = fixture.LocalRepositoryFixture.Repository;
+        var ignoredRemoteBranch = localRepository.Branches["origin/legacy/old"];
+        ignoredRemoteBranch.ShouldNotBeNull();
+        var ignoredLocalBranch = localRepository.CreateBranch("legacy/old", ignoredRemoteBranch.Tip);
+        var originalIgnoredTip = ignoredLocalBranch.Tip.Sha;
+
+        Commands.Checkout(fixture.Repository, "legacy/old");
+        fixture.Repository.MakeACommit();
+
+        var gitVersionOptions = new GitVersionOptions
+        {
+            WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
+            Settings = { NoNormalize = false, NoFetch = false }
+        };
+        var options = Options.Create(gitVersionOptions);
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = ["^legacy/"] })
+            .Build();
+        var configurationProvider = Substitute.For<IConfigurationProvider>();
+        configurationProvider.Provide(Arg.Any<IReadOnlyDictionary<object, object?>?>()).Returns(configuration);
+
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+            services.AddSingleton(configurationProvider);
+        });
+        sp.DiscoverRepository();
+
+        sp.GetRequiredService<IGitPreparer>().Prepare();
+
+        localRepository.Branches["legacy/old"].Tip.Sha.ShouldBe(originalIgnoredTip);
+        localRepository.Branches["feature/keep"].ShouldNotBeNull();
+    }
+
+    [Test]
+    public void GivenTargetBranchMatchesIgnorePattern_WhenNormalizing_CreatesTargetBranch()
+    {
+        const string targetBranch = "legacy/target";
+        using var fixture = new RemoteRepositoryFixture(
+            path =>
+            {
+                Repository.Init(path);
+                var repository = new Repository(path);
+                repository.MakeCommits(2);
+                repository.CreateBranch(targetBranch);
+                return repository;
+            });
+
+        var gitVersionOptions = new GitVersionOptions
+        {
+            WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
+            RepositoryInfo = { TargetBranch = targetBranch },
+            Settings = { NoNormalize = false, NoFetch = false }
+        };
+        var options = Options.Create(gitVersionOptions);
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = ["^legacy/"] })
+            .Build();
+        var configurationProvider = Substitute.For<IConfigurationProvider>();
+        configurationProvider.Provide(Arg.Any<IReadOnlyDictionary<object, object?>?>()).Returns(configuration);
+
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+            services.AddSingleton(configurationProvider);
+        });
+        sp.DiscoverRepository();
+
+        sp.GetRequiredService<IGitPreparer>().Prepare();
+
+        fixture.LocalRepositoryFixture.Repository.Branches[targetBranch].ShouldNotBeNull();
     }
 
     [Test]
