@@ -47,6 +47,13 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         return YamlSerializer.Serialize(OrderProperties(configuration), SerializerOptions);
     }
 
+    public string SerializeDocument(IReadOnlyDictionary<object, object?> document)
+    {
+        var yaml = SerializeLegacy(document);
+        var configuration = YamlSerializer.Deserialize<Dictionary<string, object?>>(yaml, SerializerOptions) ?? [];
+        return YamlSerializer.Serialize(OrderProperties(configuration), SerializerOptions);
+    }
+
     public static IGitVersionConfiguration? ReadConfiguration(string input)
         => DeserializeConfiguration(input, ConfigurationVersionSelector.Resolve(), "configuration document");
 
