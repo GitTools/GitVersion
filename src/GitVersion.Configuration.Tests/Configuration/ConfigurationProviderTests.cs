@@ -440,14 +440,14 @@ public class ConfigurationProviderTests : TestBase
     }
 
     [Test]
-    public void NoWarnOnGitVersionYmlFile()
+    public void WarnsOnceWhenExplicitV6LoadsAConfigurationFile()
     {
         const string text = "";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
 
-        var stringLogger = string.Empty;
+        var logMessages = new List<string>();
 
-        var loggerFactory = new TestLoggerFactory(message => stringLogger = message);
+        var loggerFactory = new TestLoggerFactory(logMessages.Add);
 
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
         var sp = ConfigureServices(services =>
@@ -458,9 +458,37 @@ public class ConfigurationProviderTests : TestBase
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
         this.configurationProvider.ProvideForDirectory(this.repoPath);
+        this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         var filePath = FileSystemHelper.Path.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
-        stringLogger.ShouldContain($"Using configuration file '{filePath}'");
+        logMessages.ShouldContain(message => message.Contains($"Configuration file '{filePath}' uses the temporary v6 compatibility mode.", StringComparison.Ordinal));
+        logMessages.Count(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal)).ShouldBe(1);
+        logMessages.ShouldContain(message => message.Contains("GitVersion 7.1", StringComparison.Ordinal));
+        logMessages.ShouldContain(message => message.Contains("gitversion config migrate", StringComparison.Ordinal));
+    }
+
+    [Test]
+    public void DoesNotWarnWhenExplicitV6ConfigurationFailsNormalization()
+    {
+        const string text = """
+                            calculation:
+                              next-version: 2.0.0
+                            output: {}
+                            """;
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        var logMessages = new List<string>();
+        var loggerFactory = new TestLoggerFactory(logMessages.Add);
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            loggerFactory.RegisterWith(services);
+        });
+        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
+
+        Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
+
+        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
     }
 
     [Test]
