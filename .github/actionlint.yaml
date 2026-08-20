@@ -5,3 +5,9 @@ paths:
       # https://github.com/rhysd/actionlint/issues/711
       - 'reusable workflow call "\$/.+" at "uses" is not following the format'
       - 'specifying action "\$/.+" in invalid format because ref is missing'
+  .github/workflows/{_artifacts_linux,_docker}.yml:
+    ignore:
+      # TODO: Remove when actionlint supports GitHub Actions background steps.
+      # https://github.com/rhysd/actionlint/issues/693
+      - 'unexpected key "background" for step to execute action'
+      - 'step must run script with "run" section or run action with "uses" section'
