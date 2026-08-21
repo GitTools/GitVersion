@@ -149,6 +149,28 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.AssertFullSemver("1.0.1-4", configuration);
     }
 
+    [Test]
+    public void NewerMergedSourceResetDiscardsEarlierTargetDirective()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(false)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementWhenBranchMerged(false)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit("Breaking change +semver: major");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit("Hotfix =semver: patch");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void IncludesTargetIncrementForTargetCommit(bool commitAfterMerge)
