@@ -64,7 +64,9 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
         foreach (var sourceBranch in sourceBranches)
         {
             foreach (var effectiveConfiguration
-                in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches, resolvePullRequestTarget: false))
+                in GetEffectiveConfigurationsRecursive(
+                    sourceBranch, configuration, branchConfiguration,
+                    new(traversedBranches, traversedBranches.Comparer), resolvePullRequestTarget: false))
             {
                 yield return effectiveConfiguration;
             }
