@@ -482,6 +482,33 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void HonorsMainBranchFlagInheritedFromSourceBranch()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("develop")
+                .WithPreventIncrementOfMergedBranch(true)
+                .WithIsMainBranch(null)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithIsMainBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+                .WithIsMainBranch(false)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.CreateBranch("develop");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.1.0-2", configuration);
+    }
+
+    [Test]
     public void RetainsIgnoredCurrentTargetAsHistoricalSource()
     {
         var configuration = GitFlowConfigurationBuilder.New
