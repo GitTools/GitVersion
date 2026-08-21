@@ -123,6 +123,31 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.AssertFullSemver("1.1.0-4", configuration);
     }
 
+    [Test]
+    public void LatestMergedSourceResetDiscardsEarlierMergedIncrement()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit("Breaking change +semver: major");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit("Hotfix =semver: patch");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-4", configuration);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void IncludesTargetIncrementForTargetCommit(bool commitAfterMerge)
@@ -219,6 +244,120 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void UsesInheritedPreventIncrementWhenBranchMergedSetting()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithPreventIncrementWhenBranchMerged(false)
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+                .WithPreventIncrementWhenBranchMerged(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithPreventIncrementWhenBranchMerged(null)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
+    [Test]
+    public void ScoresLocalAndRemoteInheritedSourceBranchesBeforePreferringLocal()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("integration", builder => builder
+                .WithRegularExpression("^(origin/)?integration$")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("main", "develop")
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("integration")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        var developTip = fixture.MakeACommit();
+        fixture.BranchTo("integration");
+        fixture.MakeACommit();
+        fixture.Repository.Refs.Add(
+            "refs/remotes/origin/integration", fixture.Repository.Lookup(developTip).Id);
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.Remove("integration");
+        fixture.MakeACommit();
+        fixture.BranchTo("integration");
+        fixture.MakeACommit();
+        fixture.Checkout("feature/foo");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.1.0-5", configuration);
+    }
+
+    [Test]
+    public void HonorsPreventIncrementForTaggedMergedSourceTip()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementWhenCurrentCommitTagged(true)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeATaggedCommit("2.0.0");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.0-1", configuration);
+    }
+
+    [Test]
+    public void RetainsTargetAsPossibleHistoricalSourceBranch()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("main", "develop")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
+    [Test]
     public void ResolvesInheritedIncrementFromHistoricalMergedBranchTip()
     {
         var configuration = GitFlowConfigurationBuilder.New
@@ -272,6 +411,38 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.MergeTo("main");
         fixture.Checkout("feature/foo");
         fixture.MergeTo("support", removeBranchAfterMerging: true);
+        fixture.Checkout("main");
+
+        fixture.AssertFullSemver("1.1.0-3", configuration);
+    }
+
+    [Test]
+    public void ResolvesRetainedInheritedBranchFromHistoricalSource()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("support", builder => builder
+                .WithRegularExpression("^support$")
+                .WithIncrement(IncrementStrategy.Major)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("develop", "support")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.CreateBranch("support");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main");
+        fixture.Checkout("feature/foo");
+        fixture.MergeTo("support");
         fixture.Checkout("main");
 
         fixture.AssertFullSemver("1.1.0-3", configuration);
