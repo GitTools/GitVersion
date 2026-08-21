@@ -230,16 +230,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+4", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+4", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.1-1+4", configuration);
     }
 
     /// <summary>
@@ -310,16 +302,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+4", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+4", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+4", configuration);
     }
 
     /// <summary>
@@ -1308,16 +1292,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+4", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+4", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.2.1-1+4", configuration);
     }
 
     /// <summary>
@@ -1684,16 +1660,9 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+4", configuration);
-        }
-        else
-        {
-            // ❔ expected: "2.0.1-foo.2+3"
-            fixture.AssertFullSemver("2.0.1-1+4", configuration);
-        }
+        // Mainline: ✅ succeeds as expected
+        // Non-mainline: ❔ expected: "2.0.1-foo.2+3"
+        fixture.AssertFullSemver("2.0.1-1+4", configuration);
     }
 
     /// <summary>
@@ -1764,16 +1733,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+4", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+4", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+4", configuration);
     }
 
     /// <summary>
@@ -2101,16 +2062,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.1-1+6", configuration);
     }
 
     /// <summary>
@@ -2192,16 +2145,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+6", configuration);
     }
 
     /// <summary>
@@ -3450,16 +3395,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.2.1-1+6", configuration);
     }
 
     /// <summary>
@@ -3881,16 +3818,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.1-1+6", configuration);
     }
 
     /// <summary>
@@ -3972,16 +3901,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+6", configuration);
     }
 
     /// <summary>
@@ -4255,16 +4176,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-1+2", configuration);
     }
 
     /// <summary>
@@ -4327,16 +4240,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-1+2", configuration);
     }
 
     /// <summary>
@@ -4575,16 +4480,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.0.1-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.0.1-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1-1+2", configuration);
     }
 
     /// <summary>
@@ -4639,16 +4536,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-1+2", configuration);
     }
 
     /// <summary>
@@ -4703,16 +4592,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-1+2", configuration);
     }
 
     /// <summary>
@@ -4951,16 +4832,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-1+2", configuration);
     }
 
     /// <summary>
@@ -5015,16 +4888,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-1+2", configuration);
     }
 
     /// <summary>
@@ -5215,16 +5080,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.1-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.1-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.1-1+2", configuration);
     }
 
     /// <summary>
@@ -5335,16 +5192,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-1+2", configuration);
     }
 
     /// <summary>
@@ -5535,16 +5384,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-1+2", configuration);
     }
 
     /// <summary>
@@ -5607,16 +5448,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         fixture.Remove("pull/2/merge");
         fixture.MergeNoFF("feature/foo");
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+2", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+2", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-1+2", configuration);
     }
 
     /// <summary>
@@ -6083,16 +5916,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -6197,16 +6022,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+6", configuration);
 
         if (!useMainline)
         {
@@ -8019,16 +7836,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.2.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.2.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -8647,16 +8456,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -8759,16 +8560,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("2.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.1.0-1+6", configuration);
 
         if (!useMainline)
         {
@@ -9326,16 +9119,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -9451,16 +9236,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-1+6", configuration);
 
         if (!useMainline)
         {
@@ -11313,16 +11090,9 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("0.1.1-1+6", configuration);
-        }
-        else
-        {
-            // ❔ not expected
-            fixture.AssertFullSemver("0.1.1-1+6", configuration);
-        }
+        // Mainline: ✅ succeeds as expected
+        // Non-mainline: ❔ not expected
+        fixture.AssertFullSemver("0.1.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -11988,16 +11758,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.0.1-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-1+6", configuration);
 
         if (!useMainline)
         {
@@ -12113,16 +11875,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
 
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
-        if (useMainline)
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+6", configuration);
-        }
-        else
-        {
-            // ✅ succeeds as expected
-            fixture.AssertFullSemver("1.1.0-1+6", configuration);
-        }
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-1+6", configuration);
 
         if (!useMainline)
         {
