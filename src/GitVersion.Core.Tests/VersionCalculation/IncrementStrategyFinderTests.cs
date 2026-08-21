@@ -36,16 +36,33 @@ public class IncrementStrategyFinderTests
 
     private sealed class StubTaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
     {
-        public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
-            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore) =>
+        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersionsOfBranch(
+            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
+        {
+            _ = branch;
+            _ = tagPrefix;
+            _ = format;
+            _ = ignore;
             throw new NotSupportedException();
+        }
 
-        public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
-            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore) =>
+        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersionsOfMergeTarget(
+            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
+        {
+            _ = branch;
+            _ = tagPrefix;
+            _ = format;
+            _ = ignore;
             throw new NotSupportedException();
+        }
 
-        public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(
-            string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore) =>
+        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersions(
+            string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
+        {
+            _ = tagPrefix;
+            _ = format;
+            _ = ignore;
             throw new NotSupportedException();
+        }
     }
 }
