@@ -354,6 +354,27 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void TreatsSelectedSourceTipTagAsTaggedAcrossLabels()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+                .WithPreventIncrementWhenCurrentCommitTagged(true)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeATaggedCommit("2.0.0");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.0-1", configuration);
+    }
+
+    [Test]
     public void IgnoresFutureDatedTagWhenEvaluatingMergedSourceMessages()
     {
         var configuration = GitFlowConfigurationBuilder.New
