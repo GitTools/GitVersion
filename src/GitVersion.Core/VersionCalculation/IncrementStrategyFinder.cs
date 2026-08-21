@@ -260,23 +260,6 @@ internal class IncrementStrategyFinder(
         return result;
     }
 
-    private CommitMessageIncrement? FindCommitMessageIncrement(
-        EffectiveConfiguration configuration, IEnumerable<ICommit> commits, IReadOnlySet<string> commitHistory)
-    {
-        if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
-        {
-            return null;
-        }
-
-        commits = commits.Where(commit => commitHistory.Contains(commit.Sha));
-        if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
-        {
-            commits = commits.Where(commit => commit.Parents.Count > 1);
-        }
-
-        return GetIncrementForCommits(configuration, [.. commits]);
-    }
-
     private bool ShouldIncrementTaggedCommit(
         ICommit commit, ICommit? baseVersionSource, EffectiveConfiguration configuration, string? label) =>
         !commit.Equals(baseVersionSource)
@@ -487,6 +470,23 @@ internal class IncrementStrategyFinder(
         return GetIncrementForCommits(configuration,
             commits: [.. commits]
         );
+    }
+
+    private CommitMessageIncrement? FindCommitMessageIncrement(
+        EffectiveConfiguration configuration, IEnumerable<ICommit> commits, IReadOnlySet<string> commitHistory)
+    {
+        if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
+        {
+            return null;
+        }
+
+        commits = commits.Where(commit => commitHistory.Contains(commit.Sha));
+        if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
+        {
+            commits = commits.Where(commit => commit.Parents.Count > 1);
+        }
+
+        return GetIncrementForCommits(configuration, [.. commits]);
     }
 
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
