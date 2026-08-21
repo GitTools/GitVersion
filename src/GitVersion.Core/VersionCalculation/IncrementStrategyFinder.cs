@@ -382,7 +382,7 @@ internal class IncrementStrategyFinder(
     {
         var candidates = repositoryStore.Branches
             .Where(branch => (!configuration.Ignore.IsBranchIgnored(branch.Name)
-                    || branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin))
+                    || IsCurrentOrLinearMainBranch(branch))
                 && IsConfiguredSourceBranch(branch, mergedBranchConfiguration, configuration));
 
         var closestDistance = int.MaxValue;
@@ -412,6 +412,21 @@ internal class IncrementStrategyFinder(
         return result
             .GroupBy(candidate => candidate.Branch.Name.WithoutOrigin, StringComparer.OrdinalIgnoreCase)
             .Select(group => group.OrderBy(candidate => candidate.Branch.IsRemote).First());
+    }
+
+    private bool IsCurrentOrLinearMainBranch(IBranch branch)
+    {
+        if (branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin))
+        {
+            return true;
+        }
+        if (branch.Tip is not { } tip
+            || !GetEffectiveConfigurations(branch).Any(configuration => configuration.IsMainBranch)
+            || FindFirstParentSource(Context.CurrentCommit, tip) is not { } source)
+        {
+            return false;
+        }
+        return !ContainsMergeCommit(Context.CurrentCommit, source.Distance);
     }
 
     private (ICommit Commit, int Distance)? FindFirstParentSource(
