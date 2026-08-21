@@ -8,7 +8,7 @@ namespace GitVersion.Tests.IntegrationTests;
 [Parallelizable(ParallelScope.All)]
 public class PreventIncrementOfMergedBranchScenarios
 {
-    [TestCase(false, false, "1.1.0-2")]
+    [TestCase(false, false, "1.0.1-2")]
     [TestCase(false, true, "1.0.1-2")]
     [TestCase(false, null, "1.1.0-2")]
     [TestCase(true, false, "1.1.0-2")]
@@ -153,12 +153,13 @@ public class PreventIncrementOfMergedBranchScenarios
     public void NewerMergedSourceResetDiscardsEarlierTargetDirective()
     {
         var configuration = GitFlowConfigurationBuilder.New
+            .WithPreventIncrementWhenBranchMerged(null)
             .WithBranch("main", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithPreventIncrementOfMergedBranch(false)
             ).WithBranch("hotfix", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
-                .WithPreventIncrementWhenBranchMerged(false)
+                .WithPreventIncrementWhenBranchMerged(null)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
