@@ -375,6 +375,31 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void StopsUnrecognizedSideHistoryAtOffFirstParentBase()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Major)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementWhenCurrentCommitTagged(true)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.Repository.MergeNoFF("topic/foo", "Integrate topic");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeATaggedCommit("2.0.0");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.0-1", configuration);
+    }
+
+    [Test]
     public void IgnoresFutureDatedTagWhenEvaluatingMergedSourceMessages()
     {
         var configuration = GitFlowConfigurationBuilder.New
