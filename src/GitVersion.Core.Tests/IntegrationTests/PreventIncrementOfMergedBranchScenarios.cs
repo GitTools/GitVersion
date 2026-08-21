@@ -531,4 +531,43 @@ public class PreventIncrementOfMergedBranchScenarios
 
         fixture.AssertFullSemver("1.1.0-3", configuration);
     }
+
+    [Test]
+    public void ResolvesNestedInheritanceFromHistoricalSourceState()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("support", builder => builder
+                .WithRegularExpression("^support$")
+                .WithIncrement(IncrementStrategy.Major)
+            ).WithBranch("integration", builder => builder
+                .WithRegularExpression("^integration$")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("develop", "support")
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("integration")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.CreateBranch("support");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.BranchTo("integration");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.Checkout("support");
+        fixture.MakeACommit();
+        fixture.MergeTo("integration");
+        fixture.Checkout("main");
+
+        fixture.AssertFullSemver("1.1.0-4", configuration);
+    }
 }
