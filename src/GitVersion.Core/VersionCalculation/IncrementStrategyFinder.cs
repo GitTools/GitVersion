@@ -120,7 +120,7 @@ internal class IncrementStrategyFinder(
         targetIncrement = DetermineIncrementedFieldInternal(
             currentCommit, baseVersionSource, shouldIncrement,
             targetConfiguration, targetLabel,
-            history.Select(item => item.Commit.Sha).ToHashSet());
+            history.SelectMany(item => item.TargetCommits).Select(commit => commit.Sha).ToHashSet());
 
         var targetCommitHistory = GetCommitHistory(
                 targetConfiguration.TagPrefixPattern,
@@ -142,7 +142,7 @@ internal class IncrementStrategyFinder(
 
             if (entry.MergedBranch is not { } mergedBranch)
             {
-                targetSegment.Add(entry.Commit);
+                targetSegment.AddRange(entry.TargetCommits);
                 continue;
             }
 
@@ -204,7 +204,21 @@ internal class IncrementStrategyFinder(
                 mergedBranch = mergeMessage.MergedBranch;
             }
 
-            yield return new(commit, mergedBranch);
+            ICommit[] targetCommits = [commit];
+            if (commit.IsMergeCommit && mergedBranch is null)
+            {
+                var firstParent = commit.Parents[0];
+                targetCommits =
+                [
+                    commit,
+                    .. commit.Parents.Skip(1)
+                        .SelectMany(parent => this.repositoryStore.GetCommitLog(
+                            firstParent, parent, targetConfiguration.Ignore))
+                        .DistinctBy(parent => parent.Sha)
+                ];
+            }
+
+            yield return new(commit, mergedBranch, targetCommits);
         }
     }
 
@@ -379,7 +393,8 @@ internal class IncrementStrategyFinder(
         IGitVersionConfiguration configuration, IRepositoryStore repositoryStore)
     {
         var candidates = repositoryStore.Branches
-            .Where(branch => !configuration.Ignore.IsBranchIgnored(branch.Name)
+            .Where(branch => (!configuration.Ignore.IsBranchIgnored(branch.Name)
+                    || branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin))
                 && IsConfiguredSourceBranch(branch, mergedBranchConfiguration, configuration));
 
         var closestDistance = int.MaxValue;
@@ -442,7 +457,7 @@ internal class IncrementStrategyFinder(
             var closestDistance = int.MaxValue;
             foreach (var branch in this.repositoryStore.Branches)
             {
-                if (Context.Configuration.GetBranchConfiguration(branch.Name).IsMainBranch != true
+                if (!Context.Configuration.GetEffectiveConfiguration(branch.Name).IsMainBranch
                     || branch.Tip is not { } tip
                     || FindFirstParentSource(commit, tip) is not { } source)
                 {
@@ -485,9 +500,9 @@ internal class IncrementStrategyFinder(
                 : sourceIncrement;
         }
 
-        return preventIncrementWhenBranchMerged is null
-            ? new(targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset)
-            : new(targetIncrement, VersionBumpNeedsToBeReset: false);
+        return preventIncrementWhenBranchMerged == true
+            ? new(targetIncrement, VersionBumpNeedsToBeReset: false)
+            : new(targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset);
     }
 
     private readonly record struct MergedBranchIncrement(
@@ -495,7 +510,8 @@ internal class IncrementStrategyFinder(
 
     private readonly record struct HistoricalSourceBranch(IBranch Branch, ICommit Tip);
 
-    private readonly record struct CommitHistoryEntry(ICommit Commit, ReferenceName? MergedBranch);
+    private readonly record struct CommitHistoryEntry(
+        ICommit Commit, ReferenceName? MergedBranch, IReadOnlyList<ICommit> TargetCommits);
 
     private CommitMessageIncrement? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
     {
