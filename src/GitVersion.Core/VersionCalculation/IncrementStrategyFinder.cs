@@ -24,7 +24,7 @@ internal class IncrementStrategyFinder(
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
     private readonly Dictionary<TaggedCommits, IReadOnlySet<string>> targetShasCache = [];
     private readonly Dictionary<VersionBumpResetScan, bool> versionBumpResetCache = [];
-    private readonly Dictionary<string, bool> linearMainBranchHistoryCache = [];
+    private readonly Dictionary<(string Commit, EffectiveConfiguration Target), bool> linearMainBranchHistoryCache = [];
 
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -48,7 +48,7 @@ internal class IncrementStrategyFinder(
         var targetIncrement = DetermineIncrementedFieldInternal(
             currentCommit, baseVersionSource, shouldIncrement, configuration, label);
 
-        if (!configuration.TrackMergeMessage || !HasLinearMainBranchHistory(currentCommit))
+        if (!configuration.TrackMergeMessage || !HasLinearMainBranchHistory(currentCommit, configuration))
         {
             return targetIncrement.Increment;
         }
@@ -448,13 +448,23 @@ internal class IncrementStrategyFinder(
         return null;
     }
 
-    private bool HasLinearMainBranchHistory(ICommit commit) =>
-        this.linearMainBranchHistoryCache.GetOrAdd(commit.Sha, () =>
+    private bool HasLinearMainBranchHistory(ICommit commit, EffectiveConfiguration targetConfiguration)
+    {
+        if (IsPullRequestBranch(Context.CurrentBranch, Context.Configuration))
+        {
+            return false;
+        }
+
+        return this.linearMainBranchHistoryCache.GetOrAdd((commit.Sha, targetConfiguration), () =>
         {
             var closestDistance = int.MaxValue;
             foreach (var branch in this.repositoryStore.Branches)
             {
-                if (!Context.Configuration.GetEffectiveConfiguration(branch.Name).IsMainBranch
+                var isCurrentBranch = branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin);
+                var isMainBranch = isCurrentBranch
+                    ? targetConfiguration.IsMainBranch
+                    : GetEffectiveConfigurations(branch).Any(configuration => configuration.IsMainBranch);
+                if (!isMainBranch
                     || branch.Tip is not { } tip
                     || FindFirstParentSource(commit, tip) is not { } source)
                 {
@@ -478,6 +488,12 @@ internal class IncrementStrategyFinder(
             }
             return true;
         });
+    }
+
+    private static bool IsPullRequestBranch(IBranch branch, IGitVersionConfiguration configuration) =>
+        branch.Name.IsPullRequest
+        || configuration.Branches.TryGetValue(ConfigurationConstants.PullRequestBranchKey, out var pullRequestConfiguration)
+        && pullRequestConfiguration.IsMatch(branch.Name.WithoutOrigin);
 
     private static bool IsConfiguredSourceBranch(
         IBranch candidate, IBranchConfiguration mergedBranchConfiguration,
