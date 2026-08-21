@@ -829,6 +829,30 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.AssertFullSemver("1.1.0-3", configuration);
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void UsesGlobalFallbackForOrphanedInheritedSource(bool removeBranchAfterMerging)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(IncrementStrategy.Minor)
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("topic", builder => builder
+                .WithRegularExpression("^topics?[/-](?<BranchName>.+)")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches()
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging);
+
+        fixture.AssertFullSemver("1.1.0-2", configuration);
+    }
+
     [Test]
     public void ResolvesNestedInheritanceFromHistoricalSourceState()
     {
