@@ -535,6 +535,40 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void RetainsIgnoredHistoricalMainAsSourceOnLinearDescendant()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = ["^main$"] })
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("main", "develop")
+            ).WithBranch("child", builder => builder
+                .WithRegularExpression("^child$")
+                .WithLabel(string.Empty)
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithSourceBranches("main")
+                .WithPreventIncrementOfMergedBranch(true)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.CreateBranch("develop");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.BranchTo("child");
+        fixture.MakeACommit();
+
+        fixture.AssertFullSemver("1.0.1-4", configuration);
+    }
+
+    [Test]
     public void StopsMergedSourceContributionsAtInterveningTargetTag()
     {
         var configuration = GitFlowConfigurationBuilder.New
