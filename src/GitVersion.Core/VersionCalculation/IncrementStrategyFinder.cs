@@ -448,37 +448,43 @@ internal class IncrementStrategyFinder(
 
         return this.linearMainBranchHistoryCache.GetOrAdd((commit.Sha, targetConfiguration), () =>
         {
-            var closestDistance = int.MaxValue;
-            foreach (var branch in this.repositoryStore.Branches)
-            {
-                var isCurrentBranch = branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin);
-                var isMainBranch = isCurrentBranch
-                    ? targetConfiguration.IsMainBranch
-                    : GetEffectiveConfigurations(branch).Any(configuration => configuration.IsMainBranch);
-                if (!isMainBranch
-                    || branch.Tip is not { } tip
-                    || FindFirstParentSource(commit, tip) is not { } source)
-                {
-                    continue;
-                }
-                closestDistance = Math.Min(closestDistance, source.Distance);
-            }
-
-            if (closestDistance == int.MaxValue)
-            {
-                return false;
-            }
-
-            for (ICommit? current = commit; closestDistance > 0;
-                 current = current?.Parents.FirstOrDefault(), closestDistance--)
-            {
-                if (current?.IsMergeCommit == true)
-                {
-                    return false;
-                }
-            }
-            return true;
+            var closestDistance = GetClosestMainBranchDistance(commit, targetConfiguration);
+            return closestDistance != int.MaxValue && !ContainsMergeCommit(commit, closestDistance);
         });
+    }
+
+    private int GetClosestMainBranchDistance(ICommit commit, EffectiveConfiguration targetConfiguration)
+    {
+        var closestDistance = int.MaxValue;
+        foreach (var branch in this.repositoryStore.Branches)
+        {
+            if (!IsMainBranch(branch, targetConfiguration)
+                || branch.Tip is not { } tip
+                || FindFirstParentSource(commit, tip) is not { } source)
+            {
+                continue;
+            }
+            closestDistance = Math.Min(closestDistance, source.Distance);
+        }
+        return closestDistance;
+    }
+
+    private bool IsMainBranch(IBranch branch, EffectiveConfiguration targetConfiguration) =>
+        branch.Name.EquivalentTo(Context.CurrentBranch.Name.WithoutOrigin)
+            ? targetConfiguration.IsMainBranch
+            : GetEffectiveConfigurations(branch).Any(configuration => configuration.IsMainBranch);
+
+    private static bool ContainsMergeCommit(ICommit commit, int distance)
+    {
+        for (ICommit? current = commit; distance > 0;
+             current = current?.Parents.FirstOrDefault(), distance--)
+        {
+            if (current?.IsMergeCommit == true)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static bool IsPullRequestBranch(IBranch branch, IGitVersionConfiguration configuration) =>
