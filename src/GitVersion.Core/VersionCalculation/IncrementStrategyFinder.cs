@@ -123,14 +123,14 @@ internal class IncrementStrategyFinder(
 
         foreach (var entry in history)
         {
-            if (!targetCommitHistory.Contains(entry.Commit.Sha))
-            {
-                continue;
-            }
-
             if (entry.MergedBranch is not { } mergedBranch)
             {
                 targetSegment.AddRange(entry.TargetCommits);
+                continue;
+            }
+
+            if (!targetCommitHistory.Contains(entry.Commit.Sha))
+            {
                 continue;
             }
 
@@ -179,31 +179,34 @@ internal class IncrementStrategyFinder(
             {
                 yield break;
             }
-            if (!commitLog.Contains(commit.Sha))
-            {
-                continue;
-            }
 
+            var isCommitIncluded = commitLog.Contains(commit.Sha);
             ReferenceName? mergedBranch = null;
-            if (commit.IsMergeCommit
+            if (isCommitIncluded
+                && commit.IsMergeCommit
                 && commit.Parents.Count == 2
                 && MergeMessage.TryParse(commit, Context.Configuration, out var mergeMessage))
             {
                 mergedBranch = mergeMessage.MergedBranch;
             }
 
-            ICommit[] targetCommits = [commit];
+            ICommit[] targetCommits = isCommitIncluded ? [commit] : [];
             if (commit.IsMergeCommit && mergedBranch is null)
             {
                 var firstParent = commit.Parents[0];
                 targetCommits =
                 [
-                    commit,
+                    .. targetCommits,
                     .. commit.Parents.Skip(1)
                         .SelectMany(parent => this.repositoryStore.GetCommitLog(
                             firstParent, parent, targetConfiguration.Ignore))
                         .DistinctBy(parent => parent.Sha)
                 ];
+            }
+
+            if (targetCommits.Length == 0)
+            {
+                continue;
             }
 
             yield return new(commit, mergedBranch, targetCommits);

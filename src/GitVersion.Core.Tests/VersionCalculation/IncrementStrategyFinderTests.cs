@@ -15,10 +15,12 @@ public class IncrementStrategyFinderTests
         commit.Sha.Returns("0123456789012345678901234567890123456789");
         commit.Message.Returns("feature: custom increment");
 
+        var repositoryStore = Substitute.For<IRepositoryStore>();
         var finder = new IncrementStrategyFinder(
             new(() => throw new InvalidOperationException()),
-            Substitute.For<IRepositoryStore>(),
-            new StubTaggedSemanticVersionRepository(),
+            repositoryStore,
+            new TaggedSemanticVersionRepository(
+                NullLogger<TaggedSemanticVersionRepository>.Instance, repositoryStore),
             Substitute.For<IEffectiveBranchConfigurationFinder>(),
             Substitute.For<IEnvironment>());
         var nonMatchingConfiguration = GitFlowConfigurationBuilder.New
@@ -32,37 +34,5 @@ public class IncrementStrategyFinderTests
             .ShouldBe(VersionField.None);
         finder.GetIncrementForcedByCommit(commit, matchingConfiguration).Increment
             .ShouldBe(VersionField.Minor);
-    }
-
-    private sealed class StubTaggedSemanticVersionRepository : ITaggedSemanticVersionRepository
-    {
-        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersionsOfBranch(
-            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
-        {
-            _ = branch;
-            _ = tagPrefix;
-            _ = format;
-            _ = ignore;
-            throw new NotSupportedException();
-        }
-
-        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersionsOfMergeTarget(
-            IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
-        {
-            _ = branch;
-            _ = tagPrefix;
-            _ = format;
-            _ = ignore;
-            throw new NotSupportedException();
-        }
-
-        ILookup<ICommit, SemanticVersionWithTag> ITaggedSemanticVersionRepository.GetTaggedSemanticVersions(
-            string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
-        {
-            _ = tagPrefix;
-            _ = format;
-            _ = ignore;
-            throw new NotSupportedException();
-        }
     }
 }
