@@ -619,13 +619,18 @@ public class PreventIncrementOfMergedBranchScenarios
     public void RetainsMergedIncrementAfterMergingMainIntoDescendant()
     {
         var configuration = GitFlowConfigurationBuilder.New
+            .WithIsMainBranch(true)
             .WithBranch("main", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithPreventIncrementOfMergedBranch(true)
+                .WithPreventIncrementWhenBranchMerged(true)
+                .WithIsMainBranch(null)
             ).WithBranch("release", builder => builder
                 .WithIncrement(IncrementStrategy.Minor)
+                .WithIsMainBranch(false)
             ).WithBranch("feature", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
+                .WithIsMainBranch(false)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -771,6 +776,30 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void PreservesCommitOrderAcrossRecognizedMergeBoundary()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Major)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit("Reset to patch =semver: patch");
+        fixture.Checkout("main");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.Repository.MergeNoFF("topic/foo", "Integrate topic");
+
+        fixture.AssertFullSemver("2.0.0-4", configuration);
+    }
+
+    [Test]
     public void PreservesSideHistoryOfIgnoredUnrecognizedMerge()
     {
         using var fixture = new EmptyRepositoryFixture("main");
@@ -909,6 +938,28 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.MergeTo("main", removeBranchAfterMerging);
 
         fixture.AssertFullSemver("1.1.0-2", configuration);
+    }
+
+    [Test]
+    public void SkipsUnresolvedFallbackForOrphanedInheritedSource()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("topic", builder => builder
+                .WithRegularExpression("^topics?[/-](?<BranchName>.+)")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches()
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-2", configuration);
     }
 
     [Test]
