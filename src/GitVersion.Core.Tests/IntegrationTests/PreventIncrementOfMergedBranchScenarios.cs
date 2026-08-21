@@ -619,6 +619,32 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void PreservesSideHistoryOfIgnoredUnrecognizedMerge()
+    {
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit("Breaking change +semver: major");
+        fixture.Checkout("main");
+        fixture.Repository.MergeNoFF("topic/foo", "Integrate topic");
+        var ignoredMerge = fixture.Repository.Head.Tip;
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [ignoredMerge.Sha] })
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        fixture.AssertFullSemver("2.0.0-3", configuration);
+    }
+
+    [Test]
     public void ResolvesInheritedIncrementFromHistoricalMergedBranchTip()
     {
         var configuration = GitFlowConfigurationBuilder.New
