@@ -356,7 +356,8 @@ internal class IncrementStrategyFinder(
         foreach (var source in sources)
         {
             foreach (var parentConfiguration in GetHistoricalEffectiveConfigurations(
-                source.Branch, source.Tip, traversedBranches))
+                source.Branch, source.Tip,
+                new(traversedBranches, traversedBranches.Comparer)))
             {
                 yield return new(
                     Context.Configuration, branchConfiguration, parentConfiguration);
@@ -432,8 +433,7 @@ internal class IncrementStrategyFinder(
             var closestDistance = int.MaxValue;
             foreach (var branch in this.repositoryStore.Branches)
             {
-                if (Context.Configuration.Ignore.IsBranchIgnored(branch.Name)
-                    || Context.Configuration.GetBranchConfiguration(branch.Name).IsMainBranch != true
+                if (Context.Configuration.GetBranchConfiguration(branch.Name).IsMainBranch != true
                     || branch.Tip is not { } tip
                     || FindFirstParentSource(commit, tip) is not { } source)
                 {
