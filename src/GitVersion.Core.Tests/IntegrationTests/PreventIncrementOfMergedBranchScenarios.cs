@@ -616,6 +616,64 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void RetainsMergedIncrementAfterMergingMainIntoDescendant()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("release", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.BranchTo("release/minor");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.AssertFullSemver("1.1.0-2", configuration);
+        fixture.Checkout("feature/foo");
+        fixture.MergeNoFF("main");
+
+        fixture.AssertFullSemver("1.1.0-foo.1+4", configuration);
+    }
+
+    [Test]
+    public void RejectsUnrelatedMergeBeforeMergingMainIntoDescendant()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("release", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.BranchTo("release/minor");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.Checkout("feature/foo");
+        fixture.BranchTo("feature/side");
+        fixture.MakeACommit();
+        fixture.MergeTo("feature/foo", removeBranchAfterMerging: true);
+        fixture.MergeNoFF("main");
+
+        fixture.AssertFullSemver("1.0.1-foo.1+6", configuration);
+    }
+
+    [Test]
     public void StopsMergedSourceContributionsAtInterveningTargetTag()
     {
         var configuration = GitFlowConfigurationBuilder.New
