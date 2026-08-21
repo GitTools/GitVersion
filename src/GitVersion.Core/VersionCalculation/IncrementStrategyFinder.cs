@@ -13,7 +13,7 @@ internal class IncrementStrategyFinder(
     IEnvironment environment)
     : IIncrementStrategyFinder
 {
-    private readonly Dictionary<string, CommitMessageIncrement?> commitIncrementCache = [];
+    private readonly Dictionary<CommitIncrementCacheKey, CommitMessageIncrement?> commitIncrementCache = [];
     private readonly Dictionary<(string Commit, bool IsMergedTipBaseVersionSource, EffectiveConfiguration Target),
         MergedBranchIncrement[]> mergedBranchIncrementCache = [];
     private readonly Dictionary<(string Branch, string? Tip), EffectiveConfiguration[]> effectiveConfigurationCache = [];
@@ -108,11 +108,6 @@ internal class IncrementStrategyFinder(
             yield break;
         }
 
-        targetIncrement = DetermineIncrementedFieldInternal(
-            currentCommit, baseVersionSource, shouldIncrement,
-            targetConfiguration, targetLabel,
-            history.SelectMany(item => item.TargetCommits).Select(commit => commit.Sha).ToHashSet());
-
         var targetCommitHistory = GetCommitHistory(
                 targetConfiguration.TagPrefixPattern,
                 targetConfiguration.SemanticVersionFormat,
@@ -122,6 +117,8 @@ internal class IncrementStrategyFinder(
                 targetConfiguration.Ignore)
             .Select(commit => commit.Sha)
             .ToHashSet();
+        var defaultTargetIncrement = DetermineIncrementedField(
+            commitMessageIncrement: null, shouldIncrement, targetConfiguration).Increment;
         List<ICommit> targetSegment = [];
 
         foreach (var entry in history)
@@ -157,7 +154,7 @@ internal class IncrementStrategyFinder(
             if (sourceIncrements.Length != 0)
             {
                 yield return ConsolidateMergedBranchIncrements(
-                    sourceIncrements, targetConfiguration, targetIncrement.Increment);
+                    sourceIncrements, targetConfiguration, defaultTargetIncrement);
             }
         }
 
@@ -504,6 +501,9 @@ internal class IncrementStrategyFinder(
     private readonly record struct CommitHistoryEntry(
         ICommit Commit, ReferenceName? MergedBranch, IReadOnlyList<ICommit> TargetCommits);
 
+    private readonly record struct CommitIncrementCacheKey(
+        string Commit, Regex Major, Regex Minor, Regex Patch, Regex NoBump, Regex Reset);
+
     private CommitMessageIncrement? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
     {
         commits.NotNull();
@@ -672,8 +672,11 @@ internal class IncrementStrategyFinder(
             [.. this.repositoryStore.GetCommitsReacheableFromHead(headCommit, ignore)]);
 
     private CommitMessageIncrement? GetIncrementFromCommit(
-        ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex, Regex versionBumpResetRegex) =>
-        this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
+        ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex, Regex versionBumpResetRegex)
+    {
+        var key = new CommitIncrementCacheKey(
+            commit.Sha, majorRegex, minorRegex, patchRegex, noBumpRegex, versionBumpResetRegex);
+        return this.commitIncrementCache.GetOrAdd(key, () =>
         {
             var increment = GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, noBumpRegex);
             if (!increment.HasValue)
@@ -683,6 +686,7 @@ internal class IncrementStrategyFinder(
 
             return new(increment.Value, versionBumpResetRegex.IsMatch(commit.Message));
         });
+    }
 
     private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex noBumpRegex)
     {
