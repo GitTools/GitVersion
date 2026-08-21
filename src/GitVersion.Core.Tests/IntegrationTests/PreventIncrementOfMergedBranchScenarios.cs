@@ -641,6 +641,28 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void SkipsTargetSegmentsPrunedByInterveningTag()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Major)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("2.0.0");
+        fixture.MakeACommit();
+        fixture.ApplyTag("1.0.0");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.1-3", configuration);
+    }
+
+    [Test]
     public void PreservesCommitMessageDirectivesFromUnrecognizedMergedHistory()
     {
         var configuration = GitFlowConfigurationBuilder.New
