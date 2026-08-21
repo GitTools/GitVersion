@@ -640,6 +640,31 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void PreservesCommitOrderAcrossUnrecognizedMergedHistory()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("topic/foo");
+        fixture.MakeACommit("Reset to patch =semver: patch");
+        fixture.Checkout("main");
+        fixture.MakeACommit("Breaking change +semver: major");
+        fixture.Repository.MergeNoFF("topic/foo", "Integrate topic");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.0-5", configuration);
+    }
+
+    [Test]
     public void PreservesSideHistoryOfIgnoredUnrecognizedMerge()
     {
         using var fixture = new EmptyRepositoryFixture("main");

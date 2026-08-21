@@ -99,8 +99,11 @@ internal class IncrementStrategyFinder(
         ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement,
         EffectiveConfiguration targetConfiguration, string? targetLabel, CommitMessageIncrement targetIncrement)
     {
+        var commitLog = this.repositoryStore
+            .GetCommitLog(baseVersionSource, currentCommit, targetConfiguration.Ignore);
+        var includedCommits = commitLog.Select(commit => commit.Sha).ToHashSet();
         var history = GetFirstParentCommitHistory(
-            currentCommit, baseVersionSource, targetConfiguration).ToArray();
+            currentCommit, baseVersionSource, targetConfiguration, includedCommits).ToArray();
 
         if (!history.Any(item => item.MergedBranch is not null))
         {
@@ -117,6 +120,9 @@ internal class IncrementStrategyFinder(
                 targetConfiguration.Ignore)
             .Select(commit => commit.Sha)
             .ToHashSet();
+        var commitOrder = commitLog
+            .Select((commit, index) => (commit.Sha, Index: index))
+            .ToDictionary(item => item.Sha, item => item.Index);
         var defaultTargetIncrement = DetermineIncrementedField(
             commitMessageIncrement: null, shouldIncrement, targetConfiguration).Increment;
         List<ICommit> targetSegment = [];
@@ -137,7 +143,7 @@ internal class IncrementStrategyFinder(
             if (targetSegment.Count != 0)
             {
                 yield return GetTargetIncrement(
-                    targetSegment, targetCommitHistory, shouldIncrement, targetConfiguration);
+                    targetSegment, targetCommitHistory, commitOrder, shouldIncrement, targetConfiguration);
                 targetSegment.Clear();
             }
 
@@ -161,18 +167,14 @@ internal class IncrementStrategyFinder(
         if (targetSegment.Count != 0)
         {
             yield return GetTargetIncrement(
-                targetSegment, targetCommitHistory, shouldIncrement, targetConfiguration);
+                targetSegment, targetCommitHistory, commitOrder, shouldIncrement, targetConfiguration);
         }
     }
 
     private IEnumerable<CommitHistoryEntry> GetFirstParentCommitHistory(
-        ICommit currentCommit, ICommit? baseVersionSource, EffectiveConfiguration targetConfiguration)
+        ICommit currentCommit, ICommit? baseVersionSource, EffectiveConfiguration targetConfiguration,
+        IReadOnlySet<string> includedCommits)
     {
-        var commitLog = this.repositoryStore
-            .GetCommitLog(baseVersionSource, currentCommit, targetConfiguration.Ignore)
-            .Select(commit => commit.Sha)
-            .ToHashSet();
-
         for (ICommit? commit = currentCommit; commit is not null; commit = commit.Parents.FirstOrDefault())
         {
             if (baseVersionSource?.Equals(commit) == true)
@@ -180,7 +182,7 @@ internal class IncrementStrategyFinder(
                 yield break;
             }
 
-            var isCommitIncluded = commitLog.Contains(commit.Sha);
+            var isCommitIncluded = includedCommits.Contains(commit.Sha);
             ReferenceName? mergedBranch = null;
             if (isCommitIncluded
                 && commit.IsMergeCommit
@@ -215,9 +217,16 @@ internal class IncrementStrategyFinder(
 
     private CommitMessageIncrement GetTargetIncrement(
         IEnumerable<ICommit> targetCommits, IReadOnlySet<string> targetCommitHistory,
+        IReadOnlyDictionary<string, int> commitOrder,
         bool shouldIncrement, EffectiveConfiguration targetConfiguration) =>
         DetermineIncrementedField(
-            FindCommitMessageIncrement(targetConfiguration, targetCommits, targetCommitHistory),
+            FindCommitMessageIncrement(
+                targetConfiguration,
+                targetCommits
+                    .Where(commit => targetCommitHistory.Contains(commit.Sha))
+                    .DistinctBy(commit => commit.Sha)
+                    .OrderBy(commit => commitOrder[commit.Sha]),
+                targetCommitHistory),
             shouldIncrement,
             targetConfiguration);
 
