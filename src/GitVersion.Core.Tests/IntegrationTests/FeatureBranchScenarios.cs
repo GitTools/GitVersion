@@ -326,7 +326,9 @@ public class FeatureBranchScenarios : TestBase
 
             // create a feature branch from main and verify the version
             fixture.BranchTo("feature/test");
-            fixture.AssertFullSemver("1.0.1-test.1+2", configuration);
+            fixture.AssertFullSemver("1.1.0-test.1+2", configuration);
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-test.1+3", configuration);
         }
     }
 
@@ -416,7 +418,7 @@ public class FeatureBranchScenarios : TestBase
 
                 // create a misnamed feature branch (i.e. it uses the default configuration) from main and verify the version
                 fixture.BranchTo("misnamed");
-                fixture.AssertFullSemver("1.0.1-misnamed.1+2", configuration);
+                fixture.AssertFullSemver("1.1.0-misnamed.1+2", configuration);
             }
         }
     }
