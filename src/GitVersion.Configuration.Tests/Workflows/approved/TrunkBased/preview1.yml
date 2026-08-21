@@ -1,104 +1,112 @@
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-versioning-scheme: MajorMinorPatch
-branches:
-  main:
-    increment: Patch
-    is-main-branch: true
-    is-release-branch: false
-    is-source-branch-for: []
-    label: ''
-    mode: ContinuousDeployment
-    pre-release-weight: 55000
-    prevent-increment:
-      of-merged-branch: true
-    regex: "^master$|^main$"
-    source-branches: []
-    track-merge-message: true
-    track-merge-target: false
-    tracks-release-branches: false
-  feature:
-    increment: Minor
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^features?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-    track-merge-message: true
-  hotfix:
-    increment: Patch
-    is-main-branch: false
-    is-release-branch: true
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-  pull-request:
-    increment: Inherit
-    is-source-branch-for: []
-    label: "PullRequest{Number}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
-    source-branches:
-      - main
-      - feature
-      - hotfix
-    track-merge-message: true
-  unknown:
-    increment: Patch
-    is-source-branch-for: []
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "(?<BranchName>.+)"
-    source-branches:
-      - main
-commit-date-format: yyyy-MM-dd
-commit-message-incrementing: Enabled
-ignore:
-  branches: []
-  paths: []
-  sha: []
-  tags: []
-increment: Inherit
-is-main-branch: false
-is-release-branch: false
-is-source-branch-for: []
-label: "{BranchName}"
-major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
-merge-message-formats: {}
-minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
-mode: ContinuousDelivery
-no-bump-message: "[+=]semver:\\s?(none|skip)"
-patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: false
-  when-current-commit-tagged: true
-regex: ''
-semantic-version-format: Strict
-source-branches: []
-strategies:
-  - ConfiguredNextVersion
-  - Mainline
-tag-pre-release-weight: 60000
-tag-prefix: "[vV]?"
-track-merge-message: true
-track-merge-target: false
-tracks-release-branches: false
-update-build-number: true
-version-bump-reset-message: "=semver:"
-version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+calculation:
+  branches:
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      mode: ContinuousDeployment
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Minor
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+      track-merge-message: true
+    hotfix:
+      increment: Patch
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
+      source-branches:
+        - main
+        - feature
+        - hotfix
+      track-merge-message: true
+    unknown:
+      increment: Patch
+      is-source-branch-for: []
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "(?<BranchName>.+)"
+      source-branches:
+        - main
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - ConfiguredNextVersion
+    - Mainline
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    main:
+      pre-release-weight: 55000
+    feature:
+      pre-release-weight: 30000
+    hotfix:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+    unknown:
+      pre-release-weight: 30000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
