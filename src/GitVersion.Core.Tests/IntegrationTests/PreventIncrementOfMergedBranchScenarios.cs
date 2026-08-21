@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
+using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
 
@@ -331,6 +332,37 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void IgnoresFutureDatedTagWhenEvaluatingMergedSourceMessages()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+                .WithIsMainBranch(true)
+                .WithTrackMergeMessage(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit("Breaking change +semver: major");
+        var futureSignature = new Signature(
+            "A. U. Thor", "thor@valhalla.asgard.com", DateTimeOffset.Now.AddYears(10));
+        var futureCommit = fixture.Repository.Commit(
+            "Breaking change +semver: major", futureSignature, futureSignature,
+            new CommitOptions { AmendPreviousCommit = true });
+        fixture.ApplyTag("1.1.0");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        var targetCommit = fixture.Repository.Head.Tip;
+        targetCommit.Parents.Count().ShouldBe(2);
+        futureCommit.Committer.When.ShouldBeGreaterThan(targetCommit.Committer.When);
+
+        fixture.AssertFullSemver("2.0.0-2", configuration, commitId: targetCommit.Sha);
+    }
+
+    [Test]
     public void RetainsTargetAsPossibleHistoricalSourceBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
@@ -355,6 +387,58 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.MergeTo("main", removeBranchAfterMerging: true);
 
         fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
+    [Test]
+    public void ExcludesIgnoredBranchesFromHistoricalSourceInference()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = ["^develop$"] })
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("main", "develop")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.0.1-3", configuration);
+    }
+
+    [Test]
+    public void StopsMergedSourceContributionsAtInterveningTargetTag()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).WithBranch("hotfix", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("2.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit("Breaking change +semver: major");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.ApplyTag("1.0.0");
+        fixture.BranchTo("hotfix/foo");
+        fixture.MakeACommit("Hotfix +semver: patch");
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("2.0.1-4", configuration);
     }
 
     [Test]
