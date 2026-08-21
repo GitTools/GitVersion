@@ -570,9 +570,9 @@ internal class IncrementStrategyFinder(
                 : sourceIncrement;
         }
 
-        return preventIncrementWhenBranchMerged == true
-            ? new(targetIncrement, VersionBumpNeedsToBeReset: false)
-            : new(targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset);
+        return preventIncrementWhenBranchMerged is null
+            ? new(targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset)
+            : new(targetIncrement, VersionBumpNeedsToBeReset: false);
     }
 
     private readonly record struct MergedBranchIncrement(
