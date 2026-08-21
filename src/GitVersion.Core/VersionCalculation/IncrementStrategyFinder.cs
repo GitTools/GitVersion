@@ -6,16 +6,27 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation;
 
 internal class IncrementStrategyFinder(
+    Lazy<GitVersionContext> contextLazy,
     IRepositoryStore repositoryStore,
-    ITaggedSemanticVersionRepository taggedSemanticVersionRepository)
+    ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
+    IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
+    IEnvironment environment)
     : IIncrementStrategyFinder
 {
     private readonly Dictionary<string, CommitMessageIncrement?> commitIncrementCache = [];
+    private readonly Dictionary<(string Commit, EffectiveConfiguration Target), VersionField[]> mergedBranchIncrementCache = [];
+    private readonly Dictionary<(string Branch, string? Tip), EffectiveBranchConfiguration[]> effectiveBranchConfigurationCache = [];
+    private readonly Dictionary<string, HashSet<string>> firstParentHistoryCache = [];
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
 
+    private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly ITaggedSemanticVersionRepository taggedSemanticVersionRepository = taggedSemanticVersionRepository.NotNull();
+    private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
+    private readonly IEnvironment environment = environment.NotNull();
+
+    private GitVersionContext Context => this.contextLazy.Value;
 
     public VersionField DetermineIncrementedField(
         ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement, EffectiveConfiguration configuration, string? label)
@@ -23,7 +34,31 @@ internal class IncrementStrategyFinder(
         currentCommit.NotNull();
         configuration.NotNull();
 
-        var commitMessageIncrement = FindCommitMessageIncrement(configuration, baseVersionSource, currentCommit, label);
+        var targetIncrement = DetermineIncrementedFieldInternal(
+            currentCommit, baseVersionSource, shouldIncrement, configuration, label);
+
+        if (!configuration.IsMainBranch
+            || !configuration.TrackMergeMessage
+            || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).IsMainBranch != true)
+        {
+            return targetIncrement;
+        }
+
+        var increments = GetIncrementsFromCommitHistory(
+            currentCommit, baseVersionSource, shouldIncrement, configuration, label, targetIncrement).ToArray();
+
+        return increments.Length == 0
+            ? targetIncrement
+            : increments.Aggregate(VersionField.None, (result, increment) => result.Consolidate(increment));
+    }
+
+    private VersionField DetermineIncrementedFieldInternal(
+        ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement,
+        EffectiveConfiguration configuration, string? label,
+        IReadOnlySet<string>? includedCommits = null)
+    {
+        var commitMessageIncrement = FindCommitMessageIncrement(
+            configuration, baseVersionSource, currentCommit, label, includedCommits);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
@@ -42,6 +77,227 @@ internal class IncrementStrategyFinder(
         }
 
         return commitMessageIncrement.Value.Increment;
+    }
+
+    private IEnumerable<VersionField> GetIncrementsFromCommitHistory(
+        ICommit currentCommit, ICommit? baseVersionSource, bool shouldIncrement,
+        EffectiveConfiguration targetConfiguration, string? targetLabel, VersionField targetIncrement)
+    {
+        var configuration = Context.Configuration;
+        var commitLog = this.repositoryStore
+            .GetCommitLog(baseVersionSource, currentCommit, targetConfiguration.Ignore)
+            .Select(commit => commit.Sha)
+            .ToHashSet();
+        List<ICommit> targetCommits = [];
+        Dictionary<string, (ICommit Commit, ReferenceName MergedBranch)> mergedBranches = [];
+
+        for (ICommit? commit = currentCommit; commit is not null; commit = commit.Parents.FirstOrDefault())
+        {
+            if (baseVersionSource?.Equals(commit) == true)
+            {
+                break;
+            }
+            if (!commitLog.Contains(commit.Sha))
+            {
+                continue;
+            }
+
+            targetCommits.Add(commit);
+            if (!commit.IsMergeCommit
+                || commit.Parents.Count != 2
+                || !MergeMessage.TryParse(commit, configuration, out var mergeMessage)
+                || mergeMessage.MergedBranch is not { } mergedBranch)
+            {
+                continue;
+            }
+
+            mergedBranches.Add(commit.Sha, (commit, mergedBranch));
+        }
+
+        if (mergedBranches.Count == 0)
+        {
+            yield return targetIncrement;
+            yield break;
+        }
+
+        var targetCommitShas = targetCommits.Select(commit => commit.Sha).ToHashSet();
+        targetIncrement = DetermineIncrementedFieldInternal(
+            currentCommit, baseVersionSource, shouldIncrement,
+            targetConfiguration, targetLabel, targetCommitShas);
+
+        var mergedBranchCommits = mergedBranches.Keys.ToHashSet();
+        var hasTargetContribution = targetCommits.Any(commit => !mergedBranchCommits.Contains(commit.Sha))
+            || FindCommitMessageIncrement(
+                targetConfiguration, baseVersionSource, currentCommit, targetLabel, mergedBranchCommits) is not null;
+        if (hasTargetContribution)
+        {
+            yield return targetIncrement;
+        }
+
+        foreach (var (commit, mergedBranch) in mergedBranches.Values)
+        {
+            var sourceBranchConfiguration = configuration.GetBranchConfiguration(mergedBranch);
+            var preventIncrementWhenBranchMerged = sourceBranchConfiguration.PreventIncrement.WhenBranchMerged
+                ?? configuration.PreventIncrement.WhenBranchMerged;
+
+            foreach (var sourceIncrement in this.mergedBranchIncrementCache.GetOrAdd(
+                         (commit.Sha, targetConfiguration), () =>
+                         {
+                             var mergeBase = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
+
+                             return [.. GetSourceConfigurations(
+                                     mergedBranch, commit.Parents[1], sourceBranchConfiguration, targetConfiguration)
+                                 .Select(sourceConfiguration => DetermineIncrementedFieldInternal(
+                                     currentCommit: commit.Parents[1],
+                                     baseVersionSource: mergeBase,
+                                     shouldIncrement: true,
+                                     configuration: sourceConfiguration,
+                                     label: sourceConfiguration.GetBranchSpecificLabel(
+                                         mergedBranch, null, this.environment)
+                                 ))];
+                         }))
+            {
+                yield return SelectIncrement(
+                    targetConfiguration.PreventIncrementOfMergedBranch,
+                    preventIncrementWhenBranchMerged,
+                    targetIncrement,
+                    sourceIncrement
+                );
+            }
+        }
+    }
+
+    private IEnumerable<EffectiveConfiguration> GetSourceConfigurations(
+        ReferenceName mergedBranch, ICommit mergedBranchTip,
+        IBranchConfiguration sourceBranchConfiguration, EffectiveConfiguration targetConfiguration)
+    {
+        var existingBranch = this.repositoryStore.Branches
+            .Where(candidate => candidate.Name.EquivalentTo(mergedBranch.WithoutOrigin)
+                && candidate.Tip?.Equals(mergedBranchTip) == true)
+            .MinBy(candidate => candidate.IsRemote);
+
+        if (existingBranch is not null)
+        {
+            var configurations = GetEffectiveBranchConfigurations(existingBranch)
+                .Select(candidate => candidate.Value)
+                .Distinct()
+                .ToArray();
+            if (configurations.Length != 0)
+            {
+                return configurations;
+            }
+        }
+
+        if (sourceBranchConfiguration.Increment != IncrementStrategy.Inherit)
+        {
+            return [Context.Configuration.GetEffectiveConfiguration(mergedBranch)];
+        }
+
+        var inheritedConfigurations = FindClosestSourceBranches(
+                mergedBranchTip, sourceBranchConfiguration, Context.Configuration,
+                Context.CurrentBranch.Name, this.repositoryStore)
+            .SelectMany(GetEffectiveBranchConfigurations)
+            .Select(source => new EffectiveConfiguration(
+                Context.Configuration, sourceBranchConfiguration, source.Value))
+            .Distinct()
+            .ToArray();
+
+        return inheritedConfigurations.Length != 0
+            ? inheritedConfigurations
+            : [Context.Configuration.GetEffectiveConfiguration(mergedBranch, targetConfiguration)];
+    }
+
+    private EffectiveBranchConfiguration[] GetEffectiveBranchConfigurations(IBranch branch) =>
+        this.effectiveBranchConfigurationCache.GetOrAdd(
+            (branch.Name.ToString(), branch.Tip?.Sha),
+            () => [.. this.effectiveBranchConfigurationFinder
+                .GetConfigurations(branch, Context.Configuration)
+            ]);
+
+    private IEnumerable<IBranch> FindClosestSourceBranches(
+        ICommit mergedBranchTip, IBranchConfiguration mergedBranchConfiguration,
+        IGitVersionConfiguration configuration, ReferenceName currentBranch,
+        IRepositoryStore repositoryStore)
+    {
+        var candidates = repositoryStore.Branches
+            .Where(branch => IsConfiguredSourceBranch(branch, mergedBranchConfiguration, configuration)
+                // The current target contains the merged tip through this merge and cannot be the
+                // topic's source. Other configured source branches may legitimately absorb it later.
+                && !branch.Name.EquivalentTo(currentBranch.WithoutOrigin))
+            .GroupBy(branch => branch.Name.WithoutOrigin, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.MinBy(branch => branch.IsRemote))
+            .OfType<IBranch>();
+
+        var closestDistance = int.MaxValue;
+        List<IBranch> result = [];
+        foreach (var candidate in candidates)
+        {
+            if (candidate.Tip is null)
+            {
+                continue;
+            }
+
+            if (GetFirstParentSourceDistance(mergedBranchTip, candidate.Tip) is not { } distance)
+            {
+                continue;
+            }
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                result.Clear();
+            }
+            if (distance == closestDistance)
+            {
+                result.Add(candidate);
+            }
+        }
+
+        return result;
+    }
+
+    private int? GetFirstParentSourceDistance(ICommit mergedBranchTip, ICommit sourceBranchTip)
+    {
+        var sourceHistory = this.firstParentHistoryCache.GetOrAdd(sourceBranchTip.Sha, () =>
+        {
+            HashSet<string> result = [];
+            for (ICommit? commit = sourceBranchTip; commit is not null; commit = commit.Parents.FirstOrDefault())
+            {
+                result.Add(commit.Sha);
+            }
+            return result;
+        });
+
+        var distance = 0;
+        for (ICommit? commit = mergedBranchTip; commit is not null; commit = commit.Parents.FirstOrDefault())
+        {
+            if (sourceHistory.Contains(commit.Sha))
+            {
+                return distance;
+            }
+            distance++;
+        }
+        return null;
+    }
+
+    private static bool IsConfiguredSourceBranch(
+        IBranch candidate, IBranchConfiguration mergedBranchConfiguration,
+        IGitVersionConfiguration configuration) =>
+        mergedBranchConfiguration.SourceBranches.Any(sourceBranch =>
+            configuration.Branches.TryGetValue(sourceBranch, out var sourceBranchConfiguration)
+            && sourceBranchConfiguration.IsMatch(candidate.Name.WithoutOrigin));
+
+    private static VersionField SelectIncrement(
+        bool preventIncrementOfMergedBranch, bool? preventIncrementWhenBranchMerged,
+        VersionField targetIncrement, VersionField sourceIncrement)
+    {
+        if (preventIncrementOfMergedBranch)
+        {
+            return preventIncrementWhenBranchMerged == true ? targetIncrement : sourceIncrement;
+        }
+
+        return preventIncrementWhenBranchMerged is null
+            ? targetIncrement.Consolidate(sourceIncrement)
+            : targetIncrement;
     }
 
     private CommitMessageIncrement? GetIncrementForCommits(EffectiveConfiguration configuration, ICommit[] commits)
@@ -79,7 +335,8 @@ internal class IncrementStrategyFinder(
     }
 
     private CommitMessageIncrement? FindCommitMessageIncrement(
-        EffectiveConfiguration configuration, ICommit? baseVersionSource, ICommit currentCommit, string? label)
+        EffectiveConfiguration configuration, ICommit? baseVersionSource, ICommit currentCommit, string? label,
+        IReadOnlySet<string>? includedCommits = null)
     {
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
         {
@@ -94,6 +351,11 @@ internal class IncrementStrategyFinder(
             label: label,
             ignore: configuration.Ignore
         );
+
+        if (includedCommits is not null)
+        {
+            commits = commits.Where(commit => includedCommits.Contains(commit.Sha));
+        }
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
         {

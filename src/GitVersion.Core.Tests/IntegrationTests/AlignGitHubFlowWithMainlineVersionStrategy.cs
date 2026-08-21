@@ -158,7 +158,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+4"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            fixture.AssertFullSemver("2.0.0-1+4", configuration);
         }
     }
 
@@ -237,8 +237,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.0.1-1+4"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.0.1-1+4", configuration);
         }
     }
 
@@ -317,8 +317,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+4"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+4", configuration);
         }
     }
 
@@ -868,7 +868,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.0.2-2+4"
-            fixture.AssertFullSemver("0.0.3-1+4", configuration);
+            fixture.AssertFullSemver("0.0.2-1+4", configuration);
         }
     }
 
@@ -1236,7 +1236,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.2.0-2+4"
-            fixture.AssertFullSemver("0.3.0-1+4", configuration);
+            fixture.AssertFullSemver("0.2.0-1+4", configuration);
         }
     }
 
@@ -1315,8 +1315,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.2.1-1+4"
-            fixture.AssertFullSemver("0.3.0-1+4", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.2.1-1+4", configuration);
         }
     }
 
@@ -1612,7 +1612,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+4"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            fixture.AssertFullSemver("2.0.0-1+4", configuration);
         }
     }
 
@@ -1692,7 +1692,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.1-foo.2+3"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            fixture.AssertFullSemver("2.0.1-1+4", configuration);
         }
     }
 
@@ -1771,8 +1771,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+4"
-            fixture.AssertFullSemver("3.0.0-1+4", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+4", configuration);
         }
     }
 
@@ -2018,7 +2018,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
     }
 
@@ -2108,8 +2108,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.0.1-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.0.1-1+6", configuration);
         }
     }
 
@@ -2199,8 +2199,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+6", configuration);
         }
     }
 
@@ -2944,7 +2944,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.0.2-2+6"
-            fixture.AssertFullSemver("0.0.3-1+6", configuration);
+            fixture.AssertFullSemver("0.0.2-1+6", configuration);
         }
     }
 
@@ -3366,8 +3366,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.2.0-1+6"
-            fixture.AssertFullSemver("0.3.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.2.0-1+6", configuration);
         }
     }
 
@@ -3457,8 +3457,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.2.1-1+6"
-            fixture.AssertFullSemver("0.3.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.2.1-1+6", configuration);
         }
     }
 
@@ -3798,7 +3798,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
     }
 
@@ -3888,8 +3888,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.0.1-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.0.1-1+6", configuration);
         }
     }
 
@@ -3979,8 +3979,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+6", configuration);
         }
     }
 
@@ -4190,8 +4190,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.0-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.0-1+2", configuration);
         }
     }
 
@@ -4262,8 +4262,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.1-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.1-1+2", configuration);
         }
     }
 
@@ -4334,8 +4334,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.1.0-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.1.0-1+2", configuration);
         }
     }
 
@@ -4582,8 +4582,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.0.1-1+2"
-            fixture.AssertFullSemver("0.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.0.1-1+2", configuration);
         }
     }
 
@@ -4646,8 +4646,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.1.0-1+2"
-            fixture.AssertFullSemver("0.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.1.0-1+2", configuration);
         }
     }
 
@@ -4710,8 +4710,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.0-1+2"
-            fixture.AssertFullSemver("0.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.0-1+2", configuration);
         }
     }
 
@@ -4839,7 +4839,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.0.1-2+2"
-            fixture.AssertFullSemver("0.0.2-1+2", configuration);
+            fixture.AssertFullSemver("0.0.1-1+2", configuration);
         }
     }
 
@@ -4958,8 +4958,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.1.0-1+2"
-            fixture.AssertFullSemver("0.0.2-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.1.0-1+2", configuration);
         }
     }
 
@@ -5022,8 +5022,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.0-1+2"
-            fixture.AssertFullSemver("0.0.2-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.0-1+2", configuration);
         }
     }
 
@@ -5150,8 +5150,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.1.0-1+2"
-            fixture.AssertFullSemver("0.2.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.1.0-1+2", configuration);
         }
     }
 
@@ -5222,8 +5222,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.1.1-1+2"
-            fixture.AssertFullSemver("0.2.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.1.1-1+2", configuration);
         }
     }
 
@@ -5342,8 +5342,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.0-1+2"
-            fixture.AssertFullSemver("0.2.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.0-1+2", configuration);
         }
     }
 
@@ -5470,8 +5470,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.0-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.0-1+2", configuration);
         }
     }
 
@@ -5542,8 +5542,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.1-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.1-1+2", configuration);
         }
     }
 
@@ -5614,8 +5614,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.1.0-1+2"
-            fixture.AssertFullSemver("2.0.0-1+2", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.1.0-1+2", configuration);
         }
     }
 
@@ -5979,7 +5979,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -6090,8 +6090,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.0.1-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.0.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -6204,8 +6204,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -7313,7 +7313,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.0.2-2+6"
-            fixture.AssertFullSemver("0.0.3-1+6", configuration);
+            fixture.AssertFullSemver("0.0.2-1+6", configuration);
         }
 
         if (!useMainline)
@@ -7919,7 +7919,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.2.0-2+6"
-            fixture.AssertFullSemver("0.3.0-1+6", configuration);
+            fixture.AssertFullSemver("0.2.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -8026,8 +8026,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "0.2.1-1+6"
-            fixture.AssertFullSemver("0.3.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("0.2.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -8545,7 +8545,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "2.0.0-2+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            fixture.AssertFullSemver("2.0.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -8654,8 +8654,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.0.1-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.0.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -8766,8 +8766,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "2.1.0-1+6"
-            fixture.AssertFullSemver("3.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("2.1.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -9213,7 +9213,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "1.0.0-2+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            fixture.AssertFullSemver("1.0.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -9333,8 +9333,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.1-1+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -9458,8 +9458,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.1.0-1+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.1.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -10569,7 +10569,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "0.0.1-2+6"
-            fixture.AssertFullSemver("0.0.2-1+6", configuration);
+            fixture.AssertFullSemver("0.0.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -11206,7 +11206,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ not expected
-            fixture.AssertFullSemver("0.2.0-1+6", configuration);
+            fixture.AssertFullSemver("0.1.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -11321,7 +11321,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ not expected
-            fixture.AssertFullSemver("0.2.0-1+6", configuration);
+            fixture.AssertFullSemver("0.1.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -11875,7 +11875,7 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         else
         {
             // ❔ expected: "1.0.0-2+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            fixture.AssertFullSemver("1.0.0-1+6", configuration);
         }
 
         if (!useMainline)
@@ -11995,8 +11995,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.0.1-1+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.0.1-1+6", configuration);
         }
 
         if (!useMainline)
@@ -12120,8 +12120,8 @@ public class AlignGitHubFlowWithMainlineVersionStrategy
         }
         else
         {
-            // ❔ expected: "1.1.0-1+6"
-            fixture.AssertFullSemver("2.0.0-1+6", configuration);
+            // ✅ succeeds as expected
+            fixture.AssertFullSemver("1.1.0-1+6", configuration);
         }
 
         if (!useMainline)
