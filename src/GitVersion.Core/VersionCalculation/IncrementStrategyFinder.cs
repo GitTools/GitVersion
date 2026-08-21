@@ -283,7 +283,7 @@ internal class IncrementStrategyFinder(
                     mergeCommit.Parents[0], mergeCommit.Parents[1]);
 
                 return [.. GetSourceConfigurations(
-                        mergedBranch, mergeCommit.Parents[1], sourceBranchConfiguration, targetConfiguration)
+                        mergedBranch, mergeCommit.Parents[1], sourceBranchConfiguration)
                     .Select(sourceConfiguration => GetMergedBranchIncrement(
                         mergeCommit.Parents[1], mergedBranch, baseVersionSource, mergeBase,
                         sourceBranchConfiguration, sourceConfiguration))];
@@ -341,7 +341,7 @@ internal class IncrementStrategyFinder(
 
     private IEnumerable<EffectiveConfiguration> GetSourceConfigurations(
         ReferenceName mergedBranch, ICommit mergedBranchTip,
-        IBranchConfiguration sourceBranchConfiguration, EffectiveConfiguration targetConfiguration)
+        IBranchConfiguration sourceBranchConfiguration)
     {
         var existingBranch = this.repositoryStore.Branches
             .Where(candidate => candidate.Name.EquivalentTo(mergedBranch.WithoutOrigin)
@@ -373,7 +373,7 @@ internal class IncrementStrategyFinder(
 
         return inheritedConfigurations.Length != 0
             ? inheritedConfigurations
-            : [Context.Configuration.GetEffectiveConfiguration(mergedBranch, targetConfiguration)];
+            : [Context.Configuration.GetEffectiveConfiguration(mergedBranch)];
     }
 
     private EffectiveConfiguration[] GetEffectiveConfigurations(IBranch branch, ICommit? tip = null)
