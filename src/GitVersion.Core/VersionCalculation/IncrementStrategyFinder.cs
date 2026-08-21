@@ -132,7 +132,8 @@ internal class IncrementStrategyFinder(
         {
             if (entry.MergedBranch is not { } mergedBranch)
             {
-                targetSegment.AddRange(entry.TargetCommits);
+                targetSegment.AddRange(entry.TargetCommits
+                    .Where(commit => targetCommitHistory.Contains(commit.Sha)));
                 continue;
             }
 
