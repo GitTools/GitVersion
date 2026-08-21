@@ -416,6 +416,27 @@ public class PreventIncrementOfMergedBranchScenarios
     }
 
     [Test]
+    public void RetainsIgnoredCurrentMainForMergedIncrementResolution()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Branches = ["^main$"] })
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+
+        fixture.AssertFullSemver("1.1.0-2", configuration);
+    }
+
+    [Test]
     public void StopsMergedSourceContributionsAtInterveningTargetTag()
     {
         var configuration = GitFlowConfigurationBuilder.New
@@ -569,5 +590,50 @@ public class PreventIncrementOfMergedBranchScenarios
         fixture.Checkout("main");
 
         fixture.AssertFullSemver("1.1.0-4", configuration);
+    }
+
+    [Test]
+    public void ResolvesAllSiblingHistoricalInheritancePaths()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true)
+            ).WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+            ).WithBranch("integration-a", builder => builder
+                .WithRegularExpression("^integration-a$")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("develop")
+                .WithPreventIncrementWhenBranchMerged(true)
+            ).WithBranch("integration-b", builder => builder
+                .WithRegularExpression("^integration-b$")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("develop")
+                .WithPreventIncrementWhenBranchMerged(false)
+            ).WithBranch("aggregate", builder => builder
+                .WithRegularExpression("^aggregate$")
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("integration-a", "integration-b")
+            ).WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit)
+                .WithSourceBranches("aggregate")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.CreateBranch("integration-a");
+        fixture.CreateBranch("integration-b");
+        fixture.BranchTo("aggregate");
+        fixture.BranchTo("feature/foo");
+        fixture.MakeACommit();
+        fixture.MergeTo("main", removeBranchAfterMerging: true);
+        fixture.Checkout("aggregate");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+
+        fixture.AssertFullSemver("1.1.0-3", configuration);
     }
 }
