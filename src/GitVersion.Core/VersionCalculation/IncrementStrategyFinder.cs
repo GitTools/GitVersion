@@ -111,21 +111,23 @@ internal class IncrementStrategyFinder(
         var commitOrder = commitLog
             .Select((commit, index) => (commit.Sha, Index: index))
             .ToDictionary(item => item.Sha, item => item.Index);
+        var orderedHistory = history
+            .SelectMany(entry => entry.MergedBranch is not null
+                ? [new IncrementHistoryEntry(entry.Commit, entry.MergedBranch)]
+                : entry.TargetCommits.Select(commit => new IncrementHistoryEntry(commit, MergedBranch: null)))
+            .Where(entry => targetCommitHistory.Contains(entry.Commit.Sha))
+            .GroupBy(entry => entry.Commit.Sha)
+            .Select(group => group.OrderByDescending(entry => entry.MergedBranch is not null).First())
+            .OrderBy(entry => commitOrder[entry.Commit.Sha]);
         var defaultTargetIncrement = DetermineIncrementedField(
             commitMessageIncrement: null, shouldIncrement, targetConfiguration).Increment;
         List<ICommit> targetSegment = [];
 
-        foreach (var entry in history)
+        foreach (var entry in orderedHistory)
         {
             if (entry.MergedBranch is not { } mergedBranch)
             {
-                targetSegment.AddRange(entry.TargetCommits
-                    .Where(commit => targetCommitHistory.Contains(commit.Sha)));
-                continue;
-            }
-
-            if (!targetCommitHistory.Contains(entry.Commit.Sha))
-            {
+                targetSegment.Add(entry.Commit);
                 continue;
             }
 
@@ -393,9 +395,15 @@ internal class IncrementStrategyFinder(
             .Distinct()
             .ToArray();
 
-        return inheritedConfigurations.Length != 0
-            ? inheritedConfigurations
-            : [Context.Configuration.GetEffectiveConfiguration(mergedBranch)];
+        if (inheritedConfigurations.Length != 0)
+        {
+            return inheritedConfigurations;
+        }
+
+        var fallbackConfiguration = Context.Configuration.GetEffectiveConfiguration(mergedBranch);
+        return fallbackConfiguration.Increment == IncrementStrategy.Inherit
+            ? []
+            : [fallbackConfiguration];
     }
 
     private EffectiveConfiguration[] GetEffectiveConfigurations(IBranch branch, ICommit? tip = null)
@@ -626,6 +634,8 @@ internal class IncrementStrategyFinder(
 
     private readonly record struct CommitHistoryEntry(
         ICommit Commit, ReferenceName? MergedBranch, IReadOnlyList<ICommit> TargetCommits);
+
+    private readonly record struct IncrementHistoryEntry(ICommit Commit, ReferenceName? MergedBranch);
 
     private readonly record struct CommitIncrementCacheKey(
         string Commit, Regex Major, Regex Minor, Regex Patch, Regex NoBump, Regex Reset);
