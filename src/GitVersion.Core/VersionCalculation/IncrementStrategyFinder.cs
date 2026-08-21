@@ -136,6 +136,11 @@ internal class IncrementStrategyFinder(
 
         foreach (var entry in history)
         {
+            if (!targetCommitHistory.Contains(entry.Commit.Sha))
+            {
+                continue;
+            }
+
             if (entry.MergedBranch is not { } mergedBranch)
             {
                 targetSegment.Add(entry.Commit);
@@ -276,6 +281,7 @@ internal class IncrementStrategyFinder(
         || !this.taggedSemanticVersionRepository
             .GetTaggedSemanticVersions(
                 configuration.TagPrefixPattern, configuration.SemanticVersionFormat, configuration.Ignore)[commit]
+            .Where(versionWithTag => versionWithTag.Tag.Commit.When <= Context.CurrentCommit.When)
             .Any(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label));
 
     private IEnumerable<EffectiveConfiguration> GetSourceConfigurations(
@@ -330,7 +336,8 @@ internal class IncrementStrategyFinder(
         IGitVersionConfiguration configuration, IRepositoryStore repositoryStore)
     {
         var candidates = repositoryStore.Branches
-            .Where(branch => IsConfiguredSourceBranch(branch, mergedBranchConfiguration, configuration));
+            .Where(branch => !configuration.Ignore.IsBranchIgnored(branch.Name)
+                && IsConfiguredSourceBranch(branch, mergedBranchConfiguration, configuration));
 
         var closestDistance = int.MaxValue;
         List<IBranch> result = [];
@@ -521,6 +528,7 @@ internal class IncrementStrategyFinder(
             (IReadOnlySet<string>)this.taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
                 .SelectMany(versionWithTags => versionWithTags)
+                .Where(versionWithTag => versionWithTag.Tag.Commit.When <= Context.CurrentCommit.When)
                 .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))
                 .Select(versionWithTag => versionWithTag.Tag.TargetSha)
                 .ToHashSet(StringComparer.Ordinal));
