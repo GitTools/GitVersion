@@ -21,6 +21,7 @@ internal class IncrementStrategyFinder(
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = [];
     private readonly Dictionary<string, ICommit[]> headCommitsCache = [];
     private readonly Dictionary<(string Commit, EffectiveConfiguration Target), bool> linearMainBranchHistoryCache = [];
+    private readonly Dictionary<string, HashSet<string>> reachableCommitCache = [];
 
     private readonly Lazy<GitVersionContext> contextLazy = contextLazy.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -175,9 +176,10 @@ internal class IncrementStrategyFinder(
         ICommit currentCommit, ICommit? baseVersionSource, EffectiveConfiguration targetConfiguration,
         IReadOnlySet<string> includedCommits)
     {
+        var commitsReachableFromBase = GetReachableCommitShas(baseVersionSource);
         for (ICommit? commit = currentCommit; commit is not null; commit = commit.Parents.FirstOrDefault())
         {
-            if (baseVersionSource?.Equals(commit) == true)
+            if (commitsReachableFromBase.Contains(commit.Sha))
             {
                 yield break;
             }
@@ -213,6 +215,36 @@ internal class IncrementStrategyFinder(
 
             yield return new(commit, mergedBranch, targetCommits);
         }
+    }
+
+    private HashSet<string> GetReachableCommitShas(ICommit? commit)
+    {
+        if (commit is null)
+        {
+            return [];
+        }
+
+        return this.reachableCommitCache.GetOrAdd(commit.Sha, () =>
+        {
+            HashSet<string> result = [];
+            var pending = new Stack<ICommit>();
+            pending.Push(commit);
+
+            while (pending.TryPop(out var current))
+            {
+                if (!result.Add(current.Sha))
+                {
+                    continue;
+                }
+
+                foreach (var parent in current.Parents)
+                {
+                    pending.Push(parent);
+                }
+            }
+
+            return result;
+        });
     }
 
     private CommitMessageIncrement GetTargetIncrement(
