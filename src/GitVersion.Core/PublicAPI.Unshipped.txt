@@ -1,4 +1,17 @@
 #nullable enable
+GitVersion.ConfigurationMigrationInfo
+GitVersion.ConfigurationMigrationInfo.ConfigurationMigrationInfo() -> void
+GitVersion.ConfigurationMigrationInfo.Force.get -> bool
+GitVersion.ConfigurationMigrationInfo.Force.set -> void
+GitVersion.ConfigurationMigrationInfo.InPlace.get -> bool
+GitVersion.ConfigurationMigrationInfo.InPlace.set -> void
+GitVersion.ConfigurationMigrationInfo.InputFile.get -> string?
+GitVersion.ConfigurationMigrationInfo.InputFile.set -> void
+GitVersion.ConfigurationMigrationInfo.IsMigration.get -> bool
+GitVersion.ConfigurationMigrationInfo.IsMigration.set -> void
+GitVersion.ConfigurationMigrationInfo.OutputFile.get -> string?
+GitVersion.ConfigurationMigrationInfo.OutputFile.set -> void
+GitVersion.GitVersionOptions.ConfigurationMigrationInfo.get -> GitVersion.ConfigurationMigrationInfo!
 GitVersion.Configuration.EffectiveConfiguration.CustomVersionFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.VersionBumpResetMessage.get -> string?
 GitVersion.Configuration.IBranchConfiguration.CustomVersionFormat.get -> string?

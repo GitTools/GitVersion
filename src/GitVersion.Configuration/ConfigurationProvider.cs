@@ -18,6 +18,7 @@ internal class ConfigurationProvider(
     private readonly ILogger<ConfigurationProvider> logger = logger.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
+    private bool legacyConfigurationWarningLogged;
 
     public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
@@ -49,6 +50,7 @@ internal class ConfigurationProvider(
         var overrideConfigurationFromFile = configurationFromFile is null
             ? null
             : ConfigurationDocumentMapper.Normalize(configurationFromFile, configurationVersion, "configuration file");
+        WarnAboutExplicitLegacyConfiguration(configFile, configurationFromFile);
         var normalizedOverrideConfiguration = overrideConfiguration is null
             ? null
             : ConfigurationDocumentMapper.NormalizeInternal(overrideConfiguration, "runtime override configuration");
@@ -100,6 +102,21 @@ internal class ConfigurationProvider(
         this.logger.LogInformation("Using configuration file '{ConfigFilePath}'", configFilePath);
         var content = this.fileSystem.File.ReadAllText(configFilePath);
         return this.configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
+    }
+
+    private void WarnAboutExplicitLegacyConfiguration(string? configFilePath, Dictionary<object, object?>? configuration)
+    {
+        if (configuration is null || this.legacyConfigurationWarningLogged || !ConfigurationVersionSelector.IsExplicitV6())
+        {
+            return;
+        }
+
+        this.legacyConfigurationWarningLogged = true;
+        this.logger.LogWarning(
+            "Configuration file '{ConfigurationFile}' uses the temporary v6 compatibility mode. Legacy configuration loading is removed in GitVersion 7.1. " +
+            "Run 'gitversion config migrate' and validate with {ConfigurationVersion}=v7.",
+            configFilePath,
+            ConfigurationVersionSelector.EnvironmentVariableName);
     }
 
     private static string? GetWorkflow(IReadOnlyDictionary<object, object?>? overrideConfiguration, IReadOnlyDictionary<object, object?>? overrideConfigurationFromFile)
