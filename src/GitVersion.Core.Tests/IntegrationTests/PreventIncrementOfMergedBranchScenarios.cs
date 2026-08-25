@@ -8,15 +8,13 @@ namespace GitVersion.Tests.IntegrationTests;
 [Parallelizable(ParallelScope.All)]
 public class PreventIncrementOfMergedBranchScenarios
 {
-    [TestCase(false, false, "1.0.1-2")]
+    [TestCase(false, false, "1.1.0-2")]
     [TestCase(false, true, "1.0.1-2")]
-    [TestCase(false, null, "1.1.0-2")]
     [TestCase(true, false, "1.1.0-2")]
     [TestCase(true, true, "1.0.1-2")]
-    [TestCase(true, null, "1.1.0-2")]
     public void SelectsIncrementFromTargetAndMergedBranchConfiguration(
         bool preventIncrementOfMergedBranch,
-        bool? preventIncrementWhenBranchMerged,
+        bool preventIncrementWhenBranchMerged,
         string expectedVersion)
     {
         var configuration = GitFlowConfigurationBuilder.New

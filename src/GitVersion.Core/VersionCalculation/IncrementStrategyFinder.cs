@@ -266,18 +266,17 @@ internal class IncrementStrategyFinder(
                         mergedBranch, mergeCommit.Parents[1], sourceBranchConfiguration)
                     .Select(sourceConfiguration => GetMergedBranchIncrement(
                         mergeCommit.Parents[1], mergedBranch, baseVersionSource, mergeBase,
-                        sourceBranchConfiguration, sourceConfiguration, targetConfiguration))];
+                        sourceConfiguration, targetConfiguration))];
             });
 
     private MergedBranchIncrement GetMergedBranchIncrement(
         ICommit mergedBranchTip, ReferenceName mergedBranch, ICommit? baseVersionSource, ICommit? mergeBase,
-        IBranchConfiguration sourceBranchConfiguration, EffectiveConfiguration sourceConfiguration,
-        EffectiveConfiguration targetConfiguration)
+        EffectiveConfiguration sourceConfiguration, EffectiveConfiguration targetConfiguration)
     {
         var sourceLabel = sourceConfiguration.GetBranchSpecificLabel(
             mergedBranch, null, this.environment);
         var preventIncrementWhenBranchMerged = ResolvePreventIncrementWhenBranchMerged(
-            sourceBranchConfiguration, sourceConfiguration, targetConfiguration);
+            sourceConfiguration, targetConfiguration);
         var shouldIncrement = ShouldIncrementTaggedCommit(
             mergedBranchTip, baseVersionSource, sourceConfiguration, sourceLabel);
         var sourceIncrement = DetermineIncrementedFieldInternal(
@@ -301,20 +300,16 @@ internal class IncrementStrategyFinder(
         return new(sourceIncrement, preventIncrementWhenBranchMerged);
     }
 
-    private bool? ResolvePreventIncrementWhenBranchMerged(
-        IBranchConfiguration sourceBranchConfiguration, EffectiveConfiguration sourceConfiguration,
-        EffectiveConfiguration targetConfiguration)
+    private static bool ResolvePreventIncrementWhenBranchMerged(
+        EffectiveConfiguration sourceConfiguration, EffectiveConfiguration targetConfiguration)
     {
         // Updating a descendant from main carries main's version floor; it does not complete main as a source branch.
         if (sourceConfiguration.IsMainBranch && !targetConfiguration.IsMainBranch)
         {
-            return null;
+            return false;
         }
 
-        return sourceBranchConfiguration.PreventIncrement.WhenBranchMerged
-            ?? (sourceBranchConfiguration.Increment == IncrementStrategy.Inherit
-                ? sourceConfiguration.PreventIncrementWhenBranchMerged
-                : Context.Configuration.PreventIncrement.WhenBranchMerged);
+        return sourceConfiguration.PreventIncrementWhenBranchMerged;
     }
 
     private static CommitMessageIncrement ConsolidateIncrements(
@@ -612,23 +607,19 @@ internal class IncrementStrategyFinder(
             && sourceBranchConfiguration.IsMatch(candidate.Name.WithoutOrigin));
 
     private static CommitMessageIncrement SelectIncrement(
-        bool preventIncrementOfMergedBranch, bool? preventIncrementWhenBranchMerged,
-        VersionField targetIncrement, CommitMessageIncrement sourceIncrement)
-    {
-        if (preventIncrementOfMergedBranch)
+        bool preventIncrementOfMergedBranch, bool preventIncrementWhenBranchMerged,
+        VersionField targetIncrement, CommitMessageIncrement sourceIncrement) =>
+        (preventIncrementOfMergedBranch, preventIncrementWhenBranchMerged) switch
         {
-            return preventIncrementWhenBranchMerged == true
-                ? new(targetIncrement, VersionBumpNeedsToBeReset: false)
-                : sourceIncrement;
-        }
-
-        return preventIncrementWhenBranchMerged is null
-            ? new(targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset)
-            : new(targetIncrement, VersionBumpNeedsToBeReset: false);
-    }
+            (false, false) => new(
+                targetIncrement.Consolidate(sourceIncrement.Increment), sourceIncrement.VersionBumpNeedsToBeReset),
+            (false, true) => new(targetIncrement, VersionBumpNeedsToBeReset: false),
+            (true, false) => sourceIncrement,
+            (true, true) => new(targetIncrement, VersionBumpNeedsToBeReset: false)
+        };
 
     private readonly record struct MergedBranchIncrement(
-        CommitMessageIncrement Increment, bool? PreventIncrementWhenBranchMerged);
+        CommitMessageIncrement Increment, bool PreventIncrementWhenBranchMerged);
 
     private readonly record struct HistoricalSourceBranch(IBranch Branch, ICommit Tip);
 
