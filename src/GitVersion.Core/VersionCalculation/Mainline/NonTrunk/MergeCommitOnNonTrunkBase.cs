@@ -39,20 +39,27 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
     private static VersionField ConsolidateIncrement(MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
     {
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         var increment = VersionField.None;
 
-        if (!effectiveConfiguration.PreventIncrementOfMergedBranch)
+        var effectiveConfiguration1 = commit.GetEffectiveConfiguration(context.Configuration);
+        if (!effectiveConfiguration1.PreventIncrementOfMergedBranch)
         {
             increment = increment.Consolidate(context.Increment);
         }
 
-        if (!effectiveConfiguration.PreventIncrementWhenBranchMerged)
+        var effectiveConfiguration2 = commit.ChildIteration!.GetEffectiveConfiguration(context.Configuration);
+        if (!effectiveConfiguration2.PreventIncrementWhenBranchMerged)
         {
             increment = increment.Consolidate(baseVersion.Operator?.Increment);
         }
 
-        if (effectiveConfiguration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+        if (effectiveConfiguration1.PreventIncrementOfMergedBranch
+            && effectiveConfiguration2.PreventIncrementWhenBranchMerged)
+        {
+            increment = increment.Consolidate(context.Increment);
+        }
+
+        if (effectiveConfiguration1.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
         {
             increment = increment.Consolidate(commit.Increment);
         }
