@@ -20,6 +20,7 @@ that we know about today.
 * [ReactiveUI](https://github.com/reactiveui/reactiveui)
 * [Uno Platform](https://platform.uno/)
 * [Fluent Assertions](https://fluentassertions.com)
+* [SnapX](https://snapx.sh)
 
 If you are using GitVersion in your projects, and you are not listed above,
 please feel free to add a link to your project.
