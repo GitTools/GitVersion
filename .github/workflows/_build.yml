@@ -4,6 +4,7 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
+  GITVERSION_GIT_BACKEND: managed
 
 jobs:
   build:
