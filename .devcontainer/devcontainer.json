@@ -17,10 +17,10 @@
         "ghcr.io/devcontainers/features/powershell:2.0.2": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/github-cli:1.1.0": {
+        "ghcr.io/devcontainers/features/github-cli:1.1.1": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {
+        "ghcr.io/devcontainers/features/docker-in-docker:4.1.0": {
             "version": "latest"
         },
         "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.1": {
