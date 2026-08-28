@@ -42,6 +42,7 @@ updates:
         group-by: dependency-name
         patterns:
           - "NUnit.*"
+          - "NUnit3TestAdapter"
       LibGit2Sharp:
         group-by: dependency-name
         patterns:
