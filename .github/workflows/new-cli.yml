@@ -1,4 +1,9 @@
 name: Build (new-cli)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
