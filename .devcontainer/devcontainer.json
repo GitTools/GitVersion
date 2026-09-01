@@ -14,10 +14,10 @@
             "userGid": "1000",
             "upgradePackages": "true"
         },
-        "ghcr.io/devcontainers/features/powershell:2.0.2": {
+        "ghcr.io/devcontainers/features/powershell:2.0.3": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/github-cli:1.1.1": {
+        "ghcr.io/devcontainers/features/github-cli:1.1.2": {
             "version": "latest"
         },
         "ghcr.io/devcontainers/features/docker-in-docker:4.1.0": {
