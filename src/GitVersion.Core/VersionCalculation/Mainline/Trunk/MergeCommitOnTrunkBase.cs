@@ -25,27 +25,10 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
                    incrementStrategyFinder: context.IncrementStrategyFinder,
                    configuration: context.Configuration,
                    environment: context.Environment
-               );
+            );
 
             context.Label ??= baseVersion.Operator?.Label;
-
-            var increment = VersionField.None;
-
-            if (!commit.GetEffectiveConfiguration(context.Configuration).PreventIncrementOfMergedBranch)
-            {
-                increment = increment.Consolidate(context.Increment);
-            }
-
-            if (!commit.ChildIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
-            {
-                increment = increment.Consolidate(baseVersion.Operator?.Increment);
-            }
-
-            if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
-            {
-                increment = increment.Consolidate(commit.Increment);
-            }
-            context.Increment = increment;
+            context.Increment = ConsolidateIncrement(commit, context, baseVersion);
 
             if (baseVersion.BaseVersionSource is not null)
             {
@@ -80,5 +63,35 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
             context.BaseVersionSource = commit.Value;
         }
+    }
+
+    private static VersionField ConsolidateIncrement(MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
+    {
+        var increment = VersionField.None;
+
+        var effectiveConfiguration1 = commit.GetEffectiveConfiguration(context.Configuration);
+        if (!effectiveConfiguration1.PreventIncrementOfMergedBranch)
+        {
+            increment = increment.Consolidate(context.Increment);
+        }
+
+        var effectiveConfiguration2 = commit.ChildIteration!.GetEffectiveConfiguration(context.Configuration);
+        if (!effectiveConfiguration2.PreventIncrementWhenBranchMerged)
+        {
+            increment = increment.Consolidate(baseVersion.Operator?.Increment);
+        }
+
+        if (effectiveConfiguration1.PreventIncrementOfMergedBranch
+            && effectiveConfiguration2.PreventIncrementWhenBranchMerged)
+        {
+            increment = increment.Consolidate(context.Increment);
+        }
+
+        if (effectiveConfiguration1.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+        {
+            increment = increment.Consolidate(commit.Increment);
+        }
+
+        return increment;
     }
 }
