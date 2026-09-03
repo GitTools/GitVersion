@@ -32,8 +32,9 @@ The following supported workflow configurations are available in GitVersion and 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
 ```yaml
-workflow: GitHubFlow/v1
-tag-prefix: '[abc]'
+calculation:
+  workflow: GitHubFlow/v1
+  tag-prefix: '[abc]'
 ```
 
 The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) looks like:
@@ -41,178 +42,188 @@ The built-in configuration for the `GitFlow` workflow (`workflow: GitFlow/v1`) l
 <!-- snippet: /docs/workflows/GitFlow/v1.yml -->
 <a id='snippet-/docs/workflows/GitFlow/v1.yml'></a>
 ```yml
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-versioning-scheme: MajorMinorPatch
-branches:
-  develop:
-    increment: Minor
-    is-main-branch: false
-    is-release-branch: false
-    is-source-branch-for: []
-    label: alpha
-    mode: ContinuousDelivery
-    pre-release-weight: 0
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: ^dev(elop)?(ment)?$
-    source-branches:
-      - main
-    track-merge-message: true
-    track-merge-target: true
-    tracks-release-branches: true
-  main:
-    increment: Patch
-    is-main-branch: true
-    is-release-branch: false
-    is-source-branch-for: []
-    label: ''
-    pre-release-weight: 55000
-    prevent-increment:
-      of-merged-branch: true
-    regex: "^master$|^main$"
-    source-branches: []
-    track-merge-message: true
-    track-merge-target: false
-    tracks-release-branches: false
-  release:
-    increment: Minor
-    is-main-branch: false
-    is-release-branch: true
-    is-source-branch-for: []
-    label: beta
-    mode: ManualDeployment
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    regex: "^releases?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-      - support
-    track-merge-target: false
-    tracks-release-branches: false
-  feature:
-    increment: Inherit
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ManualDeployment
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^features?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - develop
-      - main
-      - release
-      - support
-      - hotfix
-    track-merge-message: true
-  pull-request:
-    increment: Inherit
-    is-source-branch-for: []
-    label: "PullRequest{Number}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
-    source-branches:
-      - develop
-      - main
-      - release
-      - feature
-      - support
-      - hotfix
-    track-merge-message: true
-  hotfix:
-    increment: Inherit
-    is-main-branch: false
-    is-release-branch: true
-    is-source-branch-for: []
-    label: beta
-    mode: ManualDeployment
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-      - support
-  support:
-    increment: Patch
-    is-main-branch: true
-    is-release-branch: false
-    is-source-branch-for: []
-    label: ''
-    pre-release-weight: 55000
-    prevent-increment:
-      of-merged-branch: true
-    regex: "^support[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-    track-merge-target: false
-    tracks-release-branches: false
-  unknown:
-    increment: Inherit
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ManualDeployment
-    prevent-increment:
-      when-current-commit-tagged: true
-    regex: "(?<BranchName>.+)"
-    source-branches:
-      - main
-      - develop
-      - release
-      - feature
-      - pull-request
-      - hotfix
-      - support
-commit-date-format: yyyy-MM-dd
-commit-message-incrementing: Enabled
-ignore:
-  branches: []
-  paths: []
-  sha: []
-  tags: []
-increment: Inherit
-is-main-branch: false
-is-release-branch: false
-is-source-branch-for: []
-label: "{BranchName}"
-major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
-merge-message-formats: {}
-minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
-mode: ContinuousDelivery
-no-bump-message: "[+=]semver:\\s?(none|skip)"
-patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: false
-  when-current-commit-tagged: true
-regex: ''
-semantic-version-format: Strict
-source-branches: []
-strategies:
-  - Fallback
-  - ConfiguredNextVersion
-  - MergeMessage
-  - TaggedCommit
-  - TrackReleaseBranches
-  - VersionInBranchName
-tag-pre-release-weight: 60000
-tag-prefix: "[vV]?"
-track-merge-message: true
-track-merge-target: false
-tracks-release-branches: false
-update-build-number: true
-version-bump-reset-message: "=semver:"
-version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+calculation:
+  branches:
+    develop:
+      increment: Minor
+      is-main-branch: false
+      is-release-branch: false
+      is-source-branch-for: []
+      label: alpha
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: ^dev(elop)?(ment)?$
+      source-branches:
+        - main
+      track-merge-message: true
+      track-merge-target: true
+      tracks-release-branches: true
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    release:
+      increment: Minor
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^releases?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+        - support
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - develop
+        - main
+        - release
+        - support
+        - hotfix
+      track-merge-message: true
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
+      source-branches:
+        - develop
+        - main
+        - release
+        - feature
+        - support
+        - hotfix
+      track-merge-message: true
+    hotfix:
+      increment: Inherit
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+        - support
+    support:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^support[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+      track-merge-target: false
+      tracks-release-branches: false
+    unknown:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: true
+      regex: "(?<BranchName>.+)"
+      source-branches:
+        - main
+        - develop
+        - release
+        - feature
+        - pull-request
+        - hotfix
+        - support
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - Fallback
+    - ConfiguredNextVersion
+    - MergeMessage
+    - TaggedCommit
+    - TrackReleaseBranches
+    - VersionInBranchName
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    develop:
+      pre-release-weight: 0
+    main:
+      pre-release-weight: 55000
+    release:
+      pre-release-weight: 30000
+    feature:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+    hotfix:
+      pre-release-weight: 30000
+    support:
+      pre-release-weight: 55000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
 ```
-<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L170' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitFlow/v1.yml#L1-L180' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The supported built-in configuration for the `GitHubFlow` workflow (`workflow: GitHubFlow/v1`) looks like:
@@ -220,127 +231,134 @@ The supported built-in configuration for the `GitHubFlow` workflow (`workflow: G
 <!-- snippet: /docs/workflows/GitHubFlow/v1.yml -->
 <a id='snippet-/docs/workflows/GitHubFlow/v1.yml'></a>
 ```yml
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-versioning-scheme: MajorMinorPatch
-branches:
-  main:
-    increment: Patch
-    is-main-branch: true
-    is-release-branch: false
-    is-source-branch-for: []
-    label: ''
-    pre-release-weight: 55000
-    prevent-increment:
-      of-merged-branch: true
-    regex: "^master$|^main$"
-    source-branches: []
-    track-merge-message: true
-    track-merge-target: false
-    tracks-release-branches: false
-  release:
-    increment: Patch
-    is-main-branch: false
-    is-release-branch: true
-    is-source-branch-for: []
-    label: beta
-    mode: ManualDeployment
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-branch-merged: false
-      when-current-commit-tagged: false
-    regex: "^releases?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-    track-merge-message: true
-    track-merge-target: false
-    tracks-release-branches: false
-  feature:
-    increment: Inherit
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ManualDeployment
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^features?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-      - release
-    track-merge-message: true
-  pull-request:
-    increment: Inherit
-    is-source-branch-for: []
-    label: "PullRequest{Number}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
-    source-branches:
-      - main
-      - release
-      - feature
-    track-merge-message: true
-  unknown:
-    increment: Inherit
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ManualDeployment
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "(?<BranchName>.+)"
-    source-branches:
-      - main
-      - release
-      - feature
-      - pull-request
-    track-merge-message: false
-commit-date-format: yyyy-MM-dd
-commit-message-incrementing: Enabled
-ignore:
-  branches: []
-  paths: []
-  sha: []
-  tags: []
-increment: Inherit
-is-main-branch: false
-is-release-branch: false
-is-source-branch-for: []
-label: "{BranchName}"
-major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
-merge-message-formats: {}
-minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
-mode: ContinuousDelivery
-no-bump-message: "[+=]semver:\\s?(none|skip)"
-patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: false
-  when-current-commit-tagged: true
-regex: ''
-semantic-version-format: Strict
-source-branches: []
-strategies:
-  - Fallback
-  - ConfiguredNextVersion
-  - MergeMessage
-  - TaggedCommit
-  - TrackReleaseBranches
-  - VersionInBranchName
-tag-pre-release-weight: 60000
-tag-prefix: "[vV]?"
-track-merge-message: true
-track-merge-target: false
-tracks-release-branches: false
-update-build-number: true
-version-bump-reset-message: "=semver:"
-version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+calculation:
+  branches:
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    release:
+      increment: Patch
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        of-merged-branch: true
+        when-branch-merged: false
+        when-current-commit-tagged: false
+      regex: "^releases?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+        - release
+      track-merge-message: true
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
+      source-branches:
+        - main
+        - release
+        - feature
+      track-merge-message: true
+    unknown:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "(?<BranchName>.+)"
+      source-branches:
+        - main
+        - release
+        - feature
+        - pull-request
+      track-merge-message: false
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - Fallback
+    - ConfiguredNextVersion
+    - MergeMessage
+    - TaggedCommit
+    - TrackReleaseBranches
+    - VersionInBranchName
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    main:
+      pre-release-weight: 55000
+    release:
+      pre-release-weight: 30000
+    feature:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
 ```
-<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L119' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/GitHubFlow/v1.yml#L1-L126' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/GitHubFlow/v1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The preview built-in configuration (experimental usage only) for the `TrunkBased` workflow (`workflow: TrunkBased/preview1`) looks like:
@@ -348,112 +366,120 @@ The preview built-in configuration (experimental usage only) for the `TrunkBased
 <!-- snippet: /docs/workflows/TrunkBased/preview1.yml -->
 <a id='snippet-/docs/workflows/TrunkBased/preview1.yml'></a>
 ```yml
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-versioning-scheme: MajorMinorPatch
-branches:
-  main:
-    increment: Patch
-    is-main-branch: true
-    is-release-branch: false
-    is-source-branch-for: []
-    label: ''
-    mode: ContinuousDeployment
-    pre-release-weight: 55000
-    prevent-increment:
-      of-merged-branch: true
-    regex: "^master$|^main$"
-    source-branches: []
-    track-merge-message: true
-    track-merge-target: false
-    tracks-release-branches: false
-  feature:
-    increment: Minor
-    is-main-branch: false
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^features?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-    track-merge-message: true
-  hotfix:
-    increment: Patch
-    is-main-branch: false
-    is-release-branch: true
-    is-source-branch-for: []
-    label: "{BranchName}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
-    source-branches:
-      - main
-  pull-request:
-    increment: Inherit
-    is-source-branch-for: []
-    label: "PullRequest{Number}"
-    mode: ContinuousDelivery
-    pre-release-weight: 30000
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
-    source-branches:
-      - main
-      - feature
-      - hotfix
-    track-merge-message: true
-  unknown:
-    increment: Patch
-    is-source-branch-for: []
-    pre-release-weight: 30000
-    prevent-increment:
-      when-current-commit-tagged: false
-    regex: "(?<BranchName>.+)"
-    source-branches:
-      - main
-commit-date-format: yyyy-MM-dd
-commit-message-incrementing: Enabled
-ignore:
-  branches: []
-  paths: []
-  sha: []
-  tags: []
-increment: Inherit
-is-main-branch: false
-is-release-branch: false
-is-source-branch-for: []
-label: "{BranchName}"
-major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
-merge-message-formats: {}
-minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
-mode: ContinuousDelivery
-no-bump-message: "[+=]semver:\\s?(none|skip)"
-patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: false
-  when-current-commit-tagged: true
-regex: ''
-semantic-version-format: Strict
-source-branches: []
-strategies:
-  - ConfiguredNextVersion
-  - Mainline
-tag-pre-release-weight: 60000
-tag-prefix: "[vV]?"
-track-merge-message: true
-track-merge-target: false
-tracks-release-branches: false
-update-build-number: true
-version-bump-reset-message: "=semver:"
-version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+calculation:
+  branches:
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      mode: ContinuousDeployment
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Minor
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+      track-merge-message: true
+    hotfix:
+      increment: Patch
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^hotfix(es)?[\\/-](?<BranchName>.+)"
+      source-branches:
+        - main
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)"
+      source-branches:
+        - main
+        - feature
+        - hotfix
+      track-merge-message: true
+    unknown:
+      increment: Patch
+      is-source-branch-for: []
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "(?<BranchName>.+)"
+      source-branches:
+        - main
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - ConfiguredNextVersion
+    - Mainline
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?<version>[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    main:
+      pre-release-weight: 55000
+    feature:
+      pre-release-weight: 30000
+    hotfix:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+    unknown:
+      pre-release-weight: 30000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
 ```
-<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L104' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/docs/workflows/TrunkBased/preview1.yml#L1-L112' title='Snippet source file'>snippet source</a> | <a href='#snippet-/docs/workflows/TrunkBased/preview1.yml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The details of the available options are as follows:
