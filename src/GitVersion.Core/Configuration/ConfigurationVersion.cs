@@ -25,4 +25,7 @@ internal static class ConfigurationVersionSelector
     }
 
     public static string ResolveName() => Resolve() == ConfigurationVersion.V6 ? "v6" : "v7";
+
+    public static bool IsExplicitV6() =>
+        SysEnv.GetEnvironmentVariable(EnvironmentVariableName)?.Trim().Equals("v6", StringComparison.OrdinalIgnoreCase) ?? false;
 }

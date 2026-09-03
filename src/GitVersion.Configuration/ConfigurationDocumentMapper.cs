@@ -153,6 +153,34 @@ internal static class ConfigurationDocumentMapper
         };
     }
 
+    public static Dictionary<object, object?> Nest(IReadOnlyDictionary<object, object?> document)
+    {
+        Dictionary<object, object?> calculation = [];
+        Dictionary<object, object?> output = [];
+
+        foreach (var (key, value) in document)
+        {
+            if (key is string propertyName && propertyName.Equals(BranchesPropertyName, StringComparison.Ordinal))
+            {
+                SplitBranches(value, calculation, output);
+            }
+            else if (key is string outputPropertyName && OutputPropertyNames.Contains(outputPropertyName))
+            {
+                output[key] = CloneValue(value);
+            }
+            else
+            {
+                calculation[key] = CloneValue(value);
+            }
+        }
+
+        return new()
+        {
+            [CalculationSectionName] = calculation,
+            [OutputSectionName] = output
+        };
+    }
+
     public static bool IsOutputProperty(string propertyName) => OutputPropertyNames.Contains(propertyName);
 
     public static bool IsOutputBranchProperty(string propertyName) => OutputBranchPropertyNames.Contains(propertyName);
@@ -262,6 +290,56 @@ internal static class ConfigurationDocumentMapper
             foreach (var (propertyName, propertyValue) in branch)
             {
                 (OutputBranchPropertyNames.Contains(propertyName) ? outputBranch : calculationBranch)[propertyName] = propertyValue;
+            }
+
+            if (calculationBranch.Count != 0)
+            {
+                calculationBranches[branchName] = calculationBranch;
+            }
+
+            if (outputBranch.Count != 0)
+            {
+                outputBranches[branchName] = outputBranch;
+            }
+        }
+
+        if (calculationBranches.Count != 0)
+        {
+            calculation[BranchesPropertyName] = calculationBranches;
+        }
+
+        if (outputBranches.Count != 0)
+        {
+            output[BranchesPropertyName] = outputBranches;
+        }
+    }
+
+    private static void SplitBranches(
+        object? value,
+        IDictionary<object, object?> calculation,
+        IDictionary<object, object?> output)
+    {
+        if (value is not IReadOnlyDictionary<object, object?> branches)
+        {
+            calculation[BranchesPropertyName] = CloneValue(value);
+            return;
+        }
+
+        Dictionary<object, object?> calculationBranches = [];
+        Dictionary<object, object?> outputBranches = [];
+        foreach (var (branchName, branchValue) in branches)
+        {
+            if (branchValue is not IReadOnlyDictionary<object, object?> branch)
+            {
+                calculationBranches[branchName] = CloneValue(branchValue);
+                continue;
+            }
+
+            Dictionary<object, object?> calculationBranch = [];
+            Dictionary<object, object?> outputBranch = [];
+            foreach (var (propertyName, propertyValue) in branch)
+            {
+                (propertyName is string name && OutputBranchPropertyNames.Contains(name) ? outputBranch : calculationBranch)[propertyName] = CloneValue(propertyValue);
             }
 
             if (calculationBranch.Count != 0)

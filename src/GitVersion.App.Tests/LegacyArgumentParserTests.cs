@@ -64,6 +64,14 @@ public class LegacyArgumentParserTests : TestBase
     }
 
     [Test]
+    public void ConfigMigrateIsRejectedAsASubcommand()
+    {
+        var exception = Should.Throw<WarningException>(() => this.argumentParser.ParseArguments("config migrate"));
+
+        exception.Message.ShouldContain("only available with the POSIX argument parser");
+    }
+
+    [Test]
     public void EmptyMeansUseCurrentDirectory()
     {
         var arguments = this.argumentParser.ParseArguments("");
