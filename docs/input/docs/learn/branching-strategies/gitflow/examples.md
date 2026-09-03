@@ -12,8 +12,9 @@ in GitVersion. To enable this workflow, the builtin template
 configuration as follows:
 
 ```yaml
-workflow: GitFlow/v1
-mode: ContinuousDelivery
+calculation:
+  mode: ContinuousDelivery
+  workflow: GitFlow/v1
 ```
 
 Where
