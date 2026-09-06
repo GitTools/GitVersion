@@ -1,8 +1,10 @@
 ---
-Title: Migration
-Description: Technical reference documentation.
-Order: 100
+Title: Upgrading
+Description: Upgrade GitVersion and update scripts, configuration, and output consumers.
+Order: 60
 ---
-<p>@Html.Raw(Model.String(DocsKeys.Description))</p>
-
-@Html.Partial("_ChildPages")
+<p>Match the documentation to the version you use. These pages describe v7 development; they do not imply that every documented change is available in the latest published package.</p>
+<p>Check your installation with <code>dotnet-gitversion --version</code>. Pin the package or tool manifest version used by your team and CI.</p>
+<h2>From v6 to v7</h2>
+<p><a href="/docs/migration/v6-to-v7">Read the migration guide</a> for renamed variables, command-line arguments, runtime requirements, artifacts, Git backends, and compatibility switches.</p>
+<p>Before upgrading a pipeline, compare its calculated version and consumed variables on representative tagged, feature, and release commits.</p>

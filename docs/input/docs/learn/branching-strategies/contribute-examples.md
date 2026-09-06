@@ -1,4 +1,5 @@
 ---
+ShowInSidebar: false
 Order: 70
 Title: Contribute Examples
 Description: Contribute examples of how GitVersion works for your branching strategy

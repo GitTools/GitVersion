@@ -7,7 +7,8 @@ RedirectFrom: docs/more-info/variables
 
 Version variables are quite useful if you need different formats of the version
 number. Running the `gitversion` executable in your repository will show you
-what is available. For the `release/3.0.0` branch of GitVersion it shows:
+what is available. The following is illustrative output; your values depend on
+the repository history and effective configuration:
 
 ```json
 {

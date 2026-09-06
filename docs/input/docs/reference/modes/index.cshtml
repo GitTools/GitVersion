@@ -1,13 +1,16 @@
 ---
 Order: 50
-Title: Versioning Modes
-Description: The different modes of versioning GitVersion supports
+Title: Deployment modes
+Description: Compare version behavior between releases.
 RedirectFrom: docs/reference/versioning-modes/versioning-mode
 ---
-
-<p>
-    GitVersion supports a few different versioning modes. They are described
-    in detail on the pages enumerated below.
-</p>
-
-@Html.Partial("_ChildPages")
+<p>The effective branch configuration selects a deployment mode. This is separate from your workflow preset and calculation strategies.</p>
+<table class="table">
+<thead><tr><th>Mode</th><th>Effect after version selection</th><th>Read more</th></tr></thead>
+<tbody>
+<tr><td>ManualDeployment</td><td>Keeps the calculated pre-release version and adds build metadata; intermediate commits can share a semantic version.</td><td><a href="/docs/reference/modes/manual-deployment">Manual deployment</a></td></tr>
+<tr><td>ContinuousDelivery</td><td>Requires a numbered pre-release version and incorporates the commit count into its pre-release number.</td><td><a href="/docs/reference/modes/continuous-delivery">Continuous delivery</a></td></tr>
+<tr><td>ContinuousDeployment</td><td>Removes the pre-release label from the calculated version. Tags and increment rules determine when the released version changes.</td><td><a href="/docs/reference/modes/continuous-deployment">Continuous deployment</a></td></tr>
+</tbody></table>
+<p>A mode does not publish a package or deploy your application. Your pipeline performs those actions.</p>
+<p>See <a href="/docs/learn/workflows-modes-strategies">workflows, modes, and strategies</a> for how these choices fit together, and inspect your effective configuration with <code>dotnet-gitversion --show-config</code>.</p>

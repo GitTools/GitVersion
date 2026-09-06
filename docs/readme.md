@@ -15,6 +15,29 @@ the documentation locally before submitting a pull request. This involves
 on your machine, clicking around in it to ensure that everything works as
 expected.
 
+## Documentation organization
+
+The documentation is grouped into Getting started, Guides, Concepts, Reference,
+Troubleshooting, and Upgrading. The curated sidebar is defined in
+`input/Shared/Sidebar/_ChildPages.cshtml`. It groups existing pages by task
+without changing their public URLs. When adding a page, update its landing page
+and the relevant sidebar group. Keep contributor and community links in the footer.
+
+The current main-branch documentation describes v7 development. Match command
+examples and output-variable names to that version, and keep legacy arguments
+in migration guidance.
+
+Configuration prose is authored in
+`input/docs/reference/mdsource/configuration.source.md`. Do not edit
+`input/docs/reference/configuration.md` directly. Follow
+`.github/workflows/mkdocs.yml`: run `mdsnippets --write-header false` from
+`docs/input` after editing the source. Include both the source and regenerated
+Markdown in a documentation change. The topical configuration pages link to the
+complete reference so existing setting anchors remain stable.
+
+Preserve existing URLs when reorganizing. If a page must move, retain its old
+URL with Wyam's `RedirectFrom` metadata and preserve or map its fragment anchors.
+
 ## Serving the documentation locally
 
 To serve up the documentation locally, you need to run the following

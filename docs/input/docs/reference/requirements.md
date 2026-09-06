@@ -16,7 +16,8 @@ build server, needs to adhere to the below requirements.
 
 The repository should be an [unshallow][git-unshallow] clone. This means
 that the `fetch-depth` in GitHub Actions should set to `0`, unless
-the `allowshallow` flag is used.
+the `--allow-shallow` flag is used. That flag does not restore missing history
+or guarantee that the result matches a full clone.
 Check with your [build server][build-servers] to see how it can be configured
 appropriately.
 

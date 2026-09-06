@@ -5,18 +5,13 @@ Description: Details about how GitVersion can be configured to suit your needs
 RedirectFrom: docs/configuration
 ---
 
-GitVersion, starting from version 3.0, is mainly powered by configuration and no
-longer has branching strategies hard-coded.
+This is the complete settings reference, including built-in workflow defaults.
+For a shorter starting point, use [configuration by topic](/docs/reference/configuration-topics)
+or follow [Configure GitVersion](/docs/usage/configure).
 
-:::{.alert .alert-info}
-**Note**
-
-GitVersion ships with internal default configuration which works with
-GitHubFlow and GitFlow, probably with others too.
-:::
-
-The `develop` branch is set to `ContinuousDeployment` mode by default as we have
-found that is generally what is needed when using GitFlow.
+Defaults depend on the selected workflow and effective branch configuration.
+Use the configuration output below to inspect them rather than assuming that
+every workflow uses the same deployment mode.
 
 To see the effective configuration (defaults and overrides), you can run
 `gitversion --show-config`.
@@ -107,7 +102,7 @@ The following supported workflow configurations are available in GitVersion and 
 
 * GitFlow (GitFlow/v1)
 * GitHubFlow (GitHubFlow/v1)
-* TrunkBased (TrunkBased/preview1)
+* TrunkBased (TrunkBased/preview1, experimental preview)
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 

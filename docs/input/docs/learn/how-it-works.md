@@ -1,74 +1,42 @@
 ---
 Order: 10
-Title: How it works
+Title: How versions are calculated
 RedirectFrom: docs/more-info/how-it-works
 ---
+GitVersion combines repository history with effective configuration to calculate a version for the current commit. It then exposes that result as [version variables](/docs/reference/variables).
 
-GitVersion v3 works very differently to v2. Version 2 had knowledge of both
-GitFlow and GitHubFlow hard coded into it, with each branch having its own
-class which calculated the version for that branch type.
+<a id="architecture"></a>
 
-v3 is driven by [configuration](/docs/reference/configuration), meaning most of the
-behaviors in GitVersion can be tweaked to work the way you want. This also makes
-it _much_ more predictable and easier to diagnose when odd things are happening.
+## 1. Resolve the context and configuration
 
-## Architecture
+GitVersion determines the current commit and branch and resolves configuration defaults and overrides. The effective branch configuration supplies matching rules, increment behavior, labels, and deployment mode.
 
-GitVersion has three distinct steps for calculating versions in v3.
+Missing tags, branches, or history can change the information available to the calculation. Start with the [repository requirements](/docs/reference/requirements).
 
-1. If the current commit is tagged, the tag is used and build metadata
-   (excluding commit count) is added. The other two steps will not execute.
-2. A set of strategies are evaluated to decide on the base version and some
-   metadata about that version. See [Version Strategies](#version-strategies)
-3. The highest base version is selected, using that base version as the new
-   version is calculated.
+<a id="version-strategies"></a>
 
-Visually it looks something like this:
+## 2. Consider tags and version strategies
 
-<pre class="mermaid" aria-label="Version calculation diagram">
-^"../../../diagrams/version-calculation.mmd"
-</pre>
+A suitable version tag on the current commit can determine the result when the effective configuration prevents incrementing an already-tagged commit. This is conditional: a tagged commit does not unconditionally bypass all other calculation.
 
-[View diagram source](https://github.com/GitTools/GitVersion/blob/main/docs/diagrams/version-calculation.mmd)
+Otherwise, enabled [version strategies](/docs/reference/version-sources) examine sources such as tags, merge messages, release branches, and configured versions. Candidates carry information about the base version and its source in history.
 
-**\*** Some strategies allow the version to be incremented, others don't. More
-info below.
-**+** This version is out of context with the rest of the example. It is here
-simply to show what happens if the check is true.
+Fallback is considered after other strategies and is skipped when another strategy has returned a base version. It is not an unconditional fixed final version of 0.1.0.
 
-### Version Strategies
+## 3. Apply increments and deployment behavior
 
-Currently we have the following strategies:
+GitVersion compares candidate next versions, resolves the version source, and applies effective branch and [deployment-mode](/docs/reference/modes) rules. Branch settings, commit messages, tags, and merge history can all affect the result.
 
-* `Fallback` - Always returns 0.0.0 and will be used for
-  calculating the next version which is dependent on the increment strategy of
-  the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0).
-  The fallback strategy only applies if no other selected strategy returns a base version.
-* `ConfiguredNextVersion` - Returns the version from the GitVersion.yaml file
-* `MergeMessage` - Finds version numbers from merge messages
-  (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
-* `TaggedCommit` - Extracts version information from all tags on the branch which are valid,
-  and not newer than the current commit.
-* `TrackReleaseBranches` - Considers the base version extracted from release branches when
-  calculating the next version for branches configured with `track-release-branches: true`
-  (part of default configuration for `develop` branch in `GitFlow` workflow)
-* `VersionInBranchName` - Extracts version information from the
-  branch name (e.g., `release/3.0.0` will find `3.0.0`)
-* `Mainline` - Increments the version on every commit for branches configured with `is-main-branch: true`
+Read [version increments](/docs/reference/version-increments) for increment controls, and [workflows, modes, and strategies](/docs/learn/workflows-modes-strategies) for their different responsibilities.
 
-Each strategy needs to return an instance of `BaseVersion` which has the
-following properties:
+## 4. Produce version variables
 
-* `Source` - Description of the source (e.g., `Merge message 'Merge 'release/3.0.0' into 'main'`)
-* `ShouldIncrement` - Some strategies should have the version incremented,
-  others do not (e.g., `ConfiguredNextVersion` returns false,
-  `TaggedCommit` returns true)
-* `SemanticVersion` - SemVer of the base version strategy
-* `BaseVersionSource` - SHA hash of the source. Commits will be counted from
-  this hash. Can be null (e.g., `ConfiguredNextVersion` returns
-  null).
-* `BranchNameOverride` - When `useBranchName` or `{BranchName}` is used in the
-  tag configuration, this allows the branch name to be changed by a base version.
-  `VersionInBranchName` uses this to strip out anything before the
-  first `-` or `/.` so `foo` ends up being evaluated as `foo`. If in doubt, just
-  use null.
+The result is expanded into semantic versions, assembly versions, branch and commit information, and other variables. Formatting settings control additional representations such as assembly and informational versions.
+
+Choose [JSON, a single variable, a file, or build-server output](/docs/usage/cli/output) according to how your build consumes the result.
+
+## Follow an example
+
+The [GitHubFlow examples](/docs/learn/branching-strategies/githubflow/examples) and [GitFlow examples](/docs/learn/branching-strategies/gitflow/examples) show concrete histories and their expected versions. Always read an example together with its configuration.
+
+If your output is unexpected, follow [Troubleshooting](/docs/learn/faq) before changing version settings.

@@ -5,61 +5,83 @@ NoContainer: true
 NoGutter: true
 ---
 
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-4">GitVersion</h1>
-        <p class="tagline">
-            From <code>git log</code> to <a href="https://semver.org">SemVer</a> in no time
-        </p>
-    </div>
-</div>
-
-<main role="main" class="container text-center">
-    <div class="row slideanim">
-        <div class="col-sm-6">
-            <span class="glyphicon glyphicon-heart logo-small"></span>
-            <h3 class="no-anchor">Open-Source</h3>
-            <p>
-                GitVersion is free to use, improve, contribute and distribute.
-                Source code is available on <a href="https://github.com/GitTools/GitVersion">GitHub</a> under MIT license.
-            </p>
+<main class="gv-home gv-mockup" id="main-content">
+    <section class="gv-banner" aria-labelledby="hero-title">
+        <div class="gv-container">
+            <h1 id="hero-title">GitVersion</h1>
+            <p class="gv-banner-tagline">From <code>git log</code> to SemVer in no time</p>
+            <p class="gv-banner-description">Semantic versioning powered by your Git history.<br>Automate version numbers across your builds and releases.</p>
+            <div class="gv-actions">
+                <a class="gv-button gv-primary" href="/docs/usage/cli/installation">Get started <span aria-hidden="true">→</span></a>
+                <a class="gv-button gv-secondary" href="https://github.com/GitTools/GitVersion"><i class="fa fa-github" aria-hidden="true"></i> View on GitHub</a>
+            </div>
         </div>
+    </section>
 
-        <div class="col-sm-6">
-            <span class="glyphicon glyphicon-random logo-small"></span>
-            <h3 class="no-anchor">Flexible</h3>
-            <p>
-                GitVersion is built for many different use-cases and workflows, so whether you use
-                <a href="/docs/reference/modes/mainline">Mainline</a>,
-                <a href="/docs/learn/branching-strategies/gitflow">Git Flow</a> or
-                <a href="/docs/learn/branching-strategies/githubflow">GitHub Flow</a>,
-                GitVersion has you covered.
-            </p>
-        </div>
-    </div>
+    <section class="gv-container gv-feature-cards" aria-label="Why GitVersion">
+        <article><i class="fa fa-code" aria-hidden="true"></i><h2>Open-Source</h2><p>Built by the GitTools community and available under the MIT license.</p><a href="https://github.com/GitTools/GitVersion">Explore the source →</a></article>
+        <article><i class="fa fa-code-fork" aria-hidden="true"></i><h2>Flexible</h2><p>Use GitHub Flow, Git Flow, or a branching strategy that fits your team.</p><a href="/docs/learn/branching-strategies">Find your workflow →</a></article>
+        <article><i class="fa fa-sliders" aria-hidden="true"></i><h2>Configurable</h2><p>Define versioning rules in GitVersion.yml and make every release consistent.</p><a href="/docs/reference/configuration">Explore configuration →</a></article>
+        <article><i class="fa fa-cubes" aria-hidden="true"></i><h2>Rich tooling</h2><p>Run from the command line, Docker, MSBuild, or your CI pipeline.</p><a href="/docs/usage">Choose your integration →</a></article>
+    </section>
 
-    <div class="row slideanim">
-        <div class="col-sm-6">
-            <span class="glyphicon glyphicon-cog logo-small"></span>
-            <h3 class="no-anchor">Configurable</h3>
-            <p>
-                Gitversion is highly <a href="/docs/reference/configuration">configurable</a>
-                and can be made to support your specific versioning scheme, almost
-                regardless of what it may be.
-            </p>
-        </div>
+    <section class="gv-start-panel" aria-labelledby="quickstart-title">
+        <div class="gv-container">
+            <h2 id="quickstart-title">Getting Started</h2>
+            <div class="gv-start-columns">
+                <div><h3>Installation</h3><p>Install GitVersion as a global .NET tool.</p>
+                    <div class="gv-install"><span aria-hidden="true">$</span><code id="install-command">dotnet tool install --global GitVersion.Tool</code><button type="button" data-copy="install-command" aria-label="Copy installation command"><i class="fa fa-clone" aria-hidden="true"></i></button></div>
+                    <p class="gv-alternatives">Also available for <a href="/docs/usage/docker">Docker</a> and <a href="/docs/usage/msbuild">MSBuild</a>.</p>
+                    <a href="/docs/usage/cli/installation">Full installation guide →</a>
+                </div>
+                <div><h3>Usage</h3><p>Run it inside your Git repository.</p>
+                    <pre><code><span class="gv-code-comment"># Calculate your version</span>
+dotnet-gitversion
 
-        <div class="col-sm-6">
-            <span class="glyphicon glyphicon-wrench logo-small"></span>
-            <h3 class="no-anchor">Rich tooling</h3>
-            <p>
-                Expose version variables in different formats to the tools you use. Use GitVersion locally or in a
-                build pipeline with
-                <a href="/docs/reference/build-servers/teamcity">TeamCity</a>,
-                <a href="/docs/reference/build-servers/appveyor">AppVeyor</a>,
-                <a href="/docs/reference/build-servers/jenkins">Jenkins</a> or any of the other supported
-                <a href="/docs/reference/build-servers/">build servers</a>.
-            </p>
+<span class="gv-code-comment"># Print a single version variable</span>
+dotnet-gitversion --show-variable SemVer</code></pre>
+                    <a href="/docs/usage/cli/arguments">Command-line options →</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="gv-container gv-example" aria-labelledby="example-title">
+        <h2 id="example-title">How It Works</h2>
+        <div class="gv-example-card">
+            <div class="gv-example-copy"><h3>Version Calculation Example</h3><p>GitVersion reads your tags, branches, and commits to calculate a semantic version for the current commit.</p><h4>Your history is the starting point</h4><ul><li><strong>Tags</strong> establish released versions.</li><li><strong>Branches</strong> provide context for your workflow.</li><li><strong>Configuration</strong> controls increments and pre-release labels.</li></ul><p class="gv-example-note">This example is illustrative. Your output depends on your repository history and configuration.</p><a href="/docs/learn/how-it-works">Learn how versions are calculated →</a></div>
+        <div class="gv-history" aria-label="Illustration of Git history becoming a semantic version">
+            <div class="gv-history-heading"><span><i class="fa fa-code-fork" aria-hidden="true"></i> A HISTORY WORTH BUILDING ON</span><span class="gv-live-dot" aria-hidden="true"></span></div>
+            <svg class="gv-graph" viewBox="0 0 520 230" role="img" aria-labelledby="graph-title graph-description">
+                <title id="graph-title">A feature branch merges back into main</title>
+                <desc id="graph-description">Commits on main and a feature branch form the history GitVersion reads. The version below is illustrative; actual output depends on your history and configuration.</desc>
+                <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#dedce6" /></pattern></defs>
+                <rect width="520" height="230" fill="url(#grid)" />
+                <g fill="none" stroke-width="3"><path d="M35 150H485" stroke="#6d347e"/><path d="M135 150C175 150 160 72 200 72H300C340 72 325 150 365 150" stroke="#229c8f"/></g>
+                <g stroke="#6d347e" stroke-width="3" fill="#fff"><circle cx="55" cy="150" r="7"/><circle cx="135" cy="150" r="7"/><circle cx="245" cy="150" r="7"/><circle cx="365" cy="150" r="7"/><circle cx="465" cy="150" r="9"/></g>
+                <g stroke="#229c8f" stroke-width="3" fill="#fff"><circle cx="205" cy="72" r="7"/><circle cx="290" cy="72" r="7"/></g>
+                <g font-family="ui-monospace, monospace" font-size="14"><text x="31" y="188" fill="#675d70">v1.0.0</text><text x="185" y="42" fill="#18796f">feature / next</text><text x="420" y="188" fill="#6d347e">main</text></g>
+            </svg>
+            <div class="gv-result">
+                <div class="gv-terminal-label"><span><span class="gv-terminal-dot"></span> gitversion</span><span>ILLUSTRATIVE OUTPUT</span></div>
+                <div class="gv-version">1<span>.</span>1<span>.</span>0</div>
+                <div class="gv-result-bottom"><code>"FullSemVer": "1.1.0"</code><span><i class="fa fa-check" aria-hidden="true"></i> Ready to build</span></div>
+            </div>
+            <div class="gv-history-caption"><span>Git history</span><span aria-hidden="true">→</span><span>GitVersion</span><span aria-hidden="true">→</span><span>Semantic version</span></div>
+        </div>
+        </div>
+    </section>
+
+    <section class="gv-doc-panel" aria-labelledby="docs-title"><div class="gv-container">
+        <h2 id="docs-title">Documentation</h2>
+        <div class="gv-doc-cards">
+            <a href="/docs/usage/cli/installation"><h3>Quick Start</h3><p>Get up and running in minutes.</p><span aria-hidden="true">→</span></a>
+            <a href="/docs/reference/configuration"><h3>Configuration</h3><p>Customize your versioning strategy.</p><span aria-hidden="true">→</span></a>
+            <a href="/docs/usage/ci"><h3>CI/CD Integration</h3><p>Connect your build and release pipeline.</p><span aria-hidden="true">→</span></a>
+            <a href="/api"><h3>API Reference</h3><p>Explore namespaces, types, and members.</p><span aria-hidden="true">→</span></a>
+        </div>
+    </div></section>
+
+    <section class="gv-container gv-support"><h2>Need Help?</h2><p>Ask the community, report an issue, or help improve GitVersion.</p><div class="gv-actions"><a class="gv-button gv-primary" href="https://github.com/GitTools/GitVersion/discussions">Join the discussion</a><a class="gv-button gv-secondary" href="https://github.com/GitTools/GitVersion/issues">Report an issue</a></div></section>
+    <output id="copy-status" class="sr-only" aria-live="polite"></output>
 </main>

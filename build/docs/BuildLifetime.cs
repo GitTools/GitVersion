@@ -23,7 +23,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
             Settings = new Dictionary<string, object>
             {
                 { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
-                { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
+                { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitVersion.Testing,!GitTools.*,}/**/*.cs" },
                 { "Title", "GitVersion" },
                 { "IncludeGlobalNamespace", false },
                 { "IgnoreFolders", "**/mdsource" }

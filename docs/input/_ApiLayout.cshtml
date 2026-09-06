@@ -1,0 +1,29 @@
+@{
+    Layout = "/_Master.cshtml";
+    var containingNamespace = Model.Get<IDocument>("ContainingNamespace");
+    var containingType = Model.Get<IDocument>("ContainingType");
+    ViewData[Keys.Title] = "API - " + Model["DisplayName"] + " " + Model["SpecificKind"];
+}
+@section Search { @Html.Partial("_ApiSearch") }
+@section Sidebar { @Html.Partial("Sidebar/_" + Model.String("Kind")) }
+<div class="gv-api">
+    <header class="content-header">
+        <nav class="gv-api-breadcrumb" aria-label="Breadcrumb">
+            <a href="/api">API</a>
+            @if (containingNamespace != null) { <span aria-hidden="true">/</span>@Context.GetTypeLink(containingNamespace, false) }
+            @if (containingType != null) { <span aria-hidden="true">/</span>@Context.GetTypeLink(containingType, false) }
+        </nav>
+        <h1>@Model.Name() <small>@Model["SpecificKind"]</small></h1>
+    </header>
+    <div class="gv-api-body">
+        <section class="content">
+            @Html.Partial("_ApiBeforeContent")
+            @RenderBody()
+            @Html.Partial("Kind/_" + Model.String("Kind"))
+            @Html.Partial("_ApiAfterContent")
+        </section>
+        <aside class="gv-api-toc" aria-label="On this page" hidden>
+            <strong>On this page</strong><nav aria-label="On this page"></nav>
+        </aside>
+    </div>
+</div>

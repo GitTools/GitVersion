@@ -1,81 +1,77 @@
 ---
 Order: 50
-Title: FAQ
+Title: Troubleshooting
 RedirectFrom: docs/faq
 ---
+Start by recording the installed GitVersion version, the commit SHA, the effective configuration, and the output you expected. Compare the same commit and configuration locally and in CI.
 
 ## Why is my version not incrementing?
 
-GitVersion calculates the semantic version, this will only change once per
-_release_. Read more about [version increments][increments].
+A new CI run is not necessarily a new version. Check the [deployment mode](/docs/reference/modes), branch increment settings, applicable tags, and [commit-message increments](/docs/reference/version-increments).
 
-## I'm using Octopus deploy
+Use `dotnet-gitversion --show-config` to inspect the effective configuration. Changing the output format will not change the underlying version calculation.
 
-Because Octopus deploy cannot have the same version of a package to a NuGet
-feed. There is no magic solution to this, but you can read more about your
-options at [octopus deploy][octopus].
+## Local and CI versions differ
 
-## How can GitVersion run for a shallow clone or checkout on server working directories
+Check whether both environments have the same commit, branch context, configuration file, tags, and history. A shallow checkout or missing remote branch can affect the available version sources.
 
-GitVersion needs a proper git repository to run, some build servers do not do a
-proper clone which can cause issues. GitVersion has a feature called [dynamic
-repositories][dynamic-repos] which solves this by cloning the repository and
-working against that clone instead of the working directory.
+Follow the [CI checkout guide](/docs/reference/build-servers), then the page for your provider.
 
-## I don't understand what SemVer is all about
+<a id="how-can-gitversion-run-for-a-shallow-clone-or-checkout-on-server-working-directories"></a>
 
-Not a problem, we have a quick [introduction to SemVer][semver-intro] which can
-be a good primer to read before reading [SemVer.org][semver].
+## Shallow clone or missing history
 
-## I can't use the build number for NuGet
+Use a full checkout with the required tags and branches. For an existing shallow clone, fetch the missing history before running GitVersion. See [repository requirements](/docs/reference/requirements).
 
-If you have used NuGet you would notice the versions above are not compatible
-with NuGet. GitVersion solves this by providing [variables][variables].
+The `--allow-shallow` argument permits running on a shallow clone; it does not restore missing history or guarantee that the result matches a full clone.
 
-What you have seen above is the `SemVer` variable. You can use the
-`NuGetVersion` variable to have the version formatted in a NuGet compatible way.
+If no suitable local checkout is available, consider [dynamic repositories](/docs/learn/dynamic-repositories).
 
-So `1.0.1-rc.1+5` would become `1.0.1-rc0001`, this takes into account
-characters which are not allowed and NuGets crap sorting.
+## Branch detection and detached HEAD
 
-:::{.alert .alert-info}
-**Note**
+Ensure that the provider supplies the intended branch or tag and that the corresponding references are available. Review [repository setup](/docs/learn/git-setup) and provider-specific [CI guidance](/docs/reference/build-servers).
 
-The `NuGetVersion` variable is floating, so when NuGet 3.0 comes out
-with proper SemVer support GitVersion will switch this variable to a proper
-SemVer.
-:::
+## Configuration is not being used
 
-If you want to fix the version, use `NuGetVersionV2` which will stay the same
-after NuGet 3.0 comes out
+Check that the configuration file is checked out. Recognized names include `GitVersion.yml`, `GitVersion.yaml`, `.GitVersion.yml`, and `.GitVersion.yaml`.
+
+Select it explicitly and inspect the result:
+
+```shell
+dotnet-gitversion --config GitVersion.yml --show-config
+```
+
+See [Configure GitVersion](/docs/usage/configure).
+
+<a id="i-cant-use-the-build-number-for-nuget"></a>
+
+## Package or assembly version is unsuitable
+
+Choose a variable supported by the consumer. Start with `SemVer` for the semantic version and the assembly-specific variables for .NET assemblies. Consult the [variable reference](/docs/reference/variables) and [custom formatting](/docs/reference/custom-formatting).
+
+Old examples mentioning `NuGetVersion` or `NuGetVersionV2` do not describe the current output-variable set.
 
 ## Merged branch names as version source
 
-When GitVersion considers previous commits to calculate a version number, it's
-important that the metadata to be considered is _stable_. Since branches are
-usually deleted after they are merged, the name of a branch can't be considered
-as a stable version source. _Branch names are not stable_, they are ephemeral.
+A deleted branch name is not durable history. Version tags and merge messages can retain information that a deleted branch reference cannot. See [calculation strategies](/docs/reference/version-sources) and the [workflow examples](/docs/learn/branching-strategies).
 
-The only place a branch name can be considered for version calculation is for
-the branch itself. This is typically used for `release/*` branches, which
-usually have a version number in their name. For the release branch
-`release/1.2.3`, the verison number `1.2.3` will be used to calculate the final
-version number _for the release branch_.
+## Collect diagnostic information
 
-However, when the `release/1.2.3` branch is merged into `main`, the fact that
-the merged commits came from a branch named `release/1.2.3` vanishes with the
-branch which will be deleted. The name of the merged release branch can
-therefore not be considered for version calculation in the target branch of the
-merge.
+```shell
+dotnet-gitversion --show-config
+dotnet-gitversion --verbosity Diagnostic --log-file gitversion.log
+```
 
-[dynamic-repos]: /docs/learn/dynamic-repositories
+To bypass cached calculation during an investigation, use `--no-cache`. Review logs and configuration for credentials and private repository details before sharing them in an issue.
 
-[increments]: /docs/reference/version-increments
+For additional graph diagnostics, `--diagnose` requires `--log-file` and Git installed. See [CLI arguments](/docs/usage/cli/arguments).
 
-[octopus]: /docs/reference/build-servers/octopus-deploy
+<a id="im-using-octopus-deploy"></a>
+<a id="i-dont-understand-what-semver-is-all-about"></a>
 
-[semver-intro]: /docs/learn/intro-to-semver
+## More help
 
-[semver]: https://semver.org
-
-[variables]: /docs/reference/variables
+- [Upgrade scripts from v6 to v7](/docs/migration/v6-to-v7).
+- [Introduction to semantic versioning](/docs/learn/intro-to-semver).
+- [Version packages for Octopus Deploy](/docs/reference/build-servers/octopus-deploy).
+- [Ask a question](https://github.com/GitTools/GitVersion/discussions).
