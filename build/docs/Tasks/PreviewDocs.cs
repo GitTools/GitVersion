@@ -1,4 +1,3 @@
-using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
@@ -6,8 +5,7 @@ namespace Docs.Tasks;
 
 [TaskName(nameof(PreviewDocs))]
 [TaskDescription("Run a local server with docs in preview")]
-[IsDependentOn(typeof(Clean))]
-[IsDependentOn(typeof(ValidateMermaidDiagrams))]
+[IsDependentOn(typeof(BuildDocs))]
 public sealed class PreviewDocs : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
@@ -20,18 +18,6 @@ public sealed class PreviewDocs : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
-        if (context.WyamSettings is not null)
-        {
-            var schemaTargetDir = Paths.ArtifactsDocs.Combine("preview").Combine("schemas");
-            context.EnsureDirectoryExists(schemaTargetDir);
-            context.CopyDirectory(Paths.Schemas, schemaTargetDir);
-            context.StageMermaidRuntimeForWyam();
-
-            context.WyamSettings.Preview = true;
-            context.WyamSettings.Watch = true;
-            context.WyamSettings.NoClean = true;
-            context.WyamSettings.Settings.Add("Host", "gittools.github.io");
-            context.Wyam(context.WyamSettings);
-        }
+        VersionedDocs.Preview(context);
     }
 }

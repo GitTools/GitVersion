@@ -40,6 +40,41 @@ URL with Wyam's `RedirectFrom` metadata and preserve or map its fragment anchors
 
 ## Serving the documentation locally
 
+The preview builds Current, 6.8, and 5.12 with the same templates, styles, and
+homepage. Choose an edition in the navigation. Released prose comes from its
+tagged source; API signatures come from the matching published assemblies, with
+package XML comments supplemented from that source. No rendered `gh-pages` files
+are used as input.
+
+Current API signatures come from freshly built `GitVersion.App` and
+`GitVersion.MsBuild` projects, including their referenced assemblies. BuildDocs
+creates this assembly bundle itself, locally and in GitHub Actions; no existing
+application binaries are required. Every edition is checked against its public
+type inventory, and missing API pages or local links fail the documentation build.
+
+`versions.json` defines the editions. At each build, 6.8 and 5.12 resolve to the
+latest stable patch in that minor line. A build uses one resolved patch throughout.
+Exact inputs are recorded in `artifacts/docs/inputs.json`; the site exposes a
+portable `build-inputs.json` receipt. Package archives and source snapshots are
+cached under `artifacts/docs/cache`, verified by checksum, and downloaded again
+only for new inputs or an empty cache. Metadata lookup still needs network access;
+an unavailable feed fails the build instead of silently selecting an older patch.
+
+Presentation is owned by this checkout: `input/_*.cshtml`, `input/Shared`,
+`input/assets`, `input/index.cshtml`, and `theme`. Release Markdown and section
+landing pages keep their original content. Shared homepage commands adjust to
+the selected edition. To add an edition, add its major.minor ID, matching tool
+framework, and unique URL prefix to the manifest.
+
+PreviewDocs watches shared documentation inputs and rebuilds all editions. Refresh
+the browser after a successful rebuild. A failed rebuild keeps the last successful
+site available. Build task changes require restarting the preview. The local
+server listens at `http://localhost:5080`; `/6.8/` and `/5.12/` are the release
+editions, and `/5.12.0/` URLs redirect to `/5.12/`.
+
+Without PowerShell, use `dotnet run --project build/docs/docs.csproj -- --target=PreviewDocs`.
+Run the focused input-selection checks with `dotnet run --file docs/scripts/check-docs-inputs.cs`.
+
 To serve up the documentation locally, you need to run the following
 commands:
 

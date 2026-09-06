@@ -12,7 +12,11 @@ on:
     branches:
       - main
     paths:
-      - build/docs/**
+      - build/**
+      - src/**
+      - global.json
+      - .config/dotnet-tools.json
+      - .github/actions/cache-restore/**
       - docs/**
       - package*.json
       - markdownlint.json
@@ -23,7 +27,11 @@ on:
     branches:
       - main
     paths:
-      - build/docs/**
+      - build/**
+      - src/**
+      - global.json
+      - .config/dotnet-tools.json
+      - .github/actions/cache-restore/**
       - docs/**
       - package*.json
       - markdownlint.json
@@ -112,15 +120,39 @@ jobs:
           key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
           restore-keys: node-${{ runner.os }}
 
+      - name: Verify documentation input selection
+        run: dotnet run --file docs/scripts/check-docs-inputs.cs
+
+      - name: Restore released documentation inputs
+        id: docs-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: artifacts/docs/cache
+          key: docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}
+          restore-keys: |
+            docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-
+            docs-inputs-v2-${{ runner.os }}-
+
       - name: '[Build Documentation]'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         shell: pwsh
         run: dotnet run/docs.dll --target=BuildDocs
+
+      # New releases can add immutable inputs without changing the manifest.
+      # Save only when the verified archive set differs from the restored cache.
+      - name: Save released documentation inputs
+        if: hashFiles('artifacts/docs/cache/**/*.sha512') != '' && steps.docs-cache.outputs.cache-matched-key != format('docs-inputs-v2-{0}-{1}-{2}', runner.os, hashFiles('docs/versions.json'), hashFiles('artifacts/docs/cache/**/*.sha512'))
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: artifacts/docs/cache
+          key: docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-${{ hashFiles('artifacts/docs/cache/**/*.sha512') }}
 
       - name: '[HTMLProofer]'
         uses: chabad360/htmlproofer@c2750eb7eb937599ac859517e7dd23a29f1b3ed7 # v2
         with:
           directory: ./artifacts/docs/preview
-          arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension --disable-external --no-check_external_hash
+          arguments: --ignore-urls /api/,/docs/,/5.12.0/ --allow-hash-href --allow-missing-href --assume-extension .html --disable-external --no-check-external-hash
 
       - name: '[Reviewdog Reporter]'
         id: reporter
@@ -173,6 +205,16 @@ jobs:
           key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
           restore-keys: node-${{ runner.os }}
 
+      - name: Restore released documentation inputs
+        id: docs-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: artifacts/docs/cache
+          key: docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}
+          restore-keys: |
+            docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-
+            docs-inputs-v2-${{ runner.os }}-
+
       - name: '[Build Schemas]'
         shell: pwsh
         run: dotnet run/docs.dll --target=GenerateSchemas
@@ -181,3 +223,10 @@ jobs:
         if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         shell: pwsh
         run: dotnet run/docs.dll --target=PublishDocs --force
+
+      - name: Save released documentation inputs
+        if: hashFiles('artifacts/docs/cache/**/*.sha512') != '' && steps.docs-cache.outputs.cache-matched-key != format('docs-inputs-v2-{0}-{1}-{2}', runner.os, hashFiles('docs/versions.json'), hashFiles('artifacts/docs/cache/**/*.sha512'))
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: artifacts/docs/cache
+          key: docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-${{ hashFiles('artifacts/docs/cache/**/*.sha512') }}

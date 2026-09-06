@@ -1,5 +1,12 @@
 /* Shared visual system for the Wyam Docs/Samson templates. */
 
+.gv-version-item { position: relative; display: flex !important; align-items: center; padding: 0 16px 0 12px; }
+.gv-version-item::after { content: ""; position: absolute; right: 30px; top: 50%; width: 6px; height: 6px; border-right: 1.5px solid var(--gv-purple); border-bottom: 1.5px solid var(--gv-purple); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+#docs-version { appearance: none; -webkit-appearance: none; min-width: 96px; height: 36px; padding: 0 34px 0 12px; border: 1px solid var(--gv-line); border-radius: 8px; background: var(--gv-tint); color: var(--gv-purple); font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1.4; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+#docs-version:hover { border-color: var(--gv-purple); }
+#docs-version:focus-visible { outline: 2px solid var(--gv-purple); outline-offset: 3px; }
+#docs-version option { color: var(--gv-ink); background: var(--gv-paper); }
+
 /* API explorer: align the title and reference content, with search-first navigation. */
 body:has(.gv-api) .main-sidebar .infobar { display: none; }
 body:has(.gv-api) .main-sidebar { padding-top: 104px; }
@@ -319,7 +326,7 @@ html[data-theme="dark"] .gv-theme-sun { display: inline-block; }
     .main-header .navbar .navbar-collapse { flex: 1; min-width: 0; float: none !important; }
     .main-header .navbar .navbar-nav { display: flex; align-items: center; width: 100%; float: none; }
     .main-header .navbar .nav > li { float: none; flex-shrink: 0; }
-    .main-header .navbar .nav > li.gv-theme-item { margin-left: auto; }
+    .main-header .navbar .nav > li.gv-version-item { margin-left: auto; }
 }
 @media (min-width: 768px) and (max-width: 1100px) {
     .main-header > .logo { width: 200px; padding-left: 24px; }
@@ -329,8 +336,9 @@ html[data-theme="dark"] .gv-theme-sun { display: inline-block; }
 }
 @media (max-width: 767px) {
     .main-header .navbar .navbar-nav { display: flex; flex-wrap: wrap; padding-right: 20px; }
-    .main-header .navbar .nav > li:not(.gv-theme-item):not(.gv-github-item) { flex-basis: 100%; }
-    .main-header .navbar .nav > li.gv-theme-item { margin-left: auto; padding: 10px 4px; }
+    .main-header .navbar .nav > li:not(.gv-version-item):not(.gv-theme-item):not(.gv-github-item) { flex-basis: 100%; }
+    .main-header .navbar .nav > li.gv-version-item { margin-left: auto; }
+    .main-header .navbar .nav > li.gv-theme-item { padding: 10px 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .gv-theme-toggle { transition: none; }
