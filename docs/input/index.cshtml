@@ -30,7 +30,8 @@ NoGutter: true
             <h2 id="quickstart-title">Getting Started</h2>
             <div class="gv-start-columns">
                 <div><h3>Installation</h3><p>Install GitVersion as a global .NET tool.</p>
-                    <div class="gv-install"><span aria-hidden="true">$</span><code id="install-command">dotnet tool install --global GitVersion.Tool@(Context.String("DocsEdition", "Current") == "Current" ? "" : " --version " + Context.String("DocsRelease"))</code><button type="button" data-copy="install-command" aria-label="Copy installation command"><i class="fa fa-clone" aria-hidden="true"></i></button></div>
+                    <div class="gv-install"><span aria-hidden="true">$</span><code id="install-command">@(Context.String("DocsRelease") == "development" ? "git clone https://github.com/GitTools/GitVersion.git" : "dotnet tool install --global GitVersion.Tool --version " + Context.String("DocsRelease"))</code><button type="button" data-copy="install-command" aria-label="Copy installation command"><i class="fa fa-clone" aria-hidden="true"></i></button></div>
+                    @if (Context.String("DocsRelease") == "development") { <p>This edition follows development source. After cloning, follow the <a href="/docs/getting-started">source-build instructions</a> to run v7.</p> }
                     <p class="gv-alternatives">Also available for <a href="@(Context.String("DocsEdition", "Current") == "5.12" ? "/docs/usage/cli/installation" : "/docs/usage/docker")">Docker</a> and <a href="/docs/usage/msbuild">MSBuild</a>.</p>
                     <a href="/docs/usage/cli/installation">Full installation guide →</a>
                 </div>
@@ -39,7 +40,7 @@ NoGutter: true
 dotnet-gitversion
 
 <span class="gv-code-comment"># Print a single version variable</span>
-dotnet-gitversion @(Context.String("DocsEdition", "Current") == "Current" ? "--show-variable" : "/showvariable") SemVer</code></pre>
+dotnet-gitversion @(new Version(Context.String("DocsEdition")).Major >= 7 ? "--show-variable" : "/showvariable") SemVer</code></pre>
                     <a href="/docs/usage/cli/arguments">Command-line options →</a>
                 </div>
             </div>

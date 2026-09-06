@@ -75,12 +75,15 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
             BranchName = publishBranchName
         });
 
-        foreach (var directory in System.IO.Directory.GetDirectories(publishFolder.FullPath))
+        foreach (var directory in System.IO.Directory.GetDirectories(publishFolder.FullPath).Where(directory => System.IO.Path.GetFileName(directory) != ".git"))
         {
-            if (System.IO.Path.GetFileName(directory) != ".git") System.IO.Directory.Delete(directory, true);
+            System.IO.Directory.Delete(directory, true);
         }
-        foreach (var file in System.IO.Directory.GetFiles(publishFolder.FullPath))
-            if (System.IO.Path.GetFileName(file) is not ("CNAME" or ".nojekyll")) System.IO.File.Delete(file);
+        foreach (var file in System.IO.Directory.GetFiles(publishFolder.FullPath).Where(file => System.IO.Path.GetFileName(file) is not ("CNAME" or ".nojekyll")))
+        {
+            System.IO.File.Delete(file);
+        }
+
         DocsInputs.CopyTree(context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")).FullPath, publishFolder.FullPath);
 
         var schemaTargetDir = publishFolder.Combine("schemas");

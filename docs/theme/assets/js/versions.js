@@ -6,18 +6,18 @@
         return response.json();
     }).then(versions => {
         const current = versions.find(v => v.basePath && (location.pathname === v.basePath || location.pathname.startsWith(v.basePath + '/')))
-            || versions.find(v => !v.basePath);
+            || versions[0];
         selector.replaceChildren(...versions.map(v => {
             const option = new Option(v.label, v.id, false, v.id === current.id);
             return option;
         }));
-        const normalize = path => path.replace(/\/index\.html$/, '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+        const normalize = path => path.replace(/\/index(?:\.html)?$/, '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
         selector.addEventListener('change', () => {
             const target = versions.find(v => v.id === selector.value);
             const route = normalize(location.pathname.slice(current.basePath.length));
             const exists = target.routes.some(p => normalize(p) === route);
             const fallback = route.startsWith('/api') ? '/api' : '/docs';
-            location.assign(target.basePath + (exists ? route : fallback) + (exists ? location.hash : '?version-fallback=1'));
+            location.assign(target.basePath + (exists ? route : fallback) + (exists ? location.search + location.hash : '?version-fallback=1'));
         });
         if (new URLSearchParams(location.search).has('version-fallback')) {
             const message = document.createElement('div');

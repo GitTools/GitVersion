@@ -16,8 +16,5 @@ public sealed class PreviewDocs : FrostingTask<BuildContext>
         return shouldRun;
     }
 
-    public override void Run(BuildContext context)
-    {
-        VersionedDocs.Preview(context);
-    }
+    public override void Run(BuildContext context) => VersionedDocs.Preview(context);
 }

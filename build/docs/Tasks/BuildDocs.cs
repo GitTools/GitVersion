@@ -18,8 +18,5 @@ public sealed class BuildDocs : FrostingTask<BuildContext>
         return shouldRun;
     }
 
-    public override void Run(BuildContext context)
-    {
-        VersionedDocs.Build(context);
-    }
+    public override void Run(BuildContext context) => VersionedDocs.Build(context);
 }

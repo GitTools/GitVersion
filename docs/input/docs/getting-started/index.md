@@ -16,9 +16,19 @@ These examples use v7 arguments. If your installed tool is v6, consult [Upgradin
 ## 2. Install GitVersion
 
 ```shell
-dotnet tool install --global GitVersion.Tool
+dotnet tool install --global GitVersion.Tool --version "7.*"
 dotnet-gitversion --version
 ```
+
+This command requires a published stable v7 package. Before that release, build v7 from source; an unversioned tool install selects stable v6 and cannot run the v7 examples below.
+
+```shell
+git clone https://github.com/GitTools/GitVersion.git
+dotnet publish GitVersion/src/GitVersion.App/GitVersion.App.csproj --configuration Release --output GitVersion/artifacts/local-cli
+dotnet GitVersion/artifacts/local-cli/gitversion.dll --version
+```
+
+For a source build, replace `dotnet-gitversion` in the remaining examples with `dotnet /absolute/path/to/GitVersion/artifacts/local-cli/gitversion.dll`. Run it from the repository you want to version, or pass `--target-path /path/to/repository`.
 
 Use `--version <package-version>` on the install command to select a specific published version. A [local tool manifest](/docs/usage/cli/installation#net-local-tool) can keep the team and CI on the same version.
 

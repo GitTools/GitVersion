@@ -7,7 +7,7 @@
         parent = root.Document(Keys.Parent);
     }
     string current = Context.GetLink(Document).TrimEnd('/');
-    if (Context.String("DocsEdition", "Current") == "Current" && (current == "/docs" || current.StartsWith("/docs/")))
+    if (new Version(Context.String("DocsEdition")).Major >= 7 && (current == "/docs" || current.StartsWith("/docs/")))
     {
         var documents = new List<IDocument>();
         var pending = new Queue<IDocument>();
@@ -30,7 +30,7 @@
             Tuple.Create("Troubleshooting", "/docs/learn/faq", new[] { "/docs/learn/faq", "/docs/learn/git-setup" }),
             Tuple.Create("Upgrading", "/docs/migration", new[] { "/docs/migration/v6-to-v7" })
         };
-        <li class="header gv-docs-version">Current · development docs</li>
+        <li class="header gv-docs-version">@Context.String("DocsEdition") · documentation</li>
         foreach (var group in groups)
         {
             var entries = group.Item3.Select(path => documents.FirstOrDefault(d => Context.GetLink(d).TrimEnd('/') == path)).Where(d => d != null).ToList();
