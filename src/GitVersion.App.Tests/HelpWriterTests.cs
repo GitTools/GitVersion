@@ -55,7 +55,12 @@ public class HelpWriterTests : TestBase
         var ignored = new[]
         {
             nameof(Arguments.Authentication),
-            nameof(Arguments.UpdateAssemblyInfoFileName)
+            nameof(Arguments.UpdateAssemblyInfoFileName),
+            nameof(Arguments.IsConfigurationMigration),
+            nameof(Arguments.MigrationInputFile),
+            nameof(Arguments.MigrationOutputFile),
+            nameof(Arguments.MigrationInPlace),
+            nameof(Arguments.MigrationForce)
         };
         typeof(Arguments).GetFields()
             .Select(p => p.Name)

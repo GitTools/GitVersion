@@ -169,6 +169,56 @@ public class ArgumentParserTests : TestBase
         parser.GetOverrideConfiguration().ShouldBeEmpty();
     }
 
+    [TestCase("config migrate --config GitVersion.yml")]
+    [TestCase("config migrate -c GitVersion.yml")]
+    [TestCase("--config GitVersion.yml config migrate")]
+    [TestCase("-c GitVersion.yml config migrate")]
+    public void ConfigMigrateParsesItsInputAndOutputOptions(string inputArguments)
+    {
+        var arguments = this.argumentParser.ParseArguments(
+            $"{inputArguments} --output GitVersion.v7.yml --force");
+
+        arguments.IsConfigurationMigration.ShouldBeTrue();
+        arguments.MigrationInputFile.ShouldBe("GitVersion.yml");
+        arguments.MigrationOutputFile.ShouldBe("GitVersion.v7.yml");
+        arguments.MigrationForce.ShouldBeTrue();
+    }
+
+    [Test]
+    public void ConfigMigrateUsesPositionalTargetPath()
+    {
+        var arguments = this.argumentParser.ParseArguments("path config migrate --in-place");
+
+        arguments.IsConfigurationMigration.ShouldBeTrue();
+        arguments.TargetPath.ShouldBe("path");
+    }
+
+    [Test]
+    public void ConfigMigrateRejectsOutputAndInPlaceTogether()
+    {
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("config migrate --output GitVersion.v7.yml --in-place"));
+
+        exception.Message.ShouldBe("Cannot use --output together with --in-place.");
+    }
+
+    [Test]
+    public void ConfigRequiresASubcommand()
+    {
+        var exception = Should.Throw<WarningException>(() => this.argumentParser.ParseArguments("config"));
+
+        exception.Message.ShouldBe("The 'config' command requires a subcommand. Use 'gitversion config migrate'.");
+    }
+
+    [Test]
+    public void TargetPathAllowsDirectoryNamedConfig()
+    {
+        var arguments = this.argumentParser.ParseArguments("--target-path config");
+
+        arguments.TargetPath.ShouldBe("config");
+        arguments.IsConfigurationMigration.ShouldBeFalse();
+    }
+
     [Test]
     public void EmptyMeansUseCurrentDirectory()
     {

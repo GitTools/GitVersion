@@ -78,6 +78,12 @@ internal class LegacyArgumentParser(
             return new Arguments { IsVersion = true };
         }
 
+        if (firstArgument.Equals("config", StringComparison.OrdinalIgnoreCase)
+            && commandLineArguments.Skip(1).FirstOrDefault()?.Equals("migrate", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            throw new WarningException("The 'config migrate' command is only available with the POSIX argument parser.");
+        }
+
         var arguments = new Arguments();
 
         AddAuthentication(arguments);

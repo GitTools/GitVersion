@@ -8,6 +8,7 @@ public class GitVersionConfigurationModule : IGitVersionModule
     {
         services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
         services.AddSingleton<IConfigurationSerializer, ConfigurationSerializer>();
+        services.AddSingleton<IConfigurationMigrationService, ConfigurationMigrationService>();
         services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
         services.AddSingleton<IConfigurationFileLocator, ConfigurationFileLocator>();
     }
