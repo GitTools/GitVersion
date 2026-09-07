@@ -13,7 +13,8 @@ configuration as follows:
 
 ```yaml
 workflow: GitFlow/v1
-mode: ContinuousDelivery
+calculation:
+  mode: ContinuousDelivery
 ```
 
 Where

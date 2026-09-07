@@ -11,7 +11,8 @@ configuration as follows:
 
 ```yaml
 workflow: GitHubFlow/v1
-mode: ContinuousDelivery
+calculation:
+  mode: ContinuousDelivery
 ```
 
 Where

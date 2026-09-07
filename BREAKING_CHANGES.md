@@ -55,6 +55,26 @@ The command-line interface has been migrated from Windows-style (`/switch` and s
 
 As a temporary migration aid, set the environment variable `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to restore the legacy `/switch` and `-switch` argument handling. This escape hatch will be removed in a future release.
 
+### Configuration structure and migration
+
+v7 configuration now separates calculation from output:
+
+```yaml
+calculation:
+  branches:
+    main:
+      increment: Patch
+output:
+  update-build-number: true
+```
+
+v7.0 defaults to the nested layout. `GITVERSION_CONFIGURATION_VERSION=v6` is a
+temporary flat-layout fallback that logs a migration warning for user files.
+Convert files with `gitversion config migrate`. The command
+writes YAML to stdout by default, supports `--config`, `--output`,
+`--in-place`, and `--force`, and warns that comments cannot be preserved when
+replacing a file.
+
 #### Full argument mapping
 
 | Old argument                  | New argument                     | Short alias                    | Env var alternative          |
