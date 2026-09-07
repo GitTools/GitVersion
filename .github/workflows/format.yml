@@ -24,6 +24,11 @@ on:
       - main
       - 'support/*'
       - 'next/*'
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!.github/**'
+      - .github/workflows/format.yml
 
 permissions:
   contents: read
@@ -46,47 +51,13 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-
-      # Required checks must report even when the PR only changes excluded paths.
-      - name: Check relevant changes
-        id: changes
-        shell: bash
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          if [[ "$EVENT_NAME" != pull_request ]]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          changed_files=$(mktemp)
-          trap 'rm -f "$changed_files"' EXIT
-          git diff --name-only -z "$BASE_SHA...$HEAD_SHA" > "$changed_files"
-          relevant=false
-          while IFS= read -r -d '' path; do
-            case "$path" in
-              .github/workflows/format.yml) relevant=true ;;
-              docs/*|.github/*) continue ;;
-              *) relevant=true ;;
-            esac
-          done < "$changed_files"
-          echo "relevant=$relevant" >> "$GITHUB_OUTPUT"
-          if [[ "$relevant" == false ]]; then
-            echo "No relevant changes; .NET formatting is not needed." >> "$GITHUB_STEP_SUMMARY"
-          fi
 
       - name: Setup .NET SDK
-        if: steps.changes.outputs.relevant == 'true'
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
 
       - name: Cache NuGet packages
-        if: steps.changes.outputs.relevant == 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.nuget/packages
@@ -95,9 +66,7 @@ jobs:
             nuget-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Run Format 'ci' solution
-        if: steps.changes.outputs.relevant == 'true'
         run: dotnet format ./build/ --verify-no-changes
 
       - name: Run Format 'GitVersion' solution
-        if: steps.changes.outputs.relevant == 'true'
         run: dotnet format ./src/ --exclude "**/AddFormats/" --verify-no-changes
