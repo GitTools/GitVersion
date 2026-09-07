@@ -18,6 +18,7 @@ public class GitVersionExecutorTests : TestBase
     private IFileSystem fileSystem = null!;
     private GitVersionCacheProvider gitVersionCacheProvider = null!;
     private IServiceProvider sp = null!;
+    private string? originalConfigurationVersion;
 
     private const string versionCacheFileContent =
         """
@@ -52,6 +53,34 @@ public class GitVersionExecutorTests : TestBase
           "WeightedPreReleaseNumber": 19
         }
         """;
+
+    [SetUp]
+    public void SetupConfigurationVersion()
+    {
+        this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+    }
+
+    [TearDown]
+    public void RestoreConfigurationVersion() =>
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
+
+    [Test]
+    public void ConfigurationVersionChangeInvalidatesCache()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        var options = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
+        _ = GetGitVersionCalculator(options);
+        var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
+
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        var v6Key = cacheKeyFactory.Create(null);
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        var v7Key = cacheKeyFactory.Create(null);
+
+        v7Key.ShouldNotBe(v6Key);
+    }
 
     [Test]
     public void ResolvedConfiguration_IsCreatedOncePerExecution()

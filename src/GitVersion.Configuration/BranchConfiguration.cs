@@ -25,6 +25,9 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonIgnore]
     IPreventIncrementConfiguration IBranchConfiguration.PreventIncrement => PreventIncrement;
 
+    [JsonIgnore]
+    IPreventIncrementConfiguration ICalculationBranchConfiguration.PreventIncrement => PreventIncrement;
+
     [JsonPropertyName("prevent-increment")]
     [JsonPropertyDescription("The prevent increment configuration section.")]
     public PreventIncrementConfiguration PreventIncrement { get; set; } = new();
@@ -56,12 +59,18 @@ internal record BranchConfiguration : IBranchConfiguration
     [JsonIgnore]
     IReadOnlyCollection<string> IBranchConfiguration.SourceBranches => SourceBranches;
 
+    [JsonIgnore]
+    IReadOnlyCollection<string> ICalculationBranchConfiguration.SourceBranches => SourceBranches;
+
     [JsonPropertyName("is-source-branch-for")]
     [JsonPropertyDescription("The branches that this branch is a source branch.")]
     public HashSet<string> IsSourceBranchFor { get; set; } = [];
 
     [JsonIgnore]
     IReadOnlyCollection<string> IBranchConfiguration.IsSourceBranchFor => IsSourceBranchFor;
+
+    [JsonIgnore]
+    IReadOnlyCollection<string> ICalculationBranchConfiguration.IsSourceBranchFor => IsSourceBranchFor;
 
     [JsonPropertyName("tracks-release-branches")]
     [JsonPropertyDescription("Indicates this branch configuration represents develop in GitFlow.")]

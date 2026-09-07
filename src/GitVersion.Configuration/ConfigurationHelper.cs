@@ -6,8 +6,8 @@ internal class ConfigurationHelper
 {
     private static ConfigurationSerializer Serializer => new();
     private string Yaml => this.yaml ??= this.dictionary == null
-        ? Serializer.Serialize(this.configuration!)
-        : Serializer.Serialize(this.dictionary);
+        ? ConfigurationSerializer.SerializeLegacy(this.configuration!)
+        : ConfigurationSerializer.SerializeLegacy(this.dictionary);
     private string? yaml;
 
     internal IReadOnlyDictionary<object, object?> Dictionary
@@ -19,14 +19,14 @@ internal class ConfigurationHelper
                 return this.dictionary;
             }
 
-            this.yaml ??= Serializer.Serialize(this.configuration!);
+            this.yaml ??= ConfigurationSerializer.SerializeLegacy(this.configuration!);
             this.dictionary = Serializer.Deserialize<Dictionary<object, object?>>(this.yaml);
             return this.dictionary;
         }
     }
     private IReadOnlyDictionary<object, object?>? dictionary;
 
-    public IGitVersionConfiguration Configuration => this.configuration ??= Serializer.Deserialize<GitVersionConfiguration>(Yaml);
+    public IGitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.DeserializeLegacyConfiguration(Yaml)!;
     private IGitVersionConfiguration? configuration;
 
     internal ConfigurationHelper(string yaml) => this.yaml = yaml.NotNull();

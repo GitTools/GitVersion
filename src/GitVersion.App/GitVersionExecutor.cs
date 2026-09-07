@@ -70,8 +70,9 @@ internal class GitVersionExecutor(
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
             this.gitVersionOutputTool.UpdateWixVersionFile(variables);
         }
-        catch (WarningException exception)
+        catch (Exception exception) when (exception is WarningException or ConfigurationException)
         {
+            WriteError(exception);
             this.logger.LogError(exception, """
                                             An error occurred:
                                             {Message}
@@ -101,6 +102,12 @@ internal class GitVersionExecutor(
         }
 
         return 0;
+    }
+
+    private static void WriteError(Exception exception)
+    {
+        Console.Error.WriteLine("An error occurred:");
+        Console.Error.WriteLine(exception.Message);
     }
 
     private void Initialize(GitVersionOptions gitVersionOptions)
