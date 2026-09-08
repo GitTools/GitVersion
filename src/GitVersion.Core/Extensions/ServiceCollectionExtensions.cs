@@ -57,7 +57,8 @@ public static class ServiceCollectionExtensions
 
         if (ShouldLogToConsole())
         {
-            loggerConfig.WriteTo.Console(outputTemplate: outputTemplate, formatProvider: formatProvider);
+            loggerConfig.WriteTo.Console(outputTemplate: outputTemplate, formatProvider: formatProvider,
+                standardErrorFromLevel: LogEventLevel.Verbose);
         }
         else
         {

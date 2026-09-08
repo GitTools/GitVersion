@@ -46,7 +46,7 @@ public class ExecCmdLineArgumentTest
         var headCommit = fixture.MakeACommit();
 
         var environment = new KeyValuePair<string, string?>(
-            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+            "GITVERSION_ARGUMENT_PARSER_VERSION", useLegacyParser ? "v6" : null);
         var showVariableArgument = useLegacyParser ? "-showvariable" : "--show-variable";
         var commitArgument = useLegacyParser ? "-c" : "--commit";
         var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
@@ -76,7 +76,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeACommit();
 
         var environment = new KeyValuePair<string, string?>(
-            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+            "GITVERSION_ARGUMENT_PARSER_VERSION", useLegacyParser ? "v6" : null);
         var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
         var targetPathArgument = useLegacyParser ? $" \"{fixture.RepositoryPath}\"" : string.Empty;
         var outputArguments = useLegacyParser
@@ -107,7 +107,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeACommit();
 
         var environment = new KeyValuePair<string, string?>(
-            "GITVERSION_USE_V6_ARGUMENT_PARSER", useLegacyParser ? "true" : null);
+            "GITVERSION_ARGUMENT_PARSER_VERSION", useLegacyParser ? "v6" : null);
         var workingDirectory = useLegacyParser ? null : fixture.RepositoryPath;
         var targetPathArgument = useLegacyParser ? $" \"{fixture.RepositoryPath}\"" : string.Empty;
         var verbosityArgument = useLegacyParser ? "/verbosity Verbose" : "--verbosity verbose";

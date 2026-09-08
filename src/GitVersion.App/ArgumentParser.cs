@@ -167,6 +167,7 @@ internal class ArgumentParser(
             MigrationOutputFile = outputFile,
             MigrationInPlace = inPlace,
             MigrationForce = force,
+            LogFilePath = parseResult.GetValue(options.LogFile),
             TargetPath = parseResult.GetValue(options.TargetPath)
                          ?? parseResult.GetValue(options.Path)
                          ?? SysEnv.CurrentDirectory
@@ -371,7 +372,7 @@ internal class ArgumentParser(
         };
         var logFile = new Option<string?>("--log-file", "-l")
         {
-            Description = "Path to logfile; specify 'console' to emit to stdout"
+            Description = "Path to logfile; specify 'console' to emit to stderr"
         };
         var output = new Option<OutputType[]>("--output", "-o")
         {

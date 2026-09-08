@@ -1,15 +1,17 @@
 using GitVersion;
 
-var builder = CliHost.CreateCliHostBuilder(args);
-
-var host = builder.Build();
-var app = host.Services.GetRequiredService<GitVersionApp>();
-
-var cts = new CancellationTokenSource();
-Console.CancelKeyPress += (_, _) =>
+try
 {
-    cts.Cancel();
-    cts.Dispose();
-};
+    var builder = CliHost.CreateCliHostBuilder(args);
 
-await app.RunAsync(cts.Token).ConfigureAwait(false);
+    using var host = builder.Build();
+    var app = host.Services.GetRequiredService<GitVersionApp>();
+
+    await app.RunAsync(CancellationToken.None).ConfigureAwait(false);
+}
+catch (WarningException exception)
+{
+    await Console.Error.WriteLineAsync("An error occurred:").ConfigureAwait(false);
+    await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
+    SysEnv.ExitCode = 1;
+}
