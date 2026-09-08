@@ -35,14 +35,14 @@ GitVersion is migrating away from LibGit2Sharp and its native libgit2 binaries t
 
 | Release | Default backend | Switch |
 | ------- | --------------- | ------ |
-| v7.0    | `libgit2`       | `GITVERSION_GIT_BACKEND=managed` to opt in to the new backend |
-| v7.1    | `managed`       | `GITVERSION_GIT_BACKEND=libgit2` to fall back |
-| later   | `managed`       | libgit2 backend removed |
+| v7.0    | `managed`       | `GITVERSION_GIT_BACKEND=libgit2` is a temporary fallback |
+| v7.1    | `managed`       | libgit2 is removed; `libgit2` reports an actionable error, explicit `managed` remains accepted |
+| v8      | `managed`       | the selector is removed |
 
 Behavioral notes when using the `managed` backend:
 
 * Mutating and network operations (repository normalization on CI build agents, dynamic repositories via `--url`, checkout, fetch) are performed by invoking the `git` executable, which must be available on the `PATH`. Plain version calculation on an already-prepared checkout does not require it.
-* v7.0 behavior is unchanged unless you opt in. Please test the `managed` backend and report issues — the libgit2 backend will be removed once the new backend has proven itself over several releases.
+* The default changes to `managed` in v7.0. LibGit2Sharp/native binaries remain available through the explicit fallback until their scheduled v7.1 removal.
 
 ### Invalid label formatting is not ignored
 Previously bad label formatting config would be silently accepted. For example `{Branhc}` (when BranchName is misspelled) or even `{BranchName` (missing a closing brace). This is not ignored now and exceptions will be thrown if formatting problems exist in the label config. This brings it into line with how assembly string formatting is treated.
@@ -53,7 +53,13 @@ The command-line interface has been migrated from Windows-style (`/switch` and s
 
 **Old-style arguments are no longer accepted by default.** Update any scripts, CI pipelines, or tooling accordingly.
 
-As a temporary migration aid, set the environment variable `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to restore the legacy `/switch` and `-switch` argument handling. This escape hatch will be removed in a future release.
+As a temporary v7.0 migration aid, set `GITVERSION_ARGUMENT_PARSER_VERSION=v6` to restore legacy `/switch` and `-switch` handling. The default is `v7`. Unset `GITVERSION_USE_V6_ARGUMENT_PARSER`: any presence of that retired variable, including `false`, now fails with replacement guidance. The legacy parser is scheduled for removal in v7.1; the selector remains until v8.
+
+The parser, configuration and Git backend selectors are independent. They trim
+values, ignore case, treat blanks as unset and reject unknown values with the
+accepted values. Effective selections are logged at information level; console
+logs use stderr, including when build-server output is selected. Build-server
+integration commands continue to use their existing output channel.
 
 ### Configuration structure and migration
 
@@ -74,6 +80,10 @@ Convert files with `gitversion config migrate`. The command
 writes YAML to stdout by default, supports `--config`, `--output`,
 `--in-place`, and `--force`, and warns that comments cannot be preserved when
 replacing a file.
+
+Flat v6 runtime support is scheduled for removal in v7.1. Explicit `v7` remains
+accepted throughout v7.x, and the configuration selector is removed in v8.
+`gitversion config migrate` remains available after runtime removal.
 
 #### Full argument mapping
 

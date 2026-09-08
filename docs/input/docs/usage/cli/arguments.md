@@ -8,7 +8,10 @@ Description: The supported arguments of the GitVersion Command Line Interface
 **Note:** GitVersion uses POSIX-style `--long-name` arguments from version 7 and up. Long-form
 arguments are recommended for readability in scripts and documentation. Short aliases
 (e.g. `-l`, `-o`, `-b`) are also supported. The legacy `/switch` and `-switch`
-syntax is still available when `GITVERSION_USE_V6_ARGUMENT_PARSER=true` is set.
+syntax is available during v7.0 when `GITVERSION_ARGUMENT_PARSER_VERSION=v6` is set.
+The default is `v7`. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER`
+variable; it now produces a replacement diagnostic. The legacy parser is
+removed in v7.1 and the selector in v8.
 
 See [Migration v6 to v7](/docs/migration/v6-to-v7) for upgrade guidance and the full argument mapping.
 :::
@@ -47,7 +50,7 @@ GitVersion [path]
                     Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
                     E.g. --output json --format {SemVer} - will output `1.2.3+beta.4`
                          --output json --format {Major}.{Minor} - will output `1.2`
-    --log-file, -l  Path to logfile; specify 'console' to emit to stdout.
+    --log-file, -l  Path to logfile; specify 'console' to emit to stderr.
     --config, -c    Path to config file (defaults to GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml)
     --show-config   Outputs the effective GitVersion config (defaults + custom
                     from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format
@@ -122,7 +125,8 @@ writes YAML to stdout unless `--output` or `--in-place` is selected. `--output`
 will not replace an existing file without `--force`; it cannot be combined with
 `--in-place`. Replacing a file warns that comments are not preserved. The
 command does not require a Git repository and is unavailable when
-`GITVERSION_USE_V6_ARGUMENT_PARSER=true` selects the legacy parser.
+`GITVERSION_ARGUMENT_PARSER_VERSION=v6` selects the legacy parser. Migration
+remains available after v6 runtime support is removed in v7.1.
 
 ## Override config
 
