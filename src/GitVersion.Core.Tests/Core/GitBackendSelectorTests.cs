@@ -6,10 +6,12 @@ namespace GitVersion.Tests;
 [NonParallelizable]
 public class GitBackendSelectorTests : TestBase
 {
-    [TestCase(null, false)]
-    [TestCase("", false)]
+    [TestCase(null, true)]
+    [TestCase("", true)]
+    [TestCase(" \t ", true)]
     [TestCase("libgit2", false)]
     [TestCase("LIBGIT2", false)]
+    [TestCase(" LIBGIT2 ", false)]
     [TestCase("managed", true)]
     [TestCase("Managed", true)]
     [TestCase(" managed ", true)]
@@ -25,12 +27,12 @@ public class GitBackendSelectorTests : TestBase
     [TestCase("true")]
     public void FailsFastOnUnknownValues(string value)
     {
-        // A silently ignored typo would make a user believe they validated the
-        // managed backend while actually running libgit2.
         using var scope = new EnvironmentVariableScope(value);
 
-        Should.Throw<InvalidOperationException>(() => GitBackendSelector.Resolve())
-            .Message.ShouldContain(value);
+        var exception = Should.Throw<WarningException>(() => GitBackendSelector.Resolve());
+        exception.Message.ShouldContain(value);
+        exception.Message.ShouldContain(GitBackendSelector.EnvironmentVariableName);
+        exception.Message.ShouldContain("'libgit2' and 'managed'");
     }
 
     private sealed class EnvironmentVariableScope : IDisposable
