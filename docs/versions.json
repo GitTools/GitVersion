@@ -1,0 +1,8 @@
+{
+  "discoverFromMajor": 7,
+  "versions": [
+    { "id": "7.0", "label": "7.0", "basePath": "/7.0", "status": "development" },
+    { "id": "6.8", "label": "6.8", "basePath": "/6.8", "status": "release", "framework": "net8.0" },
+    { "id": "5.12", "label": "5.12", "basePath": "/5.12", "status": "release", "framework": "net6.0", "aliases": ["/5.12.0"] }
+  ]
+}

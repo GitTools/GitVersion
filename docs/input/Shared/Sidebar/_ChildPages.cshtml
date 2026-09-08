@@ -1,0 +1,57 @@
+@{
+    IDocument root = Document;
+    IDocument parent = root.Document(Keys.Parent);
+    while (parent != null)
+    {
+        root = parent;
+        parent = root.Document(Keys.Parent);
+    }
+    string current = Context.GetLink(Document).TrimEnd('/');
+    if (new Version(Context.String("DocsEdition")).Major >= 7 && (current == "/docs" || current.StartsWith("/docs/")))
+    {
+        var documents = new List<IDocument>();
+        var pending = new Queue<IDocument>();
+        pending.Enqueue(root);
+        while (pending.Count > 0)
+        {
+            var item = pending.Dequeue();
+            documents.Add(item);
+            var descendants = item.DocumentList(Keys.Children);
+            if (descendants != null)
+            {
+                foreach (var descendant in descendants) { pending.Enqueue(descendant); }
+            }
+        }
+        var groups = new[] {
+            Tuple.Create("Getting started", "/docs/getting-started", new[] { "/docs/getting-started", "/docs/usage/cli/installation", "/docs/reference/requirements" }),
+            Tuple.Create("Guides", "/docs/usage", new[] { "/docs/usage/choose-workflow", "/docs/usage/configure", "/docs/learn/branching-strategies", "/docs/reference/build-servers", "/docs/usage/cli/output", "/docs/usage/docker", "/docs/usage/msbuild", "/docs/usage/cli/assembly-patch", "/docs/usage/library", "/docs/learn/dynamic-repositories" }),
+            Tuple.Create("Concepts", "/docs/learn", new[] { "/docs/learn/intro-to-semver", "/docs/learn/how-it-works", "/docs/learn/workflows-modes-strategies", "/docs/reference/modes", "/docs/reference/version-increments" }),
+            Tuple.Create("Reference", "/docs/reference", new[] { "/docs/reference/configuration-topics", "/docs/usage/cli/arguments", "/docs/reference/version-sources", "/docs/reference/variables", "/docs/reference/custom-formatting", "/docs/reference/environment-variables" }),
+            Tuple.Create("Troubleshooting", "/docs/learn/faq", new[] { "/docs/learn/faq", "/docs/learn/git-setup" }),
+            Tuple.Create("Upgrading", "/docs/migration", new[] { "/docs/migration/v6-to-v7" })
+        };
+        <li class="header gv-docs-version">@Context.String("DocsEdition") · documentation</li>
+        foreach (var group in groups)
+        {
+            var entries = group.Item3.Select(path => documents.FirstOrDefault(d => Context.GetLink(d).TrimEnd('/') == path)).Where(d => d != null).ToList();
+            bool active = current == group.Item2 || group.Item3.Any(path => current == path || current.StartsWith(path + "/"));
+            if (group.Item1 == "Guides" && (current == "/docs/usage/ci" || current == "/docs/usage/cli")) { active = true; }
+            if (group.Item1 == "Reference" && current == "/docs/reference/configuration") { active = true; }
+            <li class="treeview @(active ? "active" : null) @(current == group.Item2 ? "selected" : null)">
+                <a href="@Context.GetLink(group.Item2)">@group.Item1</a><a href="#" class="expand" aria-label="Expand @group.Item1"></a>
+                <ul class="treeview-menu">
+                    @foreach (var entry in entries)
+                    {
+                        @Html.Partial("Sidebar/_ChildPagesMenu", new List<IDocument> { entry })
+                    }
+                </ul>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="header gv-docs-version">@Context.String("DocsEdition", "Current") · documentation</li>
+        var children = root.DocumentList(Keys.Children);
+        if (children != null && children.Count > 0) { @Html.Partial("Sidebar/_ChildPagesMenu", children) }
+    }
+}

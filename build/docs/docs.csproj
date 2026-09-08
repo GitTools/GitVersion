@@ -7,8 +7,9 @@
         <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="AngleSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
         <PackageReference Include="Cake.Frosting.Git" />
-        <PackageReference Include="Cake.Npx" />
         <PackageReference Include="Cake.Wyam" />
     </ItemGroup>
 </Project>

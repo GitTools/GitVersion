@@ -1,4 +1,3 @@
-using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
@@ -8,5 +7,5 @@ public class BuildContext(ICakeContext context) : BuildContextBase(context)
 {
     public bool ForcePublish { get; set; }
     public Credentials? Credentials { get; set; }
-    public WyamSettings? WyamSettings { get; set; }
+    public PreparedEdition[]? DocumentationInputs { get; set; }
 }

@@ -1,4 +1,3 @@
-using Cake.Wyam;
 using Common.Lifetime;
 using Common.Utilities;
 using Docs.Utilities;
@@ -13,26 +12,6 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         context.Credentials = Credentials.GetCredentials(context);
         context.ForcePublish = context.HasArgument("force");
-
-        context.WyamSettings = new WyamSettings
-        {
-            Recipe = "Docs",
-            Theme = "Samson",
-            OutputPath = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")),
-            RootPath = context.MakeAbsolute(Paths.Docs),
-            Settings = new Dictionary<string, object>
-            {
-                { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
-                { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
-                { "Title", "GitVersion" },
-                { "IncludeGlobalNamespace", false },
-                { "IgnoreFolders", "**/mdsource" }
-            },
-            EnvironmentVariables = new Dictionary<string, string>
-            {
-                { "DOTNET_ROLL_FORWARD", "Major" },
-            },
-        };
 
         context.StartGroup("Build Setup");
 

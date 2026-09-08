@@ -1,6 +1,4 @@
 using Cake.Git;
-using Cake.Npx;
-using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
@@ -22,8 +20,7 @@ public sealed class PublishDocs : FrostingTask<BuildContext>
 
 [TaskName(nameof(PublishDocsInternal))]
 [TaskDescription("Published the docs changes to docs specific branch")]
-[IsDependentOn(typeof(Clean))]
-[IsDependentOn(typeof(ValidateMermaidDiagrams))]
+[IsDependentOn(typeof(BuildDocs))]
 public sealed class PublishDocsInternal : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
@@ -78,14 +75,16 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
             BranchName = publishBranchName
         });
 
-        if (context.WyamSettings is not null)
+        foreach (var directory in System.IO.Directory.GetDirectories(publishFolder.FullPath).Where(directory => System.IO.Path.GetFileName(directory) != ".git"))
         {
-            context.WyamSettings.OutputPath = publishFolder;
-            context.WyamSettings.NoClean = true;
-            context.StageMermaidRuntimeForWyam();
-            context.Wyam(context.WyamSettings);
-            context.Npx("prettier", arguments: "--write **/*.html", configureSettings: settings => settings.WorkingDirectory = publishFolder);
+            System.IO.Directory.Delete(directory, true);
         }
+        foreach (var file in System.IO.Directory.GetFiles(publishFolder.FullPath).Where(file => System.IO.Path.GetFileName(file) is not ("CNAME" or ".nojekyll")))
+        {
+            System.IO.File.Delete(file);
+        }
+
+        DocsInputs.CopyTree(context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")).FullPath, publishFolder.FullPath);
 
         var schemaTargetDir = publishFolder.Combine("schemas");
         context.EnsureDirectoryExists(schemaTargetDir);

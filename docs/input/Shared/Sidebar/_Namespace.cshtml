@@ -1,0 +1,39 @@
+@{
+    var namespaces = Documents.FromPipeline(Docs.Api)
+        .Where(x => x.String("Kind") == "Namespace")
+        .OrderBy(x => x.String("DisplayName")).ToList();
+    var currentNamespace = Model.String("Kind") == "Namespace" ? Model : Model.Get<IDocument>("ContainingNamespace");
+    string selectedName = currentNamespace == null ? "" : currentNamespace.String("DisplayName");
+    var parents = new Stack<string>();
+    <li class="header">Namespaces</li>
+    for (int i = 0; i < namespaces.Count; i++)
+    {
+        var item = namespaces[i];
+        string name = item.String("DisplayName");
+        while (parents.Count > 0 && !name.StartsWith(parents.Peek() + "."))
+        {
+            @Html.Raw("</ul></li>")
+            parents.Pop();
+        }
+        string label = parents.Count == 0 ? name : name.Substring(parents.Peek().Length + 1);
+        bool hasChildren = i + 1 < namespaces.Count && namespaces[i + 1].String("DisplayName").StartsWith(name + ".");
+        bool selected = name == selectedName;
+        bool active = selected || selectedName.StartsWith(name + ".") || (selectedName == "" && parents.Count == 0);
+        if (hasChildren)
+        {
+            @Html.Raw("<li class=\"treeview" + (active ? " active" : "") + (selected ? " selected" : "") + "\">")
+            <a href="@Context.GetLink(item)" title="@name">@label</a><a href="#" class="expand" aria-label="Expand @name"></a>
+            @Html.Raw("<ul class=\"treeview-menu\">")
+            parents.Push(name);
+        }
+        else
+        {
+            <li class="@(selected ? "selected" : null)"><a href="@Context.GetLink(item)" title="@name">@label</a></li>
+        }
+    }
+    while (parents.Count > 0)
+    {
+        @Html.Raw("</ul></li>")
+        parents.Pop();
+    }
+}

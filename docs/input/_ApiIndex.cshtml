@@ -1,0 +1,22 @@
+@{
+    Layout = "/_Master.cshtml";
+    ViewData[Keys.Title] = "API reference";
+    var namespaces = Documents.FromPipeline(Docs.Api)
+        .Where(x => x.String("Kind") == "Namespace")
+        .OrderBy(x => x.String("DisplayName")).ToList();
+}
+@section Search { @Html.Partial("_ApiSearch") }
+@section Sidebar { @Html.Partial("Sidebar/_Namespace") }
+<div class="gv-api">
+    <header class="content-header">
+        <nav class="gv-api-breadcrumb" aria-label="Breadcrumb"><a href="/docs">Documentation</a><span aria-hidden="true">/</span><span>API</span></nav>
+        <h1>API reference</h1>
+        <p class="gv-api-intro">Browse namespaces and types, or search for a type by name.</p>
+    </header>
+    <section class="content">
+        @Html.Partial("Section/_DocsTable", new DocsTable {
+            Docs = namespaces, Title = "Namespaces", Header = "Namespace",
+            HasSummary = true, LinkTypeArguments = false
+        })
+    </section>
+</div>

@@ -1,6 +1,7 @@
 ---
+Title: CI integrations
 Order: 3000
-Description: Details on GitVersion's Build Server support
+Description: Prepare a checkout and use GitVersion in your build pipeline.
 RedirectFrom:
 - docs/build-server-support
 - docs/build-server-support/build-server
@@ -8,60 +9,18 @@ RedirectFrom:
 - docs/build-server-support/build-server-support
 - docs/build-server-support/index.html
 ---
-
-<p>
-    Depending on the Build Server being used, i.e. TeamCity, Jenkins, etc,
-    GitVersion might need to extra repository information in order to work
-    correctly. GitVersion has knowledge of most of the main CI Providers, and when
-    instructed to do so, will fetch the necessary information in order to
-    correctly assert the semantic version number.
-</p>
-
-<p>
-    In addition, most build servers allow the setting of the build number within
-    the system, GitVersion knows how to do this automatically. GitVersion has
-    support for quite a few build servers out of the box. Currently we support:
-</p>
-
+<p>Calculate a version for the intended commit, then pass its values to packaging and deployment steps.</p>
+<h2>Prepare the checkout</h2>
+<ol><li>Check out the commit you intend to version.</li><li>Fetch the tags and branch history required by your workflow. Start with an unshallow checkout; for GitHub Actions, set <code>fetch-depth: 0</code>.</li><li>Include your configuration file.</li><li>Follow the provider guide for branch detection, pull requests, and variable scope.</li></ol>
+<p>See <a href="/docs/reference/requirements">repository requirements</a> and <a href="/docs/learn/faq">Troubleshooting</a> if CI produces a different result from your local checkout.</p>
+<h2>Choose your integration</h2>
+<p>Start with <a href="/docs/reference/build-servers/github-actions">GitHub Actions</a>, <a href="/docs/reference/build-servers/azure-devops">Azure DevOps</a>, or <a href="/docs/reference/build-servers/gitlab">GitLab CI</a>, or choose another provider below.</p>
 @Html.Partial("_ChildPages")
-
 <h2>Build Server Variables</h2>
-
-<p>
-    When the <code>gitVersion</code> executable is run with the
-    <code>--output buildserver</code> flag instead of outputting JSON, it will
-    export its <a href="/docs/reference/variables">version variables</a> to the
-    current build server as build-server native variables. For instance if you
-    are running in TeamCity after you run
-    <code>gitversion --output buildserver</code> you will have the
-    <code>%system.GitVersion.SemVer%</code> variable available for you to use
-    in the rest of the build configuration.
-</p>
-
+<p>Run <code>dotnet-gitversion --output buildserver</code> to use a supported provider's native variable and build-number mechanisms. Dedicated GitTools integrations can perform these steps for you. Check the provider guide for exact variable names and how to pass them to later jobs.</p>
 <h2>MSBuild Properties</h2>
-
-<p>
-    When running in MSBuild either from the
-    <a href="/docs/usage/msbuild">MSBuild Task</a> or by using
-    <code>/proj myproject.sln</code> parameter, GitVersion will make its
-    <a href="/docs/reference/variables">version variables</a> available as
-    MSBuild properties in the format <code>$(GitVersion_SemVer)</code>.
-</p>
-
+<p>The <a href="/docs/usage/msbuild">MSBuild task</a> exposes properties such as <code>$(GitVersion_SemVer)</code>. See that guide for assembly and package integration.</p>
 <h2>Environment Variables</h2>
-
-<p>
-    When executed within one of the supported build servers mentioned above,
-    GitVersion will also expose the <a href="/docs/reference/variables">version
-    variables</a> as <strong>environment variables</strong>, in the format
-    <code>GitVersion_SemVer</code> (and in some circumstances, as
-    <code>GitVersion.SemVer</code>).
-</p>
-
+<p>Provider integrations commonly expose values such as <code>GitVersion_SemVer</code>. Export mechanisms and scope differ between providers. For portable scripts, use <a href="/docs/usage/cli/output">JSON or dotenv output</a> and explicitly pass the resulting file to downstream jobs.</p>
 <h2>Normalization</h2>
-
-<p>
-    The standard <code>gitversion</code> executable normalize the branches if
-    there is a build server detected. This behavior can be disabled with the
-    <code>/nonormalize</code> option.
-</p>
+<p>GitVersion can normalize repository references when a build server is detected. The <code>--no-normalize</code> option disables that step; it does not supply missing references. Follow provider-specific checkout guidance before changing this behavior.</p>

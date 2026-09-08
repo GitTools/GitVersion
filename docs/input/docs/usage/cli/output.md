@@ -1,37 +1,43 @@
 ---
 Order: 30
-Title: Output
-Description: Details about the output types supported by the GitVersion CLI
+Title: Use version output
+Description: Read version variables in scripts and pass them to builds.
 ---
+By default GitVersion writes a JSON object containing its [version variables](/docs/reference/variables).
 
-By default GitVersion returns a json object to stdout containing all the
-[variables](/docs/reference/variables) which GitVersion generates. This works
-great if you want to get your build scripts to parse the json object then use
-the variables, but there is a simpler way.
+## JSON and a single variable
 
-`GitVersion.exe --output buildserver` will change the mode of GitVersion to write
-out the variables to whatever build server it is running in. You can then use
-those variables in your build scripts or run different tools to create versioned
-NuGet packages or whatever you would like to do. See [build
-servers](/docs/reference/build-servers) for more information about this.
-
-You can even store the [variables](/docs/reference/variables) in a Dotenv file
-and load it to have the variables available in your environment.
-For that you have to run `GitVersion.exe --output dotenv` and store the output
-into e.g. a `gitversion.env` file. These files can also be passed around in CI environments
-like [GitHub](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#passing-values-between-steps-and-jobs-in-a-workflow)
-or [GitLab](https://docs.gitlab.com/ee/ci/variables/#pass-an-environment-variable-to-another-job).
-Below are some examples of using the Dotenv format in the Unix command line:
-```bash
-# Output version variables in Dotenv format
-gitversion --output dotenv
-
-# Show only a subset of the version variables in Dotenv format
-gitversion --output dotenv | grep -i "prerelease"
-
-# Show only a subset of the version variables that match the regex in Dotenv format
-gitversion --output dotenv | grep -iE "major|sha=|_prerelease"
-
-# Write version variables in Dotenv format into a file
-gitversion --output dotenv > gitversion.env
+```shell
+dotnet-gitversion
+dotnet-gitversion --show-variable SemVer
 ```
+
+Use `SemVer` when you need the semantic version, or select another variable for the target consuming it. See [formatting syntax](/docs/reference/custom-formatting) for custom formats.
+
+## Write a JSON file
+
+```shell
+dotnet-gitversion --output file --output-file gitversion.json
+```
+
+Pass this file to later steps or jobs using your CI provider's artifact mechanism.
+
+## Build-server output
+
+```shell
+dotnet-gitversion --output buildserver
+```
+
+On a supported build server, this uses the provider's variable and build-number mechanisms. Follow the [CI integration guide](/docs/reference/build-servers) for exact names and job/step scope.
+
+## Dotenv output
+
+```shell
+dotnet-gitversion --output dotenv > gitversion.env
+```
+
+Load the file using your runner's or application's dotenv support. Writing a file does not automatically export variables into the invoking shell or later jobs.
+
+## .NET assemblies
+
+Use the [MSBuild task](/docs/usage/msbuild) or [assembly patching](/docs/usage/cli/assembly-patch) to put version values into build artifacts. Select the assembly variables or formatting rules appropriate for those artifacts.

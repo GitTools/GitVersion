@@ -1,0 +1,22 @@
+@model DocsTable
+@{
+    if (Model != null && Model.Docs != null && Model.Docs.Count > 0)
+    {
+        bool hasSummary = Model.HasSummary && Model.Docs.Any(doc =>
+            !string.IsNullOrWhiteSpace(System.Text.RegularExpressions.Regex.Replace(doc.String("Summary", ""), "<[^>]+>|&nbsp;", "").Trim()));
+        <h2 id="@(Model.Title.Replace(" ", ""))">@Model.Title</h2>
+        <div class="box gv-api-table">
+            <div class="box-body no-padding table-responsive">
+                <table class="table table-hover @(hasSummary ? "two-cols" : string.Empty)">
+                    <thead><tr><th scope="col">@Model.Header</th>@if (hasSummary) { <th scope="col">Summary</th> }</tr></thead>
+                    <tbody>
+                    @foreach (IDocument doc in Model.Docs)
+                    {
+                        <tr><td>@Context.GetTypeLink(doc, Model.LinkTypeArguments)</td>@if (hasSummary) { <td>@Html.Raw(doc["Summary"])</td> }</tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

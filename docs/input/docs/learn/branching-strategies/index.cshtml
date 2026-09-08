@@ -1,12 +1,14 @@
 ---
 Order: 4000
-Title: Branching Strategies
+Title: Workflow examples
 Description: Information about the different branching strategies supported by GitVersion
 RedirectFrom:
 - docs/git-branching-strategies/overview
 - docs/git-branching-strategies
 - docs/examples
 ---
+
+<p>Start by <a href="/docs/usage/choose-workflow">choosing a workflow</a>. The examples below illustrate GitFlow and GitHubFlow histories; read each example with its configuration. For experimental trunk-based defaults, see <a href="/docs/reference/configuration#global-configuration">TrunkBased/preview1</a>.</p>
 
 <img src="/docs/img/CommitGraph.png" alt="Commit graph">
 
@@ -26,8 +28,8 @@ b5d142 -> 2.0.0+0 (2.0.0 branch was merged, so main is now at 2.0.0)
 
 <p>
     This is just a small sample of the way GitVersion works. The idea is you
-    just plug it in and you will get sensible version numbers by default. We
-    support the following branch types out of the box:
+    inspect the configuration alongside its resulting versions. Depending on the
+    selected workflow, configured branch types can include:
 </p>
 
 <ul>
