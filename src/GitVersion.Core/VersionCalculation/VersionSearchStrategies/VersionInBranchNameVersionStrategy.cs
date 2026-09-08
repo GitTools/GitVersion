@@ -52,7 +52,7 @@ internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext>
                 branchNameOverride = result.Name;
             }
 
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride, this.environment);
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, branchNameOverride, this.environment, Context.CurrentCommit);
 
             baseVersion = new BaseVersion("Version in branch name", result.Value)
             {

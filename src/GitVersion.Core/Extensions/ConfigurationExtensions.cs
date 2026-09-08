@@ -135,13 +135,14 @@ internal static class ConfigurationExtensions
 
     extension(EffectiveConfiguration configuration)
     {
-        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment)
-            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment);
+        public string? GetBranchSpecificLabel(ReferenceName branchName, string? branchNameOverride, IEnvironment environment, ICommit currentCommit)
+            => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride, environment, currentCommit);
 
-        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment)
+        public string? GetBranchSpecificLabel(string? branchName, string? branchNameOverride, IEnvironment environment, ICommit currentCommit)
         {
             configuration.NotNull();
             environment.NotNull();
+            currentCommit.NotNull();
 
             var label = configuration.Label;
 
@@ -152,6 +153,9 @@ internal static class ConfigurationExtensions
 
             var effectiveBranchName = branchNameOverride ?? branchName;
             var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
+            // Preserve existing named captures, including those named Sha or ShortSha.
+            labelPlaceholders.TryAdd("Sha", currentCommit.Sha);
+            labelPlaceholders.TryAdd("ShortSha", currentCommit.Id.ToString(7));
 
             return label.FormatWith(labelPlaceholders, environment)
                 .RegexReplace(RegexPatterns.SanitizeLabelRegexPattern, "-");

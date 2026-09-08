@@ -24,7 +24,7 @@ internal abstract class CommitOnNonTrunkWithPreReleaseTagBase : IIncrementer
 
         context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
         context.ForceIncrement = false;
     }
 }

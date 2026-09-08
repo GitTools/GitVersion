@@ -23,7 +23,7 @@ internal sealed class CommitOnTrunk : IIncrementer
         }
 
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator

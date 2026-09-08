@@ -34,7 +34,7 @@ internal sealed class FallbackVersionStrategy(
             yield break;
         }
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
 
         var baseVersionSource = this.taggedSemanticVersionService.GetTaggedSemanticVersions(
             branch: Context.CurrentBranch,

@@ -24,7 +24,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
         }
 
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
 
         if (commit.Successor is not null)
         {

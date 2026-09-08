@@ -109,7 +109,7 @@ internal class NextVersionCalculator(
     {
         result = null;
 
-        var label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var label = effectiveConfiguration.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
         var currentCommitTaggedVersion = taggedSemanticVersionsOfCurrentCommit
             .Where(element => element.Value.IsMatchForBranchSpecificLabel(label)).Max();
 

@@ -7,6 +7,20 @@ public class ConfigurationMigrationServiceTests
 {
     private readonly IConfigurationMigrationService migrationService = new ConfigurationMigrationService(new ConfigurationSerializer());
 
+    [TestCase("ci.{ShortSha}")]
+    [TestCase("{BranchName}.{Sha}")]
+    public void MigrationPreservesCommitLabelTemplateUnderCalculationBranches(string label)
+    {
+        var migrated = this.migrationService.Migrate($"branches:\n  feature:\n    label: '{label}'");
+        var document = new ConfigurationSerializer().Deserialize<Dictionary<object, object?>>(migrated);
+        var configuration = new ConfigurationSerializer().Deserialize<GitVersionConfiguration>(migrated);
+
+        configuration.Branches["feature"].Label.ShouldBe(label);
+        document.ContainsKey("calculation").ShouldBeTrue();
+        document.ContainsKey("branches").ShouldBeFalse();
+        this.migrationService.Migrate(migrated).ShouldBe(migrated);
+    }
+
     [Test]
     public void MigratesFlatConfigurationToCalculationAndOutputSections()
     {
