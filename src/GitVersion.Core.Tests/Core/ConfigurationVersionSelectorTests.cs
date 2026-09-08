@@ -8,6 +8,7 @@ public class ConfigurationVersionSelectorTests : TestBase
 {
     [TestCase(null, false)]
     [TestCase("", false)]
+    [TestCase(" \t ", false)]
     [TestCase("v6", true)]
     [TestCase("V6", true)]
     [TestCase(" v6 ", true)]

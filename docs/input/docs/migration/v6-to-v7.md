@@ -51,7 +51,7 @@ GitVersion now uses POSIX-style command-line arguments powered by System.Command
 :::{.alert .alert-warning}
 **Breaking change:** Legacy Windows-style (`/switch`) and legacy single-dash long-form (`-switch`) arguments are no longer accepted by default.
 
-As a temporary migration aid, set `GITVERSION_USE_V6_ARGUMENT_PARSER=true` to restore legacy argument handling. This compatibility mode is temporary and will be removed in a future release.
+As a temporary v7.0 migration aid, set `GITVERSION_ARGUMENT_PARSER_VERSION=v6` to restore legacy argument handling. The legacy parser is removed in v7.1. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable: its presence is an error, even when set to `false`; it is not an alias for the new selector.
 :::
 
 ### What you need to change
@@ -149,14 +149,14 @@ migrate` to retain schema validation.
 
 ## Git backend
 
-GitVersion v7 introduces a fully managed Git backend as an alternative to the native LibGit2Sharp (libgit2) implementation. The backend is selected with the `GITVERSION_GIT_BACKEND` environment variable. When the variable is not set (or empty), the release's default backend is used — you never need to set it. Setting it to any value other than `libgit2` or `managed` (case-insensitive) is an error: GitVersion fails fast instead of silently running the default backend with a typo unnoticed.
+GitVersion v7.0 uses the managed Git backend by default. The `GITVERSION_GIT_BACKEND` environment variable accepts `managed` or the temporary `libgit2` fallback.
 
 :::{.alert .alert-info}
-In v7.0 the `libgit2` backend remains the **default** — behaviour is unchanged unless you opt in. Set `GITVERSION_GIT_BACKEND=managed` to try the managed backend and help validate it. In v7.1 the default flips to `managed`, with `GITVERSION_GIT_BACKEND=libgit2` available as a fallback. Both backends ship side by side for several releases before libgit2 is removed.
+In v7.0, use `GITVERSION_GIT_BACKEND=libgit2` only if you need the temporary native backend fallback. LibGit2Sharp and its native binaries are scheduled for removal in v7.1. Explicit `managed` remains accepted throughout v7.x; the selector is removed in v8.
 :::
 
-- `libgit2` — the native, libgit2-based backend (default in v7.0).
-- `managed` — a managed implementation for all read/history operations, combined with the `git` command-line executable for network and write operations (clone, fetch, checkout, and CI repository normalization).
+- `libgit2` — the temporary native backend fallback in v7.0.
+- `managed` — the v7.0 default: a managed implementation for all read/history operations, combined with the `git` command-line executable for network and write operations (clone, fetch, checkout, and CI repository normalization).
 
 :::{.alert .alert-warning}
 When using the `managed` backend, the `git` executable must be available on the `PATH` **only** for the network/normalization scenarios above (dynamic repositories, build-agent normalization). Plain version calculation on an already-prepared checkout does not require `git` on the `PATH`.
@@ -169,7 +169,27 @@ The environment variables relevant to migrating from v6 to v7:
 | Variable                            | Purpose                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `GITVERSION_CONFIGURATION_VERSION`   | Selects the configuration layout: `v7` (default) or temporary flat `v6` fallback.                                   |
-| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `libgit2` (default in v7.0) or `managed`. See [Git backend](#git-backend).                 |
-| `GITVERSION_USE_V6_ARGUMENT_PARSER` | Set to `true` to temporarily restore the legacy v6 (`/switch`) argument parser. Removed in a future release.        |
+| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `managed` (default) or temporary `libgit2` fallback. See [Git backend](#git-backend). |
+| `GITVERSION_ARGUMENT_PARSER_VERSION` | Selects the argument parser: `v7` (default, POSIX syntax) or temporary `v6` fallback (`/switch` and `-switch`). |
 | `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
 | `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |
+
+The three selectors are independent: selecting the v6 parser does not select
+flat configuration or libgit2. Values are trimmed and case-insensitive;
+unset, empty, and whitespace-only values use the defaults. Unknown values
+fail before execution and list the accepted values. Replace
+`GITVERSION_USE_V6_ARGUMENT_PARSER=true` with
+`GITVERSION_ARGUMENT_PARSER_VERSION=v6` and unset the old variable.
+
+Effective selections are logged at information level. Use `--log-file <path>`
+to capture them or `--log-file console` to see them on stderr. Console logs
+also use stderr when build-server output is selected, including combinations
+with JSON or other machine-readable output. Build-server integration commands
+retain their normal output channel. For migration, place logging options before the command:
+`gitversion --log-file console config migrate --config GitVersion.yml`.
+
+In v7.1, legacy parser and flat configuration runtime support are scheduled
+for removal alongside libgit2. Retired `v6`/`libgit2` selections will report
+actionable errors; explicit `v7`/`managed` selections remain accepted during
+v7.x. All three selectors are removed in v8. `gitversion config migrate`
+remains available to convert flat files after runtime support is removed.

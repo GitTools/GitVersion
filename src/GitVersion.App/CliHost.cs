@@ -29,17 +29,17 @@ internal static class CliHost
 
     private static void RegisterGitVersionModules(IServiceCollection services, string[] args)
     {
+        var selections = FeatureSelections.Resolve();
+        services.AddSingleton(selections);
         services.AddModule(new GitVersionCoreModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionOutputModule());
 
-        services.AddModule(GitBackendSelector.Resolve() == GitBackend.Managed
+        services.AddModule(selections.GitBackend == GitBackend.Managed
             ? new GitVersionManagedGitModule()
             : new GitVersionLibGit2SharpModule());
 
-        var envValue = SysEnv.GetEnvironmentVariable("GITVERSION_USE_V6_ARGUMENT_PARSER");
-        var useLegacyParser = string.Equals(envValue, "true", StringComparison.OrdinalIgnoreCase);
-        services.AddModule(new GitVersionAppModule(args, useLegacyParser));
+        services.AddModule(new GitVersionAppModule(args, selections.ArgumentParser == ArgumentParserVersion.V6));
     }
 }

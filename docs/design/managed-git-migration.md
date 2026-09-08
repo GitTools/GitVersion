@@ -200,7 +200,7 @@ Build `GitVersion.Git.Managed` bottom-up with per-layer unit tests against git-C
 (loose/packed/mixed objects, packed-refs, worktrees, shallow, multi-pack-index, index v4).
 The final B step takes the `GitVersion.Core` reference, lands the direct `IGitRepository`/
 `IMutatingGitRepository` implementations, absorbs `GitVersion.Git.CommandLine` (see §4), and wires
-backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (default `libgit2`). Validation:
+backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (initially `libgit2`, changed to `managed` for v7.0 under #5135). Validation:
 - **CI matrix**: full integration suites (`GitVersion.Core.Tests`, `GitVersion.App.Tests`) run on both backends,
   three OSes — the suites assert exact SemVer strings over complex histories and are the strongest parity oracle
 - **DualBackendParityTests**: open the same fixture with both backends; deep-equality on ref enumeration,
@@ -209,10 +209,13 @@ backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (default `libgit2
 - **Real-world corpus script**: `gitversion /nocache /output json` diffed across backends on this repo,
   GitReleaseManager, dotnet/runtime, a shallow CI-style clone, and a worktree checkout
 
-### Phase C — default flip in v7.1 · ~1 week + multi-release soak
-**v7.0 ships with default `libgit2`** (managed opt-in); **v7.1 flips the default to `managed`** with
-`GITVERSION_GIT_BACKEND=libgit2` as the fallback while users validate the new backend. The dual-backend
-CI matrix stays green throughout the window.
+### Phase C — managed default in v7.0
+**v7.0 ships with default `managed`** under #5135, with
+`GITVERSION_GIT_BACKEND=libgit2` as the temporary fallback. The independent
+parser/configuration selectors default to `v7`. All selectors trim values,
+ignore case, treat blanks as unset and reject unknown values. Effective
+selections are logged without mixing logs into machine-readable stdout.
+The dual-backend CI matrix stays green throughout the v7.0 window.
 
 ### Phase D — fixture migration (parallel with B) · ~2–3 weeks
 `GitVersion.Testing` moves to pure git-CLI writes via the existing `ExecuteGitCmd` pattern:
@@ -220,13 +223,18 @@ deterministic `GIT_AUTHOR_*`/`GIT_COMMITTER_*` env (several tests advance commit
 `git commit --allow-empty`, `-c commit.gpgsign=false -c gc.auto=0`. Migrate the six direct-usage test files.
 If suite time regresses from process spawns, batch history creation with `git fast-import`.
 
-### Phase E — remove LibGit2Sharp · ~1–2 weeks
+### Phase E — remove LibGit2Sharp in v7.1 (#5040)
 Delete `src/GitVersion.LibGit2Sharp` and `new-cli/GitVersion.Core.Libgit2Sharp`; drop the package from
 `Directory.Packages.props`; re-point new-cli source-linking at `GitVersion.Git.Managed`
 (read-only subset). Add a packaging assertion test: **zero `runtimes/**/native/*` entries** in the
 `GitVersion.MsBuild` and `GitVersion.Tool` nupkgs. Document the new runtime requirement: `git` on PATH is needed
 **only** for dynamic-repo/CI-normalization scenarios — pure version calculation on a prepared checkout needs no
 git binary at all (a strict improvement for MSBuild-task users).
+
+Parser and flat configuration runtime removal in v7.1 is tracked separately
+by #5188. Keep `gitversion config migrate` and actionable retired selector
+value diagnostics throughout v7.x. #5136 removes all three selectors in v8;
+explicit `v7` and `managed` remain accepted until then.
 
 ### Phase F (optional) — performance accelerators · ~2–3 weeks
 Commit-graph reader (generation numbers for topo sort and merge-base), benchmark-driven pack cache tuning.

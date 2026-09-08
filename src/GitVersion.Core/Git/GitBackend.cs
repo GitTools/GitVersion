@@ -2,52 +2,43 @@ namespace GitVersion.Git;
 
 /// <summary>
 /// The Git backend implementations selectable via the <c>GITVERSION_GIT_BACKEND</c>
-/// environment variable during the dual-backend window (v7.0–v7.x).
+/// environment variable during the dual-backend window (v7.0).
 /// </summary>
 internal enum GitBackend
 {
-    /// <summary>The libgit2-based backend (the v7.0 default).</summary>
+    /// <summary>The temporary libgit2-based fallback, removed in v7.1.</summary>
     LibGit2,
 
-    /// <summary>The managed reader + git CLI mutator backend.</summary>
+    /// <summary>The managed reader + git CLI mutator backend (the v7.0 default).</summary>
     Managed
 }
 
 /// <summary>
 /// The single place where <c>GITVERSION_GIT_BACKEND</c> is interpreted: every composition
 /// root selects the backend through this class so production and tests cannot drift, and
-/// the v7.1 default flip is a one-line change. This is configuration, not Git logic — it
+/// the v7.0 default is consistent. This is configuration, not Git logic — it
 /// names no backend internals, so it lives at the composition seam that every root already
 /// shares rather than inside one of the backend assemblies.
 /// </summary>
 internal static class GitBackendSelector
 {
     public const string EnvironmentVariableName = "GITVERSION_GIT_BACKEND";
+    private const string ManagedName = "managed";
 
     /// <summary>
     /// The canonical configuration name of the resolved backend, as users set it
     /// in <c>GITVERSION_GIT_BACKEND</c>: <c>libgit2</c> or <c>managed</c>.
     /// </summary>
-    public static string ResolveName() => Resolve() == GitBackend.Managed ? "managed" : "libgit2";
+    public static string ResolveName() => Resolve() == GitBackend.Managed ? ManagedName : "libgit2";
 
     /// <summary>
-    /// Resolves the backend from the environment: <c>libgit2</c> (the default when unset)
-    /// or <c>managed</c>. Unknown values fail fast — a silently ignored typo would make a
-    /// user believe they validated the managed backend while running libgit2.
+    /// Resolves the backend from the environment: <c>managed</c> (the default when unset)
+    /// or the temporary <c>libgit2</c> fallback. Unknown values fail fast.
     /// </summary>
     /// <returns>The selected backend.</returns>
-    /// <exception cref="InvalidOperationException">The variable is set to an unrecognized value.</exception>
-    public static GitBackend Resolve()
-    {
-        var value = SysEnv.GetEnvironmentVariable(EnvironmentVariableName)?.Trim();
-
-        return value switch
-        {
-            null or "" => GitBackend.LibGit2,
-            _ when value.Equals("libgit2", StringComparison.OrdinalIgnoreCase) => GitBackend.LibGit2,
-            _ when value.Equals("managed", StringComparison.OrdinalIgnoreCase) => GitBackend.Managed,
-            _ => throw new InvalidOperationException(
-                $"Unrecognized {EnvironmentVariableName} value '{value}'. Valid values are 'libgit2' and 'managed'.")
-        };
-    }
+    /// <exception cref="WarningException">The variable is set to an unrecognized value.</exception>
+    public static GitBackend Resolve() =>
+        FeatureSelector.Resolve(EnvironmentVariableName, ManagedName, "libgit2", ManagedName) == ManagedName
+            ? GitBackend.Managed
+            : GitBackend.LibGit2;
 }

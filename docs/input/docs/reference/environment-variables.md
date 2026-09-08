@@ -8,7 +8,7 @@ Distinguish variables **read by GitVersion** from version variables **exported t
 
 `Git_Branch` can identify the branch or tag when the build context is ambiguous. Provider-specific detection is described in the [CI guides](/docs/reference/build-servers). Ensure the selected reference and its history are available in the checkout.
 
-The [v6 to v7 migration guide](/docs/migration/v6-to-v7#environment-variables) documents Git backend selection and temporary compatibility controls, including `GITVERSION_USE_V6_ARGUMENT_PARSER`. Compatibility switches are migration aids, not recommended defaults for a new setup.
+The [v6 to v7 migration guide](/docs/migration/v6-to-v7#environment-variables) documents the independent selectors `GITVERSION_ARGUMENT_PARSER_VERSION`, `GITVERSION_CONFIGURATION_VERSION`, and `GITVERSION_GIT_BACKEND`. Their v7.0 defaults are `v7`, `v7`, and `managed`; temporary fallbacks are `v6`, `v6`, and `libgit2`. Values are trimmed and case-insensitive; blank values use the defaults and unknown values fail with accepted-value guidance. The retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable must be unset. Legacy implementations are removed in v7.1 and selectors in v8.
 
 ## Output variables
 
