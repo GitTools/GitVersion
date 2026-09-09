@@ -1,4 +1,5 @@
 #nullable enable
+GitVersion.Agents.IBuildAgent.GetCurrentTag() -> string?
 GitVersion.ConfigurationMigrationInfo
 GitVersion.ConfigurationMigrationInfo.ConfigurationMigrationInfo() -> void
 GitVersion.ConfigurationMigrationInfo.Force.get -> bool

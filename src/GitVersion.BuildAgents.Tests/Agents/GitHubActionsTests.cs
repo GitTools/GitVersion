@@ -104,6 +104,21 @@ public class GitHubActionsTests : TestBase
         result.ShouldBe("refs/pull/1/merge");
     }
 
+    [TestCase("tag", "refs/tags/1.0.0", "refs/tags/1.0.0")]
+    [TestCase("TAG", "refs/tags/1.0.0", "refs/tags/1.0.0")]
+    [TestCase("branch", "refs/heads/main", null)]
+    [TestCase("branch", "refs/pull/1/merge", null)]
+    [TestCase(null, "refs/tags/1.0.0", null)]
+    [TestCase("tag", null, null)]
+    [TestCase("tag", "refs/heads/main", null)]
+    public void GetCurrentTagOnlyReturnsAnExplicitTagReference(string? refType, string? reference, string? expected)
+    {
+        this.environment.SetEnvironmentVariable("GITHUB_REF_TYPE", refType);
+        this.environment.SetEnvironmentVariable("GITHUB_REF", reference);
+
+        this.buildServer.GetCurrentTag().ShouldBe(expected);
+    }
+
     [Test]
     public void ShouldSetOutputVariables()
     {

@@ -261,6 +261,16 @@ internal class GitPreparer(
                     ChooseLocalBranchToAttach(headSha, localBranchesWhereCommitShaIsHead);
                     break;
                 case 0:
+                    // Only the tag selected by the build identifies a tag checkout.
+                    // Resolve that tag alone; unrelated local tags do not establish build context.
+                    var currentTag = this.buildAgent.GetCurrentTag();
+                    if (currentBranchName.IsNullOrEmpty() && currentTag != null
+                        && this.repository.Tags.FirstOrDefault(tag => tag.Name.Canonical == currentTag)?.Commit.Sha == headSha)
+                    {
+                        this.logger.LogInformation("HEAD points at the selected tag '{CurrentTag}' at '{HeadSha}'. Leaving HEAD detached.", currentTag, headSha);
+                        break;
+                    }
+
                     this.logger.LogInformation("No local branch pointing at the commit '{HeadSha}'. Fake branch needs to be created.", headSha);
                     this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
                     break;

@@ -57,4 +57,15 @@ internal class GitHubActions(IEnvironment environment, ILogger<GitHubActions> lo
     }
 
     public override bool PreventFetch() => true;
+
+    public override string? GetCurrentTag()
+    {
+        var refType = this.environment.GetEnvironmentVariable("GITHUB_REF_TYPE");
+        var reference = this.environment.GetEnvironmentVariable("GITHUB_REF");
+        return string.Equals(refType, "tag", StringComparison.OrdinalIgnoreCase)
+            && reference != null
+            && reference.StartsWith("refs/tags/", StringComparison.Ordinal)
+                ? reference
+                : null;
+    }
 }

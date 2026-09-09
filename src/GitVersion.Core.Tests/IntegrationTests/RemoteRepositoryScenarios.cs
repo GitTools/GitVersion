@@ -8,6 +8,170 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class RemoteRepositoryScenarios : TestBase
 {
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(true, true)]
+    [TestCase(false, false, "tree", false)]
+    [TestCase(true, false, "tree", false)]
+    [TestCase(false, false, "blob", false)]
+    [TestCase(true, false, "blob", false)]
+    [TestCase(false, false, "tree", true)]
+    [TestCase(true, false, "tree", true)]
+    [TestCase(false, false, "blob", true)]
+    [TestCase(true, false, "blob", true)]
+    public void TaggedHistoricalCommitNormalizesWithoutAccessingRemote(bool annotated, bool multipleTags, string? metadataTarget = null, bool packed = false)
+    {
+        using var fixture = new RemoteRepositoryFixture(path =>
+        {
+            Repository.Init(path);
+            var repository = new Repository(path);
+            repository.MakeACommit();
+            if (annotated)
+            {
+                repository.ApplyTag("1.2.3", repository.Head.Tip.Author, "Release");
+            }
+            else
+            {
+                repository.ApplyTag("1.2.3");
+            }
+            if (multipleTags)
+            {
+                repository.ApplyTag("release-alias");
+            }
+            repository.MakeACommit();
+            repository.CreateBranch("feature/normalized");
+            return repository;
+        });
+        var localRepository = fixture.LocalRepositoryFixture.Repository;
+        if (metadataTarget != null)
+        {
+            using var content = new MemoryStream([1, 2, 3]);
+            GitObject target = metadataTarget == "tree"
+                ? localRepository.Head.Tip.Tree
+                : localRepository.ObjectDatabase.CreateBlob(content);
+            // Sort before the version tag so that the lookup must inspect this tag first.
+            if (annotated)
+            {
+                localRepository.ApplyTag("!metadata", target.Sha, localRepository.Head.Tip.Author, "Metadata");
+            }
+            else
+            {
+                localRepository.ApplyTag("!metadata", target.Sha);
+            }
+        }
+        if (packed)
+        {
+            GitTestExtensions.ExecuteGitCmd($"-C \"{fixture.LocalRepositoryFixture.RepositoryPath}\" pack-refs --all", ".");
+        }
+        var taggedCommit = (Commit)localRepository.Tags["1.2.3"].PeeledTarget;
+        localRepository.Branches["feature/normalized"].ShouldBeNull();
+        Commands.Checkout(localRepository, taggedCommit);
+        localRepository.Network.Remotes.Update("origin", remote =>
+            remote.Url = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, "missing-remote"));
+
+        var options = Options.Create(new GitVersionOptions
+        {
+            WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
+            Settings = { NoNormalize = false, NoFetch = true }
+        });
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+        environment.SetEnvironmentVariable("GITHUB_REF_TYPE", "tag");
+        environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.2.3");
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+        });
+        sp.DiscoverRepository();
+
+        sp.GetRequiredService<IGitPreparer>().Prepare();
+
+        localRepository.Head.Tip.Sha.ShouldBe(taggedCommit.Sha);
+        localRepository.Info.IsHeadDetached.ShouldBeTrue();
+        localRepository.Branches["feature/normalized"].Tip.Sha.ShouldBe(localRepository.Branches["origin/feature/normalized"].Tip.Sha);
+        fixture.AssertFullSemver("1.2.3", repository: localRepository);
+    }
+
+    [TestCase("refs/pull/42/merge", 0, "pull/42/merge", "1.2.4-PullRequest42.0")]
+    [TestCase(null, 1, "release/1.2.3", "1.3.0-beta.1+0")]
+    [TestCase(null, 2, "main", "1.2.3")]
+    public void TaggedCommitNormalizationPreservesBranchSelection(string? currentBranch, int localBranchCount, string expectedBranch, string expectedVersion)
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        var repository = fixture.LocalRepositoryFixture.Repository;
+        var commit = repository.Head.Tip;
+        repository.ApplyTag("1.2.3");
+        repository.MakeACommit();
+        Commands.Checkout(repository, commit);
+        // Avoid updating main back to the tagged commit from its remote tracking ref.
+        repository.Refs.Remove("refs/remotes/origin/main");
+        if (localBranchCount > 0)
+        {
+            repository.CreateBranch("release/1.2.3", commit);
+        }
+        if (localBranchCount > 1)
+        {
+            repository.Refs.UpdateTarget(repository.Refs["refs/heads/main"], commit.Id);
+        }
+        repository.Network.Remotes.Update("origin", remote =>
+            remote.Url = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, "missing-remote"));
+
+        PrepareOnGitHubActions(fixture.LocalRepositoryFixture.RepositoryPath, currentBranch);
+
+        repository.Head.Tip.Sha.ShouldBe(commit.Sha);
+        repository.Info.IsHeadDetached.ShouldBeFalse();
+        repository.Head.FriendlyName.ShouldBe(expectedBranch);
+        fixture.AssertFullSemver(expectedVersion, repository: repository);
+    }
+
+    [TestCase(null)]
+    [TestCase("refs/tags/missing")]
+    [TestCase("refs/tags/1.2.3")]
+    public void HistoricalCommitWithoutMatchingBuildTagStillDiscoversPullRequest(string? currentTag)
+    {
+        using var fixture = new RemoteRepositoryFixture(path =>
+        {
+            Repository.Init(path);
+            var repository = new Repository(path);
+            repository.MakeACommit();
+            repository.Refs.Add("refs/pull/42/merge", repository.Head.Tip.Id);
+            repository.MakeATaggedCommit("1.2.3");
+            return repository;
+        });
+        var localRepository = fixture.LocalRepositoryFixture.Repository;
+        var commit = localRepository.Head.Tip.Parents.Single();
+        Commands.Checkout(localRepository, commit);
+        localRepository.ApplyTag("local-only");
+
+        PrepareOnGitHubActions(fixture.LocalRepositoryFixture.RepositoryPath, null, currentTag);
+
+        localRepository.Head.Tip.Sha.ShouldBe(commit.Sha);
+        localRepository.Info.IsHeadDetached.ShouldBeFalse();
+        localRepository.Head.FriendlyName.ShouldBe("pull/42/merge");
+    }
+
+    private static void PrepareOnGitHubActions(string workingDirectory, string? currentBranch, string? currentTag = null)
+    {
+        var options = Options.Create(new GitVersionOptions
+        {
+            WorkingDirectory = workingDirectory,
+            Settings = { NoNormalize = false, NoFetch = true }
+        });
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+        environment.SetEnvironmentVariable("GITHUB_REF", currentTag ?? currentBranch);
+        environment.SetEnvironmentVariable("GITHUB_REF_TYPE", currentTag == null ? "branch" : "tag");
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+        });
+        sp.DiscoverRepository();
+        sp.GetRequiredService<IGitPreparer>().Prepare();
+    }
+
     [Test]
     public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalShouldMatchRemoteVersion()
     {
