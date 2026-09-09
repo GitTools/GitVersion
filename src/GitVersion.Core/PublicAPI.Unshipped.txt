@@ -1,6 +1,27 @@
 #nullable enable
 static GitVersion.Git.ReferenceName.FromTagName(string! tagName) -> GitVersion.Git.ReferenceName!
 GitVersion.Agents.IBuildAgent.GetCurrentTag() -> string?
+GitVersion.OutputVariables.GitVersionVariables.CommitCountSourceDistance.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.CommitCountSourceSha.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceIncrement.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceIncrement.init -> void
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceSemVer.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceSemVer.init -> void
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceSha.get -> string?
+GitVersion.OutputVariables.GitVersionVariables.SemVerSourceSha.init -> void
+GitVersion.SemanticVersionBuildMetaData.CommitCountSourceDistance.get -> long
+GitVersion.SemanticVersionBuildMetaData.CommitCountSourceSha.get -> string?
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceIncrement.get -> GitVersion.VersionField
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceIncrement.init -> void
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceSemVer.get -> GitVersion.SemanticVersion?
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceSemVer.init -> void
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceSha.get -> string?
+GitVersion.SemanticVersionBuildMetaData.SemVerSourceSha.init -> void
+GitVersion.SemanticVersionFormatValues.CommitCountSourceDistance.get -> string!
+GitVersion.SemanticVersionFormatValues.CommitCountSourceSha.get -> string?
+GitVersion.SemanticVersionFormatValues.SemVerSourceIncrement.get -> string!
+GitVersion.SemanticVersionFormatValues.SemVerSourceSemVer.get -> string?
+GitVersion.SemanticVersionFormatValues.SemVerSourceSha.get -> string?
 GitVersion.ConfigurationMigrationInfo
 GitVersion.ConfigurationMigrationInfo.ConfigurationMigrationInfo() -> void
 GitVersion.ConfigurationMigrationInfo.Force.get -> bool

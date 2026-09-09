@@ -19,7 +19,8 @@ internal abstract class CommitOnNonTrunkWithStableTagBase : IIncrementer
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,
-            SemanticVersion = context.SemanticVersion.NotNull()
+            SemanticVersion = context.SemanticVersion.NotNull(),
+            SemVerSource = context.SemVerSource
         };
 
         context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);

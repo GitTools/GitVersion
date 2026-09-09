@@ -66,17 +66,25 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
 
     private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
     {
+        var values = properties?.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.InvariantCultureIgnoreCase);
         var type = typeof(GitVersionVariables);
         var constructors = type.GetConstructors();
 
         var ctor = constructors.Single();
         var ctorArgs = ctor.GetParameters()
-            .Select(p => properties?.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
+            .Select(p => values?[p.Name!])
             .Cast<object>()
             .ToArray();
         var instance = Activator.CreateInstance(type, ctorArgs).NotNull();
-        return (GitVersionVariables)instance;
+        return (GitVersionVariables)instance with
+        {
+            SemVerSourceSemVer = NullIfEmpty(values?.GetValueOrDefault(nameof(GitVersionVariables.SemVerSourceSemVer))),
+            SemVerSourceSha = NullIfEmpty(values?.GetValueOrDefault(nameof(GitVersionVariables.SemVerSourceSha))),
+            SemVerSourceIncrement = NullIfEmpty(values?.GetValueOrDefault(nameof(GitVersionVariables.SemVerSourceIncrement)))
+        };
     }
+
+    private static string? NullIfEmpty(string? value) => string.IsNullOrEmpty(value) ? null : value;
 
     private GitVersionVariables FromFileInternal(string filePath)
     {

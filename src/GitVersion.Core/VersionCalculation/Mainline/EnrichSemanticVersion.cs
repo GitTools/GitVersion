@@ -16,7 +16,14 @@ internal sealed class EnrichSemanticVersion : IContextPreEnricher
         var semanticVersions = commit.SemanticVersions.Where(
             element => element.IsMatchForBranchSpecificLabel(branchSpecificLabel)
         ).ToList();
-        context.AlternativeSemanticVersions.AddRange(commit.SemanticVersions.Except(semanticVersions));
+        foreach (var version in commit.SemanticVersions.Except(semanticVersions))
+        {
+            context.AddAlternativeSemanticVersion(version,
+                new SemanticVersionSource("Git tag", version, commit.Value, VersionField.None));
+        }
         context.SemanticVersion = semanticVersions.Max();
+        context.SemVerSource = context.SemanticVersion is { } selected
+            ? new SemanticVersionSource("Git tag", selected, commit.Value, VersionField.None)
+            : null;
     }
 }

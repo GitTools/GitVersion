@@ -13,26 +13,37 @@ internal abstract class VersionCalculatorBase(
 
     protected SemanticVersionBuildMetaData CreateVersionBuildMetaData(IBaseVersion baseVersion)
     {
+        var semVerSource = baseVersion switch
+        {
+            ResolvedBaseVersion resolved => resolved.SemVerSource,
+            BaseVersion candidate => candidate.GetSemVerSource(),
+            _ => new SemanticVersionSource(baseVersion.Source, baseVersion.SemanticVersion, baseVersion.BaseVersionSource, baseVersion.Increment)
+        };
         var commitLogs = this.repositoryStore.GetCommitLog(
             baseVersionSource: baseVersion.BaseVersionSource,
             currentCommit: Context.CurrentCommit,
             ignore: Context.Configuration.Ignore
         );
 
-        var commitsSinceTag = commitLogs.Count;
-        this.logger.LogInformation("{CommitsSinceTag} commits found between {BaseVersionSource} and {CurrentCommit}", commitsSinceTag, baseVersion.BaseVersionSource, Context.CurrentCommit);
+        var commitCount = commitLogs.Count;
+        this.logger.LogInformation("{CommitCount} commits found between {CommitCountSource} and {CurrentCommit}", commitCount, baseVersion.BaseVersionSource, Context.CurrentCommit);
 
         var shortSha = Context.CurrentCommit.Id.ToString(7);
         return new SemanticVersionBuildMetaData(
             versionSourceSemVer: baseVersion.SemanticVersion,
             versionSourceSha: baseVersion.BaseVersionSource?.Sha,
-            commitsSinceTag: commitsSinceTag,
+            commitsSinceTag: commitCount,
             branch: Context.CurrentBranch.Name.Friendly,
             commitSha: Context.CurrentCommit.Sha,
             commitShortSha: shortSha,
             commitDate: Context.CurrentCommit.When,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
             versionSourceIncrement: baseVersion.Increment
-        );
+        )
+        {
+            SemVerSourceSemVer = semVerSource.Version,
+            SemVerSourceSha = semVerSource.Commit?.Sha,
+            SemVerSourceIncrement = semVerSource.Increment
+        };
     }
 }

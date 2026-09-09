@@ -41,6 +41,11 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.PreReleaseLabel.ShouldBe("1");
         result.Task.PreReleaseLabelWithDash.ShouldBe("-1");
         result.Task.FullSemVer.ShouldBe("1.2.4-1");
+        result.Task.SemVerSourceSemVer.ShouldBe("1.2.3");
+        result.Task.SemVerSourceIncrement.ShouldBe("Patch");
+        result.Task.SemVerSourceSha.ShouldBe(result.Task.VersionSourceSha);
+        result.Task.CommitCountSourceSha.ShouldBe(result.Task.VersionSourceSha);
+        result.Task.CommitCountSourceDistance.ShouldBe("1");
     }
 
     [Test]
@@ -69,6 +74,9 @@ public class GetVersionTaskTests : TestTaskBase
     [TestCase(nameof(GitVersionVariables.Patch), "4")]
     [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.2.4")]
     [TestCase(nameof(GitVersionVariables.FullSemVer), "1.2.4-1")]
+    [TestCase(nameof(GitVersionVariables.SemVerSourceSemVer), "1.2.3")]
+    [TestCase(nameof(GitVersionVariables.SemVerSourceIncrement), "Patch")]
+    [TestCase(nameof(GitVersionVariables.CommitCountSourceDistance), "1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuild(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);

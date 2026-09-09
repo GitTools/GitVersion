@@ -31,20 +31,35 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
     /// <summary>Gets or initializes the date of the current commit.</summary>
     public DateTimeOffset? CommitDate { get; init; }
 
-    /// <summary>Gets or initializes the semantic version of the source tag from which the version was calculated.</summary>
+    /// <summary>Gets or initializes the legacy semantic baseline, which need not correspond to VersionSourceSha.</summary>
     public SemanticVersion? VersionSourceSemVer { get; init; }
 
-    /// <summary>Gets or initializes the SHA of the source tag commit.</summary>
+    /// <summary>Gets or initializes the legacy counting-anchor SHA.</summary>
     public string? VersionSourceSha { get; init; }
 
-    /// <summary>Gets or initializes the number of commits between the version source tag and the current commit.</summary>
+    /// <summary>Gets or initializes the count of non-ignored commits beyond the counting anchor.</summary>
     public long VersionSourceDistance { get; init; }
 
     /// <summary>Gets or initializes the number of uncommitted changes in the working tree.</summary>
     public long UncommittedChanges { get; init; }
 
-    /// <summary>Gets or initializes the version field that was incremented relative to the version source.</summary>
+    /// <summary>Gets or initializes legacy increment metadata; prefer SemVerSourceIncrement for the selected final increment.</summary>
     public VersionField VersionSourceIncrement { get; init; }
+
+    /// <summary>Gets or initializes the semantic baseline supplied by the selected artifact or derivation.</summary>
+    public SemanticVersion? SemVerSourceSemVer { get; init; }
+
+    /// <summary>Gets or initializes the semantic source commit SHA, or null for an external source such as configuration or a branch name.</summary>
+    public string? SemVerSourceSha { get; init; }
+
+    /// <summary>Gets or initializes the final increment relative to the semantic baseline.</summary>
+    public VersionField SemVerSourceIncrement { get; init; }
+
+    /// <summary>Gets the commit used as the anchor for counting, or null when counting all reachable history.</summary>
+    public string? CommitCountSourceSha => VersionSourceSha;
+
+    /// <summary>Gets the number of non-ignored commits reachable from HEAD but not from the counting anchor.</summary>
+    public long CommitCountSourceDistance => VersionSourceDistance;
 
     /// <summary>Initializes a new empty build metadata instance.</summary>
     public SemanticVersionBuildMetaData()
@@ -93,6 +108,9 @@ public sealed class SemanticVersionBuildMetaData : IFormattable, IEquatable<Sema
         VersionSourceDistance = buildMetaData.VersionSourceDistance;
         UncommittedChanges = buildMetaData.UncommittedChanges;
         VersionSourceIncrement = buildMetaData.VersionSourceIncrement;
+        SemVerSourceSemVer = buildMetaData.SemVerSourceSemVer;
+        SemVerSourceSha = buildMetaData.SemVerSourceSha;
+        SemVerSourceIncrement = buildMetaData.SemVerSourceIncrement;
     }
 
     /// <summary>Returns <see langword="true"/> when <paramref name="obj"/> is a <see cref="SemanticVersionBuildMetaData"/> equal to this instance.</summary>

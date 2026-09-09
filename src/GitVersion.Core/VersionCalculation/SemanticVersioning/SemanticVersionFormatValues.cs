@@ -74,7 +74,22 @@ public class SemanticVersionFormatValues(SemanticVersion semver, IGitVersionConf
     /// <summary>Gets the informational version string (SemVer + full build metadata).</summary>
     public string InformationalVersion => semver.ToString("i");
 
-    /// <summary>Gets the semantic version of the source tag from which the version was calculated.</summary>
+    /// <summary>Gets the semantic baseline supplied by the selected artifact or derivation.</summary>
+    public string? SemVerSourceSemVer => semver.BuildMetaData.SemVerSourceSemVer?.ToString();
+
+    /// <summary>Gets the semantic source SHA, or null for external sources.</summary>
+    public string? SemVerSourceSha => semver.BuildMetaData.SemVerSourceSha;
+
+    /// <summary>Gets the final increment relative to the semantic baseline.</summary>
+    public string SemVerSourceIncrement => semver.BuildMetaData.SemVerSourceIncrement.ToString();
+
+    /// <summary>Gets the nullable counting anchor SHA.</summary>
+    public string? CommitCountSourceSha => semver.BuildMetaData.CommitCountSourceSha;
+
+    /// <summary>Gets the count of non-ignored commits beyond the counting anchor.</summary>
+    public string CommitCountSourceDistance => semver.BuildMetaData.CommitCountSourceDistance.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>Gets the legacy semantic baseline, which may not correspond to VersionSourceSha.</summary>
     public string? VersionSourceSemVer => semver.BuildMetaData.VersionSourceSemVer?.ToString();
 
     /// <summary>Gets the SHA of the source tag commit.</summary>

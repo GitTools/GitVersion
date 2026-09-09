@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation;
 
 /// <summary>
 /// Version is extracted from the name of the branch.
-/// BaseVersionSource is the commit where the branch was branched from its parent.
+/// The semantic source is the branch name and has no intrinsic source commit.
 /// Does not increment.
 /// </summary>
 internal sealed class VersionInBranchNameVersionStrategy(Lazy<GitVersionContext> contextLazy, IEnvironment environment) : IVersionStrategy

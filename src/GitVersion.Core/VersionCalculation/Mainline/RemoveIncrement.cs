@@ -12,6 +12,6 @@ internal sealed class RemoveIncrement : IContextPostEnricher
         context.SuppressBranchIncrement = false;
         context.Increment = VersionField.None;
         context.Label = null;
-        context.AlternativeSemanticVersions.Clear();
+        context.ClearAlternativeSemanticVersions();
     }
 }

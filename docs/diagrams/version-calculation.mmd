@@ -6,7 +6,8 @@ sequenceDiagram
 
     Next->>Base: GetBaseVersion
     Note right of Base: Determine the base version
-    Base-->>Next: 2.0.0 at 25e4ba
+    Base-->>Next: Semantic baseline 2.0.0 and its provenance
+    Next->>Next: Select counting anchor independently
 
     alt Base version allows increment
         Config->>Next: Branch increment strategy (patch)
@@ -23,7 +24,7 @@ sequenceDiagram
         Note right of Next: 2.0.1-alpha.1
     end
 
-    Next->>Metadata: Context
-    Metadata-->>Next: Commit count and branch/SHA metadata
+    Next->>Metadata: Semantic provenance and counting anchor
+    Metadata-->>Next: Count from anchor, both sources, and current branch/SHA metadata
     Next->>Next: Apply commit count and metadata
     Note right of Next: 2.0.1-alpha.1+10

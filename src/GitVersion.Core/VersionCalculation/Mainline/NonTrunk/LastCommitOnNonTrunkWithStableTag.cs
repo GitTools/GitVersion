@@ -23,7 +23,8 @@ internal sealed class LastCommitOnNonTrunkWithStableTag : CommitOnNonTrunkWithSt
             Increment = context.Increment,
             ForceIncrement = true,
             Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
     }
 }

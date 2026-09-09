@@ -24,7 +24,8 @@ internal sealed class LastMergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
             Increment = context.Increment,
             ForceIncrement = context.ForceIncrement,
             Label = context.TargetLabel ?? context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
     }
 }

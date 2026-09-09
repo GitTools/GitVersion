@@ -19,7 +19,8 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
         if (iteration.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
             && iteration.BranchName.TryGetSemanticVersion(effectiveConfiguration, out var element))
         {
-            context.AlternativeSemanticVersions.Add(element.Value);
+            context.AddAlternativeSemanticVersion(element.Value,
+                new SemanticVersionSource("Version in branch name", element.Value, null, VersionField.None));
         }
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
@@ -38,7 +39,8 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
             Increment = context.Increment,
             ForceIncrement = context.ForceIncrement,
             Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
     }
 }
