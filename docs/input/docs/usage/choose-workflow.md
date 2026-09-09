@@ -30,5 +30,6 @@ Read [workflows, modes, and strategies](/docs/learn/workflows-modes-strategies) 
 
 - [GitHub Flow](/docs/learn/branching-strategies/githubflow) and [examples](/docs/learn/branching-strategies/githubflow/examples).
 - [Git Flow](/docs/learn/branching-strategies/gitflow) and [examples](/docs/learn/branching-strategies/gitflow/examples).
+- [Trunk-based (preview)](/docs/learn/branching-strategies/trunkbased) and [examples](/docs/learn/branching-strategies/trunkbased/examples).
 - [Built-in configurations](/docs/reference/configuration#global-configuration).
 - [Create and inspect configuration](/docs/usage/configure).

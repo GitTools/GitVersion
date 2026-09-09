@@ -1,0 +1,23 @@
+sequenceDiagram
+    activate main
+    main->>main: commit
+    main->>main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.1
+    end
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.2
+    end
+    main->>main: tag v1.2.2
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.2
+    end
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.3
+    end

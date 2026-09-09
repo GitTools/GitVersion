@@ -1,0 +1,31 @@
+sequenceDiagram
+    activate main
+    main->>main: commit
+    main->>main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    create participant hotfix_fix as hotfix/fix
+    main->>hotfix_fix: branch from main
+    deactivate main
+    activate hotfix_fix
+    hotfix_fix->>hotfix_fix: commit
+    rect rgb(211, 211, 211)
+        Note over hotfix_fix: 1.2.1-fix.1
+    end
+    hotfix_fix->>hotfix_fix: commit
+    rect rgb(211, 211, 211)
+        Note over hotfix_fix: 1.2.1-fix.2
+    end
+    activate main
+    hotfix_fix->>main: merge
+    deactivate hotfix_fix
+    destroy hotfix_fix
+    main--xhotfix_fix: delete branch
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.1
+    end
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.2
+    end

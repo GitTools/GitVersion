@@ -16,6 +16,17 @@ every workflow uses the same deployment mode.
 To see the effective configuration (defaults and overrides), you can run
 `gitversion --show-config`.
 
+## Configuration tool
+
+The interactive configuration tool (`gitversion init`) was removed in
+GitVersion v6.0.0. The [removal commit](https://github.com/GitTools/GitVersion/commit/09014f1af2367d79d53919c759a82ea998d9db6c)
+removed the init wizard and its command handling. Create `GitVersion.yml`
+manually, [choose a workflow](/docs/usage/choose-workflow), and inspect the
+resolved settings with `gitversion --show-config`. Follow
+[Configure GitVersion](/docs/usage/configure) for current configuration guidance,
+or the [trunk-based guide](/docs/learn/branching-strategies/trunkbased) to try
+`TrunkBased/preview1`.
+
 ## v7 configuration layout
 
 GitVersion v7 separates version **calculation** from version **output**. Put
@@ -102,7 +113,7 @@ The following supported workflow configurations are available in GitVersion and 
 
 * GitFlow (GitFlow/v1)
 * GitHubFlow (GitHubFlow/v1)
-* TrunkBased (TrunkBased/preview1, experimental preview)
+* [TrunkBased](/docs/learn/branching-strategies/trunkbased) (`TrunkBased/preview1`, experimental preview; [worked examples](/docs/learn/branching-strategies/trunkbased/examples))
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
