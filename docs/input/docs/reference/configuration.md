@@ -749,7 +749,28 @@ branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
 
 ### tracks-release-branches
 
-Indicates this branch config represents develop in GitFlow.
+Controls whether this branch tracks release branches when calculating its version.
+This is typically enabled for `develop` in GitFlow.
+
+With the `TrackReleaseBranches` strategy enabled, a release branch's version is
+taken from its name. If the name contains no version, GitVersion uses the highest
+semantic prerelease tag matching that release branch's [configured label](#label). Matching
+is case-insensitive. Tags must be on the release branch's first-parent history,
+outside the first-parent history of configured `main` branches. A release tag
+remains eligible when its commit is merged into `main` through a merge commit.
+Like versioned release names, tags are evaluated against the current release
+refs, including when versioning an older commit. Tags on newer sibling release
+commits are eligible; advancing the tracking branch alone does not change tag eligibility.
+This does not reconstruct historical branch or tag state. [Tag prefix](#tag-prefix),
+[semantic version format](#semantic-version-format), and [ignore](#ignore) settings apply.
+The release branch must share an ancestor with the commit being versioned.
+
+For example, with release label `rc`, `releases/R2301` tagged `1.0.0-RC.1` lets
+`develop` advance to `1.1.0-beta.1` after its next commit when `develop`'s label is
+`beta`. Versioned release names retain precedence over tags within this strategy.
+Git does not record which branch created a tag; first-parent history and the
+release label determine eligibility, including when the tracking branch
+(typically `develop`) was branched from the tagged release commit.
 
 ### commit-date-format
 

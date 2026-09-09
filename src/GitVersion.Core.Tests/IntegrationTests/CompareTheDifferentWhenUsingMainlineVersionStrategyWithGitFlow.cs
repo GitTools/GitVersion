@@ -953,7 +953,8 @@ public class CompareTheDifferentWhenUsingMainlineVersionStrategyWithGitFlow
         fixture.MergeNoFF("hotfix/foo");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0-PullRequest2.5", configuration);
+        // Release tracking now recognizes the hotfix tag and counts from its branch point.
+        fixture.AssertFullSemver(useMainline ? "0.1.0-PullRequest2.5" : "0.1.0-PullRequest2.4", configuration);
 
         fixture.Checkout("main");
         fixture.BranchTo("pull/3/merge");
