@@ -11,7 +11,7 @@ internal record BranchConfiguration : IBranchConfiguration
     public DeploymentMode? DeploymentMode { get; set; }
 
     [JsonPropertyName("label")]
-    [JsonPropertyDescription("The label to use for this branch. Use the value {BranchName} or similar as a placeholder to insert a named capture group from RegularExpression (fx. the branch name).")]
+    [JsonPropertyDescription("The label to use for this branch. Use {BranchName} or another named capture group from a regular expression, {Sha} for the current commit's full hash, or {ShortSha} for its abbreviated hash. Named regular expression capture groups take precedence over commit placeholders.")]
     public string? Label { get; set; }
 
     [JsonPropertyName("custom-version-format")]

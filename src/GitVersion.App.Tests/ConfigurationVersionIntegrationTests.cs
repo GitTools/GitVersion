@@ -8,6 +8,43 @@ namespace GitVersion.App.Tests;
 [NonParallelizable]
 public class ConfigurationVersionIntegrationTests
 {
+    [TestCase("ShortSha")]
+    [TestCase("Sha")]
+    public async Task V6V7AndMigratedConfigurationCalculateCurrentCommitLabel(string placeholder)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        fixture.BranchTo("feature/topic");
+        fixture.MakeACommit();
+        var sha = fixture.Repository.Head.Tip.Sha;
+        var label = $"ci.{{{placeholder}}}";
+        var configurationPath = Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
+        await File.WriteAllTextAsync(configurationPath, $"next-version: 2.0.0\nbranches:\n  feature:\n    label: '{label}'");
+
+        var v6 = Execute(fixture.RepositoryPath, "v6");
+        var migration = await new ProgramFixture(fixture.RepositoryPath).Run("config", "migrate");
+
+        migration.ExitCode.ShouldBe(0);
+        migration.Output.ShouldNotBeNull();
+        var migratedConfiguration = new ConfigurationSerializer().Deserialize<GitVersionConfiguration>(migration.Output);
+        migratedConfiguration.Branches["feature"].Label.ShouldBe(label);
+        await File.WriteAllTextAsync(configurationPath, migration.Output);
+        var migrated = Execute(fixture.RepositoryPath, "v7");
+
+        await File.WriteAllTextAsync(configurationPath, $"calculation:\n  next-version: 2.0.0\n  branches:\n    feature:\n      label: '{label}'\noutput: {{}}");
+        var v7 = Execute(fixture.RepositoryPath, "v7");
+
+        foreach (var result in new[] { v6, v7, migrated })
+        {
+            result.ExitCode.ShouldBe(0);
+            using var json = JsonDocument.Parse(result.StandardOutput!);
+            json.RootElement.GetProperty("PreReleaseLabelName").GetString().ShouldBe("ci." + (placeholder == "Sha" ? sha : sha[..7]));
+            json.RootElement.GetProperty("Sha").GetString().ShouldBe(sha);
+            json.RootElement.GetProperty("ShortSha").GetString().ShouldBe(sha[..7]);
+            GetFullSemVer(result.StandardOutput!).ShouldBe(GetFullSemVer(v6.StandardOutput!));
+        }
+    }
+
     [Test]
     public async Task ConfigMigrateWritesMigratedConfigurationToStandardOutput()
     {

@@ -657,6 +657,30 @@ of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?
 
 Another example: branch `features/sc-12345/some-description` would become a pre-release label of `sc-12345` with `label: '{StoryNo}'` and `regex: '^features?[\/-](?<StoryNo>sc-\d+)[-/].+'`.
 
+Use `{Sha}` for the full hash of the commit being versioned, or `{ShortSha}` for
+its abbreviated hash, using the same seven-character abbreviation as the
+`ShortSha` output variable. These placeholders work without named regex captures
+and can be combined with them, for example `label: '{BranchName}.ci.{ShortSha}'`.
+
+```yaml
+workflow: GitHubFlow/v1
+calculation:
+  branches:
+    feature:
+      label: 'ci.{ShortSha}'
+```
+
+For a commit whose abbreviated hash is `a1b2c3d`, this configures the label
+`ci.a1b2c3d`. The pre-release number still follows the selected deployment mode.
+In the temporary [v6 compatibility mode](#v7-configuration-layout), put the same
+`label` setting under `branches.feature` instead of `calculation.branches.feature`.
+
+Placeholder names are case-sensitive. If the branch regex contains a named
+capture `Sha` or `ShortSha`, that capture takes precedence over the corresponding
+commit value, including when the capture is empty. Commit values always refer
+to the commit being versioned, even while GitVersion examines earlier commits
+or merged branches to calculate its version.
+
 You can also use environment variable placeholders with the `{env:VARIABLE_NAME}` syntax. Environment variable placeholders can also be combined with regex placeholders, for example `{BranchName}-{env:VARIABLE_NAME}`, and support fallback values using the `{env:VARIABLE_NAME ?? "fallback"}` syntax. These can be combined with cascading fallbacks using environment variables and placeholders like this: `{env:VARIABLE_NAME ?? BranchName ?? "fallback"}`.
 
 **Note:** To clear a default use an empty string: `label: ''`

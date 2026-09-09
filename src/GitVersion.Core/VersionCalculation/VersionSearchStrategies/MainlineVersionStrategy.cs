@@ -108,7 +108,7 @@ internal sealed class MainlineVersionStrategy(
             notOlderThan: Context.CurrentCommit.When,
             taggedSemanticVersion: taggedSemanticVersion
         );
-        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var targetLabel = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
         IterateOverCommitsRecursive(
             commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
@@ -117,7 +117,7 @@ internal sealed class MainlineVersionStrategy(
             taggedSemanticVersions: taggedSemanticVersions
         );
 
-        yield return DetermineBaseVersion(iteration, targetLabel, this.incrementStrategyFinder, Context.Configuration, this.environment);
+        yield return DetermineBaseVersion(iteration, targetLabel, this.incrementStrategyFinder, Context.Configuration, this.environment, Context.CurrentCommit);
     }
 
     private MainlineIteration CreateIteration(
@@ -240,7 +240,7 @@ internal sealed class MainlineVersionStrategy(
         var label = targetLabel ?? new EffectiveConfiguration(
             configuration: Context.Configuration,
             branchConfiguration: state.Configuration
-        ).GetBranchSpecificLabel(state.BranchName, null, this.environment);
+        ).GetBranchSpecificLabel(state.BranchName, null, this.environment, Context.CurrentCommit);
 
         foreach (var semanticVersion in semanticVersions)
         {
@@ -400,15 +400,15 @@ internal sealed class MainlineVersionStrategy(
     }
 
     private static BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel,
-            IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
-        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration, environment);
+            IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
+        => DetermineBaseVersionRecursive(iteration, targetLabel, incrementStrategyFinder, configuration, environment, currentCommit);
 
     internal static BaseVersion DetermineBaseVersionRecursive(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
     {
         iteration.NotNull();
 
-        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, environment).ToArray();
+        var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, environment, currentCommit).ToArray();
 
         BaseVersion? result = null;
         foreach (var baseVersionIncrement in incrementSteps)
@@ -431,9 +431,9 @@ internal sealed class MainlineVersionStrategy(
     }
 
     private static IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, string? targetLabel,
-        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment)
+        IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
     {
-        MainlineContext context = new(incrementStrategyFinder, configuration, environment)
+        MainlineContext context = new(incrementStrategyFinder, configuration, environment, currentCommit)
         {
             TargetLabel = targetLabel
         };

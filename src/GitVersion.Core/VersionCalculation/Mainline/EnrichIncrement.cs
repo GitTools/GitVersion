@@ -32,7 +32,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             context.Label = null;
         }
 
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
 
         if (effectiveConfiguration.IsMainBranch)
         {

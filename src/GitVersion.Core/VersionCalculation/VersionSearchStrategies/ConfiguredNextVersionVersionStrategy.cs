@@ -33,7 +33,7 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
         var semanticVersion = SemanticVersion.Parse(
             nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
         );
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
 
         if (!semanticVersion.IsMatchForBranchSpecificLabel(label))
         {

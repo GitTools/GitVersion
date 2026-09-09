@@ -44,7 +44,7 @@ internal sealed class TaggedCommitVersionStrategy(
             taggedSemanticVersion: configuration.Value.GetTaggedSemanticVersion()
         ).SelectMany(elements => elements).Distinct().ToArray();
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
 
         var semanticVersionTreshold = SemanticVersion.Empty;
         List<SemanticVersionWithTag> alternativeSemanticVersionsWithTag = [];

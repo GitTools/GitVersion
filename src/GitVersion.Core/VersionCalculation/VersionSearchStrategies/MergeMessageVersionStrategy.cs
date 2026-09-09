@@ -50,7 +50,7 @@ internal sealed class MergeMessageVersionStrategy(ILogger<MergeMessageVersionStr
                 baseVersionSource = this.repositoryStore.FindMergeBase(commit.Parents[0], commit.Parents[1]);
             }
 
-            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+            var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
             var increment = configuration.Value.PreventIncrementOfMergedBranch
                 ? VersionField.None : this.incrementStrategyFinder.DetermineIncrementedField(
                     currentCommit: Context.CurrentCommit,

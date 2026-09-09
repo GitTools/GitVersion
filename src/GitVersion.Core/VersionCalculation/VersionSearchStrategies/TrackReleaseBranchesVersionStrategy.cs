@@ -67,7 +67,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
             return false;
         }
 
-        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment);
+        var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
         var increment = this.incrementStrategyFinder.DetermineIncrementedField(
             currentCommit: Context.CurrentCommit,
             baseVersionSource: baseVersionSource,
@@ -103,7 +103,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
             return false;
         }
 
-        var label = configuration.Value.GetBranchSpecificLabel(releaseBranch.Name, null, this.environment);
+        var label = configuration.Value.GetBranchSpecificLabel(releaseBranch.Name, null, this.environment, Context.CurrentCommit);
         var tags = this.taggedSemanticVersionRepository.GetTaggedSemanticVersionsOfBranch(
             releaseBranch, configuration.Value.TagPrefixPattern, configuration.Value.SemanticVersionFormat,
             Context.Configuration.Ignore);
