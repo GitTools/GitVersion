@@ -17,6 +17,21 @@ public class GetVersion : GitVersionTaskBase
     public string BuildMetaData { get; set; } = null!;
 
     [Output]
+    public string CommitCountSourceDistance { get; set; } = null!;
+
+    [Output]
+    public string CommitCountSourceSha { get; set; } = null!;
+
+    [Output]
+    public string SemVerSourceIncrement { get; set; } = null!;
+
+    [Output]
+    public string SemVerSourceSemVer { get; set; } = null!;
+
+    [Output]
+    public string SemVerSourceSha { get; set; } = null!;
+
+    [Output]
     public string CommitDate { get; set; } = null!;
 
     [Output]

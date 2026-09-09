@@ -13,8 +13,15 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The name of the checked out Git branch.")]
     public string? BranchName { get; set; }
 
-    [JsonPropertyDescription("The build metadata, usually representing number of commits since the VersionSourceSha.")]
+    [JsonPropertyDescription("The build metadata, usually representing number of commits since the CommitCountSourceSha.")]
     public int? BuildMetaData { get; set; }
+
+    [JsonPropertyDescription("The number of non-ignored commits reachable from HEAD but not from the counting anchor.")]
+    public long? CommitCountSourceDistance { get; set; }
+
+    [JsonPropertyDescription("The commit used as the counting anchor, or null when counting all reachable history.")]
+    [JsonConverter(typeof(SourceVariableJsonConverter))]
+    public string? CommitCountSourceSha { get; set; }
 
     [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
     public string? CommitDate { get; set; }
@@ -64,6 +71,18 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The semantic version number, including PreReleaseLabelWithDash for pre-release version numbers.")]
     public string? SemVer { get; set; }
 
+    [JsonPropertyDescription("The final increment relative to the semantic baseline: None, Patch, Minor or Major.")]
+    [JsonConverter(typeof(SourceVariableJsonConverter))]
+    public string? SemVerSourceIncrement { get; set; }
+
+    [JsonPropertyDescription("The semantic baseline supplied by the selected artifact or derivation.")]
+    [JsonConverter(typeof(SourceVariableJsonConverter))]
+    public string? SemVerSourceSemVer { get; set; }
+
+    [JsonPropertyDescription("The semantic source commit SHA, or null for external sources such as configuration or a branch name.")]
+    [JsonConverter(typeof(SourceVariableJsonConverter))]
+    public string? SemVerSourceSha { get; set; }
+
     [JsonPropertyDescription("The SHA of the Git commit.")]
     public string? Sha { get; set; }
 
@@ -73,16 +92,16 @@ internal class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of uncommitted changes present in the repository.")]
     public int? UncommittedChanges { get; set; }
 
-    [JsonPropertyDescription("The number of commits since the version source.")]
+    [JsonPropertyDescription("Compatibility alias for CommitCountSourceDistance.")]
     public int? VersionSourceDistance { get; set; }
 
     [JsonPropertyDescription("The increment strategy used for the version calculation. Possible values: None, Patch, Minor, Major.")]
     public string? VersionSourceIncrement { get; set; }
 
-    [JsonPropertyDescription("The semantic version of the commit used as version source.")]
+    [JsonPropertyDescription("Legacy semantic baseline; it need not come from VersionSourceSha. Prefer SemVerSourceSemVer.")]
     public string? VersionSourceSemVer { get; set; }
 
-    [JsonPropertyDescription("The SHA of the commit used as version source.")]
+    [JsonPropertyDescription("Compatibility alias for CommitCountSourceSha.")]
     public string? VersionSourceSha { get; set; }
 
     [JsonPropertyDescription("A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches.")]

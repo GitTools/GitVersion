@@ -18,6 +18,7 @@ internal abstract class CommitOnTrunkWithStableTagBase : IIncrementer
         {
             Source = GetType().Name,
             SemanticVersion = context.SemanticVersion.NotNull(),
+            SemVerSource = context.SemVerSource,
             BaseVersionSource = context.BaseVersionSource
         };
 

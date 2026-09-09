@@ -33,7 +33,8 @@ internal sealed class CommitOnTrunk : IIncrementer
             Increment = context.Increment,
             ForceIncrement = context.ForceIncrement,
             Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
 
         context.BaseVersionSource = commit.Value;

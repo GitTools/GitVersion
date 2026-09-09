@@ -79,6 +79,7 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         result = new BaseVersion(
             "Release branch exists -> " + baseVersion.Source, baseVersion.SemanticVersion, baseVersionSource)
         {
+            SemVerSource = baseVersion.GetBaselineSemVerSource(),
             Operator = new BaseVersionOperator
             {
                 Increment = increment,
@@ -133,7 +134,11 @@ internal sealed class TrackReleaseBranchesVersionStrategy(
         // advances the minor instead of only changing the prerelease label or number.
         var version = tag.Value;
         result = new BaseVersion($"Version in release branch tag '{tag.Tag.Name.Friendly}'",
-            new SemanticVersion(version.Major, version.Minor, version.Patch));
+            new SemanticVersion(version.Major, version.Minor, version.Patch))
+        {
+            SemVerSource = new SemanticVersionSource($"Git tag '{tag.Tag.Name.Friendly}'",
+                version, tag.Tag.Commit, VersionField.None)
+        };
         return true;
     }
 

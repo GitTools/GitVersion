@@ -31,7 +31,8 @@ internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
             Increment = VersionField.None,
             ForceIncrement = false,
             Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
     }
 }

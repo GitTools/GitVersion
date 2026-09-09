@@ -56,7 +56,8 @@ internal sealed class TaggedCommitVersionStrategy(
                 continue;
             }
 
-            var alternativeSemanticVersionMax = alternativeSemanticVersionsWithTag.Max()?.Value;
+            var alternativeTag = alternativeSemanticVersionsWithTag.Max();
+            var alternativeSemanticVersionMax = alternativeTag?.Value;
             var highestPossibleSemanticVersion = semanticVersion.Value.Increment(
                 VersionField.Major, null, forceIncrement: true, alternativeSemanticVersionMax
             );
@@ -88,7 +89,9 @@ internal sealed class TaggedCommitVersionStrategy(
                     Increment = increment,
                     ForceIncrement = false,
                     Label = label,
-                    AlternativeSemanticVersion = alternativeSemanticVersionMax
+                    AlternativeSemanticVersion = alternativeSemanticVersionMax,
+                    AlternativeSemVerSource = alternativeTag is null ? null : new SemanticVersionSource(
+                        $"Git tag '{alternativeTag.Tag.Name.Friendly}'", alternativeTag.Value, alternativeTag.Tag.Commit, VersionField.None)
                 }
             };
             alternativeSemanticVersionsWithTag.Clear();

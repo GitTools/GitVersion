@@ -40,6 +40,26 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
     /// <summary>Gets or initializes the optional operator that describes the increment to apply.</summary>
     public BaseVersionOperator? Operator { get; init; }
 
+    internal SemanticVersionSource? SemVerSource { get; init; }
+
+    internal SemanticVersionSource GetBaselineSemVerSource()
+        => (SemVerSource ?? Operand.SemVerSource) is { } origin
+            ? origin with { Version = SemanticVersion, Increment = Increment }
+            : new SemanticVersionSource(Operand.Source, SemanticVersion, Operand.BaseVersionSource, Increment);
+
+    internal SemanticVersionSource GetSemVerSource()
+    {
+        if (Operator?.AlternativeSemanticVersion is { } alternative
+            && SemanticVersion.Increment(Operator.Increment, Operator.Label, Operator.ForceIncrement)
+                .IsLessThan(alternative, includePreRelease: false))
+        {
+            return Operator.AlternativeSemVerSource
+                ?? new SemanticVersionSource("Alternative semantic version", alternative, null, VersionField.None);
+        }
+
+        return GetBaselineSemVerSource();
+    }
+
     /// <summary>Returns the semantic version after applying the operator increment, or the base version when no increment is needed.</summary>
     public SemanticVersion GetIncrementedVersion()
     {
@@ -100,6 +120,7 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
 
         return new BaseVersion(Source, GetIncrementedVersion(), BaseVersionSource)
         {
+            SemVerSource = GetSemVerSource(),
             Operator = baseVersionOperator
         };
     }

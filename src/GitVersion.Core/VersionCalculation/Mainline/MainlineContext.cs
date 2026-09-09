@@ -19,6 +19,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public SemanticVersion? SemanticVersion { get; set; }
 
+    public SemanticVersionSource? SemVerSource { get; set; }
+
     public string? Label { get; set; }
 
     public VersionField Increment { get; set; }
@@ -28,6 +30,26 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
     public ICommit? BaseVersionSource { get; set; }
 
     public HashSet<SemanticVersion> AlternativeSemanticVersions { get; } = [];
+
+    private readonly Dictionary<SemanticVersion, SemanticVersionSource> alternativeSources = [];
+
+    public void AddAlternativeSemanticVersion(SemanticVersion version, SemanticVersionSource source)
+    {
+        AlternativeSemanticVersions.Add(version);
+        this.alternativeSources.TryAdd(version, source);
+    }
+
+    public SemanticVersionSource? GetAlternativeSemVerSource()
+    {
+        var version = AlternativeSemanticVersions.Max();
+        return version is not null && this.alternativeSources.TryGetValue(version, out var source) ? source : null;
+    }
+
+    public void ClearAlternativeSemanticVersions()
+    {
+        AlternativeSemanticVersions.Clear();
+        this.alternativeSources.Clear();
+    }
 
     public bool ForceIncrement { get; set; }
 }
