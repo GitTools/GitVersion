@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" VersionOverride="10.0.12" />
     </ItemGroup>
 
     <ItemGroup>
