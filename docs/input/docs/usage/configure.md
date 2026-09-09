@@ -4,13 +4,16 @@ Order: 2
 ---
 Start with a workflow and override only the settings your repository needs.
 
+The old interactive `init` configuration tool was [removed in v6](/docs/reference/configuration#configuration-tool). Create and edit the YAML file directly.
+
 ## Create a configuration file
 
 Put `GitVersion.yml` at the repository root. GitVersion also recognizes `GitVersion.yaml`, `.GitVersion.yml`, and `.GitVersion.yaml`.
 
 ```yaml
 workflow: GitHubFlow/v1
-tag-prefix: '[vV]?'
+calculation:
+  tag-prefix: '[vV]?'
 ```
 
 This selects the GitHubFlow defaults and permits a leading v or V in version tags. For a different starting point, [choose a workflow](/docs/usage/choose-workflow).

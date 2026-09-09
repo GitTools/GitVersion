@@ -61,7 +61,7 @@ public static class Mermaid
                 context.DotNetTest(DocumentationTestsProject.FullPath, new DotNetTestSettings
                 {
                     PathType = DotNetTestPathType.Project,
-                    Filter = "FullyQualifiedName~DocumentationSamplesForGitFlow|FullyQualifiedName~DocumentationSamplesForGitHubFlow",
+                    Filter = "FullyQualifiedName~DocumentationSamplesForGitFlow|FullyQualifiedName~DocumentationSamplesForGitHubFlow|FullyQualifiedName~DocumentationSamplesForTrunkBased",
                     WorkingDirectory = context.MakeAbsolute(Paths.Root),
                     EnvironmentVariables = new Dictionary<string, string>
                     {
