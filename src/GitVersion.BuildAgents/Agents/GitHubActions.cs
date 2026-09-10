@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
+using GitVersion.Git;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -64,7 +65,7 @@ internal class GitHubActions(IEnvironment environment, ILogger<GitHubActions> lo
         var reference = this.environment.GetEnvironmentVariable("GITHUB_REF");
         return string.Equals(refType, "tag", StringComparison.OrdinalIgnoreCase)
             && reference != null
-            && reference.StartsWith("refs/tags/", StringComparison.Ordinal)
+            && new ReferenceName(reference).IsTag
                 ? reference
                 : null;
     }
