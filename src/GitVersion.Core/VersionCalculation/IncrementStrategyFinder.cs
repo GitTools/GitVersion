@@ -274,7 +274,7 @@ internal class IncrementStrategyFinder(
         EffectiveConfiguration sourceConfiguration, EffectiveConfiguration targetConfiguration)
     {
         var sourceLabel = sourceConfiguration.GetBranchSpecificLabel(
-            mergedBranch, null, this.environment);
+            mergedBranch, null, this.environment, Context.CurrentCommit);
         var preventIncrementWhenBranchMerged = ResolvePreventIncrementWhenBranchMerged(
             sourceConfiguration, targetConfiguration);
         var shouldIncrement = ShouldIncrementTaggedCommit(
