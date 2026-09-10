@@ -16,6 +16,9 @@ public interface IBuildAgent
     /// <summary>Returns the name of the current branch as reported by the build agent environment.</summary>
     string? GetCurrentBranch(bool usingDynamicRepos);
 
+    /// <summary>Returns the canonical tag reference explicitly selected by the build agent environment, or null for other builds.</summary>
+    string? GetCurrentTag() => null;
+
     /// <summary>Indicates whether fetching from the remote should be suppressed in this build agent environment.</summary>
     bool PreventFetch();
 

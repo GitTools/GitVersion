@@ -19,6 +19,8 @@ internal abstract class BuildAgentBase(IEnvironment environment, ILogger logger,
 
     public virtual string? GetCurrentBranch(bool usingDynamicRepos) => null;
 
+    public virtual string? GetCurrentTag() => null;
+
     public virtual bool IsDefault => false;
     public virtual bool PreventFetch() => true;
     public virtual bool ShouldCleanUpRemotes() => false;
