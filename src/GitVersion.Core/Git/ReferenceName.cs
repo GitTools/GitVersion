@@ -58,6 +58,13 @@ public sealed class ReferenceName : IEquatable<ReferenceName?>, IComparable<Refe
             ? value
             : Parse(LocalBranchPrefix + branchName);
 
+    /// <summary>Creates a <see cref="ReferenceName"/> from a literal tag name, always prepending <c>refs/tags/</c>.</summary>
+    public static ReferenceName FromTagName(string tagName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(tagName);
+        return new ReferenceName(TagPrefix + tagName);
+    }
+
     /// <summary>Gets the canonical reference name (e.g. <c>refs/heads/main</c>).</summary>
     public string Canonical { get; }
 

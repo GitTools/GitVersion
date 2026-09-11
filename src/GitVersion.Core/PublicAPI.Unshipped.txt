@@ -1,4 +1,5 @@
 #nullable enable
+static GitVersion.Git.ReferenceName.FromTagName(string! tagName) -> GitVersion.Git.ReferenceName!
 GitVersion.Agents.IBuildAgent.GetCurrentTag() -> string?
 GitVersion.ConfigurationMigrationInfo
 GitVersion.ConfigurationMigrationInfo.ConfigurationMigrationInfo() -> void

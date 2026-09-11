@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using GitVersion.Git;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -41,6 +42,12 @@ internal class GitLabCi : BuildAgentBase
             return mergeRequestRefPath;
         }
         return this.environment.GetEnvironmentVariable(CommitRefNameEnvironmentVariableName);
+    }
+
+    public override string? GetCurrentTag()
+    {
+        var tagName = this.environment.GetEnvironmentVariable(CommitTagEnvironmentVariableName);
+        return string.IsNullOrEmpty(tagName) ? null : ReferenceName.FromTagName(tagName).Canonical;
     }
 
     public override bool PreventFetch() => true;

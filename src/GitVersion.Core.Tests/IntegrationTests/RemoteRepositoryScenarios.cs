@@ -12,6 +12,118 @@ public class RemoteRepositoryScenarios : TestBase
     [TestCase(true, false)]
     [TestCase(false, true)]
     [TestCase(true, true)]
+    public void GitLabHistoricalTagIgnoresPipelineAndDeploymentRefs(bool annotated, bool unavailableRemote)
+    {
+        using var fixture = new RemoteRepositoryFixture(path =>
+        {
+            Repository.Init(path);
+            var repository = new Repository(path);
+            repository.MakeACommit();
+            if (annotated)
+            {
+                repository.ApplyTag("1.2.3", repository.Head.Tip.Author, "Release");
+            }
+            else
+            {
+                repository.ApplyTag("1.2.3");
+            }
+            repository.Refs.Add("refs/pipelines/42", repository.Head.Tip.Id);
+            repository.Refs.Add("refs/environments/production/deployments/1", repository.Head.Tip.Id);
+            repository.Refs.Add("refs/environments/production/deployments/2", repository.Head.Tip.Id);
+            repository.MakeACommit();
+            return repository;
+        });
+        var repository = fixture.LocalRepositoryFixture.Repository;
+        var commit = (Commit)repository.Tags["1.2.3"].PeeledTarget;
+        Commands.Checkout(repository, commit);
+        if (unavailableRemote)
+        {
+            repository.Network.Remotes.Update("origin", remote =>
+                remote.Url = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, "missing-remote"));
+        }
+
+        PrepareOnGitLab(fixture.LocalRepositoryFixture.RepositoryPath, "1.2.3", "1.2.3");
+
+        repository.Head.Tip.Sha.ShouldBe(commit.Sha);
+        repository.Info.IsHeadDetached.ShouldBeTrue();
+        fixture.AssertFullSemver("1.2.3", repository: repository);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("missing")]
+    [TestCase("1.2.3")]
+    public void GitLabHistoricalCommitWithoutMatchingTagStillDiscoversRemoteRefs(string? tagName)
+    {
+        using var fixture = new RemoteRepositoryFixture(path =>
+        {
+            Repository.Init(path);
+            var repository = new Repository(path);
+            repository.MakeACommit();
+            repository.Refs.Add("refs/pipelines/42", repository.Head.Tip.Id);
+            repository.Refs.Add("refs/environments/production/deployments/1", repository.Head.Tip.Id);
+            repository.MakeATaggedCommit("1.2.3");
+            return repository;
+        });
+        var repository = fixture.LocalRepositoryFixture.Repository;
+        var commit = repository.Head.Tip.Parents.Single();
+        Commands.Checkout(repository, commit);
+        repository.ApplyTag("local-only");
+
+        var exception = Should.Throw<WarningException>(() =>
+            PrepareOnGitLab(fixture.LocalRepositoryFixture.RepositoryPath, tagName));
+
+        exception.Message.ShouldContain("Found more than one remote tip");
+        exception.Message.ShouldContain("refs/pipelines/42");
+        exception.Message.ShouldContain("refs/environments/production/deployments/1");
+        repository.Head.Tip.Sha.ShouldBe(commit.Sha);
+        repository.Info.IsHeadDetached.ShouldBeTrue();
+    }
+
+    [TestCase("feature/work", null, "feature/work")]
+    [TestCase("feature/work", "refs/merge-requests/42/head", "merge-requests/42/head")]
+    public void GitLabTaggedCommitPreservesBranchAndMergeRequestContext(string refName, string? mergeRequest, string expectedBranch)
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        var repository = fixture.LocalRepositoryFixture.Repository;
+        var commit = repository.Head.Tip;
+        repository.ApplyTag("1.2.3");
+        repository.MakeACommit();
+        Commands.Checkout(repository, commit);
+        repository.Refs.Remove("refs/remotes/origin/main");
+
+        PrepareOnGitLab(fixture.LocalRepositoryFixture.RepositoryPath, null, refName, mergeRequest);
+
+        repository.Head.Tip.Sha.ShouldBe(commit.Sha);
+        repository.Info.IsHeadDetached.ShouldBeFalse();
+        repository.Head.FriendlyName.ShouldBe(expectedBranch);
+    }
+
+    private static void PrepareOnGitLab(string workingDirectory, string? tagName, string? refName = null, string? mergeRequest = null)
+    {
+        var options = Options.Create(new GitVersionOptions
+        {
+            WorkingDirectory = workingDirectory,
+            Settings = { NoNormalize = false, NoFetch = true }
+        });
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(GitLabCi.EnvironmentVariableName, "true");
+        environment.SetEnvironmentVariable(GitLabCi.CommitTagEnvironmentVariableName, tagName);
+        environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, refName);
+        environment.SetEnvironmentVariable(GitLabCi.MergeRequestRefPathEnvironmentVariableName, mergeRequest);
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton(options);
+            services.AddSingleton<IEnvironment>(environment);
+        });
+        sp.DiscoverRepository();
+        sp.GetRequiredService<IGitPreparer>().Prepare();
+    }
+
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(true, true)]
     [TestCase(false, false, "tree", false)]
     [TestCase(true, false, "tree", false)]
     [TestCase(false, false, "blob", false)]

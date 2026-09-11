@@ -42,6 +42,19 @@ public class GitLabCiTests : TestBase
         this.buildServer.SetBuildNumber(vars).ShouldBe("0.0.0-Beta4.7");
     }
 
+    [TestCase(null, null)]
+    [TestCase("", null)]
+    [TestCase("v1.2.3", "refs/tags/v1.2.3")]
+    [TestCase("release/1.2.3", "refs/tags/release/1.2.3")]
+    [TestCase("refs/tags/1.2.3", "refs/tags/refs/tags/1.2.3")]
+    public void GetCurrentTagShouldUseCommitTagName(string? tagName, string? expected)
+    {
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitTagEnvironmentVariableName, tagName);
+        this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, "different-ref");
+
+        this.buildServer.GetCurrentTag().ShouldBe(expected);
+    }
+
     [Test]
     public void ShouldSetOutputVariables()
     {
@@ -62,6 +75,7 @@ public class GitLabCiTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         result.ShouldBe(expectedResult);
+        this.buildServer.GetCurrentTag().ShouldBeNull();
     }
 
     [TestCase("main", "", "main")]
@@ -93,6 +107,7 @@ public class GitLabCiTests : TestBase
         this.environment.SetEnvironmentVariable(GitLabCi.CommitRefNameEnvironmentVariableName, "developer");
 
         this.buildServer.GetCurrentBranch(false).ShouldBe(expected);
+        this.buildServer.GetCurrentTag().ShouldBeNull();
     }
 
     [Test]
