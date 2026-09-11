@@ -9,6 +9,28 @@ To use GitVersion with GitLab CI, either use the [MSBuild
 Task](/docs/usage/msbuild) or put the GitVersion executable in your
 runner's `PATH`.
 
+### Tag pipelines
+
+GitVersion uses GitLab's [`CI_COMMIT_TAG` predefined variable](https://docs.gitlab.com/ci/variables/predefined_variables/)
+to identify the selected tag. This variable contains the tag name, such as
+`1.2.3`, rather than the full `refs/tags/1.2.3` reference. When it is nonempty,
+GitVersion treats the build as a tag pipeline rather than using
+`CI_COMMIT_REF_NAME` as a branch name.
+
+Rerunning a historical tag pipeline after the branch has advanced can leave HEAD
+detached at a commit that is no longer the tip of any branch. If normalization
+cannot attach HEAD to a local branch, it checks the selected local tag. When
+that tag resolves to the checked-out commit, GitVersion keeps HEAD detached and
+avoids a remote lookup that could be ambiguous because GitLab advertises
+`refs/pipelines/*` and `refs/environments/*/deployments/*` at the same commit.
+Existing branch selection takes precedence when a local branch identifies HEAD.
+
+The selected tag must exist locally and resolve to HEAD for this behavior to
+apply. A missing or empty `CI_COMMIT_TAG`, a missing local tag, or a tag pointing
+to a different commit does not bypass normal ref discovery. An unrelated local
+tag does not identify the build. This behavior does not replace the full Git
+history required for version calculation.
+
 ### Merge Request pipelines
 
 In merge request pipelines GitLab sets `CI_MERGE_REQUEST_REF_PATH` (for example
