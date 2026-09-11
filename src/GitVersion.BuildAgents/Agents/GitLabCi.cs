@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using GitVersion.Git;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Agents;
@@ -46,8 +47,7 @@ internal class GitLabCi : BuildAgentBase
     public override string? GetCurrentTag()
     {
         var tagName = this.environment.GetEnvironmentVariable(CommitTagEnvironmentVariableName);
-        // CI_COMMIT_TAG is a tag name, including any literal refs/tags/ prefix in that name.
-        return string.IsNullOrEmpty(tagName) ? null : $"refs/tags/{tagName}";
+        return string.IsNullOrEmpty(tagName) ? null : ReferenceName.FromTagName(tagName).Canonical;
     }
 
     public override bool PreventFetch() => true;
