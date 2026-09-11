@@ -156,6 +156,32 @@ The `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` environment va
 
 ### Configuration changes:
 
+* Configurations upgrading from v5 that use `branches.master` to override the built-in main branch configuration must use `branches.main` in v6. Later v5 releases already used `main` internally but accepted `master` for compatibility; v6 no longer applies that compatibility mapping.
+
+  v5 configuration:
+
+  ```yaml
+  branches:
+    master:
+      increment: Minor
+    feature:
+      source-branches: [master]
+  ```
+
+  Equivalent v6 configuration (flat layout):
+
+  ```yaml
+  branches:
+    main:
+      increment: Minor
+    feature:
+      source-branches: [main]
+  ```
+
+  These are **configuration keys**, not Git branch names. The built-in `main` configuration's default `regex` matches both `main` and `master`, so you do not need to rename your Git branch. In v6, `master` is treated as a separate custom configuration entry; a partial override can fail with `Branch configuration 'master' is missing required configuration 'regex'`.
+
+  Update `source-branches` and any other references to the renamed configuration key, including `is-source-branch-for` where applicable. Preserve other entries in those lists. Do not blindly rename intentionally custom configurations or literal Git branch names and regular expressions. For the v7 nested layout and further guidance, see [configuration migration](https://gitversion.net/docs/reference/configuration#migrating-master-overrides-from-v5).
+
 * The configuration properties `continuous-delivery-fallback-tag`, `tag-number-pattern`, and `tag` were renamed to `continuous-delivery-fallback-label`, `label-number-pattern`, and `label` respectively. `tag-pre-release-weight` and `tag-prefix` remained as they were as they are referring to a Git tag.
 
 * When using a commit message that matches **both** `*-version-bump-message` and `no-bump-message`, there is no increment for that commit. In other words, `no-bump-message` now takes precedence over `*-version-bump-message`.

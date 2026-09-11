@@ -73,6 +73,10 @@ a user configuration that way.
 
 ### Migrating an existing configuration
 
+When upgrading from v5, first [migrate any `master` overrides](#migrating-master-overrides-from-v5)
+to the v6 configuration keys. The layout migration command below does not
+rename branch configuration keys or references to them.
+
 Use the migration command with the default POSIX-style argument parser to
 convert a v6 document without opening a repository. It works on all supported
 operating systems; the legacy v6 argument parser does not support it:
@@ -94,6 +98,62 @@ already nested v7 document produces the same YAML again.
 Migration also relocates `calculation.workflow` from the earlier v7 draft layout
 to the root. Runtime loading accepts only root-level `workflow`; duplicate
 root/nested selectors and `output.workflow` are rejected.
+
+### Migrating master overrides from v5
+
+If your v5 configuration uses `branches.master` to override the built-in main
+branch settings, change that key to `branches.main` for v6. Later v5 releases
+already used `main` internally but accepted `master` for compatibility. v6
+removed that compatibility mapping; see the
+[v6.0.0 breaking changes](https://github.com/GitTools/GitVersion/blob/main/BREAKING_CHANGES.md#v600).
+
+For example, this v5 configuration overrides the main branch increment and
+restricts the feature configuration's source branches:
+
+```yaml
+branches:
+  master:
+    increment: Minor
+  feature:
+    source-branches: [master]
+```
+
+The equivalent v6 configuration uses the flat layout:
+
+```yaml
+branches:
+  main:
+    increment: Minor
+  feature:
+    source-branches: [main]
+```
+
+For v7, use the nested layout (or convert the corrected v6 file with
+`gitversion config migrate`):
+
+```yaml
+calculation:
+  branches:
+    main:
+      increment: Minor
+    feature:
+      source-branches: [main]
+```
+
+`main` here is a **configuration key**, not a requirement to rename your Git
+branch. The built-in `main` configuration's default `regex` matches both Git
+branches `main` and `master`. The overrides above therefore also apply when
+your repository's branch is still named `master`.
+
+In v6 and v7, a `master` configuration entry is a separate custom entry, so a
+partial override can fail with
+`Branch configuration 'master' is missing required configuration 'regex'`.
+Update references to the renamed key in `source-branches` and, where
+applicable, `is-source-branch-for`, preserving the other entries in each list.
+These properties refer to configuration keys. Do not blindly rename
+intentionally custom configurations or literal Git branch names and regular
+expressions. Custom configurations still need their own required settings,
+including `regex` and `source-branches`.
 
 ### Overriding v7 configuration
 
@@ -644,7 +704,10 @@ For information on using format strings in these properties, see
 
 ### branches
 
-The header for all the individual branch configuration.
+The header for all the individual branch configurations. Entries are named
+configuration keys; their `regex` selects the Git branches they apply to.
+The built-in `main` key matches both `main` and `master` by default. For v5
+files that use `branches.master`, see [migration guidance](#migrating-master-overrides-from-v5).
 
 ### increment
 
