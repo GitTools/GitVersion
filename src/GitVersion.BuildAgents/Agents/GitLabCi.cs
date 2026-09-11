@@ -43,6 +43,13 @@ internal class GitLabCi : BuildAgentBase
         return this.environment.GetEnvironmentVariable(CommitRefNameEnvironmentVariableName);
     }
 
+    public override string? GetCurrentTag()
+    {
+        var tagName = this.environment.GetEnvironmentVariable(CommitTagEnvironmentVariableName);
+        // CI_COMMIT_TAG is a tag name, including any literal refs/tags/ prefix in that name.
+        return string.IsNullOrEmpty(tagName) ? null : $"refs/tags/{tagName}";
+    }
+
     public override bool PreventFetch() => true;
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
