@@ -36,7 +36,8 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             Increment = context.Increment,
             ForceIncrement = context.ForceIncrement,
             Label = context.Label,
-            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+            AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+            AlternativeSemVerSource = context.GetAlternativeSemVerSource()
         };
     }
 }

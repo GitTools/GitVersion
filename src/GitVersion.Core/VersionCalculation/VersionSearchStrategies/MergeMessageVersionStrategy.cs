@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation;
 
 /// <summary>
 /// Version is extracted from older commits' merge messages.
-/// BaseVersionSource is the commit where the message was found.
+/// Semantic provenance is the commit containing the message; counting and increment scans are selected independently.
 /// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
 internal sealed class MergeMessageVersionStrategy(ILogger<MergeMessageVersionStrategy> logger, Lazy<GitVersionContext> contextLazy,
@@ -62,6 +62,7 @@ internal sealed class MergeMessageVersionStrategy(ILogger<MergeMessageVersionStr
 
             yield return new BaseVersion($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version)
             {
+                SemVerSource = new SemanticVersionSource($"Merge message '{commit.Message.Trim()}'", mergeMessage.Version, commit, increment),
                 Operator = new()
                 {
                     Increment = increment,

@@ -23,6 +23,8 @@ public sealed record BaseVersionOperator : IBaseVersionIncrement
     /// <summary>Gets or initializes an alternative semantic version that may be used instead when it is greater than the incremented version.</summary>
     public SemanticVersion? AlternativeSemanticVersion { get; init; }
 
+    internal SemanticVersionSource? AlternativeSemVerSource { get; init; }
+
     /// <summary>Returns a human-readable description of this operator including source, increment field, label, and commit anchor.</summary>
     public override string ToString()
     {

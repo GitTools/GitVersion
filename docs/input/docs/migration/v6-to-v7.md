@@ -44,6 +44,16 @@ macOS.
 
 Use `VersionSourceDistance` instead; it has the same value.
 
+## Separate semantic and counting sources
+
+Five additive output variables distinguish semantic provenance from counting: `SemVerSourceSemVer`, `SemVerSourceSha`, `SemVerSourceIncrement`, `CommitCountSourceSha`, and `CommitCountSourceDistance`. They are available in JSON, custom formats, generated version-information files, build-server output, and MSBuild.
+
+Existing `VersionSource*` fields keep their values. `VersionSourceSha` identifies the counting anchor, which may not be the artifact supplying `VersionSourceSemVer`. The legacy `VersionSourceIncrement` can be `None` after candidate resolution even when an increment was applied; new integrations should use `SemVerSourceIncrement`.
+
+For the removed v6 `CommitsSinceVersionSource`, `VersionSourceDistance` remains a compatible replacement; `CommitCountSourceDistance` is the explicit name for the same count. Do not replace that count with a distance from `SemVerSourceSha`: configuration and branch-name sources have no intrinsic SHA. New nullable source fields use JSON null; textual outputs use an empty string.
+
+Update strict JSON property-set consumers for the five added fields. Public source interfaces and existing constructors remain available. This change does not alter candidate ordering, version numbers, or commit counts. See [version variables](/docs/reference/variables) for a concrete example.
+
 ## CLI Arguments - POSIX-style syntax
 
 GitVersion now uses POSIX-style command-line arguments powered by System.CommandLine.

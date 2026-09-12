@@ -4,6 +4,8 @@
   <?define AssemblySemVer="1.2.3.0"?>
   <?define BranchName="develop"?>
   <?define BuildMetaData="5"?>
+  <?define CommitCountSourceDistance="5"?>
+  <?define CommitCountSourceSha="versionSourceSha"?>
   <?define CommitDate="2019-02-20"?>
   <?define CustomVersion=""?>
   <?define EscapedBranchName="develop"?>
@@ -20,6 +22,9 @@
   <?define PreReleaseLabelWithDash=""?>
   <?define PreReleaseNumber=""?>
   <?define SemVer="1.2.3"?>
+  <?define SemVerSourceIncrement="None"?>
+  <?define SemVerSourceSemVer=""?>
+  <?define SemVerSourceSha=""?>
   <?define Sha="commitSha"?>
   <?define ShortSha="commitShortSha"?>
   <?define UncommittedChanges="0"?>

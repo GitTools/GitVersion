@@ -77,7 +77,12 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
             VersionSourceIncrement: semverFormatValues.VersionSourceIncrement,
             VersionSourceSemVer: semverFormatValues.VersionSourceSemVer,
             VersionSourceSha: semverFormatValues.VersionSourceSha,
-            WeightedPreReleaseNumber: semverFormatValues.WeightedPreReleaseNumber);
+            WeightedPreReleaseNumber: semverFormatValues.WeightedPreReleaseNumber)
+        {
+            SemVerSourceSemVer = semverFormatValues.SemVerSourceSemVer,
+            SemVerSourceSha = semverFormatValues.SemVerSourceSha,
+            SemVerSourceIncrement = semverFormatValues.SemVerSourceIncrement
+        };
     }
 
     private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName) where T : notnull

@@ -67,17 +67,20 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
         {
             context.BaseVersionSource = baseVersion.BaseVersionSource;
             context.SemanticVersion = baseVersion.SemanticVersion;
+            context.SemVerSource = baseVersion.GetBaselineSemVerSource();
             return;
         }
 
         if (baseVersion.SemanticVersion != SemanticVersion.Empty)
         {
-            context.AlternativeSemanticVersions.Add(baseVersion.SemanticVersion);
+            context.AddAlternativeSemanticVersion(baseVersion.SemanticVersion, baseVersion.GetBaselineSemVerSource() with { Increment = VersionField.None });
         }
 
         if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
         {
-            context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
+            context.AddAlternativeSemanticVersion(baseVersion.Operator.AlternativeSemanticVersion,
+                baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
+                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion, null, VersionField.None));
         }
     }
 }

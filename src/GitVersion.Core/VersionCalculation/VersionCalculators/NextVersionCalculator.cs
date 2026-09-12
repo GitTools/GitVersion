@@ -86,16 +86,22 @@ internal class NextVersionCalculator(
             notOlderThan: Context.CurrentCommit.When
         ).Where(element => element.Key.When <= Context.CurrentCommit.When
             && !(element.Key.When <= ignore.Before) && !ignore.Shas.Contains(element.Key.Sha)
-        ).SelectMany(element => element).Max()?.Value;
+        ).SelectMany(element => element).Max();
 
         if (alternativeSemanticVersion is not null
-            && semanticVersion.IsLessThan(alternativeSemanticVersion, includePreRelease: false))
+            && semanticVersion.IsLessThan(alternativeSemanticVersion.Value, includePreRelease: false))
         {
             semanticVersion = new SemanticVersion(semanticVersion)
             {
-                Major = alternativeSemanticVersion.Major,
-                Minor = alternativeSemanticVersion.Minor,
-                Patch = alternativeSemanticVersion.Patch
+                Major = alternativeSemanticVersion.Value.Major,
+                Minor = alternativeSemanticVersion.Value.Minor,
+                Patch = alternativeSemanticVersion.Value.Patch,
+                BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
+                {
+                    SemVerSourceSemVer = alternativeSemanticVersion.Value,
+                    SemVerSourceSha = alternativeSemanticVersion.Tag.Commit.Sha,
+                    SemVerSourceIncrement = VersionField.None
+                }
             };
         }
 
@@ -127,7 +133,12 @@ internal class NextVersionCalculator(
             commitShortSha: Context.CurrentCommit.Id.ToString(7),
             commitDate: Context.CurrentCommit.When,
             numberOfUnCommittedChanges: Context.NumberOfUncommittedChanges,
-            versionSourceIncrement: VersionField.None);
+            versionSourceIncrement: VersionField.None)
+        {
+            SemVerSourceSemVer = currentCommitTaggedVersion.Value,
+            SemVerSourceSha = Context.CurrentCommit.Sha,
+            SemVerSourceIncrement = VersionField.None
+        };
 
         var preReleaseTag = currentCommitTaggedVersion.Value.PreReleaseTag;
         if (effectiveConfiguration.DeploymentMode == DeploymentMode.ContinuousDeployment)
@@ -165,7 +176,7 @@ internal class NextVersionCalculator(
         var maxVersion = nextVersions.Max()
             ?? throw new GitVersionException("No base versions determined on the current branch.");
 
-        ICommit? latestBaseVersionSource;
+        ICommit? commitCountSource;
 
         var matchingVersionsOnceIncremented = nextVersions
             .Where(
@@ -175,7 +186,7 @@ internal class NextVersionCalculator(
         if (matchingVersionsOnceIncremented.Length > 1)
         {
             var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
-            latestBaseVersionSource = latestVersion.BaseVersion.BaseVersionSource;
+            commitCountSource = latestVersion.BaseVersion.BaseVersionSource;
             maxVersion = latestVersion;
             this.logger.LogInformation(
                 "Found multiple base versions which will produce the same SemVer ({IncrementedVersion}), " +
@@ -202,20 +213,18 @@ internal class NextVersionCalculator(
             version ??= versions.Where(v => v.BaseVersion.BaseVersionSource == null)
                 .OrderByDescending(v => v.IncrementedVersion)
                 .First();
-            latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
+            commitCountSource = version.BaseVersion.BaseVersionSource;
         }
 
-        BaseVersion calculatedBase = new()
-        {
-            Operand = new BaseVersionOperand
-            {
-                Source = maxVersion.BaseVersion.Source,
-                BaseVersionSource = latestBaseVersionSource,
-                SemanticVersion = maxVersion.BaseVersion.SemanticVersion
-            }
-        };
+        var semVerSource = maxVersion.BaseVersion is BaseVersion candidate
+            ? candidate.GetSemVerSource()
+            : new SemanticVersionSource(maxVersion.BaseVersion.Source, maxVersion.BaseVersion.SemanticVersion,
+                maxVersion.BaseVersion.BaseVersionSource, maxVersion.BaseVersion.Increment);
+        ResolvedBaseVersion calculatedBase = new(maxVersion.BaseVersion, semVerSource, commitCountSource);
 
-        this.logger.LogInformation("Base version used: {BaseVersion}", calculatedBase);
+        this.logger.LogInformation("Semantic version source: {Source}, version {Version}, commit {Commit}",
+            semVerSource.Description, semVerSource.Version, semVerSource.Commit?.Sha ?? "External");
+        this.logger.LogInformation("Commit count source: {Commit}", commitCountSource?.Sha ?? "All reachable history");
         this.logger.LogSeparator();
 
         return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.BranchConfiguration);

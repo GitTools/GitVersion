@@ -34,7 +34,7 @@ internal class GitVersionCacheKeyFactory(
         var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
         var configurationVersionHash = GetHash(ConfigurationVersionSelector.ResolveName());
 
-        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash, configurationVersionHash);
+        var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash, configurationVersionHash, "separate-semver-and-count-sources-v1");
         return new(compositeHash);
     }
 

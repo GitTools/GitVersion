@@ -32,6 +32,21 @@ public record GitVersionVariables(
     string WeightedPreReleaseNumber
 ) : IEnumerable<KeyValuePair<string, string?>>
 {
+    /// <summary>Gets or initializes the semantic baseline supplied by the selected artifact or derivation.</summary>
+    public string? SemVerSourceSemVer { get; init; }
+
+    /// <summary>Gets or initializes the semantic source SHA, or null for configuration and branch-name sources.</summary>
+    public string? SemVerSourceSha { get; init; }
+
+    /// <summary>Gets or initializes the final increment relative to the semantic baseline.</summary>
+    public string? SemVerSourceIncrement { get; init; }
+
+    /// <summary>Gets the commit used as the counting anchor, or null when counting all reachable history.</summary>
+    public string? CommitCountSourceSha => string.IsNullOrEmpty(VersionSourceSha) ? null : VersionSourceSha;
+
+    /// <summary>Gets the count of non-ignored commits beyond the counting anchor.</summary>
+    public string? CommitCountSourceDistance => VersionSourceDistance;
+
     internal static readonly List<string> AvailableVariables =
     [
         nameof(AssemblySemFileVer),
@@ -39,6 +54,8 @@ public record GitVersionVariables(
         nameof(BranchName),
         nameof(BuildMetaData),
         nameof(CommitDate),
+        nameof(CommitCountSourceDistance),
+        nameof(CommitCountSourceSha),
         nameof(CustomVersion),
         nameof(EscapedBranchName),
         nameof(FullBuildMetaData),
@@ -54,6 +71,9 @@ public record GitVersionVariables(
         nameof(PreReleaseLabel),
         nameof(PreReleaseLabelWithDash),
         nameof(SemVer),
+        nameof(SemVerSourceIncrement),
+        nameof(SemVerSourceSemVer),
+        nameof(SemVerSourceSha),
         nameof(Sha),
         nameof(ShortSha),
         nameof(UncommittedChanges),
@@ -64,13 +84,15 @@ public record GitVersionVariables(
         nameof(WeightedPreReleaseNumber)
     ];
 
-    private Dictionary<string, string?> Instance => field ??= new()
+    private Dictionary<string, string?> Instance => new()
     {
         { nameof(AssemblySemFileVer), AssemblySemFileVer },
         { nameof(AssemblySemVer), AssemblySemVer },
         { nameof(BranchName), BranchName },
         { nameof(BuildMetaData), BuildMetaData },
         { nameof(CommitDate), CommitDate },
+        { nameof(CommitCountSourceDistance), CommitCountSourceDistance },
+        { nameof(CommitCountSourceSha), CommitCountSourceSha },
         { nameof(CustomVersion), CustomVersion },
         { nameof(EscapedBranchName), EscapedBranchName },
         { nameof(FullBuildMetaData), FullBuildMetaData },
@@ -86,6 +108,9 @@ public record GitVersionVariables(
         { nameof(PreReleaseLabel), PreReleaseLabel },
         { nameof(PreReleaseLabelWithDash), PreReleaseLabelWithDash },
         { nameof(SemVer), SemVer },
+        { nameof(SemVerSourceIncrement), SemVerSourceIncrement },
+        { nameof(SemVerSourceSemVer), SemVerSourceSemVer },
+        { nameof(SemVerSourceSha), SemVerSourceSha },
         { nameof(Sha), Sha },
         { nameof(ShortSha), ShortSha },
         { nameof(UncommittedChanges), UncommittedChanges },

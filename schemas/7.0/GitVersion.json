@@ -27,10 +27,24 @@
       ]
     },
     "BuildMetaData": {
-      "description": "The build metadata, usually representing number of commits since the VersionSourceSha.",
+      "description": "The build metadata, usually representing number of commits since the CommitCountSourceSha.",
       "type": [
         "null",
         "integer"
+      ]
+    },
+    "CommitCountSourceDistance": {
+      "description": "The number of non-ignored commits reachable from HEAD but not from the counting anchor.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "CommitCountSourceSha": {
+      "description": "The commit used as the counting anchor, or null when counting all reachable history.",
+      "type": [
+        "null",
+        "string"
       ]
     },
     "CommitDate": {
@@ -145,6 +159,27 @@
         "string"
       ]
     },
+    "SemVerSourceIncrement": {
+      "description": "The final increment relative to the semantic baseline: None, Patch, Minor or Major.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "SemVerSourceSemVer": {
+      "description": "The semantic baseline supplied by the selected artifact or derivation.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "SemVerSourceSha": {
+      "description": "The semantic source commit SHA, or null for external sources such as configuration or a branch name.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "Sha": {
       "description": "The SHA of the Git commit.",
       "type": [
@@ -167,7 +202,7 @@
       ]
     },
     "VersionSourceDistance": {
-      "description": "The number of commits since the version source.",
+      "description": "Compatibility alias for CommitCountSourceDistance.",
       "type": [
         "null",
         "integer"
@@ -181,14 +216,14 @@
       ]
     },
     "VersionSourceSemVer": {
-      "description": "The semantic version of the commit used as version source.",
+      "description": "Legacy semantic baseline; it need not come from VersionSourceSha. Prefer SemVerSourceSemVer.",
       "type": [
         "null",
         "string"
       ]
     },
     "VersionSourceSha": {
-      "description": "The SHA of the commit used as version source.",
+      "description": "Compatibility alias for CommitCountSourceSha.",
       "type": [
         "null",
         "string"

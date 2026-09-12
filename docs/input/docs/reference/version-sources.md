@@ -20,11 +20,23 @@ Strategies are selected with the [`strategies` configuration setting](/docs/refe
 
 ## Selection and increments
 
-The order of entries in `strategies` is not a priority list. GitVersion evaluates candidates and selects a next version with a corresponding version source. Fallback is deferred until other strategies have been considered.
+The order of entries in `strategies` is not a priority list. GitVersion evaluates candidates and selects a next version, preserving its semantic source separately from the commit-count anchor. Fallback is deferred until other strategies have been considered.
 
 Do not interpret a source as “always increments” or “never increments” without the relevant branch configuration. Tagged commits, merge handling, increment inheritance, and deployment mode affect the outcome.
 
 For the sequence of operations, see [how versions are calculated](/docs/learn/how-it-works).
+
+## Semantic source and commit-count source
+
+The **semantic source** supplies the baseline version and its final increment. Tags and merge messages have associated commits. Configuration values and branch names are external sources: they do not intrinsically belong to a commit. Mainline can fold several operations into a derived baseline while retaining its source provenance. The source is not a detector for every commit that contains a version-bump message.
+
+The **commit-count source** anchors the count of commits reachable from the current commit, excluding commits reachable from the anchor and applying the configured ignore filters. This is a graph count, not first-parent distance or a count of builds. A null anchor counts all reachable, non-ignored history.
+
+GitVersion compares candidates by their incremented semantic version. For multiple equal candidates with source commits, it selects the latest source timestamp. Otherwise the counting search prefers a commit-backed candidate by descending incremented version and then source timestamp. When the winning version is stable, pre-release base candidates are excluded from this counting search. Only when no commit-backed candidate remains does it use a null anchor. The order in `strategies` does not establish precedence.
+
+For example, a `1.0.0` tag can remain the counting anchor while configuration or the branch name `release/5.0.0` supplies a `5.0.0` baseline. Replacing that anchor with the external semantic source would reset the meaning of the count. A later tag that raises the numeric version is reflected in semantic provenance without changing the selected counting anchor.
+
+See the `SemVerSource*` and `CommitCountSource*` [output variables](/docs/reference/variables). The legacy `VersionSource*` fields retain their existing values for compatibility; they mix the two concepts.
 
 ## Existing source topics
 

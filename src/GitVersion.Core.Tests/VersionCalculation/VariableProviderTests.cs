@@ -444,4 +444,62 @@ public class VariableProviderTests : TestBase
 
         variables.InformationalVersion.ShouldBe("1.2.3-0042");
     }
+
+    [TestCase(null)]
+    [TestCase("semantic-source-sha")]
+    public void SeparateSourcesSurviveFormattingEnumerationAndJson(string? semanticSourceSha)
+    {
+        var semanticVersion = new SemanticVersion(5, 0, 0)
+        {
+            BuildMetaData = new()
+            {
+                SemVerSourceSemVer = new(5, 0, 0),
+                SemVerSourceSha = semanticSourceSha,
+                SemVerSourceIncrement = VersionField.Minor,
+                VersionSourceSemVer = new(1, 0, 0),
+                VersionSourceSha = "count-source-sha",
+                VersionSourceDistance = 2,
+                VersionSourceIncrement = VersionField.None,
+                Sha = "head-sha"
+            }
+        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyInformationalFormat("{SemVerSourceSemVer}-{SemVerSourceIncrement}+{CommitCountSourceDistance:000}")
+            .Build();
+
+        var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, configuration.GetEffectiveConfiguration());
+        variables.InformationalVersion.ShouldBe("5.0.0-Minor+002");
+        variables.TryGetValue("SemVerSourceSha", out var enumeratedSource).ShouldBeTrue();
+        enumeratedSource.ShouldBe(semanticSourceSha);
+        variables.Single(pair => pair.Key == "CommitCountSourceSha").Value.ShouldBe("count-source-sha");
+
+        var json = variables.ToJson();
+        using var document = System.Text.Json.JsonDocument.Parse(json);
+        document.RootElement.GetProperty("CommitCountSourceDistance").GetInt64().ShouldBe(2);
+        document.RootElement.GetProperty("SemVerSourceSha").GetString().ShouldBe(semanticSourceSha);
+        var roundTrip = json.ToGitVersionVariables();
+        roundTrip.SemVerSourceSemVer.ShouldBe("5.0.0");
+        roundTrip.SemVerSourceSha.ShouldBe(semanticSourceSha);
+        roundTrip.SemVerSourceIncrement.ShouldBe("Minor");
+        roundTrip.CommitCountSourceSha.ShouldBe("count-source-sha");
+        roundTrip.CommitCountSourceDistance.ShouldBe("2");
+        roundTrip.VersionSourceSemVer.ShouldBe("1.0.0");
+        roundTrip.VersionSourceIncrement.ShouldBe("None");
+        roundTrip.Sha.ShouldBe("head-sha");
+    }
+
+    [Test]
+    public void CopyingEnumeratedVariablesDoesNotReuseOldSourceValues()
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var original = this.variableProvider.GetVariablesFor(new SemanticVersion(1, 0, 0), configuration, configuration.GetEffectiveConfiguration());
+        original.TryGetValue("SemVerSourceSha", out _).ShouldBeTrue();
+
+        var copy = original with { SemVerSourceSha = "updated-source", VersionSourceDistance = "3" };
+
+        copy.TryGetValue("SemVerSourceSha", out var source).ShouldBeTrue();
+        source.ShouldBe("updated-source");
+        copy.Single(pair => pair.Key == "CommitCountSourceDistance").Value.ShouldBe("3");
+        original.SemVerSourceSha.ShouldBeNull();
+    }
 }

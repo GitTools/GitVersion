@@ -35,6 +35,7 @@ internal sealed class FirstCommitOnRelease : IIncrementer
             yield break;
         }
 
-        context.AlternativeSemanticVersions.Add(element.Value);
+        context.AddAlternativeSemanticVersion(element.Value,
+                new SemanticVersionSource("Version in branch name", element.Value, null, VersionField.None));
     }
 }
