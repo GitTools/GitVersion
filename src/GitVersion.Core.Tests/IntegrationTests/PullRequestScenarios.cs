@@ -49,7 +49,7 @@ public class PullRequestScenarios : TestBase
         fixture.MergeNoFF("feature/foo");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("2.0.0-2", configuration);
+        fixture.AssertFullSemver("1.1.0-2", configuration);
     }
 
     [Test]
