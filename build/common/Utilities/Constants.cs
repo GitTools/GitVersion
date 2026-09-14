@@ -7,7 +7,10 @@ public static class Constants
     public const string Repository = "GitVersion";
 
     public const string DotnetLtsLatest = "10.0";
-    public static readonly string[] DotnetVersions = [DotnetLtsLatest];
+    public static readonly string[] DotnetVersions = [DotnetLtsLatest, "11.0"];
+
+    // Add .NET 11 after GitTools SDK/runtime base images are available for the supported distros.
+    public static readonly string[] DockerDotnetVersions = [DotnetLtsLatest];
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
