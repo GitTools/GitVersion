@@ -116,7 +116,7 @@ jobs:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
       docker_distros: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && needs.prepare.outputs.docker_distros || '["ubuntu.24.04"]' }}
-      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      dotnet_versions: ${{ needs.prepare.outputs.docker_dotnet_versions }}
 
   docker_linux_images:
     needs: [ prepare, build, publish_flags ]
@@ -139,7 +139,7 @@ jobs:
       runner: ${{ matrix.runner }}
       arch: ${{ matrix.arch }}
       docker_distros: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && needs.prepare.outputs.docker_distros || '["ubuntu.24.04"]' }}
-      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      dotnet_versions: ${{ needs.prepare.outputs.docker_dotnet_versions }}
       publish_images: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
       dockerhub_oidc_connection_id: ${{ vars.DOCKERHUB_OIDC_CONNECTIONID }}
 
@@ -154,7 +154,7 @@ jobs:
     uses: $/.github/workflows/_docker_manifests.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       docker_distros: ${{ needs.prepare.outputs.docker_distros }}
-      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      dotnet_versions: ${{ needs.prepare.outputs.docker_dotnet_versions }}
       publish_manifests: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
       dockerhub_oidc_connection_id: ${{ vars.DOCKERHUB_OIDC_CONNECTIONID }}
 

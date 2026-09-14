@@ -29,12 +29,15 @@ public class PackageNuget : FrostingTask<BuildContext>
         settings.ArgumentCustomization = arg => arg.Append("-p:PackAsTool=true").Append("-p:BuildInParallel=false");
         context.DotNetPack("./src/GitVersion.App", settings);
 
-        context.DotNetPublish("./src/GitVersion.App", new DotNetPublishSettings
+        foreach (var version in Constants.DotnetVersions)
         {
-            Configuration = context.MsBuildConfiguration,
-            Framework = $"net{Constants.DotnetLtsLatest}",
-            MSBuildSettings = context.MsBuildSettings
-        });
+            context.DotNetPublish("./src/GitVersion.App", new DotNetPublishSettings
+            {
+                Configuration = context.MsBuildConfiguration,
+                Framework = $"net{version}",
+                MSBuildSettings = context.MsBuildSettings
+            });
+        }
 
         settings.ArgumentCustomization = arg => arg.Append("-p:IsPackaging=true");
         context.DotNetPack("./src/GitVersion.MsBuild", settings);
