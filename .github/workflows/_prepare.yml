@@ -7,6 +7,9 @@ on:
       dotnet_versions:
         description: 'List of .NET versions'
         value: ${{ jobs.set_matrix.outputs.dotnet_versions }}
+      docker_dotnet_versions:
+        description: 'List of .NET versions with Docker base images'
+        value: ${{ jobs.set_matrix.outputs.docker_dotnet_versions }}
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -56,6 +59,7 @@ jobs:
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
+          dotnet-version: '10.0.x'
 
       - name: '[Build]'
         if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -71,6 +75,7 @@ jobs:
     outputs:
       docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
       dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}
+      docker_dotnet_versions: ${{ steps.set_matrix.outputs.docker_dotnet_versions }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
