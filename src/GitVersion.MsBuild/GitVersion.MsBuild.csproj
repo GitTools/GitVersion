@@ -39,6 +39,7 @@
         <None Include="msbuild/buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
 
         <None Include="$(ExePublishPath)/net10.0/publish/**/*;$(BinPath)/net10.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net10.0" />
+        <None Include="$(ExePublishPath)/net11.0/publish/**/*;$(BinPath)/net11.0/GitVersion.MsBuild.*" Pack="true" PackagePath="tools/net11.0" />
     </ItemGroup>
 
 </Project>

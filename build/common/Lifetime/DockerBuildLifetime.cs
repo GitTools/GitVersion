@@ -25,7 +25,7 @@ public abstract class DockerBuildLifetime<TContext> : BuildLifetimeBase<TContext
 
         var versions = dotnetVersion switch
         {
-            _ when dotnetVersion.IsNullOrWhiteSpace() => Constants.DotnetVersions,
+            _ when dotnetVersion.IsNullOrWhiteSpace() => Constants.DockerDotnetVersions,
             _ when dotnetVersion.IsEqualInvariant("lts-latest") => [Constants.DotnetLtsLatest],
             _ => [dotnetVersion]
         };
@@ -60,4 +60,3 @@ public abstract class DockerBuildLifetime<TContext> : BuildLifetimeBase<TContext
         context.EndGroup();
     }
 }
-
