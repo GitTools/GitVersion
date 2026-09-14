@@ -9,6 +9,7 @@
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
 
         <!-- Validates the target framework and sets the GitVersionTargetFramework property to the target framework that is compatible with the target framework of the project -->
+        <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == '' and $([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net11.0')) == 'true'">net11.0</GitVersionTargetFramework>
         <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == '' and $([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0')) == 'true'">net10.0</GitVersionTargetFramework>
         <!-- Fall back to net10.0 for older target frameworks; the CLI rolls forward to the installed .NET 10 runtime. -->
         <GitVersionTargetFramework Condition="'$(GitVersionTargetFramework)' == ''">net10.0</GitVersionTargetFramework>

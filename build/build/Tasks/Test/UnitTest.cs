@@ -65,7 +65,7 @@ public class UnitTest : FrostingTask<BuildContext>
         };
         settings.MSBuildSettings.SetContinuousIntegrationBuild(false);
 
-        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine(projectName));
+        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine($"net{framework}").Combine(projectName));
 
         settings.WithArgumentCustomization(args => args
             .Append("--report-spekt-junit")

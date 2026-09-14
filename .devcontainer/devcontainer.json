@@ -4,7 +4,7 @@
     "name": "GitVersion",
     "build": {
         "dockerfile": "Dockerfile",
-        "context": "."
+        "context": ".."
     },
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2.6.0": {
