@@ -9,9 +9,6 @@ public static class Constants
     public const string DotnetLtsLatest = "10.0";
     public static readonly string[] DotnetVersions = [DotnetLtsLatest, "11.0"];
 
-    // Add .NET 11 after GitTools SDK/runtime base images are available for the supported distros.
-    public static readonly string[] DockerDotnetVersions = [DotnetLtsLatest];
-
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
 
@@ -28,10 +25,10 @@ public static class Constants
     public static readonly string[] DockerRegistries = [DockerHub, GitHub];
 
     public const string AlpineLatest = "alpine.3.23";
-    public const string CentosLatest = "centos.stream.9";
-    public const string DebianLatest = "debian.12";
-    public const string FedoraLatest = "fedora.43";
-    public const string UbuntuLatest = "ubuntu.24.04";
+    public const string CentosLatest = "centos.stream.10";
+    public const string DebianLatest = "debian.13";
+    public const string FedoraLatest = "fedora.44";
+    public const string UbuntuLatest = "ubuntu.26.04";
 
     public const string DockerDistroLatest = UbuntuLatest;
 
@@ -42,7 +39,7 @@ public static class Constants
         DebianLatest,
         FedoraLatest,
         UbuntuLatest,
-        "ubuntu.22.04"
+        "ubuntu.24.04"
     ];
     public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
     public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";

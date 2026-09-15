@@ -7,9 +7,6 @@ on:
       dotnet_versions:
         description: 'List of .NET versions'
         value: ${{ jobs.set_matrix.outputs.dotnet_versions }}
-      docker_dotnet_versions:
-        description: 'List of .NET versions with Docker base images'
-        value: ${{ jobs.set_matrix.outputs.docker_dotnet_versions }}
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -75,7 +72,6 @@ jobs:
     outputs:
       docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
       dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}
-      docker_dotnet_versions: ${{ steps.set_matrix.outputs.docker_dotnet_versions }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
