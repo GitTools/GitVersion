@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 
 namespace GitVersion.Git;
@@ -6,7 +7,7 @@ internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
     private readonly GitRepositoryCache repositoryCache;
-    private Lazy<IReadOnlyCollection<IRemote>> remotes = null!;
+    private Lazy<IReadOnlyCollection<IRemote>> remotes;
 
     internal RemoteCollection(LibGit2Sharp.RemoteCollection collection, GitRepositoryCache repositoryCache)
     {
@@ -42,6 +43,7 @@ internal sealed class RemoteCollection : IRemoteCollection
             InitializeRemotesLazy();
         });
 
+    [MemberNotNull(nameof(remotes))]
     private void InitializeRemotesLazy()
         => this.remotes = new Lazy<IReadOnlyCollection<IRemote>>(() => [.. this.innerCollection.Select(this.repositoryCache.GetOrWrap)]);
 }
