@@ -67,6 +67,25 @@ jobs:
           restore-keys: |
             nuget-${{ runner.os }}-${{ runner.arch }}-
 
+      - name: Verify effective language versions
+        shell: pwsh
+        run: |
+          $projects = @(
+            @{ Path = 'src/GitVersion.App/GitVersion.App.csproj'; Framework = 'net10.0' },
+            @{ Path = 'src/GitVersion.App/GitVersion.App.csproj'; Framework = 'net11.0' },
+            @{ Path = 'new-cli/GitVersion.Cli/GitVersion.Cli.csproj'; Framework = 'net10.0' },
+            @{ Path = 'new-cli/GitVersion.Cli.Generator/GitVersion.Cli.Generator.csproj'; Framework = 'netstandard2.0' },
+            @{ Path = 'build/build/build.csproj'; Framework = 'net10.0' },
+            @{ Path = 'build/docs/docs.csproj'; Framework = 'net10.0' }
+          )
+          foreach ($project in $projects) {
+            $language = dotnet msbuild $project.Path "-p:TargetFramework=$($project.Framework)" -getProperty:LangVersion -nologo
+            if ($LASTEXITCODE -ne 0 -or "$language".Trim() -ne 'latest') {
+              throw "Unexpected language version for $($project.Path) / $($project.Framework): $language"
+            }
+            Write-Host "$($project.Path) / $($project.Framework): C# $language"
+          }
+
       - name: Build 'new-cli' solution
         run: dotnet build ./new-cli
 
