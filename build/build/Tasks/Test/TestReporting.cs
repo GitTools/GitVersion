@@ -4,11 +4,15 @@ internal static class TestReporting
 {
     extension(ProcessArgumentBuilder args)
     {
-        internal ProcessArgumentBuilder AppendArguments(DirectoryPath resultsDirectory) => args
-            .Append("--report-spekt-junit")
-            .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
-            .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath)
-            .Append("--coverlet")
+        internal ProcessArgumentBuilder AppendArguments(DirectoryPath resultsDirectory, bool collectCoverage)
+        {
+            args.Append("--report-spekt-junit")
+                .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
+                .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath);
+            return collectCoverage ? args.AppendCoverageArguments() : args;
+        }
+
+        private ProcessArgumentBuilder AppendCoverageArguments() => args.Append("--coverlet")
             .Append("--coverlet-output-format").AppendQuoted("cobertura")
             .Append("--coverlet-exclude").AppendQuoted("[GitVersion*.Tests]*")
             .Append("--coverlet-exclude").AppendQuoted("[GitVersion.Testing]*")
