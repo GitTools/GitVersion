@@ -51,6 +51,9 @@ public sealed class ValidateDocsParser : FrostingTask<BuildContext>
             Directory.CreateDirectory(assemblies);
             var sourcePath = Path.Combine(project, "Example.cs");
             File.WriteAllText(sourcePath, source);
+            var formats = Path.Combine(project, "GitVersionInfo", "AddFormats");
+            Directory.CreateDirectory(formats);
+            File.WriteAllText(Path.Combine(formats, "GitVersionInformation.cs"), "public const string {0} = \"{1}\";");
             var tree = DocsApi.ParseSource(source, sourcePath);
             var references = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator)
                 .Select(p => MetadataReference.CreateFromFile(p));
