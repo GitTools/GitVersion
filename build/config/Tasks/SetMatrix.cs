@@ -10,13 +10,11 @@ public class SetMatrix : FrostingTask<BuildContext>
         {
             context.GitHubActions().Commands.SetOutputParameter("docker_distros", context.SerializeJson(Constants.DockerDistros));
             context.GitHubActions().Commands.SetOutputParameter("dotnet_versions", context.SerializeJson(Constants.DotnetVersions));
-            context.GitHubActions().Commands.SetOutputParameter("docker_dotnet_versions", context.SerializeJson(Constants.DockerDotnetVersions));
         }
         else
         {
             context.Information("Docker Distros: {0}", context.SerializeJson(Constants.DockerDistros));
             context.Information("Dotnet Versions: {0}", context.SerializeJson(Constants.DotnetVersions));
-            context.Information("Docker Dotnet Versions: {0}", context.SerializeJson(Constants.DockerDotnetVersions));
         }
     }
 }

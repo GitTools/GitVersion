@@ -6,7 +6,7 @@ inputs:
     default: 'amd64'
   docker_distro:
     description: 'Linux Distro'
-    default: 'debian.12'
+    default: 'debian.13'
   dotnet_version:
     description: '.net version'
     default: '8.0'
