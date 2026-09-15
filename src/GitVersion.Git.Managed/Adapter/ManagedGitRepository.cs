@@ -5,7 +5,7 @@ namespace GitVersion.Git;
 
 internal sealed partial class ManagedGitRepository
 {
-    private readonly object sessionLock = new();
+    private readonly System.Threading.Lock sessionLock = new();
     private readonly List<ManagedRepositorySession> retiredSessions = [];
     private Lazy<ManagedRepositorySession>? sessionLazy;
     private string? gitDirectory;
