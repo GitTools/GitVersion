@@ -234,7 +234,7 @@ public record TestCommandSettings : GitVersionSettings
 
 #pragma warning disable S2699 // RunAsync verifies diagnostics and all expected generated sources; Sonar does not collect NOSONAR lines for test projects.
     [Test]
-    public async Task ValidateGeneratedCommandImplementation()
+    public async Task ValidateGeneratedCommandImplementationForCSharp14Net10Consumer()
     {
         var generatorType = typeof(SystemCommandlineGenerator);
         var encoding = Encoding.UTF8;
@@ -283,7 +283,7 @@ public record TestCommandSettings : GitVersionSettings
                 compilationOptions = compilationOptions.WithNullableContextOptions(NullableContextOptions.Enable);
 
                 return project
-                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.Latest))
+                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.CSharp14))
                     .WithCompilationOptions(compilationOptions)
                     .Solution;
             });
