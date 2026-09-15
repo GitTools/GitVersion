@@ -96,10 +96,19 @@ public class UnitTest : FrostingTask<BuildContext>
             Paths.TestOutput.Combine(backend).Combine($"attempt-{attempt}").FullPath));
         var resultsDirectory = context.MakeAbsolute(root.Combine(project.GetFilenameWithoutExtension().FullPath).Combine($"net{framework}"));
         context.CleanDirectory(resultsDirectory);
-        var args = new ProcessArgumentBuilder().AppendArguments(resultsDirectory);
+        // CI publishes coverage from the LTS target; other targets validate runtime compatibility.
+        var collectCoverage = framework == Constants.DotnetLtsLatest;
+        var args = new ProcessArgumentBuilder().AppendArguments(resultsDirectory, collectCoverage);
         if (context.BuildSystem().IsRunningOnGitHubActions)
         {
             args = args.AppendGitHubArguments();
+        }
+
+        if (project.GetFilenameWithoutExtension().FullPath == "GitVersion.App.Tests")
+        {
+            args.Append("--diagnostic")
+                .Append("--diagnostic-output-directory").AppendQuoted(resultsDirectory.FullPath)
+                .Append("--diagnostic-verbosity").Append("Trace");
         }
 
         // Direct execution preserves annotation commands that SDK 10.0.401's dotnet test suppressed.
@@ -114,9 +123,9 @@ public class UnitTest : FrostingTask<BuildContext>
             }
         });
         // Coverlet can report an instrumentation error while MTP still returns success.
-        // A green test job must include both machine-readable results and coverage.
+        // A green test job must include machine-readable results and coverage when enabled.
         if (exitCode == 0 && (!context.FileExists(resultsDirectory.CombineWithFilePath("results.xml"))
-            || !context.GetFiles($"{resultsDirectory.FullPath}/*cobertura*.xml").Any()))
+            || (collectCoverage && !context.GetFiles($"{resultsDirectory.FullPath}/*cobertura*.xml").Any())))
         {
             throw new CakeException($"Missing JUnit or coverage report for {project} / net{framework}.");
         }
