@@ -11,7 +11,6 @@ internal sealed class GitCommit
 {
     private GitSignature? author;
     private GitSignature? committer;
-    private string? message;
 
     /// <summary>
     /// Gets the <see cref="GitObjectId"/> which uniquely identifies this commit.
@@ -67,7 +66,7 @@ internal sealed class GitCommit
     /// <summary>
     /// Gets the full commit message, decoded on first access honoring the commit's <c>encoding</c> header.
     /// </summary>
-    public string Message => this.message ??= GitTextDecoder.Decode(RawMessage, EncodingName);
+    public string Message => field ??= GitTextDecoder.Decode(RawMessage, EncodingName);
 
     /// <summary>
     /// Creates a copy of this commit with no parents. Used to apply shallow-clone grafts:
