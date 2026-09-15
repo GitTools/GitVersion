@@ -37,18 +37,17 @@ smokes do not establish full cross-platform support. All-RID package validation
 remains open after NuGet runtime downloads repeatedly timed out; the shipped RID
 list has not been narrowed.
 
-## Docker staging
+## Docker matrix
 
-`Constants.DockerDotnetVersions` is separate from `Constants.DotnetVersions` so
-adding a test or package target does not implicitly publish unsupported images.
-Docker images and container-based artifact validation remain on .NET 10.
+[GitTools/build-images #104](https://github.com/GitTools/build-images/pull/104)
+published the .NET 10 and .NET 11 SDK/runtime base images for amd64 and arm64.
+Docker images and container-based artifact validation now use the shared
+`Constants.DotnetVersions` matrix for both frameworks.
 
-Before adding .NET 11 Docker jobs, validate GitTools SDK and runtime base images
-on both architectures and every selected distribution. Microsoft's current
-[.NET 11 supported OS list](https://github.com/dotnet/core/blob/main/release-notes/11.0/supported-os.md)
-lists Debian 13, while the existing matrix includes Debian 12. Use an explicit
-framework-specific distro matrix or omit that combination; do not silently
-remove the retained .NET 10 images.
+The distro matrix is Alpine 3.23, CentOS Stream 10, Debian 13, Fedora 44, and
+Ubuntu 26.04/24.04 LTS. GitVersion image validation against these published base
+images remains part of CI; base-image publication alone does not validate the
+GitVersion packages or their runtime behavior.
 
 ## Before stable release
 
