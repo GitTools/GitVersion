@@ -17,7 +17,7 @@ public class DotnetArgumentAttribute()
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DockerDotnetArgumentAttribute()
-    : TaskArgumentAttribute(Arguments.DotnetVersion, Constants.DockerDotnetVersions);
+    : TaskArgumentAttribute(Arguments.DotnetVersion, Constants.DotnetVersions);
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class DockerDistroArgumentAttribute()
