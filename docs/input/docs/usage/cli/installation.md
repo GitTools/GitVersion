@@ -33,8 +33,7 @@ ARM64, Linux x64 and ARM64 (including musl), and Apple Silicon macOS.
 The .NET 11 target currently uses RC1 and requires a compatible .NET 11 runtime.
 The .NET 10 target remains available. Standalone self-contained archives continue
 to use .NET 10; the Docker build matrix covers both .NET 10 and .NET 11 using the
-published GitTools base images. See [the .NET 11 support draft](/docs/design/dotnet-11-support)
-for the remaining release checks.
+published GitTools base images. .NET 11 support remains under validation until GA.
 
 To run call
 
@@ -135,7 +134,7 @@ without installing any other dependencies. To use the Docker image, execute
 the following:
 
 ```shell
-docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-debian.13 /repo
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-ubuntu.26.04 /repo
 ```
 
 The important arguments here are:
