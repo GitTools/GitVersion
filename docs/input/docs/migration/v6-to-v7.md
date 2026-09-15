@@ -47,7 +47,24 @@ GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-ar
 
 ## .NET 8 and .NET 9 target frameworks removed
 
-GitVersion v7 targets .NET 10 only. Install the .NET 10 runtime to use the CLI, global tool, or `GitVersion.MsBuild`. The MSBuild integration can still run in projects targeting earlier frameworks through its `dotnet exec --roll-forward Major` launcher, provided .NET 10 is installed.
+GitVersion v7 targets .NET 10 and .NET 11. Install the runtime matching the CLI or global-tool target framework. Standalone archives continue to use .NET 10.
+
+`GitVersion.MsBuild` selects its .NET 11 tools for compatible projects and .NET 10 tools otherwise. Use an MSBuild host that supports the selected task assembly. Projects targeting earlier frameworks remain supported: the CLI launcher uses `dotnet exec --roll-forward Major`, but this does not change the runtime required by the MSBuild host. See [MSBuild usage](/docs/usage/msbuild) for details.
+
+## Docker distribution versions updated
+
+The default Docker distribution is now Ubuntu 26.04. Update pinned distribution tags using this mapping:
+
+| Previous distribution | Replacement |
+| --- | --- |
+| Ubuntu 22.04 | Ubuntu 26.04 |
+| CentOS Stream 9 | CentOS Stream 10 |
+| Debian 12 | Debian 13 |
+| Fedora 43 | Fedora 44 |
+
+Ubuntu 24.04 and Alpine 3.23 remain available. Images are built for .NET 10 and .NET 11. For example, use `gittools/gitversion:latest-ubuntu.26.04` for the default Ubuntu distribution.
+
+Existing images for retired distributions are not deleted, but will no longer receive new GitVersion builds.
 
 ## RID-specific global-tool packages
 
