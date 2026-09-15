@@ -92,6 +92,9 @@ jobs:
         shell: pwsh
         run: dotnet run/build.dll --target=BuildPrepare
 
+      - name: Validate C# docs parser compatibility
+        run: dotnet run/docs.dll --target=ValidateDocsParser
+
   validate:
     name: Validates Html
     needs: [ prepare ]
