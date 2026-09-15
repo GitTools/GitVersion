@@ -92,7 +92,7 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
 
     private static object? ChangeType(object? value, Type type)
     {
-        if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Nullable<>))
+        if (Nullable.GetUnderlyingType(type) is not { } underlyingType)
         {
             return Convert.ChangeType(value, type);
         }
@@ -102,8 +102,6 @@ internal class VersionVariableSerializer(IFileSystem fileSystem) : IVersionVaria
             return null;
         }
 
-        type = Nullable.GetUnderlyingType(type)!;
-
-        return Convert.ChangeType(value, type);
+        return Convert.ChangeType(value, underlyingType);
     }
 }

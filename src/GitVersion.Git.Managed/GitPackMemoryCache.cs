@@ -27,7 +27,7 @@ internal sealed class GitPackMemoryCache : GitPackCache
     // hot delta-base entries while releasing objects no walk will read again.
     private const long MaxTotalSize = 256 * 1024 * 1024;
 
-    private readonly object syncRoot = new();
+    private readonly Lock syncRoot = new();
     private readonly Dictionary<long, LinkedListNode<CacheEntry>> cache = [];
     private readonly LinkedList<CacheEntry> recency = new();
     private long totalSize;

@@ -9,21 +9,12 @@ namespace GitVersion.Git;
 /// Each instance maintains its own position, so multiple streams can read the same file
 /// concurrently without interfering with each other. The handle is not owned by this stream.
 /// </summary>
-internal sealed class RandomAccessStream : Stream
+/// <param name="handle">The handle of the file to read. Remains owned by the caller.</param>
+/// <param name="length">The length of the file.</param>
+internal sealed class RandomAccessStream(SafeFileHandle handle, long length) : Stream
 {
-    private readonly SafeFileHandle handle;
-    private readonly long length;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RandomAccessStream"/> class.
-    /// </summary>
-    /// <param name="handle">The handle of the file to read. Remains owned by the caller.</param>
-    /// <param name="length">The length of the file.</param>
-    public RandomAccessStream(SafeFileHandle handle, long length)
-    {
-        this.handle = handle ?? throw new ArgumentNullException(nameof(handle));
-        this.length = length;
-    }
+    private readonly SafeFileHandle handle = handle ?? throw new ArgumentNullException(nameof(handle));
+    private readonly long length = length;
 
     /// <inheritdoc/>
     public override bool CanRead => true;

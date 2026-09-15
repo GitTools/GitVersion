@@ -13,7 +13,7 @@ public class CodeFormat : FrostingTask<BuildContext>
         context.DotNetFormat(Paths.Build.FullPath);
         context.DotNetFormat(Paths.Src.FullPath, new DotNetFormatSettings
         {
-            Exclude = new List<string> { " **/AddFormats/" }
+            Exclude = [" **/AddFormats/"]
         });
     }
 }

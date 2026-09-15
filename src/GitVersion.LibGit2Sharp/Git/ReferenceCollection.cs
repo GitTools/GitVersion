@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 
 namespace GitVersion.Git;
@@ -6,7 +7,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
 {
     private readonly LibGit2Sharp.ReferenceCollection innerCollection;
     private readonly GitRepositoryCache repositoryCache;
-    private Lazy<IReadOnlyCollection<IReference>> references = null!;
+    private Lazy<IReadOnlyCollection<IReference>> references;
 
     internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection, GitRepositoryCache repositoryCache)
     {
@@ -49,6 +50,7 @@ internal sealed class ReferenceCollection : IReferenceCollection
             InitializeReferencesLazy();
         });
 
+    [MemberNotNull(nameof(references))]
     private void InitializeReferencesLazy()
         => this.references = new Lazy<IReadOnlyCollection<IReference>>(() => [.. this.innerCollection.Select(this.repositoryCache.GetOrWrap)]);
 }
