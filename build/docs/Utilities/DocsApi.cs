@@ -39,7 +39,7 @@ public static class DocsApi
         }
 
         var trees = Directory.GetFiles(project, "*.cs", SearchOption.AllDirectories)
-            .Where(p => !Path.GetRelativePath(project, p).Split(Path.DirectorySeparatorChar).Any(s => s is "bin" or "obj" or "Templates"))
+            .Where(p => !Path.GetRelativePath(project, p).Split(Path.DirectorySeparatorChar).Any(s => s is "bin" or "obj" or "Templates" or "AddFormats"))
             .Select(p => ParseSource(File.ReadAllText(p), p)).ToArray();
         var compilation = CSharpCompilation.Create(name, trees, references.Where(r => r != assembly),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
