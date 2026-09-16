@@ -6,11 +6,11 @@ internal sealed class ContextualBranchCollection(IBranchCollection branches, Con
 {
     public IBranch? this[string name] => this.FirstOrDefault(branch => branch.Name.EquivalentTo(name));
 
-    public IEnumerator<IBranch> GetEnumerator() => branches.Where(branch => !branch.Equals(context)).Prepend(context).GetEnumerator();
+    public IEnumerator<IBranch> GetEnumerator() => branches.Where(branch => branch.Name.Canonical != context.Name.Canonical).Prepend(context).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude)
-        => this.Except(branchesToExclude);
+        => this.ExceptBy(branchesToExclude.Select(branch => branch.Name.Canonical), branch => branch.Name.Canonical);
 
     public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName)
     {

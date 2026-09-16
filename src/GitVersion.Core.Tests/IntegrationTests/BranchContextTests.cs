@@ -309,6 +309,14 @@ public class BranchContextTests : TestBase
             var branch = services.GetRequiredService<Lazy<GitVersionContext>>().Value.CurrentBranch;
             var store = services.GetRequiredService<IRepositoryStore>();
             store.FindBranch(branch.Name).ShouldBeSameAs(branch);
+            var physicalBranch = services.GetRequiredService<IGitRepository>().Branches[branch.Name.Canonical].ShouldNotBeNull();
+            store.ExcludingBranches([]).Single(candidate => candidate.Name.Canonical == branch.Name.Canonical).ShouldBeSameAs(branch);
+            foreach (var excluded in new[] { branch, physicalBranch })
+            {
+                var remaining = store.ExcludingBranches([excluded]).ToArray();
+                remaining.ShouldNotContain(candidate => candidate.Name.Canonical == branch.Name.Canonical);
+                remaining.ShouldContain(candidate => candidate.Name.Friendly == MainBranch);
+            }
             store.GetCommitsReacheableFrom(branch.Tip.ShouldNotBeNull(), branch).Single().Sha.ShouldBe(head.Sha);
             services.GetRequiredService<IGitRepository>().Commits.QueryBy(new CommitFilter
             {
