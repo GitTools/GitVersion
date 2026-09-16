@@ -34,7 +34,7 @@ public class BranchContextCommandTests
                 args.AddRange(["--branch", "main"]);
             }
 
-            var result = await program.Run([.. args]);
+            var result = await program.Run(args: [.. args]);
 
             result.ExitCode.ShouldBe(0, result.Log);
             var variables = result.OutputVariables.ShouldNotBeNull();
