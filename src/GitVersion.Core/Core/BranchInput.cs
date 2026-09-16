@@ -1,4 +1,5 @@
 using GitVersion.Agents;
+using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion;
@@ -16,12 +17,8 @@ internal sealed class BranchInput
             return;
         }
 
-        var branch = environment.GetEnvironmentVariable("GIT_BRANCH");
-        if (string.IsNullOrWhiteSpace(branch))
-        {
-            branch = environment.GetEnvironmentVariable("Git_Branch");
-        }
-        if (!string.IsNullOrWhiteSpace(branch))
+        var branch = environment.GetFirstNonBlankEnvironmentVariable("GIT_BRANCH", "Git_Branch");
+        if (branch is not null)
         {
             ContextBranch = ParseContextBranch(branch);
             return;

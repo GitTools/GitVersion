@@ -13,9 +13,9 @@ internal class TeamCity(IEnvironment environment, ILogger<TeamCity> logger, IFil
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var branchName = this.environment.GetEnvironmentVariable("Git_Branch");
+        var branchName = this.environment.GetFirstNonBlankEnvironmentVariable("Git_Branch");
 
-        if (!branchName.IsNullOrWhiteSpace())
+        if (branchName is not null)
         {
             return branchName;
         }
@@ -35,8 +35,7 @@ internal class TeamCity(IEnvironment environment, ILogger<TeamCity> logger, IFil
                                                                      See https://gitversion.net/docs/reference/build-servers/teamcity for more info
                                                                      """);
 
-    public override bool PreventFetch() => !string.IsNullOrWhiteSpace(this.environment.GetEnvironmentVariable("GIT_BRANCH"))
-        || !string.IsNullOrWhiteSpace(this.environment.GetEnvironmentVariable("Git_Branch"));
+    public override bool PreventFetch() => this.environment.GetFirstNonBlankEnvironmentVariable("GIT_BRANCH", "Git_Branch") is not null;
 
     public override string[] SetOutputVariables(string name, string? value) =>
     [
