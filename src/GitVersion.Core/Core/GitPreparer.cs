@@ -17,7 +17,8 @@ internal class GitPreparer(
     Lazy<IGitVersionConfiguration> configuration,
     IMutatingGitRepository repository,
     IGitRepositoryInfo repositoryInfo,
-    Lazy<GitVersionContext> versionContext)
+    Lazy<GitVersionContext> versionContext,
+    BranchInput branchInput)
     : IGitPreparer
 {
     private readonly ILogger<GitPreparer> logger = logger.NotNull();
@@ -51,7 +52,8 @@ internal class GitPreparer(
 
     private void PrepareInternal(GitVersionOptions gitVersionOptions)
     {
-        var currentBranch = ResolveCurrentBranch();
+        var currentBranch = branchInput.TargetBranch;
+        this.logger.LogInformation("Branch input: {Branch}; contextual override: {Context}", currentBranch, branchInput.ContextBranch);
 
         if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
@@ -73,18 +75,6 @@ internal class GitPreparer(
 
             NormalizeGitDirectory(currentBranch, false);
         }
-    }
-
-    private string? ResolveCurrentBranch()
-    {
-        var gitVersionOptions = this.options.Value;
-        var targetBranch = gitVersionOptions.RepositoryInfo.TargetBranch;
-
-        var isDynamicRepository = !gitVersionOptions.RepositoryInfo.ClonePath.IsNullOrWhiteSpace();
-        var currentBranch = this.buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
-        this.logger.LogInformation("Branch from build environment: {CurrentBranch}", currentBranch);
-
-        return currentBranch;
     }
 
     private void CleanupDuplicateOrigin()
@@ -109,7 +99,7 @@ internal class GitPreparer(
 
     private void CreateDynamicRepository(string? targetBranch)
     {
-        if (targetBranch.IsNullOrWhiteSpace())
+        if (targetBranch.IsNullOrWhiteSpace() && branchInput.ContextBranch is null)
         {
             throw new InvalidOperationException("Dynamic Git repositories must have a target branch (/b)");
         }
@@ -169,6 +159,14 @@ internal class GitPreparer(
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureOnlyOneRemoteIsDefined), expectedSha);
         FetchRemotesIfRequired(remote, noFetch, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(FetchRemotesIfRequired), expectedSha);
+        if (branchInput.ContextBranch != null)
+        {
+            // The environment names an in-memory branch at HEAD. In particular,
+            // do not attach HEAD or rewrite a real branch with the same name.
+            EnsureFullHistory();
+            return;
+        }
+
         EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureLocalBranchExistsForCurrentBranch), expectedSha);
         CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name, currentBranchName, ignoreConfiguration);
@@ -191,6 +189,11 @@ internal class GitPreparer(
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
 
+        EnsureFullHistory();
+    }
+
+    private void EnsureFullHistory()
+    {
         if (!this.repository.IsShallow)
         {
             return;

@@ -19,7 +19,7 @@ internal class AzurePipelines(IEnvironment environment, ILogger<AzurePipelines> 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
         var gitBranch = this.environment.GetEnvironmentVariable("GIT_BRANCH");
-        if (gitBranch is not null)
+        if (!string.IsNullOrWhiteSpace(gitBranch))
         {
             return gitBranch;
         }

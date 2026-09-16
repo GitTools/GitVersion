@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository) : IRepositoryStore
+internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchInput? branchInput = null) : IRepositoryStore
 {
     private readonly ILogger<RepositoryStore> logger = logger.NotNull();
     private readonly IGitRepository repository = repository.NotNull();
@@ -14,7 +14,14 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
     public IBranch Head => this.repository.Head;
 
-    public IBranchCollection Branches => this.repository.Branches;
+    private ContextualBranch? contextualBranch;
+    private ContextualBranch? ContextualBranch => branchInput?.ContextBranch is { } name
+        ? this.contextualBranch ??= new ContextualBranch(name, Head)
+        : null;
+
+    public IBranchCollection Branches => ContextualBranch is { } context
+        ? new ContextualBranchCollection(this.repository.Branches, context)
+        : this.repository.Branches;
 
     public ITagCollection Tags => this.repository.Tags;
 
@@ -66,6 +73,10 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
     public IBranch GetTargetBranch(string? targetBranchName)
     {
+        if (ContextualBranch is { } context)
+        {
+            return context;
+        }
         // By default, we assume HEAD is pointing to the desired branch
         var desiredBranch = this.repository.Head;
 
@@ -86,7 +97,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
         }
 
         // In the case where HEAD is not the desired branch, try to find the branch with matching name
-        desiredBranch = this.repository.Branches.Where(b => b.Name.EquivalentTo(targetBranchName)).MinBy(b => b.IsRemote);
+        desiredBranch = Branches.Where(b => b.Name.EquivalentTo(targetBranchName)).MinBy(b => b.IsRemote);
 
         // Failsafe in case the specified branch is invalid
         desiredBranch ??= this.repository.Head;
@@ -94,9 +105,9 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
         return desiredBranch;
     }
 
-    public IBranch? FindBranch(ReferenceName branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.Equals(branchName));
+    public IBranch? FindBranch(ReferenceName branchName) => Branches.FirstOrDefault(x => x.Name.Equals(branchName));
 
-    public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
+    public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => Branches.ExcludeBranches(branchesToExclude);
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
@@ -300,7 +311,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
     private IEnumerable<ICommit> FilterCommits(CommitFilter filter) => this.repository.Commits.QueryBy(filter);
 
-    private IBranch? FindBranch(string branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
+    private IBranch? FindBranch(string branchName) => Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
     private List<BranchCommit> FindCommitBranchesBranchedFrom(
         IBranch branch,

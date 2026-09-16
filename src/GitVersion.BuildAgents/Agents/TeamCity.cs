@@ -15,7 +15,7 @@ internal class TeamCity(IEnvironment environment, ILogger<TeamCity> logger, IFil
     {
         var branchName = this.environment.GetEnvironmentVariable("Git_Branch");
 
-        if (!branchName.IsNullOrEmpty())
+        if (!branchName.IsNullOrWhiteSpace())
         {
             return branchName;
         }
@@ -35,7 +35,8 @@ internal class TeamCity(IEnvironment environment, ILogger<TeamCity> logger, IFil
                                                                      See https://gitversion.net/docs/reference/build-servers/teamcity for more info
                                                                      """);
 
-    public override bool PreventFetch() => !string.IsNullOrEmpty(this.environment.GetEnvironmentVariable("Git_Branch"));
+    public override bool PreventFetch() => !string.IsNullOrWhiteSpace(this.environment.GetEnvironmentVariable("GIT_BRANCH"))
+        || !string.IsNullOrWhiteSpace(this.environment.GetEnvironmentVariable("Git_Branch"));
 
     public override string[] SetOutputVariables(string name, string? value) =>
     [

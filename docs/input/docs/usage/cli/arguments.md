@@ -96,8 +96,9 @@ GitVersion [path]
 # Remote repository args
 
     --url           Url to remote git repository.
-    --branch, -b    Name of the branch to use on the remote repository, must be
-                    used in combination with --url.
+    --branch, -b    Target branch to version (local or with --url). Takes
+                    precedence over GIT_BRANCH/Git_Branch, which only supply
+                    branch context at HEAD.
     --username, -u  Username in case authentication is required.
     --password, -p  Password in case authentication is required.
     --commit        The commit id to check. If not specified, the latest

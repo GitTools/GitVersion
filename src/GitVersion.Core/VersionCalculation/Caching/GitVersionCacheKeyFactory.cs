@@ -14,7 +14,8 @@ internal class GitVersionCacheKeyFactory(
     IConfigurationFileLocator configFileLocator,
     IConfigurationSerializer configurationSerializer,
     IRepositoryStore repositoryStore,
-    IGitRepositoryInfo repositoryInfo)
+    IGitRepositoryInfo repositoryInfo,
+    BranchInput branchInput)
     : IGitVersionCacheKeyFactory
 {
     private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
@@ -179,12 +180,17 @@ internal class GitVersionCacheKeyFactory(
     private string GetRepositoryTargetHash()
     {
         var repoInfo = this.options.Value.RepositoryInfo;
-        if (repoInfo.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
+        if (branchInput.ContextBranch is { } context)
+        {
+            return GetHash("branch-context", context.Canonical, repoInfo.CommitId ?? string.Empty);
+        }
+
+        if (branchInput.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
         {
             return string.Empty;
         }
 
-        return GetHash(repoInfo.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
+        return GetHash(branchInput.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
     }
 
     private string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)

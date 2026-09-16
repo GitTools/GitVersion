@@ -6,6 +6,24 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## Branch environment overrides
+
+`GIT_BRANCH` and its cross-platform alias `Git_Branch` now supply branch context at
+the checked-out commit, including local builds and detached HEAD. They no longer
+select the named branch's tip or cause its ref to move. The branch need not exist.
+Invalid branch names fail; empty or whitespace-only values are ignored. Do not
+pass tag refs through these variables.
+
+Explicit `--branch` / API `RepositoryInfo.TargetBranch` wins over the environment,
+which wins over provider detection. When both aliases are nonblank on a
+case-sensitive platform, `GIT_BRANCH` wins. In particular, Jenkins `GIT_BRANCH`
+now wins over `BRANCH_NAME` / `GIT_LOCAL_BRANCH`, and explicit targets win over
+Azure Pipelines branch detection. Check ambient CI variables when upgrading.
+
+Use `--branch` if you intend to select a different branch's history. Explicit
+commit selection retains its existing semantics. See [environment variables](/docs/reference/environment-variables)
+for reference-name forms, dynamic repositories and normalization behavior.
+
 ## Pre-release output variables renamed
 
 The pre-release output variables now use SemVer terminology consistently. Update JSON consumers, `--show-variable` arguments, custom format strings, build-agent environment variables, generated version-information files, and `GitVersion.MsBuild` properties according to this mapping:

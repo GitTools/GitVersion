@@ -40,9 +40,10 @@ config will apply.
 
 ### Git Branch
 
-If it is ambigous which reference (branch or tag) is being built, which is often
-the case on build servers, the `Git_Branch` environment variable needs to be
-defined and set to the reference being built.
+When branch context is ambiguous, set `GIT_BRANCH` (or its `Git_Branch` alias) to
+the branch name to use at the checked-out commit. The branch need not exist as a
+ref. This does not select a tag or move HEAD. See [environment variables](/docs/reference/environment-variables)
+for precedence and validation rules.
 
 [git-unshallow]: https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow
 
