@@ -14,7 +14,7 @@ internal sealed class ContextualBranchCollection(IBranchCollection branches, Con
 
     public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName)
     {
-        if (branch.Equals(context))
+        if (branch.Name.Canonical == context.Name.Canonical)
         {
             throw new InvalidOperationException("Calculation branch context cannot update repository refs.");
         }
