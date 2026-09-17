@@ -110,6 +110,37 @@ file in full before doing any release work, and follow its phases in order rathe
 symlinked at `.claude/skills/release` for tool discovery, and summarized for humans in
 [`CONTRIBUTING.md`](CONTRIBUTING.md#release-process). It requires the `gh` CLI authenticated (`gh auth login`).
 
+## CodeRabbit reviews
+
+Use CodeRabbit to review completed changes before handing them back. Prefer the
+CodeRabbit plugin for your agent when installed; otherwise use the CLI from the worktree
+containing the changes. Follow the [official setup guide](https://docs.coderabbit.ai/cli/codex-integration)
+to install the CLI and plugin, then authenticate with your account's hosting region
+(`coderabbit auth login --agent --region us` or `--region eu`). Authentication is
+per developer and must never be committed to this repository.
+
+- Check `coderabbit auth status --agent` before starting a review. If installation,
+  authentication, or service limits block the review, report that limitation;
+  do not describe it as a passing review.
+- Summarize the diff and choose an explicit scope. For local edits, run
+  `coderabbit review --agent --uncommitted`. Add `--include-untracked` when new
+  files belong to the change. For committed branch changes, run
+  `coderabbit review --agent --committed --base origin/main` after refreshing the
+  base ref, or use the task's explicitly requested base.
+- Wait for completion. Report the finding count, severity, file location, impact,
+  and recommended fix for actionable findings. Check each finding against the
+  current code before changing it.
+- Fix confirmed issues within the task's scope, run relevant validation, and
+  review the resulting changes again. Explain dismissed findings and report
+  remaining blockers. Stop on repeated findings or service limits rather than
+  looping indefinitely; do not opt into usage credits without authorization.
+- Focus on version calculation and branch/tag semantics, compatibility of CLI
+  and build-agent outputs, consistency between Git backends, generated
+  configuration/documentation, and regression coverage for changed behavior.
+  Apply the repository conventions above to all review fixes.
+- Keep fixes local unless the user has authorized committing, pushing, or
+  opening a pull request. CodeRabbit complements the repository's tests and CI.
+
 ## Tips
 
 - For `gh` commands, set `GH_PAGER=cat GH_FORCE_TTY=0` to avoid pager/TTY issues in non-interactive terminals.

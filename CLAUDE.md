@@ -6,6 +6,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 GitVersion is a multi-project .NET repository that calculates semantic versions from Git history. It supports multiple versioning strategies (GitFlow, GitHubFlow, Mainline) and integrates with CI/CD systems (GitHub Actions, Azure Pipelines, TeamCity, etc.).
 
+## CodeRabbit reviews
+
+Follow the shared [CodeRabbit review workflow in AGENTS.md](AGENTS.md#coderabbit-reviews)
+after completing changes, including scope selection, validation of findings,
+reviewing fixes, and reporting authentication or service-limit blockers.
+
+Install the Claude Code plugin from the repository root with
+`claude plugin install coderabbit --scope project`. If the plugin cannot be found,
+add its official marketplace with `claude plugin marketplace add coderabbitai/claude-plugin`
+and retry. See the [official Claude Code integration guide](https://docs.coderabbit.ai/cli/claude-code-integration).
+The plugin uses the same authenticated CodeRabbit CLI as the Codex integration.
+
+Use `/coderabbit:review uncommitted` for local edits, adding `--include-untracked`
+when new files belong to the change. For a branch review, use
+`/coderabbit:review committed --base origin/main`, or the task's requested base.
+When using the CLI directly, pass this context file explicitly, for example:
+`coderabbit review --agent --uncommitted -c CLAUDE.md`.
+
+Present the proposed fixes, then apply confirmed findings within the authorized
+task scope and run relevant validation. Keep changes local unless delivery has
+been authorized, and report any remaining findings or review blockers.
+
 ## Developer commands
 
 ```bash
