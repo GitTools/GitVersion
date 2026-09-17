@@ -7,11 +7,11 @@ GitVersion reads your Git history and configuration to produce version variables
 
 ## 1. Prepare your environment
 
-For the v7 .NET tool, use the .NET 10 SDK. See [installation options](/docs/usage/cli/installation) for supported platforms and alternatives.
+For the v7 .NET tool, use the .NET 10 SDK. See [installation options][installation-options] for supported platforms and alternatives.
 
-Use a repository with the history, tags, and branches needed by your workflow. In CI, start with a full checkout rather than a shallow clone. Read [repository requirements](/docs/reference/requirements).
+Use a repository with the history, tags, and branches needed by your workflow. In CI, start with a full checkout rather than a shallow clone. Read [repository requirements][repository-requirements].
 
-These examples use v7 arguments. If your installed tool is v6, consult [Upgrading](/docs/migration/v6-to-v7).
+These examples use v7 arguments. If your installed tool is v6, consult [Upgrading][upgrading].
 
 ## 2. Install GitVersion
 
@@ -30,7 +30,7 @@ dotnet GitVersion/artifacts/local-cli/gitversion.dll --version
 
 For a source build, replace `dotnet-gitversion` in the remaining examples with `dotnet /absolute/path/to/GitVersion/artifacts/local-cli/gitversion.dll`. Run it from the repository you want to version, or pass `--target-path /path/to/repository`.
 
-Use `--version <package-version>` on the install command to select a specific published version. A [local tool manifest](/docs/usage/cli/installation#net-local-tool) can keep the team and CI on the same version.
+Use `--version <package-version>` on the install command to select a specific published version. A [local tool manifest][local-tool-manifest] can keep the team and CI on the same version.
 
 ## 3. Calculate a version
 
@@ -56,11 +56,11 @@ dotnet-gitversion --show-variable SemVer
 | `AssemblySemVer` / `AssemblySemFileVer` | .NET assembly version values. |
 | `Sha` | The commit associated with the result. |
 
-See the [complete variable reference](/docs/reference/variables). A commit count or pre-release number is not a count of how many times your CI job has run.
+See the [complete variable reference][complete-variable-reference]. A commit count or pre-release number is not a count of how many times your CI job has run.
 
 ## 5. Make versioning explicit
 
-[Choose a workflow](/docs/usage/choose-workflow), then [configure GitVersion.yml](/docs/usage/configure). Inspect the effective configuration with:
+[Choose a workflow][choose-a-workflow], then [configure GitVersion.yml][configure-gitversion-yml]. Inspect the effective configuration with:
 
 ```shell
 dotnet-gitversion --show-config
@@ -68,7 +68,29 @@ dotnet-gitversion --show-config
 
 ## Next steps
 
-- [Use version output in scripts](/docs/usage/cli/output).
-- [Set up CI](/docs/reference/build-servers).
-- [Understand the calculation](/docs/learn/how-it-works).
-- [Diagnose unexpected results](/docs/learn/faq).
+- [Use version output in scripts][use-version-output-in-scripts].
+- [Set up CI][set-up-ci].
+- [Understand the calculation][understand-the-calculation].
+- [Diagnose unexpected results][diagnose-unexpected-results].
+
+[installation-options]: /docs/usage/cli/installation
+
+[repository-requirements]: /docs/reference/requirements
+
+[upgrading]: /docs/migration/v6-to-v7
+
+[local-tool-manifest]: /docs/usage/cli/installation#net-local-tool
+
+[complete-variable-reference]: /docs/reference/variables
+
+[choose-a-workflow]: /docs/usage/choose-workflow
+
+[configure-gitversion-yml]: /docs/usage/configure
+
+[use-version-output-in-scripts]: /docs/usage/cli/output
+
+[set-up-ci]: /docs/reference/build-servers
+
+[understand-the-calculation]: /docs/learn/how-it-works
+
+[diagnose-unexpected-results]: /docs/learn/faq

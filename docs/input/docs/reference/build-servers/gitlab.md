@@ -6,12 +6,12 @@ RedirectFrom: docs/build-server-support/build-server/gitlab
 ---
 
 To use GitVersion with GitLab CI, either use the [MSBuild
-Task](/docs/usage/msbuild) or put the GitVersion executable in your
+Task][msbuild-task] or put the GitVersion executable in your
 runner's `PATH`.
 
 ### Tag pipelines
 
-GitVersion uses GitLab's [`CI_COMMIT_TAG` predefined variable](https://docs.gitlab.com/ci/variables/predefined_variables/)
+GitVersion uses GitLab's [`CI_COMMIT_TAG` predefined variable][ci-commit-tag-predefined-variable]
 to identify the selected tag. This variable contains the tag name, such as
 `1.2.3`, rather than the full `refs/tags/1.2.3` reference. When it is nonempty,
 GitVersion treats the build as a tag pipeline rather than using
@@ -93,3 +93,7 @@ Here is a summary of what it demonstrated (many more details in the [Readme][rea
 [utterly-automated-versioning]: https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/
 
 [gitlab-release-help]: https://docs.gitlab.com/ee/user/project/releases/
+
+[msbuild-task]: /docs/usage/msbuild
+
+[ci-commit-tag-predefined-variable]: https://docs.gitlab.com/ci/variables/predefined_variables/

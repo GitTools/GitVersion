@@ -31,7 +31,7 @@ GitVersion no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64
 
 ### Selectable Git backend (libgit2 vs. managed)
 
-GitVersion is migrating away from LibGit2Sharp and its native libgit2 binaries towards a managed implementation combined with the `git` CLI ([#5031](https://github.com/GitTools/GitVersion/issues/5031)). A single environment variable selects the backend:
+GitVersion is migrating away from LibGit2Sharp and its native libgit2 binaries towards a managed implementation combined with the `git` CLI ([#5031][5031]). A single environment variable selects the backend:
 
 | Release | Default backend | Switch |
 | ------- | --------------- | ------ |
@@ -49,7 +49,7 @@ Previously bad label formatting config would be silently accepted. For example `
 
 ### CLI Arguments — POSIX-style Syntax
 
-The command-line interface has been migrated from Windows-style (`/switch` and single-dash `-switch`) arguments to POSIX-style `--long-name` arguments using [System.CommandLine](https://github.com/dotnet/command-line-api).
+The command-line interface has been migrated from Windows-style (`/switch` and single-dash `-switch`) arguments to POSIX-style `--long-name` arguments using [System.CommandLine][system-commandline].
 
 **Old-style arguments are no longer accepted by default.** Update any scripts, CI pipelines, or tooling accordingly.
 
@@ -180,7 +180,7 @@ The `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` environment va
 
   These are **configuration keys**, not Git branch names. The built-in `main` configuration's default `regex` matches both `main` and `master`, so you do not need to rename your Git branch. In v6, `master` is treated as a separate custom configuration entry; a partial override can fail with `Branch configuration 'master' is missing required configuration 'regex'`.
 
-  Update `source-branches` and any other references to the renamed configuration key, including `is-source-branch-for` where applicable. Preserve other entries in those lists. Do not blindly rename intentionally custom configurations or literal Git branch names and regular expressions. For the v7 nested layout and further guidance, see [configuration migration](https://gitversion.net/docs/reference/configuration#migrating-master-overrides-from-v5).
+  Update `source-branches` and any other references to the renamed configuration key, including `is-source-branch-for` where applicable. Preserve other entries in those lists. Do not blindly rename intentionally custom configurations or literal Git branch names and regular expressions. For the v7 nested layout and further guidance, see [configuration migration][configuration-migration].
 
 * The configuration properties `continuous-delivery-fallback-tag`, `tag-number-pattern`, and `tag` were renamed to `continuous-delivery-fallback-label`, `label-number-pattern`, and `label` respectively. `tag-pre-release-weight` and `tag-prefix` remained as they were as they are referring to a Git tag.
 
@@ -335,3 +335,9 @@ work for you
 [pr-1541]: https://github.com/GitTools/GitVersion/pull/1541
 
 [pr-1581]: https://github.com/GitTools/GitVersion/pull/1581
+
+[5031]: https://github.com/GitTools/GitVersion/issues/5031
+
+[system-commandline]: https://github.com/dotnet/command-line-api
+
+[configuration-migration]: https://gitversion.net/docs/reference/configuration#migrating-master-overrides-from-v5

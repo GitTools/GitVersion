@@ -22,14 +22,36 @@ The preview workflow is experimental. Do not assume it has the same compatibilit
 
 ## Understand the choices
 
-A workflow supplies defaults. A [deployment mode](/docs/reference/modes) controls version behavior between releases. A [calculation strategy](/docs/reference/version-sources) helps determine the version from history. **Mainline is a calculation strategy**, not a fourth deployment mode.
+A workflow supplies defaults. A [deployment mode][deployment-mode] controls version behavior between releases. A [calculation strategy][calculation-strategy] helps determine the version from history. **Mainline is a calculation strategy**, not a fourth deployment mode.
 
-Read [workflows, modes, and strategies](/docs/learn/workflows-modes-strategies) before combining custom settings.
+Read [workflows, modes, and strategies][workflows-modes-and-strategies] before combining custom settings.
 
 ## Worked examples and defaults
 
-- [GitHub Flow](/docs/learn/branching-strategies/githubflow) and [examples](/docs/learn/branching-strategies/githubflow/examples).
-- [Git Flow](/docs/learn/branching-strategies/gitflow) and [examples](/docs/learn/branching-strategies/gitflow/examples).
-- [Trunk-based (preview)](/docs/learn/branching-strategies/trunkbased) and [examples](/docs/learn/branching-strategies/trunkbased/examples).
-- [Built-in configurations](/docs/reference/configuration#global-configuration).
-- [Create and inspect configuration](/docs/usage/configure).
+- [GitHub Flow][github-flow] and [examples][examples].
+- [Git Flow][git-flow] and [examples][examples-2].
+- [Trunk-based (preview)][trunk-based-preview] and [examples][examples-3].
+- [Built-in configurations][built-in-configurations].
+- [Create and inspect configuration][create-and-inspect-configuration].
+
+[deployment-mode]: /docs/reference/modes
+
+[calculation-strategy]: /docs/reference/version-sources
+
+[workflows-modes-and-strategies]: /docs/learn/workflows-modes-strategies
+
+[github-flow]: /docs/learn/branching-strategies/githubflow
+
+[examples]: /docs/learn/branching-strategies/githubflow/examples
+
+[git-flow]: /docs/learn/branching-strategies/gitflow
+
+[examples-2]: /docs/learn/branching-strategies/gitflow/examples
+
+[trunk-based-preview]: /docs/learn/branching-strategies/trunkbased
+
+[examples-3]: /docs/learn/branching-strategies/trunkbased/examples
+
+[built-in-configurations]: /docs/reference/configuration#global-configuration
+
+[create-and-inspect-configuration]: /docs/usage/configure

@@ -2,22 +2,22 @@
 
 We love contributions to get started contributing you might need:
 
-* [Get started with git](https://rogerdudler.github.io/git-guide)
-* [How to create a pull request](https://help.github.com/articles/using-pull-requests)
-* [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](https://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
-* An understanding of our [architecture](https://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
+* [Get started with git][get-started-with-git]
+* [How to create a pull request][how-to-create-a-pull-request]
+* [An issue to work on][an-issue-to-work-on] - We are on [Up for grabs][up-for-grabs], our up for grabs issues are tagged `up-for-grabs`
+* An understanding of our [architecture][architecture] and how [we write tests][we-write-tests]
 
 Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.
 
-Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
+Issues are also welcome, [failing tests][we-write-tests] are even more welcome.
 
 ## Contribution Guidelines
 
 * Try to use feature branches rather than developing on main.
 * Please include tests covering the change.
-* The documentation is stored in the repository under the [`docs`](docs) folder.
-  Have a look at the [documentation readme file](docs/readme.md) for guidance
+* The documentation is stored in the repository under the [`docs`][docs] folder.
+  Have a look at the [documentation readme file][documentation-readme-file] for guidance
   on how to improve the documentation and please include documentation updates
   with your PR.
 
@@ -54,7 +54,7 @@ git rebase -i origin/main
 
 ## How it works
 
-See [how it works](https://gitversion.net/docs/learn/how-it-works) in GitVersion's documentation
+See [how it works][how-it-works] in GitVersion's documentation
 
 ## Writing Tests
 
@@ -144,8 +144,8 @@ We use Cake for our build and deployment process. The way the release process is
 
 ### Running the release with the `release` agent skill
 
-Steps 2–9 above are automated by the `release` agent skill, kept at [`.agents/skills/release/SKILL.md`](.agents/skills/release/SKILL.md)
-(also symlinked at `.claude/skills/release` for tool discovery, and referenced from [`AGENTS.md`](AGENTS.md)). It walks
+Steps 2–9 above are automated by the `release` agent skill, kept at [`.agents/skills/release/SKILL.md`][agents-skills-release-skill-md]
+(also symlinked at `.claude/skills/release` for tool discovery, and referenced from [`AGENTS.md`][agents-md]). It walks
 through milestone setup, GitReleaseManager label validation, creating the GitHub release, monitoring the downstream
 publish PRs (Homebrew, winget, GitTools Actions), and verifying published artifacts (NuGet, Docker, Chocolatey, docs schema).
 
@@ -159,7 +159,7 @@ All three supported coding agents resolve to the same skill file, with different
 
   or ask the assistant to run the `release` skill directly if slash commands aren't available in your client.
 
-* **GitHub Copilot** reads [`.github/copilot-instructions.md`](.github/copilot-instructions.md), which points to `AGENTS.md`.
+* **GitHub Copilot** reads [`.github/copilot-instructions.md`][github-copilot-instructions-md], which points to `AGENTS.md`.
   Ask Copilot Chat (or the Copilot coding agent) to perform a GitVersion release; it should follow the pointer to
   `AGENTS.md` and from there to the skill file. If it doesn't pick up the pointer on its own, explicitly ask it to
   read `.agents/skills/release/SKILL.md` and follow its phases in order.
@@ -177,7 +177,7 @@ wait for downstream PRs to merge — once a PR is confirmed created it's linked 
 
 ### NuGet Trusted Publishing
 
-NuGet packages are published to nuget.org using [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing),
+NuGet packages are published to nuget.org using [Trusted Publishing][trusted-publishing],
 which replaces long-lived API keys with short-lived, identity-based tokens issued by GitHub Actions OIDC.
 
 #### How it works
@@ -191,9 +191,9 @@ which replaces long-lived API keys with short-lived, identity-based tokens issue
 Trusted Publishing is configured once for the repository and workflow — not per package. A single trusted
 publisher entry covers every package pushed by the same workflow run.
 
-1. Sign in to [nuget.org](https://www.nuget.org) as a package owner.
+1. Sign in to [nuget.org][nuget-org] as a package owner.
 2. Go to **Account settings** → **Trusted Publishers** (or navigate to any of the
-   [GitVersion packages](https://www.nuget.org/profiles/GitTools) and open **Manage package** → **Settings** →
+   [GitVersion packages][gitversion-packages] and open **Manage package** → **Settings** →
    **Trusted Publishers**).
 3. Click **Add trusted publisher** and fill in the following fields:
 
@@ -222,7 +222,7 @@ publisher entry covers every package pushed by the same workflow run.
 
 ## Code Style
 
-In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`](https://github.com/dotnet/format).
+In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`][dotnet-format].
 
 Change to the root folder of the GitVersion repository and use the following command to apply the code style:
 
@@ -232,8 +232,8 @@ dotnet format ./src/ --exclude **/AddFormats/
 
 ## Documentation
 
-The documentation is stored in the repository under the [`docs`](docs) folder.
-Have a look at the [documentation readme file](docs/readme.md) for guidance.
+The documentation is stored in the repository under the [`docs`][docs] folder.
+Have a look at the [documentation readme file][documentation-readme-file] for guidance.
 
 In order to check locally how the documentation looks like you can use the following command:
 
@@ -249,3 +249,35 @@ If there are changes to the GitVersionVariables or to the GitVersionConfiguratio
 ./build.ps1 -Stage build -Target BuildPrepare
 ./build.ps1 -Stage docs -Target GenerateSchemas
 ```
+
+[get-started-with-git]: https://rogerdudler.github.io/git-guide
+
+[how-to-create-a-pull-request]: https://help.github.com/articles/using-pull-requests
+
+[an-issue-to-work-on]: https://github.com/GitTools/GitVersion/labels/up-for-grabs
+
+[up-for-grabs]: https://up-for-grabs.net/
+
+[architecture]: https://gitversion.net/docs/learn/how-it-works#architecture
+
+[we-write-tests]: #writing-tests
+
+[docs]: docs
+
+[documentation-readme-file]: docs/readme.md
+
+[how-it-works]: https://gitversion.net/docs/learn/how-it-works
+
+[agents-skills-release-skill-md]: .agents/skills/release/SKILL.md
+
+[agents-md]: AGENTS.md
+
+[github-copilot-instructions-md]: .github/copilot-instructions.md
+
+[trusted-publishing]: https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing
+
+[nuget-org]: https://www.nuget.org
+
+[gitversion-packages]: https://www.nuget.org/profiles/GitTools
+
+[dotnet-format]: https://github.com/dotnet/format

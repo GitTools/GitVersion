@@ -6,8 +6,8 @@ RedirectFrom: docs/configuration
 ---
 
 This is the complete settings reference, including built-in workflow defaults.
-For a shorter starting point, use [configuration by topic](/docs/reference/configuration-topics)
-or follow [Configure GitVersion](/docs/usage/configure).
+For a shorter starting point, use [configuration by topic][configuration-by-topic]
+or follow [Configure GitVersion][configure-gitversion].
 
 Defaults depend on the selected workflow and effective branch configuration.
 Use the configuration output below to inspect them rather than assuming that
@@ -19,12 +19,12 @@ To see the effective configuration (defaults and overrides), you can run
 ## Configuration tool
 
 The interactive configuration tool (`gitversion init`) was removed in
-GitVersion v6.0.0. The [removal commit](https://github.com/GitTools/GitVersion/commit/09014f1af2367d79d53919c759a82ea998d9db6c)
+GitVersion v6.0.0. The [removal commit][removal-commit]
 removed the init wizard and its command handling. Create `GitVersion.yml`
-manually, [choose a workflow](/docs/usage/choose-workflow), and inspect the
+manually, [choose a workflow][choose-a-workflow], and inspect the
 resolved settings with `gitversion --show-config`. Follow
-[Configure GitVersion](/docs/usage/configure) for current configuration guidance,
-or the [trunk-based guide](/docs/learn/branching-strategies/trunkbased) to try
+[Configure GitVersion][configure-gitversion] for current configuration guidance,
+or the [trunk-based guide][trunk-based-guide] to try
 `TrunkBased/preview1`.
 
 ## v7 configuration layout
@@ -73,7 +73,7 @@ a user configuration that way.
 
 ### Migrating an existing configuration
 
-When upgrading from v5, first [migrate any `master` overrides](#migrating-master-overrides-from-v5)
+When upgrading from v5, first [migrate any `master` overrides][migrate-any-master-overrides]
 to the v6 configuration keys. The layout migration command below does not
 rename branch configuration keys or references to them.
 
@@ -105,7 +105,7 @@ If your v5 configuration uses `branches.master` to override the built-in main
 branch settings, change that key to `branches.main` for v6. Later v5 releases
 already used `main` internally but accepted `master` for compatibility. v6
 removed that compatibility mapping; see the
-[v6.0.0 breaking changes](https://github.com/GitTools/GitVersion/blob/main/BREAKING_CHANGES.md#v600).
+[v6.0.0 breaking changes][v6-0-0-breaking-changes].
 
 For example, this v5 configuration overrides the main branch increment and
 restricts the feature configuration's source branches:
@@ -173,7 +173,7 @@ The following supported workflow configurations are available in GitVersion and 
 
 * GitFlow (GitFlow/v1)
 * GitHubFlow (GitHubFlow/v1)
-* [TrunkBased](/docs/learn/branching-strategies/trunkbased) (`TrunkBased/preview1`, experimental preview; [worked examples](/docs/learn/branching-strategies/trunkbased/examples))
+* [TrunkBased][trunk-based-guide] (`TrunkBased/preview1`, experimental preview; [worked examples][worked-examples])
 
 Example of using a `GitHubFlow` workflow with a different `tag-prefix`:
 
@@ -267,18 +267,18 @@ attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
 `Major`, `None`.
 
 For information on using format strings in these properties, see
-[Format Strings](/docs/reference/custom-formatting).
+[Format Strings][format-strings].
 
 ### branches
 
 The header for all the individual branch configurations. Entries are named
 configuration keys; their `regex` selects the Git branches they apply to.
 The built-in `main` key matches both `main` and `master` by default. For v5
-files that use `branches.master`, see [migration guidance](#migrating-master-overrides-from-v5).
+files that use `branches.master`, see [migration guidance][migrate-any-master-overrides].
 
 ### increment
 
-Same as for the [global configuration, explained above](#increment).
+Same as for the [global configuration, explained above][global-configuration-explained-above].
 
 ### is-main-branch
 
@@ -291,7 +291,7 @@ Indicates this branch config represents a release branch in GitFlow.
 ### label
 
 The pre-release label to use for this branch. Use the value `{BranchName}` as a placeholder to
-insert the value of the named group `BranchName` from the [regular expression](#regex).
+insert the value of the named group `BranchName` from the [regular expression][regular-expression].
 
 For example: branch `feature/foo` would become a pre-release label
 of `alpha.foo` with `label: 'alpha.{BranchName}'` and `regex: '^features?[\/-](?<BranchName>.+)'`.
@@ -313,7 +313,7 @@ calculation:
 
 For a commit whose abbreviated hash is `a1b2c3d`, this configures the label
 `ci.a1b2c3d`. The pre-release number still follows the selected deployment mode.
-In the temporary [v6 compatibility mode](#v7-configuration-layout), put the same
+In the temporary [v6 compatibility mode][v6-compatibility-mode], put the same
 `label` setting under `branches.feature` instead of `calculation.branches.feature`.
 
 Placeholder names are case-sensitive. If the branch regex contains a named
@@ -359,7 +359,7 @@ output:
 
 ### mode
 
-Same as for the [global configuration, explained above](#mode).
+Same as for the [global configuration, explained above][global-configuration-explained-above-2].
 
 ### pre-release-weight
 
@@ -419,15 +419,15 @@ This is typically enabled for `develop` in GitFlow.
 
 With the `TrackReleaseBranches` strategy enabled, a release branch's version is
 taken from its name. If the name contains no version, GitVersion uses the highest
-semantic prerelease tag matching that release branch's [configured label](#label). Matching
+semantic prerelease tag matching that release branch's [configured label][configured-label]. Matching
 is case-insensitive. Tags must be on the release branch's first-parent history,
 outside the first-parent history of configured `main` branches. A release tag
 remains eligible when its commit is merged into `main` through a merge commit.
 Like versioned release names, tags are evaluated against the current release
 refs, including when versioning an older commit. Tags on newer sibling release
 commits are eligible; advancing the tracking branch alone does not change tag eligibility.
-This does not reconstruct historical branch or tag state. [Tag prefix](#tag-prefix),
-[semantic version format](#semantic-version-format), and [ignore](#ignore) settings apply.
+This does not reconstruct historical branch or tag state. [Tag prefix][tag-prefix],
+[semantic version format][semantic-version-format], and [ignore][ignore] settings apply.
 The release branch must share an ancestor with the commit being versioned.
 
 For example, with release label `rc`, `releases/R2301` tagged `1.0.0-RC.1` lets
@@ -610,7 +610,7 @@ increased, such as for commits after a tag: `Major`, `Minor`, `Patch`, `None`.
 
 The special value `Inherit` means that GitVersion should find the parent branch
 (i.e. the branch where the current branch was branched from), and use its values
-for [increment](#increment) or other branch related properties.
+for [increment][global-configuration-explained-above] or other branch related properties.
 
 For a synthetic pull request merge ref, GitVersion uses the `TargetBranch`
 captured from the merge commit message as the immediate parent when it matches
@@ -726,12 +726,12 @@ Default set to `'[+=]semver:\s?(fix|patch)'`, which will match occurrences of
 This is the regex which is used to match the current branch to the correct
 branch configuration.
 
-[Named groups](https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions) can be used to dynamically label pre-releases based on the branch name, or parts of it. See [Label](#label) for more details and examples.
+[Named groups][named-groups] can be used to dynamically label pre-releases based on the branch name, or parts of it. See [Label][configured-label] for more details and examples.
 
 ### semantic-version-format
 
 Specifies the semantic version format that is used when parsing the string.
-Can be `Strict` - using the [regex](https://regex101.com/r/Ly7O1x/3/)
+Can be `Strict` - using the [regex][regex]
 or `Loose` the old way of parsing. The default if not specified is `Strict`
 Example of invalid `Strict`, but valid `Loose`
 
@@ -838,7 +838,7 @@ keys to named branch configurations. It uses the legacy flat layout and is retai
 only for that historical migration context; it is not a valid v7 configuration. For
 new v7 configuration, place branch calculation settings under `calculation.branches`
 and branch output settings under `output.branches`, as shown in the [v7 configuration
-layout](#v7-configuration-layout).
+layout][v6-compatibility-mode].
 
 :::{.alert .alert-info}
 **Note**
@@ -959,3 +959,41 @@ where the option `is-release-branch` is set to `true`. The default value is
 ### workflow
 
 The base template of the configuration to use. Possible values are `GitFlow/v1` or `GitHubFlow/v1`. Defaults to `GitFlow/v1` if not set. To create a configuration from scratch without using a base template, please specify an empty string.
+
+[configuration-by-topic]: /docs/reference/configuration-topics
+
+[configure-gitversion]: /docs/usage/configure
+
+[removal-commit]: https://github.com/GitTools/GitVersion/commit/09014f1af2367d79d53919c759a82ea998d9db6c
+
+[choose-a-workflow]: /docs/usage/choose-workflow
+
+[trunk-based-guide]: /docs/learn/branching-strategies/trunkbased
+
+[migrate-any-master-overrides]: #migrating-master-overrides-from-v5
+
+[v6-0-0-breaking-changes]: https://github.com/GitTools/GitVersion/blob/main/BREAKING_CHANGES.md#v600
+
+[worked-examples]: /docs/learn/branching-strategies/trunkbased/examples
+
+[format-strings]: /docs/reference/custom-formatting
+
+[global-configuration-explained-above]: #increment
+
+[regular-expression]: #regex
+
+[v6-compatibility-mode]: #v7-configuration-layout
+
+[global-configuration-explained-above-2]: #mode
+
+[configured-label]: #label
+
+[tag-prefix]: #tag-prefix
+
+[semantic-version-format]: #semantic-version-format
+
+[ignore]: #ignore
+
+[named-groups]: https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
+
+[regex]: https://regex101.com/r/Ly7O1x/3/

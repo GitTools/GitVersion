@@ -21,7 +21,7 @@ now wins over `BRANCH_NAME` / `GIT_LOCAL_BRANCH`, and explicit targets win over
 Azure Pipelines branch detection. Check ambient CI variables when upgrading.
 
 Use `--branch` if you intend to select a different branch's history. Explicit
-commit selection retains its existing semantics. See [environment variables](/docs/reference/environment-variables)
+commit selection retains its existing semantics. See [environment variables][environment-variables]
 for reference-name forms, dynamic repositories and normalization behavior.
 
 ## Pre-release output variables renamed
@@ -133,7 +133,7 @@ gitversion /url https://github.com/org/repo.git /b main /u user /p pass /c a1b2c
 gitversion --url https://github.com/org/repo.git --branch main --username user --password pass --commit a1b2c3
 ```
 
-For current command details and examples, see [CLI Arguments](/docs/usage/cli/arguments).
+For current command details and examples, see [CLI Arguments][cli-arguments].
 
 ## Configuration migration
 
@@ -187,7 +187,7 @@ The environment variables relevant to migrating from v6 to v7:
 | Variable                            | Purpose                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `GITVERSION_CONFIGURATION_VERSION`   | Selects the configuration layout: `v7` (default) or temporary flat `v6` fallback.                                   |
-| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `managed` (default) or temporary `libgit2` fallback. See [Git backend](#git-backend). |
+| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `managed` (default) or temporary `libgit2` fallback. See [Git backend][git-backend]. |
 | `GITVERSION_ARGUMENT_PARSER_VERSION` | Selects the argument parser: `v7` (default, POSIX syntax) or temporary `v6` fallback (`/switch` and `-switch`). |
 | `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
 | `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |
@@ -211,3 +211,9 @@ for removal alongside libgit2. Retired `v6`/`libgit2` selections will report
 actionable errors; explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.
+
+[cli-arguments]: /docs/usage/cli/arguments
+
+[environment-variables]: /docs/reference/environment-variables
+
+[git-backend]: #git-backend

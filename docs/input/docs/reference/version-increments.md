@@ -52,7 +52,7 @@ feed will see the alpha packages.
 
 ### 2. Octopus deploy
 
-See [Octopus deploy](/docs/reference/build-servers/octopus-deploy)
+See [Octopus deploy][octopus-deploy]
 
 ## Manually incrementing the version
 
@@ -112,14 +112,14 @@ created.
 
 If your CI/CD workflow uses semantic-release's commit-analyzer, change
 `(fix|perf)` to `(fix|perf|revert)`.
-[Why?](https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38)
+[Why?][why]
 
 Alternatively, you can override this rule in the
-[configuration](https://github.com/semantic-release/commit-analyzer/tree/master#usage)
+[configuration][configuration]
 of @semantic-release/commit-analyzer. If you intend to write rules with
 patterns, note that instead of using Regular Expression,
 @semantic-release/commit-analyzer uses
-[micromatch's glob implementation](https://github.com/micromatch/micromatch#matching-features).
+[micromatch's glob implementation][micromatch-s-glob-implementation].
 
 ### GitVersion.yml
 
@@ -173,7 +173,7 @@ b5d142 -> 2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
 As you can see, the versions now no longer conflict. When you want to create a
 stable `2.0.0` release you simply `git tag 2.0.0`, then build the tag, and it
 will produce a stable `2.0.0` package. Be aware that
-[tags are not transferred with `git push`](#tagging-commit)
+[tags are not transferred with `git push`][tags-are-not-transferred-with-git-push]
 
 For more information/background on why we have come to this conclusion, read
 [Xavier Decoster's blog post on the subject][auto-incremented-nuget-package].
@@ -187,3 +187,13 @@ For more information/background on why we have come to this conclusion, read
 [faq-branch-name-source]: /docs/learn/faq#merged-branch-names-as-version-source
 
 [git-tagging]: https://git-scm.com/book/en/v2/Git-Basics-Tagging
+
+[octopus-deploy]: /docs/reference/build-servers/octopus-deploy
+
+[why]: https://github.com/semantic-release/commit-analyzer/blob/75c9c87c88772d7ded4ca9614852b42519e41931/lib/default-release-rules.js#L8C1-L8C38
+
+[configuration]: https://github.com/semantic-release/commit-analyzer/tree/master#usage
+
+[micromatch-s-glob-implementation]: https://github.com/micromatch/micromatch#matching-features
+
+[tags-are-not-transferred-with-git-push]: #tagging-commit

@@ -8,7 +8,7 @@ RedirectFrom: docs/build-server-support/build-server/bamboo
 If you use Bamboo then you will have to use GitVersion from the command line, as
 there is no actively supported app.  You can use the "Inject Bamboo Variables"
 task to read the GitVersion output back into Bamboo. Below are two examples
-using the [.NET Core GitVersion global tool](https://www.nuget.org/packages/GitVersion.Tool/).
+using the [.NET Core GitVersion global tool][net-core-gitversion-global-tool].
 
 ## Example
 
@@ -39,3 +39,5 @@ sed -i '1d;$ d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 * **Path to properties file**: gitversion.txt
 * **Namespace**: GitVersion
 * **Scope of the Variables**: Result
+
+[net-core-gitversion-global-tool]: https://www.nuget.org/packages/GitVersion.Tool/

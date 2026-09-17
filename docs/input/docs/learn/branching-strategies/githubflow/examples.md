@@ -6,7 +6,7 @@ RedirectFrom: docs/git-branching-strategies/githubflow-examples
 
 These examples are illustrating the usage of the supported `GitHubFlow` workflow
 in GitVersion. To enable this workflow, the builtin template
-[GitHubFlow/v1](/docs/workflows/GitHubFlow/v1.json) needs to be referenced in the
+[GitHubFlow/v1][githubflow-v1] needs to be referenced in the
 configuration as follows:
 
 ```yaml
@@ -25,7 +25,7 @@ for `release`, `feature` and `unknown` branches are specified.
 This configuration allows you to publish CI (Continuous Integration) builds
 from `main` branch to an artifact repository.
 All other branches are manually published. Read more about this at
-[version increments](/docs/reference/version-increments).
+[version increments][version-increments].
 
 :::{.alert .alert-info}
 The _continuous delivery_ mode has been used for the `main` branch in this
@@ -59,7 +59,7 @@ configured to use _continuous deployment_ the version would be `2.0.0`.
 ### Mainline version strategy comparison
 
 The same feature branch history produces different versions when the
-[Mainline version strategy](/docs/reference/modes/mainline) is
+[Mainline version strategy][mainline-version-strategy] is
 used. In particular, the final untagged commit on `main` becomes `2.0.1-1`
 rather than `2.0.0-6`:
 
@@ -69,7 +69,7 @@ rather than `2.0.0-6`:
 
 The other Mainline integration scenarios use the same branch histories as the
 release examples below, so they are not repeated here. See
-[`DocumentationSamplesForGitHubFlow.cs`](https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForGitHubFlow.cs)
+[`DocumentationSamplesForGitHubFlow.cs`][documentationsamplesforgithubflow-cs]
 for the complete executable scenarios and their expected versions.
 
 ## Release Branches
@@ -104,7 +104,7 @@ branch or the release branch.
 
 ## To Contribute
 
-See [contributing examples](/docs/learn/branching-strategies/contribute-examples).
+See [contributing examples][contributing-examples].
 
 ### Source
 
@@ -118,3 +118,13 @@ committing it.
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
 
 [manual-deployment]: /docs/reference/modes/manual-deployment
+
+[githubflow-v1]: /docs/workflows/GitHubFlow/v1.json
+
+[version-increments]: /docs/reference/version-increments
+
+[mainline-version-strategy]: /docs/reference/modes/mainline
+
+[documentationsamplesforgithubflow-cs]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForGitHubFlow.cs
+
+[contributing-examples]: /docs/learn/branching-strategies/contribute-examples

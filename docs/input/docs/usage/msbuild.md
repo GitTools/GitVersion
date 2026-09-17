@@ -19,13 +19,13 @@ Since version 6.0 only MSBuild running on .NET Core (`dotnet msbuild`) is suppor
 
 Unfortunately, up until at least Visual Studio 2022 17.11, Visual Studio runs all builds
 using the .NET Framework version of MSBuild, and therefore **Visual Studio is not supported**.
-For more information see [this discussion](https://github.com/GitTools/GitVersion/discussions/4130).
+For more information see [this discussion][this-discussion].
 
 ## TL;DR
 
 ### Install the MSTask targets
 
-Add the [GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/) NuGet
+Add the [GitVersion.MsBuild][gitversion-msbuild] NuGet
 Package into the project you want to be versioned by GitVersion.
 
 From the Package Manager Console:
@@ -59,9 +59,9 @@ are set and how you can use them in MSBuild tasks.
 
 ## Configuration
 
-The [configuration file](/docs/reference/configuration), if any, is read from a file
+The [configuration file][configuration-file], if any, is read from a file
 the `GitVersion.yml` the root of the repository or the project directory. Since version 3,
-the path to the configuration file itself [cannot be configured](https://github.com/GitTools/GitVersion/issues/3009).
+the path to the configuration file itself [cannot be configured][cannot-be-configured].
 
 ## How does it work?
 
@@ -74,7 +74,7 @@ described below.
 The sub-task named `GitVersion.MsBuild.UpdateAssemblyInfo` will inject version
 metadata into the assembly where GitVersion.MsBuild has been added to. For each assembly
 you want GitVersion to handle versioning, you will need to install
-[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/) into the corresponding
+[GitVersion.MsBuild][gitversion-msbuild] into the corresponding
 project via NuGet.
 
 #### AssemblyInfo Attributes
@@ -98,11 +98,11 @@ Now, when you build:
   appended to it.
 * `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
-Assembly version formatting can use C# format strings. See [Format Strings](/docs/reference/custom-formatting) for available options.
+Assembly version formatting can use C# format strings. See [Format Strings][format-strings] for available options.
 
 #### Other injected Variables
 
-All other [variables](/docs/reference/variables) will be injected into an
+All other [variables][variables] will be injected into an
 internal static class part of the global namespace similar to this:
 
 ```csharp
@@ -165,7 +165,7 @@ else
 ### Populate some MSBuild properties with version metadata
 
 The sub-task `GitVersion.MsBuild.GetVersion` will write all the derived
-[variables](/docs/reference/variables) to MSBuild properties so the information
+[variables][variables] to MSBuild properties so the information
 can be used by other tooling in the build pipeline.
 
 The class for `GitVersion.MsBuild.GetVersion` has a property for each variable.
@@ -206,9 +206,9 @@ The sub-task `GitVersion.MsBuild.WriteVersionInfoToBuildLog` will attempt to wri
 the version information to the current Build Server log.
 
 If, at build time, it is detected that the build is occurring inside a Build
-Server then the [variables](/docs/reference/variables) will be written to the
+Server then the [variables][variables] will be written to the
 Build Server log in a format that the current Build Server can consume. See
-[Build Server Support](/docs/reference/build-servers).
+[Build Server Support][build-server-support].
 
 ## Conditional control tasks
 
@@ -259,7 +259,7 @@ You can configure GitVersion to generate the `GitVersionInformation` class in a 
 ## Extra properties
 
 There are properties that correspond to certain
-[command line arguments](/docs/usage/cli/arguments) for GetVersion task.
+[command line arguments][command-line-arguments] for GetVersion task.
 In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch`
 during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables
 normalize step on a build server, setting `GitVersion_NoCacheEnabled` to `true`
@@ -272,3 +272,19 @@ All the rest command line arguments can be passed via
 
 Set the environment variables `GITVERSION_REMOTE_USERNAME` and
 `GITVERSION_REMOTE_PASSWORD` before the build is initiated.
+
+[this-discussion]: https://github.com/GitTools/GitVersion/discussions/4130
+
+[gitversion-msbuild]: https://www.nuget.org/packages/GitVersion.MsBuild/
+
+[configuration-file]: /docs/reference/configuration
+
+[cannot-be-configured]: https://github.com/GitTools/GitVersion/issues/3009
+
+[format-strings]: /docs/reference/custom-formatting
+
+[variables]: /docs/reference/variables
+
+[build-server-support]: /docs/reference/build-servers
+
+[command-line-arguments]: /docs/usage/cli/arguments

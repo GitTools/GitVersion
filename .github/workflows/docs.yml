@@ -18,6 +18,8 @@ on:
       - .config/dotnet-tools.json
       - .github/actions/cache-restore/**
       - docs/**
+      - CONTRIBUTING.md
+      - BREAKING_CHANGES.md
       - package*.json
       - markdownlint.json
       - .remarkrc.yaml
@@ -33,6 +35,8 @@ on:
       - .config/dotnet-tools.json
       - .github/actions/cache-restore/**
       - docs/**
+      - CONTRIBUTING.md
+      - BREAKING_CHANGES.md
       - package*.json
       - markdownlint.json
       - .remarkrc.yaml
@@ -122,6 +126,12 @@ jobs:
 
       - name: Verify documentation input selection
         run: dotnet run --file docs/scripts/check-docs-inputs.cs
+
+      - name: Verify reference links in scoped Markdown documentation
+        run: |
+          npm ci --ignore-scripts
+          npm run test:links
+          npm run check:links
 
       - name: Restore released documentation inputs
         id: docs-cache

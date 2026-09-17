@@ -15,6 +15,27 @@ the documentation locally before submitting a pull request. This involves
 on your machine, clicking around in it to ensure that everything works as
 expected.
 
+## Markdown link style
+
+Use reference-style links and images in Markdown documentation under `docs/`
+and in root `CONTRIBUTING.md` and `BREAKING_CHANGES.md`. Use readable
+reference labels and put their definitions at the end of the document.
+
+```markdown
+Read the [configuration guide][configuration-guide].
+
+[configuration-guide]: /docs/usage/configure
+```
+
+After `npm ci`, run `npm run check:links` from the repository root.
+Run the rule tests with `npm run test:links`. The checker includes
+tracked and new, non-ignored Markdown files within the scope above; it excludes
+dependency directories and generated build output through Git's ignore rules.
+The checker also runs through `npm run check` and in documentation CI.
+Angle-bracket autolinks, HTML,
+front matter, and literal Markdown examples in code are left in their native form.
+For generated documentation, change the source and regenerate before checking.
+
 ## Documentation organization
 
 The documentation is grouped into Getting started, Guides, Concepts, Reference,

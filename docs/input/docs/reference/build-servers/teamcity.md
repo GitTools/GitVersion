@@ -14,7 +14,7 @@ In [TeamCity][teamcity] you can create a build step as follows:
 * **Command executable:**  `GitVersion.exe`
 * **Command parameters:** `--output buildserver --update-assembly-info true`
 
-Then in your build parameters simply [add a placeholder](#nuget-in-teamcity) of
+Then in your build parameters simply [add a placeholder][add-a-placeholder] of
 the GitVersion variables you would like to use.
 
 GitVersion writes system parameters into TeamCity, so they will automatically be
@@ -114,3 +114,5 @@ Sorry
 [teamcity]: https://www.jetbrains.com/teamcity/
 
 [meta-runner]: https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion
+
+[add-a-placeholder]: #nuget-in-teamcity

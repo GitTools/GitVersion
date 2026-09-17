@@ -3,7 +3,7 @@ Order: 50
 Title: Trunk-based examples
 ---
 
-All examples use the unmodified [TrunkBased preview preset](/docs/learn/branching-strategies/trunkbased):
+All examples use the unmodified [TrunkBased preview preset][trunkbased-preview-preset]:
 
 ```yaml
 workflow: TrunkBased/preview1
@@ -60,7 +60,7 @@ On main, the following sequence illustrates the enabled commit-message rules:
 
 The default patterns also accept `fix`, `feature`, and `breaking` as aliases
 for `patch`, `minor`, and `major`. See
-[version increments](/docs/reference/version-increments) for the configurable
+[version increments][version-increments] for the configurable
 message patterns.
 
 <pre class="mermaid" aria-label="Trunk-based commit-message increments diagram">
@@ -70,8 +70,16 @@ message patterns.
 ## Executable source
 
 These diagrams come from
-[`DocumentationSamplesForTrunkBased.cs`](https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs),
+[`DocumentationSamplesForTrunkBased.cs`][documentationsamplesfortrunkbased-cs],
 which constructs `TrunkBasedConfigurationBuilder.New.Build()` in each scenario
 and asserts every displayed version. To update them, run the
 `GenerateMermaidSources` Cake task and then `ValidateMermaidDiagrams`.
-See [contributing examples](/docs/learn/branching-strategies/contribute-examples).
+See [contributing examples][contributing-examples].
+
+[trunkbased-preview-preset]: /docs/learn/branching-strategies/trunkbased
+
+[version-increments]: /docs/reference/version-increments
+
+[documentationsamplesfortrunkbased-cs]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs
+
+[contributing-examples]: /docs/learn/branching-strategies/contribute-examples

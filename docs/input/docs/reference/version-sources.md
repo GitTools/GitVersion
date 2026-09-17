@@ -4,7 +4,7 @@ Title: Calculation strategies
 Description: Sources and algorithms used to determine a version.
 RedirectFrom: docs/more-info/version-sources
 ---
-Strategies are selected with the [`strategies` configuration setting](/docs/reference/configuration#strategies). They work with branch configuration and deployment modes; they do not independently define the final version.
+Strategies are selected with the [`strategies` configuration setting][strategies-configuration-setting]. They work with branch configuration and deployment modes; they do not independently define the final version.
 
 | Strategy | Role |
 | --- | --- |
@@ -24,7 +24,7 @@ The order of entries in `strategies` is not a priority list. GitVersion evaluate
 
 Do not interpret a source as “always increments” or “never increments” without the relevant branch configuration. Tagged commits, merge handling, increment inheritance, and deployment mode affect the outcome.
 
-For the sequence of operations, see [how versions are calculated](/docs/learn/how-it-works).
+For the sequence of operations, see [how versions are calculated][how-versions-are-calculated].
 
 ## Existing source topics
 
@@ -32,23 +32,23 @@ The following anchors are retained for older links.
 
 ### Tag name
 
-See `TaggedCommit` above and [tag-prefix](/docs/reference/configuration#tag-prefix).
+See `TaggedCommit` above and [tag-prefix][tag-prefix].
 
 ### Version in branch name
 
-See `VersionInBranchName` and [version-in-branch-pattern](/docs/reference/configuration#version-in-branch-pattern).
+See `VersionInBranchName` and [version-in-branch-pattern][version-in-branch-pattern].
 
 ### Merge message
 
-See `MergeMessage` and [merge-message-formats](/docs/reference/configuration#merge-message-formats).
+See `MergeMessage` and [merge-message-formats][merge-message-formats].
 
 ### GitVersion.yml
 
-See `ConfiguredNextVersion` and [next-version](/docs/reference/configuration#next-version).
+See `ConfiguredNextVersion` and [next-version][next-version].
 
 ### Develop branch
 
-See `TrackReleaseBranches` and the [GitFlow configuration](/docs/reference/configuration#global-configuration).
+See `TrackReleaseBranches` and the [GitFlow configuration][gitflow-configuration].
 
 ### Fallback
 
@@ -56,4 +56,22 @@ Fallback determines an increment using the effective configuration. Do not rely 
 
 <a id="others"></a>
 
-For configuration combinations, see [workflow examples](/docs/learn/branching-strategies). To propose additional strategy behavior, start a [discussion](https://github.com/GitTools/GitVersion/discussions).
+For configuration combinations, see [workflow examples][workflow-examples]. To propose additional strategy behavior, start a [discussion][discussion].
+
+[strategies-configuration-setting]: /docs/reference/configuration#strategies
+
+[how-versions-are-calculated]: /docs/learn/how-it-works
+
+[tag-prefix]: /docs/reference/configuration#tag-prefix
+
+[version-in-branch-pattern]: /docs/reference/configuration#version-in-branch-pattern
+
+[merge-message-formats]: /docs/reference/configuration#merge-message-formats
+
+[next-version]: /docs/reference/configuration#next-version
+
+[gitflow-configuration]: /docs/reference/configuration#global-configuration
+
+[workflow-examples]: /docs/learn/branching-strategies
+
+[discussion]: https://github.com/GitTools/GitVersion/discussions
