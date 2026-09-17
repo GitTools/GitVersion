@@ -44,6 +44,7 @@ internal sealed class CommitCollection : ICommitCollection
             {
                 Commit c => (LibGit2Sharp.Commit)c,
                 Branch b => (LibGit2Sharp.Branch)b,
+                IBranch b => GetReacheableFrom(b.Tip),
                 _ => null
             };
 

@@ -112,7 +112,7 @@ internal sealed class ManagedCommitCollection : ICommitCollection
         item switch
         {
             ManagedCommit commit => commit.ObjectId,
-            ManagedBranch branch => (branch.Tip as ManagedCommit)?.ObjectId,
+            IBranch branch => (branch.Tip as ManagedCommit)?.ObjectId,
             _ => null
         };
 

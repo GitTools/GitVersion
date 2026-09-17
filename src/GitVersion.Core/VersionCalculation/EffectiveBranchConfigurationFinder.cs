@@ -4,7 +4,10 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranchConfigurationFinder> logger, IRepositoryStore repositoryStore) : IEffectiveBranchConfigurationFinder
+internal sealed class EffectiveBranchConfigurationFinder(
+    ILogger<EffectiveBranchConfigurationFinder> logger,
+    IRepositoryStore repositoryStore,
+    RepositoryPreparationState? preparationState = null) : IEffectiveBranchConfigurationFinder
 {
     private readonly ILogger<EffectiveBranchConfigurationFinder> logger = logger.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -85,7 +88,9 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
         var targetBranch = new SourceBranchFinder(this.repositoryStore.Branches, configuration, excludeIgnoredBranches: false)
             .FindSourceBranchesOf(branch)
             .Where(candidate => candidate.Name.EquivalentTo(mergeMessage.TargetBranch))
-            .MinBy(candidate => candidate.IsRemote);
+            .OrderByDescending(candidate => IsFetchedContextTarget(branch, candidate))
+            .ThenBy(candidate => candidate.IsRemote)
+            .FirstOrDefault();
 
         if (targetBranch is null)
         {
@@ -104,6 +109,10 @@ internal sealed class EffectiveBranchConfigurationFinder(ILogger<EffectiveBranch
 
         return targetBranch;
     }
+
+    private bool IsFetchedContextTarget(IBranch branch, IBranch candidate) =>
+        branch is ContextualBranch && preparationState?.FetchedRemoteName is { } remoteName
+        && candidate.Name.Canonical.StartsWith($"{ReferenceName.RemoteTrackingBranchPrefix}{remoteName}/", StringComparison.Ordinal);
 
     private static bool IsPullRequestBranch(IBranch branch, IGitVersionConfiguration configuration) =>
         branch.Name.IsPullRequest

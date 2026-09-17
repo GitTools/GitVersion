@@ -22,8 +22,13 @@ public class GitVersionContext(
     /// <summary>Gets the branch currently being versioned.</summary>
     public IBranch CurrentBranch { get; } = currentBranch.NotNull();
 
-    /// <summary>Gets the commits on the current branch that were authored before the current commit.</summary>
-    public IEnumerable<ICommit> CurrentBranchCommits => CurrentBranch.Commits.GetCommitsPriorTo(CurrentCommit.When);
+    /// <summary>
+    /// Gets commits authored before the current commit, or the full reachable history
+    /// including the current tip when versioning a contextual branch at its tip.
+    /// </summary>
+    public IEnumerable<ICommit> CurrentBranchCommits => CurrentBranch is ContextualBranch && CurrentCommit.Equals(CurrentBranch.Tip)
+        ? CurrentBranch.Commits
+        : CurrentBranch.Commits.GetCommitsPriorTo(CurrentCommit.When);
 
     /// <summary>Gets the commit being versioned.</summary>
     public ICommit CurrentCommit { get; } = currentCommit.NotNull();

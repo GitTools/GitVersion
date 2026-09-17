@@ -12,10 +12,14 @@ public class GitVersionCoreModule : IGitVersionModule
     public void RegisterTypes(IServiceCollection services)
     {
         services.AddSingleton<IGitVersionCacheProvider, GitVersionCacheProvider>();
+        services.AddSingleton<CacheConfigurationContentProvider>();
+        services.AddSingleton<CacheRepositoryTargetProvider>();
 
         services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
 
+        services.AddSingleton<RepositoryPreparationState>();
         services.AddSingleton<IGitPreparer, GitPreparer>();
+        services.AddSingleton<BranchResolver>();
         services.AddSingleton<IRepositoryStore, RepositoryStore>();
         services.AddSingleton<ITaggedSemanticVersionRepository, TaggedSemanticVersionRepository>();
         services.AddSingleton<ITaggedSemanticVersionService, TaggedSemanticVersionService>();

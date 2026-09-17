@@ -40,7 +40,7 @@ internal class GitVersionExecutor(
         Initialize(gitVersionOptions);
 
         var exitCode = !VerifyAndDisplayConfiguration(gitVersionOptions)
-            ? RunGitVersionTool(gitVersionOptions)
+            ? RunGitVersionTool()
             : 0;
 
         if (exitCode != 0)
@@ -51,9 +51,9 @@ internal class GitVersionExecutor(
         return exitCode;
     }
 
-    private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
+    private int RunGitVersionTool()
     {
-        this.gitRepository.DiscoverRepository(gitVersionOptions.WorkingDirectory);
+        this.gitRepository.DiscoverRepository(this.repositoryInfo.GitRootPath);
         var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(FileSystemHelper.Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 

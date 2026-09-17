@@ -472,7 +472,7 @@ internal class ArgumentParser(
         };
         var branch = new Option<string?>("--branch", "-b")
         {
-            Description = "Name of the branch to use on the remote repository, must be used in combination with --url"
+            Description = "Target branch to version (local or with --url). Takes precedence over GIT_BRANCH/Git_Branch, which only supply branch context at HEAD"
         };
         var username = new Option<string?>("--username", "-u")
         {

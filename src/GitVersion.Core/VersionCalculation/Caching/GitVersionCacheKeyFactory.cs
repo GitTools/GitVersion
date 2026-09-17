@@ -10,28 +10,24 @@ namespace GitVersion.VersionCalculation.Caching;
 internal class GitVersionCacheKeyFactory(
     IFileSystem fileSystem,
     ILogger<GitVersionCacheKeyFactory> logger,
-    IOptions<GitVersionOptions> options,
-    IConfigurationFileLocator configFileLocator,
-    IConfigurationSerializer configurationSerializer,
+    CacheRepositoryTargetProvider repositoryTarget,
+    CacheConfigurationContentProvider configurationContent,
     IRepositoryStore repositoryStore,
     IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
 {
     private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly IOptions<GitVersionOptions> options = options.NotNull();
-    private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
-    private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
     public GitVersionCacheKey Create(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
         var gitSystemHash = GetGitSystemHash();
-        var configFileHash = GetConfigFileHash();
+        var configFileHash = GetHash(configurationContent.GetFileContent());
         var repositorySnapshotHash = GetRepositorySnapshotHash();
-        var repositoryTargetHash = GetRepositoryTargetHash();
-        var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
+        var repositoryTargetHash = GetHash(repositoryTarget.GetTarget());
+        var overrideConfigHash = GetHash(configurationContent.GetOverrideContent(overrideConfiguration));
         var configurationVersionHash = GetHash(ConfigurationVersionSelector.ResolveName());
 
         var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, repositoryTargetHash, overrideConfigHash, configurationVersionHash);
@@ -174,49 +170,6 @@ internal class GitVersionCacheKeyFactory(
 
         var hash = string.Join(":", head.Name.Canonical, head.Tip.Sha);
         return GetHash(hash);
-    }
-
-    private string GetRepositoryTargetHash()
-    {
-        var repoInfo = this.options.Value.RepositoryInfo;
-        if (repoInfo.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
-        {
-            return string.Empty;
-        }
-
-        return GetHash(repoInfo.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
-    }
-
-    private string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)
-    {
-        if (overrideConfiguration?.Any() != true)
-        {
-            return string.Empty;
-        }
-
-        // Doesn't depend on command line representation and
-        // includes possible changes in default values of Config per se.
-        var configContent = this.configurationSerializer.Serialize(overrideConfiguration);
-
-        return GetHash(configContent);
-    }
-
-    private string GetConfigFileHash()
-    {
-        // will return the same hash even when configuration file will be moved
-        // from workingDirectory to rootProjectDirectory. It's OK. Configuration essentially is the same.
-        var workingDirectory = this.options.Value.WorkingDirectory;
-        var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
-
-        var configFilePath = this.configFileLocator.GetConfigurationFile(workingDirectory)
-                             ?? this.configFileLocator.GetConfigurationFile(projectRootDirectory);
-        if (configFilePath == null || !this.fileSystem.File.Exists(configFilePath))
-        {
-            return string.Empty;
-        }
-
-        var configFileContent = this.fileSystem.File.ReadAllText(configFilePath);
-        return GetHash(configFileContent);
     }
 
     private static string GetHash(params IEnumerable<string> textsToHash)
