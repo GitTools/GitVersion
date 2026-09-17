@@ -34,13 +34,19 @@ public class AzurePipelinesTests : TestBase
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
     }
 
-    [Test]
-    public void ShouldSetOutputVariables()
+    [TestCase("0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'")]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("0")]
+    public void ShouldSetOutputVariables(string? value)
     {
-        var vsVersion = this.buildServer.SetOutputVariables("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+        var vsVersion = this.buildServer.SetOutputVariables("Foo", value);
 
-        vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
-        vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo;isOutput=true]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+        vsVersion.ShouldBe(new[]
+        {
+            $"##vso[task.setvariable variable=GitVersion_Foo]{value}",
+            $"##vso[task.setvariable variable=GitVersion_Foo;isOutput=true]{value}"
+        });
     }
 
     [Test]
@@ -70,6 +76,7 @@ public class AzurePipelinesTests : TestBase
     [TestCase("$(GITVERSION_SEMVER)", "1.0.0", "1.0.0")]
     [TestCase("$(GitVersion.SemVer)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
     [TestCase("$(GITVERSION_SEMVER)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
+    [TestCase("$(GitVersion.SemVer)-$(GitVersion_SemVer)", "1.0.0", "1.0.0-1.0.0")]
     public void AzurePipelinesBuildNumberWithSemVer(string buildNumberFormat, string mySemVer, string expectedBuildNumber)
     {
         this.environment.SetEnvironmentVariable(key, buildNumberFormat);
