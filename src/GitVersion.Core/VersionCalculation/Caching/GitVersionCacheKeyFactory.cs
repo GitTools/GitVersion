@@ -14,7 +14,7 @@ internal class GitVersionCacheKeyFactory(
     CacheConfigurationContentProvider configurationContent,
     IRepositoryStore repositoryStore,
     IGitRepositoryInfo repositoryInfo,
-    BranchInput branchInput)
+    BranchResolver branchResolver)
     : IGitVersionCacheKeyFactory
 {
     private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
@@ -177,17 +177,17 @@ internal class GitVersionCacheKeyFactory(
     private string GetRepositoryTargetHash()
     {
         var repoInfo = this.options.Value.RepositoryInfo;
-        if (branchInput.ContextBranch is { } context)
+        if (branchResolver.ContextBranch is { } context)
         {
             return GetHash("branch-context", context.Canonical, repoInfo.CommitId ?? string.Empty);
         }
 
-        if (branchInput.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
+        if (branchResolver.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
         {
             return string.Empty;
         }
 
-        return GetHash(branchInput.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
+        return GetHash(branchResolver.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
     }
 
     private static string GetHash(params IEnumerable<string> textsToHash)

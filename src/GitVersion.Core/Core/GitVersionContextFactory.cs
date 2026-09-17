@@ -8,7 +8,7 @@ internal class GitVersionContextFactory(
     IRepositoryStore repositoryStore,
     ITaggedSemanticVersionRepository taggedSemanticVersionRepository,
     IOptions<GitVersionOptions> options,
-    BranchInput branchInput)
+    BranchResolver branchResolver)
     : IGitVersionContextFactory
 {
     private readonly Lazy<IGitVersionConfiguration> configuration = configuration.NotNull();
@@ -21,9 +21,9 @@ internal class GitVersionContextFactory(
         var gitVersionOptions = this.options.Value;
         var effectiveConfiguration = this.configuration.Value;
 
-        var currentBranch = this.repositoryStore.GetTargetBranch(branchInput.TargetBranch)
+        var currentBranch = this.repositoryStore.GetTargetBranch(branchResolver.TargetBranch)
             ?? throw new InvalidOperationException("Need a branch to operate on");
-        var currentCommit = (branchInput.ContextBranch != null && gitVersionOptions.RepositoryInfo.CommitId.IsNullOrWhiteSpace()
+        var currentCommit = (branchResolver.ContextBranch != null && gitVersionOptions.RepositoryInfo.CommitId.IsNullOrWhiteSpace()
             ? currentBranch.Tip
             : this.repositoryStore.GetCurrentCommit(
             currentBranch, gitVersionOptions.RepositoryInfo.CommitId, effectiveConfiguration.Ignore

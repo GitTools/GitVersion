@@ -484,7 +484,7 @@ public class BranchContextTests : TestBase
         using var services = CreateServices(fixture.RepositoryPath, environment);
 
         services.GetRequiredService<ICurrentBuildAgent>().PreventFetch().ShouldBeFalse();
-        services.GetRequiredService<BranchInput>().ContextBranch.ShouldBeNull();
+        services.GetRequiredService<BranchResolver>().ContextBranch.ShouldBeNull();
     }
 
     [Test]
@@ -586,14 +586,14 @@ public class BranchContextTests : TestBase
         }
     }
 
-    private static BranchInput Resolve(string? upper, string? alias, string? target = null)
+    private static BranchResolver Resolve(string? upper, string? alias, string? target = null)
     {
         var environment = new TestEnvironment();
         environment.SetEnvironmentVariable("GIT_BRANCH", upper);
         environment.SetEnvironmentVariable("Git_Branch", alias);
         var agent = Substitute.For<ICurrentBuildAgent>();
         agent.GetCurrentBranch(Arg.Any<bool>()).Returns("refs/heads/provider");
-        return new BranchInput(Options.Create(new GitVersionOptions { RepositoryInfo = { TargetBranch = target } }), environment, agent);
+        return new BranchResolver(Options.Create(new GitVersionOptions { RepositoryInfo = { TargetBranch = target } }), environment, agent);
     }
 
     private static ServiceProvider CreateServices(string path, TestEnvironment environment, bool noNormalize = false,

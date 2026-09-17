@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchInput? branchInput = null) : IRepositoryStore
+internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchResolver? branchResolver = null) : IRepositoryStore
 {
     private readonly ILogger<RepositoryStore> logger = logger.NotNull();
     private readonly IGitRepository repository = repository.NotNull();
@@ -15,7 +15,7 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
     public IBranch Head => this.repository.Head;
 
     private ContextualBranch? contextualBranch;
-    private ContextualBranch? ContextualBranch => branchInput?.ContextBranch is { } name
+    private ContextualBranch? ContextualBranch => branchResolver?.ContextBranch is { } name
         ? this.contextualBranch ??= new ContextualBranch(name, Head)
         : null;
 

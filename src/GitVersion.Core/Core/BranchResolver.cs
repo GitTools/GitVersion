@@ -6,9 +6,9 @@ namespace GitVersion;
 
 // Resolve once per execution, before preparation or cache lookup. An environment
 // branch names the checkout's context; it must never become a target selector.
-internal sealed class BranchInput
+internal sealed class BranchResolver
 {
-    public BranchInput(IOptions<GitVersionOptions> options, IEnvironment environment, ICurrentBuildAgent buildAgent)
+    public BranchResolver(IOptions<GitVersionOptions> options, IEnvironment environment, ICurrentBuildAgent buildAgent)
     {
         var repository = options.Value.RepositoryInfo;
         if (!string.IsNullOrWhiteSpace(repository.TargetBranch))

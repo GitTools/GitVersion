@@ -18,7 +18,7 @@ internal class GitPreparer(
     IMutatingGitRepository repository,
     IGitRepositoryInfo repositoryInfo,
     Lazy<GitVersionContext> versionContext,
-    BranchInput branchInput)
+    BranchResolver branchResolver)
     : IGitPreparer
 {
     private readonly ILogger<GitPreparer> logger = logger.NotNull();
@@ -52,8 +52,8 @@ internal class GitPreparer(
 
     private void PrepareInternal(GitVersionOptions gitVersionOptions)
     {
-        var currentBranch = branchInput.TargetBranch;
-        this.logger.LogInformation("Branch input: {Branch}; contextual override: {Context}", currentBranch, branchInput.ContextBranch);
+        var currentBranch = branchResolver.TargetBranch;
+        this.logger.LogInformation("Branch input: {Branch}; contextual override: {Context}", currentBranch, branchResolver.ContextBranch);
 
         if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
@@ -99,7 +99,7 @@ internal class GitPreparer(
 
     private void CreateDynamicRepository(string? targetBranch)
     {
-        if (targetBranch.IsNullOrWhiteSpace() && branchInput.ContextBranch is null)
+        if (targetBranch.IsNullOrWhiteSpace() && branchResolver.ContextBranch is null)
         {
             throw new InvalidOperationException("Dynamic Git repositories must have a target branch (/b)");
         }
@@ -159,7 +159,7 @@ internal class GitPreparer(
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureOnlyOneRemoteIsDefined), expectedSha);
         FetchRemotesIfRequired(remote, noFetch, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(FetchRemotesIfRequired), expectedSha);
-        if (branchInput.ContextBranch != null)
+        if (branchResolver.ContextBranch != null)
         {
             // The environment names an in-memory branch at HEAD. In particular,
             // do not attach HEAD or rewrite a real branch with the same name.
