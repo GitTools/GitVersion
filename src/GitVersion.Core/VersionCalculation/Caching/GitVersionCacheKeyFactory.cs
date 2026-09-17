@@ -10,16 +10,14 @@ namespace GitVersion.VersionCalculation.Caching;
 internal class GitVersionCacheKeyFactory(
     IFileSystem fileSystem,
     ILogger<GitVersionCacheKeyFactory> logger,
-    IOptions<GitVersionOptions> options,
+    CacheRepositoryTargetProvider repositoryTarget,
     CacheConfigurationContentProvider configurationContent,
     IRepositoryStore repositoryStore,
-    IGitRepositoryInfo repositoryInfo,
-    BranchResolver branchResolver)
+    IGitRepositoryInfo repositoryInfo)
     : IGitVersionCacheKeyFactory
 {
     private readonly ILogger<GitVersionCacheKeyFactory> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly IOptions<GitVersionOptions> options = options.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
@@ -28,7 +26,7 @@ internal class GitVersionCacheKeyFactory(
         var gitSystemHash = GetGitSystemHash();
         var configFileHash = GetHash(configurationContent.GetFileContent());
         var repositorySnapshotHash = GetRepositorySnapshotHash();
-        var repositoryTargetHash = GetRepositoryTargetHash();
+        var repositoryTargetHash = GetHash(repositoryTarget.GetTarget());
         var overrideConfigHash = GetHash(configurationContent.GetOverrideContent(overrideConfiguration));
         var configurationVersionHash = GetHash(ConfigurationVersionSelector.ResolveName());
 
@@ -172,22 +170,6 @@ internal class GitVersionCacheKeyFactory(
 
         var hash = string.Join(":", head.Name.Canonical, head.Tip.Sha);
         return GetHash(hash);
-    }
-
-    private string GetRepositoryTargetHash()
-    {
-        var repoInfo = this.options.Value.RepositoryInfo;
-        if (branchResolver.ContextBranch is { } context)
-        {
-            return GetHash("branch-context", context.Canonical, repoInfo.CommitId ?? string.Empty);
-        }
-
-        if (branchResolver.TargetBranch.IsNullOrEmpty() && repoInfo.CommitId.IsNullOrEmpty())
-        {
-            return string.Empty;
-        }
-
-        return GetHash(branchResolver.TargetBranch ?? string.Empty, repoInfo.CommitId ?? string.Empty);
     }
 
     private static string GetHash(params IEnumerable<string> textsToHash)

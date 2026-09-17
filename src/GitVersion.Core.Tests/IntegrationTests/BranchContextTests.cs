@@ -586,6 +586,85 @@ public class BranchContextTests : TestBase
         }
     }
 
+    [TestCase(false, false, false, false)]
+    [TestCase(true, false, false, false)]
+    [TestCase(false, true, false, false)]
+    [TestCase(false, false, true, false)]
+    [TestCase(false, false, false, true)]
+    public void ContextualPullRequestPrefersTargetFromSuccessfulFetch(bool noFetch, bool noNormalize, bool localBuild, bool preventFetch)
+    {
+        using var remote = new EmptyRepositoryFixture();
+        remote.Repository.MakeATaggedCommit("1.0.0");
+        remote.BranchTo("support/1.0");
+        var originalTarget = remote.Repository.Head.Tip;
+        remote.Checkout(MainBranch);
+        var scratch = Directory.CreateTempSubdirectory("gitversion-context-target-").FullName;
+        try
+        {
+            var path = Path.Combine(scratch, "checkout");
+            Repository.Clone(remote.RepositoryPath, path);
+            using var repository = new Repository(path);
+            var target = repository.CreateBranch("support/1.0", repository.Lookup<LibGit2Sharp.Commit>(originalTarget.Sha));
+            Commands.Checkout(repository, repository.CreateBranch("feature/work", target.Tip));
+            var source = repository.MakeACommit();
+            Commands.Checkout(repository, target);
+            repository.Merge(repository.Branches["feature/work"], source.Author,
+                new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
+            var merge = repository.Commit("Merge pull request 42 from feature/work into support/1.0", source.Author, source.Author,
+                new CommitOptions { AmendPreviousCommit = true });
+            Commands.Checkout(repository, merge);
+            repository.Refs.UpdateTarget(repository.Refs[target.CanonicalName], originalTarget.Sha);
+            remote.Checkout("support/1.0");
+            var fetchedTarget = remote.Repository.MakeACommit();
+            var localRefs = SnapshotRefs(repository).Where(reference => reference.StartsWith("refs/heads/", StringComparison.Ordinal)).ToArray();
+            var environment = new TestEnvironment();
+            if (!localBuild)
+            {
+                environment.SetEnvironmentVariable(preventFetch ? "TF_BUILD" : ContinuaCi.EnvironmentVariableName, "true");
+            }
+            environment.SetEnvironmentVariable("GIT_BRANCH", "pull/42/merge");
+            var configuration = GitFlowConfigurationBuilder.New
+                .WithBranch("support", builder => builder.WithIncrement(IncrementStrategy.Patch))
+                .Build();
+            using var services = CreateServices(path, environment, noNormalize: noNormalize, configuration: configuration,
+                configure: options => options.Settings.NoFetch = noFetch);
+            services.GetRequiredService<IGitPreparer>().Prepare();
+            var context = services.GetRequiredService<Lazy<GitVersionContext>>().Value;
+            context.CurrentCommit.Parents.Count.ShouldBe(2);
+            MergeMessage.TryParse(context.CurrentCommit, configuration, out var mergeMessage).ShouldBeTrue();
+            mergeMessage.IsMergedPullRequest.ShouldBeTrue();
+            mergeMessage.TargetBranch.ShouldBe("support/1.0");
+            var selected = services.GetRequiredService<IEffectiveBranchConfigurationFinder>()
+                .GetConfigurations(context.CurrentBranch, configuration).ToArray().ShouldHaveSingleItem().Branch;
+            var fetched = !noFetch && !noNormalize && !localBuild && !preventFetch;
+
+            selected.Name.Canonical.ShouldBe(fetched ? "refs/remotes/origin/support/1.0" : "refs/heads/support/1.0");
+            selected.Tip.ShouldNotBeNull().Sha.ShouldBe(fetched ? fetchedTarget.Sha : originalTarget.Sha);
+            context.CurrentCommit.Sha.ShouldBe(merge.Sha);
+            repository.Info.IsHeadDetached.ShouldBeTrue();
+            SnapshotRefs(repository).Where(reference => reference.StartsWith("refs/heads/", StringComparison.Ordinal)).ShouldBe(localRefs);
+            if (fetched)
+            {
+                var cacheKeys = services.GetRequiredService<IGitVersionCacheKeyFactory>();
+                var fetchedKey = cacheKeys.Create(null);
+                var fetchedRefs = SnapshotRefs(repository);
+                services.GetRequiredService<IOptions<GitVersionOptions>>().Value.Settings.NoFetch = true;
+                services.GetRequiredService<IGitPreparer>().Prepare();
+                var withoutFetch = services.GetRequiredService<IEffectiveBranchConfigurationFinder>()
+                    .GetConfigurations(context.CurrentBranch, configuration).ToArray().ShouldHaveSingleItem().Branch;
+
+                withoutFetch.Name.Canonical.ShouldBe("refs/heads/support/1.0");
+                withoutFetch.Tip.ShouldNotBeNull().Sha.ShouldBe(originalTarget.Sha);
+                SnapshotRefs(repository).ShouldBe(fetchedRefs);
+                cacheKeys.Create(null).ShouldNotBe(fetchedKey);
+            }
+        }
+        finally
+        {
+            FileSystemHelper.Directory.DeleteDirectory(scratch);
+        }
+    }
+
     private static BranchResolver Resolve(string? upper, string? alias, string? target = null)
     {
         var environment = new TestEnvironment();

@@ -21,6 +21,12 @@ Cache entries include this context. The override also works with `--no-normalize
 when normalization is enabled it can fetch history, but does not rewrite branches
 or attach HEAD for the override.
 
+For a contextual pull-request branch whose merge message identifies the target,
+a successful preparation fetch makes the matching remote-tracking target take
+precedence over a stale local target. Local refs remain unchanged. When preparation
+does not fetch (including `--no-fetch`, `--no-normalize`, local builds, or a provider
+that disables fetching), target selection retains its normal local preference.
+
 Use a valid Git branch name such as `feature/work`. `refs/heads/feature/work` is
 accepted as `feature/work`; `refs/remotes/origin/feature/work` also supplies
 `feature/work` context. A short name such as `origin/feature/work` is literal.

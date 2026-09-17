@@ -34,8 +34,11 @@ internal class GitPreparer(
 
     private const string DefaultRemoteName = "origin";
 
+    internal string? FetchedRemoteName { get; private set; }
+
     public void Prepare()
     {
+        FetchedRemoteName = null;
         var gitVersionOptions = this.options.Value;
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
         var projectRoot = this.repositoryInfo.ProjectRootDirectory;
@@ -325,6 +328,7 @@ internal class GitPreparer(
             var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
             this.logger.LogInformation("Fetching from remote '{RemoteName}' using the following refspecs: {RefSpecs}.", remote.Name, refSpecs);
             this.retryAction.Execute(() => this.repository.Fetch(remote.Name, [], authentication, null));
+            FetchedRemoteName = remote.Name;
         }
     }
 
