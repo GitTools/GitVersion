@@ -48,7 +48,16 @@ internal sealed class BranchResolver
 
     private static bool IsValidBranchName(string name) => !string.IsNullOrEmpty(name)
         && name != "HEAD" && name[0] != '-' && !name.EndsWith('.')
-        && !name.Contains("..", StringComparison.Ordinal) && !name.Contains("@{", StringComparison.Ordinal)
-        && !name.Any(c => c <= ' ' || c == '\u007f' || "~^:?*[\\".Contains(c))
-        && !name.Split('/').Any(part => part.Length == 0 || part[0] == '.' || part.EndsWith(".lock", StringComparison.Ordinal));
+        && !ContainsInvalidSequences(name)
+        && !ContainsInvalidCharacters(name)
+        && !HasInvalidPathComponents(name);
+
+    private static bool ContainsInvalidSequences(string name) =>
+        name.Contains("..", StringComparison.Ordinal) || name.Contains("@{", StringComparison.Ordinal);
+
+    private static bool ContainsInvalidCharacters(string name) =>
+        name.Any(c => c <= ' ' || c == '\u007f' || "~^:?*[\\".Contains(c));
+
+    private static bool HasInvalidPathComponents(string name) =>
+        name.Split('/').Any(part => part.Length == 0 || part[0] == '.' || part.EndsWith(".lock", StringComparison.Ordinal));
 }
