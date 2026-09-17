@@ -18,6 +18,8 @@ public sealed record BaseVersionOperand(string Source, SemanticVersion SemanticV
     /// <summary>Gets or initializes the discovered semantic version.</summary>
     public SemanticVersion SemanticVersion { get; init; } = SemanticVersion.NotNull();
 
+    internal SemanticVersionSource? SemVerSource { get; init; }
+
     /// <summary>Returns a human-readable description of this operand including its source and version.</summary>
     public override string ToString()
     {

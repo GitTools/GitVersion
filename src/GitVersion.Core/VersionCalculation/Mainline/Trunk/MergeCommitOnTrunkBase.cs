@@ -52,11 +52,14 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
             {
                 context.BaseVersionSource = baseVersion.BaseVersionSource;
                 context.SemanticVersion = baseVersion.SemanticVersion;
+                context.SemVerSource = baseVersion.GetBaselineSemVerSource();
                 context.ForceIncrement = baseVersion.Operator?.ForceIncrement ?? false;
             }
             else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
             {
-                context.AlternativeSemanticVersions.Add(baseVersion.Operator.AlternativeSemanticVersion);
+                context.AddAlternativeSemanticVersion(baseVersion.Operator.AlternativeSemanticVersion,
+                baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
+                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion, null, VersionField.None));
             }
 
             if (context.SemanticVersion is not null)
@@ -65,7 +68,8 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
                 {
                     Source = GetType().Name,
                     BaseVersionSource = context.BaseVersionSource,
-                    SemanticVersion = context.SemanticVersion.NotNull()
+                    SemanticVersion = context.SemanticVersion.NotNull(),
+                    SemVerSource = context.SemVerSource
                 };
             }
 
@@ -76,7 +80,8 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
                 Increment = context.Increment,
                 ForceIncrement = context.ForceIncrement,
                 Label = context.Label,
-                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max()
+                AlternativeSemanticVersion = context.AlternativeSemanticVersions.Max(),
+                AlternativeSemVerSource = context.GetAlternativeSemVerSource()
             };
 
             context.BaseVersionSource = commit.Value;

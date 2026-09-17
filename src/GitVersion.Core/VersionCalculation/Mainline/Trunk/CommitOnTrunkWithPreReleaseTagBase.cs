@@ -17,7 +17,8 @@ internal abstract class CommitOnTrunkWithPreReleaseTagBase : IIncrementer
         {
             Source = GetType().Name,
             BaseVersionSource = context.BaseVersionSource,
-            SemanticVersion = context.SemanticVersion.NotNull()
+            SemanticVersion = context.SemanticVersion.NotNull(),
+            SemVerSource = context.SemVerSource
         };
     }
 }

@@ -51,6 +51,18 @@ output:
   custom-version-format: '{env:ANDROID_VERSION_CODE}'
 ```
 
+## Source variables
+
+Use `CommitCountSourceDistance` when formatting the count, and `SemVerSourceSemVer` or `SemVerSourceIncrement` when describing the selected semantic baseline:
+
+```yaml
+output:
+  assembly-informational-format: '{SemVerSourceSemVer}-{SemVerSourceIncrement}+{CommitCountSourceDistance:000}'
+  # Example: 5.0.0-None+002 for an external 5.0.0 baseline and two counted commits.
+```
+
+`SemVerSourceSha` can be absent for configuration or branch-name sources; it is not a substitute for `Sha` (HEAD) or `CommitCountSourceSha` (the counting anchor). Existing `VersionSource*` format names remain available for compatibility.
+
 ## Overview
 
 The custom formatter functionality introduces several new formatters that can be used in GitVersion configuration files and templates:

@@ -59,6 +59,11 @@
             <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
             <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
             <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
+            <Output TaskParameter="CommitCountSourceDistance" PropertyName="GitVersion_CommitCountSourceDistance" />
+            <Output TaskParameter="CommitCountSourceSha" PropertyName="GitVersion_CommitCountSourceSha" />
+            <Output TaskParameter="SemVerSourceIncrement" PropertyName="GitVersion_SemVerSourceIncrement" />
+            <Output TaskParameter="SemVerSourceSemVer" PropertyName="GitVersion_SemVerSourceSemVer" />
+            <Output TaskParameter="SemVerSourceSha" PropertyName="GitVersion_SemVerSourceSha" />
             <Output TaskParameter="VersionSourceDistance" PropertyName="GitVersion_VersionSourceDistance" />
             <Output TaskParameter="VersionSourceIncrement" PropertyName="GitVersion_VersionSourceIncrement" />
             <Output TaskParameter="VersionSourceSemVer" PropertyName="GitVersion_VersionSourceSemVer" />
@@ -101,6 +106,11 @@
             <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_CommitCountSourceDistance)' != '' ">GitVersion_CommitCountSourceDistance=$(GitVersion_CommitCountSourceDistance);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_CommitCountSourceSha)' != '' ">GitVersion_CommitCountSourceSha=$(GitVersion_CommitCountSourceSha);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_SemVerSourceIncrement)' != '' ">GitVersion_SemVerSourceIncrement=$(GitVersion_SemVerSourceIncrement);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_SemVerSourceSemVer)' != '' ">GitVersion_SemVerSourceSemVer=$(GitVersion_SemVerSourceSemVer);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_SemVerSourceSha)' != '' ">GitVersion_SemVerSourceSha=$(GitVersion_SemVerSourceSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceDistance)' != '' ">GitVersion_VersionSourceDistance=$(GitVersion_VersionSourceDistance);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceIncrement)' != '' ">GitVersion_VersionSourceIncrement=$(GitVersion_VersionSourceIncrement);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceSemVer)' != '' ">GitVersion_VersionSourceSemVer=$(GitVersion_VersionSourceSemVer);$(DefineConstants)</DefineConstants>

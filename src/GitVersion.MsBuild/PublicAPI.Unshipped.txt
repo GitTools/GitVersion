@@ -1,3 +1,13 @@
 #nullable enable
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceDistance.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceDistance.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceSha.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceIncrement.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceIncrement.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.set -> void
