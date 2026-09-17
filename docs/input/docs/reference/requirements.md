@@ -40,10 +40,11 @@ config will apply.
 
 ### Git Branch
 
-When branch context is ambiguous, set `GIT_BRANCH` (or its `Git_Branch` alias) to
+When branch context is ambiguous or missing (such as on a detached `HEAD`),
+set `GIT_BRANCH` (or its `Git_Branch` alias) to
 the branch name to use at the checked-out commit. The branch need not exist as a
-ref. This does not select a tag or move HEAD. See [environment variables](/docs/reference/environment-variables)
-for precedence and validation rules.
+ref. This does not select a tag or move HEAD. See [environment variables][env-vars]
+for precedence and validation rules and behavior details.
 
 [git-unshallow]: https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow
 
@@ -52,3 +53,5 @@ for precedence and validation rules.
 [build-servers]: /docs/reference/build-servers
 
 [configuration]: /docs/reference/configuration
+
+[env-vars]: /docs/reference/environment-variables

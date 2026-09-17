@@ -30,7 +30,10 @@ that disables fetching), target selection retains its normal local preference.
 Use a valid Git branch name such as `feature/work`. `refs/heads/feature/work` is
 accepted as `feature/work`; `refs/remotes/origin/feature/work` also supplies
 `feature/work` context. A short name such as `origin/feature/work` is literal.
-Nonblank names are not trimmed. Invalid names, tag refs and pull-request refs are
+Whitespace-only values such as `GIT_BRANCH="    "` are ignored without an error;
+resolution continues with `Git_Branch`, then the provider's branch ref, then HEAD.
+Nonblank names are not trimmed, so `GIT_BRANCH=" feature/work "` is invalid.
+Invalid names, tag refs and pull-request refs are
 rejected. To label a PR merge checkout, supply the intended branch name, for example
 `GIT_BRANCH=feature/work`. Provider tag detection remains separate; do not use this
 variable to select a tag or commit.
