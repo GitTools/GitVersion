@@ -1,5 +1,29 @@
 ## Unreleased
 
+### Azure Pipelines variable names use underscores
+
+In v7.0, the CLI's build-server output and `GitVersion.MsBuild` emit
+`GitVersion_<Property>` for both ordinary and output variables. Dotted
+`GitVersion.<Property>` names are no longer emitted, and no aliases are provided.
+
+Update pipeline references such as `$(GitVersion.SemVer)` to
+`$(GitVersion_SemVer)` and named-step references such as
+`$(version.GitVersion.SemVer)` to `$(version.GitVersion_SemVer)`. Update conditions,
+templates, environment mappings, log parsers, and cross-job/stage output keys
+such as `outputs['version.GitVersion.SemVer']` to
+`outputs['version.GitVersion_SemVer']` as well.
+
+The ordinary shell environment name remains `GITVERSION_SEMVER`. Check for
+user-defined underscore variables that the new outputs could overwrite and
+dotted variables that normalize to the same environment key. Build-number
+interpolation continues to accept both dotted and underscore placeholders.
+
+GitTools' Azure `gitversion-execute` task already emits underscore-prefixed and
+camel-case names from JSON; its output names need no separator migration for
+this change. Check the task's supported GitVersion versions separately before
+adopting v7. See the [v6-to-v7 migration guide][azure-variable-migration] for the
+full reference mapping.
+
 ### Pre-release output variables renamed
 
 The pre-release output variables now use SemVer label terminology consistently:
@@ -341,3 +365,5 @@ work for you
 [system-commandline]: https://github.com/dotnet/command-line-api
 
 [configuration-migration]: https://gitversion.net/docs/reference/configuration#migrating-master-overrides-from-v5
+
+[azure-variable-migration]: docs/input/docs/migration/v6-to-v7.md#azure-pipelines-variable-names

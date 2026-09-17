@@ -6,6 +6,37 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## Azure Pipelines variable names
+
+The CLI's build-server output and `GitVersion.MsBuild` now emit
+`GitVersion_<Property>` for both ordinary and output variables. Dotted
+`GitVersion.<Property>` names are removed without aliases in v7.0.
+
+For a producer step named `version`, job `Build`, and stage `Compile`:
+
+| Consumer | v6 | v7 |
+| --- | --- | --- |
+| Later-step macro | `$(GitVersion.SemVer)` | `$(GitVersion_SemVer)` |
+| Expression | `variables['GitVersion.SemVer']` | `variables['GitVersion_SemVer']` |
+| Named-step macro | `$(version.GitVersion.SemVer)` | `$(version.GitVersion_SemVer)` |
+| Dependent job | `$[ dependencies.Build.outputs['version.GitVersion.SemVer'] ]` | `$[ dependencies.Build.outputs['version.GitVersion_SemVer'] ]` |
+| Dependent stage's job | `$[ stageDependencies.Compile.Build.outputs['version.GitVersion.SemVer'] ]` | `$[ stageDependencies.Compile.Build.outputs['version.GitVersion_SemVer'] ]` |
+
+Update conditions, templates, explicit environment mappings, and custom log
+parsers as well as task inputs. Pin the previous tool version until consumers
+are migrated. The ordinary shell environment name remains `GITVERSION_SEMVER`;
+check for user-defined underscore variables that the new pipeline outputs could
+overwrite and dotted variables that normalize to the same environment key.
+
+Build-number interpolation still accepts both dotted and underscore placeholders.
+JSON property names, DotEnv keys, and MSBuild properties are unaffected by this
+separator change. Other build agents retain their existing naming conventions.
+
+GitTools' Azure `gitversion-execute` task already emits underscore-prefixed and
+camel-case names from JSON. Its output names need no separator migration for this
+change; check the task's supported tool versions separately before adopting v7.
+See [Azure DevOps][azure-devops] for complete dependency and environment examples.
+
 ## Branch environment overrides
 
 `GIT_BRANCH` and its cross-platform alias `Git_Branch` now supply branch context at
@@ -229,3 +260,5 @@ remains available to convert flat files after runtime support is removed.
 [git-backend]: #git-backend
 
 [version-variables]: /docs/reference/variables
+
+[azure-devops]: /docs/reference/build-servers/azure-devops
