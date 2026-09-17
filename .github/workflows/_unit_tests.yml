@@ -15,6 +15,93 @@ permissions:
   contents: read
 
 jobs:
+  reporter_pilot:
+    name: MTP pilot - ubuntu-24.04 - net10.0 - managed - BuildAgents
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      GITVERSION_GIT_BACKEND: managed
+      TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/pilot/GitVersion.BuildAgents.Tests/net10.0/managed/attempt-${{ github.run_attempt }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', '**/*.csproj', '**/*.props', '**/*.targets', 'NuGet.config', 'nuget.config') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Build reporting pilot
+        shell: bash
+        run: |
+          mkdir -p "$TEST_RESULTS"
+          dotnet build src/GitVersion.BuildAgents.Tests/GitVersion.BuildAgents.Tests.csproj \
+            --framework net10.0 --configuration Release -p:ContinuousIntegrationBuild=false \
+            2>&1 | tee "$TEST_RESULTS/build.log"
+
+      # SDK 10.0.401's dotnet test output omits the reporter's annotation
+      # commands. Invoke the built MTP executable so Actions receives them.
+      # Do not retry: earlier failure annotations survive a later passing run.
+      - name: Test BuildAgents with MTP reporting
+        id: pilot_tests
+        shell: bash
+        run: |
+          # Explicit bash uses pipefail, preserving a test failure through tee.
+          dotnet src/GitVersion.BuildAgents.Tests/bin/Release/net10.0/GitVersion.BuildAgents.Tests.dll \
+            --results-directory "$TEST_RESULTS" \
+            --report-spekt-junit --report-spekt-junit-filename "$TEST_RESULTS/results.xml" \
+            --coverlet --coverlet-output-format cobertura \
+            --coverlet-exclude '[GitVersion*.Tests]*' --coverlet-exclude '[GitVersion.Testing]*' \
+            --report-gh --report-gh-annotations on --report-gh-groups off \
+            --report-gh-step-summary on-failure --report-gh-step-summary-sections test-results \
+            --report-gh-failure-details on --report-gh-slow-test-notices off \
+            2>&1 | tee "$TEST_RESULTS/test.log"
+
+      - name: Pilot test totals
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
+        if: always() && hashFiles('artifacts/test-results/pilot/**/results.xml') != ''
+        with:
+          paths: artifacts/test-results/pilot/**/results.xml
+
+      - name: Explain incomplete or failed pilot
+        if: always() && steps.pilot_tests.outcome != 'success'
+        shell: bash
+        env:
+          TEST_OUTCOME: ${{ steps.pilot_tests.outcome }}
+        run: |
+          {
+            echo '### MTP pilot — BuildAgents / net10.0 / managed'
+            printf 'Test step outcome: **%s**.\n\n' "$TEST_OUTCOME"
+            echo 'The run may be incomplete. Missing reports do not mean that tests passed.'
+            echo 'See the test-step log and the pilot artifact, if produced, for available JUnit and coverage evidence.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve pilot reports and log
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: mtp-pilot-ubuntu-24.04-net10.0-managed-BuildAgents-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/test-results/pilot/
+          if-no-files-found: warn
+          retention-days: 7
+
   unit_test:
     name: ${{ matrix.os }} - net${{ matrix.dotnet_version }} - ${{ matrix.git_backend }}
     permissions:

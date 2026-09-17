@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
+        <PackageReference Include="Microsoft.Testing.Extensions.GitHubActionsReport" PrivateAssets="all" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.Core.Tests\GitVersion.Core.Tests.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
