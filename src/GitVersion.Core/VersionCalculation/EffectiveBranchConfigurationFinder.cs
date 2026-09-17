@@ -7,7 +7,7 @@ namespace GitVersion.VersionCalculation;
 internal sealed class EffectiveBranchConfigurationFinder(
     ILogger<EffectiveBranchConfigurationFinder> logger,
     IRepositoryStore repositoryStore,
-    GitPreparer? gitPreparer = null) : IEffectiveBranchConfigurationFinder
+    RepositoryPreparationState? preparationState = null) : IEffectiveBranchConfigurationFinder
 {
     private readonly ILogger<EffectiveBranchConfigurationFinder> logger = logger.NotNull();
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
@@ -111,7 +111,7 @@ internal sealed class EffectiveBranchConfigurationFinder(
     }
 
     private bool IsFetchedContextTarget(IBranch branch, IBranch candidate) =>
-        branch is ContextualBranch && gitPreparer?.FetchedRemoteName is { } remoteName
+        branch is ContextualBranch && preparationState?.FetchedRemoteName is { } remoteName
         && candidate.Name.Canonical.StartsWith($"{ReferenceName.RemoteTrackingBranchPrefix}{remoteName}/", StringComparison.Ordinal);
 
     private static bool IsPullRequestBranch(IBranch branch, IGitVersionConfiguration configuration) =>

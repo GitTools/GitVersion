@@ -17,8 +17,8 @@ public class GitVersionCoreModule : IGitVersionModule
 
         services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
 
-        services.AddSingleton<GitPreparer>();
-        services.AddSingleton<IGitPreparer>(sp => sp.GetRequiredService<GitPreparer>());
+        services.AddSingleton<RepositoryPreparationState>();
+        services.AddSingleton<IGitPreparer, GitPreparer>();
         services.AddSingleton<BranchResolver>();
         services.AddSingleton<IRepositoryStore, RepositoryStore>();
         services.AddSingleton<ITaggedSemanticVersionRepository, TaggedSemanticVersionRepository>();

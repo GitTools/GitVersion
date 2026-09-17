@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation.Caching;
 internal sealed class CacheRepositoryTargetProvider(
     IOptions<GitVersionOptions> options,
     BranchResolver branchResolver,
-    GitPreparer gitPreparer)
+    RepositoryPreparationState preparationState)
 {
     public string[] GetTarget()
     {
@@ -14,7 +14,7 @@ internal sealed class CacheRepositoryTargetProvider(
         {
             // A fetched remote can change contextual PR target selection even
             // when its refs already matched the remote before preparation.
-            return ["branch-context", context.Canonical, commitId ?? string.Empty, gitPreparer.FetchedRemoteName ?? string.Empty];
+            return ["branch-context", context.Canonical, commitId ?? string.Empty, preparationState.FetchedRemoteName ?? string.Empty];
         }
 
         return branchResolver.TargetBranch.IsNullOrEmpty() && commitId.IsNullOrEmpty()
