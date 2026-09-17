@@ -5,7 +5,7 @@ Description: Details on the Continua CI support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/continua
 ---
 
-This guide explains how to run GitVersion inside [Continua CI](https://www.finalbuilder.com/continua-ci).
+This guide explains how to run GitVersion inside [Continua CI][continua-ci].
 
 ## Assumptions
 
@@ -40,7 +40,7 @@ GitVersion tool on the agents:
 
 ## Basic Usage
 
-To run GitLink inside [Continua CI](https://www.finalbuilder.com/continua-ci),
+To run GitLink inside [Continua CI][continua-ci],
 follow the steps below:
 
 * Add a new `Execute Program` step to a stage
@@ -57,3 +57,5 @@ follow the steps below:
   * Exit code: 0
 
 Now GitVersion will automatically run and fill the `GitVersion_` variables.
+
+[continua-ci]: https://www.finalbuilder.com/continua-ci

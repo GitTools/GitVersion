@@ -3,7 +3,9 @@
   "description": "From `git log` to SemVer in no time",
   "main": "index.js",
   "scripts": {
-    "check": "remark . --quiet --frail",
+    "check": "npm run check:links && remark . --quiet --frail",
+    "check:links": "node docs/scripts/check-reference-links.mjs",
+    "test:links": "node --test docs/scripts/remark-reference-links.test.mjs",
     "format": "remark . --output"
   },
   "directories": {

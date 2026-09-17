@@ -1,18 +1,18 @@
 # Replacing LibGit2Sharp with a managed Git implementation
 
-Research and migration plan for [#236](https://github.com/arturcic/GitVersion/issues/236) — researched 2026-07, based on a full survey of the `next/v7` tree.
+Research and migration plan for [#236][236] — researched 2026-07, based on a full survey of the `next/v7` tree.
 
 ## 1. Motivation
 
 LibGit2Sharp wraps the native `libgit2` library and has been a recurring source of pain for GitVersion for close to a decade:
 
 - **Native binary load failures** on end-user machines and CI images — GitTools/GitVersion
-  [#1097](https://github.com/GitTools/GitVersion/issues/1097),
-  [#1203](https://github.com/GitTools/GitVersion/issues/1203),
-  [#1744](https://github.com/GitTools/GitVersion/issues/1744),
-  [#1852](https://github.com/GitTools/GitVersion/issues/1852),
-  [#2615](https://github.com/GitTools/GitVersion/issues/2615),
-  [#2884](https://github.com/GitTools/GitVersion/issues/2884). The failure mode is always the same class:
+  [#1097][1097],
+  [#1203][1203],
+  [#1744][1744],
+  [#1852][1852],
+  [#2615][2615],
+  [#2884][2884]. The failure mode is always the same class:
   the RID-specific `libgit2-*.so/.dylib/.dll` doesn't match the runtime OS/arch/libc (musl vs glibc,
   new Ubuntu OpenSSL versions, ARM variants) or cannot be located by the MSBuild task's assembly-load context.
 - **Packaging weight**: `LibGit2Sharp.NativeBinaries` unpacks ~12 native binaries
@@ -24,8 +24,8 @@ LibGit2Sharp wraps the native `libgit2` library and has been a recurring source 
   complicates concurrent use inside MSBuild.
 
 Precedent: Nerdbank.GitVersioning faced the same problem and built a managed read-only engine
-([dotnet/Nerdbank.GitVersioning#505](https://github.com/dotnet/Nerdbank.GitVersioning/issues/505),
-[#521](https://github.com/dotnet/Nerdbank.GitVersioning/pull/521)). It became their default backend and delivered
+([dotnet/Nerdbank.GitVersioning#505][dotnet-nerdbank-gitversioning-505],
+[#521][521]). It became their default backend and delivered
 **>10x throughput on history walks** compared to libgit2. NBGV kept libgit2 for write paths; the plan below goes one
 step further and removes the native dependency entirely.
 
@@ -33,9 +33,9 @@ step further and removes the native dependency entirely.
 
 | Candidate | Reads | Writes | Fetch/clone | Maintained | Assessment |
 |---|---|---|---|---|---|
-| [NBGV ManagedGit](https://github.com/dotnet/Nerdbank.GitVersioning/tree/main/src/NerdBank.GitVersioning/ManagedGit) | objects, packs (incl. deltas), refs; tuned for version calculation | No | No | Active, but internal to NBGV (MIT) | **Primary porting source** — proven pack/idx/delta code, the source of the >10x speedup |
-| [GitReader](https://github.com/kekyo/GitReader) (kekyo) | full traversal: branches/tags/commits, packfiles, worktrees, index, .gitignore | No | No | Active (v1.18, .NET 10 TFMs, zero deps) | Porting inspiration for worktree handling and commit-graph; viable external dependency if vendoring were rejected |
-| [ManagedGitLib](https://github.com/GlebChili/ManagedGitLib) | standalone extraction of NBGV ManagedGit | No | No | Stale (~2022) | Proof that vendoring/extracting NBGV's code works; not a dependency to take |
+| [NBGV ManagedGit][nbgv-managedgit] | objects, packs (incl. deltas), refs; tuned for version calculation | No | No | Active, but internal to NBGV (MIT) | **Primary porting source** — proven pack/idx/delta code, the source of the >10x speedup |
+| [GitReader][gitreader] (kekyo) | full traversal: branches/tags/commits, packfiles, worktrees, index, .gitignore | No | No | Active (v1.18, .NET 10 TFMs, zero deps) | Porting inspiration for worktree handling and commit-graph; viable external dependency if vendoring were rejected |
+| [ManagedGitLib][managedgitlib] | standalone extraction of NBGV ManagedGit | No | No | Stale (~2022) | Proof that vendoring/extracting NBGV's code works; not a dependency to take |
 | DotGit, GitRead.Net, GitSharp, NGit | partial readers / ancient ports | No | No | Dead | Skip |
 | `git` CLI shell-out (MinVer-style) | yes | yes | yes, with system credential helpers | n/a | **Chosen for writes + network** — requires `git` on PATH, which every CI normalization scenario already implies |
 
@@ -279,3 +279,27 @@ Commit-graph reader (generation numbers for topo sort and merge-base), benchmark
 | F | commit-graph accelerator (optional) | 2–3 weeks |
 
 **Total to a LibGit2Sharp-free GitVersion: ~4–5 months elapsed including soak cycles.**
+
+[236]: https://github.com/arturcic/GitVersion/issues/236
+
+[1097]: https://github.com/GitTools/GitVersion/issues/1097
+
+[1203]: https://github.com/GitTools/GitVersion/issues/1203
+
+[1744]: https://github.com/GitTools/GitVersion/issues/1744
+
+[1852]: https://github.com/GitTools/GitVersion/issues/1852
+
+[2615]: https://github.com/GitTools/GitVersion/issues/2615
+
+[2884]: https://github.com/GitTools/GitVersion/issues/2884
+
+[dotnet-nerdbank-gitversioning-505]: https://github.com/dotnet/Nerdbank.GitVersioning/issues/505
+
+[521]: https://github.com/dotnet/Nerdbank.GitVersioning/pull/521
+
+[nbgv-managedgit]: https://github.com/dotnet/Nerdbank.GitVersioning/tree/main/src/NerdBank.GitVersioning/ManagedGit
+
+[gitreader]: https://github.com/kekyo/GitReader
+
+[managedgitlib]: https://github.com/GlebChili/ManagedGitLib

@@ -4,7 +4,7 @@ Order: 2
 ---
 Start with a workflow and override only the settings your repository needs.
 
-The old interactive `init` configuration tool was [removed in v6](/docs/reference/configuration#configuration-tool). Create and edit the YAML file directly.
+The old interactive `init` configuration tool was [removed in v6][removed-in-v6]. Create and edit the YAML file directly.
 
 ## Create a configuration file
 
@@ -16,7 +16,7 @@ calculation:
   tag-prefix: '[vV]?'
 ```
 
-This selects the GitHubFlow defaults and permits a leading v or V in version tags. For a different starting point, [choose a workflow](/docs/usage/choose-workflow).
+This selects the GitHubFlow defaults and permits a leading v or V in version tags. For a different starting point, [choose a workflow][choose-a-workflow].
 
 ## Inspect the effective configuration
 
@@ -31,7 +31,7 @@ dotnet-gitversion --config GitVersion.yml --show-config
 dotnet-gitversion --config GitVersion.yml --show-variable SemVer
 ```
 
-Check that the file is included in your CI checkout. See [configuration troubleshooting](/docs/learn/faq#configuration-is-not-being-used).
+Check that the file is included in your CI checkout. See [configuration troubleshooting][configuration-troubleshooting].
 
 ## Change one responsibility at a time
 
@@ -41,4 +41,12 @@ Check that the file is included in your CI checkout. See [configuration troubles
 
 Labels affect the calculated semantic version; they are not only a display preference.
 
-Use [configuration by topic](/docs/reference/configuration-topics) to find the relevant settings. Before adopting a change, compare the effective configuration and output on histories that represent your release process.
+Use [configuration by topic][configuration-by-topic] to find the relevant settings. Before adopting a change, compare the effective configuration and output on histories that represent your release process.
+
+[removed-in-v6]: /docs/reference/configuration#configuration-tool
+
+[choose-a-workflow]: /docs/usage/choose-workflow
+
+[configuration-troubleshooting]: /docs/learn/faq#configuration-is-not-being-used
+
+[configuration-by-topic]: /docs/reference/configuration-topics

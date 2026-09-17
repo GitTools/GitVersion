@@ -73,5 +73,9 @@ pipelines:
         - dotnet build
 ```
 
-[Variables and Secrets](https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/)
-[Clone Options](https://bitbucket.org/blog/support-for-more-clone-options-at-the-step-level)
+[Variables and Secrets][variables-and-secrets]
+[Clone Options][clone-options]
+
+[variables-and-secrets]: https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/
+
+[clone-options]: https://bitbucket.org/blog/support-for-more-clone-options-at-the-step-level

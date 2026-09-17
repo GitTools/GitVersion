@@ -83,6 +83,8 @@ may be exposed automatically as **environment variables** in the format
 
 ## Formatting Variables
 
-GitVersion variables can be formatted using C# format strings. See [Format Strings](/docs/reference/custom-formatting) for details.
+GitVersion variables can be formatted using C# format strings. See [Format Strings][format-strings] for details.
 
 [build-servers]: ./build-servers/
+
+[format-strings]: /docs/reference/custom-formatting

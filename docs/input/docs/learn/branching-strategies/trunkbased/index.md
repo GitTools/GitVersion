@@ -29,11 +29,11 @@ dotnet-gitversion --show-variable FullSemVer
 ```
 
 The preset selects the `ConfiguredNextVersion` and `Mainline` calculation
-strategies. [Mainline](/docs/reference/modes/mainline) interprets commits and
+strategies. [Mainline][mainline] interprets commits and
 merges to calculate version increments; it is a strategy, not a deployment mode.
 You do not need to override `strategies` or set `next-version` to use this preset.
 
-For overrides, follow the [v7 configuration layout](/docs/reference/configuration#v7-configuration-layout):
+For overrides, follow the [v7 configuration layout][v7-configuration-layout]:
 `workflow` stays at the root, version-calculation settings go under
 `calculation`, and output settings go under `output`.
 
@@ -61,14 +61,22 @@ not mean it has been published. Feature and hotfix builds carry branch labels.
 Commit-message incrementing is enabled, and the default tag prefix accepts
 both `1.2.0` and `v1.2.0`.
 
-See the [complete built-in configuration](/docs/reference/configuration#global-configuration)
+See the [complete built-in configuration][complete-built-in-configuration]
 for the exact regular expressions, merge handling, and output weights. Do not
 substitute the outputs of customized GitFlow Mainline examples for this preset.
 
 ## Try representative histories
 
-The [worked examples](examples) show direct commits on main, feature and hotfix
+The [worked examples][worked-examples] show direct commits on main, feature and hotfix
 merges, release tags, and commit-message increments using this exact preset.
 Compare those histories with your repository, including your actual merge
 policy, before switching workflows. Squash and fast-forward merges produce
 different histories from the explicit merge commits in these examples.
+
+[mainline]: /docs/reference/modes/mainline
+
+[v7-configuration-layout]: /docs/reference/configuration#v7-configuration-layout
+
+[complete-built-in-configuration]: /docs/reference/configuration#global-configuration
+
+[worked-examples]: examples

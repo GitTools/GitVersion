@@ -13,7 +13,7 @@ The default is `v7`. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER`
 variable; it now produces a replacement diagnostic. The legacy parser is
 removed in v7.1 and the selector in v8.
 
-See [Migration v6 to v7](/docs/migration/v6-to-v7) for upgrade guidance and the full argument mapping.
+See [Migration v6 to v7][migration-v6-to-v7] for upgrade guidance and the full argument mapping.
 :::
 
 ## Help
@@ -177,7 +177,7 @@ key stays at the root in both versions:
 20. `calculation.version-bump-reset-message`
 21. `workflow`
 
-Read more about [Configuration](/docs/reference/configuration).
+Read more about [Configuration][configuration].
 
 Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`, `GitVersion.yaml`, `.GitVersion.yml` or `.GitVersion.yaml`.
 
@@ -208,3 +208,7 @@ Will use only major and minor version numbers for assembly version. Assembly bui
 ### Example: How to override configuration option 'next-version'
 
 `GitVersion.exe --output json --override-config calculation.next-version=6`
+
+[migration-v6-to-v7]: /docs/migration/v6-to-v7
+
+[configuration]: /docs/reference/configuration

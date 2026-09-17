@@ -23,7 +23,7 @@ Example: `dotnet tool install GitVersion.Tool --global --version 7.0.0`
 :::
 
 If you want to pin to a specific version of GitVersion, you can find the available
-versions of [`GitVersion.Tool` on NuGet](https://www.nuget.org/packages/GitVersion.Tool/).
+versions of [`GitVersion.Tool` on NuGet][tool].
 
 GitVersion v7 uses .NET 10 RID-specific tool packages. The install command must
 run with the .NET 10 SDK; NuGet then selects the package for the current
@@ -112,7 +112,7 @@ of writing: Linux and macOS).
 
 ### Chocolatey
 
-Available on [Chocolatey](https://chocolatey.org) as
+Available on [Chocolatey][chocolatey] as
 [`GitVersion.Portable`][choco].
 
 ```shell
@@ -164,3 +164,5 @@ of writing: Linux, macOS, Windows).
 [docker]: https://hub.docker.com/r/gittools/gitversion
 
 [choco]: https://chocolatey.org/packages/GitVersion.Portable
+
+[chocolatey]: https://chocolatey.org
