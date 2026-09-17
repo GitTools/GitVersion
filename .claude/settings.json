@@ -13,7 +13,8 @@
     "enabledPlugins": {
         "csharp-lsp@claude-plugins-official": true,
         "dotnet-test@dotnet-agent-skills": true,
-        "dotnet-upgrade@dotnet-agent-skills": true
+        "dotnet-upgrade@dotnet-agent-skills": true,
+        "coderabbit@claude-plugins-official": true
     },
     "hooks": {
         "SessionStart": [
