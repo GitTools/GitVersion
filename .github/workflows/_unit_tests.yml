@@ -53,6 +53,15 @@ jobs:
           retry_on: error
           command: 'dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }}'
 
+      - name: Upload app test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: app-test-diagnostics-${{ matrix.os }}-net${{ matrix.dotnet_version }}-${{ matrix.git_backend }}
+          path: artifacts/test-results/**/GitVersion.App.Tests/**
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Test Summary
         uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
         if: always() && matrix.dotnet_version == '10.0'

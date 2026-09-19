@@ -233,7 +233,7 @@ public record TestCommandSettings : GitVersionSettings
 """;
 
     [Test]
-    public async Task ValidateGeneratedCommandImplementation()
+    public async Task ValidateGeneratedCommandImplementationForCSharp14Net10Consumer()
     {
         var generatorType = typeof(SystemCommandlineGenerator);
         var encoding = Encoding.UTF8;
@@ -282,7 +282,7 @@ public record TestCommandSettings : GitVersionSettings
                 compilationOptions = compilationOptions.WithNullableContextOptions(NullableContextOptions.Enable);
 
                 return project
-                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.Latest))
+                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.CSharp14))
                     .WithCompilationOptions(compilationOptions)
                     .Solution;
             });

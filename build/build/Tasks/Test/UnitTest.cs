@@ -65,17 +65,32 @@ public class UnitTest : FrostingTask<BuildContext>
         };
         settings.MSBuildSettings.SetContinuousIntegrationBuild(false);
 
-        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine(projectName));
+        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine($"net{framework}").Combine(projectName));
 
-        settings.WithArgumentCustomization(args => args
-            .Append("--report-spekt-junit")
-            .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
-            .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath)
-            .Append("--coverlet")
-            .Append("--coverlet-output-format").AppendQuoted("cobertura")
-            .Append("--coverlet-exclude").AppendQuoted("[GitVersion*.Tests]*")
-            .Append("--coverlet-exclude").AppendQuoted("[GitVersion.Testing]*")
-        );
+        settings.WithArgumentCustomization(args =>
+        {
+            args.Append("--report-spekt-junit")
+                .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
+                .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath);
+
+            // CI publishes coverage from the LTS target; other targets validate runtime compatibility.
+            if (framework == Constants.DotnetLtsLatest)
+            {
+                args.Append("--coverlet")
+                    .Append("--coverlet-output-format").AppendQuoted("cobertura")
+                    .Append("--coverlet-exclude").AppendQuoted("[GitVersion*.Tests]*")
+                    .Append("--coverlet-exclude").AppendQuoted("[GitVersion.Testing]*");
+            }
+
+            if (projectName == "GitVersion.App.Tests")
+            {
+                args.Append("--diagnostic")
+                    .Append("--diagnostic-output-directory").AppendQuoted(resultsDirectory.FullPath)
+                    .Append("--diagnostic-verbosity").Append("Trace");
+            }
+
+            return args;
+        });
 
         context.DotNetTest(project.FullPath, settings);
     }
