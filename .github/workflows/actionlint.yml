@@ -49,7 +49,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run actionlint
-        uses: reviewdog/action-actionlint@8b682e1e7e512151d73a6b9449cbff173846226e # v1.74.0
+        uses: reviewdog/action-actionlint@ab7138020abfe6cd20b742c82e5b7a9749fb5884 # v1.75.0
         with:
           github_token: ${{ github.token }}
           reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
