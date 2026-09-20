@@ -107,6 +107,20 @@ public class MainScenarios : TestBase
     }
 
     [Test]
+    public void NextVersionDoesNotRequireTagPrefix()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.2.3")
+            .WithTagPrefixPattern("project-a/")
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+
+        fixture.AssertFullSemver("1.2.3-1", configuration);
+    }
+
+    [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommitsVersionShouldBeTag()
     {
         var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("1.1.0").Build();
