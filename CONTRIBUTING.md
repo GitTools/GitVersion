@@ -21,6 +21,28 @@ Issues are also welcome, [failing tests][we-write-tests] are even more welcome.
   on how to improve the documentation and please include documentation updates
   with your PR.
 
+### C# language and compiler compatibility
+
+Use the SDK pinned in `global.json`. Shared .NET 10/.NET 11 source, build tooling,
+and the experimental CLI use `LangVersion=latest`, selecting the latest language
+version supported by that compiler. Check runtime and API requirements separately
+when adopting syntax in code that also targets .NET 10.
+
+The source generator retains its `netstandard2.0` target and PolySharp support.
+Its generated code must compile for a C# 14/.NET 10 consumer. Its Roslyn package
+version also constrains which compiler hosts can load it; building with the
+pinned SDK and running generator tests are separate compatibility checks.
+The docs parser uses its own Roslyn package and must preserve API symbols and
+XML comments independently of the SDK compiler. Roslyn 5.9 still requires
+`LanguageVersion.Preview` to parse C# 15 collection-expression arguments, so the
+docs parser enables it while project compilation remains on `LangVersion=latest`.
+The compatibility fixture covers C# 14 and C# 15 syntax. Revisit this parser setting
+with the GA Roslyn package and revalidate it when adopting newer syntax.
+
+Build tooling will move to .NET 11 at GA; the deferred `DocsInputs`
+collection-arguments cleanup belongs
+with that upgrade, preserving case-insensitive reserved-path validation.
+
 ### Git history & pull request updates
 
 We prefer a **linear commit history**.

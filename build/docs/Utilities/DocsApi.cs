@@ -39,8 +39,8 @@ public static class DocsApi
         }
 
         var trees = Directory.GetFiles(project, "*.cs", SearchOption.AllDirectories)
-            .Where(p => !Path.GetRelativePath(project, p).Split(Path.DirectorySeparatorChar).Any(s => s is "bin" or "obj" or "Templates"))
-            .Select(p => CSharpSyntaxTree.ParseText(File.ReadAllText(p), new CSharpParseOptions(documentationMode: DocumentationMode.Diagnose), p)).ToArray();
+            .Where(p => !Path.GetRelativePath(project, p).Split(Path.DirectorySeparatorChar).Any(s => s is "bin" or "obj" or "Templates" or "AddFormats"))
+            .Select(p => ParseSource(File.ReadAllText(p), p)).ToArray();
         var compilation = CSharpCompilation.Create(name, trees, references.Where(r => r != assembly),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         var path = Path.Combine(assemblies, name + ".xml");
@@ -53,6 +53,20 @@ public static class DocsApi
         }
 
         document.Save(path);
+    }
+
+    internal static SyntaxTree ParseSource(string source, string path)
+    {
+        var tree = CSharpSyntaxTree.ParseText(source,
+            // Roslyn 5.9 still gates C# 15 syntax behind Preview; revisit with the GA package.
+            new CSharpParseOptions(LanguageVersion.Preview, documentationMode: DocumentationMode.Diagnose), path);
+        var errors = tree.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToArray();
+        if (errors.Length > 0)
+        {
+            throw new InvalidOperationException($"Could not parse API source {path}: {string.Join(Environment.NewLine, errors.Select(d => d.ToString()))}");
+        }
+
+        return tree;
     }
 
     private static void AddTreeComments(SemanticModel model, SyntaxTree tree, XElement members, HashSet<string?> existing)

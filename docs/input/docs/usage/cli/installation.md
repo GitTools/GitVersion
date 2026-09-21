@@ -25,10 +25,15 @@ Example: `dotnet tool install GitVersion.Tool --global --version 7.0.0`
 If you want to pin to a specific version of GitVersion, you can find the available
 versions of [`GitVersion.Tool` on NuGet][tool].
 
-GitVersion v7 uses .NET 10 RID-specific tool packages. The install command must
-run with the .NET 10 SDK; NuGet then selects the package for the current
+GitVersion v7 uses RID-specific tool packages targeting .NET 10 and .NET 11.
+The install command requires the .NET 10 SDK or later; NuGet selects the package for the current
 platform automatically. GitVersion ships dedicated packages for Windows x64 and
 ARM64, Linux x64 and ARM64 (including musl), and Apple Silicon macOS.
+
+The .NET 11 target currently uses RC1 and requires a compatible .NET 11 runtime.
+The .NET 10 target remains available. Standalone self-contained archives continue
+to use .NET 10; the Docker build matrix covers both .NET 10 and .NET 11 using the
+published GitTools base images. .NET 11 support remains under validation until GA.
 
 To run call
 
@@ -93,7 +98,7 @@ When using these commands, you must specify the package name `GitVersion.Tool` r
 Note that local tools use `dotnet gitversion` (without the hyphen), while the
 global tool uses `dotnet-gitversion` (with a hyphen).
 
-The same .NET 10 SDK and platform requirements as the global tool apply.
+The same SDK and platform requirements as the global tool apply.
 
 ### Homebrew
 
@@ -129,7 +134,7 @@ without installing any other dependencies. To use the Docker image, execute
 the following:
 
 ```shell
-docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-debian.12 /repo
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-ubuntu.26.04 /repo
 ```
 
 The important arguments here are:

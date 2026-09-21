@@ -126,12 +126,19 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
     {
-        var workingDirectory = FileSystemHelper.Path.GetTempPathLegacy();
-        var result = GitVersionHelper.ExecuteIn(workingDirectory, null, false);
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var result = GitVersionHelper.ExecuteIn(directory.FullName, null, false);
 
-        result.ExitCode.ShouldNotBe(0);
-        result.Output.ShouldNotBeNull();
-        result.Output.ShouldContain("Cannot find the .git directory");
+            result.ExitCode.ShouldNotBe(0);
+            result.Output.ShouldNotBeNull();
+            result.Output.ShouldContain("Cannot find the .git directory");
+        }
+        finally
+        {
+            directory.Delete(true);
+        }
     }
 
     [TestCase(" --help")]

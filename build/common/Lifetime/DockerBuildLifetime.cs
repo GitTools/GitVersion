@@ -60,4 +60,3 @@ public abstract class DockerBuildLifetime<TContext> : BuildLifetimeBase<TContext
         context.EndGroup();
     }
 }
-

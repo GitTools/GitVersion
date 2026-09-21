@@ -39,7 +39,15 @@ The change applies to JSON output, formatting variables, build-agent environment
 
 ### .NET 8 and .NET 9 target frameworks removed
 
-GitVersion now targets .NET 10 only. The CLI, global tool, and `GitVersion.MsBuild` require a .NET 10 runtime. The MSBuild integration continues to support projects targeting earlier frameworks through its `dotnet exec --roll-forward Major` launcher, provided .NET 10 is installed.
+GitVersion now targets .NET 10 and .NET 11. Install the runtime matching the CLI or global-tool target framework. Standalone archives continue to use .NET 10.
+
+`GitVersion.MsBuild` selects its .NET 11 tools for compatible projects and .NET 10 tools otherwise. The MSBuild host must support the selected task assembly. Projects targeting earlier frameworks remain supported; the CLI launcher uses `dotnet exec --roll-forward Major`, but this does not change the runtime required by the MSBuild host.
+
+### Docker distribution versions updated
+
+The default Docker distribution is now Ubuntu 26.04. New image builds replace Ubuntu 22.04, CentOS Stream 9, Debian 12, and Fedora 43 with Ubuntu 26.04, CentOS Stream 10, Debian 13, and Fedora 44. Ubuntu 24.04 and Alpine 3.23 remain available. Images are built for .NET 10 and .NET 11.
+
+Update pinned distribution tags in CI pipelines. Existing images for retired distributions are not deleted, but will no longer receive new GitVersion builds.
 
 ### RID-specific global-tool packages
 
