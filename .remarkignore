@@ -1,0 +1,4 @@
+# Generated documentation, downloaded packages, and build output.
+artifacts/
+**/[Bb]in/
+**/[Oo]bj/

@@ -8,7 +8,7 @@ Portions of the code in this project (the managed Git object store reader) are d
 
 Nerdbank.GitVersioning is licensed under the MIT License:
 
-```
+```text
 The MIT License (MIT)
 
 Copyright (c) .NET Foundation and Contributors

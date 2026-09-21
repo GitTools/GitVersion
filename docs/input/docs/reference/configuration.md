@@ -1231,21 +1231,6 @@ The configuration accepts the following values:
 * VersionInBranchName
 * Mainline
 
-[1145]: https://github.com/GitTools/GitVersion/issues/1145
-
-[1366]: https://github.com/GitTools/GitVersion/issues/1366
-
-[2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
-
-[conventional-commits-config]: /docs/reference/version-increments#conventional-commit-messages
-
-[conventional-commits]: https://www.conventionalcommits.org/
-
-[modes]: /docs/reference/modes
-
-[variables]: /docs/reference/variables
-
-[version-sources]: /docs/reference/version-sources
 ### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the
@@ -1430,3 +1415,19 @@ The base template of the configuration to use. Possible values are `GitFlow/v1` 
 [named-groups]: https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
 
 [regex]: https://regex101.com/r/Ly7O1x/3/
+
+[1145]: https://github.com/GitTools/GitVersion/issues/1145
+
+[1366]: https://github.com/GitTools/GitVersion/issues/1366
+
+[2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+
+[conventional-commits-config]: /docs/reference/version-increments#conventional-commit-messages
+
+[conventional-commits]: https://www.conventionalcommits.org/
+
+[modes]: /docs/reference/modes
+
+[variables]: /docs/reference/variables
+
+[version-sources]: /docs/reference/version-sources
