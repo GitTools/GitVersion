@@ -80,7 +80,7 @@ GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-ar
 
 GitVersion v7 targets .NET 10 and .NET 11. Install the runtime matching the CLI or global-tool target framework. Standalone archives continue to use .NET 10.
 
-`GitVersion.MsBuild` selects its .NET 11 tools for compatible projects and .NET 10 tools otherwise. Use an MSBuild host that supports the selected task assembly. Projects targeting earlier frameworks remain supported: the CLI launcher uses `dotnet exec --roll-forward Major`, but this does not change the runtime required by the MSBuild host. See [MSBuild usage](/docs/usage/msbuild) for details.
+`GitVersion.MsBuild` selects its .NET 11 tools for compatible projects and .NET 10 tools otherwise. Use an MSBuild host that supports the selected task assembly. Projects targeting earlier frameworks remain supported: the CLI launcher uses `dotnet exec --roll-forward Major`, but this does not change the runtime required by the MSBuild host. See [MSBuild usage][msbuild-usage] for details.
 
 ## Docker distribution versions updated
 
@@ -279,3 +279,5 @@ remains available to convert flat files after runtime support is removed.
 [version-variables]: /docs/reference/variables
 
 [azure-devops]: /docs/reference/build-servers/azure-devops
+
+[msbuild-usage]: /docs/usage/msbuild
