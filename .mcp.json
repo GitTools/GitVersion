@@ -1,12 +1,1 @@
-{
-  "mcpServers": {
-    "jbcontext": {
-      "type": "stdio",
-      "command": "jbcontext",
-      "args": [
-        "mcp"
-      ],
-      "env": {}
-    }
-  }
-}
+{}
