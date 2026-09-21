@@ -73,6 +73,7 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
+        <PackageReference Include="Microsoft.Testing.Extensions.GitHubActionsReport" PrivateAssets="all" />
         <PackageReference Include="coverlet.MTP" />
         <PackageReference Include="JunitXml.TestLogger" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
