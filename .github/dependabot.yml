@@ -51,6 +51,11 @@ updates:
         group-by: dependency-name
         patterns:
           - "JsonSchemaNet.*"
+      polly:
+        group-by: dependency-name
+        patterns:
+          - "Polly"
+          - "Polly.*"
       # Keep every remaining dependency update in one PR across all roots.
       other-dependencies:
         group-by: dependency-name
