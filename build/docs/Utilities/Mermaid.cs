@@ -58,9 +58,11 @@ public static class Mermaid
 
             try
             {
-                context.DotNetTest(DocumentationTestsProject.FullPath, new DotNetTestSettings
+                context.DotNetTest(context.MakeAbsolute(DocumentationTestsProject).FullPath, new DotNetTestSettings
                 {
                     PathType = DotNetTestPathType.Project,
+                    // Generate each diagram once, even when the test project targets multiple runtimes.
+                    Framework = $"net{Constants.DotnetLtsLatest}",
                     Filter = "FullyQualifiedName~DocumentationSamplesForGitFlow|FullyQualifiedName~DocumentationSamplesForGitHubFlow|FullyQualifiedName~DocumentationSamplesForTrunkBased",
                     WorkingDirectory = context.MakeAbsolute(Paths.Root),
                     EnvironmentVariables = new Dictionary<string, string>
