@@ -114,9 +114,9 @@ fixture.AssertFullSemver("1.0.1-my-feature.1", configuration);
 Test stack: NUnit 4.x, Shouldly assertions, NSubstitute mocks, `EmptyRepositoryFixture` / `BaseGitFlowRepositoryFixture`, config builders (`GitFlowConfigurationBuilder`, `GitHubFlowConfigurationBuilder`, `EmptyConfigurationBuilder`).
 
 <!-- jbcontext-instructions-start -->
-## Tools
+# Tools
 
-### Code discovery: context-explorer first
+## Code discovery: context-explorer first
 
 When a task requires finding or understanding code whose location you don't
 already know, your FIRST code-discovery step MUST be:
@@ -155,25 +155,25 @@ Notes: <confidence; whether keyword grep would be more direct here>
 Use its findings if they look useful, or ignore them entirely if `Notes:` flags
 the task as keyword-based. You retain full freedom for the rest of the run.
 
-### Semantic Code Search (jbcontext)
+## Semantic Code Search (jbcontext)
 
 You have access to `jbcontext search` for searching the codebase semantically.
 It finds code by meaning, not just keywords.
 
-#### Usage
+### Usage
 
 ```bash
 jbcontext search "<detailed and descriptive query>"
 jbcontext search -p <path> "<query>"  # <path> must be relative to the project root
 ```
 
-#### Query Tips
+### Query Tips
 
 - Be descriptive: "function that validates user email addresses" > "email"
 - Include context: "error handling middleware for HTTP requests with logging"
 - Specify what you're looking for: "React component that renders a modal dialog"
 
-#### Single-Shot Policy
+### Single-Shot Policy
 
 Use `jbcontext search` as a semantic bootstrap when the relevant file or subsystem is still unknown.
 
@@ -184,7 +184,7 @@ Use `jbcontext search` as a semantic bootstrap when the relevant file or subsyst
 - After the first relevant file or path is known, prefer direct file reads and exact search to inspect nearby code.
 - If a semantic retry is still needed, use `jbcontext search -p <path> ...` with the directory of the best first hit.
 
-#### Examples
+### Examples
 
 ```bash
 # Find authentication-related code
