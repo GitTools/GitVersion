@@ -13,22 +13,28 @@ timeout = 2
 # jbcontext-hook:SessionStart:end
 
 # jbcontext-hook:PreToolUse:start
+# jbcontext-hook:PreToolUse:reminder:start
 [[hooks.PreToolUse]]
-matcher = "Bash|Find|rg"
+matcher = "Bash|Find|rg|shell|shell_command|local_shell|local_shell_call|run_shell_command|exec|exec_command"
 
 [[hooks.PreToolUse.hooks]]
 type = "command"
 command = "jbcontext hook pre-tool-use --agent codex"
 timeout = 2
+# jbcontext-hook:PreToolUse:reminder:end
+
 # jbcontext-hook:PreToolUse:end
 
 # jbcontext-hook:UserPromptSubmit:start
+# jbcontext-hook:UserPromptSubmit:reminder:start
 [[hooks.UserPromptSubmit]]
 
 [[hooks.UserPromptSubmit.hooks]]
 type = "command"
 command = "jbcontext hook user-prompt-submit --agent codex"
 timeout = 2
+# jbcontext-hook:UserPromptSubmit:reminder:end
+
 # jbcontext-hook:UserPromptSubmit:end
 
 [mcp_servers.rider]
