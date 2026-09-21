@@ -12,8 +12,8 @@ internal class AzurePipelines(IEnvironment environment, ILogger<AzurePipelines> 
 
     public override string[] SetOutputVariables(string name, string? value) =>
     [
-        $"##vso[task.setvariable variable=GitVersion.{name}]{value}",
-        $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
+        $"##vso[task.setvariable variable=GitVersion_{name}]{value}",
+        $"##vso[task.setvariable variable=GitVersion_{name};isOutput=true]{value}"
     ];
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)

@@ -17,7 +17,7 @@ public class WriteVersionInfoTest : TestTaskBase
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        result.Log.ShouldNotContain("##vso[task.setvariable variable=GitVersion.FullSemVer]");
+        result.Log.ShouldNotContain("##vso[task.setvariable");
     }
 
     [Test]
@@ -29,7 +29,9 @@ public class WriteVersionInfoTest : TestTaskBase
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1-1");
+        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer]1.0.1-1");
+        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer;isOutput=true]1.0.1-1");
+        result.Log.ShouldNotContain("##vso[task.setvariable variable=GitVersion.");
     }
 
     [TestCase("2021-02-14.1")]
@@ -47,6 +49,9 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
         result.Log.ShouldNotContain("##vso[build.updatebuildnumber]");
+        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer]1.0.1-1");
+        result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer;isOutput=true]1.0.1-1");
+        result.Log.ShouldNotContain("##vso[task.setvariable variable=GitVersion.");
     }
 
     [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1-1")]
@@ -103,7 +108,7 @@ public class WriteVersionInfoTest : TestTaskBase
         result.MsBuild.OverallSuccess.ShouldBe(true);
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
-        result.Output.ShouldNotContain("##vso[task.setvariable variable=GitVersion.FullSemVer]");
+        result.Output.ShouldNotContain("##vso[task.setvariable");
     }
 
     [Test]
@@ -119,7 +124,9 @@ public class WriteVersionInfoTest : TestTaskBase
         result.MsBuild.OverallSuccess.ShouldBe(true);
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
-        result.Output.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1-1");
+        result.Output.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer]1.0.1-1");
+        result.Output.ShouldContain("##vso[task.setvariable variable=GitVersion_FullSemVer;isOutput=true]1.0.1-1");
+        result.Output.ShouldNotContain("##vso[task.setvariable variable=GitVersion.");
     }
 
     private static void AddWriteVersionInfoToBuildLogTask(ProjectCreator project, string targetToRun, string taskName)
