@@ -108,7 +108,7 @@ backend is a natural completion of an existing pattern. Six test files additiona
 
 ## 4. Target architecture
 
-```
+```text
 src/
   GitVersion.Git.Managed/          vendored managed reader; the raw git-format layers below
                                    are Core-free, Core is referenced only once the interface
