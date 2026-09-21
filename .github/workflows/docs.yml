@@ -171,7 +171,7 @@ jobs:
           echo "value=$value" >> "$GITHUB_OUTPUT"
 
       - name: '[Remark Lint]'
-        uses: reviewdog/action-remark-lint@7c4b1f5f1cf73b426e8b2c1921fb2888d84c55d5 # v5.19.0
+        uses: reviewdog/action-remark-lint@b59ae6b0c8764e8fe1b72541328b9a19f0f94ae0 # v5.20.0
         with:
           github_token: ${{ github.token }}
           reporter: ${{ steps.reporter.outputs.value }}
