@@ -29,6 +29,10 @@ jobs:
         git_backend: [ libgit2, managed ]
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
+      TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/${{ matrix.git_backend }}/attempt-${{ github.run_attempt }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
@@ -42,26 +46,51 @@ jobs:
       - name: Restore State
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
+      # One attempt: retries leave stale failure annotations after a later pass.
       - name: '[Unit Test]'
-        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        id: unit_tests
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          # Explicit bash uses pipefail on every runner. Keep the log outside Cake's Clean target.
+          preserve_reports() {
+            mkdir -p "$TEST_RESULTS"
+            cp "$RUNNER_TEMP/unit-tests.log" "$TEST_RESULTS/test.log"
+            if [[ -f "$GITHUB_STEP_SUMMARY" ]]; then
+              cp "$GITHUB_STEP_SUMMARY" "$TEST_RESULTS/summary.md"
+            fi
+          }
+          trap preserve_reports EXIT
+          dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }} --test_results="$TEST_RESULTS" \
+            2>&1 | tee "$RUNNER_TEMP/unit-tests.log"
+
+      - name: Explain failed or incomplete test run
+        if: always() && steps.unit_tests.outcome != 'success'
+        shell: bash
         env:
-          GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
-        with:
-          shell: pwsh
-          timeout_minutes: 30
-          max_attempts: 3
-          retry_on: error
-          command: 'dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }}'
+          TEST_OUTCOME: ${{ steps.unit_tests.outcome }}
+        run: |
+          {
+            echo '### Unit-test job did not complete successfully'
+            printf 'Test step outcome: **%s**.\n\n' "$TEST_OUTCOME"
+            echo 'Project summaries describe completed test runs only. A build or host failure may leave other projects untested.'
+            echo 'Missing reports do not mean tests passed. See the job log and available test-results artifact.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p "$TEST_RESULTS"
+          cat "$GITHUB_STEP_SUMMARY" >> "$TEST_RESULTS/summary.md"
 
-      - name: Test Summary
-        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
-        if: always() && matrix.dotnet_version == '10.0'
+      - name: Preserve test reports and log
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
         with:
-          paths: artifacts/test-results/**/results.xml
+          name: test-results-${{ matrix.os }}-net${{ matrix.dotnet_version }}-${{ matrix.git_backend }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/test-results/
+          if-no-files-found: warn
+          retention-days: 7
 
-      - name: Upload Coverage
+      - name: Upload Test Results
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-        if: success() && inputs.publish_coverage && matrix.dotnet_version == '10.0'
+        if: ${{ !cancelled() && inputs.publish_coverage && matrix.dotnet_version == '10.0' }}
         with:
           files: artifacts/test-results/**/results.xml
           report_type: 'test_results'

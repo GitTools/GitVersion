@@ -1,5 +1,4 @@
-using Cake.Common.Tools.DotNet.Test;
-using Cake.Incubator.LoggingExtensions;
+using Cake.Common.Tools.DotNet.Execute;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -7,12 +6,45 @@ namespace Build.Tasks;
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
 [DotnetArgument]
+[TaskArgument(Arguments.TestResults)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context) => context.EnabledUnitTests;
 
     public override void Run(BuildContext context)
+    {
+        var frameworks = GetFrameworks(context);
+        var projects = context.GetFiles($"{Paths.Src}/**/*.Tests.csproj").OrderBy(project => project.FullPath).ToArray();
+        if (projects.Length == 0)
+        {
+            throw new CakeException("No test projects were found.");
+        }
+
+        var failures = new List<string>();
+        foreach (var framework in frameworks)
+        {
+            foreach (var project in projects)
+            {
+                var exitCode = TestProjectForTarget(context, project, framework);
+                if (exitCode != 0)
+                {
+                    // MTP exit code 2 means tests failed. Other codes indicate an incomplete run.
+                    var outcome = exitCode == 2 ? "tests failed" : "test run incomplete";
+                    var failure = $"{project.GetFilenameWithoutExtension()} / net{framework}: {outcome} (exit {exitCode})";
+                    context.Error(failure);
+                    failures.Add(failure);
+                }
+            }
+        }
+
+        if (failures.Count > 0)
+        {
+            throw new CakeException(string.Join(Environment.NewLine, failures));
+        }
+    }
+
+    private static string[] GetFrameworks(BuildContext context)
     {
         var dotnetVersion = context.Argument(Arguments.DotnetVersion, string.Empty);
         var frameworks = Constants.DotnetVersions;
@@ -29,54 +61,65 @@ public class UnitTest : FrostingTask<BuildContext>
             frameworks = [dotnetVersion];
         }
 
-        foreach (var framework in frameworks)
-        {
-            // run using dotnet test
-            var projects = context.GetFiles($"{Paths.Src}/**/*.Tests.csproj");
-            foreach (var project in projects)
-            {
-                TestProjectForTarget(context, project, framework);
-            }
-        }
+        return frameworks;
     }
 
-    public override void OnError(Exception exception, BuildContext context)
+    private static int TestProjectForTarget(BuildContext context, FilePath project, string framework)
     {
-        var error = (exception as AggregateException)?.InnerExceptions[0];
-        context.Error(error.Dump());
-        throw exception;
-    }
-
-    private static void TestProjectForTarget(BuildContext context, FilePath project, string framework)
-    {
-        var testResultsPath = Paths.TestOutput;
-        var projectName = $"{project.GetFilenameWithoutExtension()}";
-        var settings = new DotNetTestSettings
+        var settings = new DotNetBuildSettings
         {
-            PathType = DotNetTestPathType.Project,
             Framework = $"net{framework}",
-            // UnitTest depends on Build, which restores the complete solution.
-            // Each test project must still rebuild with ContinuousIntegrationBuild=false
-            // so its snapshot tests retain their expected source paths.
-            NoBuild = false,
+            // Build restores the solution. Rebuild with real source paths for snapshots and annotations.
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
             MSBuildSettings = new()
         };
         settings.MSBuildSettings.SetContinuousIntegrationBuild(false);
+        context.DotNetBuild(project.FullPath, settings);
 
-        var resultsDirectory = context.MakeAbsolute(testResultsPath.Combine(projectName));
+        var query = new DotNetMSBuildSettings { NoLogo = true };
+        query.WithProperty("Configuration", context.MsBuildConfiguration);
+        query.WithProperty("TargetFramework", $"net{framework}");
+        query.SetContinuousIntegrationBuild(false);
+        query.GetProperties.Add("TargetPath");
+        var output = new List<string>();
+        context.DotNetMSBuild(project.FullPath, query, lines => output.AddRange(lines));
+        var targetPath = output.Single(line => !string.IsNullOrWhiteSpace(line)).Trim();
+        if (!context.FileExists(targetPath))
+        {
+            throw new CakeException($"Test assembly not found for {project} / net{framework}: {targetPath}");
+        }
 
-        settings.WithArgumentCustomization(args => args
-            .Append("--report-spekt-junit")
-            .Append("--report-spekt-junit-filename").AppendQuoted(resultsDirectory.CombineWithFilePath("results.xml").FullPath)
-            .Append("--results-directory").AppendQuoted(resultsDirectory.FullPath)
-            .Append("--coverlet")
-            .Append("--coverlet-output-format").AppendQuoted("cobertura")
-            .Append("--coverlet-exclude").AppendQuoted("[GitVersion*.Tests]*")
-            .Append("--coverlet-exclude").AppendQuoted("[GitVersion.Testing]*")
-        );
+        var backend = context.EnvironmentVariable("GITVERSION_GIT_BACKEND") ?? "default";
+        var attempt = context.EnvironmentVariable("GITHUB_RUN_ATTEMPT") ?? "local";
+        var root = new DirectoryPath(context.Argument(Arguments.TestResults,
+            Paths.TestOutput.Combine(backend).Combine($"attempt-{attempt}").FullPath));
+        var resultsDirectory = context.MakeAbsolute(root.Combine(project.GetFilenameWithoutExtension().FullPath).Combine($"net{framework}"));
+        context.CleanDirectory(resultsDirectory);
+        var args = new ProcessArgumentBuilder().AppendArguments(resultsDirectory);
+        if (context.BuildSystem().IsRunningOnGitHubActions)
+        {
+            args = args.AppendGitHubArguments();
+        }
 
-        context.DotNetTest(project.FullPath, settings);
+        // Direct execution preserves annotation commands that SDK 10.0.401's dotnet test suppressed.
+        // Collect process failures so subsequent projects still run; build/start exceptions propagate.
+        var exitCode = 0;
+        context.DotNetExecute(targetPath, args, new DotNetExecuteSettings
+        {
+            HandleExitCode = code =>
+            {
+                exitCode = code;
+                return true;
+            }
+        });
+        // Coverlet can report an instrumentation error while MTP still returns success.
+        // A green test job must include both machine-readable results and coverage.
+        if (exitCode == 0 && (!context.FileExists(resultsDirectory.CombineWithFilePath("results.xml"))
+            || !context.GetFiles($"{resultsDirectory.FullPath}/*cobertura*.xml").Any()))
+        {
+            throw new CakeException($"Missing JUnit or coverage report for {project} / net{framework}.");
+        }
+        return exitCode;
     }
 }
