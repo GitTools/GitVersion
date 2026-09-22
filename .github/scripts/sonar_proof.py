@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
+import uuid
 import xml.etree.ElementTree as ET
 
 SCANNER_VERSION = "11.3.0"
@@ -63,10 +64,38 @@ def repository_path(value, producer, repository):
     return relative.as_posix()
 
 
+def write_project_ids(repository, destination):
+    """Give same-named projects stable, distinct IDs during the proof build."""
+    root = ET.Element("Project")
+    properties = ET.SubElement(root, "PropertyGroup")
+    for scope in ("src", "new-cli", "build"):
+        for project in sorted((repository / scope).rglob("*.csproj")):
+            relative = project.relative_to(repository)
+            if {"obj", "bin"}.intersection(relative.parts):
+                continue
+            require(not any(c in str(project) for c in "'$;"), "Unsupported MSBuild project path")
+            identifier = uuid.uuid5(uuid.NAMESPACE_URL, "GitTools/GitVersion/" + relative.as_posix())
+            item = ET.SubElement(properties, "ProjectGuid", {"Condition": f"'$(MSBuildProjectFullPath)' == '{project}'"})
+            item.text = str(identifier)
+    ET.ElementTree(root).write(destination, encoding="utf-8", xml_declaration=True)
+
+
+def check_project_ids(project_files):
+    identifiers = set()
+    for path in project_files:
+        info = read_xml(path)
+        if info.findtext("s:IsExcluded", namespaces=NS) == "true":
+            continue
+        identifier = uuid.UUID(info.findtext("s:ProjectGuid", namespaces=NS) or "")
+        require(identifier not in identifiers, f"Duplicate Sonar project ID: {identifier}")
+        identifiers.add(identifier)
+
+
 def analysis_scope(payload, producer, repository):
     """Find repository sources in the scanner output for all three solution trees."""
     project_files = sorted((payload / "sonar/out").glob("*/ProjectInfo.xml"))
     require(project_files, "Missing Sonar project metadata")
+    check_project_ids(project_files)
     projects = set()
     analyzed_sources = set()
     for path in project_files:
@@ -180,12 +209,18 @@ def verify(repository, bundle, identity):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["collect", "verify"])
+    parser.add_argument("mode", choices=["collect", "verify", "project-ids"])
     parser.add_argument("--repository", type=Path, default=Path.cwd())
-    parser.add_argument("--bundle", type=Path, required=True)
+    parser.add_argument("--bundle", type=Path)
+    parser.add_argument("--targets", type=Path)
     parser.add_argument("--scanner", type=Path)
     parser.add_argument("--coverage", type=Path)
     args = parser.parse_args()
+    if args.mode == "project-ids":
+        require(args.targets is not None, "Project IDs need a targets destination")
+        write_project_ids(args.repository.resolve(), args.targets)
+        return
+    require(args.bundle is not None, "Collect and verify need a bundle")
     identity = {key: os.environ[key] for key in
                 ("GITHUB_REPOSITORY", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT", "PROOF_HEAD_SHA", "PROOF_PR")}
     repository = args.repository.resolve()

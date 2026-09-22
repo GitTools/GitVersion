@@ -38,6 +38,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/sonar-logs"
+          python3 .github/scripts/sonar_proof.py project-ids --targets "$RUNNER_TEMP/sonar-projects.targets"
           "$RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" begin \
             /k:GitTools_GitVersion /o:gittools \
             /d:sonar.host.url=https://sonarcloud.io \
@@ -48,6 +49,7 @@ jobs:
           for solution in src/GitVersion.slnx new-cli/GitVersion.slnx build/CI.slnx; do
             dotnet build "$solution" --configuration Release --no-incremental \
               -p:ContinuousIntegrationBuild=false \
+              -p:CustomAfterMicrosoftCommonTargets="$RUNNER_TEMP/sonar-projects.targets" \
               2>&1 | tee -a "$RUNNER_TEMP/sonar-logs/build.log"
           done
       - name: Download this attempt's canonical coverage

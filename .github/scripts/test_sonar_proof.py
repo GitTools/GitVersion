@@ -27,6 +27,7 @@ class SonarProofTests(unittest.TestCase):
             self.write(source, "class Example {}")
             self.write(self.scanner / f"out/{i}/ProjectInfo.xml",
                        f'<ProjectInfo xmlns="{proof.NS["s"]}"><FullPath>{project}</FullPath>'
+                       f'<ProjectGuid>{proof.uuid.UUID(int=i + 1)}</ProjectGuid>'
                        '<IsExcluded>false</IsExcluded></ProjectInfo>')
             self.write(self.scanner / f"conf/{i}/FilesToAnalyze.txt", str(source) + "\n")
         self.report = self.coverage / "Example.Tests/net10.0/coverage.cobertura.xml"
@@ -53,6 +54,26 @@ class SonarProofTests(unittest.TestCase):
         self.assertEqual(result["analyzed_source_files"], 3)
         self.assertEqual(result["projects"], ["build/Example/Example.csproj", "new-cli/Example/Example.csproj", "src/Example/Example.csproj"])
         self.assertFalse((self.bundle / "payload/sonar/conf/SonarQubeAnalysisConfig.xml").exists())
+
+    def test_rejects_duplicate_project_ids(self):
+        path = self.scanner / "out/1/ProjectInfo.xml"
+        self.write(path, path.read_text().replace(str(proof.uuid.UUID(int=2)), str(proof.uuid.UUID(int=1))))
+        with self.assertRaisesRegex(ValueError, "Duplicate Sonar project ID"):
+            self.collect()
+
+    def test_project_ids_distinguish_same_names_and_survive_checkout_move(self):
+        import shutil
+        first = self.root / "first.targets"
+        second = self.root / "second.targets"
+        proof.write_project_ids(self.repo, first)
+        receiver = self.root / "receiver"
+        shutil.copytree(self.repo, receiver)
+        proof.write_project_ids(receiver, second)
+        first_ids = [e.text for e in proof.read_xml(first).iter("ProjectGuid")]
+        second_ids = [e.text for e in proof.read_xml(second).iter("ProjectGuid")]
+        self.assertEqual(len(first_ids), 4)
+        self.assertEqual(len(set(first_ids)), 4)
+        self.assertEqual(first_ids, second_ids)
 
     def test_ignores_external_source_list_entries_without_reading_them(self):
         path = self.scanner / "conf/0/FilesToAnalyze.txt"
