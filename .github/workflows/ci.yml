@@ -89,6 +89,15 @@ jobs:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
 
+  sonar_proof:
+    name: Sonar proof
+    needs: [ unit_test ]
+    # Temporary proof runs only on this fork branch. Existing SonarCloud remains automatic.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'arturcic/GitVersion' && github.head_ref == 'codex/5221-sonar-coverage'
+    permissions:
+      contents: read
+    uses: $/.github/workflows/_sonar_proof.yml # NOSONAR -- $/ resolves to the running commit.
+
   artifacts_windows_test:
     name: Artifacts Windows
     needs: [ build, publish_flags ]
