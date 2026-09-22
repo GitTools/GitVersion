@@ -9,7 +9,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 SCANNER_VERSION = "11.3.0"
-NS = {"s": "http://www.sonarsource.com/msbuild/integration/2015/1"}  # NOSONAR: XML namespace identifier, not a network endpoint.
+NS = {"s": "http://www.sonarsource.com/msbuild/integration/2015/1"}  # NOSONAR(S5332) XML namespace identifier, not a network endpoint.
 DATA_SUFFIXES = {".xml", ".json", ".pb", ".txt", ".ucfgs", ".typedefs", ".udg", ".log", ".lock", ".md"}
 MAX_FILE_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_BYTES = 1024 * 1024 * 1024
@@ -86,7 +86,7 @@ def analysis_scope(payload, producer, repository):
                 continue
             relative = source.relative_to(PurePosixPath(producer))
             require(".." not in relative.parts, f"Invalid source-list path: {value}")
-            if "obj" in relative.parts or "bin" in relative.parts:
+            if {"obj", "bin"}.intersection(relative.parts):
                 continue
             if (repository / relative).is_file():
                 analyzed_sources.add(repository_path(value, producer, repository))
