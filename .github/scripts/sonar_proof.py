@@ -9,7 +9,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 SCANNER_VERSION = "11.3.0"
-NS = {"s": "http://www.sonarsource.com/msbuild/integration/2015/1"}
+NS = {"s": "http://www.sonarsource.com/msbuild/integration/2015/1"}  # NOSONAR: XML namespace identifier, not a network endpoint.
 DATA_SUFFIXES = {".xml", ".json", ".pb", ".txt", ".ucfgs", ".typedefs", ".udg", ".log", ".lock", ".md"}
 MAX_FILE_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_BYTES = 1024 * 1024 * 1024
@@ -63,8 +63,8 @@ def repository_path(value, producer, repository):
     return relative.as_posix()
 
 
-def inspect(payload, producer, repository):
-    """Check C# scope and source mapping without running the scanner or build."""
+def analysis_scope(payload, producer, repository):
+    """Find repository sources in the scanner output for all three solution trees."""
     project_files = sorted((payload / "sonar/out").glob("*/ProjectInfo.xml"))
     require(project_files, "Missing Sonar project metadata")
     projects = set()
@@ -94,6 +94,11 @@ def inspect(payload, producer, repository):
             "Analysis must include src, new-cli and build projects")
     require(any(p.endswith(".cs") for p in analyzed_sources), "No analyzed C# source files")
 
+    return projects, analyzed_sources
+
+
+def coverage_scope(payload, producer, repository):
+    """Require complete per-project Cobertura reports and map owned source paths."""
     expected = {p.stem for p in (repository / "src").glob("**/*.Tests.csproj")}
     require(expected, "No expected test projects")
     reports = sorted((payload / "coverage").glob("*/net10.0/*cobertura*.xml"))
@@ -119,6 +124,13 @@ def inspect(payload, producer, repository):
         require(mapped, f"No repository files in coverage: {path}")
         require(coverage.findall(".//line"), f"No line coverage data: {path}")
         owned.update(mapped)
+    return reports, owned, external
+
+
+def inspect(payload, producer, repository):
+    """Check C# scope and source mapping without running the scanner or build."""
+    projects, analyzed_sources = analysis_scope(payload, producer, repository)
+    reports, owned, external = coverage_scope(payload, producer, repository)
     require(owned <= analyzed_sources, f"Coverage files absent from analysis: {sorted(owned - analyzed_sources)[:5]}")
     return {"projects": sorted(projects), "analyzed_source_files": len(analyzed_sources),
             "coverage_reports": len(reports), "covered_source_files": len(owned),
