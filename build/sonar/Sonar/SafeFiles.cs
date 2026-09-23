@@ -34,7 +34,10 @@ public static class SafeFiles
     {
         var path = Path.GetFullPath(Path.Combine(root, Relative(relative)));
         var basePath = Path.GetFullPath(root);
-        Require(path.StartsWith(basePath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal), "Path escapes root");
+        if (!path.StartsWith(basePath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        {
+            throw new InvalidDataException("Path escapes root");
+        }
         for (var current = path; current is not null; current = Path.GetDirectoryName(current))
         {
             var info = Directory.Exists(current) ? (FileSystemInfo)new DirectoryInfo(current) : new FileInfo(current);
@@ -118,9 +121,16 @@ public static class SafeFiles
     private static void Extract(ZipArchive archive, string destination)
     {
         Directory.CreateDirectory(destination);
+        var root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         foreach (var entry in archive.Entries)
         {
-            var path = Resolve(destination, entry.FullName.TrimEnd('/'));
+            var path = Path.GetFullPath(Path.Combine(root, entry.FullName.TrimEnd('/')));
+            // Keep the canonical-path guard at the filesystem sink as well as validating
+            // the entire archive before creating the destination.
+            if (!path.StartsWith(root, StringComparison.Ordinal))
+            {
+                throw new InvalidDataException("Archive path escapes destination");
+            }
             if (entry.FullName.EndsWith('/'))
             {
                 Directory.CreateDirectory(path);
