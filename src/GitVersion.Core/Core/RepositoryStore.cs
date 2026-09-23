@@ -5,10 +5,12 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchResolver? branchResolver = null) : IRepositoryStore
+internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchResolver? branchResolver = null)
+    : IRepositoryStore, ICachedCommitLogProvider
 {
     private readonly ILogger<RepositoryStore> logger = logger.NotNull();
     private readonly IGitRepository repository = repository.NotNull();
+    private CommitLogProjection? commitLogProjection;
 
     public int UncommittedChangesCount => this.repository.UncommittedChangesCount();
 
@@ -254,6 +256,10 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
         => FindCommitBranchesBranchedFrom(
             branch, configuration, excludedBranches, excludeIgnoredBranches: true);
 
+    /// <summary>
+    /// Returns the commits reachable from <paramref name="currentCommit"/> which are not reachable from
+    /// <paramref name="baseVersionSource"/>, in the order the revision walk emits them.
+    /// </summary>
     public IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore)
     {
         currentCommit.NotNull();
@@ -268,6 +274,52 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
 
         var commits = FilterCommits(filter).ToArray();
         return [.. ignore.Filter(commits)];
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ICommit> GetCommitLog(
+        ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore, IReadOnlySet<string> excludedShas)
+    {
+        currentCommit.NotNull();
+        ignore.NotNull();
+        excludedShas.NotNull();
+
+        var projection = GetCommitLogProjection(currentCommit);
+        var ignored = projection.GetIgnoredMask(ignore);
+        var excluded = projection.GetExcludedMask(ignore, ignored, excludedShas);
+
+        return projection.Graph.GetCommits(baseVersionSource, ignored, excluded);
+    }
+
+    /// <summary>
+    /// Returns what has been derived from the revision walk of <paramref name="currentCommit"/>, performing that
+    /// walk if it has not been performed yet.
+    /// </summary>
+    /// <remarks>
+    /// Only the projection of a single head commit is kept. The head commit is fixed for the duration of one
+    /// version calculation — every caller passes the current commit of the <see cref="GitVersionContext"/>, which
+    /// is resolved once — so a different one means a new calculation and everything derived from the previous head
+    /// is dead weight; dropping it bounds what this store retains to the calculation in progress.
+    /// <para>
+    /// The projection is pure memoization, so discarding it costs a recomputation and nothing else. Were a caller
+    /// to alternate between two head commits, each call would walk again, which is what the code this replaced did
+    /// on every call anyway: the floor is the behaviour before this optimisation, not something worse.
+    /// </para>
+    /// </remarks>
+    private CommitLogProjection GetCommitLogProjection(ICommit currentCommit)
+    {
+        if (this.commitLogProjection is { } projection && projection.HeadSha == currentCommit.Sha)
+        {
+            return projection;
+        }
+
+        var filter = new CommitFilter
+        {
+            IncludeReachableFrom = currentCommit,
+            SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+        };
+
+        return this.commitLogProjection = new(currentCommit.Sha, CommitGraph.Create([.. FilterCommits(filter)]));
     }
 
     public IReadOnlyList<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore)
@@ -330,5 +382,46 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
             this.logger.LogWarning("Branch {Branch} has no tip.", branch);
             return [];
         }
+    }
+
+    /// <summary>
+    /// Everything derived from the single revision walk of one head commit: the graph itself, and the masks built
+    /// over it. Because the projection is scoped to one head, the masks are keyed only on what actually varies
+    /// within a calculation.
+    /// </summary>
+    private sealed class CommitLogProjection(string headSha, CommitGraph graph)
+    {
+        private readonly Dictionary<IIgnoreConfiguration, CommitMask> ignoredMasks = [];
+        private readonly Dictionary<ExcludedCommits, CommitMask> excludedMasks = [];
+
+        /// <summary>The head commit this projection was built from.</summary>
+        public string HeadSha { get; } = headSha;
+
+        /// <summary>The commits reachable from the head commit.</summary>
+        public CommitGraph Graph { get; } = graph;
+
+        /// <summary>Returns the commits which <paramref name="ignore"/> removes from the history.</summary>
+        public CommitMask GetIgnoredMask(IIgnoreConfiguration ignore)
+            => ignore.IsEmpty
+                ? CommitMask.Empty
+                : this.ignoredMasks.GetOrAdd(ignore, () => Graph.CreateIgnoredMask(ignore));
+
+        /// <summary>
+        /// Returns the commits which <paramref name="excludedShas"/> removes from the history, which are those
+        /// commits together with everything they build upon. Which commits those are does not depend on the base
+        /// version source, so the result is cached once per set of excluded commits rather than once per
+        /// requested commit log.
+        /// </summary>
+        public CommitMask GetExcludedMask(IIgnoreConfiguration ignore, CommitMask ignored, IReadOnlySet<string> excludedShas)
+            => excludedShas.Count == 0
+                ? CommitMask.Empty
+                : this.excludedMasks.GetOrAdd(
+                    new(ignore, excludedShas), () => Graph.CreateAncestorMask(excludedShas, ignored));
+
+        /// <summary>
+        /// Identifies the commits one set of excluded commits removes from this projection. The excluded set takes
+        /// part in the identity by reference, which is why callers must not modify it after passing it in.
+        /// </summary>
+        private readonly record struct ExcludedCommits(IIgnoreConfiguration Ignore, IReadOnlySet<string> ExcludedShas);
     }
 }
