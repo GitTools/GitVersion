@@ -13,18 +13,12 @@ on:
       - 'poc/*'
       - 'support/*'
       - 'next/*'
-    paths:
-      - '**'
-      - '!docs/**'
 
   pull_request:
     branches:
       - main
       - 'support/*'
       - 'next/*'
-    paths:
-      - '**'
-      - '!docs/**'
   merge_group:
     types: [ checks_requested ]
 
@@ -89,14 +83,13 @@ jobs:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
 
-  sonar_proof:
-    name: Sonar proof
+  sonar_build:
+    name: Sonar analysis data
     needs: [ unit_test ]
-    # Temporary proof runs only on this fork branch. Existing SonarCloud remains automatic.
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'arturcic/GitVersion' && github.head_ref == 'codex/5221-sonar-coverage'
+    if: github.repository == 'GitTools/GitVersion' && (github.event_name == 'pull_request' || github.event_name == 'push')
     permissions:
       contents: read
-    uses: $/.github/workflows/_sonar_proof.yml # NOSONAR -- $/ resolves to the running commit.
+    uses: $/.github/workflows/_sonar_build.yml # NOSONAR -- $/ resolves to the running commit.
 
   artifacts_windows_test:
     name: Artifacts Windows

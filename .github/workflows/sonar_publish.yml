@@ -1,0 +1,136 @@
+name: Sonar publisher
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful upstream CI run to recover
+        required: true
+        type: string
+      run_attempt:
+        description: Exact latest source attempt
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  tools:
+    if: >-
+      github.repository == 'GitTools/GitVersion' &&
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' ||
+      github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      publication-key: ${{ steps.identity.outputs.key }}
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+      - name: Checkout trusted workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          global-json-file: global.json
+      - name: Build trusted publisher and install pinned scanner
+        run: |
+          dotnet publish build/sonar/Sonar/Sonar.csproj --configuration Release --output "$RUNNER_TEMP/trusted/helper"
+          dotnet tool install dotnet-sonarscanner --version 11.3.0 --tool-path "$RUNNER_TEMP/trusted/scanner"
+      - name: Resolve trusted publication identity
+        id: identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.run_id }}
+          SOURCE_ATTEMPT: ${{ github.event.workflow_run.run_attempt || inputs.run_attempt }}
+        run: dotnet "$RUNNER_TEMP/trusted/helper/Sonar.dll" resolve "$SOURCE_RUN" "$SOURCE_ATTEMPT"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sonar-trusted-tools-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/trusted
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  receiver:
+    needs: tools
+    # Group both completion events and manual recovery by independently resolved PR/branch.
+    concurrency:
+      group: sonar-${{ needs.tools.outputs.publication-key }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+      checks: read
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          dotnet-version: '10.0.401'
+      - name: Download only this receiver run's trusted tooling
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: sonar-trusted-tools-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/trusted
+      - name: Admit source run and prepare without Sonar credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.run_id }}
+          SOURCE_ATTEMPT: ${{ github.event.workflow_run.run_attempt || inputs.run_attempt }}
+        run: |
+          chmod +x "$RUNNER_TEMP/trusted/scanner/dotnet-sonarscanner"
+          dotnet "$RUNNER_TEMP/trusted/helper/Sonar.dll" admit \
+            "$GITHUB_WORKSPACE" "$RUNNER_TEMP/trusted/scanner/dotnet-sonarscanner" \
+            "$RUNNER_TEMP/sonar-bundle" "$RUNNER_TEMP/sonar-identity.json" "$SOURCE_RUN" "$SOURCE_ATTEMPT"
+      # Keep disabled through bootstrap, format/security review and merge-queue acceptance.
+      # Setting this variable is an operational cutover, not part of merging this workflow.
+      - name: Load only the Sonar analysis credential
+        id: sonar
+        if: vars.SONAR_CI_PUBLISH == 'true'
+        uses: 1password/load-secrets-action@14f2fed3712a25f8ad8916ddcca3c4ed737810f6 # v3
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SONAR_TOKEN: op://gittools/ci/sonarcloud/token
+      - name: Publish and verify Sonar's coverage and decoration
+        id: publish
+        if: vars.SONAR_CI_PUBLISH == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SONAR_TOKEN: ${{ steps.sonar.outputs.SONAR_TOKEN }}
+        run: |
+          dotnet "$RUNNER_TEMP/trusted/helper/Sonar.dll" publish \
+            "$GITHUB_WORKSPACE" "$RUNNER_TEMP/trusted/scanner/dotnet-sonarscanner" \
+            "$RUNNER_TEMP/sonar-bundle" "$RUNNER_TEMP/sonar-identity.json"
+      - name: Preserve verified publication receipt
+        if: steps.publish.outputs.receipt != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.publish.outputs.receipt }}
+          path: ${{ runner.temp }}/sonar-identity.json.published.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Explain disabled publication
+        if: vars.SONAR_CI_PUBLISH != 'true'
+        run: echo 'Admission completed. Publication remains disabled; automatic analysis supplies the Sonar PR comment and check.' >> "$GITHUB_STEP_SUMMARY"
