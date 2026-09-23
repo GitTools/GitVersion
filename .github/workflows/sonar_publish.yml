@@ -12,7 +12,7 @@ permissions:
 
 # Serialize publication while validating current PR/branch heads before upload.
 concurrency:
-  group: sonar-publisher
+  group: sonar-publisher-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 jobs:
@@ -52,7 +52,8 @@ jobs:
           head=$(jq -r '.head_sha' "$RUNNER_TEMP/source-run.json")
           if [[ $(jq -r '.event' "$RUNNER_TEMP/source-run.json") == pull_request ]]; then
             repository=$(jq -r '.head_repository.full_name' "$RUNNER_TEMP/source-run.json")
-            gh api "repos/GitTools/GitVersion/commits/$head/pulls" |
+            branch=$(jq -r '.head_branch' "$RUNNER_TEMP/source-run.json")
+            gh api -X GET "repos/GitTools/GitVersion/pulls" -f state=open -f "head=${repository%%/*}:$branch" -f per_page=100 |
               jq -e --arg head "$head" --arg repository "$repository" \
                 '[.[] | select(.state == "open" and .head.sha == $head and .head.repo.full_name == $repository and .base.repo.full_name == "GitTools/GitVersion")] |
                 if length == 1 then .[0] else error("No unique current PR") end' > "$RUNNER_TEMP/source-pr.json"
@@ -114,6 +115,7 @@ jobs:
         if: vars.SONAR_CI_PUBLISH == 'true'
         shell: pwsh
         env:
+          GH_TOKEN: ${{ github.token }}
           SONAR_TOKEN: ${{ steps.sonar.outputs.SONAR_TOKEN }}
           ANALYZED_SHA: ${{ steps.source.outputs.analyzed }}
           HEAD_SHA: ${{ steps.source.outputs.head }}
@@ -131,12 +133,13 @@ jobs:
           & "$env:RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" @arguments
           if ($LASTEXITCODE -ne 0) { throw 'Scanner preparation failed' }
           & "$env:RUNNER_TEMP/sonar-handoff.ps1" -Mode Install -Workspace $env:GITHUB_WORKSPACE -Bundle "$env:RUNNER_TEMP/sonar-bundle" -Staging "$env:RUNNER_TEMP/sonar-staged" -Revision $env:ANALYZED_SHA
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = "application/vnd.github+json" }
           if ($env:PR) {
-            $current = Invoke-RestMethod "https://api.github.com/repos/GitTools/GitVersion/pulls/$env:PR"
+            $current = Invoke-RestMethod -Headers $headers "https://api.github.com/repos/GitTools/GitVersion/pulls/$env:PR"
             if ($current.state -ne 'open' -or $current.head.sha -ne $env:HEAD_SHA -or $current.merge_commit_sha -ne $env:ANALYZED_SHA) { throw 'PR advanced; wait for current CI' }
           } else {
             $branch = [Uri]::EscapeDataString($env:SOURCE_BRANCH)
-            $current = Invoke-RestMethod "https://api.github.com/repos/GitTools/GitVersion/branches/$branch"
+            $current = Invoke-RestMethod -Headers $headers "https://api.github.com/repos/GitTools/GitVersion/branches/$branch"
             if ($current.commit.sha -ne $env:HEAD_SHA) { throw 'Branch advanced; wait for current CI' }
           }
           & "$env:RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" end "/d:sonar.token=$env:SONAR_TOKEN"
