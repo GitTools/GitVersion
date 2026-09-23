@@ -1,0 +1,144 @@
+name: Sonar reviewed PR proof
+
+# Dispatch explicitly trusts the selected commit's build and tests with credentials.
+# Never attach this build to pull_request_target or workflow_run.
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Upstream PR number whose code has been reviewed
+        required: true
+        type: string
+      head_sha:
+        description: Full reviewed PR head SHA (build and tests run with Sonar credentials)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: sonar-reviewed-proof
+  cancel-in-progress: false
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  GITVERSION_GIT_BACKEND: managed
+
+jobs:
+  analyze:
+    if: github.repository == 'GitTools/GitVersion' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+      - name: Check reviewed PR identity and analysis mode
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pull_request }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        shell: bash
+        run: |
+          [[ "$PR" =~ ^[1-9][0-9]*$ && "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]
+          gh api "repos/GitTools/GitVersion/pulls/$PR" > "$RUNNER_TEMP/pr.json"
+          jq -e --arg sha "$HEAD_SHA" '.state == "open" and .head.sha == $sha and .base.repo.full_name == "GitTools/GitVersion"' "$RUNNER_TEMP/pr.json"
+          jq -r '"branch=" + .head.ref, "base=" + .base.ref' "$RUNNER_TEMP/pr.json" >> "$GITHUB_OUTPUT"
+          curl --fail --silent --show-error 'https://sonarcloud.io/api/settings/values?component=GitTools_GitVersion&keys=sonar.autoscan.enabled' |
+            jq -e 'any(.settings[]; .key == "sonar.autoscan.enabled" and .value == "false")'
+      - name: Checkout explicitly reviewed commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          global-json-file: global.json
+      - name: Install SonarScanner for .NET
+        run: dotnet tool install --global dotnet-sonarscanner --version 11.3.0
+      - name: Distinguish same-named projects across solutions
+        shell: bash
+        run: |
+          # Sonar otherwise conflates projects such as src/new-cli GitVersion.Core.
+          targets="$RUNNER_TEMP/sonar-projects.targets"
+          echo '<Project><PropertyGroup>' > "$targets"
+          while IFS= read -r project; do
+            [[ "$project" =~ ^[a-zA-Z0-9_./-]+$ ]]
+            digest=$(printf '%s' "$project" | sha256sum)
+            guid="${digest:0:8}-${digest:8:4}-${digest:12:4}-${digest:16:4}-${digest:20:12}"
+            # MSBuild evaluates the literal property later.
+            # shellcheck disable=SC2016
+            printf '<ProjectGuid Condition="\x27$(MSBuildProjectFullPath)\x27 == \x27%s/%s\x27">%s</ProjectGuid>\n' "$GITHUB_WORKSPACE" "$project" "$guid" >> "$targets"
+          done < <(git ls-files 'src/**/*.csproj' 'new-cli/**/*.csproj' 'build/**/*.csproj')
+          echo '</PropertyGroup></Project>' >> "$targets"
+      - name: Load Sonar analysis token
+        id: sonar
+        uses: 1password/load-secrets-action@14f2fed3712a25f8ad8916ddcca3c4ed737810f6 # v3
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SONAR_TOKEN: op://gittools/ci/sonarcloud/token
+      - name: Begin Sonar analysis
+        env:
+          SONAR_TOKEN: ${{ steps.sonar.outputs.SONAR_TOKEN }}
+          PR: ${{ inputs.pull_request }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          PR_BRANCH: ${{ steps.pr.outputs.branch }}
+          PR_BASE: ${{ steps.pr.outputs.base }}
+        run: |
+          dotnet sonarscanner begin /k:GitTools_GitVersion /o:gittools \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.host.url=https://sonarcloud.io \
+            /d:sonar.pullrequest.key="$PR" \
+            /d:sonar.pullrequest.branch="$PR_BRANCH" \
+            /d:sonar.pullrequest.base="$PR_BASE" \
+            /d:sonar.scm.revision="$HEAD_SHA" \
+            /d:sonar.cs.opencover.reportsPaths="$RUNNER_TEMP/sonar-coverage/**/*opencover*.xml" \
+            /d:sonar.exclusions='build/common/Addins/**/*,.devagent/**' \
+            /d:sonar.qualitygate.wait=true
+      - name: Build all three solutions with analysis
+        run: |
+          for solution in src/GitVersion.slnx new-cli/GitVersion.slnx build/CI.slnx; do
+            dotnet build "$solution" --configuration Release --no-incremental --disable-build-servers \
+              -p:ContinuousIntegrationBuild=false \
+              -p:CustomAfterMicrosoftCommonTargets="$RUNNER_TEMP/sonar-projects.targets"
+          done
+      - name: Run tests and collect OpenCover reports
+        shell: bash
+        run: |
+          for project in src/*.Tests/*.csproj; do
+            name=$(basename "$project" .csproj)
+            results="$RUNNER_TEMP/sonar-coverage/$name"
+            dotnet test --project "$project" --configuration Release --no-build \
+              --coverlet --coverlet-output-format opencover \
+              --coverlet-exclude '[GitVersion*.Tests]*' \
+              --coverlet-exclude '[GitVersion.Testing]*' \
+              --coverlet-exclude '[Spekt.TestLogger]*' \
+              --results-directory "$results"
+            compgen -G "$results/*opencover*.xml" > /dev/null
+          done
+      - name: Confirm PR head is still current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pull_request }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        run: |
+          gh api "repos/GitTools/GitVersion/pulls/$PR" |
+            jq -e --arg sha "$HEAD_SHA" '.state == "open" and .head.sha == $sha'
+      - name: End analysis and wait for quality gate
+        env:
+          SONAR_TOKEN: ${{ steps.sonar.outputs.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+      - name: Preserve coverage reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sonar-opencover-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/sonar-coverage
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,6 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>GitVersion.Sonar</RootNamespace>
-  </PropertyGroup>
-</Project>

@@ -13,12 +13,18 @@ on:
       - 'poc/*'
       - 'support/*'
       - 'next/*'
+    paths:
+      - '**'
+      - '!docs/**'
 
   pull_request:
     branches:
       - main
       - 'support/*'
       - 'next/*'
+    paths:
+      - '**'
+      - '!docs/**'
   merge_group:
     types: [ checks_requested ]
 
@@ -82,14 +88,6 @@ jobs:
     with:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
-
-  sonar_build:
-    name: Sonar analysis data
-    needs: [ unit_test ]
-    if: github.repository == 'GitTools/GitVersion' && (github.event_name == 'pull_request' || github.event_name == 'push')
-    permissions:
-      contents: read
-    uses: $/.github/workflows/_sonar_build.yml # NOSONAR -- $/ resolves to the running commit.
 
   artifacts_windows_test:
     name: Artifacts Windows

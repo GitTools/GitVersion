@@ -23,6 +23,4 @@
   <Project Path="docs/docs.csproj" />
   <Project Path="publish/publish.csproj" />
   <Project Path="release/release.csproj" />
-  <Project Path="sonar/Sonar/Sonar.csproj" />
-  <Project Path="sonar/Sonar.Tests/Sonar.Tests.csproj" />
 </Solution>
