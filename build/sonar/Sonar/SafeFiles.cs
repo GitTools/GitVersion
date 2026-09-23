@@ -124,7 +124,7 @@ public static class SafeFiles
         var root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         foreach (var entry in archive.Entries)
         {
-            var path = Path.GetFullPath(Path.Combine(root, entry.FullName.TrimEnd('/')));
+            var path = Path.GetFullPath(Resolve(destination, entry.FullName.TrimEnd('/')));
             // Keep the canonical-path guard at the filesystem sink as well as validating
             // the entire archive before creating the destination.
             if (!path.StartsWith(root, StringComparison.Ordinal))
