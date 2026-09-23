@@ -1,0 +1,146 @@
+name: Sonar analysis publisher
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+# Serialize publication while validating current PR/branch heads before upload.
+concurrency:
+  group: sonar-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.repository == 'GitTools/GitVersion' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      SOURCE_RUN: ${{ github.event.workflow_run.id }}
+      SOURCE_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+      - name: Load trusted import script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Preserve trusted script outside source checkout
+        run: cp .github/scripts/sonar-handoff.ps1 "$RUNNER_TEMP/sonar-handoff.ps1"
+      - name: Resolve source run and current revision
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/GitTools/GitVersion/actions/runs/$SOURCE_RUN" > "$RUNNER_TEMP/source-run.json"
+          jq -e --argjson attempt "$SOURCE_ATTEMPT" \
+            '.path == ".github/workflows/ci.yml" and .run_attempt == $attempt and .conclusion == "success"' "$RUNNER_TEMP/source-run.json"
+          gh api --paginate "repos/GitTools/GitVersion/actions/runs/$SOURCE_RUN/attempts/$SOURCE_ATTEMPT/jobs?per_page=100" |
+            jq --slurp -e '[.[].jobs[] | select(.name == "Test / ubuntu-24.04 - net10.0 - managed")] |
+              length == 1 and .[0].conclusion == "success"'
+          head=$(jq -r '.head_sha' "$RUNNER_TEMP/source-run.json")
+          if [[ $(jq -r '.event' "$RUNNER_TEMP/source-run.json") == pull_request ]]; then
+            repository=$(jq -r '.head_repository.full_name' "$RUNNER_TEMP/source-run.json")
+            gh api "repos/GitTools/GitVersion/commits/$head/pulls" |
+              jq -e --arg head "$head" --arg repository "$repository" \
+                '[.[] | select(.state == "open" and .head.sha == $head and .head.repo.full_name == $repository and .base.repo.full_name == "GitTools/GitVersion")] |
+                if length == 1 then .[0] else error("No unique current PR") end' > "$RUNNER_TEMP/source-pr.json"
+            jq -r '"pr=" + (.number|tostring), "branch=" + .head.ref, "base=" + .base.ref, "analyzed=" + .merge_commit_sha' "$RUNNER_TEMP/source-pr.json" >> "$GITHUB_OUTPUT"
+          else
+            branch=$(jq -r '.head_branch' "$RUNNER_TEMP/source-run.json")
+            escaped=$(printf '%s' "$branch" | jq -sRr @uri)
+            gh api "repos/GitTools/GitVersion/branches/$escaped" | jq -e --arg head "$head" '.commit.sha == $head'
+            printf 'branch=%s\nanalyzed=%s\n' "$branch" "$head" >> "$GITHUB_OUTPUT"
+          fi
+          printf 'head=%s\n' "$head" >> "$GITHUB_OUTPUT"
+      - name: Checkout source as data
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.source.outputs.analyzed }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download canonical analysis output
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: sonar-analysis-ubuntu-24.04-net10.0-managed-${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}
+          path: ${{ runner.temp }}/sonar-bundle
+      - name: Download matching coverage reports
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: test-results-ubuntu-24.04-net10.0-managed-${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}
+          path: ${{ runner.temp }}/sonar-test-results
+      - name: Validate and stage data without Sonar credentials
+        shell: pwsh
+        env:
+          ANALYZED_SHA: ${{ steps.source.outputs.analyzed }}
+        run: |
+          & "$env:RUNNER_TEMP/sonar-handoff.ps1" -Mode Stage -Workspace $env:GITHUB_WORKSPACE -Bundle "$env:RUNNER_TEMP/sonar-bundle" -Staging "$env:RUNNER_TEMP/sonar-staged" -Coverage "$env:RUNNER_TEMP/sonar-test-results" -Revision $env:ANALYZED_SHA
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          dotnet-version: '10.0.401'
+      - name: Install trusted scanner outside the source checkout
+        working-directory: ${{ runner.temp }}
+        run: dotnet tool install dotnet-sonarscanner --version 11.3.0 --tool-path "$RUNNER_TEMP/sonar-tool"
+      - name: Check publication mode
+        if: vars.SONAR_CI_PUBLISH == 'true'
+        run: |
+          curl --fail --silent --show-error 'https://sonarcloud.io/api/settings/values?component=GitTools_GitVersion&keys=sonar.autoscan.enabled' |
+            jq -e 'any(.settings[]; .key == "sonar.autoscan.enabled" and .value == "false")'
+      - name: Load Sonar analysis token
+        id: sonar
+        if: vars.SONAR_CI_PUBLISH == 'true'
+        uses: 1password/load-secrets-action@14f2fed3712a25f8ad8916ddcca3c4ed737810f6 # v3
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SONAR_TOKEN: op://gittools/ci/sonarcloud/token
+      - name: Fresh scanner preparation, import and publication
+        if: vars.SONAR_CI_PUBLISH == 'true'
+        shell: pwsh
+        env:
+          SONAR_TOKEN: ${{ steps.sonar.outputs.SONAR_TOKEN }}
+          ANALYZED_SHA: ${{ steps.source.outputs.analyzed }}
+          HEAD_SHA: ${{ steps.source.outputs.head }}
+          PR: ${{ steps.source.outputs.pr }}
+          SOURCE_BRANCH: ${{ steps.source.outputs.branch }}
+          BASE_BRANCH: ${{ steps.source.outputs.base }}
+        run: |
+          $arguments = @('begin', '/install:false', '/k:GitTools_GitVersion', '/o:gittools',
+            "/d:sonar.token=$env:SONAR_TOKEN", '/d:sonar.host.url=https://sonarcloud.io',
+            "/d:sonar.scm.revision=$env:HEAD_SHA", '/d:sonar.exclusions=build/common/Addins/**/*,.devagent/**',
+            "/d:sonar.cs.cobertura.reportsPaths=$env:RUNNER_TEMP/sonar-staged/coverage/*.xml", '/d:sonar.qualitygate.wait=true')
+          if ($env:PR) {
+            $arguments += "/d:sonar.pullrequest.key=$env:PR", "/d:sonar.pullrequest.branch=$env:SOURCE_BRANCH", "/d:sonar.pullrequest.base=$env:BASE_BRANCH"
+          } else { $arguments += "/d:sonar.branch.name=$env:SOURCE_BRANCH" }
+          & "$env:RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" @arguments
+          if ($LASTEXITCODE -ne 0) { throw 'Scanner preparation failed' }
+          & "$env:RUNNER_TEMP/sonar-handoff.ps1" -Mode Install -Workspace $env:GITHUB_WORKSPACE -Bundle "$env:RUNNER_TEMP/sonar-bundle" -Staging "$env:RUNNER_TEMP/sonar-staged" -Revision $env:ANALYZED_SHA
+          if ($env:PR) {
+            $current = Invoke-RestMethod "https://api.github.com/repos/GitTools/GitVersion/pulls/$env:PR"
+            if ($current.state -ne 'open' -or $current.head.sha -ne $env:HEAD_SHA -or $current.merge_commit_sha -ne $env:ANALYZED_SHA) { throw 'PR advanced; wait for current CI' }
+          } else {
+            $branch = [Uri]::EscapeDataString($env:SOURCE_BRANCH)
+            $current = Invoke-RestMethod "https://api.github.com/repos/GitTools/GitVersion/branches/$branch"
+            if ($current.commit.sha -ne $env:HEAD_SHA) { throw 'Branch advanced; wait for current CI' }
+          }
+          & "$env:RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" end "/d:sonar.token=$env:SONAR_TOKEN"
+          if ($LASTEXITCODE -ne 0) { throw 'Scanner publication or quality gate failed' }
+      - name: Explain disabled publication
+        if: vars.SONAR_CI_PUBLISH != 'true'
+        run: echo 'Handoff validation completed. Publication remains disabled pending acceptance; automatic analysis still supplies Sonar PR comments and checks.' >> "$GITHUB_STEP_SUMMARY"

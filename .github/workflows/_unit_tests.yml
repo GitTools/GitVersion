@@ -31,6 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     env:
+      SONAR_PRODUCER: ${{ github.repository == 'GitTools/GitVersion' && (github.event_name == 'pull_request' || github.event_name == 'push') && matrix.os == 'ubuntu-24.04' && matrix.dotnet_version == '10.0' && matrix.git_backend == 'managed' }}
       GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
       TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/${{ matrix.git_backend }}/attempt-${{ github.run_attempt }}
     steps:
@@ -45,6 +46,29 @@ jobs:
           fetch-depth: 0
       - name: Restore State
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
+
+      - name: Prepare anonymous Sonar analysis
+        if: env.SONAR_PRODUCER == 'true'
+        shell: bash
+        run: |
+          dotnet tool install dotnet-sonarscanner --version 11.3.0 --tool-path "$RUNNER_TEMP/sonar-tool"
+          # Sonar otherwise conflates projects such as src/new-cli GitVersion.Core.
+          targets="$RUNNER_TEMP/sonar-projects.targets"
+          echo '<Project><PropertyGroup>' > "$targets"
+          while IFS= read -r project; do
+            [[ "$project" =~ ^[a-zA-Z0-9_./-]+$ ]]
+            digest=$(printf '%s' "$project" | sha256sum)
+            guid="${digest:0:8}-${digest:8:4}-${digest:12:4}-${digest:16:4}-${digest:20:12}"
+            # MSBuild evaluates the literal property later.
+            # shellcheck disable=SC2016
+            printf '<ProjectGuid Condition="\x27$(MSBuildProjectFullPath)\x27 == \x27%s/%s\x27">%s</ProjectGuid>\n' "$GITHUB_WORKSPACE" "$project" "$guid" >> "$targets"
+          done < <(git ls-files 'src/**/*.csproj' 'new-cli/**/*.csproj' 'build/**/*.csproj')
+          echo '</PropertyGroup></Project>' >> "$targets"
+          echo "CustomAfterMicrosoftCommonTargets=$RUNNER_TEMP/sonar-projects.targets" >> "$GITHUB_ENV"
+          "$RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" begin /k:GitTools_GitVersion /o:gittools \
+            /d:sonar.host.url=https://sonarcloud.io \
+            /d:sonar.exclusions='build/common/Addins/**/*,.devagent/**' \
+            /d:sonar.scm.revision="$GITHUB_SHA"
 
       # One attempt: retries leave stale failure annotations after a later pass.
       - name: '[Unit Test]'
@@ -63,6 +87,29 @@ jobs:
           trap preserve_reports EXIT
           dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }} --test_results="$TEST_RESULTS" \
             2>&1 | tee "$RUNNER_TEMP/unit-tests.log"
+
+      - name: Analyze remaining solutions
+        if: env.SONAR_PRODUCER == 'true'
+        shell: bash
+        run: |
+          for solution in new-cli/GitVersion.slnx build/CI.slnx; do
+            dotnet build "$solution" --configuration Release --no-incremental --disable-build-servers \
+              -p:ContinuousIntegrationBuild=false
+          done
+      - name: Package Sonar analysis data
+        if: env.SONAR_PRODUCER == 'true'
+        shell: pwsh
+        run: |
+          ./.github/scripts/sonar-handoff.ps1 -Mode Pack -Workspace $env:GITHUB_WORKSPACE -Bundle "$env:RUNNER_TEMP/sonar-bundle"
+      - name: Upload canonical Sonar build data
+        if: env.SONAR_PRODUCER == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sonar-analysis-ubuntu-24.04-net10.0-managed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/sonar-bundle
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Explain failed or incomplete test run
         if: always() && steps.unit_tests.outcome != 'success'

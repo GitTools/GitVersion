@@ -1,48 +1,58 @@
-# SonarScanner fork PR proof
+# SonarCloud analysis and coverage
 
-The **Sonar reviewed PR proof** job in the existing **CI** workflow uses the pinned `dotnet-sonarscanner`
-tool directly: `begin`, build, test with OpenCover coverage, then `end`. It targets
-`GitTools_GitVersion` with explicit PR and commit properties, allowing SonarCloud
-to provide its own PR comment and Code Analysis check. Related to #5221.
+CI prepares SonarScanner for .NET without credentials on exactly one unit-test
+matrix leg: **Ubuntu 24.04 / .NET 10 / managed Git backend**. Cake builds and tests
+`src` after preparation. The same job then builds `new-cli` and the build solution
+under the scanner, without rerunning the existing tests. Temporary path-based
+project IDs distinguish identically named projects across solutions.
 
-This is a controlled proof for a reviewed commit, not unattended analysis of
-arbitrary fork contributions. Dispatching it trusts the selected commit's build,
-dependencies and tests with the Sonar credential. Step-scoped environment
-variables do not isolate a credential from code running elsewhere in that job.
-Do not add `pull_request_target` or `workflow_run` triggers to this workflow.
+The leg uploads analysis data and the existing test-results artifact containing
+Cobertura coverage. Names include the run and attempt. Other legs retain their
+normal tests. Upstream push and PR runs, including fork and Dependabot PRs, produce
+the artifacts; docs-only changes also run CI. Merge-queue and release-dispatch runs
+do not produce Sonar artifacts.
 
-Manual dispatch runs only the Sonar job; normal CI jobs, including publication,
-are skipped. Push, pull request, merge queue and release-dispatch runs keep their
-existing behavior and skip the credentialed Sonar job.
+## Trusted publication
 
-## Run the proof
+**Sonar analysis publisher** starts automatically after CI succeeds. The trigger
+is workflow-wide; the receiver verifies that the latest source attempt contains
+exactly one successful canonical unit-test job, then downloads its named artifacts.
+It resolves the current PR/head/merge revision or branch revision through GitHub.
 
-1. The updated CI workflow must exist on upstream `main`. Review the entire selected PR
-   revision, including build scripts and dependencies, and copy its full head SHA.
-2. Coordinate a short analysis window: let automatic analyses finish, then disable
-   automatic analysis in SonarCloud. This is project-wide; do not leave it disabled
-   after the proof. The workflow checks the setting and never changes it itself.
-3. Dispatch **CI** on `main`, supplying the upstream PR number
-   and reviewed head SHA. It rejects a closed PR or changed head. The existing
-   1Password integration supplies `op://gittools/ci/sonarcloud/token` using the
-   repository's `OP_SERVICE_ACCOUNT_TOKEN` secret.
-4. Verify the completed Sonar analysis revision, imported coverage, and Sonar's own
-   check/comment on that PR. The scanner waits for the quality gate; upload success
-   alone is not acceptance. The workflow does not manufacture a replacement comment.
-5. Restore automatic analysis after the run, including on failure or cancellation,
-   and confirm normal PR analysis resumes. No permanent cutover is made by this PR.
+The import script is loaded from the trusted default-branch workflow revision.
+The source checkout is data only: the publisher does not run fork build scripts,
+tests, package restores or downloaded executables. Before loading a Sonar token,
+the script checks source ownership, project inventory, file types/limits and
+coverage, and reconstructs project metadata with fixed scanner settings. Producer
+and publisher use identical workspace paths for the scanner's binary analysis data.
 
-All three solutions are built under the scanner. A temporary MSBuild targets file
-assigns stable path-based project IDs because `src` and `new-cli` contain projects
-with identical names. Coverage is freshly collected from the seven existing `src`
-test projects on Ubuntu/net10/managed. This proof does not add coverage collection
-to `new-cli` or the build tooling, and does not change normal CI, Codecov or MTP
-reporting. No custom C# publisher, Python converter or scanner-artifact handoff is used.
+When publication is enabled, a fresh trusted scanner performs authenticated
+preparation. The script compares analyzer/rules fingerprints, installs staged
+analysis data and coverage, and the scanner finalizes and uploads the report.
+The source head is checked again immediately before upload. The scanner waits for
+the quality gate; Sonar's installed GitHub app supplies its own PR comment/check.
 
-The proof is complete only when a hosted run demonstrates coverage and decoration
-on the selected fork PR revision. Safe unattended fork analysis and a permanent
-CI-analysis cutover remain separate work; do not close #5221 on this proof alone.
+## Activation and acceptance
+
+`SONAR_CI_PUBLISH` must be exactly `true` to load the token and upload. Leave it unset
+until the hosted handoff, import safety and coverage/decoration acceptance checks
+are complete. The token comes from `op://gittools/ci/sonarcloud/token` through the
+existing 1Password integration. No custom C# application or Python is used.
+
+The receiver must first exist on upstream `main` for `workflow_run` to trigger it.
+Before cutover, verify actual imported coverage and current-revision Sonar comments
+and checks for fork, same-repository and Dependabot PRs, plus main and merge-queue
+behavior. Artifact validation alone is not a completed Sonar analysis.
+
+Keep automatic analysis enabled during bootstrap. At cutover, disable it once in
+SonarCloud under **Administration → Analysis Method**, retain the GitHub app and
+repository binding, and enable CI publication. Do not run competing automatic and
+CI analyses on the same project. On rollback, disable publication, drain in-flight
+publishers, restore automatic analysis and verify current PR checks. The workflows
+never change the Sonar analysis-mode setting themselves.
+
+Related to #5221; close it only after the automatic path meets these acceptance
+conditions, not merely after merging the workflows.
 
 References: [SonarScanner for .NET](https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/scanners/sonarscanner-for-dotnet/using),
-[.NET coverage](https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/test-coverage/dotnet-test-coverage),
-[GitHub fork workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request).
+[GitHub workflow_run](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run).
