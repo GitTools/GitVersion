@@ -45,7 +45,8 @@ function Copy-Data([string]$Source, [string]$Target) {
 function Get-XmlFingerprint([Xml.XmlNode]$Node) {
     # Rules/settings are unordered collections. Preserve all names, attributes and values.
     $attributes = @($Node.Attributes | ForEach-Object { $_.Name + '=' + $_.Value } | Sort-Object)
-    $children = @($Node.ChildNodes | Where-Object { $_ -is [Xml.XmlElement] } | ForEach-Object { Get-XmlFingerprint $_ } | Sort-Object)
+    $children = @($Node.ChildNodes | Where-Object { $_ -is [Xml.XmlElement] } | ForEach-Object { Get-XmlFingerprint $_ })
+    if (-not $Node.SelectSingleNode("Include")) { $children = @($children | Sort-Object) }
     $value = if ($children.Count) { '' } else { $Node.InnerText }
     $canonical = @($Node.Name, $attributes, $value, $children) | ConvertTo-Json -Depth 10 -Compress
     return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($canonical)))
@@ -54,7 +55,12 @@ function Get-Fingerprint {
     $conf = "$Workspace/.sonarqube/conf"
     $result = [ordered]@{}
     Get-ChildItem -LiteralPath $conf -Recurse -File | Where-Object { $_.Extension -eq '.ruleset' -or $_.Name -eq 'SonarLint.xml' } | Sort-Object FullName | ForEach-Object {
-        $result[[IO.Path]::GetRelativePath($conf, $_.FullName)] = Get-XmlFingerprint (Read-Xml $_.FullName).DocumentElement
+        $document = Read-Xml $_.FullName
+        # This trusted publisher input is not a compiler rule or analyzer parameter.
+        foreach ($setting in @($document.SelectNodes('/AnalysisInput/Settings/Setting[Key="sonar.cs.cobertura.reportsPaths"]'))) {
+            [void]$setting.ParentNode.RemoveChild($setting)
+        }
+        $result[[IO.Path]::GetRelativePath($conf, $_.FullName)] = Get-XmlFingerprint $document.DocumentElement
     }
     $xml = Read-Xml "$conf/SonarQubeAnalysisConfig.xml"
     foreach ($plugin in $xml.SelectNodes("//*[local-name()='AnalyzerPlugin']")) {
@@ -136,8 +142,8 @@ foreach ($infoPath in Get-ChildItem "$Bundle/out/*/ProjectInfo.xml" | Sort-Objec
     $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($project))).Substring(0,32)
     $guid = [Guid]::ParseExact($digest, 'N')
     Require ([Guid]$info.ProjectInfo.ProjectGuid -eq $guid) 'Unexpected project identifier'
-    # A solution can rebuild a shared project; retain its latest completed output.
-    if (-not $projects.Add($project)) { continue }
+    # Preserve every valid build output; the standard scanner handles shared projects.
+    [void]$projects.Add($project)
     $accepted = @(Get-Content -LiteralPath (Resolve-Child $Bundle "conf/$folder/FilesToAnalyze.txt") | Where-Object {
         $_.StartsWith($Workspace + '/', [StringComparison]::Ordinal) -and $tracked.Contains($_.Substring($Workspace.Length + 1))
     })
@@ -193,9 +199,9 @@ foreach ($report in $reports) {
     $sources = @($xml.SelectNodes('/coverage/sources/source') | ForEach-Object { $_.InnerText } | Where-Object { [IO.Path]::IsPathFullyQualified($_) })
     $owned = 0
     foreach ($item in @($xml.SelectNodes('//class'))) {
-        $matches = @($sources | ForEach-Object { [IO.Path]::GetFullPath([IO.Path]::Combine($_, $item.GetAttribute('filename'))) } | Where-Object { $_.StartsWith($Workspace + '/', [StringComparison]::Ordinal) })
-        if ($matches.Count -eq 0) { [void]$item.ParentNode.RemoveChild($item); continue }
-        [void](Get-Owned $matches[0]); $item.SetAttribute('filename', $matches[0]); $owned++
+        $sourceMatches = @($sources | ForEach-Object { [IO.Path]::GetFullPath([IO.Path]::Combine($_, $item.GetAttribute('filename'))) } | Where-Object { $_.StartsWith($Workspace + '/', [StringComparison]::Ordinal) })
+        if ($sourceMatches.Count -eq 0) { [void]$item.ParentNode.RemoveChild($item); continue }
+        [void](Get-Owned $sourceMatches[0]); $item.SetAttribute('filename', $sourceMatches[0]); $owned++
     }
     Require ($owned -gt 0) 'Coverage report has no repository sources'
     foreach ($source in $xml.SelectNodes('/coverage/sources/source')) { $source.InnerText = '/' }
