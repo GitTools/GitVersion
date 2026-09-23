@@ -1,6 +1,6 @@
 # SonarScanner fork PR proof
 
-The manual **Sonar reviewed PR proof** workflow uses the pinned `dotnet-sonarscanner`
+The **Sonar reviewed PR proof** job in the existing **CI** workflow uses the pinned `dotnet-sonarscanner`
 tool directly: `begin`, build, test with OpenCover coverage, then `end`. It targets
 `GitTools_GitVersion` with explicit PR and commit properties, allowing SonarCloud
 to provide its own PR comment and Code Analysis check. Related to #5221.
@@ -11,14 +11,18 @@ dependencies and tests with the Sonar credential. Step-scoped environment
 variables do not isolate a credential from code running elsewhere in that job.
 Do not add `pull_request_target` or `workflow_run` triggers to this workflow.
 
+Manual dispatch runs only the Sonar job; normal CI jobs, including publication,
+are skipped. Push, pull request, merge queue and release-dispatch runs keep their
+existing behavior and skip the credentialed Sonar job.
+
 ## Run the proof
 
-1. The workflow must exist on upstream `main`. Review the entire selected PR
+1. The updated CI workflow must exist on upstream `main`. Review the entire selected PR
    revision, including build scripts and dependencies, and copy its full head SHA.
 2. Coordinate a short analysis window: let automatic analyses finish, then disable
    automatic analysis in SonarCloud. This is project-wide; do not leave it disabled
    after the proof. The workflow checks the setting and never changes it itself.
-3. Dispatch **Sonar reviewed PR proof** on `main`, supplying the upstream PR number
+3. Dispatch **CI** on `main`, supplying the upstream PR number
    and reviewed head SHA. It rejects a closed PR or changed head. The existing
    1Password integration supplies `op://gittools/ci/sonarcloud/token` using the
    repository's `OP_SERVICE_ACCOUNT_TOKEN` secret.
