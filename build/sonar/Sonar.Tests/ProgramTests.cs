@@ -79,10 +79,17 @@ public class ProgramTests
 
     private static Dictionary<string, string?> IdentityEnvironment(string eventName) => new()
     {
-        ["GITHUB_EVENT_NAME"] = eventName, ["GITHUB_REPOSITORY"] = "GitTools/GitVersion", ["GITHUB_RUN_ID"] = "123",
-        ["GITHUB_RUN_ATTEMPT"] = "2", ["GITHUB_SHA"] = new('b', 40), ["GITHUB_REF_NAME"] = "main",
-        ["SONAR_HEAD_SHA"] = new('a', 40), ["SONAR_BASE_SHA"] = new('c', 40), ["SONAR_PR"] = "42",
-        ["GITHUB_HEAD_REF"] = "feature", ["GITHUB_BASE_REF"] = "main"
+        ["GITHUB_EVENT_NAME"] = eventName,
+        ["GITHUB_REPOSITORY"] = "GitTools/GitVersion",
+        ["GITHUB_RUN_ID"] = "123",
+        ["GITHUB_RUN_ATTEMPT"] = "2",
+        ["GITHUB_SHA"] = new('b', 40),
+        ["GITHUB_REF_NAME"] = "main",
+        ["SONAR_HEAD_SHA"] = new('a', 40),
+        ["SONAR_BASE_SHA"] = new('c', 40),
+        ["SONAR_PR"] = "42",
+        ["GITHUB_HEAD_REF"] = "feature",
+        ["GITHUB_BASE_REF"] = "main"
     };
 
     private Task<(int ExitCode, string Output, string Error)> Invoke(params string[] arguments) => InvokeWithEnvironment([], arguments);
@@ -92,11 +99,21 @@ public class ProgramTests
         var start = new ProcessStartInfo("dotnet") { WorkingDirectory = this.directory, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
         foreach (var (name, value) in environment)
         {
-            if (value is null) start.Environment.Remove(name);
-            else start.Environment[name] = value;
+            if (value is null)
+            {
+                start.Environment.Remove(name);
+            }
+            else
+            {
+                start.Environment[name] = value;
+            }
         }
         start.ArgumentList.Add(typeof(SafeFiles).Assembly.Location);
-        foreach (var argument in arguments) start.ArgumentList.Add(argument);
+        foreach (var argument in arguments)
+        {
+            start.ArgumentList.Add(argument);
+        }
+
         using var process = Process.Start(start)!;
         var stdout = process.StandardOutput.ReadToEndAsync();
         var stderr = process.StandardError.ReadToEndAsync();

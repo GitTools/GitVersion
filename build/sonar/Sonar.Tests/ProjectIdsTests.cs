@@ -30,6 +30,6 @@ public class ProjectIdsTests
         }
         var destination = Path.Combine(repository, "ids.props");
         ProjectIds.Write(repository, destination);
-        return XDocument.Load(destination).Descendants("ProjectGuid").Select(e => e.Value).Order().ToList();
+        return [.. XDocument.Load(destination).Descendants("ProjectGuid").Select(e => e.Value).Order()];
     }
 }

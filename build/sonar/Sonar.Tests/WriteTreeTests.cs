@@ -32,7 +32,11 @@ public class WriteTreeTests
         await Git("config", "filter.canary.required", "true");
         var hook = Path.Combine(this.repository, ".git/hooks/post-checkout");
         await File.WriteAllTextAsync(hook, $"#!/bin/sh\ntouch '{hookCanary}'\n");
-        if (!OperatingSystem.IsWindows()) File.SetUnixFileMode(hook, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        if (!OperatingSystem.IsWindows())
+        {
+            File.SetUnixFileMode(hook, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        }
+
         File.Delete(binary);
         File.Delete(attributes);
         File.Delete(link);

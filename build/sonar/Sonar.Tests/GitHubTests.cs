@@ -202,7 +202,11 @@ public class GitHubTests
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var path = request.RequestUri!.PathAndQuery;
-            if (!responses.TryGetValue(path, out var response)) throw new InvalidOperationException("Unexpected request: " + path);
+            if (!responses.TryGetValue(path, out var response))
+            {
+                throw new InvalidOperationException("Unexpected request: " + path);
+            }
+
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(response.ToJsonString(), Encoding.UTF8, "application/json") });
         }
     }

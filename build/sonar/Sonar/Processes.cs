@@ -100,7 +100,11 @@ public static class Processes
             }
             catch
             {
-                if (!process.HasExited) process.Kill(true);
+                if (!process.HasExited)
+                {
+                    process.Kill(true);
+                }
+
                 throw;
             }
             SafeFiles.Require(process.ExitCode == 0 && output.Length == size, "Unable to materialize source blob");

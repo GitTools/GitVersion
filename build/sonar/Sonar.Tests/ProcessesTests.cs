@@ -13,9 +13,17 @@ public class ProcessesTests
         var credentials = new[] { "OP_SERVICE_ACCOUNT_TOKEN", "SONAR_TOKEN", "GH_TOKEN" };
         if (Environment.GetEnvironmentVariable(marker) == "1")
         {
-            foreach (var name in credentials) Assert.That(Environment.GetEnvironmentVariable(name), Is.EqualTo(canary));
+            foreach (var name in credentials)
+            {
+                Assert.That(Environment.GetEnvironmentVariable(name), Is.EqualTo(canary));
+            }
+
             var output = await Processes.Run("/usr/bin/env", [], Path.GetTempPath());
-            foreach (var name in credentials) Assert.That(output, Does.Not.Contain(name + "="));
+            foreach (var name in credentials)
+            {
+                Assert.That(output, Does.Not.Contain(name + "="));
+            }
+
             Assert.That(output, Does.Not.Contain(canary));
             Assert.That(output, Does.Contain("GIT_CONFIG_NOSYSTEM=1"));
             Assert.That(output, Does.Contain("PATH="));
@@ -28,7 +36,11 @@ public class ProcessesTests
         start.ArgumentList.Add("--filter");
         start.ArgumentList.Add("FullyQualifiedName=GitVersion.Sonar.Tests.ProcessesTests.RunDoesNotInheritCredentialEnvironment");
         start.Environment[marker] = "1";
-        foreach (var name in credentials) start.Environment[name] = canary;
+        foreach (var name in credentials)
+        {
+            start.Environment[name] = canary;
+        }
+
         using var process = Process.Start(start)!;
         var stdout = process.StandardOutput.ReadToEndAsync();
         var stderr = process.StandardError.ReadToEndAsync();

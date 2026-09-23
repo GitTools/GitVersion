@@ -14,14 +14,20 @@ public class SonarResultTests
     [SetUp]
     public void SetUp()
     {
-        this.checks = new JsonObject { ["check_runs"] = new JsonArray(new JsonObject
+        this.checks = new JsonObject
         {
-            ["app"] = new JsonObject { ["slug"] = "sonarqubecloud" }, ["head_sha"] = Identity.HeadSha,
-            ["status"] = "completed", ["completed_at"] = SubmittedAt.AddSeconds(1).ToString("O")
-        }) };
+            ["check_runs"] = new JsonArray(new JsonObject
+            {
+                ["app"] = new JsonObject { ["slug"] = "sonarqubecloud" },
+                ["head_sha"] = Identity.HeadSha,
+                ["status"] = "completed",
+                ["completed_at"] = SubmittedAt.AddSeconds(1).ToString("O")
+            })
+        };
         this.comments = new JsonArray(new JsonObject
         {
-            ["user"] = new JsonObject { ["login"] = "sonarqubecloud[bot]" }, ["updated_at"] = SubmittedAt.AddSeconds(1).ToString("O")
+            ["user"] = new JsonObject { ["login"] = "sonarqubecloud[bot]" },
+            ["updated_at"] = SubmittedAt.AddSeconds(1).ToString("O")
         });
     }
 
@@ -64,8 +70,15 @@ public class SonarResultTests
     [TestCase(false)]
     public void HasDecorationRequiresBothCheckAndComment(bool removeCheck)
     {
-        if (removeCheck) this.checks["check_runs"] = new JsonArray();
-        else this.comments.Clear();
+        if (removeCheck)
+        {
+            this.checks["check_runs"] = new JsonArray();
+        }
+        else
+        {
+            this.comments.Clear();
+        }
+
         Assert.That(HasDecoration(), Is.False);
     }
 

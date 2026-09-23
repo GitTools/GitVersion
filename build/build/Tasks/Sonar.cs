@@ -20,8 +20,15 @@ internal static class SonarHelper
     internal static void Run(BuildContext context, params string[] arguments)
     {
         var args = new ProcessArgumentBuilder().AppendQuoted("build/sonar/Sonar/bin/Release/net10.0/Sonar.dll");
-        foreach (var argument in arguments) args.AppendQuoted(argument);
+        foreach (var argument in arguments)
+        {
+            args.AppendQuoted(argument);
+        }
+
         var result = context.StartProcess("dotnet", new ProcessSettings { Arguments = args });
-        if (result != 0) throw new InvalidOperationException($"Sonar helper failed with exit code {result}");
+        if (result != 0)
+        {
+            throw new InvalidOperationException($"Sonar helper failed with exit code {result}");
+        }
     }
 }

@@ -22,7 +22,11 @@ public class HandoffTests
         this.coverage = Path.Combine(this.root, "coverage");
         this.bundle = Path.Combine(this.root, "bundle");
         var projects = new[] { "src/Foo/Foo.csproj", "src/Foo.Tests/Foo.Tests.csproj", "new-cli/Bar/Bar.csproj", "build/Tool/Tool.csproj", "build/sonar/Sonar.Tests/Sonar.Tests.csproj" };
-        for (var i = 0; i < projects.Length; i++) AddProject(projects[i], i);
+        for (var i = 0; i < projects.Length; i++)
+        {
+            AddProject(projects[i], i);
+        }
+
         Write("src/GitVersion.slnx", "<Solution><Project Path=\"Foo/Foo.csproj\"/><Project Path=\"Foo.Tests/Foo.Tests.csproj\"/></Solution>");
         Write("new-cli/GitVersion.slnx", "<Solution><Project Path=\"Bar/Bar.csproj\"/></Solution>");
         Write("build/CI.slnx", "<Solution><Project Path=\"Tool/Tool.csproj\"/><Project Path=\"sonar/Sonar.Tests/Sonar.Tests.csproj\"/></Solution>");
@@ -173,7 +177,11 @@ public class HandoffTests
             config.Root!.Add(new XElement(Ns + "Token", "credential-canary"));
             config.Save(Path.Combine(this.repository, relative));
         }
-        else Write(relative, "credential-canary");
+        else
+        {
+            Write(relative, "credential-canary");
+        }
+
         Write(".sonarqube/conf/0/FilesToAnalyze.txt", Path.Combine(this.repository, "src/Foo/Code.cs") + "\n" + Path.Combine(this.repository, relative));
         Assert.That(Collect, Throws.TypeOf<InvalidDataException>().With.Message.Contains("Reserved"));
     }
@@ -203,8 +211,15 @@ public class HandoffTests
     {
         Collect();
         PrepareTrustedScanner();
-        if (changeBytes) File.WriteAllText(Path.Combine(this.root, "analyzers/fake.dll"), "changed analyzer bytes");
-        else ConfigureAnalyzer("2.0");
+        if (changeBytes)
+        {
+            File.WriteAllText(Path.Combine(this.root, "analyzers/fake.dll"), "changed analyzer bytes");
+        }
+        else
+        {
+            ConfigureAnalyzer("2.0");
+        }
+
         Assert.That(() => Handoff.Import(this.repository, this.bundle, Identity), Throws.TypeOf<InvalidDataException>().With.Message.Contains("configuration changed"));
         Assert.That(Directory.Exists(Path.Combine(this.scanner, "out")), Is.False);
     }
@@ -234,7 +249,7 @@ public class HandoffTests
     {
         var path = Path.Combine(this.coverage, test, "net10.0/coverage.cobertura.xml");
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        XElement CoveredClass(string filename, int hits) => new("class", new XAttribute("filename", filename),
+        static XElement CoveredClass(string filename, int hits) => new("class", new XAttribute("filename", filename),
             new XElement("lines", new XElement("line", new XAttribute("number", 1), new XAttribute("hits", hits))));
         var doc = new XElement("coverage", new XElement("sources", new XElement("source", "/")),
             new XElement("packages", new XElement("package", new XElement("classes",

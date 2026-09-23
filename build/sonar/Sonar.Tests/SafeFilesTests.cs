@@ -150,7 +150,11 @@ public class SafeFilesTests
     public void ReadXmlRejectsOversizedFile()
     {
         var path = Path.Combine(this.root, "oversize.xml");
-        using (var file = File.Create(path)) file.SetLength(SafeFiles.MaxFileBytes + 1);
+        using (var file = File.Create(path))
+        {
+            file.SetLength(SafeFiles.MaxFileBytes + 1);
+        }
+
         Assert.That(() => SafeFiles.ReadXml(path), Throws.TypeOf<InvalidDataException>());
     }
 
@@ -159,7 +163,7 @@ public class SafeFilesTests
     public void UnpackRejectsFileDirectoryCollisionsBeforeWriting(bool parentFirst)
     {
         var entries = new[] { ("parent", "file"), ("parent/child.xml", "<child/>") };
-        var zip = CreateArchive(parentFirst ? entries : entries.Reverse().ToArray());
+        var zip = CreateArchive(parentFirst ? entries : [.. entries.Reverse()]);
         var destination = Path.Combine(this.root, "extracted");
         Assert.That(() => SafeFiles.Unpack(zip, destination), Throws.TypeOf<InvalidDataException>());
         Assert.That(Directory.Exists(destination), Is.False);
@@ -173,7 +177,11 @@ public class SafeFilesTests
         using (var output = archive.CreateEntry("oversized.xml", CompressionLevel.Fastest).Open())
         {
             var block = new byte[1024 * 1024];
-            for (var i = 0; i < SafeFiles.MaxFileBytes / block.Length; i++) output.Write(block);
+            for (var i = 0; i < SafeFiles.MaxFileBytes / block.Length; i++)
+            {
+                output.Write(block);
+            }
+
             output.WriteByte(0);
         }
         var destination = Path.Combine(this.root, "extracted");
@@ -187,7 +195,11 @@ public class SafeFilesTests
         var first = Path.Combine(this.root, "a.xml");
         var last = Path.Combine(this.root, "z.xml");
         File.WriteAllText(last, "<z/>");
-        using (var file = File.Create(first)) file.SetLength(SafeFiles.MaxFileBytes);
+        using (var file = File.Create(first))
+        {
+            file.SetLength(SafeFiles.MaxFileBytes);
+        }
+
         Assert.That(SafeFiles.Files(this.root), Is.EqualTo(new[] { first, last }));
     }
 
@@ -227,7 +239,13 @@ public class SafeFilesTests
     {
         var zip = Path.Combine(this.root, "archive.zip");
         using (var archive = ZipFile.Open(zip, ZipArchiveMode.Create))
-            for (var i = 0; i <= SafeFiles.MaxFiles; i++) archive.CreateEntry($"{i}.xml");
+        {
+            for (var i = 0; i <= SafeFiles.MaxFiles; i++)
+            {
+                archive.CreateEntry($"{i}.xml");
+            }
+        }
+
         var destination = Path.Combine(this.root, "extracted");
         Assert.That(() => SafeFiles.Unpack(zip, destination), Throws.TypeOf<InvalidDataException>());
         Assert.That(Directory.Exists(destination), Is.False);
