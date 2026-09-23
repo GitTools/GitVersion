@@ -11,6 +11,7 @@ public class GitHubTests
     private static readonly string Merge = new('b', 40);
     private static readonly string Base = new('c', 40);
     private const string Prefix = "/repos/GitTools/GitVersion/";
+    private const string ReceiptRuns = Prefix + "actions/workflows/sonar_publish.yml/runs?status=success&per_page=100&created=%3E%3D2026-09-23T12%3A00%3A00.0000000%2B00%3A00";
     private Dictionary<string, JsonNode> responses = null!;
 
     [SetUp]
@@ -20,6 +21,7 @@ public class GitHubTests
             {"workflow_id":10,"path":".github/workflows/ci.yml","repository":{"full_name":"GitTools/GitVersion"},"run_attempt":1,"conclusion":"success","head_branch":"feature","event":"pull_request","head_repository":{"full_name":"contributor/GitVersion"},"pull_requests":[]}
             """)!;
         run["head_sha"] = Head;
+        run["created_at"] = "2026-09-23T12:00:00Z";
         var pr = JsonNode.Parse("""
             {"number":42,"state":"open","head":{"ref":"feature","repo":{"full_name":"contributor/GitVersion"}},"base":{"ref":"main"}}
             """)!;
@@ -169,7 +171,7 @@ public class GitHubTests
     [TestCase(false, false, false)]
     public async Task HasReceiptAcceptsOnlyCurrentUnexpiredTrustedReceiverReceipt(bool matchingName, bool expired, bool expected)
     {
-        this.responses[Prefix + "actions/workflows/sonar_publish.yml/runs?status=success&per_page=100"] =
+        this.responses[ReceiptRuns] =
             new JsonObject { ["workflow_runs"] = new JsonArray(new JsonObject { ["id"] = 777 }) };
         this.responses[Prefix + "actions/runs/777/artifacts?per_page=100"] = new JsonObject
         {
@@ -182,9 +184,44 @@ public class GitHubTests
     [Test]
     public async Task HasReceiptReturnsFalseWithoutSuccessfulReceiverRuns()
     {
-        this.responses[Prefix + "actions/workflows/sonar_publish.yml/runs?status=success&per_page=100"] = new JsonObject { ["workflow_runs"] = new JsonArray() };
+        this.responses[ReceiptRuns] = new JsonObject { ["workflow_runs"] = new JsonArray() };
         using var github = Client();
         Assert.That(await github.HasReceipt(DownloadIdentity), Is.False);
+    }
+
+    [Test]
+    public async Task HasReceiptFindsOlderReceiptOnSecondPageOfSuccessfulRuns()
+    {
+        const string firstPage = ReceiptRuns;
+        var pages = new Dictionary<string, JsonNode>
+        {
+            [Prefix + "actions/runs/123"] = new JsonObject { ["created_at"] = "2026-09-23T12:00:00Z" }
+        };
+        var firstRuns = new JsonArray();
+        for (var id = 1000; id < 1100; id++)
+        {
+            firstRuns.Add(new JsonObject { ["id"] = id });
+            pages[Prefix + $"actions/runs/{id}/artifacts?per_page=100"] = new JsonObject { ["artifacts"] = new JsonArray() };
+        }
+        pages[firstPage] = new JsonObject { ["workflow_runs"] = firstRuns };
+        pages[firstPage + "&page=2"] = new JsonObject { ["workflow_runs"] = new JsonArray(new JsonObject { ["id"] = 999 }) };
+        pages[Prefix + "actions/runs/999/artifacts?per_page=100"] = new JsonObject
+        {
+            ["artifacts"] = new JsonArray(new JsonObject { ["name"] = GitHub.ReceiptName(DownloadIdentity), ["expired"] = false })
+        };
+        var requested = new List<string>();
+        using var github = new GitHub(new HttpClient(new StubHandler(pages, requested)) { BaseAddress = new Uri("https://api.github.com/") });
+
+        Assert.That(await github.HasReceipt(DownloadIdentity), Is.True);
+        Assert.That(requested, Is.EquivalentTo(pages.Keys), "Every expected page and artifact request must occur exactly once.");
+    }
+
+    [Test]
+    public void HasReceiptRejectsSearchBeyondGitHubResultLimit()
+    {
+        this.responses[ReceiptRuns] = new JsonObject { ["total_count"] = 1001, ["workflow_runs"] = new JsonArray() };
+        using var github = Client();
+        Assert.That(async () => await github.HasReceipt(DownloadIdentity), Throws.TypeOf<InvalidDataException>().With.Message.Contains("result limit"));
     }
 
     private void ConfigurePush()
@@ -197,11 +234,12 @@ public class GitHubTests
 
     private GitHub Client() => new(new HttpClient(new StubHandler(this.responses)) { BaseAddress = new Uri("https://api.github.com/") });
 
-    private sealed class StubHandler(Dictionary<string, JsonNode> responses) : HttpMessageHandler
+    private sealed class StubHandler(Dictionary<string, JsonNode> responses, List<string>? requested = null) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var path = request.RequestUri!.PathAndQuery;
+            requested?.Add(path);
             if (!responses.TryGetValue(path, out var response))
             {
                 throw new InvalidOperationException("Unexpected request: " + path);

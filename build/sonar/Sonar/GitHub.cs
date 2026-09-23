@@ -100,17 +100,30 @@ public sealed class GitHub : IDisposable
     {
         // Only completed successful executions of the trusted receiver can create a receipt.
         // Source CI artifacts, including fork-defined names, cannot satisfy this lookup.
-        var runs = await Get($"repos/{Repository}/actions/workflows/sonar_publish.yml/runs?status=success&per_page=100");
-        foreach (var run in runs.GetProperty("workflow_runs").EnumerateArray())
+        var source = await Get($"repos/{Repository}/actions/runs/{identity.RunId}");
+        var created = source.GetProperty("created_at").GetDateTimeOffset().ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+        var since = Uri.EscapeDataString(">=" + created);
+        for (var page = 1; ; page++)
         {
-            var id = run.GetProperty("id").GetInt64();
-            var artifacts = await Get($"repos/{Repository}/actions/runs/{id}/artifacts?per_page=100");
-            if (artifacts.GetProperty("artifacts").EnumerateArray().Any(a => a.GetProperty("name").GetString() == ReceiptName(identity) && !a.GetProperty("expired").GetBoolean()))
+            var pagination = page == 1 ? "" : $"&page={page}";
+            var response = await Get($"repos/{Repository}/actions/workflows/sonar_publish.yml/runs?status=success&per_page=100&created={since}{pagination}");
+            SafeFiles.Require(!response.TryGetProperty("total_count", out var count) || count.GetInt32() <= 1000,
+                "Receipt search exceeds GitHub's result limit; rerun source CI to narrow the recovery window");
+            var runs = response.GetProperty("workflow_runs").EnumerateArray().ToArray();
+            foreach (var run in runs)
             {
-                return true;
+                var id = run.GetProperty("id").GetInt64();
+                var artifacts = await Get($"repos/{Repository}/actions/runs/{id}/artifacts?per_page=100");
+                if (artifacts.GetProperty("artifacts").EnumerateArray().Any(a => a.GetProperty("name").GetString() == ReceiptName(identity) && !a.GetProperty("expired").GetBoolean()))
+                {
+                    return true;
+                }
+            }
+            if (runs.Length < 100)
+            {
+                return false;
             }
         }
-        return false;
     }
 
     public void Dispose() => this.client.Dispose();
