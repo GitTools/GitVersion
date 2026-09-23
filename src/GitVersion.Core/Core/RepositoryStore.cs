@@ -5,10 +5,14 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchResolver? branchResolver = null) : IRepositoryStore
+internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository repository, BranchResolver? branchResolver = null)
+    : IRepositoryStore, ICachedCommitLogProvider
 {
     private readonly ILogger<RepositoryStore> logger = logger.NotNull();
     private readonly IGitRepository repository = repository.NotNull();
+    private readonly Dictionary<string, CommitGraph> commitGraphCache = [];
+    private readonly Dictionary<IgnoredCommits, CommitMask> ignoredMaskCache = [];
+    private readonly Dictionary<ExcludedCommits, CommitMask> excludedMaskCache = [];
 
     public int UncommittedChangesCount => this.repository.UncommittedChangesCount();
 
@@ -254,6 +258,10 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
         => FindCommitBranchesBranchedFrom(
             branch, configuration, excludedBranches, excludeIgnoredBranches: true);
 
+    /// <summary>
+    /// Returns the commits reachable from <paramref name="currentCommit"/> which are not reachable from
+    /// <paramref name="baseVersionSource"/>, in the order the revision walk emits them.
+    /// </summary>
     public IReadOnlyList<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore)
     {
         currentCommit.NotNull();
@@ -269,6 +277,55 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
         var commits = FilterCommits(filter).ToArray();
         return [.. ignore.Filter(commits)];
     }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ICommit> GetCommitLog(
+        ICommit? baseVersionSource, ICommit currentCommit, IIgnoreConfiguration ignore, IReadOnlySet<string> excludedShas)
+    {
+        currentCommit.NotNull();
+        ignore.NotNull();
+        excludedShas.NotNull();
+
+        var graph = GetCommitGraph(currentCommit);
+        var ignored = GetIgnoredMask(graph, currentCommit, ignore);
+        var excluded = GetExcludedMask(graph, currentCommit, ignore, ignored, excludedShas);
+
+        return graph.GetCommits(baseVersionSource, ignored, excluded);
+    }
+
+    /// <summary>
+    /// Returns the commits reachable from <paramref name="currentCommit"/>. The walk is performed once and
+    /// cached, because the reachable history cannot change while a single version is calculated.
+    /// </summary>
+    private CommitGraph GetCommitGraph(ICommit currentCommit)
+        => this.commitGraphCache.GetOrAdd(currentCommit.Sha, () =>
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = currentCommit,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            return CommitGraph.Create([.. FilterCommits(filter)]);
+        });
+
+    /// <summary>Returns the commits which <paramref name="ignore"/> removes from the history.</summary>
+    private CommitMask GetIgnoredMask(CommitGraph graph, ICommit currentCommit, IIgnoreConfiguration ignore)
+        => ignore.IsEmpty
+            ? CommitMask.Empty
+            : this.ignoredMaskCache.GetOrAdd(new(currentCommit.Sha, ignore), () => graph.CreateIgnoredMask(ignore));
+
+    /// <summary>
+    /// Returns the commits which <paramref name="excludedShas"/> removes from the history, which are those commits
+    /// together with everything they build upon. Which commits those are does not depend on the base version
+    /// source, so the result is cached once per set of excluded commits instead of once per requested commit log.
+    /// </summary>
+    private CommitMask GetExcludedMask(
+        CommitGraph graph, ICommit currentCommit, IIgnoreConfiguration ignore, CommitMask ignored, IReadOnlySet<string> excludedShas)
+        => excludedShas.Count == 0
+            ? CommitMask.Empty
+            : this.excludedMaskCache.GetOrAdd(
+                new(currentCommit.Sha, ignore, excludedShas), () => graph.CreateAncestorMask(excludedShas, ignored));
 
     public IReadOnlyList<ICommit> GetCommitsReacheableFromHead(ICommit? headCommit, IIgnoreConfiguration ignore)
     {
@@ -331,4 +388,13 @@ internal class RepositoryStore(ILogger<RepositoryStore> logger, IGitRepository r
             return [];
         }
     }
+
+    /// <summary>Identifies the commits removed by one set of ignore rules from the history of one head commit.</summary>
+    private readonly record struct IgnoredCommits(string HeadSha, IIgnoreConfiguration Ignore);
+
+    /// <summary>
+    /// Identifies the commits removed by one set of excluded commits from the history of one head commit. The
+    /// excluded set takes part in the identity by reference, which is why callers must not modify it afterwards.
+    /// </summary>
+    private readonly record struct ExcludedCommits(string HeadSha, IIgnoreConfiguration Ignore, IReadOnlySet<string> ExcludedShas);
 }
