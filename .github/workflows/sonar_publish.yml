@@ -41,9 +41,10 @@ jobs:
         with:
           egress-policy: audit
       - name: Checkout trusted workflow revision
+        # workflow_run uses the default-branch commit; dispatch is restricted to main above.
+        # Keep checkout's default event revision, never a source PR/run ref.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.workflow_sha }}
           persist-credentials: false
       - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
         with:

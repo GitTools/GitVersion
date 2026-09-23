@@ -20,7 +20,11 @@ public static class SafeFiles
 
     public static string Relative(string value)
     {
-        Require(!string.IsNullOrWhiteSpace(value) && !Path.IsPathRooted(value) &&
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidDataException("Invalid relative path");
+        }
+        Require(!Path.IsPathRooted(value) &&
                 !value.Contains('\\') && !value.Contains(':') && !value.Any(char.IsControl), "Invalid relative path");
         Require(value.Split('/').All(p => p is not ("" or "." or "..")), "Invalid relative path component");
         return value;
