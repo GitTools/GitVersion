@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <EnableNUnitRunner>true</EnableNUnitRunner>
+    <EnableMicrosoftTestingPlatformRunner>true</EnableMicrosoftTestingPlatformRunner>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Sonar/Sonar.csproj" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.MTP" />
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+</Project>

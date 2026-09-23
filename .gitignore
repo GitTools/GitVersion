@@ -134,3 +134,6 @@ new-cli/logs/
 
 # Local agent planning notes
 /.devagent/
+
+# SonarScanner generated configuration and analysis data
+.sonarqube/
