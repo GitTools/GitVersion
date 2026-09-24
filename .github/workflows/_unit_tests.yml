@@ -51,7 +51,7 @@ jobs:
         if: env.SONAR_PRODUCER == 'true'
         shell: bash
         run: |
-          dotnet tool install dotnet-sonarscanner --version 11.3.0 --tool-path "$RUNNER_TEMP/sonar-tool"
+          dotnet tool restore
           # Sonar otherwise conflates projects such as src/new-cli GitVersion.Core.
           targets="$RUNNER_TEMP/sonar-projects.targets"
           echo '<Project><PropertyGroup>' > "$targets"
@@ -65,7 +65,7 @@ jobs:
           done < <(git ls-files 'src/**/*.csproj' 'new-cli/**/*.csproj' 'build/**/*.csproj')
           echo '</PropertyGroup></Project>' >> "$targets"
           echo "CustomAfterMicrosoftCommonTargets=$RUNNER_TEMP/sonar-projects.targets" >> "$GITHUB_ENV"
-          "$RUNNER_TEMP/sonar-tool/dotnet-sonarscanner" begin /k:GitTools_GitVersion /o:gittools \
+          dotnet tool run dotnet-sonarscanner begin /k:GitTools_GitVersion /o:gittools \
             /d:sonar.host.url=https://sonarcloud.io \
             /d:sonar.exclusions='build/common/Addins/**/*,.devagent/**' \
             /d:sonar.scm.revision="$GITHUB_SHA"

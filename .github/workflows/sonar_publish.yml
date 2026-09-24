@@ -35,8 +35,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Preserve trusted script outside source checkout
-        run: cp .github/scripts/sonar-handoff.ps1 "$RUNNER_TEMP/sonar-handoff.ps1"
+      - name: Preserve trusted script and tool manifest outside source checkout
+        run: |
+          cp .github/scripts/sonar-handoff.ps1 "$RUNNER_TEMP/sonar-handoff.ps1"
+          cp .config/dotnet-tools.json "$RUNNER_TEMP/dotnet-tools.json"
       - name: Resolve source run and current revision
         id: source
         env:
@@ -96,7 +98,9 @@ jobs:
           dotnet-version: '10.0.401'
       - name: Install trusted scanner outside the source checkout
         working-directory: ${{ runner.temp }}
-        run: dotnet tool install dotnet-sonarscanner --version 11.3.0 --tool-path "$RUNNER_TEMP/sonar-tool"
+        run: |
+          version=$(jq -er '.tools["dotnet-sonarscanner"].version' "$RUNNER_TEMP/dotnet-tools.json")
+          dotnet tool install dotnet-sonarscanner --version "$version" --tool-path "$RUNNER_TEMP/sonar-tool"
       - name: Check publication mode
         if: vars.SONAR_CI_PUBLISH == 'true'
         run: |
