@@ -247,6 +247,25 @@ public class MainScenarios : TestBase
         fixture.AssertFullSemver("0.0.1-7", configuration);
     }
 
+    /// <summary>
+    /// The `next-version` configuration value is a version, not a tag, so it should not need to
+    /// be prefixed with the configured tag-prefix in order to be parsed.
+    /// (see https://github.com/GitTools/GitVersion/issues/5228)
+    /// </summary>
+    [Test]
+    public void NextVersionInConfigDoesNotRequireTagPrefix()
+    {
+        using var fixture = new EmptyRepositoryFixture("develop");
+        fixture.MakeACommit();
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithTagPrefixPattern("package-a/")
+            .WithNextVersion("1.0.0")
+            .Build();
+
+        fixture.AssertFullSemver("1.0.0-alpha.1", configuration);
+    }
+
     [Test]
     public void NextVersionShouldBeConsideredOnTheDevelopmentBranch()
     {

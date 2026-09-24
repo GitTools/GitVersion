@@ -164,6 +164,16 @@ The `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` environment va
   * `Verbosity` enum (Quiet/Minimal/Normal/Verbose/Diagnostic) - still used for CLI verbosity control
   * `IConsole` interface - moved from `GitVersion.Logging` to `GitVersion` namespace
 
+### `next-version` no longer requires the `tag-prefix`
+
+`next-version` is a version, not a tag, so it is now parsed as-is and no longer requires the
+configured `tag-prefix` to match at the start of the value ([#5228][5228]).
+
+Previously, when `tag-prefix` did not accept an empty/optional prefix (for example
+`tag-prefix: 'package-a/'`), you had to write the prefix into `next-version` as well
+(`next-version: package-a/1.2.3`) just so it could be parsed. That workaround now fails to
+parse and should be removed — write the plain version instead (`next-version: 1.2.3`).
+
 ## v6.2.0
 
 * The configuration property `label-number-pattern` was removed. The functionality can be still used by changing the label and the branch name regular expression for pull-request branches.
@@ -361,6 +371,8 @@ work for you
 [pr-1581]: https://github.com/GitTools/GitVersion/pull/1581
 
 [5031]: https://github.com/GitTools/GitVersion/issues/5031
+
+[5228]: https://github.com/GitTools/GitVersion/issues/5228
 
 [system-commandline]: https://github.com/dotnet/command-line-api
 
