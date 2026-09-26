@@ -9,15 +9,19 @@ namespace GitVersion;
 internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVersionRepository> logger, IRepositoryStore repositoryStore) : ITaggedSemanticVersionRepository
 {
     private readonly ILogger<TaggedSemanticVersionRepository> logger = logger.NotNull();
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
         taggedSemanticVersionsOfBranchCache = new();
-    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), IReadOnlyList<(ICommit Key, SemanticVersionWithTag Value)>>
+    private readonly ConcurrentDictionary<(IBranch, string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
         taggedSemanticVersionsOfMergeTargetCache = new();
-    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), IReadOnlyList<SemanticVersionWithTag>>
+    private readonly ConcurrentDictionary<(string, SemanticVersionFormat), ILookup<ICommit, SemanticVersionWithTag>>
         taggedSemanticVersionsCache = new();
 
     private readonly IRepositoryStore repositoryStore = repositoryStore.NotNull();
 
+    /// <summary>
+    /// Returns the semantic versions tagged on the commits of <paramref name="branch"/>, grouped by the commit
+    /// they are tagged on and ordered by commit date, most recent first.
+    /// </summary>
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfBranch(
        IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
@@ -28,7 +32,8 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         var result = this.taggedSemanticVersionsOfBranchCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            return [.. GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When)];
+            return GetElements().Distinct().OrderByDescending(element => element.Tag.Commit.When)
+                .ToLookup(element => element.Tag.Commit, element => element);
         });
 
         if (isCached)
@@ -40,7 +45,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             );
         }
 
-        return result.ToLookup(element => element.Tag.Commit, element => element);
+        return result;
 
         IEnumerable<SemanticVersionWithTag> GetElements()
         {
@@ -60,6 +65,10 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         }
     }
 
+    /// <summary>
+    /// Returns the semantic versions tagged on commits which were merged into <paramref name="branch"/>, keyed by
+    /// the commit on the branch which the tagged commit has as a parent.
+    /// </summary>
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersionsOfMergeTarget(
         IBranch branch, string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
@@ -70,7 +79,8 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         var result = this.taggedSemanticVersionsOfMergeTargetCache.GetOrAdd(new(branch, tagPrefix, format), _ =>
         {
             isCached = false;
-            return [.. GetElements().Distinct().OrderByDescending(element => element.Key.When)];
+            return GetElements().Distinct().OrderByDescending(element => element.Key.When)
+                .ToLookup(element => element.Key, element => element.Value);
         });
 
         if (isCached)
@@ -82,7 +92,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             );
         }
 
-        return result.ToLookup(element => element.Key, element => element.Value);
+        return result;
 
         IEnumerable<(ICommit Key, SemanticVersionWithTag Value)> GetElements()
         {
@@ -102,6 +112,10 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         }
     }
 
+    /// <summary>
+    /// Returns every tag in the repository whose name parses as a semantic version, grouped by the commit it
+    /// points at and ordered by commit date, most recent first.
+    /// </summary>
     public ILookup<ICommit, SemanticVersionWithTag> GetTaggedSemanticVersions(
         string? tagPrefix, SemanticVersionFormat format, IIgnoreConfiguration ignore)
     {
@@ -111,7 +125,8 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
         var result = this.taggedSemanticVersionsCache.GetOrAdd(new(tagPrefix, format), _ =>
         {
             isCached = false;
-            return [.. GetElements().OrderByDescending(element => element.Tag.Commit.When)];
+            return GetElements().OrderByDescending(element => element.Tag.Commit.When)
+                .ToLookup(element => element.Tag.Commit, element => element);
         });
 
         if (isCached)
@@ -119,7 +134,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
             this.logger.LogDebug("Returning cached tagged semantic versions. TagPrefix: {TagPrefix} and Format: {Format}", tagPrefix, format);
         }
 
-        return result.ToLookup(element => element.Tag.Commit, element => element);
+        return result;
 
         IEnumerable<SemanticVersionWithTag> GetElements()
         {
