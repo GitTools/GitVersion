@@ -23,7 +23,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "jbcontext index --silent",
+                        "command": "jbcontext index --silent --only-incremental",
                         "async": true
                     }
                 ]
@@ -35,7 +35,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "jbcontext index --silent",
+                        "command": "jbcontext index --silent --only-incremental",
                         "async": true
                     }
                 ]
