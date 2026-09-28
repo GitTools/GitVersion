@@ -30,8 +30,10 @@ internal sealed class ConfiguredNextVersionVersionStrategy(Lazy<GitVersionContex
             yield break;
         }
 
+        // NextVersion is a version, not a tag, so it must not be required to carry the configured
+        // tag-prefix the way a tag name would (https://github.com/GitTools/GitVersion/issues/5228).
         var semanticVersion = SemanticVersion.Parse(
-            nextVersion, Context.Configuration.TagPrefixPattern, Context.Configuration.SemanticVersionFormat
+            nextVersion, tagPrefixRegex: null, Context.Configuration.SemanticVersionFormat
         );
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null, this.environment, Context.CurrentCommit);
 
