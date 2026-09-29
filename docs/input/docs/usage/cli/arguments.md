@@ -53,7 +53,8 @@ GitVersion [path]
     --log-file, -l  Path to logfile; specify 'console' to emit to stderr.
     --config, -c    Path to config file (defaults to GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml)
     --show-config   Outputs the effective GitVersion config (defaults + custom
-                    from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format
+                    from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format.
+                    With v7 configuration, runtime overrides are also included.
     --override-config
                     Overrides GitVersion config values inline (key=value pairs,
                     e.g. --override-config workflow=GitHubFlow/v1).
@@ -109,6 +110,70 @@ GitVersion [path]
     --no-fetch      Disables 'git fetch' during version calculation. Might cause
                     GitVersion to not calculate your version as expected.
 ```
+
+## Query a configuration property
+
+Use `gitversion config get <property-path>` to read one scalar from the effective
+**v7 configuration**. It uses the same configuration discovery, workflow defaults,
+file settings and runtime overrides as `--show-config`. It requires a Git
+repository, but does not calculate a version or update build-agent outputs or
+version files. As with full display, conflicting configuration files in the
+working directory and repository root require an explicit `--config` path.
+
+```shell
+# Default tag prefix: "[vV]?"
+gitversion config get calculation.tag-prefix
+
+# Runtime override: false
+gitversion config get output.update-build-number --override-config output.update-build-number=false
+
+# Unknown property: diagnostic on stderr, empty stdout, exit status 1
+gitversion config get calculation.no-such-property
+```
+
+Paths are case-sensitive, dot-separated public configuration names, such as
+`calculation.tag-prefix`, `output.assembly-versioning-scheme`, root `workflow`,
+or `calculation.prevent-increment.of-merged-branch`. CLR names and flat v6 paths
+are not accepted. Empty segments, escaping, wildcards and array indexing are
+not supported. Maps (including branch entries and `merge-message-formats`),
+collections and whole objects cannot be queried. A missing map key therefore
+produces an unsupported-map diagnostic, not a null value.
+
+Successful stdout contains exactly one JSON scalar followed by a newline:
+
+| Value | Output |
+| --- | --- |
+| String or enum name | JSON string, e.g. `"MajorMinorPatch"` |
+| Empty string | `""` |
+| Boolean | `true` or `false` |
+| Number | Culture-independent JSON number, e.g. `60000` |
+| Known property whose resolved value is null | `null` |
+
+Strings retain their type: a string containing `null` is emitted as `"null"`.
+Quotes, newlines and other special characters are JSON-escaped. Version-format
+strings are returned literally; placeholders are not evaluated. A known null
+property remains queryable even when full YAML display omits it. The query
+returns the final resolved value and does not distinguish a default null from
+an explicitly configured null.
+
+Success, including null, returns status 0. Unknown properties, invalid paths,
+unsupported values and configuration errors return status 1 with a diagnostic
+on stderr and no value on stdout. Logging and warnings also use stderr or the
+selected log file. These are document settings, not branch-specific inherited
+runtime behavior or calculated version variables; `--show-variable` continues
+to select calculated version variables.
+
+Supported options are `--config`/`-c`, repeated `--override-config key=value`,
+`--target-path`, `--log-file`/`-l` and `--verbosity`. A positional repository path
+must precede `config get`. Version-output, calculation and file-update options
+cannot be combined with this command. Use `gitversion config get --help` for help.
+
+The command requires the default modern argument parser and default or explicit
+`GITVERSION_CONFIGURATION_VERSION=v7`. Selecting v6 configuration produces a
+v7-required error before configuration loading, even when the modern parser is
+selected; GitVersion does not switch versions implicitly. Existing v6 full
+configuration display retains its behavior. With v7 configuration,
+`--show-config` now includes runtime overrides, matching the query result.
 
 ## Configuration migration
 

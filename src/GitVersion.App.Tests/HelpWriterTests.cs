@@ -56,6 +56,7 @@ public class HelpWriterTests : TestBase
         {
             nameof(Arguments.Authentication),
             nameof(Arguments.UpdateAssemblyInfoFileName),
+            nameof(Arguments.ConfigurationPropertyPath), // Only available through the modern parser.
             nameof(Arguments.IsConfigurationMigration),
             nameof(Arguments.MigrationInputFile),
             nameof(Arguments.MigrationOutputFile),

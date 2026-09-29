@@ -1,4 +1,6 @@
 #nullable enable
+GitVersion.ConfigurationInfo.PropertyPath.get -> string?
+GitVersion.ConfigurationInfo.PropertyPath.set -> void
 static GitVersion.Git.ReferenceName.FromTagName(string! tagName) -> GitVersion.Git.ReferenceName!
 GitVersion.Agents.IBuildAgent.GetCurrentTag() -> string?
 GitVersion.OutputVariables.GitVersionVariables.CommitCountSourceDistance.get -> string?
