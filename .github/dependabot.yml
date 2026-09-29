@@ -50,12 +50,21 @@ updates:
       JsonSchemaNet:
         group-by: dependency-name
         patterns:
-          - "JsonSchemaNet.*"
+          - "JsonSchema.Net"
+          - "JsonSchema.Net.*"
       polly:
         group-by: dependency-name
         patterns:
           - "Polly"
           - "Polly.*"
+      Scriban:
+        group-by: dependency-name
+        patterns:
+          - "Scriban"
+      SharpYaml:
+        group-by: dependency-name
+        patterns:
+          - "SharpYaml"
       # Keep every remaining dependency update in one PR across all roots.
       other-dependencies:
         group-by: dependency-name
