@@ -26,6 +26,7 @@ internal class Arguments
     public bool Diag;
     public bool IsVersion;
     public bool IsHelp;
+    internal bool IsCliSchema;
 
     public bool NoFetch;
     public bool NoCache;

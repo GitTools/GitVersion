@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="JsonSchema.Net" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
@@ -10,6 +11,7 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="TestBuildFile.proj" />
+        <None Update="Fixtures\OpenCli\schema.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Approved\**\*.approved.txt" />

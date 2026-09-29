@@ -15,6 +15,7 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
         else
         {
             services.AddSingleton<IArgumentParser, ArgumentParser>();
+            services.AddSingleton<CliSchemaExporter>();
         }
 
         services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
@@ -22,9 +23,10 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
         services.AddSingleton<IConfigurationMigrationExecutor, ConfigurationMigrationExecutor>();
         services.AddSingleton<GitVersionApp>();
 
+        services.AddSingleton(sp => sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []));
         services.AddSingleton(sp =>
         {
-            var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []);
+            var arguments = sp.GetRequiredService<Arguments>();
             var gitVersionOptions = arguments.ToOptions();
             return Options.Create(gitVersionOptions);
         });

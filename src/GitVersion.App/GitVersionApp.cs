@@ -8,7 +8,8 @@ internal class GitVersionApp(
     IConfigurationMigrationExecutor configurationMigrationExecutor,
     FeatureSelections selections,
     ILogger<GitVersionApp> logger,
-    IOptions<GitVersionOptions> options)
+    IOptions<GitVersionOptions> options,
+    Arguments arguments)
 {
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
@@ -19,6 +20,11 @@ internal class GitVersionApp(
     {
         try
         {
+            if (arguments.IsCliSchema)
+            {
+                SysEnv.ExitCode = 0;
+                return Task.CompletedTask;
+            }
             var gitVersionOptions = this.options.Value;
             selections.Log(logger);
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)

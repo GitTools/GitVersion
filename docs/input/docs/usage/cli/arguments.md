@@ -34,6 +34,7 @@ GitVersion [path]
                     also needs the '--log-file' argument to specify a logfile
                     or stdout (requires git.exe to be installed)
     --help, -h      Shows Help
+    --cli-schema    Writes the complete OpenCLI 0.1 command schema as JSON and exits.
 
     --target-path   Same as 'path', but not positional
     --output, -o    Determines the output to the console. Can be either 'json',
@@ -175,6 +176,11 @@ selected; GitVersion does not switch versions implicitly. Existing v6 full
 configuration display retains its behavior. With v7 configuration,
 `--show-config` now includes runtime overrides, matching the query result.
 
+## CLI schema
+
+`gitversion --cli-schema` exports the command tree in the [OpenCLI format][cli-schema].
+It is available with the default v7 argument parser and does not require a Git repository.
+
 ## Configuration migration
 
 The default POSIX-style argument parser exposes a `config migrate` subcommand for converting a v6
@@ -277,3 +283,5 @@ Will use only major and minor version numbers for assembly version. Assembly bui
 [migration-v6-to-v7]: /docs/migration/v6-to-v7
 
 [configuration]: /docs/reference/configuration
+
+[cli-schema]: /docs/usage/cli/cli-schema

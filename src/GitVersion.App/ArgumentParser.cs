@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.IO.Abstractions;
+using System.Text.Json;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;
@@ -17,7 +18,8 @@ internal class ArgumentParser(
     IFileSystem fileSystem,
     IConsole console,
     IGlobbingResolver globbingResolver,
-    LoggingLevelSwitch loggingLevelSwitch
+    LoggingLevelSwitch loggingLevelSwitch,
+    CliSchemaExporter cliSchemaExporter
 )
     : IArgumentParser
 {
@@ -26,6 +28,7 @@ internal class ArgumentParser(
     private readonly IConsole console = console.NotNull();
     private readonly IGlobbingResolver globbingResolver = globbingResolver.NotNull();
     private readonly LoggingLevelSwitch loggingLevelSwitch = loggingLevelSwitch.NotNull();
+    private readonly CliSchemaExporter cliSchemaExporter = cliSchemaExporter.NotNull();
 
     private const string DefaultOutputFileName = "GitVersion.json";
     private static readonly IEnumerable<string> availableVariables = GitVersionVariables.AvailableVariables;
@@ -40,17 +43,32 @@ internal class ArgumentParser(
     };
 
     // Build the command schema at once — it's stateless and safe to reuse across calls.
-    private static readonly Lazy<(RootCommand Root, CommandOptions Options)> commandFactory = new(BuildCommand);
+    private static readonly Lazy<(RootCommand Root, CommandOptions Options, IReadOnlyDictionary<Symbol, CliSchemaValues> Values)> commandFactory = new(BuildCommand);
 
     public Arguments ParseArguments(string commandLineArguments) =>
         ParseArguments(QuotedStringHelpers.SplitUnquoted(commandLineArguments, ' '));
 
     public Arguments ParseArguments(string[] commandLineArguments)
     {
-        var (rootCommand, options) = commandFactory.Value;
+        var (rootCommand, options, values) = commandFactory.Value;
         var parseResult = rootCommand.Parse(commandLineArguments);
+        var schemaRequested = parseResult.GetResult(options.CliSchema) is { Implicit: false };
 
-        ValidateParsedResult(parseResult, options);
+        ValidateParsedResult(parseResult, options, schemaRequested);
+
+        if (schemaRequested)
+        {
+            try
+            {
+                var schema = this.cliSchemaExporter.Export(rootCommand, values);
+                this.console.WriteLine(schema);
+            }
+            catch (Exception exception) when (exception is JsonException or NotSupportedException or IOException)
+            {
+                throw new WarningException($"Could not export the CLI schema: {exception.Message}");
+            }
+            return new Arguments { IsCliSchema = true };
+        }
 
         if (IsOptionExplicitlySet<HelpOption>())
         {
@@ -92,9 +110,12 @@ internal class ArgumentParser(
         }
     }
 
-    private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options)
+    private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options, bool schemaRequested)
     {
-        if (parseResult.Errors.Count > 0)
+        // The last terminating option selects System.CommandLine's validation policy.
+        // A schema request takes precedence even when --version follows it. Skip value
+        // validation for this informational operation, but retain unmatched-token checks.
+        if (!schemaRequested && parseResult.Errors.Count > 0)
         {
             var message = parseResult.Errors[0].Message;
             var token = message.Contains("Unrecognized command or argument")
@@ -398,7 +419,7 @@ internal class ArgumentParser(
         }
     }
 
-    private static (RootCommand Root, CommandOptions Options) BuildCommand()
+    private static (RootCommand Root, CommandOptions Options, IReadOnlyDictionary<Symbol, CliSchemaValues> Values) BuildCommand()
     {
         var path = new Argument<string?>("path")
         {
@@ -559,6 +580,14 @@ internal class ArgumentParser(
         get.Options.Add(verbosity);
         configCommand.Subcommands.Add(get);
 
+        var cliSchema = new Option<bool>("--cli-schema")
+        {
+            Description = "Writes the complete OpenCLI 0.1 command schema as JSON and exits.",
+            Arity = ArgumentArity.Zero,
+            Recursive = true,
+            Action = new CliSchemaAction()
+        };
+
         var rootCommand = new RootCommand("Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.")
         {
             path,
@@ -586,7 +615,8 @@ internal class ArgumentParser(
             username,
             password,
             commit,
-            dynamicRepoLocation
+            dynamicRepoLocation,
+            cliSchema
         };
         rootCommand.Subcommands.Add(configCommand);
 
@@ -612,8 +642,12 @@ internal class ArgumentParser(
             Commit: commit, DynamicRepoLocation: dynamicRepoLocation,
             ConfigCommand: configCommand, Migrate: migrate,
             MigrationInputFile: migrationInputFile, MigrationOutputFile: migrationOutputFile,
-            InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath
-        ));
+            InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath, CliSchema: cliSchema
+        ), new Dictionary<Symbol, CliSchemaValues>
+        {
+            [verbosity] = new(Enum.GetNames<Verbosity>(), true, true),
+            [showVariable] = new([.. availableVariables], true)
+        });
     }
 
     private void AddAuthentication(Arguments arguments)
@@ -744,6 +778,7 @@ internal class ArgumentParser(
         Option<bool> InPlace,
         Option<bool> Force,
         Command Get,
-        Argument<string> PropertyPath
+        Argument<string> PropertyPath,
+        Option<bool> CliSchema
     );
 }
