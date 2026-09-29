@@ -112,8 +112,8 @@ public class CliSchemaTests
         var result = await fixture.Run("--cli-schema");
 
         result.ExitCode.ShouldBe(0);
-        lifetime.ShouldNotBeNull();
-        lifetime.ApplicationStopping.IsCancellationRequested.ShouldBeTrue();
+        var applicationLifetime = lifetime ?? throw new AssertionException("The CLI did not resolve the application lifetime.");
+        applicationLifetime.ApplicationStopping.IsCancellationRequested.ShouldBeTrue();
         result.Log.ShouldBeNullOrEmpty();
         CliSchemaExporterTests.ValidateSchema(result.Output!);
     }
@@ -214,9 +214,6 @@ public class CliSchemaTests
         }
     }
 
-    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string configuration, string backend)
-        => RunProcess(directory, arguments, parser, configuration, backend, []);
-
     [Test]
     public void ProcessIgnoresBuildServerOutputAndPreservesExistingConfiguration()
     {
@@ -254,6 +251,9 @@ public class CliSchemaTests
         }
     }
 
+    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string configuration, string backend)
+        => RunProcess(directory, arguments, parser, configuration, backend, []);
+
     private static ExecutionResults RunProcess(string directory, string arguments, string parser, string configuration, string backend,
         KeyValuePair<string, string?>[] additionalEnvironment)
     {
@@ -268,19 +268,19 @@ public class CliSchemaTests
 
     private sealed class UnexpectedGlobbingResolver : IGlobbingResolver
     {
-        public IEnumerable<string> Resolve(string workingDirectory, string pattern) =>
+        IEnumerable<string> IGlobbingResolver.Resolve(string workingDirectory, string pattern) =>
             throw new InvalidOperationException("Schema export must not resolve files.");
     }
 
     private sealed class UnexpectedMigrationExecutor : IConfigurationMigrationExecutor
     {
-        public int Execute(GitVersionOptions options) =>
+        int IConfigurationMigrationExecutor.Execute(GitVersionOptions options) =>
             throw new InvalidOperationException("Schema export must not execute migration.");
     }
 
     private sealed class UnexpectedVersionExecutor : IGitVersionExecutor
     {
-        public int Execute(GitVersionOptions options) =>
+        int IGitVersionExecutor.Execute(GitVersionOptions options) =>
             throw new InvalidOperationException("Schema export must not calculate a version.");
     }
 }

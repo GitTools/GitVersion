@@ -11,7 +11,7 @@ internal sealed class CliSchemaExporter
         var assembly = typeof(ArgumentParser).Assembly;
         var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
                       ?? assembly.GetName().Version?.ToString() ?? "0.0.0";
-        var command = ExportCommand(root) with
+        var command = ExportCommand(root, values) with
         {
             Name = "gitversion",
             Metadata = [new("gitversion.optionArgumentSeparators",
@@ -19,46 +19,66 @@ internal sealed class CliSchemaExporter
         };
         var document = new CliSchemaDocument("0.1", new("GitVersion", version), command, new());
         return JsonSerializer.Serialize(document, CliSchemaJsonContext.Default.CliSchemaDocument);
+    }
 
-        CliSchemaCommand ExportCommand(Command item) => new(
-            item.Name, Aliases(item.Name, item.Aliases), item.Description, item.Hidden,
-            [.. item.Arguments.Select(argument => ExportArgument(argument, argument.Name, argument.Description,
-                argument.Hidden, argument.Arity, argument.ValueType, argument.HasDefaultValue))],
-            [.. item.Options.Select(ExportOption)], [.. item.Subcommands.Select(ExportCommand)]);
+    private static CliSchemaCommand ExportCommand(Command item, IReadOnlyDictionary<Symbol, CliSchemaValues>? values) => new(
+        item.Name, Aliases(item.Name, item.Aliases), item.Description, item.Hidden,
+        [.. item.Arguments.Select(argument => ExportArgument(argument, argument.Name,
+            argument.Arity, argument.ValueType, argument.HasDefaultValue, values))],
+        [.. item.Options.Select(option => ExportOption(option, values))],
+        [.. item.Subcommands.Select(command => ExportCommand(command, values))]);
 
-        CliSchemaOption ExportOption(Option option) => new(
-            option.Name, Aliases(option.Name, option.Aliases), option.Description, option.Hidden,
-            option.Required, option.Recursive,
-            option.Arity.MaximumNumberOfValues == 0 ? [] :
-                [ExportArgument(option, option.HelpName ?? option.Name.TrimStart('-'), null, false,
-                    option.Arity, option.ValueType, false)],
-            [BooleanMetadata("gitversion.allowMultipleArgumentsPerToken", option.AllowMultipleArgumentsPerToken)]);
+    private static CliSchemaOption ExportOption(Option option, IReadOnlyDictionary<Symbol, CliSchemaValues>? values) => new(
+        option.Name, Aliases(option.Name, option.Aliases), option.Description, option.Hidden,
+        option.Required, option.Recursive,
+        option.Arity.MaximumNumberOfValues == 0 ? [] :
+            [ExportArgument(option, option.HelpName ?? option.Name.TrimStart('-'),
+                option.Arity, option.ValueType, false, values)],
+        [BooleanMetadata("gitversion.allowMultipleArgumentsPerToken", option.AllowMultipleArgumentsPerToken)]);
 
-        CliSchemaArgument ExportArgument(Symbol symbol, string name, string? description, bool hidden,
-            ArgumentArity arity, Type type, bool hasDefault)
+    private static CliSchemaArgument ExportArgument(Symbol symbol, string name, ArgumentArity arity, Type type,
+        bool hasDefault, IReadOnlyDictionary<Symbol, CliSchemaValues>? values)
+    {
+        var valueType = type.IsArray ? type.GetElementType()! : Nullable.GetUnderlyingType(type) ?? type;
+        var choices = GetChoices(symbol, valueType, values);
+        var positional = symbol is Argument;
+        // System.CommandLine represents unbounded arity with the ZeroOrMore sentinel.
+        var maximum = arity.MaximumNumberOfValues == ArgumentArity.ZeroOrMore.MaximumNumberOfValues
+            ? (int?)null : arity.MaximumNumberOfValues;
+        return new(name, positional ? symbol.Description : null, positional && symbol.Hidden,
+            arity.MinimumNumberOfValues > 0 && !hasDefault, new(arity.MinimumNumberOfValues, maximum),
+            choices?.AcceptedValues, GetChoiceMetadata(choices));
+    }
+
+    private static CliSchemaValues? GetChoices(Symbol symbol, Type valueType, IReadOnlyDictionary<Symbol, CliSchemaValues>? values)
+    {
+        if (values is not null && values.TryGetValue(symbol, out var supplement))
         {
-            var valueType = type.IsArray ? type.GetElementType()! : Nullable.GetUnderlyingType(type) ?? type;
-            var choices = values is not null && values.TryGetValue(symbol, out var supplement)
-                ? supplement
-                : valueType.IsEnum ? new CliSchemaValues(Enum.GetNames(valueType), true, true)
-                : valueType == typeof(bool) ? new CliSchemaValues(["true", "false"], true)
-                : null;
-            List<CliSchemaMetadata> metadata = [];
-            if (choices is not null)
-            {
-                metadata.Add(BooleanMetadata("gitversion.caseInsensitiveValues", choices.CaseInsensitive));
-                metadata.Add(BooleanMetadata("gitversion.acceptedValuesExhaustive", !choices.Numeric));
-                if (choices.Numeric)
-                {
-                    metadata.Add(BooleanMetadata("gitversion.acceptsNumericValues", true));
-                }
-            }
-            // System.CommandLine represents unbounded arity with the ZeroOrMore sentinel.
-            var maximum = arity.MaximumNumberOfValues == ArgumentArity.ZeroOrMore.MaximumNumberOfValues
-                ? (int?)null : arity.MaximumNumberOfValues;
-            return new(name, description, hidden, arity.MinimumNumberOfValues > 0 && !hasDefault,
-                new(arity.MinimumNumberOfValues, maximum), choices?.AcceptedValues, [.. metadata]);
+            return supplement;
         }
+        if (valueType.IsEnum)
+        {
+            return new(Enum.GetNames(valueType), true, true);
+        }
+        return valueType == typeof(bool) ? new(["true", "false"], true) : null;
+    }
+
+    private static CliSchemaMetadata[] GetChoiceMetadata(CliSchemaValues? choices)
+    {
+        if (choices is null)
+        {
+            return [];
+        }
+        List<CliSchemaMetadata> metadata =
+        [
+            BooleanMetadata("gitversion.caseInsensitiveValues", choices.CaseInsensitive),
+            BooleanMetadata("gitversion.acceptedValuesExhaustive", !choices.Numeric)
+        ];
+        if (choices.Numeric)
+        {
+            metadata.Add(BooleanMetadata("gitversion.acceptsNumericValues", true));
+        }
+        return [.. metadata];
     }
 
     private static string[] Aliases(string name, IEnumerable<string> aliases) =>
