@@ -24,14 +24,10 @@ on:
       - main
       - 'support/*'
       - 'next/*'
-    paths:
-      - '**'
-      - '!docs/**'
-      - '!.github/**'
-      - .github/workflows/format.yml
 
 permissions:
   contents: read
+  pull-requests: read
 
 env:
   DOTNET_ROLL_FORWARD: "Major"
@@ -49,15 +45,28 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Check for relevant changes
+        if: github.event_name == 'pull_request'
+        id: changes
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: |
+            relevant:
+              - '!{docs,.github}/**'
+              - '.github/workflows/format.yml'
+
       - name: Checkout
+        if: github.event_name != 'pull_request' || steps.changes.outputs.relevant == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup .NET SDK
+        if: github.event_name != 'pull_request' || steps.changes.outputs.relevant == 'true'
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
 
       - name: Cache NuGet packages
+        if: github.event_name != 'pull_request' || steps.changes.outputs.relevant == 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.nuget/packages
@@ -66,7 +75,9 @@ jobs:
             nuget-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Run Format 'ci' solution
+        if: github.event_name != 'pull_request' || steps.changes.outputs.relevant == 'true'
         run: dotnet format ./build/ --verify-no-changes
 
       - name: Run Format 'GitVersion' solution
+        if: github.event_name != 'pull_request' || steps.changes.outputs.relevant == 'true'
         run: dotnet format ./src/ --exclude "**/AddFormats/" --verify-no-changes
