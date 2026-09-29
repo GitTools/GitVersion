@@ -58,7 +58,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
     {
         var value = ConfigurationPropertyQuery.GetValue(configuration, path);
         // Use the same scalar conversion as full YAML display, including public enum names.
-        var scalar = value is null ? null : this.Deserialize<object>(SerializeLegacy(value));
+        var scalar = value is null ? null : Deserialize<object>(SerializeLegacy(value));
         return JsonSerializer.Serialize(scalar);
     }
 
