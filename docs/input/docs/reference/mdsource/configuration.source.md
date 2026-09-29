@@ -20,7 +20,7 @@ For a single v7 scalar setting, use `gitversion config get calculation.tag-prefi
 The result is a JSON scalar after workflow, file and runtime overrides have been
 applied. Both querying and full display honor runtime overrides with v7
 configuration. Querying requires v7 configuration; branch maps and structured
-values are unsupported. See [query a configuration property](/docs/usage/cli/arguments#query-a-configuration-property)
+values are unsupported. See [query a configuration property][query-a-configuration-property]
 for path syntax, null handling, exit statuses and examples.
 
 ## Configuration tool
@@ -1005,3 +1005,5 @@ The base template of the configuration to use. Possible values are `GitFlow/v1` 
 [variables]: /docs/reference/variables
 
 [version-sources]: /docs/reference/version-sources
+
+[query-a-configuration-property]: /docs/usage/cli/arguments#query-a-configuration-property

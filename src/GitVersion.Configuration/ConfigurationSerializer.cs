@@ -54,7 +54,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         return YamlSerializer.Serialize(OrderProperties(configuration), SerializerOptions);
     }
 
-    public string SerializeProperty(IGitVersionConfiguration configuration, string path)
+    string IConfigurationSerializer.SerializeProperty(IGitVersionConfiguration configuration, string path)
     {
         var value = ConfigurationPropertyQuery.GetValue(configuration, path);
         // Use the same scalar conversion as full YAML display, including public enum names.

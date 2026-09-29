@@ -187,12 +187,11 @@ internal class ArgumentParser(
             throw new WarningException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
         }
 
-        foreach (var option in rootCommand.Options.Except(options.Get.Options))
+        var unsupportedOption = rootCommand.Options.Except(options.Get.Options)
+            .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
+        if (unsupportedOption is not null)
         {
-            if (parseResult.GetResult(option) is { Implicit: false })
-            {
-                throw new WarningException($"Option '{option.Name}' cannot be used with 'config get'.");
-            }
+            throw new WarningException($"Option '{unsupportedOption.Name}' cannot be used with 'config get'.");
         }
 
         var arguments = new Arguments

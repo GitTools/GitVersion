@@ -9,12 +9,24 @@ internal static class ConfigurationPropertyQuery
             throw new ConfigurationException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
         }
 
+        var segments = ParsePath(path);
+        var offset = GetPropertyOffset(segments, path);
+        return TraverseProperties(configuration, segments, offset, path);
+    }
+
+    private static string[] ParsePath(string path)
+    {
         var segments = path.Split('.');
         if (segments.Any(segment => segment.Length == 0 || segment.Any(character => !char.IsAsciiLetterLower(character) && !char.IsAsciiDigit(character) && character != '-')))
         {
             throw new ConfigurationException($"Invalid configuration property path '{path}'. Use dot-separated public configuration names.");
         }
 
+        return segments;
+    }
+
+    private static int GetPropertyOffset(string[] segments, string path)
+    {
         var offset = segments[0] is ConfigurationDocumentMapper.CalculationSectionName or ConfigurationDocumentMapper.OutputSectionName ? 1 : 0;
         if (offset == 1 && segments.Length == 1)
         {
@@ -41,20 +53,18 @@ internal static class ConfigurationPropertyQuery
             }
         }
 
+        return offset;
+    }
+
+    private static object? TraverseProperties(IGitVersionConfiguration configuration, string[] segments, int offset, string path)
+    {
         // Traverse declared public properties rather than displayed YAML: serialization omits
         // nulls, and a mapping alone cannot distinguish a fixed object from a dynamic map.
         object? current = configuration;
         var type = configuration.GetType();
         for (var index = offset; index < segments.Length; index++)
         {
-            var property = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .SingleOrDefault(candidate => candidate.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name == segments[index]
-                                              && candidate.GetCustomAttribute<JsonIgnoreAttribute>() is null);
-            if (property is null)
-            {
-                throw Unknown(path);
-            }
-
+            var property = GetPublicProperty(type, segments[index], path);
             type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
             if (type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -76,6 +86,12 @@ internal static class ConfigurationPropertyQuery
 
         throw Unknown(path);
     }
+
+    private static PropertyInfo GetPublicProperty(Type type, string name, string path) =>
+        type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .SingleOrDefault(candidate => candidate.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name == name
+                                          && candidate.GetCustomAttribute<JsonIgnoreAttribute>() is null)
+        ?? throw Unknown(path);
 
     private static ConfigurationException Unknown(string path) => new($"Unknown configuration property '{path}'. Use the public v7 configuration path.");
 

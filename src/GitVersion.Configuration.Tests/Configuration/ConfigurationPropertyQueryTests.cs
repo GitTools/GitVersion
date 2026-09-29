@@ -4,7 +4,7 @@ namespace GitVersion.Configuration.Tests;
 [NonParallelizable]
 public class ConfigurationPropertyQueryTests
 {
-    private readonly ConfigurationSerializer serializer = new();
+    private readonly IConfigurationSerializer serializer = new ConfigurationSerializer();
     private string? originalVersion;
 
     [SetUp]

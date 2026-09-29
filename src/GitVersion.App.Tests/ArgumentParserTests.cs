@@ -57,25 +57,31 @@ public class ArgumentParserTests : TestBase
     public void ConfigGetMapsOnlyQueryOptions()
     {
         SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
-        var directory = Path.GetTempPath();
-        this.fileSystem.Directory.CreateDirectory(directory);
-        var config = Path.Combine(directory, "custom.yml");
-        this.fileSystem.File.WriteAllText(config, "");
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var config = Path.Combine(directory.FullName, "custom.yml");
+            this.fileSystem.File.WriteAllText(config, "");
 
-        var arguments = this.argumentParser.ParseArguments([
-            "config", "get", "output.update-build-number", "--target-path", directory,
-            "--config", "custom.yml", "--override-config", "workflow=GitHubFlow/v1",
-            "--override-config", "output.update-build-number=false", "--log-file", "console", "--verbosity", "Diagnostic"]);
+            var arguments = this.argumentParser.ParseArguments([
+                "config", "get", "output.update-build-number", "--target-path", directory.FullName,
+                "--config", "custom.yml", "--override-config", "workflow=GitHubFlow/v1",
+                "--override-config", "output.update-build-number=false", "--log-file", "console", "--verbosity", "Diagnostic"]);
 
-        arguments.ConfigurationFile.ShouldBe(config);
-        arguments.TargetPath.ShouldBe(directory);
-        arguments.LogFilePath.ShouldBe("console");
-        arguments.OverrideConfiguration["workflow"].ShouldBe("GitHubFlow/v1");
-        ((IDictionary<object, object?>)arguments.OverrideConfiguration["output"]!)["update-build-number"].ShouldBe("false");
-        arguments.ToOptions().ConfigurationInfo.PropertyPath.ShouldBe("output.update-build-number");
-        arguments.ShowConfiguration.ShouldBeFalse();
-        arguments.Output.ShouldBeEmpty();
-        arguments.UpdateAssemblyInfo.ShouldBeFalse();
+            arguments.ConfigurationFile.ShouldBe(config);
+            arguments.TargetPath.ShouldBe(directory.FullName);
+            arguments.LogFilePath.ShouldBe("console");
+            arguments.OverrideConfiguration["workflow"].ShouldBe("GitHubFlow/v1");
+            ((IDictionary<object, object?>)arguments.OverrideConfiguration["output"]!)["update-build-number"].ShouldBe("false");
+            arguments.ToOptions().ConfigurationInfo.PropertyPath.ShouldBe("output.update-build-number");
+            arguments.ShowConfiguration.ShouldBeFalse();
+            arguments.Output.ShouldBeEmpty();
+            arguments.UpdateAssemblyInfo.ShouldBeFalse();
+        }
+        finally
+        {
+            directory.Delete(true);
+        }
     }
 
     [TestCase("--output json")]
