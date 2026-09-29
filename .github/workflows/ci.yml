@@ -96,7 +96,7 @@ jobs:
       contents: read
     uses: $/.github/workflows/_artifacts_windows.yml # NOSONAR -- $/ resolves to the running commit.
     with:
-      packages: ${{ fromJson(needs.publish_flags.outputs.run_full_validation) && '["Executable", "MsBuildFull"]' || '["Executable"]' }}
+      packages: '["Executable", "MsBuildFull"]'
 
   artifacts_linux_test:
     needs: [ prepare, build, publish_flags ]

@@ -22,13 +22,17 @@ do
 done
 
 git config --global --add safe.directory '*'
-result=$(dotnet build $repoPath --source $nugetPath --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion=$version -p:TargetFrameworks=$targetframework) # >/dev/null
+result=$(dotnet build "$repoPath/Program.cs" --output "$repoPath/build/$targetframework" --source "$nugetPath" --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion="$version" -p:TargetFramework="$targetframework") # >/dev/null
 status=$?
 if test $status -eq 0
 then
-    dotnet $repoPath/build/$targetframework/app.dll;
+    # DockerTestRun validates stdout against the expected FullSemVer in
+    # build/common/Utilities/DockerContextExtensions.cs. Keep app output on stdout.
+    dotnet "$repoPath/build/$targetframework/app.dll"
+    status=$?
 else
-    echo $result
+    echo "$result"
 fi
-rm -rf $repoPath/build >/dev/null
-rm -rf $repoPath/obj >/dev/null
+rm -rf "$repoPath/build" >/dev/null
+rm -rf "$repoPath/obj" >/dev/null
+exit "$status"
