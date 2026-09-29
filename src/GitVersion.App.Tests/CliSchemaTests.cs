@@ -43,6 +43,7 @@ public class CliSchemaTests
         result.IsHelp.ShouldBeFalse();
         result.IsVersion.ShouldBeFalse();
         result.IsConfigurationMigration.ShouldBeFalse();
+        globbing.Calls.ShouldBe(0);
         environment.ReceivedCalls().ShouldBeEmpty();
         fileSystem.ReceivedCalls().ShouldBeEmpty();
         console.Received(1).WriteLine(Arg.Is<string>(value => value.StartsWith('{') && value.EndsWith('}')));
@@ -112,6 +113,8 @@ public class CliSchemaTests
         var result = await fixture.Run("--cli-schema");
 
         result.ExitCode.ShouldBe(0);
+        calculation.Calls.ShouldBe(0);
+        migration.Calls.ShouldBe(0);
         var applicationLifetime = lifetime ?? throw new AssertionException("The CLI did not resolve the application lifetime.");
         applicationLifetime.ApplicationStopping.IsCancellationRequested.ShouldBeTrue();
         result.Log.ShouldBeNullOrEmpty();
@@ -268,19 +271,34 @@ public class CliSchemaTests
 
     private sealed class UnexpectedGlobbingResolver : IGlobbingResolver
     {
-        IEnumerable<string> IGlobbingResolver.Resolve(string workingDirectory, string pattern) =>
-            throw new InvalidOperationException("Schema export must not resolve files.");
+        public int Calls { get; private set; }
+
+        IEnumerable<string> IGlobbingResolver.Resolve(string workingDirectory, string pattern)
+        {
+            Calls++;
+            throw new InvalidOperationException($"Schema export must not resolve pattern '{pattern}' in '{workingDirectory}'.");
+        }
     }
 
     private sealed class UnexpectedMigrationExecutor : IConfigurationMigrationExecutor
     {
-        int IConfigurationMigrationExecutor.Execute(GitVersionOptions options) =>
-            throw new InvalidOperationException("Schema export must not execute migration.");
+        public int Calls { get; private set; }
+
+        int IConfigurationMigrationExecutor.Execute(GitVersionOptions options)
+        {
+            Calls++;
+            throw new InvalidOperationException($"Schema export must not execute migration with {options.GetType().Name}.");
+        }
     }
 
     private sealed class UnexpectedVersionExecutor : IGitVersionExecutor
     {
-        int IGitVersionExecutor.Execute(GitVersionOptions options) =>
-            throw new InvalidOperationException("Schema export must not calculate a version.");
+        public int Calls { get; private set; }
+
+        int IGitVersionExecutor.Execute(GitVersionOptions options)
+        {
+            Calls++;
+            throw new InvalidOperationException($"Schema export must not calculate a version with {options.GetType().Name}.");
+        }
     }
 }
