@@ -147,7 +147,8 @@ public class CliSchemaExporterTests
 
     internal static void ValidateSchema(string json)
     {
-        var schema = JsonSchema.FromFile(Path.Combine(AppContext.BaseDirectory, "Fixtures", "OpenCli", "schema.json"));
+        var schema = JsonSchema.FromFile(Path.Combine(AppContext.BaseDirectory, "Fixtures", "OpenCli", "schema.json"),
+            new BuildOptions { SchemaRegistry = new SchemaRegistry() });
         using var document = JsonDocument.Parse(json);
         var result = schema.Evaluate(document.RootElement, new EvaluationOptions { OutputFormat = OutputFormat.List });
         result.IsValid.ShouldBeTrue($"OpenCLI schema validation failed: {string.Join(", ", result.Details?.SelectMany(detail => detail.Errors?.Values.AsEnumerable() ?? []) ?? [])}");
