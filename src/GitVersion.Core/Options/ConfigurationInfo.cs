@@ -9,6 +9,9 @@ public record ConfigurationInfo
     /// <summary>Gets or sets a value indicating whether the effective configuration should be printed to the output.</summary>
     public bool ShowConfiguration { get; set; }
 
+    /// <summary>Gets or sets the public v7 configuration property path to print as a JSON scalar.</summary>
+    public string? PropertyPath { get; set; }
+
     /// <summary>Gets or sets a dictionary of key/value pairs that override specific configuration values at runtime.</summary>
     public IReadOnlyDictionary<object, object?>? OverrideConfiguration { get; set; }
 }

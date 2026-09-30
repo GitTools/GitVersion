@@ -53,6 +53,71 @@ public class ArgumentParserTests : TestBase
         configuration.Branches["main"].PreReleaseWeight.ShouldBe(42);
     }
 
+    [Test]
+    public void ConfigGetMapsOnlyQueryOptions()
+    {
+        SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+        var directory = Directory.CreateTempSubdirectory();
+        try
+        {
+            var config = Path.Combine(directory.FullName, "custom.yml");
+            this.fileSystem.File.WriteAllText(config, "");
+
+            var arguments = this.argumentParser.ParseArguments([
+                "config", "get", "output.update-build-number", "--target-path", directory.FullName,
+                "--config", "custom.yml", "--override-config", "workflow=GitHubFlow/v1",
+                "--override-config", "output.update-build-number=false", "--log-file", "console", "--verbosity", "Diagnostic"]);
+
+            arguments.ConfigurationFile.ShouldBe(config);
+            arguments.TargetPath.ShouldBe(directory.FullName);
+            arguments.LogFilePath.ShouldBe("console");
+            arguments.OverrideConfiguration["workflow"].ShouldBe("GitHubFlow/v1");
+            ((IDictionary<object, object?>)arguments.OverrideConfiguration["output"]!)["update-build-number"].ShouldBe("false");
+            arguments.ToOptions().ConfigurationInfo.PropertyPath.ShouldBe("output.update-build-number");
+            arguments.ShowConfiguration.ShouldBeFalse();
+            arguments.Output.ShouldBeEmpty();
+            arguments.UpdateAssemblyInfo.ShouldBeFalse();
+        }
+        finally
+        {
+            directory.Delete(true);
+        }
+    }
+
+    [TestCase("--output json")]
+    [TestCase("--show-config")]
+    [TestCase("--show-variable FullSemVer")]
+    [TestCase("--update-wix-version-file")]
+    [TestCase("--update-assembly-info")]
+    [TestCase("--no-cache")]
+    [TestCase("--diagnose")]
+    [TestCase("--branch main")]
+    public void ConfigGetRejectsUnrelatedOptionsBeforeAndAfterCommand(string option)
+    {
+        SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        Should.Throw<WarningException>(() => this.argumentParser.ParseArguments($"{option} config get calculation.tag-prefix"));
+        Should.Throw<WarningException>(() => this.argumentParser.ParseArguments($"config get calculation.tag-prefix {option}"));
+    }
+
+    [TestCase("config get")]
+    [TestCase("config get calculation.tag-prefix extra")]
+    public void ConfigGetRequiresExactlyOneProperty(string command)
+    {
+        SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
+
+        Should.Throw<WarningException>(() => this.argumentParser.ParseArguments(command));
+    }
+
+    [Test]
+    public void ConfigGetRejectsV6BeforeConfigFileValidation()
+    {
+        var exception = Should.Throw<WarningException>(() =>
+            this.argumentParser.ParseArguments("config get calculation.tag-prefix --config missing.yml"));
+
+        exception.Message.ShouldContain("require v7 configuration");
+    }
+
     [TestCase("v6")]
     [TestCase("v7")]
     public void OverrideConfigAcceptsWorkflowOnlyInEitherVersion(string version)
@@ -207,7 +272,7 @@ public class ArgumentParserTests : TestBase
     {
         var exception = Should.Throw<WarningException>(() => this.argumentParser.ParseArguments("config"));
 
-        exception.Message.ShouldBe("The 'config' command requires a subcommand. Use 'gitversion config migrate'.");
+        exception.Message.ShouldBe("The 'config' command requires a subcommand. Use 'gitversion config get' or 'gitversion config migrate'.");
     }
 
     [Test]

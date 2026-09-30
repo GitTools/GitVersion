@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.IO.Abstractions;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;
 using GitVersion.Helpers;
@@ -64,12 +65,17 @@ internal class ArgumentParser(
 
         if (parseResult.CommandResult.Command == options.ConfigCommand)
         {
-            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config migrate'.");
+            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config get' or 'gitversion config migrate'.");
         }
 
         if (parseResult.CommandResult.Command == options.Migrate)
         {
             return MapMigrationValues(parseResult, options);
+        }
+
+        if (parseResult.CommandResult.Command == options.Get)
+        {
+            return MapQueryValues(parseResult, options, rootCommand);
         }
 
         var arguments = new Arguments();
@@ -172,6 +178,42 @@ internal class ArgumentParser(
                          ?? parseResult.GetValue(options.Path)
                          ?? SysEnv.CurrentDirectory
         };
+    }
+
+    private Arguments MapQueryValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
+    {
+        if (ConfigurationVersionSelector.Resolve() != ConfigurationVersion.V7)
+        {
+            throw new WarningException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
+        }
+
+        var unsupportedOption = rootCommand.Options.Except(options.Get.Options)
+            .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
+        if (unsupportedOption is not null)
+        {
+            throw new WarningException($"Option '{unsupportedOption.Name}' cannot be used with 'config get'.");
+        }
+
+        var arguments = new Arguments
+        {
+            ConfigurationPropertyPath = parseResult.GetValue(options.PropertyPath),
+            ConfigurationFile = parseResult.GetValue(options.Config),
+            TargetPath = parseResult.GetValue(options.TargetPath) ?? parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory,
+            LogFilePath = parseResult.GetValue(options.LogFile)
+        };
+        if (!this.fileSystem.Directory.Exists(arguments.TargetPath))
+        {
+            throw new WarningException($"The working directory '{arguments.TargetPath}' does not exist.");
+        }
+
+        if (parseResult.GetValue(options.VerbosityOption) is { } verbosity)
+        {
+            this.loggingLevelSwitch.MinimumLevel = VerbosityMaps[ParseVerbosity(verbosity)];
+        }
+
+        ParseOverrideConfig(arguments, parseResult.GetValue(options.OverrideConfig));
+        ValidateConfigurationFile(arguments);
+        return arguments;
     }
 
     private static void MapOutputOptions(Arguments arguments, ParseResult parseResult, CommandOptions options)
@@ -406,7 +448,7 @@ internal class ArgumentParser(
         };
         var showConfig = new Option<bool>("--show-config")
         {
-            Description = "Outputs the effective GitVersion config (defaults + custom from GitVersion.yml) in yaml format"
+            Description = "Outputs the effective GitVersion config in yaml format (defaults + custom from GitVersion.yml + runtime overrides with v7 configuration)"
         };
         var overrideConfig = new Option<string[]>("--override-config")
         {
@@ -503,6 +545,20 @@ internal class ArgumentParser(
         migrate.Options.Add(force);
         configCommand.Subcommands.Add(migrate);
 
+        var get = new Command("get", "Queries a scalar property of the effective v7 configuration as JSON.");
+        var propertyPath = new Argument<string>("property-path")
+        {
+            Description = "Dot-separated public v7 property path, e.g. calculation.tag-prefix. Maps and collections are not supported.",
+            Arity = ArgumentArity.ExactlyOne
+        };
+        get.Arguments.Add(propertyPath);
+        get.Options.Add(config);
+        get.Options.Add(overrideConfig);
+        get.Options.Add(targetPath);
+        get.Options.Add(logFile);
+        get.Options.Add(verbosity);
+        configCommand.Subcommands.Add(get);
+
         var rootCommand = new RootCommand("Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.")
         {
             path,
@@ -556,7 +612,7 @@ internal class ArgumentParser(
             Commit: commit, DynamicRepoLocation: dynamicRepoLocation,
             ConfigCommand: configCommand, Migrate: migrate,
             MigrationInputFile: migrationInputFile, MigrationOutputFile: migrationOutputFile,
-            InPlace: inPlace, Force: force
+            InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath
         ));
     }
 
@@ -686,6 +742,8 @@ internal class ArgumentParser(
         Option<string?> MigrationInputFile,
         Option<string?> MigrationOutputFile,
         Option<bool> InPlace,
-        Option<bool> Force
+        Option<bool> Force,
+        Command Get,
+        Argument<string> PropertyPath
     );
 }

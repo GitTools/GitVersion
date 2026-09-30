@@ -9,6 +9,7 @@ internal class Arguments
     public string? ConfigurationFile;
     public IReadOnlyDictionary<object, object?> OverrideConfiguration = new Dictionary<object, object?>();
     public bool ShowConfiguration;
+    public string? ConfigurationPropertyPath;
     public bool IsConfigurationMigration;
     public string? MigrationInputFile;
     public string? MigrationOutputFile;
@@ -66,7 +67,8 @@ internal class Arguments
             {
                 ConfigurationFile = this.ConfigurationFile,
                 OverrideConfiguration = this.OverrideConfiguration,
-                ShowConfiguration = this.ShowConfiguration
+                ShowConfiguration = this.ShowConfiguration,
+                PropertyPath = this.ConfigurationPropertyPath
             },
 
             ConfigurationMigrationInfo =
