@@ -651,16 +651,10 @@ public class ArgumentParserTests : TestBase
         return exception.Message;
     }
 
-    private static IEnumerable<TestCaseData> OverrideconfigWithInvalidOptionTestData()
+    private static IEnumerable<TestCaseDataWithReturn<string, string>> OverrideconfigWithInvalidOptionTestData()
     {
-        yield return new TestCaseData("tag-prefix=sample=asdf")
-        {
-            ExpectedResult = "Could not parse --override-config option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
-        };
-        yield return new TestCaseData("unknown-option=25")
-        {
-            ExpectedResult = "Could not parse --override-config option: unknown-option=25. Unsupported key 'unknown-option'."
-        };
+        yield return TestCaseData.Create("tag-prefix=sample=asdf").Returns("Could not parse --override-config option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'.");
+        yield return TestCaseData.Create("unknown-option=25").Returns("Could not parse --override-config option: unknown-option=25. Unsupported key 'unknown-option'.");
     }
 
     [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
@@ -672,149 +666,149 @@ public class ArgumentParserTests : TestBase
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
-    private static IEnumerable<TestCaseData> OverrideConfigWithSingleOptionTestData()
+    private static IEnumerable<TestCaseData<string, GitVersionConfiguration>> OverrideConfigWithSingleOptionTestData()
     {
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "assembly-file-versioning-scheme=\"MajorMinorPatch\"",
             new GitVersionConfiguration
             {
                 AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "assembly-informational-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyInformationalFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "assembly-file-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "custom-version-format=\"{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}\"",
             new GitVersionConfiguration
             {
                 CustomVersionFormat = "{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "mode=ContinuousDelivery",
             new GitVersionConfiguration
             {
                 DeploymentMode = DeploymentMode.ContinuousDelivery
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "tag-prefix=sample",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "label=cd-label",
             new GitVersionConfiguration
             {
                 Label = "cd-label"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "next-version=1",
             new GitVersionConfiguration
             {
                 NextVersion = "1"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "major-version-bump-message=\"This is major version bump message.\"",
             new GitVersionConfiguration
             {
                 MajorVersionBumpMessage = "This is major version bump message."
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "minor-version-bump-message=\"This is minor version bump message.\"",
             new GitVersionConfiguration
             {
                 MinorVersionBumpMessage = "This is minor version bump message."
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "patch-version-bump-message=\"This is patch version bump message.\"",
             new GitVersionConfiguration
             {
                 PatchVersionBumpMessage = "This is patch version bump message."
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "no-bump-message=\"This is no bump message.\"",
             new GitVersionConfiguration
             {
                 NoBumpMessage = "This is no bump message."
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "version-bump-reset-message=\"baseline:\"",
             new GitVersionConfiguration
             {
                 VersionBumpResetMessage = "baseline:"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "tag-pre-release-weight=2",
             new GitVersionConfiguration
             {
                 TagPreReleaseWeight = 2
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "commit-message-incrementing=MergeMessageOnly",
             new GitVersionConfiguration
             {
                 CommitMessageIncrementing = CommitMessageIncrementMode.MergeMessageOnly
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "increment=Minor",
             new GitVersionConfiguration
             {
                 Increment = IncrementStrategy.Minor
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "commit-date-format=\"MM/dd/yyyy h:mm tt\"",
             new GitVersionConfiguration
             {
                 CommitDateFormat = "MM/dd/yyyy h:mm tt"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "update-build-number=true",
             new GitVersionConfiguration
             {
                 UpdateBuildNumber = true
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "strategies=[\"None\",\"Mainline\"]",
             new GitVersionConfiguration
             {
@@ -831,9 +825,9 @@ public class ArgumentParserTests : TestBase
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
-    private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()
+    private static IEnumerable<TestCaseData<string, GitVersionConfiguration>> OverrideConfigWithMultipleOptionsTestData()
     {
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "--override-config tag-prefix=sample --override-config assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
@@ -841,7 +835,7 @@ public class ArgumentParserTests : TestBase
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
@@ -849,7 +843,7 @@ public class ArgumentParserTests : TestBase
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
-        yield return new TestCaseData(
+        yield return TestCaseData.Create(
             "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" --override-config update-build-number=true --override-config assembly-versioning-scheme=MajorMinorPatchTag --override-config mode=ContinuousDelivery --override-config tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
