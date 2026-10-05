@@ -33,10 +33,6 @@ updates:
       roslynator:
         patterns:
           - "Roslynator.*"
-      analyzers:
-        group-by: dependency-name
-        patterns:
-          - "*Analyzers"
       serilog:
         group-by: dependency-name
         patterns:
