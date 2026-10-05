@@ -30,6 +30,9 @@ updates:
         patterns:
           - "Microsoft.*"
           - "System.*"
+      roslynator:
+        patterns:
+          - "Roslynator.*"
       analyzers:
         group-by: dependency-name
         patterns:
