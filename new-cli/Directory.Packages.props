@@ -25,7 +25,7 @@
     <PackageVersion Include="Polly" Version="8.8.0" />
     <PackageVersion Include="PolySharp" Version="1.16.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="5.0.0" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="5.0.0" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="5.0.1" />
     <!-- specific packages -->
     <PackageVersion Include="Scriban" Version="7.5.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
