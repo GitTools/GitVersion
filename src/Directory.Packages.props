@@ -29,7 +29,7 @@
     <PackageVersion Include="Serilog.Sinks.Map" Version="2.0.0" />
     <PackageVersion Include="Polly" Version="8.8.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="5.0.0" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="5.0.0" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="5.0.1" />
     <!-- specific packages -->
     <PackageVersion Include="Buildalyzer" Version="9.0.0" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="7.4.0" />
