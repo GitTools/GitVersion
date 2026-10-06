@@ -227,7 +227,7 @@ Environment.SetEnvironmentVariable($"GitVersion_{name}", value);
 ### Running the CLI Locally
 
 ```bash
-dotnet run --project src/GitVersion.App
+dotnet run --project src/GitVersion.App --framework net10.0
 ```
 
 ### Debugging Tests

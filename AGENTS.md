@@ -66,7 +66,7 @@ dotnet test ./src/GitVersion.slnx
 dotnet test --project ./src/GitVersion.Core.Tests/GitVersion.Core.Tests.csproj
 
 # Run the legacy CLI locally
-dotnet run --project src/GitVersion.App
+dotnet run --project src/GitVersion.App --framework net10.0
 
 # Format code
 dotnet format ./src/GitVersion.slnx
