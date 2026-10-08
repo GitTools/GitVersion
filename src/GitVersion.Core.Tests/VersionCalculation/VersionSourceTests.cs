@@ -319,9 +319,11 @@ public class VersionSourceTests : TestBase
         version.BuildMetaData.CommitCountSourceDistance.ShouldBe(3);
     }
 
-    [TestCase("2.0.0", "2.0.0-3")]
-    [TestCase("1.0.1", "1.0.1-3")]
-    public void MergeMessageKeepsSupplyingCommitSeparateFromOlderTag(string releaseVersion, string fullSemVer)
+    [TestCase("2.0.0", false, "2.0.0-3")]
+    [TestCase("2.0.0", true, "2.0.0-3")]
+    [TestCase("1.0.1", true, "1.0.1-3")]
+    public void MergeMessageKeepsSupplyingCommitSeparateFromOlderTag(
+        string releaseVersion, bool preventIncrementWhenBranchMerged, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         var tagSha = fixture.MakeATaggedCommit("1.0.0");
@@ -333,12 +335,39 @@ public class VersionSourceTests : TestBase
         var mergeSha = fixture.Repository.Head.Tip.Sha;
         fixture.MakeACommit();
 
-        var version = FindVersion(fixture, GitFlowConfigurationBuilder.New.Build());
+        // A patch release name only wins over the tag when the release branch's
+        // default minor increment is prevented from contributing to the merge.
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("release", builder => builder
+                .WithPreventIncrementWhenBranchMerged(preventIncrementWhenBranchMerged))
+            .Build();
+        var version = FindVersion(fixture, configuration);
 
         version.ToString("f").ShouldBe(fullSemVer);
         version.BuildMetaData.SemVerSourceSemVer.ShouldNotBeNull().ToString().ShouldBe(releaseVersion);
         version.BuildMetaData.SemVerSourceSha.ShouldBe(mergeSha);
         version.BuildMetaData.SemVerSourceIncrement.ShouldBe(VersionField.None);
+        version.BuildMetaData.CommitCountSourceSha.ShouldBe(tagSha);
+        version.BuildMetaData.CommitCountSourceDistance.ShouldBe(3);
+    }
+
+    [Test]
+    public void MergedReleaseIncrementKeepsWinningTagAsSemanticSource()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var tagSha = fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("release/1.0.1");
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("release/1.0.1");
+        fixture.MakeACommit();
+
+        var version = FindVersion(fixture, GitFlowConfigurationBuilder.New.Build());
+
+        version.ToString("f").ShouldBe("1.1.0-3");
+        version.BuildMetaData.SemVerSourceSemVer.ShouldNotBeNull().ToString().ShouldBe("1.0.0");
+        version.BuildMetaData.SemVerSourceSha.ShouldBe(tagSha);
+        version.BuildMetaData.SemVerSourceIncrement.ShouldBe(VersionField.Minor);
         version.BuildMetaData.CommitCountSourceSha.ShouldBe(tagSha);
         version.BuildMetaData.CommitCountSourceDistance.ShouldBe(3);
     }

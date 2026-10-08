@@ -223,13 +223,18 @@ public class RepositoryStoreCommitLogTests : TestBase
         // versions anyway, and it reads them from the tag collection rather than through a revision walk.
         var taggedSemanticVersionRepository = new TaggedSemanticVersionRepository(
             NullLogger<TaggedSemanticVersionRepository>.Instance, store);
-        var sut = new IncrementStrategyFinder(store, taggedSemanticVersionRepository);
+        var fullConfiguration = GitFlowConfigurationBuilder.New.Build();
+        var head = repository.Head.Tip.ShouldNotBeNull();
+        var context = new GitVersionContext(repository.Head, head, fullConfiguration,
+            isCurrentCommitTagged: false, numberOfUncommittedChanges: 0);
+        var sut = new IncrementStrategyFinder(
+            new(() => context), store, taggedSemanticVersionRepository,
+            Substitute.For<IEffectiveBranchConfigurationFinder>(), Substitute.For<IEnvironment>());
 
         // The configuration has to be resolved for a concrete branch: the branchless effective configuration
         // leaves the increment at 'Inherit', which has no version field to increment.
-        var configuration = GitFlowConfigurationBuilder.New.Build()
+        var configuration = fullConfiguration
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("main"));
-        var head = repository.Head.Tip.ShouldNotBeNull();
 
         foreach (var baseVersionSource in AllCommits(repository))
         {

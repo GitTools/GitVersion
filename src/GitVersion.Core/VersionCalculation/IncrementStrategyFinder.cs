@@ -109,12 +109,10 @@ internal class IncrementStrategyFinder(
         }
 
         var targetCommitHistory = GetCommitHistory(
-                targetConfiguration.TagPrefixPattern,
-                targetConfiguration.SemanticVersionFormat,
+                targetConfiguration,
                 baseVersionSource,
                 currentCommit,
-                targetLabel,
-                targetConfiguration.Ignore)
+                targetLabel)
             .Select(commit => commit.Sha)
             .ToHashSet();
         var commitOrder = commitLog
