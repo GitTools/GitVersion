@@ -38,7 +38,8 @@
         "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/VersionCalculation/Strategies"
+        "src/GitVersion.Core.Tests/VersionCalculation/Strategies",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
@@ -53,7 +54,8 @@
         "src/GitVersion.Core/VersionCalculation/EffectiveBranchConfigurationFinder.cs"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/VersionCalculation/EffectiveBranchConfigurationFinderTests.cs"
+        "src/GitVersion.Core.Tests/VersionCalculation/EffectiveBranchConfigurationFinderTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
@@ -87,7 +89,8 @@
         "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/BaseVersion.cs"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs"
+        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
@@ -118,7 +121,8 @@
         "src/GitVersion.Core/VersionCalculation/VersionCalculators"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/IntegrationTests/ContinuousDeliveryTestScenarios.cs"
+        "src/GitVersion.Core.Tests/IntegrationTests/ContinuousDeliveryTestScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {

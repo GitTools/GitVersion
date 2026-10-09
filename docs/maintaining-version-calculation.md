@@ -42,8 +42,10 @@ the inputs. CI cannot infer a new dependency that has not been mapped.
 
 ## Executable examples
 
-The page reuses existing test-generated trunk-based histories for tags and
-commit-message increments. The docs build runs their assertions, compares
+The page uses `DocumentationSamplesForVersionCalculation` for competing
+candidates, inherited increments, equal-version selection, separate sources,
+and deployment modes. It also reuses trunk-based histories for tags and
+commit-message increments. The docs build runs these assertions, compares
 the generated Mermaid sources, and validates syntax. Use the existing
 [example contribution workflow][examples] when extending those histories.
 
@@ -53,4 +55,3 @@ show representative outcomes, rather than every history/configuration combinatio
 [algorithm]: input/docs/learn/version-calculation.md
 
 [examples]: input/docs/learn/branching-strategies/contribute-examples.md
-

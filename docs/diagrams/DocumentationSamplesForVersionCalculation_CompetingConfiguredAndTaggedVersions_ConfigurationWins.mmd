@@ -1,0 +1,8 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 5.0.0-1
+    end
+    Note over main: next-version: 5.0.0
