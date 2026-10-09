@@ -136,7 +136,8 @@ internal sealed class MainlineVersionStrategy(
 
     private bool IterateOverCommitsRecursive(
         IEnumerable<ICommit> commitsInReverseOrder, MainlineIteration iteration, IBranch targetBranch, string? targetLabel,
-        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
+        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null,
+        bool stopOnMatchingTag = true)
     {
         traversedCommits ??= [];
 
@@ -160,13 +161,13 @@ internal sealed class MainlineVersionStrategy(
             ApplyBranchedFromTransition(item, iteration, targetBranch, state);
 
             var (commit, stop) = ProcessCommit(item, iteration, targetLabel, state);
-            if (stop)
+            if (stop && stopOnMatchingTag)
             {
                 return true;
             }
 
             if (item.IsMergeCommit
-                && HandleMergeCommit(item, commit, iteration, targetBranch, targetLabel, state, traversedCommits))
+                && HandleMergeCommit(item, commit, iteration, targetBranch, targetLabel, state, traversedCommits, stopOnMatchingTag))
             {
                 return true;
             }
@@ -267,7 +268,7 @@ internal sealed class MainlineVersionStrategy(
 
     private bool HandleMergeCommit(
         ICommit item, MainlineCommit commit, MainlineIteration iteration, IBranch targetBranch,
-        string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits)
+        string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits, bool stopOnMatchingTag)
     {
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
             () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
@@ -298,7 +299,8 @@ internal sealed class MainlineVersionStrategy(
                     iteration: CreateIteration(childBranchName, childConfiguration),
                     targetBranch: targetBranch,
                     targetLabel: targetLabel,
-                    taggedSemanticVersions: state.TaggedSemanticVersions);
+                    taggedSemanticVersions: state.TaggedSemanticVersions,
+                    stopOnMatchingTag: false);
                 SetMergedSupportIncrement(item, commit, state.Configuration, childConfiguration, childBranchName);
                 traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
                 return false;
@@ -334,7 +336,8 @@ internal sealed class MainlineVersionStrategy(
             targetBranch: targetBranch,
             targetLabel: targetLabel,
             taggedSemanticVersions: state.TaggedSemanticVersions,
-            traversedCommits: traversedCommits);
+            traversedCommits: traversedCommits,
+            stopOnMatchingTag: stopOnMatchingTag);
 
         commit.AddChildIteration(childIteration);
         if (done)
