@@ -7,7 +7,7 @@
         "context": "."
     },
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2.7.0": {
+        "ghcr.io/devcontainers/features/common-utils:2.7.1": {
             "installZsh": "true",
             "username": "vscode",
             "userUid": "1000",
