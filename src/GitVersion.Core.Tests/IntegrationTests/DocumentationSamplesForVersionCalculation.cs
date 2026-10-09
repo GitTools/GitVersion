@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace GitVersion.Tests.IntegrationTests;
 
 [TestFixture]
+[NonParallelizable] // The tie scenario requires ordered timestamps from the shared VirtualTime clock.
 public class DocumentationSamplesForVersionCalculation
 {
     [TestCase("5.0.0", "5.0.0-1", "5.0.0", false, VersionField.None)]

@@ -42,4 +42,3 @@ test("acknowledgement is explicit and updates only reviewed sections",t=>{
   assert.ok(inspect(f.root,f.manifest).every(r=>r.stale));
 });
 test("repository path traversal is rejected",t=>{const f=fixture(t);f.manifest.page="../outside.md";assert.throws(()=>inspect(f.root,f.manifest),/Invalid repository path/);});
-
