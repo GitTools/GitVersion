@@ -287,50 +287,30 @@ internal sealed class MainlineVersionStrategy(
         var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
         var childBranchName = mergeMessage.MergedBranch;
 
-        if (childConfiguration.IsMainBranch == true)
+        if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch == true)
         {
-            if (state.Configuration.IsMainBranch == true)
+            if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
             {
-                if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
-                {
-                    // Keep traversing main for its baseline. Support contributes one increment batch,
-                    // rather than a child mainline whose tags could replace that baseline.
-                    var childEffectiveConfiguration = new EffectiveConfiguration(Context.Configuration,
-                        childConfiguration.Increment == IncrementStrategy.Inherit
-                            ? childConfiguration.Inherit(state.Configuration)
-                            : childConfiguration);
-                    var mergeBase = this.repositoryStore.FindMergeBase(item.Parents[0], item.Parents[1])
-                        ?? throw new GitVersionException("Cannot find the base commit of merged support branch.");
-                    var childLabel = childEffectiveConfiguration.GetBranchSpecificLabel(
-                        childBranchName, null, this.environment, Context.CurrentCommit);
-                    commit.MergedBranchIncrement = childEffectiveConfiguration.PreventIncrementWhenBranchMerged
-                        ? VersionField.None
-                        : this.incrementStrategyFinder.DetermineIncrementedField(
-                            currentCommit: item.Parents[1],
-                            baseVersionSource: mergeBase,
-                            shouldIncrement: true,
-                            configuration: childEffectiveConfiguration,
-                            label: childLabel);
-                    traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
-                    return false;
-                }
-
-                if (!IsSupportMergedIntoMain(childBranchName, state.BranchName))
-                {
-                    throw new NotImplementedException();
-                }
-
-                // Main merged into support uses the existing recursive calculation, including
-                // main's tagged baseline and the receiver/source increment controls.
+                SetMergedSupportIncrement(item, commit, state.Configuration, childConfiguration, childBranchName);
+                traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
+                return false;
             }
-            else
+
+            if (!IsSupportMergedIntoMain(childBranchName, state.BranchName))
             {
-                mergedCommitsInReverseOrderLazy = new(
-                    () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
-                );
-                childConfiguration = state.Configuration;
-                childBranchName = iteration.BranchName;
+                throw new NotImplementedException();
             }
+
+            // Main merged into support uses the existing recursive calculation, including
+            // main's tagged baseline and the receiver/source increment controls.
+        }
+        else if (childConfiguration.IsMainBranch == true)
+        {
+            mergedCommitsInReverseOrderLazy = new(
+                () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
+            );
+            childConfiguration = state.Configuration;
+            childBranchName = iteration.BranchName;
         }
 
         var childIteration = CreateIteration(
@@ -356,6 +336,30 @@ internal sealed class MainlineVersionStrategy(
 
         traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
         return false;
+    }
+
+    private void SetMergedSupportIncrement(
+        ICommit item, MainlineCommit commit, IBranchConfiguration targetConfiguration,
+        IBranchConfiguration childConfiguration, ReferenceName childBranchName)
+    {
+        // Keep traversing main for its baseline. Support contributes one increment batch,
+        // rather than a child mainline whose tags could replace that baseline.
+        var childEffectiveConfiguration = new EffectiveConfiguration(Context.Configuration,
+            childConfiguration.Increment == IncrementStrategy.Inherit
+                ? childConfiguration.Inherit(targetConfiguration)
+                : childConfiguration);
+        var mergeBase = this.repositoryStore.FindMergeBase(item.Parents[0], item.Parents[1])
+            ?? throw new GitVersionException("Cannot find the base commit of merged support branch.");
+        var childLabel = childEffectiveConfiguration.GetBranchSpecificLabel(
+            childBranchName, null, this.environment, Context.CurrentCommit);
+        commit.MergedBranchIncrement = childEffectiveConfiguration.PreventIncrementWhenBranchMerged
+            ? VersionField.None
+            : this.incrementStrategyFinder.DetermineIncrementedField(
+                currentCommit: item.Parents[1],
+                baseVersionSource: mergeBase,
+                shouldIncrement: true,
+                configuration: childEffectiveConfiguration,
+                label: childLabel);
     }
 
     private bool IsSupportMergedIntoMain(ReferenceName targetBranch, ReferenceName sourceBranch)
