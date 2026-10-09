@@ -239,6 +239,20 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
 .content .card-header img { filter: brightness(.5); max-width: 25px; }
 .content .btn-primary { border-radius: 5px; background: var(--gv-purple); border-color: var(--gv-purple); padding: 9px 14px; }
 .mermaid { overflow: auto; max-width: 100%; }
+/* Mermaid's embedded flowchart styles retain light-theme connector colors. */
+html[data-theme="dark"] .mermaid .flowchart-link { stroke: #b1bac4 !important; }
+html[data-theme="dark"] .mermaid .marker { fill: #b1bac4 !important; stroke: #b1bac4 !important; }
+html[data-theme="dark"] .mermaid .actor-line,
+html[data-theme="dark"] .mermaid .messageLine0,
+html[data-theme="dark"] .mermaid .messageLine1 { stroke: #b1bac4 !important; }
+html[data-theme="dark"] .mermaid .messageText { fill: #f0f6fc !important; }
+html[data-theme="dark"] .mermaid marker[id$="-arrowhead"] path,
+html[data-theme="dark"] .mermaid marker[id$="-filled-head"] path,
+html[data-theme="dark"] .mermaid marker[id$="-solidTopArrowHead"] path,
+html[data-theme="dark"] .mermaid marker[id$="-solidBottomArrowHead"] path { fill: #b1bac4 !important; stroke: #b1bac4 !important; }
+html[data-theme="dark"] .mermaid marker[id$="-crosshead"] path,
+html[data-theme="dark"] .mermaid marker[id$="-stickTopArrowHead"] path,
+html[data-theme="dark"] .mermaid marker[id$="-stickBottomArrowHead"] path { stroke: #b1bac4 !important; }
 #return-to-top { background: var(--gv-purple); border-radius: 6px; right: 20px; bottom: 20px; }
 @media (min-width: 1441px) {
     body.layout-boxed { background: #f7f6f9; }

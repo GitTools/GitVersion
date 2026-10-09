@@ -143,6 +143,11 @@ jobs:
             docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-
             docs-inputs-v2-${{ runner.os }}-
 
+      - name: Verify algorithm documentation review records
+        run: |
+          npm run test:algorithm-docs
+          npm run check:algorithm-docs
+
       - name: '[Build Documentation]'
         env:
           GITHUB_TOKEN: ${{ github.token }}
