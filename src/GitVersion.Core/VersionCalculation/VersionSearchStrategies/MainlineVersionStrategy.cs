@@ -291,6 +291,14 @@ internal sealed class MainlineVersionStrategy(
         {
             if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
             {
+                // Validate nested merge edges using the existing traversal, without contributing
+                // a child iteration to main's version or marking its history as traversed yet.
+                IterateOverCommitsRecursive(
+                    commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
+                    iteration: CreateIteration(childBranchName, childConfiguration),
+                    targetBranch: targetBranch,
+                    targetLabel: targetLabel,
+                    taggedSemanticVersions: state.TaggedSemanticVersions);
                 SetMergedSupportIncrement(item, commit, state.Configuration, childConfiguration, childBranchName);
                 traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
                 return false;
