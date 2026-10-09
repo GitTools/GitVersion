@@ -1,0 +1,11 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    Note over main: Controlled candidate A: 2.0.0 at this commit
+    main->>main: commit
+    Note over main: Controlled candidate B: 2.0.0 at this later commit
+    main->>main: commit
+    Note over main: Equal candidates: 2.0.0 at tag commit and next commit#59; latest source wins
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.0+1
+    end
