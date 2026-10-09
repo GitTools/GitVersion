@@ -668,9 +668,10 @@ public class MainlineSupportMergeScenarios : TestBase
         Should.Throw<NotImplementedException>(() => fixture.GetVersion(configuration));
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public void DistinctSupportBranchesRemainOutsideTheSupportedScope(bool mergeIntoMain)
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(true, true)]
+    public void DistinctSupportBranchesRemainOutsideTheSupportedScope(bool mergeIntoMain, bool tagSupportHistory)
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
@@ -681,6 +682,11 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MakeACommit();
         fixture.MergeNoFF("support/other");
 
+        if (tagSupportHistory)
+        {
+            fixture.MakeATaggedCommit("1.0.6");
+        }
+
         if (mergeIntoMain)
         {
             fixture.Checkout(MainBranch);
@@ -688,6 +694,30 @@ public class MainlineSupportMergeScenarios : TestBase
         }
 
         Should.Throw<NotImplementedException>(() => fixture.GetVersion(GetConfigurationBuilder().Build()));
+    }
+
+    [Test]
+    public void SupportMergeValidatesNestedMainHistoryPastTags()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        CreateTaggedBranches(fixture);
+        fixture.BranchTo("other/mainline");
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.MakeACommit();
+        fixture.MergeNoFF("other/mainline");
+        fixture.MakeATaggedCommit("2.0.1");
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("unknown", builder => builder.WithIsMainBranch(true).WithIncrement(IncrementStrategy.Patch))
+            .Build();
+
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.0.1");
+        fixture.Checkout("support/1.x");
+        fixture.MergeNoFF(MainBranch);
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("support/1.x");
+
+        Should.Throw<NotImplementedException>(() => fixture.GetVersion(configuration));
     }
 
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
