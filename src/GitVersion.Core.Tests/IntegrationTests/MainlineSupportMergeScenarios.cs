@@ -668,8 +668,9 @@ public class MainlineSupportMergeScenarios : TestBase
         Should.Throw<NotImplementedException>(() => fixture.GetVersion(configuration));
     }
 
-    [Test]
-    public void DistinctSupportBranchesRemainOutsideTheSupportedScope()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void DistinctSupportBranchesRemainOutsideTheSupportedScope(bool mergeIntoMain)
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
@@ -679,6 +680,12 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.Checkout("support/1.x");
         fixture.MakeACommit();
         fixture.MergeNoFF("support/other");
+
+        if (mergeIntoMain)
+        {
+            fixture.Checkout(MainBranch);
+            fixture.MergeNoFF("support/1.x");
+        }
 
         Should.Throw<NotImplementedException>(() => fixture.GetVersion(GetConfigurationBuilder().Build()));
     }
