@@ -1,0 +1,15 @@
+flowchart TD
+    Pool["All accepted incremented candidates"] --> Maximum["Find maximum SemVer"]
+    Maximum --> Tie{"Multiple source-backed candidates<br/>produce this same version?"}
+    Tie -->|Yes| Latest["Latest source timestamp chooses<br/>winner and count source"]
+    Tie -->|No| Winner["Keep maximum semantic candidate"]
+    Winner --> Stable{"Winning version is stable?"}
+    Stable -->|Yes| Exclude["Exclude prerelease baselines<br/>from count-source search"]
+    Stable -->|No| Count["Prefer source-backed candidate:<br/>highest incremented version,<br/>then latest source timestamp"]
+    Exclude --> Count
+    Count --> Found{"Source-backed candidate found?"}
+    Found -->|Yes| Anchor["Use its source as counting anchor"]
+    Found -->|No| External["Use highest remaining external candidate:<br/>null counting anchor"]
+    Latest --> Resolved["Resolved semantic and counting sources"]
+    Anchor --> Resolved
+    External --> Resolved

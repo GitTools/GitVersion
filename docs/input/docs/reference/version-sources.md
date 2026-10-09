@@ -25,6 +25,8 @@ The order of entries in `strategies` is not a priority list. GitVersion evaluate
 Do not interpret a source as “always increments” or “never increments” without the relevant branch configuration. Tagged commits, merge handling, increment inheritance, and deployment mode affect the outcome.
 
 For the sequence of operations, see [how versions are calculated][how-versions-are-calculated].
+The [version calculation algorithm][version-calculation-algorithm] expands that
+sequence into Mermaid decision diagrams and a versioning scenario map.
 
 ## Semantic source and commit-count source
 
@@ -89,3 +91,5 @@ For configuration combinations, see [workflow examples][workflow-examples]. To p
 [discussion]: https://github.com/GitTools/GitVersion/discussions
 
 [output-variables]: /docs/reference/variables
+
+[version-calculation-algorithm]: /docs/learn/version-calculation

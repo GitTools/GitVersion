@@ -1,0 +1,15 @@
+flowchart TD
+    Branch["Branch configuration"] --> Inherit{"Increment is Inherit?"}
+    Inherit -->|No| Effective["Effective configuration"]
+    Inherit -->|Yes| PR{"Allowed pull-request target<br/>identified from merge context?"}
+    PR -->|Yes| Target["Use target as source branch"]
+    PR -->|No| Sources["Find allowed source branches"]
+    Sources --> Found{"Source branches found?"}
+    Found -->|Yes| Recursive["Recursively inherit configuration<br/>with cycle guard"]
+    Target --> Recursive
+    Recursive --> Results["Zero, one or multiple<br/>effective configurations"]
+    Found -->|No| Global{"Global increment is Inherit?"}
+    Global -->|Yes| Skip["Skip orphaned branch"]
+    Global -->|No| Fallback["Use global fallback configuration"]
+    Effective --> Results
+    Fallback --> Results
