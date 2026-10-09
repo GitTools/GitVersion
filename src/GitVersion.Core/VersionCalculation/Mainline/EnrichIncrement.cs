@@ -11,7 +11,13 @@ internal sealed class EnrichIncrement : IContextPreEnricher
     {
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
-        var commitMessageIncrement = commit.IsDummy
+        // An eligible tag on a merged mainline already releases that commit's bump message.
+        var isTaggedMergedMainline = context.SemanticVersion is not null
+            && iteration.Configuration.IsMainBranch == true
+            && effectiveConfiguration.IsMainBranch
+            && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged
+            && iteration.ParentCommit?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
+        var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
         commit.Increment = commitMessageIncrement.Increment;
@@ -22,7 +28,9 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         }
 
         context.Increment = context.Increment.Consolidate(commitMessageIncrement.Increment);
-        if (!context.SuppressBranchIncrement)
+        context.Increment = context.Increment.Consolidate(commit.MergedBranchIncrement);
+        if (!context.SuppressBranchIncrement
+            && (commit.MergedBranchIncrement is null || !effectiveConfiguration.PreventIncrementOfMergedBranch))
         {
             context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
         }
