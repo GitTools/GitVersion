@@ -148,7 +148,8 @@ internal sealed class MainlineVersionStrategy(
             branchName: iteration.BranchName,
             branch: branch,
             taggedSemanticVersions: taggedSemanticVersions,
-            commitsWasBranchedFromLazy: new(() => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch))
+            commitsWasBranchedFromLazy: new(() => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch)),
+            stopOnMatchingTag: stopOnMatchingTag
         );
 
         foreach (var item in commitsInReverseOrder)
@@ -167,7 +168,7 @@ internal sealed class MainlineVersionStrategy(
             }
 
             if (item.IsMergeCommit
-                && HandleMergeCommit(item, commit, iteration, targetBranch, targetLabel, state, traversedCommits, stopOnMatchingTag))
+                && HandleMergeCommit(item, commit, iteration, targetBranch, targetLabel, state, traversedCommits))
             {
                 return true;
             }
@@ -268,7 +269,7 @@ internal sealed class MainlineVersionStrategy(
 
     private bool HandleMergeCommit(
         ICommit item, MainlineCommit commit, MainlineIteration iteration, IBranch targetBranch,
-        string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits, bool stopOnMatchingTag)
+        string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits)
     {
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
             () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
@@ -337,7 +338,7 @@ internal sealed class MainlineVersionStrategy(
             targetLabel: targetLabel,
             taggedSemanticVersions: state.TaggedSemanticVersions,
             traversedCommits: traversedCommits,
-            stopOnMatchingTag: stopOnMatchingTag);
+            stopOnMatchingTag: state.StopOnMatchingTag);
 
         commit.AddChildIteration(childIteration);
         if (done)
@@ -384,7 +385,8 @@ internal sealed class MainlineVersionStrategy(
         ReferenceName branchName,
         IBranch? branch,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions,
-        Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy)
+        Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy,
+        bool stopOnMatchingTag)
     {
         public IBranchConfiguration Configuration { get; set; } = configuration;
         public ReferenceName BranchName { get; set; } = branchName;
@@ -392,6 +394,7 @@ internal sealed class MainlineVersionStrategy(
         public ILookup<ICommit, SemanticVersionWithTag> TaggedSemanticVersions { get; set; } = taggedSemanticVersions;
         public Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> CommitsWasBranchedFromLazy { get; set; } = commitsWasBranchedFromLazy;
         public bool ReturnTrueWhenTheIncrementIsKnown { get; set; }
+        public bool StopOnMatchingTag { get; } = stopOnMatchingTag;
     }
 
     private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
