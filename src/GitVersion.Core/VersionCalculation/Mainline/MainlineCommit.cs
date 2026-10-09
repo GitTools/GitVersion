@@ -17,6 +17,8 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public VersionField Increment { get; set; }
 
+    public VersionField? MergedBranchIncrement { get; set; }
+
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
