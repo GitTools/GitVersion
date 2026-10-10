@@ -105,6 +105,47 @@ public class ShaLabelScenarios : TestBase
         actual.Sha.ShouldBe(fixture.Repository.Head.Tip.Sha);
     }
 
+    [TestCase("managed", "ShortSha")]
+    [TestCase("libgit2", "ShortSha")]
+    [TestCase("managed", "Sha")]
+    [TestCase("libgit2", "Sha")]
+    public void MergedSourceLabelUsesCalculationCommitForHistoryReset(string backend, string placeholder)
+    {
+        using var backendScope = new BackendScope(backend);
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/topic");
+        fixture.MakeACommit("source change +semver: major");
+        var sourceSha = fixture.Repository.Head.Tip.Sha;
+        fixture.MergeTo("main");
+        var currentSha = fixture.Repository.Head.Tip.Sha;
+        var label = "ci-sha" + (placeholder == "Sha" ? currentSha : currentSha[..7]);
+        fixture.Repository.Tags.Add($"0.9.0-{label}.1", sourceSha);
+
+        IGitVersionConfiguration Configuration(string sourceLabel) => GitFlowConfigurationBuilder.New
+            .WithBranch("main", b => b
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementOfMergedBranch(true))
+            .WithBranch("feature", b => b
+                .WithLabel(sourceLabel)
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithPreventIncrementWhenBranchMerged(false))
+            .Build();
+
+        var literal = fixture.GetVersion(Configuration(label));
+        var actual = fixture.GetVersion(Configuration($"ci-sha{{{placeholder}}}"));
+
+        currentSha.ShouldNotBe(sourceSha);
+        literal.FullSemVer.ShouldBe("1.0.1-2");
+        actual.FullSemVer.ShouldBe(literal.FullSemVer);
+
+        fixture.MakeACommit();
+        var historical = fixture.GetVersion(
+            Configuration($"ci-sha{{{placeholder}}}"), commitId: currentSha);
+        historical.Sha.ShouldBe(currentSha);
+        historical.FullSemVer.ShouldBe(actual.FullSemVer);
+    }
+
     private sealed class BackendScope : IDisposable
     {
         private readonly string? original = System.Environment.GetEnvironmentVariable(GitBackendSelector.EnvironmentVariableName);
