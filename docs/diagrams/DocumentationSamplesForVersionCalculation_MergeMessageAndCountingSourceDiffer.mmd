@@ -1,0 +1,11 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    create participant release_2_0_0 as release/2.0.0
+    main->>release_2_0_0: branch from main
+    release_2_0_0->>release_2_0_0: commit
+    release_2_0_0->>main: merge
+    main->>main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.0-3
+    end

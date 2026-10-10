@@ -1,0 +1,16 @@
+flowchart TD
+    Context["Current commit, branch and configuration"] --> Config["Resolve branch configuration"]
+    Config --> Tagged{"Matching current-commit tag,<br/>resolved increment and<br/>prevent increment when tagged?"}
+    Tagged -->|Yes| TagResult["Use tag and build metadata"]
+    Tagged -->|No| Inherit["Resolve effective configurations<br/>including branch inheritance"]
+    Inherit --> Candidates["Collect and increment strategy candidates"]
+    Candidates --> Any{"Any accepted candidates?"}
+    Any -->|No| Error["No base versions: error"]
+    Any -->|Yes| Select["Select maximum incremented SemVer<br/>Resolve ties and count source"]
+    Select --> InheritedTag{"Inherited increment resolved;<br/>matching current tag and<br/>prevent increment when tagged?"}
+    InheritedTag -->|Yes| TagResult
+    InheritedTag -->|No| Mode["Apply deployment mode"]
+    Mode --> Floor["Raise numeric version if<br/>an eligible branch tag is higher"]
+    Floor --> Result["Semantic version and source metadata"]
+    TagResult --> Result
+    Result --> Output["Version variables and output formatting"]

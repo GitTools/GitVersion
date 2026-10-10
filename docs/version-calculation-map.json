@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "page": "docs/input/docs/learn/version-calculation.md",
+  "coverageRoots": [
+    "src/GitVersion.Core/VersionCalculation"
+  ],
+  "sharedSources": [
+    "src/GitVersion.Core/Core",
+    "src/GitVersion.Core/Git",
+    "src/GitVersion.Core/SemVer",
+    "src/GitVersion.Core/Extensions",
+    "src/GitVersion.Core/Configuration",
+    "src/GitVersion.Core/GitVersionContext.cs",
+    "src/GitVersion.Configuration",
+    "src/GitVersion.Git.Managed",
+    "src/GitVersion.LibGit2Sharp"
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "heading": "Calculation overview",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
+      "review": {
+        "sourceDigest": "f4b83277db506fbe5510de828dc346e1016b30904320d8230eaf682829bd5c58",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "strategies",
+      "heading": "All calculation strategies",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/Strategies",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
+      "review": {
+        "sourceDigest": "50a7374892ab8f3c7a689ea9b6a69000fe3427987a26a9221dccb2eec4f40959",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "inheritance",
+      "heading": "Branch inheritance",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/EffectiveBranchConfigurationFinder.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/EffectiveBranchConfigurationFinderTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
+      "review": {
+        "sourceDigest": "4b2e1753796ccc165e44860c687da08f311771abf0fb3ae2188ae723b071eb9b",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "increments",
+      "heading": "Candidate increments",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/IncrementStrategyFinder.cs",
+        "src/GitVersion.Core/VersionCalculation/IncrementStrategy.cs",
+        "src/GitVersion.Core/VersionCalculation/CommitMessageIncrement.cs",
+        "src/GitVersion.Core/VersionCalculation/CommitMessageIncrementMode.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
+      ],
+      "review": {
+        "sourceDigest": "a9c94ef8cde0862f5ff7362d4f7a950c24c486e096d9ad260e077f85c0a141da",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "selection",
+      "heading": "Select the version and its sources",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionCalculators/NextVersionCalculator.cs",
+        "src/GitVersion.Core/VersionCalculation/NextVersion.cs",
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/BaseVersion.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
+      "review": {
+        "sourceDigest": "6b915a79a3f5c5e64f81838238a4aaced429edbdddc8bad5b74f10170f85b2c9",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "mainline",
+      "heading": "Mainline traversal",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/Mainline",
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/Mainline"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
+      "review": {
+        "sourceDigest": "72bd2168e434aacf94c684d82e49e4a39578b707e518077ea14f7c2c4a2cf1fb",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    },
+    {
+      "id": "deployment",
+      "heading": "All deployment modes",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionCalculators"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/IntegrationTests/ContinuousDeliveryTestScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
+      "review": {
+        "sourceDigest": "557f17294c45032814be6c311aa5798cf61e05a8a3df75353d1b833120a10c9d",
+        "reason": "Initial source-backed review of the algorithm page and representative executable examples."
+      }
+    }
+  ]
+}

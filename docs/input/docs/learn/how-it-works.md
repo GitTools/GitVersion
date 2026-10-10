@@ -5,6 +5,10 @@ RedirectFrom: docs/more-info/how-it-works
 ---
 GitVersion combines repository history with effective configuration to calculate a version for the current commit. It then exposes that result as [version variables][version-variables].
 
+Follow the [version calculation algorithm][version-calculation-algorithm] for
+decision diagrams covering all strategies, candidate selection, inheritance,
+Mainline, deployment modes, and versioning scenario families.
+
 <a id="architecture"></a>
 
 ## 1. Resolve the context and configuration
@@ -60,3 +64,5 @@ If your output is unexpected, follow [Troubleshooting][troubleshooting] before c
 [gitflow-examples]: /docs/learn/branching-strategies/gitflow/examples
 
 [troubleshooting]: /docs/learn/faq
+
+[version-calculation-algorithm]: /docs/learn/version-calculation

@@ -1,7 +1,13 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import mermaid from "mermaid";
+import { JSDOM } from "jsdom";
+
+// Flowchart labels use DOMPurify, which must see a DOM when Mermaid is imported.
+const { window } = new JSDOM("");
+globalThis.window = window;
+globalThis.document = window.document;
+const { default: mermaid } = await import("mermaid");
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const sourceDirectory = join(repositoryRoot, "docs", "diagrams");

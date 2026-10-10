@@ -1,0 +1,10 @@
+flowchart TD
+    Enabled["Mainline enabled"] --> Tags["Gather eligible tags and branch context"]
+    Tags --> Traverse["Traverse commits;<br/>inspect branch points and merges"]
+    Traverse --> State["Build commit state and recursive iterations"]
+    State --> Pre["Enrich version and increment context"]
+    Pre --> Rules["Apply matching trunk/non-trunk rules"]
+    Rules --> Post["Clean up context after each commit"]
+    Post --> Fold["Fold baseline operands<br/>and increment operators"]
+    Fold --> Candidate["Mainline candidate enters shared selection"]
+    Traverse --> Unsupported["Recognized merge between two main branches:<br/>currently unsupported"]
