@@ -165,6 +165,59 @@ Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 * pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
   4 characters)
 
+## Support merges with Mainline
+
+The `GitFlow/v1` preset can use Mainline to calculate versions from history:
+
+```yaml
+workflow: GitFlow/v1
+calculation:
+  strategies:
+    - Mainline
+```
+
+Mainline supports merging a configured `support` branch into the configured
+`main` branch. It keeps main's calculated baseline and treats the newly merged
+support history as one increment contribution. A lower support tag does not
+replace main's baseline. Source history already covered by an eligible tag or
+an earlier merge is not replayed as another commit-message bump.
+
+For example, branch from `1.0.0`, tag support at `1.0.5`, tag main at `2.0.0`,
+then merge support into main with `git merge --no-ff support/1.x`. With default
+Patch increments, the core version is `2.0.1`. The default ContinuousDelivery
+mode gives `2.0.1-2`; explicitly selecting ContinuousDeployment gives `2.0.1`.
+Main's `2.0.0` tag supplies the semantic and counting sources. The two commits
+beyond that counting source are support's commit and the merge commit.
+
+The support increment and its enabled commit-message rules determine the
+contribution. Main's `prevent-increment.of-merged-branch` suppresses main's own
+branch increment at this merge; support's `prevent-increment.when-branch-merged`
+suppresses the support contribution. Enabled bump messages on the merge itself
+still apply. Both numeric version selection and the existing final tag floor
+remain active: a higher eligible support tag can raise the final numeric version.
+
+The reverse direction, merging the configured main branch into support, uses
+the existing recursive Mainline calculation for main's history. For the same
+tagged graph (`2.0.0` on main and `1.0.5` on support), the result is also core
+version `2.0.1`, or `2.0.1-2` in ContinuousDelivery. Main's tag supplies both
+sources and the counting distance is two. Eligible source tags consume their
+commit-message bumps by default. Setting main's
+`prevent-increment.when-current-commit-tagged` to `false` keeps those bumps
+active. Newer source commits and enabled merge-message bumps still apply.
+Support's `prevent-increment.of-merged-branch` suppresses its own
+increment, and main's `prevent-increment.when-branch-merged` suppresses main's
+pending increment. A reset message on main suppresses pending increments, but
+does not undo numeric version increments already calculated for earlier main
+commits.
+
+Both directions recognize the configured branch patterns and work after
+deleting the source ref, provided the merge message still identifies it.
+Arbitrary merges between other distinct main branches, including two support
+branches, remain unsupported. The forward path batches support's contribution;
+the reverse path recursively calculates main's history. This is partial
+support for multi-mainline histories. The [regression scenarios][support-merge-tests]
+assert versions, source metadata, increment controls, and the scope limits.
+
 ## Nightly Builds
 
 **develop**, **feature** and **pull-request** builds are considered nightly
@@ -182,3 +235,5 @@ commits forward from the tag to get RC1, RC2 etc??
 [gitflow-model]: https://nvie.com/posts/a-successful-git-branching-model/
 
 [git-flow-extensions]: https://github.com/CJ-Systems/gitflow-cjs
+
+[support-merge-tests]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportMergeScenarios.cs

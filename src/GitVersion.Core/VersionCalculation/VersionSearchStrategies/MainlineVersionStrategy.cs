@@ -136,7 +136,8 @@ internal sealed class MainlineVersionStrategy(
 
     private bool IterateOverCommitsRecursive(
         IEnumerable<ICommit> commitsInReverseOrder, MainlineIteration iteration, IBranch targetBranch, string? targetLabel,
-        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
+        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null,
+        bool stopOnMatchingTag = true)
     {
         traversedCommits ??= [];
 
@@ -147,7 +148,8 @@ internal sealed class MainlineVersionStrategy(
             branchName: iteration.BranchName,
             branch: branch,
             taggedSemanticVersions: taggedSemanticVersions,
-            commitsWasBranchedFromLazy: new(() => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch))
+            commitsWasBranchedFromLazy: new(() => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch)),
+            stopOnMatchingTag: stopOnMatchingTag
         );
 
         foreach (var item in commitsInReverseOrder)
@@ -160,7 +162,7 @@ internal sealed class MainlineVersionStrategy(
             ApplyBranchedFromTransition(item, iteration, targetBranch, state);
 
             var (commit, stop) = ProcessCommit(item, iteration, targetLabel, state);
-            if (stop)
+            if (stop && stopOnMatchingTag)
             {
                 return true;
             }
@@ -287,13 +289,34 @@ internal sealed class MainlineVersionStrategy(
         var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
         var childBranchName = mergeMessage.MergedBranch;
 
-        if (childConfiguration.IsMainBranch == true)
+        if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch == true)
         {
-            if (state.Configuration.IsMainBranch == true)
+            if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
+            {
+                // Validate nested merge edges using the existing traversal, without contributing
+                // a child iteration to main's version or marking its history as traversed yet.
+                IterateOverCommitsRecursive(
+                    commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
+                    iteration: CreateIteration(childBranchName, childConfiguration),
+                    targetBranch: targetBranch,
+                    targetLabel: targetLabel,
+                    taggedSemanticVersions: state.TaggedSemanticVersions,
+                    stopOnMatchingTag: false);
+                SetMergedSupportIncrement(item, commit, state.Configuration, childConfiguration, childBranchName);
+                traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
+                return false;
+            }
+
+            if (!IsSupportMergedIntoMain(childBranchName, state.BranchName))
             {
                 throw new NotImplementedException();
             }
 
+            // Main merged into support uses the existing recursive calculation, including
+            // main's tagged baseline and the receiver/source increment controls.
+        }
+        else if (childConfiguration.IsMainBranch == true)
+        {
             mergedCommitsInReverseOrderLazy = new(
                 () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
             );
@@ -314,7 +337,8 @@ internal sealed class MainlineVersionStrategy(
             targetBranch: targetBranch,
             targetLabel: targetLabel,
             taggedSemanticVersions: state.TaggedSemanticVersions,
-            traversedCommits: traversedCommits);
+            traversedCommits: traversedCommits,
+            stopOnMatchingTag: state.StopOnMatchingTag);
 
         commit.AddChildIteration(childIteration);
         if (done)
@@ -326,12 +350,43 @@ internal sealed class MainlineVersionStrategy(
         return false;
     }
 
+    private void SetMergedSupportIncrement(
+        ICommit item, MainlineCommit commit, IBranchConfiguration targetConfiguration,
+        IBranchConfiguration childConfiguration, ReferenceName childBranchName)
+    {
+        // Keep traversing main for its baseline. Support contributes one increment batch,
+        // rather than a child mainline whose tags could replace that baseline.
+        var childEffectiveConfiguration = new EffectiveConfiguration(Context.Configuration,
+            childConfiguration.Increment == IncrementStrategy.Inherit
+                ? childConfiguration.Inherit(targetConfiguration)
+                : childConfiguration);
+        var mergeBase = this.repositoryStore.FindMergeBase(item.Parents[0], item.Parents[1])
+            ?? throw new GitVersionException("Cannot find the base commit of merged support branch.");
+        var childLabel = childEffectiveConfiguration.GetBranchSpecificLabel(
+            childBranchName, null, this.environment, Context.CurrentCommit);
+        commit.MergedBranchIncrement = childEffectiveConfiguration.PreventIncrementWhenBranchMerged
+            ? VersionField.None
+            : this.incrementStrategyFinder.DetermineIncrementedField(
+                currentCommit: item.Parents[1],
+                baseVersionSource: mergeBase,
+                shouldIncrement: true,
+                configuration: childEffectiveConfiguration,
+                label: childLabel);
+    }
+
+    private bool IsSupportMergedIntoMain(ReferenceName targetBranch, ReferenceName sourceBranch)
+        => Context.Configuration.Branches.TryGetValue(ConfigurationConstants.MainBranchKey, out var mainConfiguration)
+            && mainConfiguration.IsMatch(targetBranch.WithoutOrigin)
+            && Context.Configuration.Branches.TryGetValue(ConfigurationConstants.SupportBranchKey, out var supportConfiguration)
+            && supportConfiguration.IsMatch(sourceBranch.WithoutOrigin);
+
     private sealed class TraversalState(
         IBranchConfiguration configuration,
         ReferenceName branchName,
         IBranch? branch,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions,
-        Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy)
+        Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy,
+        bool stopOnMatchingTag)
     {
         public IBranchConfiguration Configuration { get; set; } = configuration;
         public ReferenceName BranchName { get; set; } = branchName;
@@ -339,6 +394,7 @@ internal sealed class MainlineVersionStrategy(
         public ILookup<ICommit, SemanticVersionWithTag> TaggedSemanticVersions { get; set; } = taggedSemanticVersions;
         public Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> CommitsWasBranchedFromLazy { get; set; } = commitsWasBranchedFromLazy;
         public bool ReturnTrueWhenTheIncrementIsKnown { get; set; }
+        public bool StopOnMatchingTag { get; } = stopOnMatchingTag;
     }
 
     private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
