@@ -40,6 +40,8 @@ internal record MainlineIteration
 
     public MainlineCommit? ParentCommit { get; }
 
+    public IReadOnlySet<ICommit>? IncludedCommits { get; set; }
+
     public string Id { get; }
 
     public ReferenceName BranchName { get; }
@@ -62,6 +64,7 @@ internal record MainlineIteration
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
         ParentCommit = parentCommit;
+        IncludedCommits = parentIteration?.IncludedCommits;
     }
 
     public MainlineCommit CreateCommit(
