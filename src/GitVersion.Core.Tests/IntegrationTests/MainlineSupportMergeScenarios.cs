@@ -57,7 +57,7 @@ public class MainlineSupportMergeScenarios : TestBase
     }
 
     [Test]
-    public void UntaggedSupportMergeIncrementsMainOnce()
+    public void UntaggedSupportMergePreservesBothSourceIncrements()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -68,7 +68,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MakeACommit();
         fixture.MergeNoFF("support/1.x");
 
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("0.0.3");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("0.0.4");
     }
 
     [Test]
@@ -153,9 +153,9 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.GetVersion(configuration).FullSemVer.ShouldBe(fullSemVer);
     }
 
-    [TestCase(CommitMessageIncrementMode.Enabled, "2.1.0")]
-    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "2.0.1")]
-    [TestCase(CommitMessageIncrementMode.Disabled, "2.0.1")]
+    [TestCase(CommitMessageIncrementMode.Enabled, "2.1.1")]
+    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "2.0.2")]
+    [TestCase(CommitMessageIncrementMode.Disabled, "2.0.2")]
     public void SupportCommitMessageModeControlsBump(CommitMessageIncrementMode mode, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -203,7 +203,7 @@ public class MainlineSupportMergeScenarios : TestBase
     }
 
     [Test]
-    public void SupportBumpResetSuppressesEarlierBumpsAndBranchDefault()
+    public void SupportBumpResetDoesNotUndoAnEarlierMainlineVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
@@ -213,7 +213,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("support/1.x");
 
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.0.0");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("3.0.0");
     }
 
     [Test]

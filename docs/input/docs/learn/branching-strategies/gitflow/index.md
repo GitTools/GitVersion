@@ -177,10 +177,19 @@ calculation:
 ```
 
 Mainline supports merging a configured `support` branch into the configured
-`main` branch. It keeps main's calculated baseline and treats the newly merged
-support history as one increment contribution. A lower support tag does not
-replace main's baseline. Source history already covered by an eligible tag or
-an earlier merge is not replayed as another commit-message bump.
+`main` branch. It keeps main's calculated baseline and applies the effective
+Mainline increments from newly merged support history in order. A lower support
+tag does not replace main's baseline. Source history already covered by an
+eligible tag or an earlier merge is not replayed as another commit-message bump.
+If main was merged into support first, returning support to main applies only
+the newly introduced support history; main's existing increments are not replayed.
+
+For an untagged history with two commits on main followed by two commits on
+support, merging support into main produces `0.0.4-3` in ContinuousDelivery or
+`0.0.4` in ContinuousDeployment. Tagging the second support commit `0.0.4`
+preserves that result. A further support commit after the tag advances the merged
+version to `0.0.5-4` or `0.0.5`, respectively. The counting source remains main's
+pre-merge tip; the distance includes the new support commits and the merge commit.
 
 For example, branch from `1.0.0`, tag support at `1.0.5`, tag main at `2.0.0`,
 then merge support into main with `git merge --no-ff support/1.x`. With default
@@ -189,12 +198,15 @@ mode gives `2.0.1-2`; explicitly selecting ContinuousDeployment gives `2.0.1`.
 Main's `2.0.0` tag supplies the semantic and counting sources. The two commits
 beyond that counting source are support's commit and the merge commit.
 
-The support increment and its enabled commit-message rules determine the
-contribution. Main's `prevent-increment.of-merged-branch` suppresses main's own
+The support increment and its enabled commit-message rules determine each
+contribution. A reset suppresses pending increments without undoing numeric
+increments already calculated for earlier support commits. Main's
+`prevent-increment.of-merged-branch` suppresses main's own
 branch increment at this merge; support's `prevent-increment.when-branch-merged`
-suppresses the support contribution. Enabled bump messages on the merge itself
-still apply. Both numeric version selection and the existing final tag floor
-remain active: a higher eligible support tag can raise the final numeric version.
+suppresses all support contributions. Enabled bump messages on the merge itself
+still apply to the final pending contribution. A higher eligible support tag
+provides a numeric floor before subsequent support increments; a tag on the
+source tip provides a floor for the final merge contribution.
 
 The reverse direction, merging the configured main branch into support, uses
 the existing recursive Mainline calculation for main's history. For the same
@@ -213,8 +225,9 @@ commits.
 Both directions recognize the configured branch patterns and work after
 deleting the source ref, provided the merge message still identifies it.
 Arbitrary merges between other distinct main branches, including two support
-branches, remain unsupported. The forward path batches support's contribution;
-the reverse path recursively calculates main's history. This is partial
+branches, remain unsupported. The forward path applies support's ordered
+increments against main's baseline; the reverse path recursively calculates
+main's history. This is partial
 support for multi-mainline histories. The [regression scenarios][support-merge-tests]
 assert versions, source metadata, increment controls, and the scope limits.
 

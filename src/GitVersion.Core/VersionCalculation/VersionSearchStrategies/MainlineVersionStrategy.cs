@@ -154,6 +154,11 @@ internal sealed class MainlineVersionStrategy(
 
         foreach (var item in commitsInReverseOrder)
         {
+            if (iteration.IncludedCommits is { } includedCommits && !includedCommits.Contains(item))
+            {
+                continue;
+            }
+
             if (!traversedCommits.Add(item))
             {
                 continue;
@@ -272,7 +277,9 @@ internal sealed class MainlineVersionStrategy(
         string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits)
     {
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-            () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
+            () => iteration.IncludedCommits is null
+                ? [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
+                : this.repositoryStore.GetCommitLog(item.Parents[0], item.Parents.Skip(1).Single(), Context.Configuration.Ignore)
         );
 
         if ((state.Configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
@@ -293,6 +300,10 @@ internal sealed class MainlineVersionStrategy(
         {
             if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
             {
+                // A linear slice after the merge base can miss older, newly merged
+                // support commits when main has already been merged into support.
+                mergedCommitsInReverseOrderLazy = new(() => this.repositoryStore.GetCommitLog(
+                    item.Parents[0], item.Parents.Skip(1).Single(), Context.Configuration.Ignore));
                 // Validate nested merge edges using the existing traversal, without contributing
                 // a child iteration to main's version or marking its history as traversed yet.
                 IterateOverCommitsRecursive(
@@ -302,7 +313,8 @@ internal sealed class MainlineVersionStrategy(
                     targetLabel: targetLabel,
                     taggedSemanticVersions: state.TaggedSemanticVersions,
                     stopOnMatchingTag: false);
-                SetMergedSupportIncrement(item, commit, state.Configuration, childConfiguration, childBranchName);
+                SetMergedSupportIteration(mergedCommitsInReverseOrderLazy.Value, commit, childConfiguration,
+                    childBranchName, targetBranch, targetLabel, state);
                 traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
                 return false;
             }
@@ -318,7 +330,9 @@ internal sealed class MainlineVersionStrategy(
         else if (childConfiguration.IsMainBranch == true)
         {
             mergedCommitsInReverseOrderLazy = new(
-                () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
+                () => iteration.IncludedCommits is null
+                    ? [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
+                    : this.repositoryStore.GetCommitLog(item.Parents.Skip(1).Single(), item.Parents[0], Context.Configuration.Ignore)
             );
             childConfiguration = state.Configuration;
             childBranchName = iteration.BranchName;
@@ -341,6 +355,11 @@ internal sealed class MainlineVersionStrategy(
             stopOnMatchingTag: state.StopOnMatchingTag);
 
         commit.AddChildIteration(childIteration);
+        if (iteration.IncludedCommits is not null && childIteration.Commits.Count == 0)
+        {
+            // This merge only brings history already present on the receiving main.
+            commit.MergedBranchIncrement = VersionField.None;
+        }
         if (done)
         {
             return true;
@@ -350,28 +369,18 @@ internal sealed class MainlineVersionStrategy(
         return false;
     }
 
-    private void SetMergedSupportIncrement(
-        ICommit item, MainlineCommit commit, IBranchConfiguration targetConfiguration,
-        IBranchConfiguration childConfiguration, ReferenceName childBranchName)
+    private void SetMergedSupportIteration(
+        IReadOnlyCollection<ICommit> mergedCommits, MainlineCommit commit, IBranchConfiguration childConfiguration,
+        ReferenceName childBranchName, IBranch targetBranch, string? targetLabel, TraversalState state)
     {
-        // Keep traversing main for its baseline. Support contributes one increment batch,
-        // rather than a child mainline whose tags could replace that baseline.
-        var childEffectiveConfiguration = new EffectiveConfiguration(Context.Configuration,
-            childConfiguration.Increment == IncrementStrategy.Inherit
-                ? childConfiguration.Inherit(targetConfiguration)
-                : childConfiguration);
-        var mergeBase = this.repositoryStore.FindMergeBase(item.Parents[0], item.Parents[1])
-            ?? throw new GitVersionException("Cannot find the base commit of merged support branch.");
-        var childLabel = childEffectiveConfiguration.GetBranchSpecificLabel(
-            childBranchName, null, this.environment, Context.CurrentCommit);
-        commit.MergedBranchIncrement = childEffectiveConfiguration.PreventIncrementWhenBranchMerged
-            ? VersionField.None
-            : this.incrementStrategyFinder.DetermineIncrementedField(
-                currentCommit: item.Parents[1],
-                baseVersionSource: mergeBase,
-                shouldIncrement: true,
-                configuration: childEffectiveConfiguration,
-                label: childLabel);
+        // Keep traversing main for its baseline, but retain support's ordered mainline
+        // operations. Its operands become numeric floors rather than replacing main.
+        var supportIteration = CreateIteration(childBranchName, childConfiguration, commit.Iteration, commit);
+        supportIteration.IncludedCommits = mergedCommits
+            .Where(item => commit.Iteration.IncludedCommits?.Contains(item) != false).ToHashSet();
+        IterateOverCommitsRecursive(mergedCommits, supportIteration, targetBranch, targetLabel,
+            state.TaggedSemanticVersions, stopOnMatchingTag: state.StopOnMatchingTag);
+        commit.MergedSupportIteration = supportIteration;
     }
 
     private bool IsSupportMergedIntoMain(ReferenceName targetBranch, ReferenceName sourceBranch)
@@ -481,6 +490,12 @@ internal sealed class MainlineVersionStrategy(
                 case BaseVersion baseVersion:
                     result = baseVersion;
                     break;
+                case MergedSupportVersionFloor floor:
+                    if (result is null || result.GetIncrementedVersion().IsLessThan(floor.Operand.SemanticVersion, includePreRelease: false))
+                    {
+                        result = new BaseVersion(floor.Operand with { BaseVersionSource = floor.BaseVersionSource });
+                    }
+                    break;
             }
         }
         return result ?? throw new InvalidOperationException();
@@ -496,9 +511,25 @@ internal sealed class MainlineVersionStrategy(
 
         foreach (var commit in iteration.Commits)
         {
+            var supportIncrements = GetMergedSupportIncrements(commit, context);
             foreach (var item in TrunkContextPreEnricherCollection)
             {
                 item.Enrich(iteration, commit, context);
+            }
+
+            foreach (var increment in supportIncrements.SkipLast(1))
+            {
+                yield return increment switch
+                {
+                    BaseVersionOperator operation => operation with { BaseVersionSource = context.BaseVersionSource, Label = context.Label },
+                    MergedSupportVersionFloor floor => floor with { BaseVersionSource = context.BaseVersionSource },
+                    _ => throw new InvalidOperationException("Unexpected merged support version step.")
+                };
+            }
+            if (supportIncrements.LastOrDefault() is BaseVersionOperator { AlternativeSemanticVersion: { } alternative } lastSupportIncrement)
+            {
+                context.AddAlternativeSemanticVersion(alternative, lastSupportIncrement.AlternativeSemVerSource
+                    ?? new SemanticVersionSource("Merged support version", alternative, null, VersionField.None));
             }
 
             foreach (var incrementer in TrunkIncrementerCollection
@@ -515,5 +546,50 @@ internal sealed class MainlineVersionStrategy(
                 item.Enrich(commit, context);
             }
         }
+    }
+
+    private sealed record MergedSupportVersionFloor(BaseVersionOperand Operand, ICommit? BaseVersionSource = null) : IBaseVersionIncrement
+    {
+        public string Source => Operand.Source;
+    }
+
+    private static IReadOnlyList<IBaseVersionIncrement> GetMergedSupportIncrements(MainlineCommit commit, MainlineContext context)
+    {
+        if (commit.MergedSupportIteration is not { } supportIteration)
+        {
+            return [];
+        }
+
+        commit.MergedBranchIncrement = VersionField.None;
+        if (supportIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
+        {
+            return [];
+        }
+
+        var steps = GetIncrements(supportIteration, context.TargetLabel, context.IncrementStrategyFinder,
+            context.Configuration, context.Environment, context.CurrentCommit).ToArray();
+        var increments = steps.Select(step => step is BaseVersionOperand operand
+            ? new MergedSupportVersionFloor(operand)
+            : step).ToList();
+
+        // A tag on the source tip is already released: consolidate its pending merge
+        // increment against main, then apply the tag floor. A tag followed by more
+        // source commits must establish the floor before those increments instead.
+        if (steps is [BaseVersionOperand operand, BaseVersionOperator operation]
+            && operand.BaseVersionSource?.Equals(supportIteration.Commits.Last().Value) == true)
+        {
+            increments = [operation.AlternativeSemanticVersion is { } alternative
+                && !alternative.IsLessThan(operand.SemanticVersion, includePreRelease: false)
+                    ? operation
+                    : operation with
+                    {
+                        AlternativeSemanticVersion = operand.SemanticVersion,
+                        AlternativeSemVerSource = operand.SemVerSource
+                            ?? new SemanticVersionSource(operand.Source, operand.SemanticVersion, operand.BaseVersionSource, VersionField.None)
+                    }];
+        }
+
+        commit.MergedBranchIncrement = (increments.LastOrDefault() as BaseVersionOperator)?.Increment ?? VersionField.None;
+        return increments;
     }
 }
