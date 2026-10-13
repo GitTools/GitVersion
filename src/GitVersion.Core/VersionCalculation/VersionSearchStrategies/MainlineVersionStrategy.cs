@@ -277,9 +277,7 @@ internal sealed class MainlineVersionStrategy(
         string? targetLabel, TraversalState state, HashSet<ICommit> traversedCommits)
     {
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-            () => iteration.IncludedCommits is null
-                ? [.. this.incrementStrategyFinder.GetMergedCommits(item, 1, Context.Configuration.Ignore).Reverse()]
-                : this.repositoryStore.GetCommitLog(item.Parents[0], item.Parents.Skip(1).Single(), Context.Configuration.Ignore)
+            () => GetMergedCommitsInReverseOrder(item, iteration, 1)
         );
 
         if ((state.Configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
@@ -330,9 +328,7 @@ internal sealed class MainlineVersionStrategy(
         else if (childConfiguration.IsMainBranch == true)
         {
             mergedCommitsInReverseOrderLazy = new(
-                () => iteration.IncludedCommits is null
-                    ? [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
-                    : this.repositoryStore.GetCommitLog(item.Parents.Skip(1).Single(), item.Parents[0], Context.Configuration.Ignore)
+                () => GetMergedCommitsInReverseOrder(item, iteration, 0)
             );
             childConfiguration = state.Configuration;
             childBranchName = iteration.BranchName;
@@ -367,6 +363,20 @@ internal sealed class MainlineVersionStrategy(
 
         traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
         return false;
+    }
+
+    private IReadOnlyCollection<ICommit> GetMergedCommitsInReverseOrder(
+        ICommit commit, MainlineIteration iteration, int parentIndex)
+    {
+        if (iteration.IncludedCommits is null)
+        {
+            return [.. this.incrementStrategyFinder.GetMergedCommits(commit, parentIndex, Context.Configuration.Ignore).Reverse()];
+        }
+
+        var mergedHead = commit.Parents.Skip(1).Single();
+        return parentIndex == 1
+            ? this.repositoryStore.GetCommitLog(commit.Parents[0], mergedHead, Context.Configuration.Ignore)
+            : this.repositoryStore.GetCommitLog(mergedHead, commit.Parents[0], Context.Configuration.Ignore);
     }
 
     private void SetMergedSupportIteration(
@@ -519,12 +529,7 @@ internal sealed class MainlineVersionStrategy(
 
             foreach (var increment in supportIncrements.SkipLast(1))
             {
-                yield return increment switch
-                {
-                    BaseVersionOperator operation => operation with { BaseVersionSource = context.BaseVersionSource, Label = context.Label },
-                    MergedSupportVersionFloor floor => floor with { BaseVersionSource = context.BaseVersionSource },
-                    _ => throw new InvalidOperationException("Unexpected merged support version step.")
-                };
+                yield return ReanchorMergedSupportIncrement(increment, context);
             }
             if (supportIncrements.LastOrDefault() is BaseVersionOperator { AlternativeSemanticVersion: { } alternative } lastSupportIncrement)
             {
@@ -547,6 +552,14 @@ internal sealed class MainlineVersionStrategy(
             }
         }
     }
+
+    private static IBaseVersionIncrement ReanchorMergedSupportIncrement(IBaseVersionIncrement increment, MainlineContext context)
+        => increment switch
+        {
+            BaseVersionOperator operation => operation with { BaseVersionSource = context.BaseVersionSource, Label = context.Label },
+            MergedSupportVersionFloor floor => floor with { BaseVersionSource = context.BaseVersionSource },
+            _ => throw new InvalidOperationException("Unexpected merged support version step.")
+        };
 
     private sealed record MergedSupportVersionFloor(BaseVersionOperand Operand, ICommit? BaseVersionSource = null) : IBaseVersionIncrement
     {
