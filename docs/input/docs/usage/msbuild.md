@@ -236,7 +236,7 @@ variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 
 GitVersion.MsBuild includes `net10.0` and `net11.0` tools. A consumer targeting
 .NET 11 selects the .NET 11 tools; older target frameworks use the .NET 10 tools.
-The .NET 11 target currently requires a compatible .NET 11 RC1 runtime and SDK.
+The .NET 11 target currently requires a compatible .NET 11 RC2 runtime and SDK.
 The MSBuild host must also be able to load the selected task assembly: selecting
 a consumer framework does not upgrade the MSBuild host. The CLI subprocess uses
 `--roll-forward Major`, independently of task assembly loading.
