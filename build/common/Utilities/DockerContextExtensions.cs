@@ -246,6 +246,7 @@ public static class DockerContextExtensions
             {
                 Rm = true,
                 User = $"{uid}:{gid}",
+                Workdir = "/tmp",
                 Volume =
                 [
                     $"{currentDir}:{root}/repo",
