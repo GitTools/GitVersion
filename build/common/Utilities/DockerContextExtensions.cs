@@ -159,6 +159,13 @@ public static class DockerContextExtensions
             var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
+                var identity = context.DockerRun(new DockerContainerRunSettings
+                {
+                    Rm = true,
+                    Entrypoint = "id",
+                    Platform = $"linux/{dockerImage.Architecture.ToString().ToLower()}"
+                }, tag, "-u");
+                Assert.Equal("10001", string.Join("", identity).Trim());
                 context.DockerTestRun(tag, dockerImage.Architecture, "/repo", "--show-variable", "FullSemver", "--no-cache");
             }
         }
@@ -229,15 +236,22 @@ public static class DockerContextExtensions
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
+            var uid = context.ExecuteCommand("id", "-u").Single().Trim();
+            var gid = context.ExecuteCommand("id", "-g").Single().Trim();
+            if (uid == "0")
+            {
+                throw new CakeException("Docker tests must run as a non-root checkout owner to validate bind-mount permissions.");
+            }
             var settings = new DockerContainerRunSettings
             {
                 Rm = true,
+                User = $"{uid}:{gid}",
                 Volume =
                 [
                     $"{currentDir}:{root}/repo",
-                    $"{currentDir}/tests/scripts:{root}/scripts",
-                    $"{currentDir}/artifacts/packages/nuget:{root}/nuget",
-                    $"{currentDir}/artifacts/packages/native:{root}/native"
+                    $"{currentDir}/tests/scripts:{root}/scripts:ro",
+                    $"{currentDir}/artifacts/packages/nuget:{root}/nuget:ro",
+                    $"{currentDir}/artifacts/packages/native:{root}/native:ro"
                 ],
                 Platform = $"linux/{arch.ToString().ToLower()}"
             };
@@ -267,6 +281,10 @@ public static class DockerContextExtensions
             {
                 settings.Env = [.. settings.Env ?? [], $"GITVERSION_GIT_BACKEND={gitBackend}"];
             }
+
+            // The checkout owner's UID can differ from the image's default UID. Keep
+            // CLI configuration writable inside the container, not on the bind mount.
+            settings.Env = [.. settings.Env ?? [], "HOME=/tmp", "DOTNET_CLI_HOME=/tmp"];
 
             return settings;
         }

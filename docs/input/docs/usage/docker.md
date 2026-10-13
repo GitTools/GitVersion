@@ -34,6 +34,26 @@ On GitHub Actions, you may need to set the following environment variables:
 docker run --rm -v "$(pwd):/repo" --env GITHUB_ACTIONS=true --env GITHUB_REF=$(GITHUB_REF) gittools/gitversion:{tag} /repo
 ```
 
+### Non-root containers and repository permissions
+
+Images default to UID/GID `10001:10001`, with a writable home at `/home/gittools`.
+GitVersion can write repository metadata and cache files, so bind mounts must be
+writable by the selected user. On Linux, use the non-root checkout owner's identity:
+
+```sh
+docker run --rm --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp --env DOTNET_CLI_HOME=/tmp \
+  -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
+```
+
+The temporary home stays inside the disposable container. Do not run this command
+from a root shell, or make the host repository world-writable to bypass permissions.
+For Docker Desktop on Windows/macOS, ensure the shared directory is writable by
+the image's default user using the host's file-sharing permissions.
+
+Derived images can switch to root during installation, but must restore
+`USER 10001:10001` for runtime. The tool remains installed at `/tools/dotnet-gitversion`.
+
 ### Tags
 
 Most of the tags we provide have both arm64 and amd64 variants. If you need to pull a architecture specific tag you can do that like:

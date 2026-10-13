@@ -18,12 +18,16 @@ do
     shift
 done
 
+toolPath=$(mktemp -d) || exit 1
+trap 'rm -rf "$toolPath"' EXIT
 git config --global --add safe.directory '*'
-result=$(tar -xvpf /native/gitversion-$runtime-$version.tar.gz -C /native) # >/dev/null
+result=$(tar -xvf "/native/gitversion-$runtime-$version.tar.gz" -C "$toolPath")
 status=$?
 if test $status -eq 0
 then
-    /native/gitversion $repoPath --show-variable FullSemver --no-cache
+    "$toolPath/gitversion" "$repoPath" --show-variable FullSemver --no-cache
+    status=$?
 else
-    echo $result
+    echo "$result"
 fi
+exit "$status"
