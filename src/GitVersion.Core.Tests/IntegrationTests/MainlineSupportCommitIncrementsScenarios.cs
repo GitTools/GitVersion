@@ -7,6 +7,53 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class MainlineSupportCommitIncrementsScenarios : TestBase
 {
+    [Test]
+    public void IndependentMainProgressDoesNotAccumulateSupportPatches([Values(1, 2, 3, 4, 5)] int scenario,
+        [Values(false, true)] bool tagged,
+        [Values(DeploymentMode.ContinuousDelivery, DeploymentMode.ContinuousDeployment)] DeploymentMode mode)
+    {
+        var (supportCommits, mainCommits, trackMergeMessage, expectedNumericVersion, expectedCount) = scenario switch
+        {
+            1 => (3, 1, true, "0.0.5", 4),
+            2 => (3, 1, false, "0.0.7", 4),
+            3 => (2, 2, true, "0.0.5", 3),
+            4 => (2, 2, false, "0.0.7", 3),
+            5 => (2, 5, true, "0.0.8", 3),
+            _ => throw new ArgumentOutOfRangeException(nameof(scenario))
+        };
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.BranchTo("support/1.x");
+        for (var i = 0; i < supportCommits; i++)
+        {
+            fixture.MakeACommit();
+        }
+        if (tagged)
+        {
+            fixture.ApplyTag($"0.0.{2 + supportCommits}");
+        }
+        fixture.Checkout(MainBranch);
+        for (var i = 0; i < mainCommits; i++)
+        {
+            fixture.MakeACommit();
+        }
+        var countSource = fixture.Repository.Head.Tip.Sha;
+        fixture.MergeNoFF("support/1.x");
+        var configuration = GetConfigurationBuilder().WithDeploymentMode(mode)
+            .WithBranch("main", builder => builder.WithTrackMergeMessage(trackMergeMessage)).Build();
+
+        var version = fixture.GetVersion(configuration);
+
+        version.MajorMinorPatch.ShouldBe(expectedNumericVersion);
+        // Preserve the existing suffixes while their intended semantics are discussed.
+        version.FullSemVer.ShouldBe(mode == DeploymentMode.ContinuousDelivery
+            ? $"{expectedNumericVersion}-{expectedCount}"
+            : expectedNumericVersion);
+        version.CommitCountSourceSha.ShouldBe(countSource);
+        version.CommitCountSourceDistance.ShouldBe(expectedCount.ToString());
+    }
+
     [TestCase(false, false, DeploymentMode.ContinuousDelivery, "0.0.4-3")]
     [TestCase(false, false, DeploymentMode.ContinuousDeployment, "0.0.4")]
     [TestCase(true, false, DeploymentMode.ContinuousDelivery, "0.0.4-3")]
@@ -104,6 +151,34 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
             .WithBranch("support", builder => builder.WithPreventIncrementWhenBranchMerged(true)).Build();
 
         fixture.GetVersion(configuration).FullSemVer.ShouldBe("0.0.2");
+    }
+
+    [Test]
+    public void RepeatedSupportMergeDoesNotAddIndependentMainProgress()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.BranchTo("support/1.x");
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("support/1.x");
+        var configuration = GetConfigurationBuilder().Build();
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("0.0.4");
+        fixture.MakeACommit();
+        var mainTip = fixture.MakeACommit();
+        fixture.Checkout("support/1.x");
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("support/1.x");
+
+        var version = fixture.GetVersion(configuration);
+
+        version.FullSemVer.ShouldBe("0.0.7");
+        version.CommitCountSourceSha.ShouldBe(mainTip);
+        version.CommitCountSourceDistance.ShouldBe("3");
     }
 
     [Test]

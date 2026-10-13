@@ -391,6 +391,37 @@ internal sealed class MainlineVersionStrategy(
         IterateOverCommitsRecursive(mergedCommits, supportIteration, targetBranch, targetLabel,
             state.TaggedSemanticVersions, stopOnMatchingTag: state.StopOnMatchingTag);
         commit.MergedSupportIteration = supportIteration;
+        var mainTip = commit.Value.Parents[0];
+        var supportTip = commit.Value.Parents.Skip(1).Single();
+        if (this.repositoryStore.FindMergeBase(mainTip, supportTip)?.Equals(mainTip) != true)
+        {
+            var taggedSemanticVersions = state.TaggedSemanticVersions;
+            commit.MergedSupportVersion = new(() => GetSupportVersion(commit, childConfiguration,
+                childBranchName, targetBranch, targetLabel, taggedSemanticVersions));
+        }
+    }
+
+    private (BaseVersion Version, SemanticVersion Baseline) GetSupportVersion(MainlineCommit merge, IBranchConfiguration configuration,
+        ReferenceName branchName, IBranch targetBranch, string? targetLabel,
+        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions)
+    {
+        var tip = merge.Value.Parents.Skip(1).Single();
+        var iteration = CreateIteration(branchName, configuration, merge.Iteration, merge);
+        iteration.IncludedCommits = null;
+        IterateOverCommitsRecursive(this.repositoryStore.GetCommitLog(null, tip, Context.Configuration.Ignore),
+            iteration, targetBranch, targetLabel, taggedSemanticVersions);
+        var steps = GetIncrements(iteration, targetLabel, this.incrementStrategyFinder,
+            Context.Configuration, this.environment, Context.CurrentCommit).ToArray();
+        var version = ApplyIncrements(steps);
+        var baseline = steps.OfType<BaseVersionOperand>().FirstOrDefault()?.SemanticVersion ?? SemanticVersion.Empty;
+        // A released source tip contributes its tag, not its next pending increment.
+        if (version.Operand.BaseVersionSource?.Equals(tip) == true
+            && iteration.GetEffectiveConfiguration(Context.Configuration).PreventIncrementWhenCurrentCommitTagged
+            && version.Operator is { } operation)
+        {
+            version = version with { Operator = operation with { Increment = VersionField.None } };
+        }
+        return (version, baseline);
     }
 
     private bool IsSupportMergedIntoMain(ReferenceName targetBranch, ReferenceName sourceBranch)
@@ -484,7 +515,11 @@ internal sealed class MainlineVersionStrategy(
         iteration.NotNull();
 
         var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, environment, currentCommit).ToArray();
+        return ApplyIncrements(incrementSteps);
+    }
 
+    private static BaseVersion ApplyIncrements(IEnumerable<IBaseVersionIncrement> incrementSteps)
+    {
         BaseVersion? result = null;
         foreach (var baseVersionIncrement in incrementSteps)
         {
@@ -499,6 +534,9 @@ internal sealed class MainlineVersionStrategy(
                     break;
                 case BaseVersion baseVersion:
                     result = baseVersion;
+                    break;
+                case MergedSupportIncrement support:
+                    result = ApplyMergedSupportIncrement(result ?? new BaseVersion(), support);
                     break;
                 case MergedSupportVersionFloor floor:
                     if (result is null || result.GetIncrementedVersion().IsLessThan(floor.Operand.SemanticVersion, includePreRelease: false))
@@ -527,22 +565,14 @@ internal sealed class MainlineVersionStrategy(
                 item.Enrich(iteration, commit, context);
             }
 
-            foreach (var increment in supportIncrements.SkipLast(1))
-            {
-                yield return ReanchorMergedSupportIncrement(increment, context);
-            }
-            if (supportIncrements.LastOrDefault() is BaseVersionOperator { AlternativeSemanticVersion: { } alternative } lastSupportIncrement)
-            {
-                context.AddAlternativeSemanticVersion(alternative, lastSupportIncrement.AlternativeSemVerSource
-                    ?? new SemanticVersionSource("Merged support version", alternative, null, VersionField.None));
-            }
-
             foreach (var incrementer in TrunkIncrementerCollection
                 .Where(element => element.MatchPrecondition(iteration, commit, context)))
             {
                 foreach (var item in incrementer.GetIncrements(iteration, commit, context))
                 {
-                    yield return item;
+                    yield return item is BaseVersionOperator operation && supportIncrements.Count != 0
+                        ? new MergedSupportIncrement(operation, supportIncrements, commit.MergedSupportVersion)
+                        : item;
                 }
             }
 
@@ -553,11 +583,55 @@ internal sealed class MainlineVersionStrategy(
         }
     }
 
-    private static IBaseVersionIncrement ReanchorMergedSupportIncrement(IBaseVersionIncrement increment, MainlineContext context)
-        => increment switch
+    private sealed record MergedSupportIncrement(BaseVersionOperator Operation,
+        IReadOnlyList<IBaseVersionIncrement> Steps, Lazy<(BaseVersion Version, SemanticVersion Baseline)>? Version) : IBaseVersionIncrement
+    {
+        public string Source => Operation.Source;
+        public ICommit? BaseVersionSource => Operation.BaseVersionSource;
+    }
+
+    private static BaseVersion ApplyMergedSupportIncrement(BaseVersion main, MergedSupportIncrement support)
+    {
+        var mainVersion = main.GetIncrementedVersion();
+        if (support.Version?.Value is { } independent
+            && IsSameOrNewerReleaseLine(independent.Baseline, mainVersion))
         {
-            BaseVersionOperator operation => operation with { BaseVersionSource = context.BaseVersionSource, Label = context.Label },
-            MergedSupportVersionFloor floor => floor with { BaseVersionSource = context.BaseVersionSource },
+            // Compare independently calculated progress on the same (or a newer) line.
+            // Keep main's merge operator and counting anchor; only add a numeric floor.
+            return main.Apply(WithSupportVersion(support.Operation,
+                independent.Version.GetIncrementedVersion(), independent.Version.GetSemVerSource()));
+        }
+
+        // An older maintenance line still transfers its ordered increments to main's
+        // newer release line, without replacing main's baseline with the older version.
+        foreach (var step in support.Steps.SkipLast(1))
+        {
+            main = ApplySupportStep(main, step, support.Operation);
+        }
+        var operation = support.Operation;
+        if (support.Steps.LastOrDefault() is BaseVersionOperator { AlternativeSemanticVersion: { } alternative } last)
+        {
+            operation = WithSupportVersion(operation, alternative, last.AlternativeSemVerSource);
+        }
+        return main.Apply(operation);
+    }
+
+    private static bool IsSameOrNewerReleaseLine(SemanticVersion source, SemanticVersion main)
+        => source.Major > main.Major || source.Major == main.Major && source.Minor >= main.Minor;
+
+    private static BaseVersionOperator WithSupportVersion(BaseVersionOperator operation, SemanticVersion version,
+        SemanticVersionSource? source)
+        => operation.AlternativeSemanticVersion is { } alternative && !alternative.IsLessThan(version, includePreRelease: false)
+            ? operation
+            : operation with { AlternativeSemanticVersion = version, AlternativeSemVerSource = source };
+
+    private static BaseVersion ApplySupportStep(BaseVersion version, IBaseVersionIncrement step, BaseVersionOperator merge)
+        => step switch
+        {
+            BaseVersionOperator operation => version.Apply(operation with { BaseVersionSource = merge.BaseVersionSource, Label = merge.Label }),
+            MergedSupportVersionFloor floor when version.GetIncrementedVersion().IsLessThan(floor.Operand.SemanticVersion, includePreRelease: false)
+                => new BaseVersion(floor.Operand with { BaseVersionSource = merge.BaseVersionSource }),
+            MergedSupportVersionFloor => version,
             _ => throw new InvalidOperationException("Unexpected merged support version step.")
         };
 

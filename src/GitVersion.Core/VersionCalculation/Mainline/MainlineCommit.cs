@@ -21,6 +21,8 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public MainlineIteration? MergedSupportIteration { get; set; }
 
+    public Lazy<(BaseVersion Version, SemanticVersion Baseline)>? MergedSupportVersion { get; set; }
+
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();

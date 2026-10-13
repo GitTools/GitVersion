@@ -183,6 +183,10 @@ tag does not replace main's baseline. Source history already covered by an
 eligible tag or an earlier merge is not replayed as another commit-message bump.
 If main was merged into support first, returning support to main applies only
 the newly introduced support history; main's existing increments are not replayed.
+When both branches advance independently within the same release line, support's
+calculated version is a floor for main's merge result. Its patch progress is not
+added on top of main's independent patch progress. Merges from an older support
+release line retain the ordered increment behavior against main's newer baseline.
 
 For an untagged history with two commits on main followed by two commits on
 support, merging support into main produces `0.0.4-3` in ContinuousDelivery or
@@ -190,6 +194,12 @@ support, merging support into main produces `0.0.4-3` in ContinuousDelivery or
 preserves that result. A further support commit after the tag advances the merged
 version to `0.0.5-4` or `0.0.5`, respectively. The counting source remains main's
 pre-merge tip; the distance includes the new support commits and the merge commit.
+
+If main advances one commit after the fork while support advances three commits,
+the numeric result is `0.0.5`, with or without a `0.0.5` tag on support's tip.
+The existing counting rule gives `0.0.5-4` in ContinuousDelivery and `0.0.5` in
+ContinuousDeployment. This numeric comparison does not change the counting source
+or prerelease suffix calculation.
 
 For example, branch from `1.0.0`, tag support at `1.0.5`, tag main at `2.0.0`,
 then merge support into main with `git merge --no-ff support/1.x`. With default
@@ -225,9 +235,9 @@ commits.
 Both directions recognize the configured branch patterns and work after
 deleting the source ref, provided the merge message still identifies it.
 Arbitrary merges between other distinct main branches, including two support
-branches, remain unsupported. The forward path applies support's ordered
-increments against main's baseline; the reverse path recursively calculates
-main's history. This is partial
+branches, remain unsupported. The forward path compares independent progress
+within a release line and transfers ordered increments from older support lines;
+the reverse path recursively calculates main's history. This is partial
 support for multi-mainline histories. The [regression scenarios][support-merge-tests]
 assert versions, source metadata, increment controls, and the scope limits.
 

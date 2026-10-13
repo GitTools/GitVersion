@@ -57,7 +57,7 @@ public class MainlineSupportMergeScenarios : TestBase
     }
 
     [Test]
-    public void UntaggedSupportMergePreservesBothSourceIncrements()
+    public void UntaggedSupportMergeDoesNotAddIndependentMainProgress()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -68,7 +68,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MakeACommit();
         fixture.MergeNoFF("support/1.x");
 
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("0.0.4");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("0.0.3");
     }
 
     [Test]
