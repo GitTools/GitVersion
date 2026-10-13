@@ -20,6 +20,8 @@ done
 
 toolPath=$(mktemp -d) || exit 1
 trap 'rm -rf "$toolPath"' EXIT
+# Use the image's SDK without inheriting the checkout's global.json pin.
+cd "$toolPath" || exit 1
 git config --global --add safe.directory '*'
 result=$(dotnet tool install GitVersion.Tool --version "$version" --tool-path "$toolPath" --add-source "$nugetPath")
 status=$?
