@@ -17,5 +17,5 @@ internal class TravisCi(IEnvironment environment, ILogger<TravisCi> logger, IFil
         $"GitVersion_{name}={value}"
     ];
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; Travis CI prevents fetching.
 }

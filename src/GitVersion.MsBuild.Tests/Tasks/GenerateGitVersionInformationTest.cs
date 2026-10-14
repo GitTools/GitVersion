@@ -339,7 +339,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldContain("namespace App.Project.RootNamespace");
     }
 
-    private static ProjectCreator AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName,
+    private static ProjectCreator AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName, // NOSONAR: Callers use the returned ProjectCreator to chain additional project properties.
                                                              string outputProperty, string language,
                                                              string intermediateOutputPath = "$(MSBuildProjectDirectory)")
     {

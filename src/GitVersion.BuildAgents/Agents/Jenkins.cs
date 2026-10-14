@@ -27,7 +27,7 @@ internal class Jenkins : BuildAgentBase
 
     private bool IsPipelineAsCode() => !this.environment.GetEnvironmentVariable("BRANCH_NAME").IsNullOrEmpty();
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; Jenkins prevents fetching.
 
     /// <summary>
     /// When Jenkins uses pipeline-as-code, it creates two remotes: "origin" and "origin1".

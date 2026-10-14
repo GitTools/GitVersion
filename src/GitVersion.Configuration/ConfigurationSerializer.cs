@@ -19,7 +19,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         Converters = [VersionStrategiesConverter.Instance]
     };
 
-    public T Deserialize<T>(string input)
+    public T Deserialize<T>(string input) // NOSONAR: IConfigurationSerializer requires an instance method.
     {
         if (typeof(T) == typeof(Dictionary<object, object?>))
         {
@@ -35,7 +35,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         return YamlSerializer.Deserialize<T>(input, SerializerOptions)!;
     }
 
-    public string Serialize(object graph)
+    public string Serialize(object graph) // NOSONAR: IConfigurationSerializer requires an instance method.
     {
         var yaml = SerializeLegacy(graph);
         var configuration = YamlSerializer.Deserialize<Dictionary<string, object?>>(yaml, SerializerOptions) ?? [];

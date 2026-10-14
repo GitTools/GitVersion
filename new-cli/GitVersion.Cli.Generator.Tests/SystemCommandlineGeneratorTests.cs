@@ -233,7 +233,7 @@ public record TestCommandSettings : GitVersionSettings
 """;
 
     [Test]
-    public async Task ValidateGeneratedCommandImplementation()
+    public async Task ValidateGeneratedCommandImplementation() // NOSONAR: RunAsync verifies diagnostics and all expected generated sources.
     {
         var generatorType = typeof(SystemCommandlineGenerator);
         var encoding = Encoding.UTF8;

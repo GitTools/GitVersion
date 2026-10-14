@@ -66,9 +66,9 @@ internal sealed class MockEngine : IBuildEngine4
         get => this.log.ToString();
     }
 
-    public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false;
+    public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false; // NOSONAR: IBuildEngine requires an instance method.
 
-    public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs, string toolsVersion) => false;
+    public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs, string toolsVersion) => false; // NOSONAR: IBuildEngine2 requires an instance method.
 
     /// <summary>
     /// Assert that the log file contains the given string.
@@ -83,7 +83,7 @@ internal sealed class MockEngine : IBuildEngine4
     /// <param name="contains"></param>
     internal void AssertLogDoesntContain(string contains) => Log.ShouldNotContain(contains);
 
-    public bool BuildProjectFilesInParallel(
+    public bool BuildProjectFilesInParallel( // NOSONAR: IBuildEngine2 requires an instance method.
         string[] projectFileNames,
         string[] targetNames,
         IDictionary[] globalProperties,
@@ -92,7 +92,7 @@ internal sealed class MockEngine : IBuildEngine4
         bool useResultsCache,
         bool unloadProjectsOnCompletion) => false;
 
-    public BuildEngineResult BuildProjectFilesInParallel(
+    public BuildEngineResult BuildProjectFilesInParallel( // NOSONAR: IBuildEngine3 requires an instance method.
         string[] projectFileNames,
         string[] targetNames,
         IDictionary[] globalProperties,

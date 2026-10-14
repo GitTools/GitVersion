@@ -50,7 +50,7 @@ internal class GitLabCi : BuildAgentBase
         return string.IsNullOrEmpty(tagName) ? null : ReferenceName.FromTagName(tagName).Canonical;
     }
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; GitLab CI prevents fetching.
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {

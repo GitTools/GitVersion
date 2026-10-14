@@ -32,7 +32,7 @@ internal class AzurePipelines(IEnvironment environment, ILogger<AzurePipelines> 
         return sourceBranch is not null && sourceBranch.StartsWith("refs/tags", StringComparison.OrdinalIgnoreCase) ? null : sourceBranch;
     }
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; Azure Pipelines prevents fetching.
 
     public override string SetBuildNumber(GitVersionVariables variables)
     {

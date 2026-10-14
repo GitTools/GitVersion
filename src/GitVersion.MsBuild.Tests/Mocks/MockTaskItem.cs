@@ -10,7 +10,7 @@ internal class MockTaskItem : ITaskItem
 
     public ICollection MetadataNames { get; set; } = null!;
 
-    public IDictionary CloneCustomMetadata() => throw new NotImplementedException();
+    public IDictionary CloneCustomMetadata() => throw new NotImplementedException(); // NOSONAR: ITaskItem requires an instance method.
 
     public void CopyMetadataTo(ITaskItem destinationItem) => throw new NotImplementedException(); // NOSONAR: ITaskItem requires an instance method.
 

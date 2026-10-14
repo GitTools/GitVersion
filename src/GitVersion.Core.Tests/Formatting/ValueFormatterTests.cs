@@ -110,7 +110,7 @@ public class ValueFormatterTests
     {
         public int Priority { get; init; }
 
-        public bool TryFormat(object? value, string format, out string result)
+        public bool TryFormat(object? value, string format, out string result) // NOSONAR: IValueFormatter requires an instance method.
         {
             if (format == "custom" && value is string str)
             {
@@ -122,7 +122,7 @@ public class ValueFormatterTests
             return false;
         }
 
-        public bool TryFormat(object? value, string format, CultureInfo _, out string result)
+        public bool TryFormat(object? value, string format, CultureInfo _, out string result) // NOSONAR: IValueFormatter requires the culture parameter; this test formatter intentionally ignores it.
             => TryFormat(value, format, out result);
     }
 }

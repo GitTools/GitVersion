@@ -32,5 +32,5 @@ internal class EnvRun(IEnvironment environment, ILogger<EnvRun> logger, IFileSys
     [
         $"@@envrun[set name='GitVersion_{name}' value='{value}']"
     ];
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; EnvRun prevents fetching.
 }

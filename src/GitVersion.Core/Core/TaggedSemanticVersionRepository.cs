@@ -36,7 +36,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
                 .ToLookup(element => element.Tag.Commit, element => element);
         });
 
-        if (isCached)
+        if (isCached) // NOSONAR: GetOrAdd's value factory sets this to false on a cache miss.
         {
             this.logger.LogDebug(
                 "Returning cached tagged semantic versions on branch '{BranchName}'. " +
@@ -83,7 +83,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
                 .ToLookup(element => element.Key, element => element.Value);
         });
 
-        if (isCached)
+        if (isCached) // NOSONAR: GetOrAdd's value factory sets this to false on a cache miss.
         {
             this.logger.LogDebug(
                 "Returning cached tagged semantic versions by track merge target '{BranchName}'. " +
@@ -129,7 +129,7 @@ internal sealed class TaggedSemanticVersionRepository(ILogger<TaggedSemanticVers
                 .ToLookup(element => element.Tag.Commit, element => element);
         });
 
-        if (isCached)
+        if (isCached) // NOSONAR: GetOrAdd's value factory sets this to false on a cache miss.
         {
             this.logger.LogDebug("Returning cached tagged semantic versions. TagPrefix: {TagPrefix} and Format: {Format}", tagPrefix, format);
         }
