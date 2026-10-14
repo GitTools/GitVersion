@@ -24,14 +24,15 @@ if (sourceFiles.length === 0) {
 await import(pathToFileURL(configFile));
 mermaid.initialize({ ...globalThis.gitVersionMermaidConfig, startOnLoad: false });
 
-const invalidFiles = [];
-for (const sourceFile of sourceFiles) {
+const results = await Promise.all(sourceFiles.map(async (sourceFile) => {
   try {
     await mermaid.parse(readFileSync(join(sourceDirectory, sourceFile), "utf8"));
+    return null;
   } catch (error) {
-    invalidFiles.push({ sourceFile, error });
+    return { sourceFile, error };
   }
-}
+}));
+const invalidFiles = results.filter((result) => result !== null);
 
 if (invalidFiles.length > 0) {
   console.error("Invalid Mermaid sources:");

@@ -14,12 +14,14 @@ const files = [...new Set(execFileSync('git', [
     .filter(path => /\.(md|markdown|mdown|mkdn|mkd|mdwn)$/i.test(path))
     .filter(path => path.startsWith('docs/') || ['CONTRIBUTING.md', 'BREAKING_CHANGES.md'].includes(path));
 const processor = remark().use(remarkFrontmatter).use(remarkReferenceLinks);
-let failures = 0;
-for (const path of files) {
+const results = await Promise.all(files.map(async path => {
     const value = await readFile(join(root, path), 'utf8');
-    const file = await processor.process({path, value});
+    return processor.process({path, value});
+}));
+let failures = 0;
+for (const file of results) {
     for (const message of file.messages) {
-        console.error(`${path}:${message.line}:${message.column}: ${message.reason}`);
+        console.error(`${file.path}:${message.line}:${message.column}: ${message.reason}`);
         failures++;
     }
 }
