@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" VersionOverride="10.0.12" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
