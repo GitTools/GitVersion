@@ -184,7 +184,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         else
         {
             baseVersion.ShouldNotBeNull();
-            baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
+            baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion); // NOSONAR: The preceding ShouldNotBeNull assertion throws if baseVersion is null.
         }
     }
 
