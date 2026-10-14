@@ -6,6 +6,31 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## Docker images run as non-root
+
+GitVersion v7 Docker images default to UID/GID `10001:10001`. GitVersion can write
+repository metadata and cache files, so bind-mounted repositories must be
+writable by the selected user.
+
+On Linux, run the container as the non-root checkout owner when the image's
+default user cannot write to the repository:
+
+```sh
+docker run --rm --user "$(id -u):$(id -g)" \
+  -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
+```
+
+Replace `{tag}` with the v7 image tag you use. Run this command from the checkout
+owner's non-root shell. If the selected user cannot write to the configured home,
+the image automatically creates a private temporary home inside the container;
+no `HOME` or `DOTNET_CLI_HOME` flags are needed.
+
+For Docker Desktop on Windows/macOS, ensure the shared directory is writable by
+the image's default user through the host's file-sharing permissions. If you
+maintain a derived Dockerfile, use `USER root` for system installation steps and
+restore `USER 10001:10001` before runtime. See [Docker usage][docker-usage] for
+details.
+
 ## Azure Pipelines variable names
 
 The CLI's build-server output and `GitVersion.MsBuild` now emit
@@ -252,6 +277,8 @@ for removal alongside libgit2. Retired `v6`/`libgit2` selections will report
 actionable errors; explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.
+
+[docker-usage]: /docs/usage/docker
 
 [cli-arguments]: /docs/usage/cli/arguments
 
