@@ -14,7 +14,7 @@ internal static partial class RegexPatterns
     private const string SwitchArgumentRegexPattern = @"/\w+:";
 
     [StringSyntax(StringSyntaxAttribute.Regex)]
-    private const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)";
+    private const string ObscurePasswordRegexPattern = "(https?://)(.+)(:.+@)"; // NOSONAR: Credential-matching regex, not a hardcoded credential.
 
     [StringSyntax(StringSyntaxAttribute.Regex)]
     private const string ExpandTokensRegexPattern = @"\{([^{}]+)\}";

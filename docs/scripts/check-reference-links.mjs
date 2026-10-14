@@ -8,7 +8,7 @@ import remarkReferenceLinks from './remark-reference-links.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 // Check docs and the two root documents included in this style migration.
-const files = [...new Set(execFileSync('git', [
+const files = [...new Set(execFileSync('git', [ // NOSONAR: Git is resolved from the developer/CI-managed PATH; arguments are fixed.
     'ls-files', '-z', '--cached', '--others', '--exclude-standard'
 ], {cwd: root, encoding: 'utf8'}).split('\0'))]
     .filter(path => /\.(md|markdown|mdown|mkdn|mkd|mdwn)$/i.test(path))

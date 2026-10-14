@@ -19,8 +19,8 @@ public class RegexPatternsTests
     }
 
     [TestCase("https://user:pass@host", true, "https://user:pass@")]
-    [TestCase("http://user:pass@host", true, "http://user:pass@")]
-    [TestCase("ftp://user:pass@host", false, null)]
+    [TestCase("http://user:pass@host", true, "http://user:pass@")] // NOSONAR: Regex test data; no HTTP connection is made.
+    [TestCase("ftp://user:pass@host", false, null)] // NOSONAR: Regex test data; no FTP connection is made.
     public void ObscurePasswordRegex_MatchesExpected(string input, bool expected, string? expectedCapture)
     {
         var match = RegexPatterns.ObscurePasswordRegex.Match(input);
