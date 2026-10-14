@@ -51,7 +51,7 @@ body.layout-boxed .top-banner,
 
 /* For Gitter and GitHub */
 .bottom-footer {
-	margin-bottom: 40px !important;  // Make room for Gitter and GitHub buttons
+	margin-bottom: 40px;  // Make room for Gitter and GitHub buttons
 }
 
 .gitter-open-chat-button {
@@ -151,7 +151,7 @@ main .col-sm-6 {
 
 .sidebar-menu {
     li.selected > a {
-        background-color: @purple !important;
+        background-color: @purple !important; /* NOSONAR S9423: Override the theme's important selected-link background while retaining the brand color. */
     }
 
     .treeview-menu > li > a {
@@ -247,10 +247,10 @@ main .col-sm-6 {
         display: none;
     }
 
-    td {
-        border-top: none !important;
+    tr > td {
+        border-top: none;
         font-size: 2rem;
-        vertical-align: middle !important;
+        vertical-align: middle;
 
         &:first-of-type {
             width: 72px;
