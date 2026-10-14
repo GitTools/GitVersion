@@ -159,21 +159,28 @@ public static class DockerContextExtensions
             var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
-                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", "--show-variable", "FullSemver", "--no-cache");
+                var identity = context.DockerRun(new DockerContainerRunSettings
+                {
+                    Rm = true,
+                    Entrypoint = "id",
+                    Platform = $"linux/{dockerImage.Architecture.ToString().ToLower()}"
+                }, tag, "-u");
+                Assert.Equal("10001", string.Join("", identity).Trim());
+                context.DockerTestRun(tag, dockerImage.Architecture, false, "/repo", "--show-variable", "FullSemver", "--no-cache");
             }
         }
 
         public void DockerTestArtifact(DockerImage dockerImage, string cmd)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
+            context.DockerTestRun(tag, dockerImage.Architecture, true, "sh", cmd);
         }
 
-        private void DockerTestRun(string image, Architecture arch, string command,
+        private void DockerTestRun(string image, Architecture arch, bool useSdkHome, string command,
                                    params string[] args)
         {
             ArgumentNullException.ThrowIfNull(context.Version?.GitVersion.FullSemVer);
-            var settings = context.GetDockerRunSettings(arch);
+            var settings = context.GetDockerRunSettings(arch, useSdkHome);
             context.Information($"Testing image: {image}");
             var output = context.DockerRun(settings, image, command, args);
             context.Information("Output : " + output);
@@ -225,19 +232,31 @@ public static class DockerContextExtensions
             return tags.Select(x => $"{x}-{suffix}").Distinct();
         }
 
-        private DockerContainerRunSettings GetDockerRunSettings(Architecture arch)
+        private DockerContainerRunSettings GetDockerRunSettings(Architecture arch, bool useSdkHome)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
+            var statArguments = context.IsOnMacOS ? "-f %u:%g ." : "-c %u:%g .";
+            var owner = context.ExecuteCommand("stat", statArguments, currentDir).Single().Trim().Split(':');
+            if (owner.Length != 2 || !uint.TryParse(owner[0], out var uid) || !uint.TryParse(owner[1], out var gid))
+            {
+                throw new CakeException("Cannot determine the checkout owner's UID/GID for Docker tests.");
+            }
+            if (uid == 0)
+            {
+                throw new CakeException("Docker tests must run as a non-root checkout owner to validate bind-mount permissions.");
+            }
             var settings = new DockerContainerRunSettings
             {
                 Rm = true,
+                User = $"{uid}:{gid}",
+                Workdir = "/repo",
                 Volume =
                 [
                     $"{currentDir}:{root}/repo",
-                    $"{currentDir}/tests/scripts:{root}/scripts",
-                    $"{currentDir}/artifacts/packages/nuget:{root}/nuget",
-                    $"{currentDir}/artifacts/packages/native:{root}/native"
+                    $"{currentDir}/tests/scripts:{root}/scripts:ro",
+                    $"{currentDir}/artifacts/packages/nuget:{root}/nuget:ro",
+                    $"{currentDir}/artifacts/packages/native:{root}/native:ro"
                 ],
                 Platform = $"linux/{arch.ToString().ToLower()}"
             };
@@ -266,6 +285,13 @@ public static class DockerContextExtensions
             if (!string.IsNullOrWhiteSpace(gitBackend))
             {
                 settings.Env = [.. settings.Env ?? [], $"GITVERSION_GIT_BACKEND={gitBackend}"];
+            }
+
+            // SDK artifact tests need writable CLI configuration. Final-image tests
+            // deliberately inherit HOME to exercise the entrypoint's UID fallback.
+            if (useSdkHome)
+            {
+                settings.Env = [.. settings.Env ?? [], "HOME=/tmp", "DOTNET_CLI_HOME=/tmp"];
             }
 
             return settings;

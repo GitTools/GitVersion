@@ -18,12 +18,18 @@ do
     shift
 done
 
+toolPath=$(mktemp -d) || exit 1
+trap 'rm -rf "$toolPath"' EXIT
+# Use the image's SDK without inheriting the checkout's global.json pin.
+cd "$toolPath" || exit 1
 git config --global --add safe.directory '*'
-result=$(dotnet tool install GitVersion.Tool --version $version --tool-path /tools --add-source $nugetPath) # >/dev/null
+result=$(dotnet tool install GitVersion.Tool --version "$version" --tool-path "$toolPath" --add-source "$nugetPath")
 status=$?
 if test $status -eq 0
 then
-    /tools/dotnet-gitversion $repoPath --show-variable FullSemver --no-cache
+    "$toolPath/dotnet-gitversion" "$repoPath" --show-variable FullSemver --no-cache
+    status=$?
 else
-    echo $result
+    echo "$result"
 fi
+exit "$status"

@@ -21,18 +21,20 @@ do
     shift
 done
 
+workPath=$(mktemp -d) || exit 1
+trap 'rm -rf "$workPath"' EXIT
+# Use the image's SDK without inheriting the checkout's global.json pin.
+cd "$workPath" || exit 1
 git config --global --add safe.directory '*'
-result=$(dotnet build "$repoPath/Program.cs" --output "$repoPath/build/$targetframework" --source "$nugetPath" --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion="$version" -p:TargetFramework="$targetframework") # >/dev/null
+result=$(dotnet build "$repoPath/Program.cs" --output "$workPath/build" --source "$nugetPath" --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion="$version" -p:TargetFramework="$targetframework")
 status=$?
 if test $status -eq 0
 then
     # DockerTestRun validates stdout against the expected FullSemVer in
     # build/common/Utilities/DockerContextExtensions.cs. Keep app output on stdout.
-    dotnet "$repoPath/build/$targetframework/app.dll"
+    dotnet "$workPath/build/app.dll"
     status=$?
 else
     echo "$result"
 fi
-rm -rf "$repoPath/build" >/dev/null
-rm -rf "$repoPath/obj" >/dev/null
 exit "$status"

@@ -1,5 +1,13 @@
 ## Unreleased
 
+### Docker images run as non-root
+
+Docker images now default to UID/GID `10001:10001`. On Linux, bind-mounted
+repositories must be writable by that user, or run the container as the non-root
+checkout owner using `--user "$(id -u):$(id -g)" --env HOME=/tmp --env DOTNET_CLI_HOME=/tmp`.
+Downstream Dockerfiles must explicitly use root for system installation steps
+and restore a non-root user afterward. See the Docker usage guide for details.
+
 ### Azure Pipelines variable names use underscores
 
 In v7.0, the CLI's build-server output and `GitVersion.MsBuild` emit
