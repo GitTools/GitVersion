@@ -6,6 +6,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="System.IO.Abstractions" />
     </ItemGroup>
