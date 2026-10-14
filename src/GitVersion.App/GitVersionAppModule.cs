@@ -20,6 +20,8 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
 
         services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
         services.AddSingleton<IGitVersionExecutor, GitVersionExecutor>();
+        services.AddSingleton<GitVersionConfigurationDisplay>();
+        services.AddSingleton<GitVersionToolRunner>();
         services.AddSingleton<IConfigurationMigrationExecutor, ConfigurationMigrationExecutor>();
         services.AddSingleton<GitVersionApp>();
 
