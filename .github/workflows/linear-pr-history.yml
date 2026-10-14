@@ -19,6 +19,12 @@ permissions:
 jobs:
   linear-history:
     name: Linear PR History
+    # Queue PRs contain synthetic merges; contributor PRs are checked before queue entry.
+    if: >-
+      ${{ github.event_name != 'pull_request' ||
+          !(github.event.pull_request.user.login == 'mergify[bot]' &&
+            github.event.pull_request.head.repo.full_name == github.repository &&
+            startsWith(github.event.pull_request.head.ref, 'mergify/merge-queue/')) }}
     runs-on: ubuntu-24.04
     steps:
       - name: Harden the runner (Audit all outbound calls)
