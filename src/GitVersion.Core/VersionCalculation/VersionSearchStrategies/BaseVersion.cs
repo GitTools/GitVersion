@@ -19,7 +19,7 @@ public sealed record BaseVersion(BaseVersionOperand Operand) : IBaseVersion
     }
 
     /// <summary>Gets the human-readable description of the source that produced this base version.</summary>
-    public string Source => (Operator?.Source).IsNullOrEmpty() ? Operand.Source : Operator.Source;
+    public string Source => (Operator?.Source).IsNullOrEmpty() ? Operand.Source : Operator.Source; // NOSONAR: A null Operator makes IsNullOrEmpty true, selecting Operand.Source.
 
     /// <summary>Gets the base semantic version before any increment is applied.</summary>
     public SemanticVersion SemanticVersion => Operand.SemanticVersion;
