@@ -87,6 +87,7 @@ public class MsBuildExeFixture
 
         public void Shutdown()
         {
+            // The caller owns the writer, and this logger has no resources to release.
         }
     }
 }
