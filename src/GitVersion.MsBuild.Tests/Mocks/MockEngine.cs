@@ -102,10 +102,12 @@ internal sealed class MockEngine : IBuildEngine4
 
     public void Yield()
     {
+        // This mock does not schedule build nodes, so there is no node to yield.
     }
 
     public void Reacquire()
     {
+        // This mock does not schedule build nodes, so there is no node to reacquire.
     }
 
     public object? GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
