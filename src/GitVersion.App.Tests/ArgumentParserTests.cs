@@ -881,8 +881,8 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void DynamicRepoLocation()
     {
-        var arguments = this.argumentParser.ParseArguments("--dynamic-repo-location /tmp/foo"); // NOSONAR: Parser test input; no directory is created or written.
-        arguments.ClonePath.ShouldBe("/tmp/foo");
+        var arguments = this.argumentParser.ParseArguments("--dynamic-repo-location /tmp/foo");
+        arguments.ClonePath.ShouldBe("/tmp/foo"); // NOSONAR: Expected parser output; no directory is created or written.
     }
 
     [Test]
