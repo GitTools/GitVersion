@@ -129,14 +129,14 @@ main .col-sm-6 {
 }
 
 .mermaid .note {
-    fill: #d3d3d3 !important;
-    stroke: #777 !important;
+    fill: #d3d3d3 !important; /* NOSONAR S9423: Override Mermaid's generated SVG-id theme selectors for readable sequence notes. */
+    stroke: #777 !important; /* NOSONAR S9423: Override Mermaid's generated SVG-id theme selectors for visible note borders. */
     stroke-width: 1px;
 }
 
 .mermaid .noteText,
 .mermaid .noteText > tspan {
-    fill: #000 !important;
+    fill: #000 !important; /* NOSONAR S9423: Override Mermaid's generated SVG-id text selectors to keep note text readable. */
 }
 
 .mermaid rect.rect[fill="rgb(211, 211, 211)"] {

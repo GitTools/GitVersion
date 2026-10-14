@@ -1,6 +1,6 @@
 /* Shared visual system for the Wyam Docs/Samson templates. */
 
-.gv-version-item { position: relative; display: flex !important; align-items: center; padding: 0 16px 0 12px; }
+.main-header .navbar .nav > li.gv-version-item { position: relative; display: flex; align-items: center; padding: 0 16px 0 12px; }
 .gv-version-item::after { content: ""; position: absolute; right: 30px; top: 50%; width: 6px; height: 6px; border-right: 1.5px solid var(--gv-purple); border-bottom: 1.5px solid var(--gv-purple); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
 #docs-version { appearance: none; -webkit-appearance: none; min-width: 96px; height: 36px; padding: 0 34px 0 12px; border: 1px solid var(--gv-line); border-radius: 8px; background: var(--gv-tint); color: var(--gv-purple); font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1.4; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
 #docs-version:hover { border-color: var(--gv-purple); }
@@ -39,7 +39,7 @@ body:has(.gv-api) .sidebar-menu .treeview-menu { padding-left: 16px; }
 .gv-api .content .table-responsive { margin: 0; }
 .gv-api .content table { display: table; width: 100%; margin: 0; table-layout: fixed; }
 .gv-api .content table.two-cols th:first-child { width: 40%; }
-.gv-api .content table th, .gv-api .content table td { padding: 10px 14px !important; vertical-align: top; overflow-wrap: anywhere; white-space: normal; }
+.gv-api .content table th, .gv-api .content table td { padding: 10px 14px; vertical-align: top; overflow-wrap: anywhere; white-space: normal; }
 .gv-api .content table th { font-weight: 600; }
 .gv-api .content table td p { margin: 0; }
 .gv-api .content .table thead tr { background: var(--gv-tint); }
@@ -63,7 +63,7 @@ body:has(.gv-api) .sidebar-menu .treeview-menu { padding-left: 16px; }
     .gv-api { padding: 24px 20px 40px; }
     .gv-api .content-header > h1 { font-size: 28px; }
     .gv-api .content table.two-cols th:first-child { width: 44%; }
-    .gv-api .content table th, .gv-api .content table td { padding: 10px !important; }
+    .gv-api .content table th, .gv-api .content table td { padding: 10px; }
 }
 
 :root {
@@ -162,14 +162,14 @@ body.layout-boxed .main-header, body.layout-boxed .main-header > .logo, body.lay
 .gv-home .gv-steps h3 { font-size: 16px; letter-spacing: -.2px; margin: 0 0 12px; }
 .gv-steps pre { padding: 13px 15px; border: 1px solid var(--gv-line); border-radius: 5px; background: #fff; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
 .gv-steps pre code { background: none; font-size: inherit; }
-.gv-steps p { font-size: 16px !important; margin: 0 0 8px; }
+.gv-quickstart .gv-steps p { font-size: 16px; margin: 0 0 8px; }
 .gv-community { display: flex; align-items: center; gap: 70px; justify-content: space-between; padding-top: 75px; padding-bottom: 75px; }
 .gv-community > div { max-width: 690px; }
 .gv-community .gv-eyebrow { margin-bottom: 17px; }
 .gv-community p:last-child { color: var(--gv-muted); font-size: 16px; margin: 0; }
 .gv-community .gv-button { flex-shrink: 0; }
 body.layout-boxed .bottom-wrapper { border-top: 1px solid var(--gv-line); }
-.bottom-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 55px !important; margin-bottom: 0 !important; font-size: 12px; color: var(--gv-muted); }
+.bottom-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 55px; margin-bottom: 0 !important; font-size: 12px; color: var(--gv-muted); } /* NOSONAR S9423: Override override.less's important spacing reserved for the former floating chat buttons. */
 .gv-footer-brand { display: flex; align-items: center; gap: 10px; }
 .gv-footer-brand strong { font-size: 17px; color: var(--gv-ink); }
 .gv-footer-brand > span { margin-left: 12px; }
@@ -185,7 +185,7 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
 .sidebar-menu li > a { color: #595160; white-space: normal; }
 .sidebar-menu .treeview-menu { background: transparent; }
 .sidebar-menu .treeview-menu > li > a { font-size: 14px; padding-top: 7px; padding-bottom: 7px; line-height: 1.6; }
-.sidebar-menu li.selected > a { background: #eee5f3 !important; color: var(--gv-purple) !important; border-radius: 5px; }
+.main-sidebar .sidebar-menu li.selected > a { background: #eee5f3 !important; color: var(--gv-purple); border-radius: 5px; } /* NOSONAR S9423: Samson and override.less mark the selected-link background important. */
 .sidebar-menu li > a:hover { background: #f0ebf5; color: var(--gv-purple); }
 .main-sidebar .sidebar-menu li.selected { background: transparent; }
 .main-sidebar .sidebar-menu li.treeview > a:not(.expand) {
@@ -207,7 +207,7 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
     padding: 0;
     line-height: 1;
     transform: none;
-    background: transparent !important;
+    background: transparent !important; /* NOSONAR S9423: Expansion controls must override the important selected-link background without losing the content-link highlight. */
 }
 .main-sidebar .sidebar-menu li > a.expand::before { transform: none; }
 .main-sidebar .sidebar-menu li.active > a.expand::before { transform: rotate(90deg); }
@@ -227,10 +227,10 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
 .content code { font-family: var(--gv-mono); font-size: .86em; color: #693d7c; background: #f4eff7; }
 .content pre code { background: transparent; color: #352b40; font-size: inherit; }
 .content table { font-size: 14px; display: block; overflow-x: auto; max-width: 100%; border-collapse: collapse; }
-.content table th, .content table td { padding: 12px 16px !important; border-color: var(--gv-line) !important; }
+.content table tr > th, .content table tr > td, .content .icons table tr > td { padding: 12px 16px; border-color: var(--gv-line) !important; } /* NOSONAR S9423: Override override.less's important border-top reset, which also resets the border color. */
 .content .table thead tr { background: #eee7f4; color: var(--gv-ink); }
-.content .alert { border-radius: 6px; border: 1px solid var(--gv-line); border-left: 3px solid var(--gv-purple); background: #f7f4fa !important; color: var(--gv-ink) !important; }
-.content .alert a { color: var(--gv-purple) !important; }
+.content .alert { border-radius: 6px; border: 1px solid var(--gv-line); border-left: 3px solid var(--gv-purple); background: #f7f4fa !important; color: var(--gv-ink) !important; } /* NOSONAR S9423: AdminLTE alert variants inherit important background and foreground colors from its utility classes. */
+.content .alert a { color: var(--gv-purple); }
 .content .card-container { gap: 16px; }
 .content .card { margin-right: 0; border-color: var(--gv-line); border-radius: 7px; box-shadow: none; }
 .content .card-header { background: #f4eff7; color: var(--gv-purple); padding: 12px 16px; }
@@ -256,11 +256,11 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
 }
 @media (max-width: 767px) {
     body.layout-boxed .main-header { height: auto; min-height: 128px; }
-    .main-header > .logo { position: static; left: auto; margin-left: 0; float: none !important; display: block !important; width: 100% !important; height: 68px !important; line-height: 68px !important; padding-left: 24px !important; text-align: left !important; }
-    .main-header .navbar { margin-left: 0 !important; height: auto !important; min-height: 60px !important; }
+    body.layout-boxed .main-header > .logo { position: static; left: auto; margin-left: 0; float: none; display: block; width: 100%; height: 68px; line-height: 68px; padding-left: 24px; text-align: left; }
+    body.layout-boxed .main-header .navbar { margin-left: 0; height: auto; min-height: 60px; }
     .main-header .navbar .navbar-toggle { margin-top: 10px; }
     .main-header .navbar .sidebar-toggle { padding: 18px 24px; }
-    .main-header .navbar .navbar-collapse { float: none !important; width: 100%; background: #fff; border-color: var(--gv-line); box-shadow: none; }
+    .main-header .navbar .navbar-collapse { float: none !important; width: 100%; background: #fff; border-color: var(--gv-line); box-shadow: none; } /* NOSONAR S9423: Bootstrap's pull-left utility on the template element is important. */
     .main-header .navbar .navbar-nav { margin: 0 -15px; }
     .main-header .navbar .nav > li > a { margin: 4px 12px; padding: 12px; }
     .gv-container { padding-left: 24px; padding-right: 24px; }
@@ -282,7 +282,7 @@ body.layout-top-nav .content-wrapper, body.layout-top-nav .main-footer { margin-
     .gv-quickstart-grid { grid-template-columns: 1fr; gap: 42px; }
     .gv-community { display: block; padding-top: 48px; padding-bottom: 48px; }
     .gv-community .gv-button { margin-top: 25px; }
-    .bottom-footer { padding: 25px 24px !important; display: block; }
+    .bottom-footer { padding: 25px 24px; display: block; }
     .gv-footer-brand { flex-wrap: wrap; }
     .gv-footer-brand > span { margin-left: 0; }
     .gv-footer-links { margin-top: 20px; gap: 17px; flex-wrap: wrap; }
@@ -323,7 +323,7 @@ html[data-theme="dark"] .gv-theme-sun { display: inline-block; }
 .content > .gv-doc-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 24px 0; }
 @media (min-width: 768px) {
     .main-header .navbar { display: flex; align-items: center; padding-right: 24px; }
-    .main-header .navbar .navbar-collapse { flex: 1; min-width: 0; float: none !important; }
+    .main-header .navbar .navbar-collapse { flex: 1; min-width: 0; float: none !important; } /* NOSONAR S9423: Bootstrap's important pull-left utility must yield to the flex navigation layout. */
     .main-header .navbar .navbar-nav { display: flex; align-items: center; width: 100%; float: none; }
     .main-header .navbar .nav > li { float: none; flex-shrink: 0; }
     .main-header .navbar .nav > li.gv-version-item { margin-left: auto; }
@@ -386,7 +386,7 @@ html[data-theme="dark"] .gv-quickstart { background: #151b23; }
 html[data-theme="dark"] .gv-steps pre { background: #010409; color: #f0f6fc; }
 html[data-theme="dark"] body.layout-boxed .main-sidebar { background: #010409; }
 html[data-theme="dark"] .main-sidebar .sidebar-menu li > a { color: #f0f6fc; }
-html[data-theme="dark"] .main-sidebar .sidebar-menu li.selected > a { background: #172c48 !important; color: #79c0ff !important; }
+html[data-theme="dark"] .main-sidebar .sidebar-menu li.selected > a { background: #172c48 !important; color: #79c0ff; } /* NOSONAR S9423: Override the important light selected-link background for dark mode. */
 html[data-theme="dark"] .main-sidebar .sidebar-menu li > a:hover { background: #151b23; color: #79c0ff; }
 html[data-theme="dark"] .main-sidebar .sidebar-menu .treeview-menu { background: transparent; }
 html[data-theme="dark"] .infobar a { color: var(--gv-purple); }
@@ -402,7 +402,7 @@ html[data-theme="dark"] .content .table thead tr { background: #151b23; color: v
 html[data-theme="dark"] .content .table-striped tr { background: #0d1117; }
 html[data-theme="dark"] .content .table-striped > tbody > tr:nth-of-type(odd) { background: #151b23; }
 html[data-theme="dark"] .content .table-hover > tbody > tr:hover { background: #212830; }
-html[data-theme="dark"] .content .alert { background: #151b23 !important; color: var(--gv-ink) !important; }
+html[data-theme="dark"] .content .alert { background: #151b23 !important; color: var(--gv-ink) !important; } /* NOSONAR S9423: Override the important light alert palette and AdminLTE utility colors for dark mode. */
 html[data-theme="dark"] .content .card, html[data-theme="dark"] .content .box, html[data-theme="dark"] .content .panel { background: #151b23; color: var(--gv-ink); }
 html[data-theme="dark"] .content .card-header, html[data-theme="dark"] .content .box-header, html[data-theme="dark"] .content .panel-heading { background: #212830; color: var(--gv-ink); }
 html[data-theme="dark"] .content .card-header img { filter: none; }
