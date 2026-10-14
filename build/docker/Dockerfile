@@ -18,6 +18,7 @@ USER root
 
 WORKDIR /tools
 COPY --from=installer /tools .
+COPY --chmod=755 entrypoint.sh /tools/entrypoint.sh
 RUN mkdir -p /home/gittools \
     && chown 10001:10001 /home/gittools \
     && git config --system --add safe.directory '*'
@@ -25,4 +26,4 @@ RUN mkdir -p /home/gittools \
 ENV HOME=/home/gittools
 USER 10001:10001
 
-ENTRYPOINT ["/tools/dotnet-gitversion"]
+ENTRYPOINT ["/tools/entrypoint.sh"]

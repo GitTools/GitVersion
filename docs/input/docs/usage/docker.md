@@ -37,16 +37,18 @@ docker run --rm -v "$(pwd):/repo" --env GITHUB_ACTIONS=true --env GITHUB_REF=$(G
 ### Non-root containers and repository permissions
 
 Images default to UID/GID `10001:10001`, with a writable home at `/home/gittools`.
+The usual command needs no extra flags when that user can write to the mounted repository.
 GitVersion can write repository metadata and cache files, so bind mounts must be
 writable by the selected user. On Linux, use the non-root checkout owner's identity:
 
 ```sh
 docker run --rm --user "$(id -u):$(id -g)" \
-  --env HOME=/tmp --env DOTNET_CLI_HOME=/tmp \
   -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
 ```
 
-The temporary home stays inside the disposable container. Do not run this command
+The image automatically creates a private temporary home if the selected user
+cannot write to the configured home. No home environment flags are needed, and
+the temporary home stays inside the disposable container. Do not run this command
 from a root shell, or make the host repository world-writable to bypass permissions.
 For Docker Desktop on Windows/macOS, ensure the shared directory is writable by
 the image's default user using the host's file-sharing permissions.
