@@ -26,7 +26,6 @@ updates:
         patterns:
           - "Microsoft.CodeAnalysis.*"
       microsoft:
-        group-by: dependency-name
         patterns:
           - "Microsoft.*"
           - "System.*"
