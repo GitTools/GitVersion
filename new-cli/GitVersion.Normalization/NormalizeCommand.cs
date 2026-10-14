@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 
-public record NormalizeSettings : GitVersionSettings;
+public record NormalizeSettings : GitVersionSettings; // NOSONAR: Distinct command settings type inheriting shared options.
 
 [Command("normalize", "Normalizes the git repository for GitVersion calculations.")]
 public class NormalizeCommand(ILogger<NormalizeCommand> logger, IService service) : ICommand<NormalizeSettings>

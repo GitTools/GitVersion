@@ -8,4 +8,4 @@ public class CommandAttribute(string name, string description = "") : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class CommandAttribute<T>(string name, string description = "") : CommandAttribute(name, description);
+public class CommandAttribute<T>(string name, string description = "") : CommandAttribute(name, description); // NOSONAR: The source generator reads T to identify the parent command.

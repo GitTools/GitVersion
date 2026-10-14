@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 
-public record ConfigSettings : GitVersionSettings;
+public record ConfigSettings : GitVersionSettings; // NOSONAR: Distinct command settings type inheriting shared options.
 
 [Command("config", "Manages the GitVersion configuration file.")]
 public class ConfigCommand(ILogger<ConfigCommand> logger, IService service) : ICommand<ConfigSettings>

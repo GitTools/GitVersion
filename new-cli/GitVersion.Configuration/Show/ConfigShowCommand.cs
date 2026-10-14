@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 
-public record ConfigShowSettings : ConfigSettings;
+public record ConfigShowSettings : ConfigSettings; // NOSONAR: Distinct command settings type inheriting shared options.
 
 [Command<ConfigCommand>("show", "Shows the effective configuration.")]
 public class ConfigShowCommand(ILogger<ConfigShowCommand> logger, IService service) : ICommand<ConfigShowSettings>

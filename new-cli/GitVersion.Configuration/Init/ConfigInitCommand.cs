@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 
-public record ConfigInitSettings : ConfigSettings;
+public record ConfigInitSettings : ConfigSettings; // NOSONAR: Distinct command settings type inheriting shared options.
 
 [Command<ConfigCommand>("init", "Inits the configuration for current repository.")]
 public class ConfigInitCommand(ILogger<ConfigInitCommand> logger, IService service) : ICommand<ConfigInitSettings>

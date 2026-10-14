@@ -148,7 +148,7 @@ public class PublishNugetInternal : AsyncFrostingTask<BuildContext>
     private static async Task<string> ExchangeOidcTokenForApiKey(string oidcToken)
     {
         const string nugetUsername = "gittoolsbot";
-        const string nugetTokenServiceUrl = "https://www.nuget.org/api/v2/token";
+        const string nugetTokenServiceUrl = "https://www.nuget.org/api/v2/token"; // NOSONAR: Fixed NuGet.org token exchange endpoint.
 
         var requestBody = JsonSerializer.Serialize(new { username = nugetUsername, tokenType = "ApiKey" });
 

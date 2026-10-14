@@ -41,7 +41,7 @@ public static class Constants
         UbuntuLatest,
         "ubuntu.22.04"
     ];
-    public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
-    public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
-    public const string ChocolateyUrl = "https://push.chocolatey.org/";
+    public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json"; // NOSONAR: Fixed NuGet.org publishing feed.
+    public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json"; // NOSONAR: GitTools organization publishing feed.
+    public const string ChocolateyUrl = "https://push.chocolatey.org/"; // NOSONAR: Fixed Chocolatey publishing endpoint.
 }

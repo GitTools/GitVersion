@@ -50,11 +50,11 @@ public class PackageChocolatey : FrostingTask<BuildContext>
             Authors = ["GitTools and Contributors"],
             Owners = ["GitTools and Contributors"],
             Copyright = $"Copyright GitTools {DateTime.Now.Year}",
-            DocsUrl = new Uri("https://gitversion.net/docs/"),
-            LicenseUrl = new Uri("https://opensource.org/license/mit/"),
-            ProjectUrl = new Uri("https://github.com/GitTools/GitVersion"),
-            ProjectSourceUrl = new Uri("https://github.com/GitTools/GitVersion"),
-            IconUrl = new Uri("https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/Color/icon_100x100.png"),
+            DocsUrl = new Uri("https://gitversion.net/docs/"), // NOSONAR: Canonical documentation URL in package metadata.
+            LicenseUrl = new Uri("https://opensource.org/license/mit/"), // NOSONAR: Canonical MIT license URL in package metadata.
+            ProjectUrl = new Uri("https://github.com/GitTools/GitVersion"), // NOSONAR: Canonical project URL in package metadata.
+            ProjectSourceUrl = new Uri("https://github.com/GitTools/GitVersion"), // NOSONAR: Canonical source repository URL in package metadata.
+            IconUrl = new Uri("https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/Color/icon_100x100.png"), // NOSONAR: Published project icon URL in package metadata.
             RequireLicenseAcceptance = false,
             Tags = ["Git", "Versioning", "GitVersion", "GitFlowVersion", "GitFlow", "GitHubFlow", "SemVer"],
             ReleaseNotes = [$"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.ChocolateyVersion}"
