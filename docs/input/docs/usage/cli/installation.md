@@ -132,6 +132,12 @@ the following:
 docker run --rm -v "$(pwd):/repo" gittools/gitversion:latest-debian.12 /repo
 ```
 
+GitVersion v7 images run as UID/GID `10001:10001`, which needs write access to the
+mounted repository. On Linux, add `--user "$(id -u):$(id -g)"` when running from
+the non-root checkout owner's shell if the default image user cannot write to
+the checkout. The image handles an unwritable home automatically; no `HOME` or
+`DOTNET_CLI_HOME` flags are needed. See [Docker repository permissions][docker-permissions].
+
 The important arguments here are:
 
 |                    Argument | Description                                                                                                  |
@@ -162,6 +168,8 @@ of writing: Linux, macOS, Windows).
 [homebrew]: https://brew.sh/
 
 [docker]: https://hub.docker.com/r/gittools/gitversion
+
+[docker-permissions]: /docs/usage/docker#non-root-containers-and-repository-permissions
 
 [choco]: https://chocolatey.org/packages/GitVersion.Portable
 

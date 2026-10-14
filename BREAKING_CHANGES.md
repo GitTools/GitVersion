@@ -4,7 +4,9 @@
 
 Docker images now default to UID/GID `10001:10001`. On Linux, bind-mounted
 repositories must be writable by that user, or run the container as the non-root
-checkout owner using `--user "$(id -u):$(id -g)" --env HOME=/tmp --env DOTNET_CLI_HOME=/tmp`.
+checkout owner using `--user "$(id -u):$(id -g)"`.
+The image creates a private temporary home if the selected user cannot write to
+the configured home, so no `HOME` or `DOTNET_CLI_HOME` flags are needed.
 Downstream Dockerfiles must explicitly use root for system installation steps
 and restore a non-root user afterward. See the Docker usage guide for details.
 
