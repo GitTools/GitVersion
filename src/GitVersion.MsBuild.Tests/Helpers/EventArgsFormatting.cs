@@ -140,14 +140,6 @@ internal static class EventArgsFormatting
     {
         var format = new StringBuilder();
 
-        // Uncomment these lines to show the processor, if present.
-        /*
-        if (threadId != 0)
-        {
-            format.Append("{0}>");
-        }
-        */
-
         if (string.IsNullOrEmpty(file))
         {
             format.Append("MSBUILD : ");    // Should not be localized.

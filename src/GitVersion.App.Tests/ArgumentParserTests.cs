@@ -881,7 +881,7 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void DynamicRepoLocation()
     {
-        var arguments = this.argumentParser.ParseArguments("--dynamic-repo-location /tmp/foo");
+        var arguments = this.argumentParser.ParseArguments("--dynamic-repo-location /tmp/foo"); // NOSONAR: Parser test input; no directory is created or written.
         arguments.ClonePath.ShouldBe("/tmp/foo");
     }
 
@@ -1081,7 +1081,7 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCase("custom-config.yaml")]
-    [TestCase("/tmp/custom-config.yaml")]
+    [TestCase("/tmp/custom-config.yaml")] // NOSONAR: Missing-file test input; no file is created or written.
     public void ThrowIfConfigurationFileDoesNotExist(string configFile) =>
         Should.Throw<WarningException>(() => _ = this.argumentParser.ParseArguments($"--config {configFile}"));
 

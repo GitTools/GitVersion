@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GitVersion.Commands;
 
-public record CalculateSettings : GitVersionSettings;
+public record CalculateSettings : GitVersionSettings; // NOSONAR: Distinct command settings type inheriting shared options.
 
 [Command("calculate", "Calculates the version object from the git history.")]
 public class CalculateCommand(ILogger<CalculateCommand> logger, IService service, IGitRepository repository) : ICommand<CalculateSettings>

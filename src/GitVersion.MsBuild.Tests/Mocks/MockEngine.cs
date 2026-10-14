@@ -17,7 +17,7 @@ internal sealed class MockEngine : IBuildEngine4
 
     internal int Errors { private set; get; }
 
-    public bool IsRunningMultipleNodes => false;
+    public bool IsRunningMultipleNodes => false; // NOSONAR: IBuildEngine2 requires an instance property.
 
     public void LogErrorEvent(BuildErrorEventArgs e)
     {
@@ -52,13 +52,13 @@ internal sealed class MockEngine : IBuildEngine4
         ++Messages;
     }
 
-    public bool ContinueOnError => false;
+    public bool ContinueOnError => false; // NOSONAR: IBuildEngine requires an instance property.
 
-    public string ProjectFileOfTaskNode => string.Empty;
+    public string ProjectFileOfTaskNode => string.Empty; // NOSONAR: IBuildEngine requires an instance property.
 
-    public int LineNumberOfTaskNode => 0;
+    public int LineNumberOfTaskNode => 0; // NOSONAR: IBuildEngine requires an instance property.
 
-    public int ColumnNumberOfTaskNode => 0;
+    public int ColumnNumberOfTaskNode => 0; // NOSONAR: IBuildEngine requires an instance property.
 
     public string Log
     {
@@ -102,10 +102,12 @@ internal sealed class MockEngine : IBuildEngine4
 
     public void Yield()
     {
+        // This mock does not schedule build nodes, so there is no node to yield.
     }
 
     public void Reacquire()
     {
+        // This mock does not schedule build nodes, so there is no node to reacquire.
     }
 
     public object? GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
