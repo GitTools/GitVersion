@@ -16,7 +16,6 @@ public class GitVersionExecutorRoutingTests
     private IConfigurationProvider provider = null!;
     private RecordingSerializer serializer = null!;
     private IGitRepository repository = null!;
-    private IGitRepositoryInfo repositoryInfo = null!;
     private IGitVersionCalculateTool calculator = null!;
     private IGitVersionOutputTool output = null!;
     private IGitVersionConfiguration configuration = null!;
@@ -34,19 +33,19 @@ public class GitVersionExecutorRoutingTests
         this.provider = Substitute.For<IConfigurationProvider>();
         this.serializer = new();
         this.repository = Substitute.For<IGitRepository>();
-        this.repositoryInfo = Substitute.For<IGitRepositoryInfo>();
-        this.repositoryInfo.GitRootPath.Returns("repository");
-        this.repositoryInfo.ProjectRootDirectory.Returns("project");
-        this.repositoryInfo.DotGitDirectory.Returns(Guid.NewGuid().ToString("N"));
+        var repositoryInfo = Substitute.For<IGitRepositoryInfo>();
+        repositoryInfo.GitRootPath.Returns("repository");
+        repositoryInfo.ProjectRootDirectory.Returns("project");
+        repositoryInfo.DotGitDirectory.Returns(Guid.NewGuid().ToString("N"));
         this.calculator = Substitute.For<IGitVersionCalculateTool>();
         this.output = Substitute.For<IGitVersionOutputTool>();
         this.configuration = Substitute.For<IGitVersionConfiguration>();
         this.provider.Provide(Arg.Any<IReadOnlyDictionary<object, object?>?>()).Returns(this.configuration);
         this.resolvedConfiguration = new(() => this.configuration);
         var logger = NullLogger<GitVersionExecutor>.Instance;
-        var display = new GitVersionConfigurationDisplay(this.console, this.locator, this.provider, this.serializer, this.repositoryInfo);
-        var runner = new GitVersionToolRunner(logger, this.resolvedConfiguration, this.calculator, this.output, this.repository, this.repositoryInfo);
-        this.executor = new(logger, Substitute.For<IFileSystem>(), display, runner);
+        var queryExecutor = new ConfigurationQueryExecutor(this.console, this.locator, this.provider, this.serializer, repositoryInfo);
+        var runner = new GitVersionToolRunner(logger, this.resolvedConfiguration, this.calculator, this.output, this.repository, repositoryInfo);
+        this.executor = new(logger, Substitute.For<IFileSystem>(), queryExecutor, runner);
     }
 
     [TearDown]
@@ -172,7 +171,9 @@ public class GitVersionExecutorRoutingTests
         public IGitVersionConfiguration? PropertyConfiguration { get; private set; }
         public string? PropertyPath { get; private set; }
 
-        public T Deserialize<T>(string input) => throw new NotSupportedException("These execution tests only serialize configuration.");
+#pragma warning disable S2325, S1172 // Sonar does not collect NOSONAR metadata for test projects; suppress the interface-member false positives directly.
+        public T Deserialize<T>(string input) => throw new NotSupportedException("These execution tests only serialize configuration."); // NOSONAR S2325, S1172: IConfigurationSerializer requires an instance method and this input parameter.
+#pragma warning restore S2325, S1172
 
         public string Serialize(object graph)
         {

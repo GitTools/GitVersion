@@ -8,20 +8,20 @@ namespace GitVersion;
 internal class GitVersionExecutor(
     ILogger<GitVersionExecutor> logger,
     IFileSystem fileSystem,
-    GitVersionConfigurationDisplay configurationDisplay,
+    ConfigurationQueryExecutor configurationQueryExecutor,
     GitVersionToolRunner toolRunner)
     : IGitVersionExecutor
 {
     private readonly ILogger<GitVersionExecutor> logger = logger.NotNull();
     private readonly IFileSystem fileSystem = fileSystem.NotNull();
-    private readonly GitVersionConfigurationDisplay configurationDisplay = configurationDisplay.NotNull();
+    private readonly ConfigurationQueryExecutor configurationQueryExecutor = configurationQueryExecutor.NotNull();
     private readonly GitVersionToolRunner toolRunner = toolRunner.NotNull();
 
     public int Execute(GitVersionOptions gitVersionOptions)
     {
         Initialize(gitVersionOptions);
 
-        var exitCode = !this.configurationDisplay.TryDisplay(gitVersionOptions)
+        var exitCode = !this.configurationQueryExecutor.TryExecute(gitVersionOptions)
             ? this.toolRunner.Run()
             : 0;
 

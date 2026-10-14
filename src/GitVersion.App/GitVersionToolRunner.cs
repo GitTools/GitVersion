@@ -6,7 +6,7 @@ using GitVersion.Helpers;
 namespace GitVersion;
 
 internal sealed class GitVersionToolRunner(
-    ILogger<GitVersionExecutor> logger,
+    ILogger<GitVersionExecutor> logger, // NOSONAR S6672: Preserve the existing executor logging category for filters and consumers.
     Lazy<IGitVersionConfiguration> configuration,
     IGitVersionCalculateTool gitVersionCalculateTool,
     IGitVersionOutputTool gitVersionOutputTool,

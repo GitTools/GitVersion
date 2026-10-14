@@ -4,7 +4,7 @@ using GitVersion.Git;
 
 namespace GitVersion;
 
-internal sealed class GitVersionConfigurationDisplay(
+internal sealed class ConfigurationQueryExecutor(
     IConsole console,
     IConfigurationFileLocator configurationFileLocator,
     IConfigurationProvider configurationProvider,
@@ -17,7 +17,7 @@ internal sealed class GitVersionConfigurationDisplay(
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IGitRepositoryInfo repositoryInfo = repositoryInfo.NotNull();
 
-    public bool TryDisplay(GitVersionOptions gitVersionOptions)
+    public bool TryExecute(GitVersionOptions gitVersionOptions)
     {
         var configurationInfo = gitVersionOptions.ConfigurationInfo;
         if (!configurationInfo.ShowConfiguration && configurationInfo.PropertyPath is null)
