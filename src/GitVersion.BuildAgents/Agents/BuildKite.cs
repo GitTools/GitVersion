@@ -30,5 +30,5 @@ internal class BuildKite(IEnvironment environment, ILogger<BuildKite> logger, IF
         return $"refs/pull/{pullRequest}/head";
     }
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; BuildKite prevents fetching.
 }

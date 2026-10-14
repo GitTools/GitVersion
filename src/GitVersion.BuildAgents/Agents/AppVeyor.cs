@@ -71,5 +71,5 @@ internal class AppVeyor(IEnvironment environment, ILogger<AppVeyor> logger, IFil
             : this.environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
     }
 
-    public override bool PreventFetch() => false;
+    public override bool PreventFetch() => false; // NOSONAR: Polymorphic build-agent contract; AppVeyor allows fetching.
 }

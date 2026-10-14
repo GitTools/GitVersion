@@ -57,7 +57,7 @@ internal class GitHubActions(IEnvironment environment, ILogger<GitHubActions> lo
         return refType.Equals("tag", StringComparison.OrdinalIgnoreCase) ? null : this.environment.GetEnvironmentVariable("GITHUB_REF");
     }
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; GitHub Actions prevents fetching.
 
     public override string? GetCurrentTag()
     {

@@ -151,7 +151,7 @@ internal class LegacyArgumentParser(
         }
     }
 
-    private void ParseSwitchArguments(Arguments arguments, NameValueCollection switchesAndValues, int i)
+    private void ParseSwitchArguments(Arguments arguments, NameValueCollection switchesAndValues, int i) // NOSONAR: Calls instance parsing methods that use injected services.
     {
         var name = switchesAndValues.AllKeys[i];
         var values = switchesAndValues.GetValues(name);

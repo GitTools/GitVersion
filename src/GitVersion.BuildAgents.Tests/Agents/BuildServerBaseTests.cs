@@ -59,6 +59,6 @@ public class BuildServerBaseTests : TestBase
 
         public override string SetBuildNumber(GitVersionVariables variables) => variables.FullSemVer;
 
-        public override string[] SetOutputVariables(string name, string? value) => [];
+        public override string[] SetOutputVariables(string name, string? value) => []; // NOSONAR: The override requires both parameters; this test agent emits no variables.
     }
 }

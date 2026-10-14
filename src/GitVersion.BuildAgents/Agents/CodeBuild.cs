@@ -42,7 +42,7 @@ internal sealed class CodeBuild : BuildAgentBase
         this.fileSystem.File.WriteAllLines(this.file, SetOutputVariables(variables));
     }
 
-    public override bool PreventFetch() => true;
+    public override bool PreventFetch() => true; // NOSONAR: Polymorphic build-agent contract; CodeBuild prevents fetching.
 
     public override bool CanApplyToCurrentContext() => !this.environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty()
                                                        || !this.environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();

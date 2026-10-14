@@ -102,10 +102,10 @@ public static class ContextExtensions
             return string.Empty;
         }
 
-        public bool IsRunningOnAmd64()
+        public bool IsRunningOnAmd64() // NOSONAR: Instance extension member for ICakeContext.
             => RuntimeInformation.ProcessArchitecture == ProcessArchitecture.X64;
 
-        public bool IsRunningOnArm64() =>
+        public bool IsRunningOnArm64() => // NOSONAR: Instance extension member for ICakeContext.
             RuntimeInformation.ProcessArchitecture == ProcessArchitecture.Arm64;
 
         public string GetBuildAgent()
@@ -209,8 +209,8 @@ public static class ContextExtensions
 
     extension(IAzurePipelinesCommands _)
     {
-        private void StartGroup(ICakeContext context, string title) => context.Information("##[group]{0}", title);
-        private void EndGroup(ICakeContext context) => context.Information("##[endgroup]");
+        private void StartGroup(ICakeContext context, string title) => context.Information("##[group]{0}", title); // NOSONAR: Instance extension member for IAzurePipelinesCommands.
+        private void EndGroup(ICakeContext context) => context.Information("##[endgroup]"); // NOSONAR: Instance extension member for IAzurePipelinesCommands.
     }
 }
 #pragma warning restore S1144

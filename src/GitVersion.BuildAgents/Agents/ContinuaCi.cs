@@ -16,5 +16,5 @@ internal class ContinuaCi(IEnvironment environment, ILogger<ContinuaCi> logger, 
 
     public override string SetBuildNumber(GitVersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
 
-    public override bool PreventFetch() => false;
+    public override bool PreventFetch() => false; // NOSONAR: Polymorphic build-agent contract; Continua CI allows fetching.
 }

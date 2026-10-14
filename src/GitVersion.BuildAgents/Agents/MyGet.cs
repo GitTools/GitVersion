@@ -29,5 +29,5 @@ internal class MyGet(IEnvironment environment, ILogger<MyGet> logger, IFileSyste
     public override string SetBuildNumber(GitVersionVariables variables) =>
         $"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
 
-    public override bool PreventFetch() => false;
+    public override bool PreventFetch() => false; // NOSONAR: Polymorphic build-agent contract; MyGet allows fetching.
 }

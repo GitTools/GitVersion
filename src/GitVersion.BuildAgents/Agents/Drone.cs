@@ -47,5 +47,5 @@ internal class Drone(IEnvironment environment, ILogger<Drone> logger, IFileSyste
         return colonIndex > 0 ? ciCommitRefSpec[..colonIndex] : this.environment.GetEnvironmentVariable("DRONE_BRANCH");
     }
 
-    public override bool PreventFetch() => false;
+    public override bool PreventFetch() => false; // NOSONAR: Polymorphic build-agent contract; Drone allows fetching.
 }
