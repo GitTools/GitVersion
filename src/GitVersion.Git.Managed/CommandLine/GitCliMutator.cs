@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 
 namespace GitVersion.Git;
@@ -20,7 +19,7 @@ internal interface IGitCliMutator
     void CreateSymbolicReference(string workingDirectory, string name, string targetReferenceName);
 }
 
-internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
+internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
 {
     private readonly ILogger<GitCliMutator> logger = logger.NotNull();
     private readonly IGitCliExecutor executor = executor.NotNull();
@@ -149,7 +148,7 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
         if (isNetworkOperation)
         {
             // Match git's HTTP diagnostic, not digits in a URL, port or local path.
-            var httpStatus = HttpStatusRegex().Match(message).Groups["status"].Value;
+            var httpStatus = RegexPatterns.Git.HttpStatusRegex.Match(message).Groups["status"].Value;
             if (httpStatus == "401" || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException("Unauthorized: Incorrect username/password");
@@ -164,7 +163,7 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
             // git's own "fatal: repository '<url>' not found" with the URL in between.
             if (httpStatus == "404"
                 || message.Contains("Repository not found", StringComparison.OrdinalIgnoreCase)
-                || RepositoryNotFoundRegex().IsMatch(message))
+                || RegexPatterns.Git.RepositoryNotFoundRegex.IsMatch(message))
             {
                 throw new InvalidOperationException("Not found: The repository was not found");
             }
@@ -178,10 +177,4 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
         || message.Contains("could not lock", StringComparison.OrdinalIgnoreCase)
         || message.Contains("cannot lock ref", StringComparison.OrdinalIgnoreCase)
         || message.Contains("Another git process seems to be running", StringComparison.OrdinalIgnoreCase);
-
-    [GeneratedRegex(@"repository '[^']*' not found", RegexOptions.IgnoreCase)]
-    private static partial Regex RepositoryNotFoundRegex();
-
-    [GeneratedRegex(@"The requested URL returned error: (?<status>401|403|404)\r?$", RegexOptions.IgnoreCase | RegexOptions.Multiline)]
-    private static partial Regex HttpStatusRegex();
 }
