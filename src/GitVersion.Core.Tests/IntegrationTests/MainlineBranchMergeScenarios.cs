@@ -211,6 +211,34 @@ public class MainlineBranchMergeScenarios : TestBase
         version.SemVerSourceSha.ShouldBe(sourceTag);
     }
 
+    [TestCase(DeploymentMode.ManualDeployment, false, "2.0.0-alpha.6+2")]
+    [TestCase(DeploymentMode.ManualDeployment, true, "2.0.0-alpha.6+2")]
+    [TestCase(DeploymentMode.ContinuousDelivery, false, "2.0.0-alpha.7")]
+    [TestCase(DeploymentMode.ContinuousDelivery, true, "2.0.0-alpha.7")]
+    [TestCase(DeploymentMode.ContinuousDeployment, false, "2.0.0")]
+    [TestCase(DeploymentMode.ContinuousDeployment, true, "2.0.0")]
+    public void ReceiverPrereleaseSequenceIsPreserved(DeploymentMode mode, bool preventSource, string expected)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("production/right");
+        fixture.MakeATaggedCommit("1.0.1");
+        fixture.Checkout(MainBranch);
+        fixture.BranchTo("production/left");
+        var receiverTag = fixture.MakeATaggedCommit("2.0.0-alpha.5");
+        fixture.MergeNoFF("production/right");
+        var configuration = GetConfigurationBuilder().WithDeploymentMode(mode)
+            .WithBranch("left", b => b.WithLabel("alpha"))
+            .WithBranch("right", b => b.WithPreventIncrementWhenBranchMerged(preventSource)).Build();
+
+        var version = fixture.GetVersion(configuration);
+
+        version.FullSemVer.ShouldBe(expected);
+        version.SemVerSourceSha.ShouldBe(receiverTag);
+        version.CommitCountSourceSha.ShouldBe(receiverTag);
+        version.CommitCountSourceDistance.ShouldBe("2");
+    }
+
     private static IGitVersionConfiguration GetConfiguration() => GetConfigurationBuilder().Build();
 
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
