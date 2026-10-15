@@ -218,7 +218,7 @@ internal static class ConfigurationDocumentMapper
 
         if (sectionValue is not IReadOnlyDictionary<object, object?> section)
         {
-            throw new ConfigurationException($"Configuration section '{sectionName}' must be a mapping.");
+            throw new ConfigurationValidationException("GVCONFIG_LAYOUT", sectionName, "Section must be a mapping.");
         }
 
         foreach (var (key, value) in section)
@@ -246,7 +246,7 @@ internal static class ConfigurationDocumentMapper
     {
         if (value is not IReadOnlyDictionary<object, object?> source)
         {
-            throw new ConfigurationException($"Configuration property '{sectionName}.{BranchesPropertyName}' must be a mapping.");
+            throw new ConfigurationValidationException("GVCONFIG_PROPERTY", $"{sectionName}.{BranchesPropertyName}", "Property must be a mapping.");
         }
 
         foreach (var (branchName, branchValue) in source)
@@ -391,7 +391,7 @@ internal static class ConfigurationDocumentMapper
     {
         if (propertyName.Equals(WorkflowPropertyName, StringComparison.Ordinal))
         {
-            throw new ConfigurationException($"Configuration property '{sectionName}.workflow' belongs at the root as 'workflow'.");
+            throw new ConfigurationValidationException("GVCONFIG_LAYOUT", $"{sectionName}.workflow", $"Configuration property '{sectionName}.workflow' belongs at the root as 'workflow'.");
         }
 
         var knownProperties = branchProperty ? KnownBranchPropertyNames : KnownPropertyNames;
@@ -407,7 +407,7 @@ internal static class ConfigurationDocumentMapper
         if (!sectionName.Equals(expectedSection, StringComparison.Ordinal))
         {
             var branchPath = branchProperty ? $"{BranchesPropertyName}.<branch>." : string.Empty;
-            throw new ConfigurationException(
+            throw new ConfigurationValidationException("GVCONFIG_LAYOUT", $"{sectionName}.{branchPath}{propertyName}",
                 $"Configuration property '{sectionName}.{branchPath}{propertyName}' belongs under " +
                 $"'{expectedSection}.{branchPath}{propertyName}'.");
         }

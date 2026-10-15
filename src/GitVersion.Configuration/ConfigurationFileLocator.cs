@@ -59,6 +59,7 @@ internal class ConfigurationFileLocator(
         }
 
         var files = this.fileSystem.Directory.GetFiles(directoryPath);
+        Array.Sort(files, StringComparer.Ordinal);
         foreach (var fileName in this.SupportedConfigFileNames)
         {
             this.logger.LogDebug("Trying to find configuration file {FileName} at '{DirectoryPath}'", fileName, directoryPath);

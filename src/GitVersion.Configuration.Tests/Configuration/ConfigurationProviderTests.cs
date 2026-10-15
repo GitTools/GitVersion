@@ -207,8 +207,7 @@ public class ConfigurationProviderTests : TestBase
                             """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{FileSystemHelper.Path.NewLine}" +
-                            "See https://gitversion.net/docs/reference/configuration for more info");
+        ex.Message.ShouldBe("Configuration property 'branches.bug.regex': Branch configuration requires a regex.");
     }
 
     [Test]
@@ -234,8 +233,7 @@ public class ConfigurationProviderTests : TestBase
                             """;
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{FileSystemHelper.Path.NewLine}" +
-                            "See https://gitversion.net/docs/reference/configuration for more info");
+        ex.Message.ShouldBe("Configuration property 'branches.bug.source-branches': Referenced branch configuration does not exist.");
     }
 
     [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
@@ -277,7 +275,7 @@ public class ConfigurationProviderTests : TestBase
     [Test]
     public void NextVersionCanBeInteger()
     {
-        const string text = "next-version: 2";
+        const string text = "next-version: 2\nsemantic-version-format: Loose";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -287,7 +285,7 @@ public class ConfigurationProviderTests : TestBase
     [Test]
     public void NextVersionCanHaveEnormousMinorVersion()
     {
-        const string text = "next-version: 2.118998723";
+        const string text = "next-version: 2.118998723\nsemantic-version-format: Loose";
         using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 

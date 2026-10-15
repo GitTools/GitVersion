@@ -13,6 +13,13 @@ Defaults depend on the selected workflow and effective branch configuration.
 Use the configuration output below to inspect them rather than assuming that
 every workflow uses the same deployment mode.
 
+Validate a candidate first with `gitversion config validate --config GitVersion.yml`.
+Explicit-file validation works outside Git and resolves the same workflow defaults
+and overrides as normal execution. It checks public keys/types, configured regexes
+and branch-definition references without calculating versions or changing files.
+See [configuration validation][configuration-validation] for the JSON contract and
+limits. Matching-version schema and loader checks remain useful for older tools.
+
 To see the effective configuration (defaults and overrides), you can run
 `gitversion --show-config`.
 
@@ -1440,3 +1447,5 @@ The base template of the configuration to use. Possible values are `GitFlow/v1` 
 [version-sources]: /docs/reference/version-sources
 
 [query-a-configuration-property]: /docs/usage/cli/arguments#query-a-configuration-property
+
+[configuration-validation]: /docs/usage/cli/arguments#validate-configuration

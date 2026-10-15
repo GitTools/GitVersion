@@ -10,6 +10,7 @@ public class GitVersionConfigurationModule : IGitVersionModule
         services.AddSingleton<IConfigurationSerializer, ConfigurationSerializer>();
         services.AddSingleton<IConfigurationMigrationService, ConfigurationMigrationService>();
         services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+        services.AddSingleton<ConfigurationResolver>();
         services.AddSingleton<IConfigurationFileLocator, ConfigurationFileLocator>();
     }
 }

@@ -18,6 +18,23 @@ calculation:
 
 This selects the GitHubFlow defaults and permits a leading v or V in version tags. For a different starting point, [choose a workflow][choose-a-workflow].
 
+## Validate the file
+
+With the v7 POSIX CLI, check the candidate before inspecting defaults or calculating versions:
+
+```shell
+dotnet-gitversion config validate --config GitVersion.yml
+```
+
+An explicit file works outside Git and offline. Exit 0 means the file, workflow
+defaults and overrides resolve; errors return 1. Human output goes to stderr.
+Add `--format json` for a versioned result on stdout. Warnings do not fail validation.
+See [configuration validation][configuration-validation] for diagnostics and limits.
+
+For older tools lacking this command, retain matching-version schema and loader
+checks. Successful validation still needs effective-config inspection and
+calculations on representative history before adopting a release-policy change.
+
 ## Inspect the effective configuration
 
 ```shell
@@ -50,3 +67,5 @@ Use [configuration by topic][configuration-by-topic] to find the relevant settin
 [configuration-troubleshooting]: /docs/learn/faq#configuration-is-not-being-used
 
 [configuration-by-topic]: /docs/reference/configuration-topics
+
+[configuration-validation]: /docs/usage/cli/arguments#validate-configuration

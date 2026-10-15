@@ -19,6 +19,7 @@ public class CliSchemaTests
     [TestCase("--cli-schema --config")]
     [TestCase("config --cli-schema")]
     [TestCase("config migrate --cli-schema")]
+    [TestCase("config validate --cli-schema")]
     [TestCase("--help --cli-schema")]
     [TestCase("--cli-schema --help")]
     [TestCase("--version --cli-schema")]
@@ -102,12 +103,12 @@ public class CliSchemaTests
         IHostApplicationLifetime? lifetime = null;
         fixture.WithOverrides(services =>
         {
-            services.AddSingleton<IGitVersionExecutor>(sp =>
+            services.AddSingleton<IGitVersionExecutor>(calculation);
+            services.AddSingleton<IConfigurationMigrationExecutor>(sp =>
             {
                 lifetime = sp.GetRequiredService<IHostApplicationLifetime>();
-                return calculation;
+                return migration;
             });
-            services.AddSingleton<IConfigurationMigrationExecutor>(migration);
         });
 
         var result = await fixture.Run("--cli-schema");
@@ -157,6 +158,11 @@ public class CliSchemaTests
             formats.GetProperty("arity").TryGetProperty("maximum", out _).ShouldBeFalse();
             var migrationCommand = command.GetProperty("commands")[0].GetProperty("commands")[0];
             migrationCommand.GetProperty("name").GetString().ShouldBe("migrate");
+            var validationCommand = command.GetProperty("commands")[0].GetProperty("commands").EnumerateArray()
+                .Single(item => item.GetProperty("name").GetString() == "validate");
+            CliSchemaExporterTests.FindOption(validationCommand, "--format").GetProperty("arguments")[0]
+                .GetProperty("acceptedValues")[0].GetString().ShouldBe("json");
+            CliSchemaExporterTests.FindOption(validationCommand, "--config").GetProperty("name").GetString().ShouldBe("--config");
             CliSchemaExporterTests.FindOption(migrationCommand, "--output").GetProperty("arguments")[0]
                 .TryGetProperty("acceptedValues", out _).ShouldBeFalse();
             CliSchemaExporterTests.FindOption(command, "--show-variable").GetProperty("arguments")[0]

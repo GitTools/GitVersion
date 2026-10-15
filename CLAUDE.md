@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
+For configuration work, follow the [configuration validation sequence in AGENTS.md](AGENTS.md#what-to-check-when-changing-behavior): validate when the selected executable supports it, inspect effective settings, then verify representative history. Older tools still need matching-version schema and loader checks.
+
 GitVersion is a multi-project .NET repository that calculates semantic versions from Git history. It supports multiple versioning strategies (GitFlow, GitHubFlow, Mainline) and integrates with CI/CD systems (GitHub Actions, Azure Pipelines, TeamCity, etc.).
 
 ## CodeRabbit reviews

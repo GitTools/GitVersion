@@ -112,6 +112,97 @@ GitVersion [path]
                     GitVersion to not calculate your version as expected.
 ```
 
+## Validate configuration
+
+Validate a candidate with the established v7 POSIX CLI before inspecting effective settings:
+
+```shell
+gitversion config validate --config GitVersion.yml
+gitversion config validate --target-path ./candidate-directory
+gitversion config validate --config "candidate configs/équipe.yml" --format json
+gitversion config validate --config GitVersion.yml --override-config calculation.tag-prefix='[vV]?'
+```
+
+An explicit file works outside Git and offline. Without `--config`, discovery checks
+the selected directory and, inside Git, the repository root. Files in both directories
+are ambiguous. Within a directory, existing priority is `GitVersion.yml`,
+`GitVersion.yaml`, `.GitVersion.yml`, then `.GitVersion.yaml`.
+Case variants at the same priority use ordinal path order.
+Missing/unreadable files fail; validation never substitutes defaults for a missing
+file. An existing empty document resolves workflow defaults.
+
+Validation shares normal execution's deserializer, layout mapper, workflow defaults,
+override precedence and builder. Both paths reject unknown/misplaced public keys,
+wrong types or enum names, invalid workflows, invalid configured regexes and
+references to unconfigured branch definitions. Regex checks include ignore paths,
+branches and tags, tag/branch version patterns, bump messages and merge-message
+formats. Diagnostics omit configuration values and report the first error.
+
+`next-version` must parse with the selected `semantic-version-format` (`Strict`
+requires a complete version such as `2.0.0`; `Loose` permits partial versions).
+Commit cutoff dates are checked without inspecting commits.
+
+The command never calculates a version, constructs a Git backend, fetches, normalizes
+refs, writes caches, migrates configuration or emits build-server/file-update
+outputs. It accepts `--config`, `--override-config`, `--target-path` and its local
+`--format json`. A root positional directory must precede `config validate`.
+Calculation, remote, file-update and logging options are rejected, including when
+placed before the command. Help and `--cli-schema` remain informational operations.
+
+By default, the summary and diagnostics go to stderr and stdout is empty. Exit 0
+means the resolved configuration is valid; command-executed invocation,
+configuration and file-read errors return 1. Warnings do not fail validation;
+there is no strict-warning flag in this initial command.
+
+`--format json` writes exactly one JSON document to stdout, followed by a newline.
+The human summary and diagnostics remain on stderr:
+
+```json
+{
+  "schemaVersion": 1,
+  "valid": true,
+  "configurationVersion": "v7",
+  "file": "/workspace/GitVersion.yml",
+  "diagnostics": []
+}
+```
+
+`file` is the selected absolute path, or null when selection failed.
+Each diagnostic contains `code`, `severity` (`error` or `warning`), `path` (public
+property path, or empty for a document/invocation error), `message`, `line` and
+`column`. Locations are one-based when provided by YAML parsing, otherwise null.
+Codes are stable within schema version 1; human messages may change:
+
+| Code | Meaning |
+| --- | --- |
+| `GVCONFIG_FILE` | Missing or unreadable configuration file |
+| `GVCONFIG_DISCOVERY` | Ambiguous discovery |
+| `GVCONFIG_INVOCATION` | Incompatible command option or output format |
+| `GVCONFIG_OVERRIDE` | Invalid override syntax or unsupported override path |
+| `GVCONFIG_YAML` | YAML syntax or deserialization error |
+| `GVCONFIG_LAYOUT` | Wrong layout or section ownership |
+| `GVCONFIG_PROPERTY` | Unknown key, invalid type or enum |
+| `GVCONFIG_WORKFLOW` | Unknown workflow |
+| `GVCONFIG_REGEX` | Invalid regular expression |
+| `GVCONFIG_BRANCH` | Missing branch regex or unresolved branch reference |
+| `GVCONFIG_VALUE` | Invalid semantic value or invocation path |
+| `GVCONFIG_V6_COMPATIBILITY` | Non-failing temporary v6 compatibility warning |
+
+Parser failures before command execution (unknown options, missing option arguments,
+extra positional arguments) retain ordinary stderr/exit 1 behavior without JSON.
+Feature-selector errors also occur before command execution.
+
+Configuration layout selection remains separate from parser selection. Explicit
+`GITVERSION_CONFIGURATION_VERSION=v6` accepts flat files during v7.0 and emits the
+existing warning; legacy loading is removed in v7.1. Invalid v7 documents never
+fall back to v6. Use `config migrate` to convert a legacy file. This command is
+unavailable with the legacy parser and published v6 tools.
+
+Validation does not establish that versions match your release policy. Inspect
+effective configuration next and verify calculations on representative existing
+history. A preview workflow, a different branching model, or the absence of matching
+branches in history is not itself a validation error.
+
 ## Query a configuration property
 
 Use `gitversion config get <property-path>` to read one scalar from the effective

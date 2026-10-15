@@ -147,6 +147,14 @@ per developer and must never be committed to this repository.
 
 ## What to check when changing behavior
 
+For candidate configuration, first check the selected executable's help or
+`--cli-schema`. When supported, run `gitversion config validate --config <file>`
+before inspecting effective settings (`--show-config` or `config get`) and verifying
+calculations on representative existing history. Validation supports explicit files
+outside Git; it does not prove release-policy outcomes. For older tools, retain
+matching-version schema and loader checks. Keep published v6, established `src/`
+v7 and experimental `new-cli/` commands distinct.
+
 - CLI output shape changed → update `docs/` examples and build-agent adapters that parse JSON or env vars.
 - New dependency added → update `src/Directory.Packages.props` and verify with `dotnet build`.
 - Configuration schema changed → regenerate schemas:

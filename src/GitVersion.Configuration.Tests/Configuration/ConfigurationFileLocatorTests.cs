@@ -9,6 +9,22 @@ public static class ConfigurationFileLocatorTests
 {
     public class DefaultConfigFileLocatorTests : TestBase
     {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DiscoveryIsIndependentOfDirectoryEnumerationOrder(bool reverse)
+        {
+            var directory = Path.GetTempPath();
+            var canonical = Path.Combine(directory, "GitVersion.yml");
+            var lowerCase = Path.Combine(directory, "gitversion.yml");
+            var alternative = Path.Combine(directory, "GitVersion.yaml");
+            var fs = Substitute.For<IFileSystem>();
+            fs.Directory.Exists(directory).Returns(true);
+            fs.Directory.GetFiles(directory).Returns(reverse ? [alternative, lowerCase, canonical] : [canonical, lowerCase, alternative]);
+            var locator = new ConfigurationFileLocator(fs, NullLogger<ConfigurationFileLocator>.Instance, Options.Create(new GitVersionOptions()));
+
+            locator.GetConfigurationFile(directory).ShouldBe(canonical);
+        }
+
         private string repoPath = null!;
         private string workingPath = null!;
         private IFileSystem fileSystem = null!;
