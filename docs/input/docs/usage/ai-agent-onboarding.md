@@ -23,10 +23,14 @@ an option if we already depend on it or choose its compatibility guarantees.
 
 Show proposed installation commands and file changes before applying them
 unless I have already authorized those actions. After installation, verify
-the selected executable's version and supported commands, inspect the effective
-configuration, then compare baseline and candidate results on representative
-existing branches, tags and commits. Explain unexpected versions before
-adjusting settings. Report evidence, remaining questions and the final diff.
+the selected executable's version. For v7, run gitversion --cli-schema using
+that executable and read its JSON to discover commands, aliases, options,
+arguments and accepted values before constructing commands. If schema export
+is unavailable, use that executable's --help rather than guessing commands.
+Inspect the effective configuration, then compare baseline and candidate
+results on representative existing branches, tags and commits. Explain
+unexpected versions before adjusting settings. Report evidence, remaining
+questions and the final diff.
 
 Preserve existing files, user edits and Git history. Do not create tags or
 commits, fetch or normalize refs merely to make a sample work, install globally,
@@ -88,7 +92,22 @@ Preserve other tools in an existing manifest. Do not change feeds or credentials
 
 If a suitable v7 artifact is unavailable, offer a source build in a **separate GitVersion checkout**, at a reviewed v7 commit. Use the SDK pinned in that checkout's `global.json`, publish `src/GitVersion.App/GitVersion.App.csproj`, and record the source SHA and resulting executable path. See the [source-build example][getting-started]. Building requires restoring dependencies; explain that setup cost before proceeding. Do not build experimental `new-cli/` as a substitute.
 
-In the remaining v7 examples, `gitversion` means the executable you verified. For a local tool replace it with `dotnet tool run dotnet-gitversion --`; for a source build use `dotnet /absolute/path/to/gitversion.dll`. Confirm `--version`, `--help` and, when supported, [the CLI schema][cli-schema] before selecting commands. Store both the pin and invocation in the handoff.
+In the remaining v7 examples, `gitversion` means the executable you verified. For a local tool replace it with `dotnet tool run dotnet-gitversion --`; for a source build use `dotnet /absolute/path/to/gitversion.dll`. Store both the pin and invocation in the handoff.
+
+### Discover commands and options
+
+Confirm the executable's version, then ask it for its command grammar:
+
+```shell
+gitversion --version
+gitversion --cli-schema
+```
+
+Read the [CLI schema][cli-schema] JSON before constructing commands. It describes the available commands and subcommands, aliases, options, positional arguments, value arity and accepted values where available. Include inherited options from parent commands marked `recursive: true`. Use the selected executable's schema to discover capabilities rather than guessing command names or copying examples from another version.
+
+`--cli-schema` works outside a Git repository and does not load configuration, calculate a version or write files. This is the CLI grammar, **not the configuration JSON Schema** used to check YAML. Run it separately from `--version`, because schema export takes precedence when both flags are supplied.
+
+Schema export requires the v7 argument parser. If the selected executable or temporary v6 parser cannot export it, use that executable's `--help` and matching reference documentation. Do not infer support for a proposed command such as `config validate` merely because it appears in a feature request.
 
 ### Docker mounts and permissions
 
