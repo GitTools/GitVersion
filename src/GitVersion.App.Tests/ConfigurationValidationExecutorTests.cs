@@ -62,10 +62,12 @@ public class ConfigurationValidationExecutorTests
 
     private sealed class InvalidYamlSerializer : IConfigurationSerializer
     {
+#pragma warning disable S2325, S1172 // The interface requires instance methods and all parameters; this failure stub deliberately throws without using them.
         T IConfigurationSerializer.Deserialize<T>(string input) => throw new YamlException(new Mark(10, 2, 3), new Mark(11, 2, 4), "secret configuration value");
 
         string IConfigurationSerializer.Serialize(object graph) => throw new AssertionException("Validation must not serialize configuration output.");
 
         string IConfigurationSerializer.SerializeProperty(IGitVersionConfiguration configuration, string path) => throw new AssertionException("Validation must not query configuration values.");
+#pragma warning restore S2325, S1172
     }
 }
