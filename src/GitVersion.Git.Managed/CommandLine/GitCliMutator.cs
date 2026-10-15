@@ -148,19 +148,21 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
         // a local ref or pathspec can legitimately contain "401"/"404" in its name.
         if (isNetworkOperation)
         {
-            if (message.Contains("401") || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
+            // Match git's HTTP diagnostic, not digits in a URL, port or local path.
+            var httpStatus = HttpStatusRegex().Match(message).Groups["status"].Value;
+            if (httpStatus == "401" || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException("Unauthorized: Incorrect username/password");
             }
 
-            if (message.Contains("403"))
+            if (httpStatus == "403")
             {
                 throw new InvalidOperationException("Forbidden: Possibly Incorrect username/password");
             }
 
             // "Repository not found" is GitHub's server-side banner; other hosts produce
             // git's own "fatal: repository '<url>' not found" with the URL in between.
-            if (message.Contains("404")
+            if (httpStatus == "404"
                 || message.Contains("Repository not found", StringComparison.OrdinalIgnoreCase)
                 || RepositoryNotFoundRegex().IsMatch(message))
             {
@@ -179,4 +181,7 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
 
     [GeneratedRegex(@"repository '[^']*' not found", RegexOptions.IgnoreCase)]
     private static partial Regex RepositoryNotFoundRegex();
+
+    [GeneratedRegex(@"The requested URL returned error: (?<status>401|403|404)\r?$", RegexOptions.IgnoreCase | RegexOptions.Multiline)]
+    private static partial Regex HttpStatusRegex();
 }

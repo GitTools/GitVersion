@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "e083c38fa008a84ceb8c4978a43712c8a5cd6b2c8ba4c82602c18311a25a2d4e",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "1543c46f68ddae001e926802ad02009cca12ffd6af0d4b161c9a93e2c92561b5",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "66c90fe033b9988d7a44364c00324fe8939bcfb7e49ab46f25518b529d4fa8b3",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "a2b598f1d0186aa426654d3336193ec42d43d5439788d05c3930a038d03d04ea",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "4adc4714f7551b08fb5925a4337b276f71c09133cae8243662ea6b3b1e3fb205",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "a340fb81660df92e8624b168bfe3f50c2f841434c386b7239095dc67863c4481",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "3406cf967c55d45004ac9457080da092a3a72c33b17f6caeff8728cb7d83e63c",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "47ce76b738341727db09882729bee22b5194eef7f8068cefcfa25f3dd6bf54e8",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "01fac74a0951c924c0a39b7eee8e5a5392ce0cc1e0fb2d5bd6b61718bf626460",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "6c42540223fef151b21eadd90c56040db0f809ba36602f51494f941f12a7ce57",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "99e8343c98e95b8986581335c97e3ecd6a2ff8da571af06bf57c05ca137bd19b",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "39a9b934c48a4e9560cf4ba4518f95ce31556fbcc2b60593247f6a06b4090ca6",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "38ec15f5c0600c6fbe2d12d3a3c106f4b7e89cd3cef96d0b8bc36bc4582dc87b",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "59291fb2e97fe0f72255f8852c518a70ad0473fd124fad83954d991e6f5a3f0d",
+        "reason": "Reviewed the GitCliMutator HTTP error-classification fix: only failed Git network commands change, with status codes read from explicit Git diagnostics instead of arbitrary URL, port or path digits. Successful repository operations, configuration, version candidates, inheritance, increments, selection, Mainline traversal and deployment behavior are unchanged. The seven algorithm explanations and their diagrams remain accurate; GitCliMutatorTests cover the corrected failure messages and unchanged local-error behavior."
       }
     }
   ]
