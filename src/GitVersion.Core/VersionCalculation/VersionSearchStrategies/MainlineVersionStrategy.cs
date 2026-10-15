@@ -471,18 +471,7 @@ internal sealed class MainlineVersionStrategy(
                     result = baseVersion;
                     break;
                 case MergedMainlineIncrement merged:
-                    result ??= new BaseVersion();
-                    // Numeric comparison does not add another prerelease step to a
-                    // version already computed on the receiving mainline.
-                    var receiverVersion = new SemanticVersion(result.GetIncrementedVersion())
-                    {
-                        PreReleaseTag = SemanticVersionPreReleaseTag.Empty
-                    };
-                    result = new BaseVersion(result.Source, receiverVersion, result.BaseVersionSource)
-                    {
-                        SemVerSource = result.GetSemVerSource()
-                    }.Apply(WithMainlineVersion(merged.Operation,
-                        merged.Version.GetIncrementedVersion(), merged.Version.GetSemVerSource()));
+                    result = ApplyMergedMainlineIncrement(result ?? new BaseVersion(), merged);
                     break;
             }
         }
@@ -535,10 +524,25 @@ internal sealed class MainlineVersionStrategy(
         public ICommit? BaseVersionSource => Operation.BaseVersionSource;
     }
 
+    private static BaseVersion ApplyMergedMainlineIncrement(BaseVersion receiver, MergedMainlineIncrement merged)
+    {
+        var receiverVersion = receiver.GetIncrementedVersion();
+        // Restart the unnamed counting suffix for this merge's count anchor, but
+        // retain named prerelease sequences such as alpha.5 for normal advancement.
+        if (receiverVersion.PreReleaseTag.Name.IsNullOrEmpty())
+        {
+            receiverVersion = new SemanticVersion(receiverVersion) { PreReleaseTag = SemanticVersionPreReleaseTag.Empty };
+        }
+        return new BaseVersion(receiver.Source, receiverVersion, receiver.BaseVersionSource)
+        {
+            SemVerSource = receiver.GetSemVerSource()
+        }.Apply(WithMainlineVersion(merged.Operation,
+            merged.Version.GetIncrementedVersion(), merged.Version.GetSemVerSource()));
+    }
+
     private static BaseVersionOperator WithMainlineVersion(BaseVersionOperator operation, SemanticVersion version,
         SemanticVersionSource? source)
         => operation.AlternativeSemanticVersion is { } alternative && !alternative.IsLessThan(version, includePreRelease: false)
             ? operation
             : operation with { AlternativeSemanticVersion = version, AlternativeSemVerSource = source };
-
 }

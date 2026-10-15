@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "83cccc0773c398b779a03e1f69f1c6ded4bf0a40dfdb943ab540541b9404ffc7",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
+        "sourceDigest": "186d4fa8c2170d65fa1019194e63f07b5b21ffcc0b47cff9a376775cf8246e98",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "923d71197af218c54374d2df99fd2e147186e65a615caea78dca6a6855adddbe",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
+        "sourceDigest": "908a573ffefa193c630ace606bd5ba17b86a6890d597ec11c4bc4547569772e9",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
       }
     },
     {
@@ -115,8 +115,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "303d91d7b014d592cb016e8e4cb7eecd90459bcc9af6bb3d2c54fcb12eeb9175",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
+        "sourceDigest": "3dae4679a4ba0830b5cbdd1e978604b2a9d6bbf68eab2f821a64fd8aacab0eeb",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
       }
     },
     {
