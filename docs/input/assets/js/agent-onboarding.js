@@ -1,12 +1,14 @@
 (() => {
-    const content = document.querySelector('section.content');
-    const prompt = content?.querySelector('pre code.language-text');
-    if (!prompt) return;
+    const prompt = document.querySelector('#gv-agent-setup-prompt pre code');
+    const content = prompt?.closest('section.content, #gv-content');
+    if (!prompt || !content) return;
 
     const guideUrl = new URL(window.location.href);
     guideUrl.search = '';
     guideUrl.hash = '';
-    const markdownUrl = new URL('./ai-agent-onboarding.md', guideUrl);
+    const markdownLink = content.querySelector('a[href^="/"][href$="/ai-agent-onboarding.md"]');
+    if (!markdownLink) return;
+    const markdownUrl = new URL(markdownLink.href);
     const task = `${prompt.textContent.trim()}\n\nGuide: ${guideUrl.href}\nMarkdown: ${markdownUrl.href}`;
     const toolbar = document.createElement('div');
     toolbar.className = 'gv-agent-tools';
@@ -67,11 +69,15 @@
         }));
     });
     agents.appendChild(options);
-    agents.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && agents.open) {
+            const restoreFocus = agents.contains(document.activeElement);
             agents.open = false;
-            summary.focus();
+            if (restoreFocus) summary.focus();
         }
+    });
+    agents.addEventListener('focusout', event => {
+        if (!agents.contains(event.relatedTarget)) agents.open = false;
     });
     document.addEventListener('click', event => {
         if (!agents.contains(event.target)) agents.open = false;

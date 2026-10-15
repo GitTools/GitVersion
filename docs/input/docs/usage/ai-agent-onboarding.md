@@ -14,12 +14,17 @@ Use **Copy setup prompt**, or choose your agent from **Use with an agent**, to c
 
 Open your repository in your agent and provide this prompt together with this guide's URL or a local copy:
 
+<div id="gv-agent-setup-prompt">
+
 ```text
 Read the GitVersion AI-agent onboarding guide. Inspect this repository's
 existing GitVersion installation, configuration, branch/tag history and
 release workflow. Recommend a pinned v7 distribution and minimal configuration
 that match our workflow, explaining alternatives and assumptions. Keep v6 as
 an option if we already depend on it or choose its compatibility guarantees.
+Verify that the pinned v7 artifact exists. If none is suitable, propose a
+source build from a reviewed v7 commit in a separate GitVersion checkout,
+using its pinned SDK and src/GitVersion.App; record the SHA and executable.
 
 Show proposed installation commands and file changes before applying them
 unless I have already authorized those actions. After installation, verify
@@ -38,6 +43,8 @@ commits, fetch or normalize refs merely to make a sample work, install globally,
 change authentication, publish, push or configure CI unless authorized.
 Do not read or expose secrets. Follow this repository's instructions.
 ```
+
+</div>
 
 For reproducible team use, pin the guide to a reviewed GitVersion source commit or vendor a local copy and record its revision. A URL in an instruction file does not guarantee that an agent retrieves it: explicitly ask the agent to read it and report the guide revision and tool version it used.
 
@@ -142,7 +149,7 @@ calculation:
   tag-prefix: '[vV]?'
 ```
 
-That tag prefix is already the default; do not add it unless explicitly recording it helps the team. Inspect existing tag names before changing it. Output settings belong under `output`. Use [configuration by topic][configuration-topics] and the [reference][configuration] rather than copying every resolved default into the file.
+That tag prefix is the [documented default][tag-prefix]; confirm it with the selected executable's effective configuration, and do not add it unless explicitly recording it helps the team. Inspect existing tag names before changing it. Output settings belong under `output`. Use [configuration by topic][configuration-topics] and the [reference][configuration] rather than copying every resolved default into the file.
 
 Save a candidate separately from the existing config, preserving comments and unrelated settings. Select the candidate by absolute path during checks. Do not set `next-version` or ignore history merely to force a desired example result. For a v6-to-v7 migration, emit a separate candidate with [config migrate][migration] and review the diff; in-place migration cannot preserve comments.
 
@@ -254,7 +261,7 @@ These are optional adapters to one canonical guide. Avoid copying the full proce
 
 [v6-path]: #optional-v6-compatibility-path
 
-[markdown-guide]: ./ai-agent-onboarding.md
+[markdown-guide]: /docs/usage/ai-agent-onboarding.md
 
 [requirements]: /docs/reference/requirements
 
@@ -268,7 +275,7 @@ These are optional adapters to one canonical guide. Avoid copying the full proce
 
 [nuget]: https://www.nuget.org/packages/GitVersion.Tool
 
-[getting-started]: /docs/getting-started#2-install-gitversion
+[getting-started]: /docs/getting-started#install-gitversion
 
 [cli-schema]: /docs/usage/cli/cli-schema
 
@@ -279,6 +286,8 @@ These are optional adapters to one canonical guide. Avoid copying the full proce
 [configuration-topics]: /docs/reference/configuration-topics
 
 [configuration]: /docs/reference/configuration
+
+[tag-prefix]: /docs/reference/configuration#tag-prefix
 
 [migration]: /docs/migration/v6-to-v7
 
