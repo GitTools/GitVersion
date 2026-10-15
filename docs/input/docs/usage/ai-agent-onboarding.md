@@ -32,7 +32,8 @@ the selected executable's version. For v7, run gitversion --cli-schema using
 that executable and read its JSON to discover commands, aliases, options,
 arguments and accepted values before constructing commands. If schema export
 is unavailable, use that executable's --help rather than guessing commands.
-For v7, run gitversion config validate to check the candidate first.
+For v7, run gitversion config validate --config <candidate-file> to check
+the intended candidate first, using its absolute path.
 Inspect the effective configuration, then compare baseline and candidate
 results on representative existing branches, tags and commits. Explain
 unexpected versions before adjusting settings. Report evidence, remaining
