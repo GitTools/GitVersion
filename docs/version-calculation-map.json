@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "7c8e2ea3e16fef27be9835e7d2845982d32a9b65c802804573f36cd121176a6a",
-        "reason": "Reviewed mapped C# changes since ce9f9e4f: only NOSONAR comments were added for namespace selection, serializer interface methods, credential matching, tag-cache state and null-operator source selection. No executable calculation logic changed; the overview and its examples remain accurate."
+        "sourceDigest": "e083c38fa008a84ceb8c4978a43712c8a5cd6b2c8ba4c82602c18311a25a2d4e",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "11f5a19edeeb5ee255ddb601edc53ad7e0f9d81715c02cdd9a49c2fad412fdaf",
-        "reason": "Reviewed the shared-source and BaseVersion.Source comment additions since ce9f9e4f. Tag-cache behavior, configuration serialization, candidate producers and eligibility rules are unchanged; the strategy diagram, table and examples remain accurate."
+        "sourceDigest": "66c90fe033b9988d7a44364c00324fe8939bcfb7e49ab46f25518b529d4fa8b3",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "752ab6b50fab6c78f71008c9d20a279b4a751749ec7a21bb28e37fa72e9cd102",
-        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. EffectiveBranchConfigurationFinder and its inheritance, cycle and fallback rules are unchanged, so the inheritance explanation and examples remain accurate."
+        "sourceDigest": "4adc4714f7551b08fb5925a4337b276f71c09133cae8243662ea6b3b1e3fb205",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "aba21b8c47b4e339e480ce1bca7fe6ef2d6fc8afbd269ea06a58a8846949c2b0",
-        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. IncrementStrategyFinder, message precedence, reset handling and branch minimum increments are unchanged; the increment rules and worked histories remain accurate."
+        "sourceDigest": "3406cf967c55d45004ac9457080da092a3a72c33b17f6caeff8728cb7d83e63c",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "6a42f0ae7bc27abb8899dd75ecb9dfa763efa49c2b492b5665c28958585ff242",
-        "reason": "Reviewed shared-source comments and the BaseVersion.Source null-operator explanation added since ce9f9e4f. The source expression and all candidate ordering, tie-breaking and counting-anchor logic are unchanged; the selection diagram and source-metadata examples remain accurate."
+        "sourceDigest": "01fac74a0951c924c0a39b7eee8e5a5392ce0cc1e0fb2d5bd6b61718bf626460",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "f4adbcf803915dadc02457fffdffd114c6a0a994189baf0804b807520ead7453",
-        "reason": "Reviewed shared-source NOSONAR comments added since ce9f9e4f. Mainline traversal and commit rules have no executable changes; the documented unsupported cross-mainline merge path still applies on this branch. The Mainline diagram and explanation remain accurate."
+        "sourceDigest": "99e8343c98e95b8986581335c97e3ecd6a2ff8da571af06bf57c05ca137bd19b",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "8dc02db073c90195dcf2ebdfdbd6b533d16c073d7544e96b284305d7b060f5ef",
-        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. ManualDeployment, ContinuousDelivery, ContinuousDeployment and tagged-commit processing are unchanged; the deployment table, diagram and same-history examples remain accurate."
+        "sourceDigest": "38ec15f5c0600c6fbe2d12d3a3c106f4b7e89cd3cef96d0b8bc36bc4582dc87b",
+        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
       }
     }
   ]

@@ -14,6 +14,12 @@ diagrams. A [workflow][workflows] supplies defaults, a strategy supplies a
 candidate, and a [deployment mode][deployment-modes] processes the selected
 candidate. Read each scenario together with its effective configuration.
 
+For the established v7 CLI, run `gitversion config validate --config GitVersion.yml`
+before calculating a version. This checks configuration structure, property values,
+regular expressions, and branch configuration references without accessing a Git
+backend. Validation does not calculate candidates or prove release-policy outcomes;
+inspect the effective configuration and calculate over representative history too.
+
 ## On this page
 
 - [Calculation overview][overview-section]
