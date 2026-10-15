@@ -429,6 +429,20 @@ html[data-theme="dark"] #return-to-top { background: #1f6feb; color: #ffffff; }
 }
 
 /* Adaptation of the supplied gitversion-final.html mockup for Wyam. */
+.gv-agent-tools { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; margin: 0 0 12px; }
+.gv-agent-tools button, .gv-agent-tools > a, .gv-agent-tools summary { display: inline-block; background: var(--gv-paper); color: var(--gv-ink); border: 1px solid var(--gv-line); border-radius: 7px; padding: 9px 14px; font: inherit; line-height: 1.5; cursor: pointer; text-decoration: none; }
+.gv-agent-tools button:hover, .gv-agent-tools > a:hover, .gv-agent-tools summary:hover { background: var(--gv-tint); border-color: var(--gv-purple); }
+.gv-agent-tools button:focus-visible, .gv-agent-tools > a:focus-visible, .gv-agent-tools summary:focus-visible { outline: 2px solid var(--gv-purple); outline-offset: 3px; }
+.gv-agent-tools summary::after { content: ' ▾'; }
+.gv-agent-options { position: relative; }
+.gv-agent-options-list { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; min-width: 230px; padding: 6px; background: var(--gv-paper); border: 1px solid var(--gv-line); border-radius: 7px; box-shadow: 0 8px 24px #0002; }
+.gv-agent-options-list button { display: block; width: 100%; text-align: left; border-color: transparent; }
+.gv-agent-status { color: var(--gv-muted); font-size: 14px; }
+.gv-agent-copy-fallback { display: block; width: 100%; min-height: 180px; margin: 0 0 20px; padding: 12px; border: 1px solid var(--gv-line); border-radius: 7px; color: var(--gv-ink); background: var(--gv-paper); }
+.gv-agent-copy-fallback[hidden] { display: none; }
+@media (max-width: 480px) {
+    .gv-agent-options-list { position: static; margin-top: 6px; min-width: 0; }
+}
 .gv-mockup h2 { text-align: center; font-size: 30px; letter-spacing: -.8px; margin: 0 0 36px; }
 .gv-mockup h3 { font-size: 20px; letter-spacing: -.4px; }
 .gv-banner { background: linear-gradient(120deg, #682a7b, #7e22ce 55%, #551f63); padding: 72px 0 76px; text-align: center; }

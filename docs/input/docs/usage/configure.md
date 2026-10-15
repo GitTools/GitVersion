@@ -4,6 +4,8 @@ Order: 2
 ---
 Start with a workflow and override only the settings your repository needs.
 
+Use [AI-agent onboarding][ai-agent-onboarding] for a guided v7 setup that compares candidate settings against your existing branches, tags and commits.
+
 The old interactive `init` configuration tool was [removed in v6][removed-in-v6]. Create and edit the YAML file directly.
 
 ## Create a configuration file
@@ -69,3 +71,5 @@ Use [configuration by topic][configuration-by-topic] to find the relevant settin
 [configuration-by-topic]: /docs/reference/configuration-topics
 
 [configuration-validation]: /docs/usage/cli/arguments#validate-configuration
+
+[ai-agent-onboarding]: /docs/usage/ai-agent-onboarding

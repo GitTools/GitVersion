@@ -7,6 +7,8 @@ Description: How to install the GitVersion Command Line Interface
 GitVersion's command line interface can be installed and consumed in many
 different ways. Read about the options below.
 
+For an agent-assisted setup, follow [AI-agent onboarding][ai-agent-onboarding] to select a pinned v7 distribution, preserve existing installations and test configuration against local history. It also includes an optional v6 path.
+
 ### .NET Global Tool
 
 GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
@@ -174,3 +176,5 @@ of writing: Linux, macOS, Windows).
 [choco]: https://chocolatey.org/packages/GitVersion.Portable
 
 [chocolatey]: https://chocolatey.org
+
+[ai-agent-onboarding]: /docs/usage/ai-agent-onboarding

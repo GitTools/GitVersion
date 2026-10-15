@@ -120,6 +120,12 @@ public static class VersionedDocs
             EnvironmentVariables = new Dictionary<string, string> { ["DOTNET_ROLL_FORWARD"] = "Major" }
         });
         PrefixLinks(destination, edition.BasePath);
+        // Publish the source used by this edition instead of maintaining a second guide.
+        var onboardingSource = Path.Combine(input, "docs/usage/ai-agent-onboarding.md");
+        if (File.Exists(onboardingSource))
+        {
+            File.Copy(onboardingSource, Path.Combine(destination, "docs/usage/ai-agent-onboarding.md"), true);
+        }
     }
 
     private static void WriteManifests(string root, string output, PreparedEdition[] editions)
