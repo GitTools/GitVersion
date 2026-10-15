@@ -234,6 +234,9 @@ commits.
 
 Both directions recognize the configured branch patterns and work after
 deleting the source ref, provided the merge message still identifies it.
+The supported roles are the `main` and `support` configuration entries;
+their regular expressions can match Git branch names such as `trunk` and
+`maintenance/1.x`. Both matching configurations must have `is-main-branch: true`.
 Arbitrary merges between other distinct main branches, including two support
 branches, remain unsupported. The forward path compares independent progress
 within a release line and transfers ordered increments from older support lines;

@@ -534,9 +534,11 @@ public class MainlineSupportMergeScenarios : TestBase
         nextVersion.CommitCountSourceDistance.ShouldBe("1");
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public void ConfiguredMainAndSupportNamesWorkInBothDirections(bool mergeMainIntoSupport)
+    [TestCase(false, false)]
+    [TestCase(false, true)]
+    [TestCase(true, false)]
+    [TestCase(true, true)]
+    public void ConfiguredMainAndSupportNamesWorkInBothDirections(bool mergeMainIntoSupport, bool deleteSourceRef)
     {
         using var fixture = new EmptyRepositoryFixture("trunk");
         fixture.MakeATaggedCommit("1.0.0");
@@ -557,6 +559,11 @@ public class MainlineSupportMergeScenarios : TestBase
             .WithBranch("main", builder => builder.WithRegularExpression("^trunk$"))
             .WithBranch("support", builder => builder.WithRegularExpression("^maintenance[/-]"))
             .Build();
+
+        if (deleteSourceRef)
+        {
+            fixture.Repository.Branches.Remove(mergeMainIntoSupport ? "trunk" : "maintenance/1.x");
+        }
 
         var version = fixture.GetVersion(configuration);
 
