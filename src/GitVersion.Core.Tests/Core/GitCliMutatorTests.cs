@@ -230,7 +230,7 @@ public class GitCliMutatorTests : TestBase
 
     private sealed class FailingGitCliExecutor(string standardError) : IGitCliExecutor
     {
-        public GitCliResult Execute(string? workingDirectory, IReadOnlyList<string> arguments) => new(128, string.Empty, standardError);
+        GitCliResult IGitCliExecutor.Execute(string? workingDirectory, IReadOnlyList<string> arguments) => new(128, string.Empty, standardError);
     }
 
     [Test]
