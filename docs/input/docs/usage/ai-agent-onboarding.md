@@ -182,6 +182,8 @@ gitversion --target-path <repository> --config <candidate-file> --output json --
 
 Run each sample with the baseline and the candidate. When no baseline file exists, omit `--config` for the baseline and record that defaults were used. Keep the same selected file across samples rather than accidentally loading historical configuration. A commit reachable from multiple branches needs explicit branch context; a detached release tag may not reproduce the release branch's calculation.
 
+Use the full commit SHA for `--commit`. After every baseline and candidate run, verify that the `Sha` reported in stdout JSON exactly matches that requested SHA. If it differs, discard the result and investigate commit selection and execution context before comparing versions. Do not change refs or history to force a match.
+
 Capture exit status, stdout JSON and stderr separately. Keep build-server context out of local experiments and use JSON without assembly/project/WiX update options. `--no-fetch`, `--no-normalize` and `--no-cache` avoid fetching, build-server normalization and cache writes during comparison. For uncertain environments, use an isolated standalone copy with the existing relevant refs/history, preserving branch identity; do not normalize or synthesize refs just to make the calculation work.
 
 Compare `SemVer`, `FullSemVer`, `Sha`, `BranchName`, prerelease fields and `VersionSourceDistance` with the user's expectations. Check [variable meanings][variables] and the actual package/assembly consumer's constraints. A prerelease number is not a count of CI runs.
