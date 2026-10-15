@@ -26,6 +26,7 @@ GitVersion works on Windows, Linux, and Mac.
 ## Quick Links
 
 * [Documentation][docs]
+* [AI-agent onboarding (v7)][ai-agent-onboarding]
 * [Contributing][contribute]
 * [Why GitVersion][why]
 * [Usage][usage]
@@ -63,6 +64,8 @@ from The Noun Project.
 [sonar-badge]: https://sonarcloud.io/api/project_badges/measure?project=GitTools_GitVersion&metric=alert_status
 
 [docs]: https://gitversion.net/docs/
+
+[ai-agent-onboarding]: https://gitversion.net/7.0/docs/usage/ai-agent-onboarding
 
 [gh-rel]: https://github.com/GitTools/GitVersion/releases/latest
 

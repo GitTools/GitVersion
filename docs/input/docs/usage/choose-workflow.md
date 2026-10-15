@@ -4,6 +4,8 @@ Order: 1
 ---
 Choose defaults that match how you merge and release. A workflow is a configuration preset, not an instruction to change your branching process.
 
+[AI-agent onboarding][ai-agent-onboarding] helps an agent recommend a preset from your release process and verify the result against actual history before adopting it.
+
 | Workflow | Starting point | Configuration value |
 | --- | --- | --- |
 | GitHub Flow | A main branch with short-lived branches merged through pull requests. | `GitHubFlow/v1` |
@@ -55,3 +57,5 @@ Read [workflows, modes, and strategies][workflows-modes-and-strategies] before c
 [built-in-configurations]: /docs/reference/configuration#global-configuration
 
 [create-and-inspect-configuration]: /docs/usage/configure
+
+[ai-agent-onboarding]: /docs/usage/ai-agent-onboarding

@@ -14,3 +14,7 @@
 <link rel="stylesheet" href="@Context.GetLink("/assets/css/redesign.css")?v=@Context.String("DocsAssetVersion", "current")">
 <script src="@Context.GetLink("/assets/js/theme.js")"></script>
 <script src="@Context.GetLink("/assets/js/versions.js")" defer></script>
+@if (Model.Bool("AgentOnboarding", false))
+{
+    <script src="@Context.GetLink("/assets/js/agent-onboarding.js")?v=@Context.String("DocsAssetVersion", "current")" defer></script>
+}

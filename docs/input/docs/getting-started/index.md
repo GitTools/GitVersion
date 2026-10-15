@@ -5,6 +5,8 @@ Description: Install GitVersion and calculate your first version.
 ---
 GitVersion reads your Git history and configuration to produce version variables. It does not create a release or tag for you.
 
+Working with a coding agent? Use [AI-agent onboarding][ai-agent-onboarding] to choose a v7 installation and verify configuration against your repository's history, with v6 as an optional path.
+
 ## 1. Prepare your environment
 
 For the v7 .NET tool, use the .NET 10 SDK. See [installation options][installation-options] for supported platforms and alternatives.
@@ -94,3 +96,5 @@ dotnet-gitversion --show-config
 [understand-the-calculation]: /docs/learn/how-it-works
 
 [diagnose-unexpected-results]: /docs/learn/faq
+
+[ai-agent-onboarding]: /docs/usage/ai-agent-onboarding

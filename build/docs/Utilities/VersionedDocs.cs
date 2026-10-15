@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using AngleSharp.Html.Parser;
 using Cake.Wyam;
 using Path = System.IO.Path;
@@ -120,6 +121,26 @@ public static class VersionedDocs
             EnvironmentVariables = new Dictionary<string, string> { ["DOTNET_ROLL_FORWARD"] = "Major" }
         });
         PrefixLinks(destination, edition.BasePath);
+        // Export this edition's guide with links that also work when copied outside the site.
+        var onboardingSource = Path.Combine(input, "docs/usage/ai-agent-onboarding.md");
+        if (File.Exists(onboardingSource))
+        {
+            var markdown = File.ReadAllText(onboardingSource).ReplaceLineEndings("\n");
+            var lines = markdown.Split('\n');
+            if (lines[0].TrimEnd(' ', '\t') == "---")
+            {
+                var frontMatterEnd = Array.FindIndex(lines, 1, line => line.TrimEnd(' ', '\t') == "---");
+                if (frontMatterEnd >= 0)
+                {
+                    markdown = string.Join('\n', lines[(frontMatterEnd + 1)..]).TrimStart('\n');
+                }
+            }
+
+            markdown = Regex.Replace(markdown, @"(?m)^(\[[^\]\r\n]+\]: )(/(?!/)\S+)",
+                match => match.Groups[1].Value + "https://gitversion.net" + edition.BasePath + match.Groups[2].Value,
+                RegexOptions.None, TimeSpan.FromSeconds(1));
+            File.WriteAllText(Path.Combine(destination, "docs/usage/ai-agent-onboarding.md"), markdown);
+        }
     }
 
     private static void WriteManifests(string root, string output, PreparedEdition[] editions)
