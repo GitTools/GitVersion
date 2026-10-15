@@ -1,10 +1,23 @@
 flowchart TD
     Enabled["Mainline enabled"] --> Tags["Gather eligible tags and branch context"]
     Tags --> Traverse["Traverse commits;<br/>inspect branch points and merges"]
-    Traverse --> State["Build commit state and recursive iterations"]
+    Traverse --> MainPair{"Recognized merge between<br/>two configured main branches?"}
+    MainPair -->|No| State["Build commit state and recursive iterations"]
+    MainPair -->|Yes| Direction{"Configured main/support pair?"}
+    Direction -->|Other pair| Unsupported["Unsupported mainline merge"]
+    Direction -->|Support into main| Scope["Select newly introduced support history;<br/>exclude history already received by main"]
+    Scope --> Histories["Build scoped support history and, when needed,<br/>its independent full history before calculation"]
+    Histories --> State
+    Direction -->|Main into support| Recursive["Recursively calculate main history<br/>with its eligible tags and increment controls"]
+    Recursive --> State
     State --> Pre["Enrich version and increment context"]
     Pre --> Rules["Apply matching trunk/non-trunk rules"]
     Rules --> Post["Clean up context after each commit"]
     Post --> Fold["Fold baseline operands<br/>and increment operators"]
-    Fold --> Candidate["Mainline candidate enters shared selection"]
-    Traverse --> Unsupported["Recognized merge between two main branches:<br/>currently unsupported"]
+    Fold --> Support{"Support contribution<br/>into main?"}
+    Support -->|No| Candidate["Mainline candidate enters shared selection"]
+    Support -->|Yes| ReleaseLine{"Independent source baseline<br/>on same or newer release line?"}
+    ReleaseLine -->|Yes| Floor["Compare independent numeric versions;<br/>retain main's merge and counting anchor"]
+    ReleaseLine -->|No| Ordered["Apply support's ordered increments<br/>to main's newer baseline"]
+    Floor --> Candidate
+    Ordered --> Candidate
