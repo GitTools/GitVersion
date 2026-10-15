@@ -13,7 +13,7 @@ public static class ConfigurationFileLocatorTests
         [TestCase(true)]
         public void DiscoveryIsIndependentOfDirectoryEnumerationOrder(bool reverse)
         {
-            var directory = Path.GetTempPath();
+            var directory = Path.Combine(SysEnv.CurrentDirectory, "virtual-config-directory");
             var canonical = Path.Combine(directory, "GitVersion.yml");
             var lowerCase = Path.Combine(directory, "gitversion.yml");
             var alternative = Path.Combine(directory, "GitVersion.yaml");

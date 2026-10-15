@@ -111,6 +111,7 @@ internal class Arguments
             },
 
             Diag = this.Diag,
+            IsCliSchema = this.IsCliSchema,
             IsVersion = this.IsVersion,
             IsHelp = this.IsHelp,
 

@@ -89,7 +89,11 @@ public class ConfigurationResolverTests : TestBase
         var lines = new List<string> { "calculation:" };
         for (var index = 0; index < sections.Length; index++)
         {
-            var value = index == sections.Length - 1 ? path.StartsWith("ignore.", StringComparison.Ordinal) ? " ['[']" : " '['" : "";
+            var value = "";
+            if (index == sections.Length - 1)
+            {
+                value = path.StartsWith("ignore.", StringComparison.Ordinal) ? " ['[']" : " '['";
+            }
             lines.Add(new string(' ', (index + 1) * 2) + sections[index] + ":" + value);
         }
         var resolver = new ConfigurationResolver(new ConfigurationSerializer());

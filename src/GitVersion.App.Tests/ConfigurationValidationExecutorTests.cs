@@ -62,10 +62,10 @@ public class ConfigurationValidationExecutorTests
 
     private sealed class InvalidYamlSerializer : IConfigurationSerializer
     {
-        public T Deserialize<T>(string input) => throw new YamlException(new Mark(10, 2, 3), new Mark(11, 2, 4), "secret configuration value");
+        T IConfigurationSerializer.Deserialize<T>(string input) => throw new YamlException(new Mark(10, 2, 3), new Mark(11, 2, 4), "secret configuration value");
 
-        public string Serialize(object graph) => throw new AssertionException("Validation must not serialize configuration output.");
+        string IConfigurationSerializer.Serialize(object graph) => throw new AssertionException("Validation must not serialize configuration output.");
 
-        public string SerializeProperty(IGitVersionConfiguration configuration, string path) => throw new AssertionException("Validation must not query configuration values.");
+        string IConfigurationSerializer.SerializeProperty(IGitVersionConfiguration configuration, string path) => throw new AssertionException("Validation must not query configuration values.");
     }
 }

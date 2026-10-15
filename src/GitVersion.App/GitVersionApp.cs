@@ -9,8 +9,7 @@ internal class GitVersionApp(
     ConfigurationValidationExecutor configurationValidationExecutor,
     FeatureSelections selections,
     ILogger<GitVersionApp> logger,
-    IOptions<GitVersionOptions> options,
-    Arguments arguments)
+    IOptions<GitVersionOptions> options)
 {
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
     private readonly Lazy<IGitVersionExecutor> gitVersionExecutor = gitVersionExecutor.NotNull();
@@ -21,12 +20,12 @@ internal class GitVersionApp(
     {
         try
         {
-            if (arguments.IsCliSchema)
+            var gitVersionOptions = this.options.Value;
+            if (gitVersionOptions.IsCliSchema)
             {
                 SysEnv.ExitCode = 0;
                 return Task.CompletedTask;
             }
-            var gitVersionOptions = this.options.Value;
             if (gitVersionOptions.ConfigurationInfo.Validate)
             {
                 SysEnv.ExitCode = configurationValidationExecutor.Execute(gitVersionOptions);

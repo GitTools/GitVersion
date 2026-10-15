@@ -88,19 +88,7 @@ internal class ArgumentParser(
 
         if (parseResult.CommandResult.Command == options.Validate)
         {
-            var unsupported = rootCommand.Options.Except(options.Validate.Options)
-                .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
-            var format = parseResult.GetValue(options.ValidationFormat);
-            return new Arguments
-            {
-                ValidateConfiguration = true,
-                ConfigurationFile = parseResult.GetValue(options.Config),
-                TargetPath = parseResult.GetValue(options.TargetPath) ?? parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory,
-                ValidationJson = format == "json",
-                ValidationOverrides = parseResult.GetValue(options.OverrideConfig) ?? [],
-                ValidationError = unsupported is not null ? $"Option '{unsupported.Name}' cannot be used with 'config validate'."
-                    : format is not null and not "json" ? "config validate --format supports only json." : null
-            };
+            return MapValidationValues(parseResult, options, rootCommand);
         }
 
         if (parseResult.CommandResult.Command == options.Migrate)
@@ -125,6 +113,32 @@ internal class ArgumentParser(
             var option = rootCommand.Options.SingleOfType<T>();
             return parseResult.GetResult(option) is { Implicit: false };
         }
+    }
+
+    private static Arguments MapValidationValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
+    {
+        var unsupported = rootCommand.Options.Except(options.Validate.Options)
+            .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
+        var format = parseResult.GetValue(options.ValidationFormat);
+        string? error = null;
+        if (unsupported is not null)
+        {
+            error = $"Option '{unsupported.Name}' cannot be used with 'config validate'.";
+        }
+        else if (format is not null and not "json")
+        {
+            error = "config validate --format supports only json.";
+        }
+
+        return new Arguments
+        {
+            ValidateConfiguration = true,
+            ConfigurationFile = parseResult.GetValue(options.Config),
+            TargetPath = parseResult.GetValue(options.TargetPath) ?? parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory,
+            ValidationJson = format == "json",
+            ValidationOverrides = parseResult.GetValue(options.OverrideConfig) ?? [],
+            ValidationError = error
+        };
     }
 
     private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options, bool schemaRequested)

@@ -5,6 +5,8 @@ namespace GitVersion;
 /// <summary>Top-level options object that aggregates all settings used to configure a GitVersion execution.</summary>
 public class GitVersionOptions
 {
+    internal bool IsCliSchema { get; init; }
+
     /// <summary>Gets or sets the working directory from which GitVersion should operate.</summary>
     public string WorkingDirectory { get; set; } = SysEnv.CurrentDirectory;
 

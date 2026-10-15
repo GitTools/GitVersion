@@ -61,55 +61,78 @@ internal static class ConfigurationInputValidator
         type = Nullable.GetUnderlyingType(type) ?? type;
         if (type == typeof(GitVersion.VersionCalculation.VersionStrategies[]))
         {
-            try
-            {
-                var strategies = new ConfigurationSerializer().Deserialize<GitVersion.VersionCalculation.VersionStrategies[]>(ConfigurationSerializer.SerializeLegacy(value));
-                if (strategies.Any(strategy => !Enum.IsDefined(strategy)))
-                {
-                    throw Error(path, "Expected supported version strategies.");
-                }
-                return;
-            }
-            catch (Exception exception) when (exception is SharpYaml.YamlException or ArgumentException)
+            ValidateStrategies(value, path);
+            return;
+        }
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        {
+            ValidateDictionary(value, type.GenericTypeArguments[1], path, version);
+            return;
+        }
+        if (type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+        {
+            var elementType = type.IsArray ? type.GetElementType()! : type.GenericTypeArguments[0];
+            ValidateSequence(value, elementType, path, version);
+            return;
+        }
+
+        ValidateLeaf(value, type, path, version);
+    }
+
+    private static void ValidateStrategies(object value, string path)
+    {
+        try
+        {
+            var strategies = new ConfigurationSerializer().Deserialize<GitVersion.VersionCalculation.VersionStrategies[]>(ConfigurationSerializer.SerializeLegacy(value));
+            if (strategies.Any(strategy => !Enum.IsDefined(strategy)))
             {
                 throw Error(path, "Expected supported version strategies.");
             }
         }
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        catch (Exception exception) when (exception is SharpYaml.YamlException or ArgumentException)
         {
-            if (value is not IReadOnlyDictionary<object, object?> map)
-            {
-                throw Error(path, "Expected a mapping.");
-            }
-
-            foreach (var (key, item) in map)
-            {
-                if (item is null)
-                {
-                    throw Error(path + "." + key, "Expected a non-null mapping value.");
-                }
-                ValidateValue(item, type.GenericTypeArguments[1], path + "." + key, version);
-            }
+            throw Error(path, "Expected supported version strategies.");
         }
-        else if (type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+    }
+
+    private static void ValidateDictionary(object value, Type elementType, string path, ConfigurationVersion version)
+    {
+        if (value is not IReadOnlyDictionary<object, object?> map)
         {
-            if (value is not IEnumerable sequence || value is string or IDictionary or IReadOnlyDictionary<object, object?>)
-            {
-                throw Error(path, "Expected a sequence.");
-            }
-
-            var list = sequence.Cast<object?>().ToArray();
-            var elementType = type.IsArray ? type.GetElementType()! : type.GenericTypeArguments[0];
-            for (var index = 0; index < list.Length; index++)
-            {
-                if (list[index] is null)
-                {
-                    throw Error($"{path}[{index}]", "Expected a non-null sequence item.");
-                }
-                ValidateValue(list[index], elementType, $"{path}[{index}]", version);
-            }
+            throw Error(path, "Expected a mapping.");
         }
-        else if (type == typeof(string))
+
+        foreach (var (key, item) in map)
+        {
+            if (item is null)
+            {
+                throw Error(path + "." + key, "Expected a non-null mapping value.");
+            }
+            ValidateValue(item, elementType, path + "." + key, version);
+        }
+    }
+
+    private static void ValidateSequence(object value, Type elementType, string path, ConfigurationVersion version)
+    {
+        if (value is not IEnumerable sequence || value is string or IDictionary or IReadOnlyDictionary<object, object?>)
+        {
+            throw Error(path, "Expected a sequence.");
+        }
+
+        var list = sequence.Cast<object?>().ToArray();
+        for (var index = 0; index < list.Length; index++)
+        {
+            if (list[index] is null)
+            {
+                throw Error($"{path}[{index}]", "Expected a non-null sequence item.");
+            }
+            ValidateValue(list[index], elementType, $"{path}[{index}]", version);
+        }
+    }
+
+    private static void ValidateLeaf(object value, Type type, string path, ConfigurationVersion version)
+    {
+        if (type == typeof(string))
         {
             if (value is not string && value is not ValueType)
             {
@@ -118,8 +141,7 @@ internal static class ConfigurationInputValidator
         }
         else if (type.IsEnum)
         {
-            var typedEnum = type.IsInstanceOfType(value) && Enum.IsDefined(type, value);
-            if (!typedEnum && (value is not string text || !Enum.GetNames(type).Contains(text, StringComparer.OrdinalIgnoreCase)))
+            if (!IsSupportedEnum(value, type))
             {
                 throw Error(path, "Expected a supported enum name.");
             }
@@ -147,6 +169,10 @@ internal static class ConfigurationInputValidator
             throw Error(path, "Expected a mapping.");
         }
     }
+
+    private static bool IsSupportedEnum(object value, Type type)
+        => type.IsInstanceOfType(value) && Enum.IsDefined(type, value)
+           || value is string text && Enum.GetNames(type).Contains(text, StringComparer.OrdinalIgnoreCase);
 
     private static ConfigurationValidationException Error(string path, string message)
         => new("GVCONFIG_PROPERTY", path, message);

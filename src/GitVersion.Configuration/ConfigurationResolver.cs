@@ -21,8 +21,22 @@ internal sealed class ConfigurationResolver(IConfigurationSerializer serializer)
             ConfigurationInputValidator.Validate(runtime, version);
         }
 
+        var workflow = GetWorkflow(file, runtime);
+
+        IConfigurationBuilder builder = workflow is null ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+        var workflowDocument = ResolveWorkflow(workflow);
+        foreach (var item in new[] { workflowDocument, file, runtime }.OfType<IReadOnlyDictionary<object, object?>>())
+        {
+            builder.AddOverride(item);
+        }
+
+        return builder.Build();
+    }
+
+    private static string? GetWorkflow(params IReadOnlyDictionary<object, object?>?[] documents)
+    {
         string? workflow = null;
-        foreach (var item in new[] { file, runtime })
+        foreach (var item in documents)
         {
             if (item?.TryGetValue("workflow", out var value) == true && value is not null)
             {
@@ -30,27 +44,23 @@ internal sealed class ConfigurationResolver(IConfigurationSerializer serializer)
             }
         }
 
-        IConfigurationBuilder builder = workflow is null ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+        return workflow;
+    }
+
+    private static IReadOnlyDictionary<object, object?>? ResolveWorkflow(string? workflow)
+    {
         if (workflow is not null && string.IsNullOrWhiteSpace(workflow))
         {
             throw new ConfigurationValidationException("GVCONFIG_WORKFLOW", "workflow", "Expected an embedded workflow name or null for default configuration.");
         }
-        IReadOnlyDictionary<object, object?>? workflowDocument;
         try
         {
             var embedded = WorkflowManager.GetOverrideConfiguration(workflow);
-            workflowDocument = embedded is null ? null : ConfigurationDocumentMapper.NormalizeInternal(embedded, "embedded workflow");
+            return embedded is null ? null : ConfigurationDocumentMapper.NormalizeInternal(embedded, "embedded workflow");
         }
         catch (Exception exception) when (exception is ArgumentException or InvalidOperationException)
         {
             throw new ConfigurationValidationException("GVCONFIG_WORKFLOW", "workflow", "Unknown workflow. Select an embedded workflow.");
         }
-
-        foreach (var item in new[] { workflowDocument, file, runtime }.OfType<IReadOnlyDictionary<object, object?>>())
-        {
-            builder.AddOverride(item);
-        }
-
-        return builder.Build();
     }
 }

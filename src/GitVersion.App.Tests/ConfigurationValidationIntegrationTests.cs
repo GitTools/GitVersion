@@ -40,6 +40,7 @@ public class ConfigurationValidationIntegrationTests
     [TestCase("calculation:\n  unknown-key: secret-value", "GVCONFIG_PROPERTY")]
     [TestCase("output:\n  tag-prefix: secret-value", "GVCONFIG_LAYOUT")]
     [TestCase("tag-prefix: secret-value", "GVCONFIG_LAYOUT")]
+    [TestCase("calculation:\n  secret-value: true\noutput:\n  secret-value: true", "GVCONFIG_LAYOUT")]
     [TestCase("calculation:\n  increment: secret-value", "GVCONFIG_PROPERTY")]
     [TestCase("output:\n  update-build-number: secret-value", "GVCONFIG_PROPERTY")]
     [TestCase("output:\n  tag-pre-release-weight: secret-value", "GVCONFIG_PROPERTY")]
