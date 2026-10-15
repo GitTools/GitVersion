@@ -16,9 +16,9 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         {
             1 => (3, 1, true, "0.0.5", 4),
             2 => (3, 1, false, "0.0.7", 4),
-            3 => (2, 2, true, "0.0.5", 3),
+            3 => (2, 2, true, "0.0.4", 3),
             4 => (2, 2, false, "0.0.7", 3),
-            5 => (2, 5, true, "0.0.8", 3),
+            5 => (2, 5, true, "0.0.7", 3),
             _ => throw new ArgumentOutOfRangeException(nameof(scenario))
         };
         using var fixture = new EmptyRepositoryFixture();
@@ -176,7 +176,7 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
 
         var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe("0.0.7");
+        version.FullSemVer.ShouldBe("0.0.6");
         version.CommitCountSourceSha.ShouldBe(mainTip);
         version.CommitCountSourceDistance.ShouldBe("3");
     }
@@ -216,8 +216,8 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         fixture.GetVersion(configuration).FullSemVer.ShouldBe(expectedVersion);
     }
 
-    [TestCase(true, "2.0.1")]
-    [TestCase(false, "3.0.0")]
+    [TestCase(true, "1.0.5")]
+    [TestCase(false, "2.0.0")]
     public void TaggedSourceBumpRespectsPrevention(bool preventTaggedIncrement, string expectedVersion)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -226,7 +226,7 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         fixture.MakeACommit("Released API +semver: major");
         fixture.ApplyTag("1.0.5");
         fixture.Checkout(MainBranch);
-        fixture.MakeATaggedCommit("2.0.0");
+        fixture.MakeATaggedCommit("1.0.4");
         fixture.MergeNoFF("support/1.x");
         var configuration = GetConfigurationBuilder()
             .WithBranch("support", builder => builder.WithPreventIncrementWhenCurrentCommitTagged(preventTaggedIncrement)).Build();
@@ -302,12 +302,12 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe("1");
     }
 
-    [TestCase(false, false, true, "1.1.1")]
-    [TestCase(true, false, true, "1.1.1")]
-    [TestCase(false, true, true, "1.1.2")]
-    [TestCase(true, true, true, "1.1.2")]
-    [TestCase(false, false, false, "1.1.2")]
-    [TestCase(true, false, false, "1.1.2")]
+    [TestCase(false, false, true, "1.1.0")]
+    [TestCase(true, false, true, "1.1.0")]
+    [TestCase(false, true, true, "1.1.1")]
+    [TestCase(true, true, true, "1.1.1")]
+    [TestCase(false, false, false, "1.1.0")]
+    [TestCase(true, false, false, "1.1.0")]
     public void MainMergedIntoSupportIsNotReplayedWhenSupportReturns(bool tagMain, bool postMergeCommit,
         bool preventReceiverIncrement, string expectedVersion)
     {
@@ -341,13 +341,13 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe(postMergeCommit ? "4" : "3");
     }
 
-    [TestCase(false, "2.0.1", "4")]
-    [TestCase(true, "2.0.2", "5")]
+    [TestCase(false, "2.0.0", "4")]
+    [TestCase(true, "2.0.1", "5")]
     public void SupportRoundTripDoesNotReplayFeatureHistoryAlreadyReleasedOnMain(
         bool postMergeCommit, string expectedVersion, string expectedCount)
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeATaggedCommit("1.0.0");
+        var rootTag = fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo("support/1.x");
         fixture.MakeACommit();
         fixture.Checkout(MainBranch);
@@ -370,7 +370,7 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
 
         version.FullSemVer.ShouldBe(expectedVersion);
-        version.SemVerSourceSha.ShouldBe(mainTip);
+        version.SemVerSourceSha.ShouldBe(postMergeCommit ? rootTag : mainTip);
         version.CommitCountSourceSha.ShouldBe(mainTip);
         version.CommitCountSourceDistance.ShouldBe(expectedCount);
     }

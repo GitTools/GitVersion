@@ -176,17 +176,13 @@ calculation:
     - Mainline
 ```
 
-Mainline supports merging a configured `support` branch into the configured
-`main` branch. It keeps main's calculated baseline and applies the effective
-Mainline increments from newly merged support history in order. A lower support
-tag does not replace main's baseline. Source history already covered by an
-eligible tag or an earlier merge is not replayed as another commit-message bump.
-If main was merged into support first, returning support to main applies only
-the newly introduced support history; main's existing increments are not replayed.
-When both branches advance independently within the same release line, support's
-calculated version is a floor for main's merge result. Its patch progress is not
-added on top of main's independent patch progress. Merges from an older support
-release line retain the ordered increment behavior against main's newer baseline.
+Mainline supports merging any pair of branches marked `is-main-branch: true`,
+including main/support, two support branches, and custom configuration entries.
+Each branch's version is calculated independently, using its own ordered
+increments and eligible tags. The higher numeric version wins. Neither the
+`main` configuration key nor the direction of the merge gives a branch priority.
+Older support-line increments are not replayed onto a newer main version.
+Repeated merges and round trips compare versions without adding work twice.
 
 For an untagged history with two commits on main followed by two commits on
 support, merging support into main produces `0.0.4-3` in ContinuousDelivery or
@@ -203,46 +199,34 @@ or prerelease suffix calculation.
 
 For example, branch from `1.0.0`, tag support at `1.0.5`, tag main at `2.0.0`,
 then merge support into main with `git merge --no-ff support/1.x`. With default
-Patch increments, the core version is `2.0.1`. The default ContinuousDelivery
-mode gives `2.0.1-2`; explicitly selecting ContinuousDeployment gives `2.0.1`.
+merge-prevention settings, the core version is `2.0.0`. The default
+ContinuousDelivery mode gives `2.0.0-2`; ContinuousDeployment gives `2.0.0`.
 Main's `2.0.0` tag supplies the semantic and counting sources. The two commits
 beyond that counting source are support's commit and the merge commit.
 
-The support increment and its enabled commit-message rules determine each
-contribution. A reset suppresses pending increments without undoing numeric
-increments already calculated for earlier support commits. Main's
-`prevent-increment.of-merged-branch` suppresses main's own
-branch increment at this merge; support's `prevent-increment.when-branch-merged`
-suppresses all support contributions. Enabled bump messages on the merge itself
-still apply to the final pending contribution. A higher eligible support tag
-provides a numeric floor before subsequent support increments; a tag on the
-source tip provides a floor for the final merge contribution.
+The receiver's `prevent-increment.of-merged-branch` suppresses its own branch
+increment at the merge; GitFlow enables this for both main and support. The
+source's `prevent-increment.when-branch-merged` suppresses its calculated
+contribution. Enabled bump messages on the merge itself still apply to the
+receiver's candidate before comparison. Source increments are already included
+in its independent version and are not applied again to the receiver. Eligible
+source tags normally consume the tip's pending increment and bump message;
+`prevent-increment.when-current-commit-tagged: false` retains them. The shared
+final tag floor can still select a higher reachable tag when source increments
+are prevented.
 
-The reverse direction, merging the configured main branch into support, uses
-the existing recursive Mainline calculation for main's history. For the same
-tagged graph (`2.0.0` on main and `1.0.5` on support), the result is also core
-version `2.0.1`, or `2.0.1-2` in ContinuousDelivery. Main's tag supplies both
-sources and the counting distance is two. Eligible source tags consume their
-commit-message bumps by default. Setting main's
-`prevent-increment.when-current-commit-tagged` to `false` keeps those bumps
-active. Newer source commits and enabled merge-message bumps still apply.
-Support's `prevent-increment.of-merged-branch` suppresses its own
-increment, and main's `prevent-increment.when-branch-merged` suppresses main's
-pending increment. A reset message on main suppresses pending increments, but
-does not undo numeric version increments already calculated for earlier main
-commits.
+Reversing the tagged example also gives core version `2.0.0`, or `2.0.0-2` in
+ContinuousDelivery. Main's higher tag supplies the semantic version while
+support's pre-merge tip remains the counting source. The distance is two in
+either direction. Equal numeric candidates keep the receiver's semantic source.
+Counting source selection and deployment-mode processing are independent of
+which branch supplies the higher numeric version.
 
-Both directions recognize the configured branch patterns and work after
-deleting the source ref, provided the merge message still identifies it.
-The supported roles are the `main` and `support` configuration entries;
-their regular expressions can match Git branch names such as `trunk` and
-`maintenance/1.x`. Both matching configurations must have `is-main-branch: true`.
-Arbitrary merges between other distinct main branches, including two support
-branches, remain unsupported. The forward path compares independent progress
-within a release line and transfers ordered increments from older support lines;
-the reverse path recursively calculates main's history. This is partial
-support for multi-mainline histories. The [regression scenarios][support-merge-tests]
-assert versions, source metadata, increment controls, and the scope limits.
+Branch regex patterns can match names such as `trunk` and `maintenance/1.x`.
+Deleting a source ref still works if the merge message identifies the source
+and merge-message tracking is enabled. Merges with multiple source parents
+remain unsupported. The [regression scenarios][support-merge-tests] assert
+versions, source metadata, increment controls, and repeated/nested histories.
 
 ## Nightly Builds
 

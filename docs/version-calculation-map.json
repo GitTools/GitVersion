@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "2a74e1f445844478fae2d9208887a689248a7f17a3d2df4546b271832575482e",
-        "reason": "Reviewed the relocation of the unchanged Git CLI repository-not-found and HTTP-status expressions into RegexPatterns.Git and its cache registry. The HTTP matcher retains case-insensitive multiline and CRLF matching. Tagged-commit shortcuts, effective configurations, incremented candidates, deployment dispatch and the final numeric tag floor are unchanged; the calculation overview and flowchart remain accurate."
+        "sourceDigest": "83cccc0773c398b779a03e1f69f1c6ded4bf0a40dfdb943ab540541b9404ffc7",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "559ba763298167c6a65fc8360e1a02362b22848e774ebf566ebc8ff945306c02",
-        "reason": "Reviewed the shared-source change that centralizes the two Git CLI diagnostic expressions without changing their matching behavior. No strategy implementation, enabled flag, eligibility condition, candidate ignore filter or per-configuration fallback rule changed. The seven strategy descriptions and independent candidate-production flowchart remain accurate."
+        "sourceDigest": "923d71197af218c54374d2df99fd2e147186e65a615caea78dca6a6855adddbe",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
       }
     },
     {
@@ -108,14 +108,15 @@
       "tests": [
         "src/GitVersion.Core.Tests/Mainline",
         "src/GitVersion.Core.Tests/VersionCalculation/MainlineIterationTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineBranchMergeScenarios.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportMergeScenarios.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportCommitIncrementsScenarios.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "2e8ddeb42ce66ceca319fc85bca5293aab4be0742f9d08d55234b31a2689d6dc",
-        "reason": "Reviewed the shared Git diagnostic-pattern relocation against Mainline traversal and rule families. Commit/tag/branch traversal, recursive iterations and operand/operator folding are unchanged. The recognized merge between two main branches still reaches the documented unsupported path. The Mainline explanation and flowchart remain accurate."
+        "sourceDigest": "303d91d7b014d592cb016e8e4cb7eecd90459bcc9af6bb3d2c54fcb12eeb9175",
+        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions with no privileged main/support role or older-line increment replay. Each source uses its own branch label and tag prevention; explicit configurations reuse completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, reachable tag floors, equal-version receiver provenance and receiver counting anchors remain distinct. Updated prose, flowchart and executable checkpoints while retaining #5360 configuration validation guidance. Shared candidate selection and deployment algorithms are unchanged."
       }
     },
     {

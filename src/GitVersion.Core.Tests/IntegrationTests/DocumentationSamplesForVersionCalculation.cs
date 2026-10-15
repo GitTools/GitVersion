@@ -156,7 +156,7 @@ public class DocumentationSamplesForVersionCalculation
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo("support/1.x");
-        fixture.MakeATaggedCommit("1.0.5");
+        var supportTagSha = fixture.MakeATaggedCommit("1.0.5");
         fixture.Checkout("main");
         var mainTagSha = fixture.MakeATaggedCommit("2.0.0");
         if (mergeMainIntoSupport)
@@ -172,18 +172,18 @@ public class DocumentationSamplesForVersionCalculation
             .WithVersionStrategies(VersionStrategies.Mainline)
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery).Build();
 
-        fixture.AssertFullSemver("2.0.1-2", configuration);
+        fixture.AssertFullSemver("2.0.0-2", configuration);
         var version = fixture.GetVersion(configuration);
         version.SemVerSourceSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
-        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.SemVerSourceIncrement.ShouldBe("None");
+        version.CommitCountSourceSha.ShouldBe(mergeMainIntoSupport ? supportTagSha : mainTagSha);
         version.CommitCountSourceDistance.ShouldBe("2");
         Write(fixture, $"{nameof(MainlineTaggedBranchesMerge)}_{(mergeMainIntoSupport ? "MainIntoSupport" : "SupportIntoMain")}");
     }
 
     [Test]
-    public void MainlineSupportPreservesOrderedIncrements()
+    public void MainlineOlderSourceDoesNotReplayIncrements()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
@@ -198,13 +198,13 @@ public class DocumentationSamplesForVersionCalculation
             .WithVersionStrategies(VersionStrategies.Mainline)
             .WithDeploymentMode(DeploymentMode.ContinuousDelivery).Build();
 
-        fixture.AssertFullSemver("2.1.1-4", configuration);
+        fixture.AssertFullSemver("2.0.0-4", configuration);
         var version = fixture.GetVersion(configuration);
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.SemVerSourceIncrement.ShouldBe("None");
         version.CommitCountSourceSha.ShouldBe(mainTagSha);
         version.CommitCountSourceDistance.ShouldBe("4");
-        Write(fixture, nameof(MainlineSupportPreservesOrderedIncrements));
+        Write(fixture, nameof(MainlineOlderSourceDoesNotReplayIncrements));
     }
 
     [Test]
@@ -250,7 +250,7 @@ public class DocumentationSamplesForVersionCalculation
             .WithVersionStrategies(VersionStrategies.Mainline)
             .WithDeploymentMode(DeploymentMode.ContinuousDeployment).Build();
 
-        fixture.AssertFullSemver("1.1.1", configuration);
+        fixture.AssertFullSemver("1.1.0", configuration);
         var version = fixture.GetVersion(configuration);
         version.SemVerSourceSha.ShouldBe(tagSha);
         version.SemVerSourceIncrement.ShouldBe("None");

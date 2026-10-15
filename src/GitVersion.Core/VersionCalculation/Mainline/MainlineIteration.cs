@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -41,8 +40,6 @@ internal record MainlineIteration
 
     public MainlineCommit? ParentCommit { get; }
 
-    public IReadOnlySet<ICommit>? IncludedCommits { get; }
-
     public string Id { get; }
 
     public ReferenceName BranchName { get; }
@@ -57,7 +54,7 @@ internal record MainlineIteration
     private readonly Dictionary<ICommit, MainlineCommit> commitLookup = [];
 
     public MainlineIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
-        MainlineIteration? parentIteration, MainlineCommit? parentCommit, IReadOnlySet<ICommit>? includedCommits = null)
+        MainlineIteration? parentIteration, MainlineCommit? parentCommit)
     {
         Id = id.NotNullOrEmpty();
         Depth = (parentIteration?.Depth ?? 0) + 1;
@@ -65,7 +62,6 @@ internal record MainlineIteration
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
         ParentCommit = parentCommit;
-        IncludedCommits = includedCommits?.ToFrozenSet();
     }
 
     public MainlineCommit CreateCommit(
