@@ -1,0 +1,20 @@
+flowchart TD
+    Config["One effective configuration"] --> Strategies["Evaluate enabled non-fallback strategies"]
+    Strategies --> Configured["ConfiguredNextVersion<br/>Configured next-version"]
+    Strategies --> Tagged["TaggedCommit<br/>Eligible tags"]
+    Strategies --> Merge["MergeMessage<br/>Release merge messages"]
+    Strategies --> Name["VersionInBranchName<br/>Release branch name"]
+    Strategies --> Release["TrackReleaseBranches<br/>Related release targets"]
+    Strategies --> Mainline["Mainline<br/>Commit and merge traversal"]
+    Configured --> Filter["Ignore filters and candidate increment"]
+    Tagged --> Filter
+    Merge --> Filter
+    Name --> Filter
+    Release --> Filter
+    Mainline --> Filter
+    Filter --> Any{"Any accepted candidate<br/>from these strategies?"}
+    Any -->|Yes| Pool["Add candidates to global comparison"]
+    Any -->|No| Enabled{"Fallback enabled?"}
+    Enabled -->|Yes| Fallback["Fallback candidate:<br/>apply filters and increment"]
+    Fallback --> Pool
+    Enabled -->|No| None["No candidate from this configuration"]

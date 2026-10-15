@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "page": "docs/input/docs/learn/version-calculation.md",
+  "coverageRoots": [
+    "src/GitVersion.Core/VersionCalculation"
+  ],
+  "sharedSources": [
+    "src/GitVersion.Core/Core",
+    "src/GitVersion.Core/Git",
+    "src/GitVersion.Core/SemVer",
+    "src/GitVersion.Core/Extensions",
+    "src/GitVersion.Core/Configuration",
+    "src/GitVersion.Core/GitVersionContext.cs",
+    "src/GitVersion.Configuration",
+    "src/GitVersion.Git.Managed",
+    "src/GitVersion.LibGit2Sharp"
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "heading": "Calculation overview",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
+      "review": {
+        "sourceDigest": "7c8e2ea3e16fef27be9835e7d2845982d32a9b65c802804573f36cd121176a6a",
+        "reason": "Reviewed mapped C# changes since ce9f9e4f: only NOSONAR comments were added for namespace selection, serializer interface methods, credential matching, tag-cache state and null-operator source selection. No executable calculation logic changed; the overview and its examples remain accurate."
+      }
+    },
+    {
+      "id": "strategies",
+      "heading": "All calculation strategies",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/Strategies",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
+      "review": {
+        "sourceDigest": "11f5a19edeeb5ee255ddb601edc53ad7e0f9d81715c02cdd9a49c2fad412fdaf",
+        "reason": "Reviewed the shared-source and BaseVersion.Source comment additions since ce9f9e4f. Tag-cache behavior, configuration serialization, candidate producers and eligibility rules are unchanged; the strategy diagram, table and examples remain accurate."
+      }
+    },
+    {
+      "id": "inheritance",
+      "heading": "Branch inheritance",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/EffectiveBranchConfigurationFinder.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/EffectiveBranchConfigurationFinderTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
+      "review": {
+        "sourceDigest": "752ab6b50fab6c78f71008c9d20a279b4a751749ec7a21bb28e37fa72e9cd102",
+        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. EffectiveBranchConfigurationFinder and its inheritance, cycle and fallback rules are unchanged, so the inheritance explanation and examples remain accurate."
+      }
+    },
+    {
+      "id": "increments",
+      "heading": "Candidate increments",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/IncrementStrategyFinder.cs",
+        "src/GitVersion.Core/VersionCalculation/IncrementStrategy.cs",
+        "src/GitVersion.Core/VersionCalculation/CommitMessageIncrement.cs",
+        "src/GitVersion.Core/VersionCalculation/CommitMessageIncrementMode.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
+      ],
+      "review": {
+        "sourceDigest": "aba21b8c47b4e339e480ce1bca7fe6ef2d6fc8afbd269ea06a58a8846949c2b0",
+        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. IncrementStrategyFinder, message precedence, reset handling and branch minimum increments are unchanged; the increment rules and worked histories remain accurate."
+      }
+    },
+    {
+      "id": "selection",
+      "heading": "Select the version and its sources",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionCalculators/NextVersionCalculator.cs",
+        "src/GitVersion.Core/VersionCalculation/NextVersion.cs",
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/BaseVersion.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
+      "review": {
+        "sourceDigest": "6a42f0ae7bc27abb8899dd75ecb9dfa763efa49c2b492b5665c28958585ff242",
+        "reason": "Reviewed shared-source comments and the BaseVersion.Source null-operator explanation added since ce9f9e4f. The source expression and all candidate ordering, tie-breaking and counting-anchor logic are unchanged; the selection diagram and source-metadata examples remain accurate."
+      }
+    },
+    {
+      "id": "mainline",
+      "heading": "Mainline traversal",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/Mainline",
+        "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/Mainline"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
+      "review": {
+        "sourceDigest": "f4adbcf803915dadc02457fffdffd114c6a0a994189baf0804b807520ead7453",
+        "reason": "Reviewed shared-source NOSONAR comments added since ce9f9e4f. Mainline traversal and commit rules have no executable changes; the documented unsupported cross-mainline merge path still applies on this branch. The Mainline diagram and explanation remain accurate."
+      }
+    },
+    {
+      "id": "deployment",
+      "heading": "All deployment modes",
+      "sources": [
+        "src/GitVersion.Core/VersionCalculation/VersionCalculators"
+      ],
+      "tests": [
+        "src/GitVersion.Core.Tests/IntegrationTests/ContinuousDeliveryTestScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
+      ],
+      "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
+      "review": {
+        "sourceDigest": "8dc02db073c90195dcf2ebdfdbd6b533d16c073d7544e96b284305d7b060f5ef",
+        "reason": "Reviewed shared-source NOSONAR comment additions since ce9f9e4f; no executable source changed. ManualDeployment, ContinuousDelivery, ContinuousDeployment and tagged-commit processing are unchanged; the deployment table, diagram and same-history examples remain accurate."
+      }
+    }
+  ]
+}

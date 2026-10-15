@@ -1,0 +1,10 @@
+flowchart TD
+    Candidate["Selected candidate and resolved sources"] --> Mode{"Deployment mode"}
+    Mode -->|ManualDeployment| Manual["Keep candidate prerelease state<br/>Attach build metadata"]
+    Mode -->|ContinuousDelivery| Numbered{"Numbered prerelease present?"}
+    Numbered -->|No| Error["Error: prerelease tag required"]
+    Numbered -->|Yes| Delivery["Prerelease number +=<br/>commits since source - 1<br/>Record source distance"]
+    Mode -->|ContinuousDeployment| Deployment["Remove prerelease tag<br/>Record source distance"]
+    Manual --> Floor["Check eligible branch-tag numeric version floor"]
+    Delivery --> Floor
+    Deployment --> Floor

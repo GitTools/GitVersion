@@ -1,0 +1,10 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    create participant feature_work as feature/work
+    main->>feature_work: branch from main
+    feature_work->>feature_work: commit
+    rect rgb(211, 211, 211)
+        Note over feature_work: 1.0.1-work.1+1
+    end
+    Note over feature_work: main increment: Patch#59; feature increment: Inherit

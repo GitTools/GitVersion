@@ -52,9 +52,11 @@ public static class Extensions
     public static DirectoryPath GetRootDirectory()
     {
         var currentPath = DirectoryPath.FromString(Directory.GetCurrentDirectory());
-        while (!Directory.Exists(currentPath.Combine(".git").FullPath))
+        while (!Directory.Exists(currentPath.Combine(".git").FullPath)
+            && !File.Exists(currentPath.Combine(".git").FullPath))
         {
-            currentPath = currentPath.GetParent();
+            currentPath = currentPath.GetParent()
+                ?? throw new InvalidOperationException("Could not locate the Git repository root.");
         }
 
         return currentPath;
