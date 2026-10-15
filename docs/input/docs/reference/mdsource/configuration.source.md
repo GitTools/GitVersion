@@ -824,7 +824,8 @@ monotonically increasing build number.
 ### tag-prefix
 
 A regular expression which is used to trim Git tags before processing (e.g.,
-v1.0.0). The default value is `[vV]`.
+v1.0.0). The default value is `[vV]?`. Confirm the selected tool's effective value
+with `gitversion config get calculation.tag-prefix`.
 
 ### update-build-number
 

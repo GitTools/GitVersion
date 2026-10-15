@@ -32,7 +32,7 @@ the selected executable's version. For v7, run gitversion --cli-schema using
 that executable and read its JSON to discover commands, aliases, options,
 arguments and accepted values before constructing commands. If schema export
 is unavailable, use that executable's --help rather than guessing commands.
-If the schema includes config validate, use it to check the candidate first.
+For v7, run gitversion config validate to check the candidate first.
 Inspect the effective configuration, then compare baseline and candidate
 results on representative existing branches, tags and commits. Explain
 unexpected versions before adjusting settings. Report evidence, remaining
@@ -167,9 +167,9 @@ gitversion --target-path <repository> config get calculation.tag-prefix --config
 
 `--show-config` displays defaults and overrides. `config get` returns a JSON scalar for a supported v7 property; it does not return branch-specific inherited behavior or a calculated version. Both need a suitable repository in the established CLI. See [configuration queries][config-queries].
 
-The v7 `config validate` command, added for [issue #5360][config-validate], checks the candidate without calculating a version or changing files and refs. An explicit file works outside Git and offline. Require a successful exit and a valid result before continuing; `--format json` writes the result to stdout and diagnostics go to stderr. See [configuration validation][configuration-validation] for supported options, diagnostics and limits.
+The v7 `config validate` command checks the candidate without calculating a version or changing files and refs. An explicit file works outside Git and offline. Require a successful exit and a valid result before continuing; `--format json` writes the result to stdout and diagnostics go to stderr. See [configuration validation][configuration-validation] for supported options, diagnostics and limits.
 
-Use this command when it is present in the selected executable's CLI schema. For older tools that lack it, retain matching-version schema and loader checks. Successful validation still needs effective-config inspection and history-based verification to establish that versions fit the release workflow.
+Successful validation still needs effective-config inspection and history-based verification to establish that versions fit the release workflow.
 
 ## 5. Compare results against real history
 
@@ -296,8 +296,6 @@ These are optional adapters to one canonical guide. Avoid copying the full proce
 [config-queries]: /docs/usage/cli/arguments#query-a-configuration-property
 
 [configuration-validation]: /docs/usage/cli/arguments#validate-configuration
-
-[config-validate]: https://github.com/GitTools/GitVersion/issues/5360
 
 [variables]: /docs/reference/variables
 
