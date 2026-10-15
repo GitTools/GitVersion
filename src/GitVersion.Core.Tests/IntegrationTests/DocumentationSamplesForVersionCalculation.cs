@@ -149,6 +149,116 @@ public class DocumentationSamplesForVersionCalculation
         Write(fixture, $"{nameof(DeploymentModesProcessSameHistory)}_{mode}");
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void MainlineTaggedBranchesMerge(bool mergeMainIntoSupport)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeATaggedCommit("1.0.5");
+        fixture.Checkout("main");
+        var mainTagSha = fixture.MakeATaggedCommit("2.0.0");
+        if (mergeMainIntoSupport)
+        {
+            fixture.Checkout("support/1.x");
+            fixture.MergeNoFF("main");
+        }
+        else
+        {
+            fixture.MergeNoFF("support/1.x");
+        }
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery).Build();
+
+        fixture.AssertFullSemver("2.0.1-2", configuration);
+        var version = fixture.GetVersion(configuration);
+        version.SemVerSourceSemVer.ShouldBe("2.0.0");
+        version.SemVerSourceSha.ShouldBe(mainTagSha);
+        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.CommitCountSourceDistance.ShouldBe("2");
+        Write(fixture, $"{nameof(MainlineTaggedBranchesMerge)}_{(mergeMainIntoSupport ? "MainIntoSupport" : "SupportIntoMain")}");
+    }
+
+    [Test]
+    public void MainlineSupportPreservesOrderedIncrements()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeATaggedCommit("1.0.5");
+        fixture.MakeACommit("New API +semver: minor");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        var mainTagSha = fixture.MakeATaggedCommit("2.0.0");
+        fixture.MergeNoFF("support/1.x");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery).Build();
+
+        fixture.AssertFullSemver("2.1.1-4", configuration);
+        var version = fixture.GetVersion(configuration);
+        version.SemVerSourceSha.ShouldBe(mainTagSha);
+        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.CommitCountSourceDistance.ShouldBe("4");
+        Write(fixture, nameof(MainlineSupportPreservesOrderedIncrements));
+    }
+
+    [Test]
+    public void MainlineComparesIndependentProgress()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var tagSha = fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        var mainTip = fixture.MakeACommit();
+        fixture.MergeNoFF("support/1.x");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDelivery).Build();
+
+        fixture.AssertFullSemver("1.0.3-4", configuration);
+        var version = fixture.GetVersion(configuration);
+        version.SemVerSourceSha.ShouldBe(tagSha);
+        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.CommitCountSourceSha.ShouldBe(mainTip);
+        version.CommitCountSourceDistance.ShouldBe("4");
+        Write(fixture, nameof(MainlineComparesIndependentProgress));
+    }
+
+    [Test]
+    public void MainlineRoundTripDoesNotReplayMain()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var tagSha = fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.MakeACommit("New API +semver: minor");
+        var mainTip = fixture.Repository.Head.Tip.Sha;
+        fixture.Checkout("support/1.x");
+        fixture.MergeNoFF("main");
+        fixture.Checkout("main");
+        fixture.MergeNoFF("support/1.x");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment).Build();
+
+        fixture.AssertFullSemver("1.1.1", configuration);
+        var version = fixture.GetVersion(configuration);
+        version.SemVerSourceSha.ShouldBe(tagSha);
+        version.SemVerSourceIncrement.ShouldBe("None");
+        version.CommitCountSourceSha.ShouldBe(mainTip);
+        version.CommitCountSourceDistance.ShouldBe("3");
+        Write(fixture, nameof(MainlineRoundTripDoesNotReplayMain));
+    }
+
     private static void Write(EmptyRepositoryFixture fixture, string name)
         => DocumentationDiagramWriter.Write(fixture.SequenceDiagram,
             $"{nameof(DocumentationSamplesForVersionCalculation)}_{name}", true);

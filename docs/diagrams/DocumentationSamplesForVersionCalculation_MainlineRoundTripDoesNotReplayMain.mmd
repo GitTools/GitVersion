@@ -1,0 +1,12 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    create participant support_1_x as support/1.x
+    main->>support_1_x: branch from main
+    support_1_x->>support_1_x: commit
+    main->>main: Commit 'New API +semver: minor'
+    main->>support_1_x: merge
+    support_1_x->>main: merge
+    rect rgb(211, 211, 211)
+        Note over main: 1.1.1
+    end

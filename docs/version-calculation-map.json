@@ -86,7 +86,11 @@
         "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/Mainline"
+        "src/GitVersion.Core.Tests/Mainline",
+        "src/GitVersion.Core.Tests/VersionCalculation/MainlineIterationTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportMergeScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportCommitIncrementsScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd"
     },
