@@ -239,6 +239,31 @@ public class MainlineBranchMergeScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe("2");
     }
 
+    [TestCase(false, "2.0.0-6+2")]
+    [TestCase(true, "2.0.0-7+2")]
+    public void NumberedPrereleaseTagContinuesAcrossMerge(bool addNoBumpCommit, string expected)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("production/right");
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.BranchTo("production/left");
+        var tag = fixture.MakeATaggedCommit("2.0.0-5");
+        if (addNoBumpCommit)
+        {
+            fixture.MakeACommit("Keep release line =semver: none");
+        }
+        fixture.MergeNoFF("production/right");
+        var configuration = GetConfigurationBuilder().WithDeploymentMode(DeploymentMode.ManualDeployment).Build();
+
+        var version = fixture.GetVersion(configuration);
+
+        version.FullSemVer.ShouldBe(expected);
+        version.SemVerSourceSha.ShouldBe(tag);
+        version.CommitCountSourceDistance.ShouldBe("2");
+    }
+
     private static IGitVersionConfiguration GetConfiguration() => GetConfigurationBuilder().Build();
 
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New

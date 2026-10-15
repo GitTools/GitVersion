@@ -218,8 +218,9 @@ Semantic and counting sources can differ. The counting anchor stays on the
 receiver even when the source supplies the higher numeric version. Equal
 numeric versions retain the receiver's semantic source. Distance counts newly
 reachable commits, including the merge, rather than numeric increments.
-The receiver's named prerelease sequence is retained instead of restarting at
-one. The [GitFlow explanation][support-merges] describes examples and controls.
+The receiver's released prerelease sequence, including numeric tags such as
+`2.0.0-5`, continues instead of restarting at one while its core version stays
+the same. The [GitFlow explanation][support-merges] describes examples and controls.
 
 A current-commit tag shortcut can bypass traversal. Merges with multiple source
 parents remain unsupported.

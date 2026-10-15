@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "186d4fa8c2170d65fa1019194e63f07b5b21ffcc0b47cff9a376775cf8246e98",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
+        "sourceDigest": "d1fdcadbd74f5e08bedbd7ade02115c16794c96dba64de7d19931466bad9ccca",
+        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "908a573ffefa193c630ace606bd5ba17b86a6890d597ec11c4bc4547569772e9",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
+        "sourceDigest": "a04b240d887fe3d284c550a4b6c42109374592d5f3d943625612880328af9027",
+        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
       }
     },
     {
@@ -115,8 +115,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "3dae4679a4ba0830b5cbdd1e978604b2a9d6bbf68eab2f821a64fd8aacab0eeb",
-        "reason": "Codex reviewed HHobeck feedback on #4057: all IsMainBranch pairs compare independent numeric versions without privileged roles or older-line increment replay. Sources use their own branch labels and tagged-tip prevention; explicit configurations cache completed histories within a calculation. Removed scoped-selection and validation-only traversal. Receiver merge controls, explicit messages, source prevention, final reachable tag floors, equal-version provenance, receiver count anchors and named prerelease continuation are covered. Prose, flowchart and generated checkpoints reflect this rule; #5360 configuration-validation guidance is preserved. Shared candidate selection and deployment algorithms remain unchanged."
+        "sourceDigest": "0b1b19269bc2f232912c625100959bf10468681d5bb6f86d6d07b872f006b5d6",
+        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
       }
     },
     {
