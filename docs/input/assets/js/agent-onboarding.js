@@ -60,10 +60,10 @@
         'Antigravity': 'Work in my repository in Antigravity. Read applicable workspace and directory rules before starting.'
     };
     Object.entries(instructions).forEach(([agent, instruction]) => {
-        options.appendChild(button(`Copy for ${agent}`, () => {
+        options.appendChild(button(`Copy for ${agent}`, async () => {
             agents.open = false;
             summary.focus();
-            copy(`${instruction}\n\n${task}`, `${agent} prompt`);
+            await copy(`${instruction}\n\n${task}`, `${agent} prompt`);
         }));
     });
     agents.appendChild(options);
