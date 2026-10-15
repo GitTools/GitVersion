@@ -226,11 +226,11 @@ public class GitCliMutatorTests : TestBase
     }
 
     private static GitCliMutator CreateFailingMutator(string standardError) =>
-        new(NullLogger<GitCliMutator>.Instance, new FailingGitCliExecutor(standardError));
+        new(NullLogger<GitCliMutator>.Instance, new StubGitCliExecutor((_, _) => new(128, string.Empty, standardError)));
 
-    private sealed class FailingGitCliExecutor(string standardError) : IGitCliExecutor
+    private sealed class StubGitCliExecutor(Func<string?, IReadOnlyList<string>, GitCliResult> execute) : IGitCliExecutor
     {
-        GitCliResult IGitCliExecutor.Execute(string? workingDirectory, IReadOnlyList<string> arguments) => new(128, string.Empty, standardError);
+        GitCliResult IGitCliExecutor.Execute(string? workingDirectory, IReadOnlyList<string> arguments) => execute(workingDirectory, arguments);
     }
 
     [Test]
