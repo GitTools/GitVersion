@@ -7,9 +7,9 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class MainlineSupportMergeScenarios : TestBase
 {
-    [TestCase(DeploymentMode.ManualDeployment, "2.0.1-1+2")]
-    [TestCase(DeploymentMode.ContinuousDelivery, "2.0.1-2")]
-    [TestCase(DeploymentMode.ContinuousDeployment, "2.0.1")]
+    [TestCase(DeploymentMode.ManualDeployment, "2.0.0-1+2")]
+    [TestCase(DeploymentMode.ContinuousDelivery, "2.0.0-2")]
+    [TestCase(DeploymentMode.ContinuousDeployment, "2.0.0")]
     public void TaggedSupportMergedIntoMainKeepsMainVersionAndSources(DeploymentMode mode, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -27,10 +27,10 @@ public class MainlineSupportMergeScenarios : TestBase
         var version = fixture.GetVersion(configuration);
 
         version.FullSemVer.ShouldBe(fullSemVer);
-        version.MajorMinorPatch.ShouldBe("2.0.1");
+        version.MajorMinorPatch.ShouldBe("2.0.0");
         version.SemVerSourceSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.SemVerSourceIncrement.ShouldBe("None");
         version.CommitCountSourceSha.ShouldBe(mainTagSha);
         version.CommitCountSourceDistance.ShouldBe("2");
     }
@@ -72,7 +72,7 @@ public class MainlineSupportMergeScenarios : TestBase
     }
 
     [Test]
-    public void MainAndSupportAdvancingUseMainVersionAsBaseline()
+    public void MainAndSupportAdvancingSelectHighestVersion()
     {
         using var fixture = new EmptyRepositoryFixture();
         var mainTagSha = CreateTaggedBranches(fixture);
@@ -84,10 +84,10 @@ public class MainlineSupportMergeScenarios : TestBase
 
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
 
-        version.FullSemVer.ShouldBe("2.0.2");
-        version.SemVerSourceSemVer.ShouldBe("2.0.1-1");
+        version.FullSemVer.ShouldBe("2.0.1");
+        version.SemVerSourceSemVer.ShouldBe("2.0.1");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.SemVerSourceIncrement.ShouldBe("None");
         version.CommitCountSourceSha.ShouldBe(mainCommitSha);
         version.CommitCountSourceDistance.ShouldBe("3");
     }
@@ -96,13 +96,13 @@ public class MainlineSupportMergeScenarios : TestBase
     public void RepeatedSupportMergesDoNotCountPreviouslyMergedWorkAgain()
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.MakeACommit("Add API +semver: minor");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("support/1.x");
         var firstMergeSha = fixture.Repository.Head.Tip.Sha;
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.1.0");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("1.1.0");
 
         fixture.Checkout("support/1.x");
         fixture.MakeACommit();
@@ -110,23 +110,26 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MergeNoFF("support/1.x");
 
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
-        version.FullSemVer.ShouldBe("2.1.1");
+        version.FullSemVer.ShouldBe("1.1.1");
         version.CommitCountSourceSha.ShouldBe(firstMergeSha);
         version.CommitCountSourceDistance.ShouldBe("2");
 
         fixture.MakeACommit();
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.1.2");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("1.1.2");
     }
 
-    [TestCase(IncrementStrategy.None, "2.0.0")]
-    [TestCase(IncrementStrategy.Patch, "2.0.1")]
-    [TestCase(IncrementStrategy.Minor, "2.1.0")]
-    [TestCase(IncrementStrategy.Major, "3.0.0")]
-    [TestCase(IncrementStrategy.Inherit, "2.0.1")]
+    [TestCase(IncrementStrategy.None, "1.0.5")]
+    [TestCase(IncrementStrategy.Patch, "1.0.6")]
+    [TestCase(IncrementStrategy.Minor, "1.1.0")]
+    [TestCase(IncrementStrategy.Major, "2.0.0")]
+    [TestCase(IncrementStrategy.Inherit, "1.0.6")]
     public void SupportBranchIncrementControlsMergeContribution(IncrementStrategy increment, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
+        fixture.Checkout("support/1.x");
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
         fixture.MergeNoFF("support/1.x");
         var configuration = GetConfigurationBuilder()
             .WithBranch("support", builder => builder.WithIncrement(increment)).Build();
@@ -134,7 +137,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.GetVersion(configuration).FullSemVer.ShouldBe(fullSemVer);
     }
 
-    [TestCase(true, false, "2.0.1")]
+    [TestCase(true, false, "2.0.0")]
     [TestCase(false, false, "2.1.0")]
     [TestCase(true, true, "2.0.0")]
     [TestCase(false, true, "2.1.0")]
@@ -153,13 +156,13 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.GetVersion(configuration).FullSemVer.ShouldBe(fullSemVer);
     }
 
-    [TestCase(CommitMessageIncrementMode.Enabled, "2.1.1")]
-    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "2.0.2")]
-    [TestCase(CommitMessageIncrementMode.Disabled, "2.0.2")]
+    [TestCase(CommitMessageIncrementMode.Enabled, "1.1.1")]
+    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "1.0.7")]
+    [TestCase(CommitMessageIncrementMode.Disabled, "1.0.7")]
     public void SupportCommitMessageModeControlsBump(CommitMessageIncrementMode mode, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.MakeACommit("Add API +semver: minor");
         fixture.MakeACommit();
@@ -183,14 +186,14 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MakeATaggedCommit("2.0.0");
         fixture.MergeNoFF("support/1.x");
 
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.0.1");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.0.0");
     }
 
     [Test]
     public void ExplicitSupportIncrementKeepsItsOwnCommitMessageMode()
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.MakeACommit("Add API +semver: minor");
         fixture.Checkout(MainBranch);
@@ -199,21 +202,21 @@ public class MainlineSupportMergeScenarios : TestBase
             .WithBranch("main", builder => builder.WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled))
             .Build();
 
-        fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.1.0");
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("1.1.0");
     }
 
     [Test]
     public void SupportBumpResetDoesNotUndoAnEarlierMainlineVersionIncrement()
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.MakeACommit("Change API +semver: major");
         fixture.MakeACommit("Reset =semver: none");
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("support/1.x");
 
-        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("3.0.0");
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe("2.0.0");
     }
 
     [Test]
@@ -232,7 +235,7 @@ public class MainlineSupportMergeScenarios : TestBase
     public void SupportMergeMessageModeIncludesNestedMergeMessages()
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.BranchTo("feature/fix");
         fixture.MakeACommit();
@@ -244,7 +247,7 @@ public class MainlineSupportMergeScenarios : TestBase
             .WithBranch("support", builder => builder.WithCommitMessageIncrementing(CommitMessageIncrementMode.MergeMessageOnly))
             .Build();
 
-        fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.1.0");
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("1.1.0");
     }
 
     [Test]
@@ -256,7 +259,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.Repository.Branches.Remove("support/1.x");
 
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
-        version.FullSemVer.ShouldBe("2.0.1");
+        version.FullSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
         version.CommitCountSourceSha.ShouldBe(mainTagSha);
         version.CommitCountSourceDistance.ShouldBe("2");
@@ -297,41 +300,43 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.GetVersion(configuration).FullSemVer.ShouldBe("0.0.2-1");
     }
 
-    [TestCase(DeploymentMode.ManualDeployment, "2.0.1-1+2")]
-    [TestCase(DeploymentMode.ContinuousDelivery, "2.0.1-2")]
-    [TestCase(DeploymentMode.ContinuousDeployment, "2.0.1")]
+    [TestCase(DeploymentMode.ManualDeployment, "2.0.0-1+2")]
+    [TestCase(DeploymentMode.ContinuousDelivery, "2.0.0-2")]
+    [TestCase(DeploymentMode.ContinuousDeployment, "2.0.0")]
     public void TaggedMainMergedIntoSupportUsesMainVersionAndSources(DeploymentMode mode, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         var mainTagSha = CreateTaggedBranches(fixture);
         fixture.Checkout("support/1.x");
+        var receiverTip = fixture.Repository.Head.Tip.Sha;
         fixture.MergeNoFF(MainBranch);
         var configuration = GetConfigurationBuilder().WithDeploymentMode(mode).Build();
 
         var version = fixture.GetVersion(configuration);
 
         version.FullSemVer.ShouldBe(fullSemVer);
-        version.MajorMinorPatch.ShouldBe("2.0.1");
+        version.MajorMinorPatch.ShouldBe("2.0.0");
         version.SemVerSourceSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
-        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.SemVerSourceIncrement.ShouldBe("None");
+        version.CommitCountSourceSha.ShouldBe(receiverTip);
         version.CommitCountSourceDistance.ShouldBe("2");
     }
 
     [TestCase(true, false, IncrementStrategy.Patch, "2.1.0")]
     [TestCase(false, false, IncrementStrategy.Patch, "2.1.0")]
     [TestCase(true, true, IncrementStrategy.Patch, "2.0.0")]
-    [TestCase(false, true, IncrementStrategy.Patch, "2.0.1")]
+    [TestCase(false, true, IncrementStrategy.Patch, "2.0.0")]
     [TestCase(true, false, IncrementStrategy.Major, "2.1.0")]
-    [TestCase(false, false, IncrementStrategy.Major, "3.0.0")]
+    [TestCase(false, false, IncrementStrategy.Major, "2.1.0")]
     [TestCase(true, true, IncrementStrategy.Major, "2.0.0")]
-    [TestCase(false, true, IncrementStrategy.Major, "3.0.0")]
+    [TestCase(false, true, IncrementStrategy.Major, "2.0.0")]
     public void MainToSupportMergePreventionControlsBothIncrements(
         bool preventReceiverIncrement, bool preventMainIncrement, IncrementStrategy receiverIncrement, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
+        fixture.MakeACommit();
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF(MainBranch);
         var configuration = GetConfigurationBuilder()
@@ -360,9 +365,9 @@ public class MainlineSupportMergeScenarios : TestBase
 
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
 
-        version.FullSemVer.ShouldBe("2.0.1");
+        version.FullSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.SemVerSourceIncrement.ShouldBe("Patch");
+        version.SemVerSourceIncrement.ShouldBe("None");
     }
 
     [Test]
@@ -390,13 +395,13 @@ public class MainlineSupportMergeScenarios : TestBase
         version.SemVerSourceIncrement.ShouldBe("Major");
     }
 
-    [TestCase(CommitMessageIncrementMode.Enabled, "3.0.0")]
-    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "3.0.0")]
-    [TestCase(CommitMessageIncrementMode.Disabled, "2.0.0")]
+    [TestCase(CommitMessageIncrementMode.Enabled, "2.0.0")]
+    [TestCase(CommitMessageIncrementMode.MergeMessageOnly, "2.0.0")]
+    [TestCase(CommitMessageIncrementMode.Disabled, "1.0.5")]
     public void MainToSupportMergeMessageHonorsCommitMessageMode(CommitMessageIncrementMode mode, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
-        CreateTaggedBranches(fixture);
+        CreateTaggedBranches(fixture, "1.0.4");
         fixture.Checkout("support/1.x");
         fixture.Repository.MergeNoFF(MainBranch, $"Merge branch '{MainBranch}' +semver: major");
         var configuration = GetConfigurationBuilder()
@@ -433,6 +438,7 @@ public class MainlineSupportMergeScenarios : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
+        fixture.MakeACommit();
         fixture.Checkout("support/1.x");
         fixture.MergeNoFF(MainBranch);
         var configuration = GetConfigurationBuilder()
@@ -499,14 +505,15 @@ public class MainlineSupportMergeScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         var mainTagSha = CreateTaggedBranches(fixture);
         fixture.Checkout("support/1.x");
+        var receiverTip = fixture.Repository.Head.Tip.Sha;
         fixture.MergeNoFF(MainBranch);
         fixture.Repository.Branches.Remove(MainBranch);
 
         var version = fixture.GetVersion(GetConfigurationBuilder().Build());
 
-        version.FullSemVer.ShouldBe("2.0.1");
+        version.FullSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.CommitCountSourceSha.ShouldBe(receiverTip);
         version.CommitCountSourceDistance.ShouldBe("2");
     }
 
@@ -546,6 +553,7 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.MakeATaggedCommit("1.0.5");
         fixture.Checkout("trunk");
         var mainTagSha = fixture.MakeATaggedCommit("2.0.0");
+        var supportTip = fixture.Repository.Branches["maintenance/1.x"].Tip.Sha;
         if (mergeMainIntoSupport)
         {
             fixture.Checkout("maintenance/1.x");
@@ -567,9 +575,9 @@ public class MainlineSupportMergeScenarios : TestBase
 
         var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe("2.0.1");
+        version.FullSemVer.ShouldBe("2.0.0");
         version.SemVerSourceSha.ShouldBe(mainTagSha);
-        version.CommitCountSourceSha.ShouldBe(mainTagSha);
+        version.CommitCountSourceSha.ShouldBe(mergeMainIntoSupport ? supportTip : mainTagSha);
         version.CommitCountSourceDistance.ShouldBe("2");
     }
 
@@ -598,8 +606,8 @@ public class MainlineSupportMergeScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe("2");
     }
 
-    [TestCase("feature/fix", "2.0.2-fix.1+1")]
-    [TestCase("pull/123", "2.0.2-PullRequest123.1")]
+    [TestCase("feature/fix", "2.0.1-fix.1+1")]
+    [TestCase("pull/123", "2.0.1-PullRequest123.1")]
     public void BranchInheritingFromSupportCanTraverseAnEarlierMainMerge(string branchName, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -619,8 +627,8 @@ public class MainlineSupportMergeScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe("1");
     }
 
-    [TestCase("feature/fix", "2.0.2-fix.1+1")]
-    [TestCase("pull/123", "2.0.2-PullRequest123.1")]
+    [TestCase("feature/fix", "2.0.1-fix.1+1")]
+    [TestCase("pull/123", "2.0.1-PullRequest123.1")]
     public void BranchInheritingFromMainCanTraverseAnEarlierSupportMerge(string branchName, string fullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -659,7 +667,7 @@ public class MainlineSupportMergeScenarios : TestBase
     }
 
     [Test]
-    public void CustomMainlineMergeRemainsOutsideTheSupportedScope()
+    public void CustomMainlineMergeSelectsTheHigherVersion()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
@@ -672,13 +680,13 @@ public class MainlineSupportMergeScenarios : TestBase
             .WithBranch("unknown", builder => builder.WithIsMainBranch(true).WithIncrement(IncrementStrategy.Patch))
             .Build();
 
-        Should.Throw<NotImplementedException>(() => fixture.GetVersion(configuration));
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.0.0");
     }
 
     [TestCase(false, false)]
     [TestCase(true, false)]
     [TestCase(true, true)]
-    public void DistinctSupportBranchesRemainOutsideTheSupportedScope(bool mergeIntoMain, bool tagSupportHistory)
+    public void DistinctSupportBranchesAndNestedMergesSelectHighestVersion(bool mergeIntoMain, bool tagSupportHistory)
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
@@ -700,11 +708,11 @@ public class MainlineSupportMergeScenarios : TestBase
             fixture.MergeNoFF("support/1.x");
         }
 
-        Should.Throw<NotImplementedException>(() => fixture.GetVersion(GetConfigurationBuilder().Build()));
+        fixture.GetVersion(GetConfigurationBuilder().Build()).FullSemVer.ShouldBe(mergeIntoMain ? "2.0.0" : "1.0.6");
     }
 
     [Test]
-    public void SupportMergeValidatesNestedMainHistoryPastTags()
+    public void NestedMainlineMergesCanStopAtReleasedTags()
     {
         using var fixture = new EmptyRepositoryFixture();
         CreateTaggedBranches(fixture);
@@ -724,19 +732,19 @@ public class MainlineSupportMergeScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("support/1.x");
 
-        Should.Throw<NotImplementedException>(() => fixture.GetVersion(configuration));
+        fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.0.1");
     }
 
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
         .WithVersionStrategies(VersionStrategies.Mainline)
         .WithDeploymentMode(DeploymentMode.ContinuousDeployment);
 
-    private static string CreateTaggedBranches(EmptyRepositoryFixture fixture)
+    private static string CreateTaggedBranches(EmptyRepositoryFixture fixture, string mainVersion = "2.0.0")
     {
         fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo("support/1.x");
         fixture.MakeATaggedCommit("1.0.5");
         fixture.Checkout(MainBranch);
-        return fixture.MakeATaggedCommit("2.0.0");
+        return fixture.MakeATaggedCommit(mainVersion);
     }
 }

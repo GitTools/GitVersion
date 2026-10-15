@@ -71,7 +71,7 @@ filters before adding a candidate to the comparison.
 | `MergeMessage` | Merge-message tracking is enabled and a parsable message supplies a version from a configured release branch. | The version and message commit; the merged-branch prevent-increment setting controls its increment. |
 | `VersionInBranchName` | The effective configuration describes a release branch, and the current or inherited branch name contains a version. | The branch-name version and label, with no explicit numeric increment; this is an external semantic source. |
 | `TrackReleaseBranches` | The branch tracks releases, and a related release has a target version and a merge base with the current branch. | A version in the release name, or an eligible prerelease tag on the release's own history; the current branch's increment applies. |
-| `Mainline` | Mainline is enabled. | A candidate calculated from commit, tag, branch, and merge history, including the configured main/support merge paths described below. |
+| `Mainline` | Mainline is enabled. | A candidate calculated from commit, tag, branch, and merge history, including the configured main-branch merges described below. |
 | `Fallback` | It is enabled and no other strategy produced an accepted candidate for this effective configuration. | A starting version with an increment derived from effective configuration and relevant commit messages. |
 
 `TrackReleaseBranches` prefers a versioned release name. Its tag alternative
@@ -159,7 +159,7 @@ these sources. In a candidate trace, keep these fields separate:
 
 ## Mainline traversal
 
-<pre class="mermaid" aria-label="Mainline traversal, configured main/support merge paths, ordered increments and independent version comparison">
+<pre class="mermaid" aria-label="Mainline traversal and highest-version selection between configured main branches">
 ^"../../../diagrams/VersionCalculation_Mainline.mmd"
 </pre>
 
@@ -189,50 +189,39 @@ These event families do not imply one fixed bump for each event. Tags,
 configuration, accumulated context, and commit messages determine which
 operations apply.
 
-### Configured main/support merges
+### Merging main branches
 
-Mainline supports both directions between the `main` and `support`
-configuration entries when both have `is-main-branch: true`. Their regex
-patterns determine the Git branch names, so names such as `trunk` and
-`maintenance/1.x` work too. A deleted source ref can still be recognized from
-its merge message. Merge-message tracking must be enabled for this handling.
+Any pair of branches marked `is-main-branch: true` uses the same merge rule.
+Configuration keys such as `main` and `support` have no privileged role. Their
+regex patterns recognize the branches, including a deleted source ref whose
+name remains in the merge message. Merge-message tracking must be enabled.
 
-For **support into main**, select the source commits newly introduced by the
-merge, including older support work when main has previously been merged into
-support. Exclude history already received by main, including in nested merges.
-The scoped source history retains its ordered Mainline operations:
+Build the source's complete Mainline history during traversal, independently
+of the receiver, using the source's own branch label to recognize released tags.
+During calculation, compare its computed numeric version
+with the receiver's merge candidate and keep the higher version. Do not replay
+the source's increments onto the receiver, even when the source started on an
+older major/minor release line. Repeated and round-trip merges compare versions
+again rather than adding previously calculated progress a second time.
 
-- From an older major/minor release line, apply those operations in order to
-  main's newer baseline. Two source increments are not collapsed into one bump.
-- When both histories advance independently and the source baseline is on the
-  same or a newer major/minor release line, compare their independently
-  calculated numeric versions. Do not add source patches on top of main's
-  already-calculated patches. Keep main's merge operator and counting anchor.
-- Source tags supply numeric floors. A lower support tag does not lower main's
-  baseline; a higher eligible source version can raise the numeric result.
+The receiver's `prevent-increment.of-merged-branch` controls its own merge
+increment. The source's `prevent-increment.when-branch-merged` suppresses its
+calculated contribution. Enabled bump messages on the merge itself still apply
+to the receiver's candidate before comparison. With both receiver increments
+prevented, reversing the merge direction selects the same numeric maximum.
+An eligible tag normally consumes the source tip's pending increment and bump
+message; disabling `prevent-increment.when-current-commit-tagged` retains them.
+The shared final tag floor can still raise the result to a higher reachable tag,
+including when source increments are prevented.
 
-For **main into support**, recursively calculate main's history using its tags
-and the existing Mainline increment controls. An eligible source tag normally
-consumes that commit's bump message; disabling
-`prevent-increment.when-current-commit-tagged` retains it.
+Semantic and counting sources can differ. The counting anchor stays on the
+receiver even when the source supplies the higher numeric version. Equal
+numeric versions retain the receiver's semantic source. Distance counts newly
+reachable commits, including the merge, rather than numeric increments. The
+[GitFlow explanation][support-merges] describes examples and controls.
 
-In both directions, the receiver's `prevent-increment.of-merged-branch`
-controls its own merge increment, and the source's
-`prevent-increment.when-branch-merged` controls its contribution. Enabled bump
-messages on the merge itself still apply. A reset suppresses pending increments
-without undoing numeric versions already calculated for earlier commits.
-
-Semantic and counting sources can differ. In the forward path, the counting
-anchor stays on main even when support supplies a higher numeric floor. The
-distance counts newly reachable commits, including the merge, rather than the
-number of numeric increments applied. The [GitFlow explanation][support-merges]
-describes the controls and source metadata in more detail.
-
-Other distinct mainline pairs, including support-to-support merges, remain
-unsupported. The forward path validates nested merge edges even when a source
-tag ends the normal version traversal. A current-commit tag shortcut can bypass
-traversal.
-The merged-commit helper also rejects a merge with multiple source parents.
+A current-commit tag shortcut can bypass traversal. Merges with multiple source
+parents remain unsupported.
 
 ## All deployment modes
 
@@ -267,7 +256,7 @@ example catalogue can enumerate.
 | Version evidence | Configured version, branch-name version, merge message, stable tag, prerelease tag, competing evidence, and fallback. |
 | Tag tracking | Current commit, ancestor, merge target, main or release branch; prefix, format, label compatibility, and ignored evidence. |
 | Release tracking | Versioned name, unversioned release with eligible prerelease tag, several releases, missing merge base, and main-history tag exclusion. |
-| Topology | Linear commits, branch points, fast-forward, merge commits, configured main/support merges in both directions, nested or repeated merges, deleted source refs, and unsupported mainline pairs or merge shapes. |
+| Topology | Linear commits, branch points, fast-forward, merge commits, arbitrary configured main-branch pairs in either direction, support-to-support merges, nested or repeated merges, deleted source refs, and unsupported merge shapes. |
 | Increment | None, Patch, Minor, Major, Inherit, message modes, no-bump, bump reset, already-tagged history, and prevent-increment controls. |
 | Label | Stable, prerelease, branch-derived or SHA labels; matching and mismatching labels and numeric prerelease identifiers. |
 | Ignore | Commit SHA, date, path, and reference controls affecting discovery, inheritance, or counting. |
@@ -342,8 +331,9 @@ ContinuousDelivery unless stated otherwise. The source and receiver increment
 settings remain the GitFlow defaults.
 
 With a common `1.0.0` ancestor, support tagged `1.0.5`, and main tagged
-`2.0.0`, either merge direction gives `2.0.1-2`. Main's `2.0.0` tag supplies
-both sources, and the two reachable commits after that anchor supply the count.
+`2.0.0`, either merge direction gives core version `2.0.0`. Main's `2.0.0` tag
+supplies the semantic source. The receiver's pre-merge tag remains the counting
+source, with two newly reachable commits. ContinuousDelivery gives `2.0.0-2`.
 
 <pre class="mermaid" aria-label="Test-generated tagged support branch merged into main">
 ^"../../../diagrams/DocumentationSamplesForVersionCalculation_MainlineTaggedBranchesMerge_SupportIntoMain.mmd"
@@ -353,12 +343,13 @@ both sources, and the two reachable commits after that anchor supply the count.
 ^"../../../diagrams/DocumentationSamplesForVersionCalculation_MainlineTaggedBranchesMerge_MainIntoSupport.mmd"
 </pre>
 
-An older support line with a minor bump followed by a patch contributes both
-operations to main's `2.0.0` baseline, producing `2.1.1-4`. The count of four
-includes the support tag commit, its two following commits, and the merge.
+An older support line computes its own minor bump followed by a patch, reaching
+`1.1.1`. Main's `2.0.0` is higher, so the merge keeps it rather than replaying
+those operations as `2.1.1`. ContinuousDelivery gives `2.0.0-4`: the count includes
+the support tag commit, its two following commits, and the merge.
 
-<pre class="mermaid" aria-label="Test-generated older support line preserving ordered minor and patch increments">
-^"../../../diagrams/DocumentationSamplesForVersionCalculation_MainlineSupportPreservesOrderedIncrements.mmd"
+<pre class="mermaid" aria-label="Test-generated older support line keeping the higher receiving version">
+^"../../../diagrams/DocumentationSamplesForVersionCalculation_MainlineOlderSourceDoesNotReplayIncrements.mmd"
 </pre>
 
 When both branches start at `1.0.0`, three support patches and one independent
@@ -373,7 +364,7 @@ three source commits plus the merge.
 Finally, this ContinuousDeployment example shows that main's minor bump is
 already present when main is merged into support and then support returns to
 main. It is not replayed as another minor bump:
-the result is `1.1.1`, with main's pre-merge tip as the counting source and a
+the result is `1.1.0`, with main's pre-merge tip as the counting source and a
 distance of three.
 
 <pre class="mermaid" aria-label="Test-generated support round trip without replaying main's minor increment">
