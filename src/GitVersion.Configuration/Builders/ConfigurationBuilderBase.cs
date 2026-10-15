@@ -471,15 +471,45 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         var branches = configuration.Branches;
         foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
-            var targetBranchConfiguration = (BranchConfiguration)branches[targetBranchName];
+            if (!branches.TryGetValue(targetBranchName, out var target))
+            {
+                throw new ConfigurationValidationException("GVCONFIG_BRANCH", PublicPath($"branches.{branchName}.is-source-branch-for"), "Referenced branch configuration does not exist.");
+            }
+
+            var targetBranchConfiguration = (BranchConfiguration)target;
             targetBranchConfiguration.SourceBranches.Add(branchName);
         }
     }
 
     private static void ValidateConfiguration(IGitVersionConfiguration configuration)
     {
+        try
+        {
+            if (!string.IsNullOrEmpty(configuration.NextVersion)
+                && !SemanticVersion.TryParse(configuration.NextVersion, null, out _, configuration.SemanticVersionFormat))
+            {
+                throw new ConfigurationValidationException("GVCONFIG_VALUE", PublicPath("next-version"), "Expected a semantic version.");
+            }
+        }
+        catch (OverflowException)
+        {
+            throw new ConfigurationValidationException("GVCONFIG_VALUE", PublicPath("next-version"), "Semantic version components exceed the supported range.");
+        }
         ValidateIgnoreExpressions("ignore.branches", configuration.Ignore.Branches);
         ValidateIgnoreExpressions("ignore.tags", configuration.Ignore.Tags);
+        ValidateIgnoreExpressions("ignore.paths", configuration.Ignore.Paths);
+        ValidateRegex("tag-prefix", configuration.TagPrefixPattern);
+        ValidateRegex("version-in-branch-pattern", configuration.VersionInBranchPattern);
+        ValidateRegex("major-version-bump-message", configuration.MajorVersionBumpMessage);
+        ValidateRegex("minor-version-bump-message", configuration.MinorVersionBumpMessage);
+        ValidateRegex("patch-version-bump-message", configuration.PatchVersionBumpMessage);
+        ValidateRegex("no-bump-message", configuration.NoBumpMessage);
+        ValidateRegex("version-bump-reset-message", configuration.VersionBumpResetMessage);
+        ValidateRegex("regex", configuration.RegularExpression);
+        foreach (var (key, expression) in configuration.MergeMessageFormats)
+        {
+            ValidateRegex($"merge-message-formats.{key}", expression);
+        }
 
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
@@ -487,14 +517,15 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
             if (branchConfiguration.RegularExpression == null)
             {
-                throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
+                throw new ConfigurationValidationException("GVCONFIG_BRANCH", PublicPath($"branches.{name}.regex"), "Branch configuration requires a regex.");
             }
+            ValidateRegex($"branches.{name}.regex", branchConfiguration.RegularExpression);
 
             var sourceBranches = branchConfiguration.SourceBranches ?? throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
             var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
             if (missingSourceBranches.Length != 0)
             {
-                throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
+                throw new ConfigurationValidationException("GVCONFIG_BRANCH", PublicPath($"branches.{name}.source-branches"), "Referenced branch configuration does not exist.");
             }
         }
     }
@@ -503,16 +534,23 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     {
         foreach (var expression in expressions)
         {
-            try
-            {
-                _ = RegexPatterns.Cache.GetOrAdd(expression);
-            }
-            catch (ArgumentException exception)
-            {
-                throw new ConfigurationException(
-                    $"Configuration property '{propertyName}' contains invalid regular expression '{expression}'.",
-                    exception);
-            }
+            ValidateRegex(propertyName, expression);
+        }
+    }
+
+    private static string PublicPath(string path) => ConfigurationVersionSelector.Resolve() == ConfigurationVersion.V7 ? "calculation." + path : path;
+
+    private static void ValidateRegex(string path, string? expression)
+    {
+        if (expression is null)
+        {
+            return;
+        }
+
+        try { _ = RegexPatterns.Cache.GetOrAdd(expression); }
+        catch (ArgumentException)
+        {
+            throw new ConfigurationValidationException("GVCONFIG_REGEX", PublicPath(path), "Invalid regular expression.");
         }
     }
 

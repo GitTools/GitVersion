@@ -33,6 +33,18 @@ public class ArgumentParserTests : TestBase
         System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
 
     [Test]
+    public void ConfigValidateDefersInvalidTargetPathToItsExecutor()
+    {
+        var arguments = this.argumentParser.ParseArguments(["config", "validate", "--target-path", "", "--format", "json"]);
+
+        var options = arguments.ToOptions();
+
+        options.ConfigurationInfo.Validate.ShouldBeTrue();
+        options.ConfigurationInfo.ValidationJson.ShouldBeTrue();
+        options.ConfigurationInfo.ValidationError.ShouldBe("The selected directory path is invalid.");
+    }
+
+    [Test]
     public void OverrideConfigSupportsNestedV7RootAndBranchPaths()
     {
         System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
@@ -272,7 +284,7 @@ public class ArgumentParserTests : TestBase
     {
         var exception = Should.Throw<WarningException>(() => this.argumentParser.ParseArguments("config"));
 
-        exception.Message.ShouldBe("The 'config' command requires a subcommand. Use 'gitversion config get' or 'gitversion config migrate'.");
+        exception.Message.ShouldBe("The 'config' command requires a subcommand. Use 'gitversion config get', 'gitversion config validate' or 'gitversion config migrate'.");
     }
 
     [Test]

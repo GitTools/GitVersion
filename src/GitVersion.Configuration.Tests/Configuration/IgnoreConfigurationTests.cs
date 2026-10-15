@@ -153,7 +153,7 @@ public class IgnoreConfigurationTests : TestBase
     }
 
     [Test]
-    public void InvalidIgnoreBranchExpression_ThrowsConfigurationExceptionWithPropertyAndPattern()
+    public void InvalidIgnoreBranchExpression_ThrowsConfigurationExceptionWithoutPattern()
     {
         const string invalidExpression = "[invalid";
 
@@ -162,11 +162,11 @@ public class IgnoreConfigurationTests : TestBase
             .Build());
 
         exception.Message.ShouldContain("ignore.branches");
-        exception.Message.ShouldContain(invalidExpression);
+        exception.Message.ShouldNotContain(invalidExpression);
     }
 
     [Test]
-    public void InvalidIgnoreTagExpression_ThrowsConfigurationExceptionWithPropertyAndPattern()
+    public void InvalidIgnoreTagExpression_ThrowsConfigurationExceptionWithoutPattern()
     {
         const string invalidExpression = "[invalid";
 
@@ -175,7 +175,7 @@ public class IgnoreConfigurationTests : TestBase
             .Build());
 
         exception.Message.ShouldContain("ignore.tags");
-        exception.Message.ShouldContain(invalidExpression);
+        exception.Message.ShouldNotContain(invalidExpression);
     }
 
     [Test]

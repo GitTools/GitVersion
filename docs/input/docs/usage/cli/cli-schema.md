@@ -10,12 +10,19 @@ GitVersion 7 exposes its command tree as [OpenCLI][opencli] 0.1 JSON:
 gitversion --cli-schema
 gitversion config --cli-schema
 gitversion config migrate --cli-schema
+gitversion config validate --cli-schema
 ```
 
 Each invocation writes the same complete document to stdout, followed by a newline,
 and exits successfully. The document describes commands, aliases, options,
 positional arguments, value arity, and accepted values where available. The
 application version comes from the executable's assembly metadata.
+
+The tree includes `config validate` and its local `--format json`, `--config`,
+`--override-config` and `--target-path` options. This local format option selects
+the validation envelope; root `--format` formats calculated versions. OpenCLI
+describes CLI grammar; use [configuration validation][configuration-validation]
+to check a configuration document.
 
 The option is available with the default v7 argument parser. The temporary
 `GITVERSION_ARGUMENT_PARSER_VERSION=v6` fallback does not support it. Configuration
@@ -36,3 +43,5 @@ and numeric enum values is described in `gitversion.*` metadata. These names do
 not introduce new parser restrictions.
 
 [opencli]: https://opencli.org/
+
+[configuration-validation]: /docs/usage/cli/arguments#validate-configuration

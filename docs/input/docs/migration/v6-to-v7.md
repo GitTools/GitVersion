@@ -6,6 +6,31 @@ Description: Migration guidance for upgrading from GitVersion v6 to GitVersion v
 
 This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.
 
+## Validate candidate configuration
+
+The established v7 POSIX CLI supports repository-independent validation:
+
+```shell
+gitversion config validate --config GitVersion.yml
+gitversion config validate --config GitVersion.yml --format json
+```
+
+Validation shares workflow/default/override resolution with normal execution.
+Both paths now reject unknown public keys and invalid types, configured regexes
+and resolvable branch relationships early. Use supported enum names rather than
+undefined numeric values. After migration, validate the nested v7 file, inspect
+effective settings and compare representative history. For older binaries, retain
+matching-version schema and loader checks.
+
+`next-version` is checked against the selected `semantic-version-format` during
+resolution, without waiting for calculation. With `Strict`, use a complete version
+such as `2.0.0`. Select `Loose` explicitly when using partial values such as `2.1`.
+
+Explicit `GITVERSION_CONFIGURATION_VERSION=v6` retains its existing v7.0 warning
+and v7.1 removal schedule. It selects the flat layout independently of the parser;
+invalid v7 documents never trigger automatic v6 fallback. See
+[configuration validation][configuration-validation] for output and error contracts.
+
 ## Docker images run as non-root
 
 GitVersion v7 Docker images default to UID/GID `10001:10001`. GitVersion can write
@@ -289,3 +314,5 @@ remains available to convert flat files after runtime support is removed.
 [version-variables]: /docs/reference/variables
 
 [azure-devops]: /docs/reference/build-servers/azure-devops
+
+[configuration-validation]: /docs/usage/cli/arguments#validate-configuration

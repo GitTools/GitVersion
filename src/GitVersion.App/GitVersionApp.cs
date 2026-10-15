@@ -4,15 +4,15 @@ namespace GitVersion;
 
 internal class GitVersionApp(
     IHostApplicationLifetime applicationLifetime,
-    IGitVersionExecutor gitVersionExecutor,
+    Lazy<IGitVersionExecutor> gitVersionExecutor,
     IConfigurationMigrationExecutor configurationMigrationExecutor,
+    ConfigurationValidationExecutor configurationValidationExecutor,
     FeatureSelections selections,
     ILogger<GitVersionApp> logger,
-    IOptions<GitVersionOptions> options,
-    Arguments arguments)
+    IOptions<GitVersionOptions> options)
 {
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime.NotNull();
-    private readonly IGitVersionExecutor gitVersionExecutor = gitVersionExecutor.NotNull();
+    private readonly Lazy<IGitVersionExecutor> gitVersionExecutor = gitVersionExecutor.NotNull();
     private readonly IConfigurationMigrationExecutor configurationMigrationExecutor = configurationMigrationExecutor.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
 
@@ -20,12 +20,17 @@ internal class GitVersionApp(
     {
         try
         {
-            if (arguments.IsCliSchema)
+            var gitVersionOptions = this.options.Value;
+            if (gitVersionOptions.IsCliSchema)
             {
                 SysEnv.ExitCode = 0;
                 return Task.CompletedTask;
             }
-            var gitVersionOptions = this.options.Value;
+            if (gitVersionOptions.ConfigurationInfo.Validate)
+            {
+                SysEnv.ExitCode = configurationValidationExecutor.Execute(gitVersionOptions);
+                return Task.CompletedTask;
+            }
             selections.Log(logger);
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
             {
@@ -37,7 +42,7 @@ internal class GitVersionApp(
             }
             else
             {
-                SysEnv.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
+                SysEnv.ExitCode = this.gitVersionExecutor.Value.Execute(gitVersionOptions);
             }
         }
         catch (Exception exception)

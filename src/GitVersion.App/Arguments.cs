@@ -9,6 +9,10 @@ internal class Arguments
     public string? ConfigurationFile;
     public IReadOnlyDictionary<object, object?> OverrideConfiguration = new Dictionary<object, object?>();
     public bool ShowConfiguration;
+    internal bool ValidateConfiguration;
+    internal bool ValidationJson;
+    internal string[] ValidationOverrides = [];
+    internal string? ValidationError;
     public string? ConfigurationPropertyPath;
     public bool IsConfigurationMigration;
     public string? MigrationInputFile;
@@ -67,6 +71,10 @@ internal class Arguments
             ConfigurationInfo =
             {
                 ConfigurationFile = this.ConfigurationFile,
+                Validate = this.ValidateConfiguration,
+                ValidationJson = this.ValidationJson,
+                ValidationOverrides = this.ValidationOverrides,
+                ValidationError = this.ValidationError,
                 OverrideConfiguration = this.OverrideConfiguration,
                 ShowConfiguration = this.ShowConfiguration,
                 PropertyPath = this.ConfigurationPropertyPath
@@ -103,6 +111,7 @@ internal class Arguments
             },
 
             Diag = this.Diag,
+            IsCliSchema = this.IsCliSchema,
             IsVersion = this.IsVersion,
             IsHelp = this.IsHelp,
 
@@ -113,11 +122,17 @@ internal class Arguments
             OutputFile = this.OutputFile
         };
 
-        var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
+        var workingDirectory = this.ValidateConfiguration ? this.TargetPath : this.TargetPath?.TrimEnd('/', '\\');
         if (workingDirectory != null)
         {
-            var absolutePath = Path.GetFullPath(workingDirectory);
-            gitVersionOptions.WorkingDirectory = absolutePath;
+            try
+            {
+                gitVersionOptions.WorkingDirectory = Path.GetFullPath(workingDirectory);
+            }
+            catch (Exception exception) when (this.ValidateConfiguration && exception is ArgumentException or NotSupportedException or PathTooLongException)
+            {
+                gitVersionOptions.ConfigurationInfo.ValidationError ??= "The selected directory path is invalid.";
+            }
         }
 
         return gitVersionOptions;

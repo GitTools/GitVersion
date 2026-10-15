@@ -1,7 +1,5 @@
 using System.IO.Abstractions;
-using GitVersion.Configuration.Workflows;
 using GitVersion.Extensions;
-using SharpYaml;
 
 namespace GitVersion.Configuration;
 
@@ -10,7 +8,8 @@ internal class ConfigurationProvider(
     IFileSystem fileSystem,
     ILogger<ConfigurationProvider> logger,
     IConfigurationSerializer configurationSerializer,
-    IOptions<GitVersionOptions> options)
+    IOptions<GitVersionOptions> options,
+    ConfigurationResolver resolver)
     : IConfigurationProvider
 {
     private readonly IConfigurationFileLocator configFileLocator = configFileLocator.NotNull();
@@ -47,42 +46,9 @@ internal class ConfigurationProvider(
         var configurationVersion = ConfigurationVersionSelector.Resolve();
         this.logger.LogInformation("Configuration version: {ConfigurationVersion}", configurationVersion == ConfigurationVersion.V6 ? "v6" : "v7");
         var configurationFromFile = ReadOverrideConfiguration(configFile);
-        var overrideConfigurationFromFile = configurationFromFile is null
-            ? null
-            : ConfigurationDocumentMapper.Normalize(configurationFromFile, configurationVersion, "configuration file");
+        var configuration = resolver.Resolve(configurationFromFile is null ? null : ConfigurationSerializer.SerializeLegacy(configurationFromFile), overrideConfiguration);
         WarnAboutExplicitLegacyConfiguration(configFile, configurationFromFile);
-        var normalizedOverrideConfiguration = overrideConfiguration is null
-            ? null
-            : ConfigurationDocumentMapper.NormalizeInternal(overrideConfiguration, "runtime override configuration");
-
-        var workflow = GetWorkflow(normalizedOverrideConfiguration, overrideConfigurationFromFile);
-
-        IConfigurationBuilder configurationBuilder = (workflow is null)
-            ? GitFlowConfigurationBuilder.New
-            : ConfigurationBuilder.New;
-
-        var workflowConfiguration = WorkflowManager.GetOverrideConfiguration(workflow);
-        var overrideConfigurationFromWorkflow = workflowConfiguration is null
-            ? null
-            : ConfigurationDocumentMapper.NormalizeInternal(workflowConfiguration, "embedded workflow");
-        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, normalizedOverrideConfiguration }
-                     .OfType<IReadOnlyDictionary<object, object?>>())
-        {
-            configurationBuilder.AddOverride(item);
-        }
-
-        try
-        {
-            return configurationBuilder.Build();
-        }
-        catch (YamlException exception)
-        {
-            var baseException = exception.GetBaseException();
-            throw new WarningException(
-                $"Could not build the configuration instance because following exception occurred: '{baseException.Message}' " +
-                "Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
-            );
-        }
+        return configuration;
     }
 
     private Dictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath)
@@ -119,17 +85,4 @@ internal class ConfigurationProvider(
             ConfigurationVersionSelector.EnvironmentVariableName);
     }
 
-    private static string? GetWorkflow(IReadOnlyDictionary<object, object?>? overrideConfiguration, IReadOnlyDictionary<object, object?>? overrideConfigurationFromFile)
-    {
-        string? workflow = null;
-        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
-        {
-            if (item?.TryGetValue("workflow", out var value) == true && value != null)
-            {
-                workflow = (string)value;
-            }
-        }
-
-        return workflow;
-    }
 }

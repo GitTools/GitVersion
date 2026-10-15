@@ -83,7 +83,12 @@ internal class ArgumentParser(
 
         if (parseResult.CommandResult.Command == options.ConfigCommand)
         {
-            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config get' or 'gitversion config migrate'.");
+            throw new WarningException("The 'config' command requires a subcommand. Use 'gitversion config get', 'gitversion config validate' or 'gitversion config migrate'.");
+        }
+
+        if (parseResult.CommandResult.Command == options.Validate)
+        {
+            return MapValidationValues(parseResult, options, rootCommand);
         }
 
         if (parseResult.CommandResult.Command == options.Migrate)
@@ -108,6 +113,32 @@ internal class ArgumentParser(
             var option = rootCommand.Options.SingleOfType<T>();
             return parseResult.GetResult(option) is { Implicit: false };
         }
+    }
+
+    private static Arguments MapValidationValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
+    {
+        var unsupported = rootCommand.Options.Except(options.Validate.Options)
+            .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
+        var format = parseResult.GetValue(options.ValidationFormat);
+        string? error = null;
+        if (unsupported is not null)
+        {
+            error = $"Option '{unsupported.Name}' cannot be used with 'config validate'.";
+        }
+        else if (format is not null and not "json")
+        {
+            error = "config validate --format supports only json.";
+        }
+
+        return new Arguments
+        {
+            ValidateConfiguration = true,
+            ConfigurationFile = parseResult.GetValue(options.Config),
+            TargetPath = parseResult.GetValue(options.TargetPath) ?? parseResult.GetValue(options.Path) ?? SysEnv.CurrentDirectory,
+            ValidationJson = format == "json",
+            ValidationOverrides = parseResult.GetValue(options.OverrideConfig) ?? [],
+            ValidationError = error
+        };
     }
 
     private static void ValidateParsedResult(ParseResult parseResult, CommandOptions options, bool schemaRequested)
@@ -580,6 +611,14 @@ internal class ArgumentParser(
         get.Options.Add(verbosity);
         configCommand.Subcommands.Add(get);
 
+        var validate = new Command("validate", "Validates a configuration file without calculating a version or accessing a Git backend.");
+        var validationFormat = new Option<string?>("--format") { Description = "Emit one versioned JSON validation result (json). Default: diagnostics on stderr and empty stdout." };
+        validate.Options.Add(config);
+        validate.Options.Add(overrideConfig);
+        validate.Options.Add(targetPath);
+        validate.Options.Add(validationFormat);
+        configCommand.Subcommands.Add(validate);
+
         var cliSchema = new Option<bool>("--cli-schema")
         {
             Description = "Writes the complete OpenCLI 0.1 command schema as JSON and exits.",
@@ -642,11 +681,13 @@ internal class ArgumentParser(
             Commit: commit, DynamicRepoLocation: dynamicRepoLocation,
             ConfigCommand: configCommand, Migrate: migrate,
             MigrationInputFile: migrationInputFile, MigrationOutputFile: migrationOutputFile,
-            InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath, CliSchema: cliSchema
+            InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath, CliSchema: cliSchema,
+            Validate: validate, ValidationFormat: validationFormat
         ), new Dictionary<Symbol, CliSchemaValues>
         {
             [verbosity] = new(Enum.GetNames<Verbosity>(), true, true),
-            [showVariable] = new([.. availableVariables], true)
+            [showVariable] = new([.. availableVariables], true),
+            [validationFormat] = new(["json"])
         });
     }
 
@@ -779,6 +820,8 @@ internal class ArgumentParser(
         Option<bool> Force,
         Command Get,
         Argument<string> PropertyPath,
-        Option<bool> CliSchema
+        Option<bool> CliSchema,
+        Command Validate,
+        Option<string?> ValidationFormat
     );
 }

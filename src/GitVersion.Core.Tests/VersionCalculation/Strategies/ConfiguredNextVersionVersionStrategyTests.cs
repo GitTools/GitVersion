@@ -68,8 +68,10 @@ public class ConfiguredNextVersionVersionStrategyTests : TestBase
             { "semantic-version-format", versionFormat }
         };
 
-        Should.Throw<WarningException>(() => GetBaseVersion(overrideConfiguration))
-            .Message.ShouldBe($"Failed to parse {nextVersion} into a Semantic Version");
+        var error = Should.Throw<ConfigurationValidationException>(() => GetBaseVersion(overrideConfiguration));
+        error.Code.ShouldBe("GVCONFIG_VALUE");
+        error.PropertyPath.ShouldEndWith("next-version");
+        error.Message.ShouldNotContain(nextVersion);
     }
 
     private static BaseVersion? GetBaseVersion(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)

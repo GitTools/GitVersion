@@ -3,6 +3,18 @@ namespace GitVersion;
 /// <summary>Holds options that control how the GitVersion configuration file is located and applied.</summary>
 public record ConfigurationInfo
 {
+    /// <summary>Gets or sets whether to validate configuration without calculating a version.</summary>
+    internal bool Validate { get; set; }
+
+    /// <summary>Gets or sets whether validation emits a JSON result.</summary>
+    internal bool ValidationJson { get; set; }
+
+    /// <summary>Gets or sets raw command-local overrides, parsed during validation.</summary>
+    internal string[] ValidationOverrides { get; set; } = [];
+
+    /// <summary>Gets or sets a command invocation error to report through validation output.</summary>
+    internal string? ValidationError { get; set; }
+
     /// <summary>Gets or sets an explicit path to the GitVersion configuration file, overriding automatic discovery.</summary>
     public string? ConfigurationFile { get; set; }
 
