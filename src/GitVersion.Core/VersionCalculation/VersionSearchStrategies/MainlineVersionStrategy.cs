@@ -122,7 +122,8 @@ internal sealed class MainlineVersionStrategy(
 
     private MainlineIteration CreateIteration(
         ReferenceName branchName, IBranchConfiguration configuration,
-        MainlineIteration? parentIteration = null, MainlineCommit? parentCommit = null)
+        MainlineIteration? parentIteration = null, MainlineCommit? parentCommit = null,
+        IReadOnlySet<ICommit>? includedCommits = null)
     {
         var iterationCount = Interlocked.Increment(ref this.iterationCounter);
         return new MainlineIteration(
@@ -130,7 +131,8 @@ internal sealed class MainlineVersionStrategy(
             branchName: branchName,
             configuration: configuration,
             parentIteration: parentIteration,
-            parentCommit: parentCommit
+            parentCommit: parentCommit,
+            includedCommits: includedCommits
         );
     }
 
@@ -296,7 +298,7 @@ internal sealed class MainlineVersionStrategy(
 
         if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch == true)
         {
-            if (IsSupportMergedIntoMain(state.BranchName, childBranchName))
+            if (IsConfiguredSupportMerge(state.BranchName, childBranchName))
             {
                 // A linear slice after the merge base can miss older, newly merged
                 // support commits when main has already been merged into support.
@@ -317,7 +319,7 @@ internal sealed class MainlineVersionStrategy(
                 return false;
             }
 
-            if (!IsSupportMergedIntoMain(childBranchName, state.BranchName))
+            if (!IsConfiguredSupportMerge(childBranchName, state.BranchName))
             {
                 throw new NotImplementedException();
             }
@@ -338,7 +340,8 @@ internal sealed class MainlineVersionStrategy(
             branchName: childBranchName,
             configuration: childConfiguration,
             parentIteration: iteration,
-            parentCommit: commit
+            parentCommit: commit,
+            includedCommits: iteration.IncludedCommits
         );
 
         var done = IterateOverCommitsRecursive(
@@ -385,9 +388,8 @@ internal sealed class MainlineVersionStrategy(
     {
         // Keep traversing main for its baseline, but retain support's ordered mainline
         // operations. Its operands become numeric floors rather than replacing main.
-        var supportIteration = CreateIteration(childBranchName, childConfiguration, commit.Iteration, commit);
-        supportIteration.IncludedCommits = mergedCommits
-            .Where(item => commit.Iteration.IncludedCommits?.Contains(item) != false).ToHashSet();
+        var supportIteration = CreateIteration(childBranchName, childConfiguration, commit.Iteration, commit,
+            includedCommits: mergedCommits.ToHashSet());
         IterateOverCommitsRecursive(mergedCommits, supportIteration, targetBranch, targetLabel,
             state.TaggedSemanticVersions, stopOnMatchingTag: state.StopOnMatchingTag);
         commit.MergedSupportIteration = supportIteration;
@@ -395,21 +397,18 @@ internal sealed class MainlineVersionStrategy(
         var supportTip = commit.Value.Parents.Skip(1).Single();
         if (this.repositoryStore.FindMergeBase(mainTip, supportTip)?.Equals(mainTip) != true)
         {
-            var taggedSemanticVersions = state.TaggedSemanticVersions;
-            commit.MergedSupportVersion = new(() => GetSupportVersion(commit, childConfiguration,
-                childBranchName, targetBranch, targetLabel, taggedSemanticVersions));
+            // Build both histories during traversal. Version calculation only consumes
+            // these completed iterations; it never changes their commit selection.
+            var independentIteration = CreateIteration(childBranchName, childConfiguration, commit.Iteration, commit);
+            IterateOverCommitsRecursive(this.repositoryStore.GetCommitLog(null, supportTip, Context.Configuration.Ignore),
+                independentIteration, targetBranch, targetLabel, state.TaggedSemanticVersions);
+            commit.MergedSupportVersion = new(() => GetSupportVersion(independentIteration, supportTip, targetLabel));
         }
     }
 
-    private (BaseVersion Version, SemanticVersion Baseline) GetSupportVersion(MainlineCommit merge, IBranchConfiguration configuration,
-        ReferenceName branchName, IBranch targetBranch, string? targetLabel,
-        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions)
+    private (BaseVersion Version, SemanticVersion Baseline) GetSupportVersion(
+        MainlineIteration iteration, ICommit tip, string? targetLabel)
     {
-        var tip = merge.Value.Parents.Skip(1).Single();
-        var iteration = CreateIteration(branchName, configuration, merge.Iteration, merge);
-        iteration.IncludedCommits = null;
-        IterateOverCommitsRecursive(this.repositoryStore.GetCommitLog(null, tip, Context.Configuration.Ignore),
-            iteration, targetBranch, targetLabel, taggedSemanticVersions);
         var steps = GetIncrements(iteration, targetLabel, this.incrementStrategyFinder,
             Context.Configuration, this.environment, Context.CurrentCommit).ToArray();
         var version = ApplyIncrements(steps);
@@ -424,7 +423,9 @@ internal sealed class MainlineVersionStrategy(
         return (version, baseline);
     }
 
-    private bool IsSupportMergedIntoMain(ReferenceName targetBranch, ReferenceName sourceBranch)
+    // These are configuration role keys, not literal Git branch names. The enclosing
+    // merge handler also requires both matched branches to be main branches.
+    private bool IsConfiguredSupportMerge(ReferenceName targetBranch, ReferenceName sourceBranch)
         => Context.Configuration.Branches.TryGetValue(ConfigurationConstants.MainBranchKey, out var mainConfiguration)
             && mainConfiguration.IsMatch(targetBranch.WithoutOrigin)
             && Context.Configuration.Branches.TryGetValue(ConfigurationConstants.SupportBranchKey, out var supportConfiguration)

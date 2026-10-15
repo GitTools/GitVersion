@@ -341,6 +341,40 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
         version.CommitCountSourceDistance.ShouldBe(postMergeCommit ? "4" : "3");
     }
 
+    [TestCase(false, "2.0.1", "4")]
+    [TestCase(true, "2.0.2", "5")]
+    public void SupportRoundTripDoesNotReplayFeatureHistoryAlreadyReleasedOnMain(
+        bool postMergeCommit, string expectedVersion, string expectedCount)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        fixture.BranchTo("feature/shared");
+        fixture.MakeACommit("Shared API +semver: major");
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("feature/shared");
+        fixture.ApplyTag("2.0.0");
+        var mainTip = fixture.Repository.Head.Tip.Sha;
+        fixture.Checkout("support/1.x");
+        fixture.MergeNoFF("feature/shared");
+        fixture.MergeNoFF(MainBranch);
+        if (postMergeCommit)
+        {
+            fixture.MakeACommit();
+        }
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("support/1.x");
+
+        var version = fixture.GetVersion(GetConfigurationBuilder().Build());
+
+        version.FullSemVer.ShouldBe(expectedVersion);
+        version.SemVerSourceSha.ShouldBe(mainTip);
+        version.CommitCountSourceSha.ShouldBe(mainTip);
+        version.CommitCountSourceDistance.ShouldBe(expectedCount);
+    }
+
     private static GitFlowConfigurationBuilder GetConfigurationBuilder() => GitFlowConfigurationBuilder.New
         .WithVersionStrategies(VersionStrategies.Mainline)
         .WithDeploymentMode(DeploymentMode.ContinuousDeployment);
