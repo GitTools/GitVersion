@@ -27,6 +27,7 @@ the selected executable's version. For v7, run gitversion --cli-schema using
 that executable and read its JSON to discover commands, aliases, options,
 arguments and accepted values before constructing commands. If schema export
 is unavailable, use that executable's --help rather than guessing commands.
+If the schema includes config validate, use it to check the candidate first.
 Inspect the effective configuration, then compare baseline and candidate
 results on representative existing branches, tags and commits. Explain
 unexpected versions before adjusting settings. Report evidence, remaining
@@ -107,7 +108,7 @@ Read the [CLI schema][cli-schema] JSON before constructing commands. It describe
 
 `--cli-schema` works outside a Git repository and does not load configuration, calculate a version or write files. This is the CLI grammar, **not the configuration JSON Schema** used to check YAML. Run it separately from `--version`, because schema export takes precedence when both flags are supplied.
 
-Schema export requires the v7 argument parser. If the selected executable or temporary v6 parser cannot export it, use that executable's `--help` and matching reference documentation. Do not infer support for a proposed command such as `config validate` merely because it appears in a feature request.
+Schema export requires the v7 argument parser. If the selected executable or temporary v6 parser cannot export it, use that executable's `--help` and matching reference documentation. Check the discovered command tree before using newly added commands; an older v7 build may not expose them.
 
 ### Docker mounts and permissions
 
@@ -152,13 +153,16 @@ Associate the candidate with the matching [configuration schema][v7-schema] in t
 These templates use paths selected during inspection:
 
 ```text
+gitversion config validate --config <candidate-file> --format json
 gitversion --target-path <repository> --config <candidate-file> --show-config
 gitversion --target-path <repository> config get calculation.tag-prefix --config <candidate-file>
 ```
 
 `--show-config` displays defaults and overrides. `config get` returns a JSON scalar for a supported v7 property; it does not return branch-specific inherited behavior or a calculated version. Both need a suitable repository in the established CLI. See [configuration queries][config-queries].
 
-**A dedicated `config validate` command is proposed in [issue #5360][config-validate]. It is not an available step in this guide.** Until it ships, combine schema checks, effective-config inspection and representative calculations. If a future selected executable supports the command, check its documented contract before using it. Successful validation will still need history-based verification to establish that versions fit the release workflow.
+The v7 `config validate` command, added for [issue #5360][config-validate], checks the candidate without calculating a version or changing files and refs. An explicit file works outside Git and offline. Require a successful exit and a valid result before continuing; `--format json` writes the result to stdout and diagnostics go to stderr. See [configuration validation][configuration-validation] for supported options, diagnostics and limits.
+
+Use this command when it is present in the selected executable's CLI schema. For older tools that lack it, retain matching-version schema and loader checks. Successful validation still needs effective-config inspection and history-based verification to establish that versions fit the release workflow.
 
 ## 5. Compare results against real history
 
@@ -224,7 +228,7 @@ Use the appropriate flat configuration schema, such as [the 6.3 schema][v6-schem
 <verified-v6-executable> <repository> /config <candidate-file> /output json /nofetch /nonormalize /nocache /b <existing-branch> /c <existing-sha>
 ```
 
-Use the same baseline/candidate history loop, but read v6 variable names, such as `CommitsSinceVersionSource`, from that tool's reference. `config get`, `config migrate` and `--cli-schema` are v7 features; the proposed validator does not add a command to published v6 binaries. See [the migration guide][migration] before selecting v7, including the independent temporary configuration/parser/backend selectors and their removal schedule. v7's temporary flat-v6 configuration mode is distinct from running a v6 executable.
+Use the same baseline/candidate history loop, but read v6 variable names, such as `CommitsSinceVersionSource`, from that tool's reference. `config get`, `config migrate`, `config validate` and `--cli-schema` are v7 features, unavailable in published v6 binaries. See [the migration guide][migration] before selecting v7, including the independent temporary configuration/parser/backend selectors and their removal schedule. v7's temporary flat-v6 configuration mode is distinct from running a v6 executable.
 
 ## Optional agent discovery adapters
 
@@ -281,6 +285,8 @@ These are optional adapters to one canonical guide. Avoid copying the full proce
 [v7-schema]: https://gitversion.net/schemas/7.0/GitVersion.configuration.json
 
 [config-queries]: /docs/usage/cli/arguments#query-a-configuration-property
+
+[configuration-validation]: /docs/usage/cli/arguments#validate-configuration
 
 [config-validate]: https://github.com/GitTools/GitVersion/issues/5360
 
