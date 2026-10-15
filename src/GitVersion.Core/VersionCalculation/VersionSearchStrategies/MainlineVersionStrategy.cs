@@ -456,12 +456,14 @@ internal sealed class MainlineVersionStrategy(
     private static BaseVersion ApplyIncrements(IEnumerable<IBaseVersionIncrement> incrementSteps)
     {
         BaseVersion? result = null;
+        SemanticVersion? iterationBaseline = null;
         foreach (var baseVersionIncrement in incrementSteps)
         {
             switch (baseVersionIncrement)
             {
                 case BaseVersionOperand baseVersionOperand:
                     result = new BaseVersion(baseVersionOperand);
+                    iterationBaseline = baseVersionOperand.SemanticVersion;
                     break;
                 case BaseVersionOperator baseVersionOperator:
                     result ??= new BaseVersion();
@@ -469,9 +471,10 @@ internal sealed class MainlineVersionStrategy(
                     break;
                 case BaseVersion baseVersion:
                     result = baseVersion;
+                    iterationBaseline = baseVersion.SemanticVersion;
                     break;
                 case MergedMainlineIncrement merged:
-                    result = ApplyMergedMainlineIncrement(result ?? new BaseVersion(), merged);
+                    result = ApplyMergedMainlineIncrement(result ?? new BaseVersion(), merged, iterationBaseline);
                     break;
             }
         }
@@ -524,12 +527,17 @@ internal sealed class MainlineVersionStrategy(
         public ICommit? BaseVersionSource => Operation.BaseVersionSource;
     }
 
-    private static BaseVersion ApplyMergedMainlineIncrement(BaseVersion receiver, MergedMainlineIncrement merged)
+    private static BaseVersion ApplyMergedMainlineIncrement(BaseVersion receiver, MergedMainlineIncrement merged,
+        SemanticVersion? baseline)
     {
         var receiverVersion = receiver.GetIncrementedVersion();
-        // Restart the unnamed counting suffix for this merge's count anchor, but
-        // retain named prerelease sequences such as alpha.5 for normal advancement.
-        if (receiverVersion.PreReleaseTag.Name.IsNullOrEmpty())
+        var continuesReleasedPrerelease = baseline is { IsPreRelease: true }
+            && baseline.Major == receiverVersion.Major && baseline.Minor == receiverVersion.Minor
+            && baseline.Patch == receiverVersion.Patch;
+        // Restart a generated unnamed counting suffix for the new count anchor.
+        // A released prerelease, including a numeric tag such as 2.0.0-5, continues
+        // its own sequence while the numeric release version remains unchanged.
+        if (receiverVersion.PreReleaseTag.Name.IsNullOrEmpty() && !continuesReleasedPrerelease)
         {
             receiverVersion = new SemanticVersion(receiverVersion) { PreReleaseTag = SemanticVersionPreReleaseTag.Empty };
         }
