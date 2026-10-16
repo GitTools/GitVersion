@@ -81,6 +81,8 @@ internal static partial class RegexPatterns
             new(SanitizeEnvVarNameRegexPattern, SanitizeEnvVarNameRegex),
             new(SanitizeMemberNameRegexPattern, SanitizeMemberNameRegex),
             new(SanitizeNameRegexPattern, SanitizeNameRegex),
+            new(Git.RepositoryNotFoundRegexPattern, Git.RepositoryNotFoundRegex),
+            new(Git.HttpStatusRegexPattern, Git.HttpStatusRegex),
             new(Configuration.DefaultTagPrefixRegexPattern, Configuration.DefaultTagPrefixRegex),
             new(Configuration.DefaultVersionInBranchRegexPattern, Configuration.DefaultVersionInBranchRegex),
             new(Configuration.MainBranchRegexPattern, Configuration.MainBranchRegex),
@@ -128,6 +130,21 @@ internal static partial class RegexPatterns
 
         private static readonly ImmutableDictionary<string, Regex> KnownRegexes =
             Descriptors.ToImmutableDictionary(d => d.Pattern, d => d.Regex);
+    }
+
+    internal static partial class Git
+    {
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string RepositoryNotFoundRegexPattern = @"repository '[^']*' not found";
+
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string HttpStatusRegexPattern = @"The requested URL returned error: (?<status>401|403|404)\r?$";
+
+        [GeneratedRegex(RepositoryNotFoundRegexPattern, Options)]
+        public static partial Regex RepositoryNotFoundRegex { get; }
+
+        [GeneratedRegex(HttpStatusRegexPattern, Options | RegexOptions.Multiline)]
+        public static partial Regex HttpStatusRegex { get; }
     }
 
     internal static partial class Configuration

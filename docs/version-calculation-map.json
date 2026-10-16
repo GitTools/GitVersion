@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "e083c38fa008a84ceb8c4978a43712c8a5cd6b2c8ba4c82602c18311a25a2d4e",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "2a74e1f445844478fae2d9208887a689248a7f17a3d2df4546b271832575482e",
+        "reason": "Reviewed the relocation of the unchanged Git CLI repository-not-found and HTTP-status expressions into RegexPatterns.Git and its cache registry. The HTTP matcher retains case-insensitive multiline and CRLF matching. Tagged-commit shortcuts, effective configurations, incremented candidates, deployment dispatch and the final numeric tag floor are unchanged; the calculation overview and flowchart remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "66c90fe033b9988d7a44364c00324fe8939bcfb7e49ab46f25518b529d4fa8b3",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "559ba763298167c6a65fc8360e1a02362b22848e774ebf566ebc8ff945306c02",
+        "reason": "Reviewed the shared-source change that centralizes the two Git CLI diagnostic expressions without changing their matching behavior. No strategy implementation, enabled flag, eligibility condition, candidate ignore filter or per-configuration fallback rule changed. The seven strategy descriptions and independent candidate-production flowchart remain accurate."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "4adc4714f7551b08fb5925a4337b276f71c09133cae8243662ea6b3b1e3fb205",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "d22715228eeea007a0e25256403543ebd3b039ac5ab6a231cfc25c88325a4bdb",
+        "reason": "Reviewed the Git CLI diagnostic regex relocation against the inheritance explanation and mapped finder. Explicit increments, allowed source branches, pull-request target selection, recursive cycle guards and orphaned-branch fallback are unchanged. The inheritance prose and flowchart still describe the current implementation."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "3406cf967c55d45004ac9457080da092a3a72c33b17f6caeff8728cb7d83e63c",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "1b530522026aa1f9b939dd2cd67b242999fc5ed048ff57f448beb6fa663a609a",
+        "reason": "Reviewed the shared regex registry change: existing version-bump patterns and cache mappings are unchanged, and the two added patterns only recognize Git network failures. History filtering, message modes, no-bump/major/minor/patch precedence, reset accumulation and branch-increment minimum rules remain unchanged. The candidate-increment explanation and commit-message examples remain accurate."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "01fac74a0951c924c0a39b7eee8e5a5392ce0cc1e0fb2d5bd6b61718bf626460",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "fe6d0ab883de2ec786c61c72335ba0f9ff7a3032e333103842454d3e3087d906",
+        "reason": "Reviewed the diagnostic-regex refactor against candidate selection and its examples. Maximum incremented SemVer, latest-source timestamp tie-breaking, stable-winner prerelease filtering and the distinct semantic/counting sources are unchanged. The selection prose, flowchart and competing-candidate/source examples remain accurate."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "99e8343c98e95b8986581335c97e3ecd6a2ff8da571af06bf57c05ca137bd19b",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "2e8ddeb42ce66ceca319fc85bca5293aab4be0742f9d08d55234b31a2689d6dc",
+        "reason": "Reviewed the shared Git diagnostic-pattern relocation against Mainline traversal and rule families. Commit/tag/branch traversal, recursive iterations and operand/operator folding are unchanged. The recognized merge between two main branches still reaches the documented unsupported path. The Mainline explanation and flowchart remain accurate."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "38ec15f5c0600c6fbe2d12d3a3c106f4b7e89cd3cef96d0b8bc36bc4582dc87b",
-        "reason": "Reviewed the #5360 shared configuration changes: workflow/default/file/runtime override precedence is preserved by ConfigurationResolver, with earlier shape, enum, regex, next-version and branch-reference validation plus safe diagnostics and deterministic file discovery. Valid configuration retains the same strategy candidates, inheritance, increments, selection, Mainline traversal and deployment behavior; no VersionCalculation source changed. Added the config validate preflight and its release-policy limitation to the algorithm introduction; all seven section explanations and diagrams remain accurate."
+        "sourceDigest": "4b869ee493bebc6458d3d3ba779b7f16f13f6745fdd9adc0550dd914bb0dd062",
+        "reason": "Reviewed the Git CLI diagnostic regex centralization against all three deployment calculators. ManualDeployment preserves prerelease state, ContinuousDelivery requires a numbered prerelease and adds source distance minus one, and ContinuousDeployment removes the prerelease tag; tagged shortcuts and the final numeric tag floor are unchanged. The mode table, flowchart and same-history examples remain accurate."
       }
     }
   ]

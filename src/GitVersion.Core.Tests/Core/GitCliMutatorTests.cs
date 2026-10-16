@@ -137,6 +137,102 @@ public class GitCliMutatorTests : TestBase
         Should.Throw<InvalidOperationException>(() => CreateMutator().Clone(missingSource, targetPath, new AuthenticationInfo()));
     }
 
+    [TestCase(40123)]
+    [TestCase(40323)]
+    [TestCase(40423)]
+    public void CloneOfMissingHttpRepositoryIgnoresStatusCodeDigitsInUrl(int port)
+    {
+        var message = $"fatal: repository 'http://127.0.0.1:{port}/missing/repo.git/' not found";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe("Not found: The repository was not found");
+    }
+
+    [TestCase(401)]
+    [TestCase(403)]
+    [TestCase(404)]
+    public void CloneFailureDoesNotClassifyStatusCodeDigitsInUrlsOrPaths(int code)
+    {
+        var message = $"Cloning into '/tmp/repo-{code}'...\nfatal: unable to access 'https://example.test/repo/{code}/': Could not resolve host: example.test";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe($"Git command failed with exit code 128: {message}");
+    }
+
+    [TestCase(401, "Unauthorized: Incorrect username/password")]
+    [TestCase(403, "Forbidden: Possibly Incorrect username/password")]
+    [TestCase(404, "Not found: The repository was not found")]
+    public void CloneFailureMapsActualHttpStatusDespiteStatusCodeDigitsInUrl(int status, string expectedMessage)
+    {
+        var message = $"fatal: unable to access 'https://example.test:40123/403/404/': The requested URL returned error: {status}\n";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe(expectedMessage);
+    }
+
+    [TestCase(401, "Unauthorized: Incorrect username/password")]
+    [TestCase(403, "Forbidden: Possibly Incorrect username/password")]
+    [TestCase(404, "Not found: The repository was not found")]
+    public void CloneFailureMapsHttpStatusInMultilineRpcDiagnostics(int status, string expectedMessage)
+    {
+        var message = $"Cloning into '/tmp/repo-401'...\r\nerror: RPC failed; HTTP {status} curl 22 The requested URL returned error: {status}\r\nfatal: expected flush after ref listing";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe(expectedMessage);
+    }
+
+    [TestCase("Authentication failed", "Unauthorized: Incorrect username/password")]
+    [TestCase("Repository not found", "Not found: The repository was not found")]
+    public void CloneFailureRetainsRecognizedErrorPhrases(string message, string expectedMessage)
+    {
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe(expectedMessage);
+    }
+
+    [TestCase(401)]
+    [TestCase(403)]
+    [TestCase(404)]
+    public void CloneFailureDoesNotTreatLongerNumbersAsHttpStatus(int status)
+    {
+        var message = $"fatal: The requested URL returned error: {status}0";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Clone("https://example.test/repo.git", "unused", new AuthenticationInfo()));
+
+        exception.Message.ShouldBe($"Git command failed with exit code 128: {message}");
+    }
+
+    [TestCase(401)]
+    [TestCase(403)]
+    [TestCase(404)]
+    public void CheckoutFailureDoesNotClassifyHttpStatusDiagnostics(int status)
+    {
+        var message = $"fatal: The requested URL returned error: {status}";
+
+        var exception = Should.Throw<InvalidOperationException>(
+            () => CreateFailingMutator(message).Checkout("unused", "main"));
+
+        exception.Message.ShouldBe($"Git command failed with exit code 128: {message}");
+    }
+
+    private static GitCliMutator CreateFailingMutator(string standardError) =>
+        new(NullLogger<GitCliMutator>.Instance, new StubGitCliExecutor((_, _) => new(128, string.Empty, standardError)));
+
+    private sealed class StubGitCliExecutor(Func<string?, IReadOnlyList<string>, GitCliResult> execute) : IGitCliExecutor
+    {
+        GitCliResult IGitCliExecutor.Execute(string? workingDirectory, IReadOnlyList<string> arguments) => execute(workingDirectory, arguments);
+    }
+
     [Test]
     public void CloneOfMissingHttpRepositoryMapsGitsNotFoundPhrasing()
     {

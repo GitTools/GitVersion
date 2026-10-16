@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 
 namespace GitVersion.Git;
@@ -20,7 +19,7 @@ internal interface IGitCliMutator
     void CreateSymbolicReference(string workingDirectory, string name, string targetReferenceName);
 }
 
-internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
+internal sealed class GitCliMutator(ILogger<GitCliMutator> logger, IGitCliExecutor executor) : IGitCliMutator
 {
     private readonly ILogger<GitCliMutator> logger = logger.NotNull();
     private readonly IGitCliExecutor executor = executor.NotNull();
@@ -148,21 +147,23 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
         // a local ref or pathspec can legitimately contain "401"/"404" in its name.
         if (isNetworkOperation)
         {
-            if (message.Contains("401") || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
+            // Match git's HTTP diagnostic, not digits in a URL, port or local path.
+            var httpStatus = RegexPatterns.Git.HttpStatusRegex.Match(message).Groups["status"].Value;
+            if (httpStatus == "401" || message.Contains("Authentication failed", StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException("Unauthorized: Incorrect username/password");
             }
 
-            if (message.Contains("403"))
+            if (httpStatus == "403")
             {
                 throw new InvalidOperationException("Forbidden: Possibly Incorrect username/password");
             }
 
             // "Repository not found" is GitHub's server-side banner; other hosts produce
             // git's own "fatal: repository '<url>' not found" with the URL in between.
-            if (message.Contains("404")
+            if (httpStatus == "404"
                 || message.Contains("Repository not found", StringComparison.OrdinalIgnoreCase)
-                || RepositoryNotFoundRegex().IsMatch(message))
+                || RegexPatterns.Git.RepositoryNotFoundRegex.IsMatch(message))
             {
                 throw new InvalidOperationException("Not found: The repository was not found");
             }
@@ -176,7 +177,4 @@ internal sealed partial class GitCliMutator(ILogger<GitCliMutator> logger, IGitC
         || message.Contains("could not lock", StringComparison.OrdinalIgnoreCase)
         || message.Contains("cannot lock ref", StringComparison.OrdinalIgnoreCase)
         || message.Contains("Another git process seems to be running", StringComparison.OrdinalIgnoreCase);
-
-    [GeneratedRegex(@"repository '[^']*' not found", RegexOptions.IgnoreCase)]
-    private static partial Regex RepositoryNotFoundRegex();
 }
