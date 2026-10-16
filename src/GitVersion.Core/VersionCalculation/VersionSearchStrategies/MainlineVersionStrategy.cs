@@ -507,10 +507,7 @@ internal sealed class MainlineVersionStrategy(
             {
                 foreach (var item in incrementer.GetIncrements(iteration, commit, context))
                 {
-                    yield return item is BaseVersionOperator operation
-                        && commit.MergedMainlineVersion is { } source && !commit.PreventMergedMainlineVersion
-                        ? new MergedMainlineIncrement(operation, source.Value)
-                        : item;
+                    yield return WrapMergedMainlineIncrement(item, commit);
                 }
             }
 
@@ -520,6 +517,12 @@ internal sealed class MainlineVersionStrategy(
             }
         }
     }
+
+    private static IBaseVersionIncrement WrapMergedMainlineIncrement(IBaseVersionIncrement increment, MainlineCommit commit)
+        => increment is BaseVersionOperator operation
+            && commit.MergedMainlineVersion is { } source && !commit.PreventMergedMainlineVersion
+            ? new MergedMainlineIncrement(operation, source.Value)
+            : increment;
 
     private sealed record MergedMainlineIncrement(BaseVersionOperator Operation, BaseVersion Version) : IBaseVersionIncrement
     {

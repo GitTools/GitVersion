@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "d1fdcadbd74f5e08bedbd7ade02115c16794c96dba64de7d19931466bad9ccca",
-        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
+        "sourceDigest": "1b2cf3df41fa40c827ba4439c75cd915da933e0f1db7ac247caaece46c958d5b",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "a04b240d887fe3d284c550a4b6c42109374592d5f3d943625612880328af9027",
-        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
+        "sourceDigest": "cb5abaec0c195e9919fbac8a346168785c82d23e26cf0de5c4c9fb47680b6213",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {
@@ -115,8 +115,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "0b1b19269bc2f232912c625100959bf10468681d5bb6f86d6d07b872f006b5d6",
-        "reason": "Reviewed the rebase of #5295 onto main after #5366: Git CLI HTTP-status and repository-not-found handling uses the centralized RegexPatterns.Git expressions; calculation candidates, traversal and increment semantics are unchanged by that upstream change. Retained the #5295 explanation and regression evidence for independent IsMainBranch numeric versions, source-specific labels and tagged-tip prevention, completed-history caching, receiver merge controls, explicit messages, final tag floors, equal-version provenance and receiver counting anchors. Named and numeric released prereleases retain their sequences on the same core version; generated unnamed counters retain receiver semantics. The updated prose and diagrams still describe this implementation, and the existing #5360 validation guidance and shared selection/deployment descriptions remain accurate."
+        "sourceDigest": "95a478d04b82c5141b25dbdd5eb05d89b6e4bacc53bf6e9b17b7fc4a0a272832",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {
