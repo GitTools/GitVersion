@@ -1,10 +1,15 @@
 flowchart TD
     Enabled["Mainline enabled"] --> Tags["Gather eligible tags and branch context"]
     Tags --> Traverse["Traverse commits;<br/>inspect branch points and merges"]
-    Traverse --> State["Build commit state and recursive iterations"]
+    Traverse --> MainPair{"Recognized merge between<br/>two configured main branches?"}
+    MainPair -->|No| State["Build commit state and recursive iterations"]
+    MainPair -->|Yes| Histories["Build independent source history;<br/>keep the receiver's own history"]
+    Histories --> State
     State --> Pre["Enrich version and increment context"]
     Pre --> Rules["Apply matching trunk/non-trunk rules"]
     Rules --> Post["Clean up context after each commit"]
     Post --> Fold["Fold baseline operands<br/>and increment operators"]
-    Fold --> Candidate["Mainline candidate enters shared selection"]
-    Traverse --> Unsupported["Recognized merge between two main branches:<br/>currently unsupported"]
+    Fold --> Source{"Independent source contribution<br/>enabled at this merge?"}
+    Source -->|No| Candidate["Mainline candidate enters shared selection"]
+    Source -->|Yes| Floor["Compare receiver merge candidate with source version;<br/>keep the higher numeric version and receiver counting anchor"]
+    Floor --> Candidate

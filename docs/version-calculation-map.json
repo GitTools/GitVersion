@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "2a74e1f445844478fae2d9208887a689248a7f17a3d2df4546b271832575482e",
-        "reason": "Reviewed the relocation of the unchanged Git CLI repository-not-found and HTTP-status expressions into RegexPatterns.Git and its cache registry. The HTTP matcher retains case-insensitive multiline and CRLF matching. Tagged-commit shortcuts, effective configurations, incremented candidates, deployment dispatch and the final numeric tag floor are unchanged; the calculation overview and flowchart remain accurate."
+        "sourceDigest": "1b2cf3df41fa40c827ba4439c75cd915da933e0f1db7ac247caaece46c958d5b",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "559ba763298167c6a65fc8360e1a02362b22848e774ebf566ebc8ff945306c02",
-        "reason": "Reviewed the shared-source change that centralizes the two Git CLI diagnostic expressions without changing their matching behavior. No strategy implementation, enabled flag, eligibility condition, candidate ignore filter or per-configuration fallback rule changed. The seven strategy descriptions and independent candidate-production flowchart remain accurate."
+        "sourceDigest": "cb5abaec0c195e9919fbac8a346168785c82d23e26cf0de5c4c9fb47680b6213",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {
@@ -106,12 +106,17 @@
         "src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs"
       ],
       "tests": [
-        "src/GitVersion.Core.Tests/Mainline"
+        "src/GitVersion.Core.Tests/Mainline",
+        "src/GitVersion.Core.Tests/VersionCalculation/MainlineIterationTests.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineBranchMergeScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportMergeScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportCommitIncrementsScenarios.cs",
+        "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "2e8ddeb42ce66ceca319fc85bca5293aab4be0742f9d08d55234b31a2689d6dc",
-        "reason": "Reviewed the shared Git diagnostic-pattern relocation against Mainline traversal and rule families. Commit/tag/branch traversal, recursive iterations and operand/operator folding are unchanged. The recognized merge between two main branches still reaches the documented unsupported path. The Mainline explanation and flowchart remain accurate."
+        "sourceDigest": "95a478d04b82c5141b25dbdd5eb05d89b6e4bacc53bf6e9b17b7fc4a0a272832",
+        "reason": "Reviewed the Sonar S3776 refactor in #5295: the existing per-increment merged-mainline wrapping expression is extracted into WrapMergedMainlineIncrement. The iteration context, pre-enricher order, incrementer matching and enumeration order, conditional evaluation of the lazy source version, and post-enricher order are unchanged. Mainline numeric comparison, branch-specific labels, tagged-tip prevention, receiver controls, count anchors, and released prerelease sequences are unchanged. The overview, strategy descriptions, Mainline prose and flowchart still describe the same calculation behavior."
       }
     },
     {

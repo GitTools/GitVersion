@@ -22,6 +22,7 @@ internal sealed class MainlineVersionStrategy(
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
     private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
+    private readonly Dictionary<(ReferenceName Branch, ICommit Tip), Lazy<BaseVersion>> mainlineVersionCache = new();
 
     private GitVersionContext Context => this.contextLazy.Value;
 
@@ -79,6 +80,7 @@ internal sealed class MainlineVersionStrategy(
         }
 
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
+        this.mainlineVersionCache.Clear();
 
         var iteration = CreateIteration(
             branchName: Context.CurrentBranch.Name,
@@ -287,13 +289,36 @@ internal sealed class MainlineVersionStrategy(
         var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
         var childBranchName = mergeMessage.MergedBranch;
 
-        if (childConfiguration.IsMainBranch == true)
+        if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch == true)
         {
-            if (state.Configuration.IsMainBranch == true)
+            // Every mainline supplies its independently calculated version. Branch role
+            // keys and merge direction do not select a privileged release baseline.
+            var sourceTip = item.Parents.Skip(1).Single();
+            var sourceConfiguration = new EffectiveConfiguration(Context.Configuration, childConfiguration);
+            var sourceLabel = sourceConfiguration.GetBranchSpecificLabel(childBranchName, null, this.environment, sourceTip);
+            var cacheKey = (childBranchName, sourceTip);
+            // Inherited increments depend on the enclosing iteration. Explicit source
+            // configurations can reuse a completed history across nested round trips.
+            var canCache = childConfiguration.Increment != IncrementStrategy.Inherit;
+            if (!canCache || !this.mainlineVersionCache.TryGetValue(cacheKey, out var sourceVersion))
             {
-                throw new NotImplementedException();
+                var sourceIteration = CreateIteration(childBranchName, childConfiguration, iteration, commit);
+                IterateOverCommitsRecursive(this.repositoryStore.GetCommitLog(null, sourceTip, Context.Configuration.Ignore),
+                    sourceIteration, targetBranch, sourceLabel, state.TaggedSemanticVersions);
+                sourceVersion = new(() => GetMainlineVersion(sourceIteration, sourceTip, sourceLabel));
+                if (canCache)
+                {
+                    this.mainlineVersionCache.Add(cacheKey, sourceVersion);
+                }
             }
-
+            commit.MergedMainlineVersion = sourceVersion;
+            commit.PreventMergedMainlineVersion = sourceConfiguration.PreventIncrementWhenBranchMerged;
+            // The independent history must not also be replayed in the receiver.
+            traversedCommits.AddRange(this.repositoryStore.GetCommitLog(item.Parents[0], sourceTip, Context.Configuration.Ignore));
+            return false;
+        }
+        else if (childConfiguration.IsMainBranch == true)
+        {
             mergedCommitsInReverseOrderLazy = new(
                 () => [.. this.incrementStrategyFinder.GetMergedCommits(item, 0, Context.Configuration.Ignore).Reverse()]
             );
@@ -324,6 +349,22 @@ internal sealed class MainlineVersionStrategy(
 
         traversedCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
         return false;
+    }
+
+    private BaseVersion GetMainlineVersion(
+        MainlineIteration iteration, ICommit tip, string? targetLabel)
+    {
+        var steps = GetIncrements(iteration, targetLabel, this.incrementStrategyFinder,
+            Context.Configuration, this.environment, Context.CurrentCommit).ToArray();
+        var version = ApplyIncrements(steps);
+        // A released source tip contributes its tag, not its next pending increment.
+        if (version.Operand.BaseVersionSource?.Equals(tip) == true
+            && iteration.GetEffectiveConfiguration(Context.Configuration).PreventIncrementWhenCurrentCommitTagged
+            && version.Operator is { } operation)
+        {
+            version = version with { Operator = operation with { Increment = VersionField.None } };
+        }
+        return version;
     }
 
     private sealed class TraversalState(
@@ -409,14 +450,20 @@ internal sealed class MainlineVersionStrategy(
         iteration.NotNull();
 
         var incrementSteps = GetIncrements(iteration, targetLabel, incrementStrategyFinder, configuration, environment, currentCommit).ToArray();
+        return ApplyIncrements(incrementSteps);
+    }
 
+    private static BaseVersion ApplyIncrements(IEnumerable<IBaseVersionIncrement> incrementSteps)
+    {
         BaseVersion? result = null;
+        SemanticVersion? iterationBaseline = null;
         foreach (var baseVersionIncrement in incrementSteps)
         {
             switch (baseVersionIncrement)
             {
                 case BaseVersionOperand baseVersionOperand:
                     result = new BaseVersion(baseVersionOperand);
+                    iterationBaseline = baseVersionOperand.SemanticVersion;
                     break;
                 case BaseVersionOperator baseVersionOperator:
                     result ??= new BaseVersion();
@@ -424,6 +471,10 @@ internal sealed class MainlineVersionStrategy(
                     break;
                 case BaseVersion baseVersion:
                     result = baseVersion;
+                    iterationBaseline = baseVersion.SemanticVersion;
+                    break;
+                case MergedMainlineIncrement merged:
+                    result = ApplyMergedMainlineIncrement(result ?? new BaseVersion(), merged, iterationBaseline);
                     break;
             }
         }
@@ -440,6 +491,12 @@ internal sealed class MainlineVersionStrategy(
 
         foreach (var commit in iteration.Commits)
         {
+            if (commit.MergedMainlineVersion is not null)
+            {
+                // Source history has already consumed its own increments. The merge
+                // only adds the receiver's permitted increment and explicit message.
+                commit.MergedBranchIncrement = VersionField.None;
+            }
             foreach (var item in TrunkContextPreEnricherCollection)
             {
                 item.Enrich(iteration, commit, context);
@@ -450,7 +507,7 @@ internal sealed class MainlineVersionStrategy(
             {
                 foreach (var item in incrementer.GetIncrements(iteration, commit, context))
                 {
-                    yield return item;
+                    yield return WrapMergedMainlineIncrement(item, commit);
                 }
             }
 
@@ -460,4 +517,43 @@ internal sealed class MainlineVersionStrategy(
             }
         }
     }
+
+    private static IBaseVersionIncrement WrapMergedMainlineIncrement(IBaseVersionIncrement increment, MainlineCommit commit)
+        => increment is BaseVersionOperator operation
+            && commit.MergedMainlineVersion is { } source && !commit.PreventMergedMainlineVersion
+            ? new MergedMainlineIncrement(operation, source.Value)
+            : increment;
+
+    private sealed record MergedMainlineIncrement(BaseVersionOperator Operation, BaseVersion Version) : IBaseVersionIncrement
+    {
+        public string Source => Operation.Source;
+        public ICommit? BaseVersionSource => Operation.BaseVersionSource;
+    }
+
+    private static BaseVersion ApplyMergedMainlineIncrement(BaseVersion receiver, MergedMainlineIncrement merged,
+        SemanticVersion? baseline)
+    {
+        var receiverVersion = receiver.GetIncrementedVersion();
+        var continuesReleasedPrerelease = baseline is { IsPreRelease: true }
+            && baseline.Major == receiverVersion.Major && baseline.Minor == receiverVersion.Minor
+            && baseline.Patch == receiverVersion.Patch;
+        // Restart a generated unnamed counting suffix for the new count anchor.
+        // A released prerelease, including a numeric tag such as 2.0.0-5, continues
+        // its own sequence while the numeric release version remains unchanged.
+        if (receiverVersion.PreReleaseTag.Name.IsNullOrEmpty() && !continuesReleasedPrerelease)
+        {
+            receiverVersion = new SemanticVersion(receiverVersion) { PreReleaseTag = SemanticVersionPreReleaseTag.Empty };
+        }
+        return new BaseVersion(receiver.Source, receiverVersion, receiver.BaseVersionSource)
+        {
+            SemVerSource = receiver.GetSemVerSource()
+        }.Apply(WithMainlineVersion(merged.Operation,
+            merged.Version.GetIncrementedVersion(), merged.Version.GetSemVerSource()));
+    }
+
+    private static BaseVersionOperator WithMainlineVersion(BaseVersionOperator operation, SemanticVersion version,
+        SemanticVersionSource? source)
+        => operation.AlternativeSemanticVersion is { } alternative && !alternative.IsLessThan(version, includePreRelease: false)
+            ? operation
+            : operation with { AlternativeSemanticVersion = version, AlternativeSemVerSource = source };
 }
