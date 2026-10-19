@@ -19,6 +19,7 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
 {
     private readonly ILogger<GitCliExecutor> logger = logger.NotNull();
 
+    /// <summary>Runs Git and captures UTF-8 stdout and stderr with normalized line endings and the exit code.</summary>
     public GitCliResult Execute(string? workingDirectory, IReadOnlyList<string> arguments)
     {
         var startInfo = new ProcessStartInfo
@@ -27,6 +28,8 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
             CreateNoWindow = true
         };
 
