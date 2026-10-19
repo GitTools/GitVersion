@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "2a74e1f445844478fae2d9208887a689248a7f17a3d2df4546b271832575482e",
-        "reason": "Reviewed the relocation of the unchanged Git CLI repository-not-found and HTTP-status expressions into RegexPatterns.Git and its cache registry. The HTTP matcher retains case-insensitive multiline and CRLF matching. Tagged-commit shortcuts, effective configurations, incremented candidates, deployment dispatch and the final numeric tag floor are unchanged; the calculation overview and flowchart remain accurate."
+        "sourceDigest": "f217f29f302758464ef18382ae0bf72c34123bc5d96b445c791e5391ecde1546",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "559ba763298167c6a65fc8360e1a02362b22848e774ebf566ebc8ff945306c02",
-        "reason": "Reviewed the shared-source change that centralizes the two Git CLI diagnostic expressions without changing their matching behavior. No strategy implementation, enabled flag, eligibility condition, candidate ignore filter or per-configuration fallback rule changed. The seven strategy descriptions and independent candidate-production flowchart remain accurate."
+        "sourceDigest": "d63d53e1619df7c5b644452a036157dd284f7230027e8ded75dad5b9072889d0",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "d22715228eeea007a0e25256403543ebd3b039ac5ab6a231cfc25c88325a4bdb",
-        "reason": "Reviewed the Git CLI diagnostic regex relocation against the inheritance explanation and mapped finder. Explicit increments, allowed source branches, pull-request target selection, recursive cycle guards and orphaned-branch fallback are unchanged. The inheritance prose and flowchart still describe the current implementation."
+        "sourceDigest": "800cee43944923acadce1b31a190eff86a924c7d0d3ca2f8d101163547181cc5",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "1b530522026aa1f9b939dd2cd67b242999fc5ed048ff57f448beb6fa663a609a",
-        "reason": "Reviewed the shared regex registry change: existing version-bump patterns and cache mappings are unchanged, and the two added patterns only recognize Git network failures. History filtering, message modes, no-bump/major/minor/patch precedence, reset accumulation and branch-increment minimum rules remain unchanged. The candidate-increment explanation and commit-message examples remain accurate."
+        "sourceDigest": "f149f900e9562d904b090dcb6ce33071b7a7ac33466df4c43a59efb6c1d215d3",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "fe6d0ab883de2ec786c61c72335ba0f9ff7a3032e333103842454d3e3087d906",
-        "reason": "Reviewed the diagnostic-regex refactor against candidate selection and its examples. Maximum incremented SemVer, latest-source timestamp tie-breaking, stable-winner prerelease filtering and the distinct semantic/counting sources are unchanged. The selection prose, flowchart and competing-candidate/source examples remain accurate."
+        "sourceDigest": "c440e5d977ca666e0786b42d23d41487216e71d5461a13d64ea2f67e8a6de454",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "2e8ddeb42ce66ceca319fc85bca5293aab4be0742f9d08d55234b31a2689d6dc",
-        "reason": "Reviewed the shared Git diagnostic-pattern relocation against Mainline traversal and rule families. Commit/tag/branch traversal, recursive iterations and operand/operator folding are unchanged. The recognized merge between two main branches still reaches the documented unsupported path. The Mainline explanation and flowchart remain accurate."
+        "sourceDigest": "20a0e803fcfe21dcb24c5b05a56064e1a3022e56c17e203cb0321bcce202d6bd",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "4b869ee493bebc6458d3d3ba779b7f16f13f6745fdd9adc0550dd914bb0dd062",
-        "reason": "Reviewed the Git CLI diagnostic regex centralization against all three deployment calculators. ManualDeployment preserves prerelease state, ContinuousDelivery requires a numbered prerelease and adds source distance minus one, and ContinuousDeployment removes the prerelease tag; tagged shortcuts and the final numeric tag floor are unchanged. The mode table, flowchart and same-history examples remain accurate."
+        "sourceDigest": "5f09ad526e4dd38b4637bd3cb66663c2cc3b71f55061fc7d1df77613d873578b",
+        "reason": "Reviewed the .NET 11 GitCliExecutor process-capture simplification against all seven algorithm sections and their examples. ReadAllLines drains stdout and stderr separately and AppendLine retains line normalization; exit codes, arguments, environment, startup-error handling and the .NET 10 path are preserved. Candidate discovery, configuration inheritance, increments, semantic and counting-source selection, Mainline traversal and deployment processing are unchanged. The existing prose, diagrams and examples remain accurate."
       }
     }
   ]
