@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using AngleSharp.Html.Parser;
 using Cake.Wyam;
+using Common.Utilities;
 using Path = System.IO.Path;
 
 namespace Docs.Utilities;
@@ -54,6 +55,8 @@ public static class VersionedDocs
                 context.DotNetBuild(Path.Combine(root, "src", project, project + ".csproj"), new()
                 {
                     Configuration = "Debug",
+                    // API docs need one coherent assembly set, not competing TFM builds in one directory.
+                    Framework = $"net{Constants.DotnetLtsLatest}",
                     OutputDirectory = assemblies
                 });
             }
