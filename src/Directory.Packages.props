@@ -4,7 +4,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <MicrosoftBuildVersion>18.9.6</MicrosoftBuildVersion>
-    <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net11.0' ">18.10.1</MicrosoftBuildVersion>
+    <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net11.0' ">18.11.0</MicrosoftBuildVersion>
     <MicrosoftCodeAnalysisVersion>5.9.0</MicrosoftCodeAnalysisVersion>
   </PropertyGroup>
   <ItemGroup>
