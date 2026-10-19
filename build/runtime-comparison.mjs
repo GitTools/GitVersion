@@ -91,12 +91,12 @@ function capture(fixture, backend, variant, cache, sample) {
     env: { ...env, GITVERSION_GIT_BACKEND: backend },
   });
   const parsed = JSON.parse(stdout);
+  json(join(output, `${id}.json`), parsed);
   const canonical = JSON.stringify(parsed, Object.keys(parsed).sort());
   if (references.has(fixture.name) && references.get(fixture.name) !== canonical) {
     throw new Error(`Version output mismatch: ${id}`);
   }
   references.set(fixture.name, canonical);
-  json(join(output, `${id}.json`), parsed);
   const [elapsedSeconds, userSeconds, systemSeconds, peakRssKiB] = readFileSync(metrics, 'utf8').trim().split(',').map(Number);
   if (![elapsedSeconds, userSeconds, systemSeconds, peakRssKiB].every(Number.isFinite) || peakRssKiB <= 0) {
     throw new Error(`Invalid GNU time metrics: ${metrics}`);
