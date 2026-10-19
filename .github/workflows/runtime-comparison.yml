@@ -1,0 +1,47 @@
+name: Runtime comparison
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - build/runtime-comparison.mjs
+      - build/runtime-comparison.md
+      - .github/workflows/runtime-comparison.yml
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          dotnet-version: '10.0.x'
+      - name: Publish both frameworks from the same source
+        run: |
+          dotnet publish src/GitVersion.App -c Release -f net10.0 --no-self-contained -o artifacts/runtime-app/net10
+          dotnet publish src/GitVersion.App -c Release -f net11.0 --no-self-contained -o artifacts/runtime-app/net11
+      - name: Compare runtimes and verify output parity
+        run: |
+          runtime10=$(dotnet --list-runtimes | awk '$1 == "Microsoft.NETCore.App" && $2 ~ /^10\./ {print $2}' | sort -V | tail -1)
+          runtime11=$(dotnet --list-runtimes | awk '$1 == "Microsoft.NETCore.App" && $2 ~ /^11\./ {print $2}' | sort -V | tail -1)
+          node build/runtime-comparison.mjs artifacts/runtime-app/net10/gitversion.dll artifacts/runtime-app/net11/gitversion.dll "$runtime10" "$runtime11" artifacts/runtime-comparison
+          cat artifacts/runtime-comparison/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload raw measurements and runtime evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: runtime-comparison
+          path: artifacts/runtime-comparison
+          if-no-files-found: error
