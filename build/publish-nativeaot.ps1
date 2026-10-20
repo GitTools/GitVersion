@@ -14,10 +14,10 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
-if (!$OutputDirectory) { $OutputDirectory = Join-Path ([IO.Path]::GetTempPath()) ('gitversion-nativeaot-' + [guid]::NewGuid().ToString('N')) }
+if (-not $OutputDirectory) { $OutputDirectory = Join-Path ([IO.Path]::GetTempPath()) ('gitversion-nativeaot-' + [guid]::NewGuid().ToString('N')) }
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 if (Test-Path $output) { throw "Output directory must be new: $output" }
-if (!$ParityRepository) { $ParityRepository = $repo }
+if (-not $ParityRepository) { $ParityRepository = $repo }
 $ParityRepository = (Resolve-Path $ParityRepository).Path
 $nativeOutput = Join-Path $output 'native'
 $managedOutput = Join-Path $output 'managed'
@@ -44,7 +44,7 @@ function Invoke-SourceGit([string[]]$Arguments) {
     try {
         $stdout = $process.StandardOutput.ReadToEndAsync()
         $stderr = $process.StandardError.ReadToEndAsync()
-        if (!$process.WaitForExit(60000)) {
+        if (-not $process.WaitForExit(60000)) {
             $process.Kill($true)
             throw 'Source identity Git command timed out.'
         }
@@ -92,7 +92,7 @@ try {
     # Inspect before restoring the ordinary flavor: its legitimate LibGit2Sharp
     # dependency must never obscure the managed-only restore closure.
     $assetPath = Join-Path $repo 'src/GitVersion.App/obj/project.assets.json'
-    if (!(Test-Path $assetPath -PathType Leaf)) { throw 'No NativeAOT App restore assets found; closure check cannot run.' }
+    if (-not (Test-Path $assetPath -PathType Leaf)) { throw 'No NativeAOT App restore assets found; closure check cannot run.' }
     $nativeAssets = Get-Content $assetPath -Raw | ConvertFrom-Json -AsHashtable
     # Central package version declarations also appear in assets even when unused.
     # Inspect resolved libraries/targets and project references, not that catalog.
@@ -101,8 +101,8 @@ try {
             throw "LibGit2Sharp/libgit2 remains in the NativeAOT restore closure: $assetPath"
         }
     }
-    if (!$nativeAssets.libraries.ContainsKey("Microsoft.DotNet.ILCompiler/$RuntimeVersion") -or
-        !$nativeAssets.libraries.ContainsKey("runtime.$RuntimeIdentifier.Microsoft.DotNet.ILCompiler/$RuntimeVersion")) {
+    if (-not $nativeAssets.libraries.ContainsKey("Microsoft.DotNet.ILCompiler/$RuntimeVersion") -or
+        -not $nativeAssets.libraries.ContainsKey("runtime.$RuntimeIdentifier.Microsoft.DotNet.ILCompiler/$RuntimeVersion")) {
         throw 'Native compiler restore version does not match the requested runtime version.'
     }
     Copy-Item $assetPath (Join-Path $output 'native-project.assets.json')
@@ -110,14 +110,14 @@ try {
         throw 'LibGit2Sharp/libgit2 remains in NativeAOT publication output.'
     }
     $native = Join-Path $nativeOutput $executable
-    if (!(Test-Path $native -PathType Leaf)) { throw "Native executable missing: $native" }
+    if (-not (Test-Path $native -PathType Leaf)) { throw "Native executable missing: $native" }
     if (Test-Path (Join-Path $nativeOutput 'gitversion.dll')) { throw 'Native output unexpectedly contains a managed CLI assembly.' }
 
     Invoke-Checked $Dotnet ($common + @('-o', $managedOutput,
         '-p:GitVersionManagedOnly=false', '-p:PublishAot=false', '-p:PublishTrimmed=false', '-p:PublishSingleFile=false'))
     Assert-SourceIdentity $source
     $managed = Join-Path $managedOutput $executable
-    if (!(Test-Path $managed -PathType Leaf)) { throw "Managed comparator missing: $managed" }
+    if (-not (Test-Path $managed -PathType Leaf)) { throw "Managed comparator missing: $managed" }
 
     $parityPath = Join-Path $output 'parity.json'
     & $Python (Join-Path $PSScriptRoot 'nativeaot-parity.py') --managed $managed --native $native --dotnet $Dotnet --framework $Framework --rid $RuntimeIdentifier --runtime-version $RuntimeVersion --repository $ParityRepository > $parityPath
@@ -125,9 +125,9 @@ try {
     $parity = Get-Content $parityPath -Raw | ConvertFrom-Json
     $expectedParityCases = 99
     if ($parity.failed -ne 0 -or $parity.passed -ne $expectedParityCases -or $parity.cases.Count -ne $expectedParityCases -or
-        @($parity.cases | Where-Object { !$_.passed }).Count -ne 0 -or
+        @($parity.cases | Where-Object { -not $_.passed }).Count -ne 0 -or
         @($parity.cases.case | Sort-Object -Unique).Count -ne $expectedParityCases -or
-        !($parity.cases | Where-Object { $_.case -eq 'existing-history-json' -and $_.passed })) {
+        -not ($parity.cases | Where-Object { $_.case -eq 'existing-history-json' -and $_.passed })) {
         throw 'Parity report is incomplete or unsuccessful.'
     }
     if ($parity.framework -cne $Framework -or $parity.rid -cne $RuntimeIdentifier -or $parity.runtime_version -cne $RuntimeVersion -or
@@ -157,11 +157,11 @@ try {
         $archive = Join-Path $output "gitversion-nativeaot-preview-$Framework-$RuntimeIdentifier-$revision.zip"
         Assert-SourceIdentity $source
         [IO.Compression.ZipFile]::CreateFromDirectory($staging, $archive)
-        if (!$RuntimeIdentifier.StartsWith('win-')) {
+        if (-not $RuntimeIdentifier.StartsWith('win-')) {
             $zip = [IO.Compression.ZipFile]::OpenRead($archive)
             try {
                 $entry = $zip.GetEntry($executable)
-                if (!$entry -or !(($entry.ExternalAttributes -shr 16) -band 64)) {
+                if (-not $entry -or -not (($entry.ExternalAttributes -shr 16) -band 64)) {
                     throw 'Preview archive does not preserve the Unix executable permission.'
                 }
             }
