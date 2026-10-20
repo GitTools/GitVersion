@@ -13,6 +13,7 @@ const ids = ["overview","strategies","inheritance","increments","selection","mai
 function fixture(t) {
   const root = mkdtempSync(join(tmpdir(),"algorithm-docs-"));
   t.after(() => rmSync(root,{recursive:true,force:true}));
+  /** Write a fixture file, creating its parent directories as needed. */
   function write(path,contents) { mkdirSync(join(root,path,".."),{recursive:true}); writeFileSync(join(root,path),contents); }
   const boundary = "src/GitVersion.Core/VersionCalculation";
   write(boundary + "/Rule.cs","class Rule {}\n");

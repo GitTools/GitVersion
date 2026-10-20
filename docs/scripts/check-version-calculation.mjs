@@ -13,12 +13,14 @@ const defaultRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
  */
 export function inspect(root, manifest) {
   root = realpathSync(root);
+  /** Resolve an existing map path and reject traversal or symlinks outside the repository. */
   function safe(path) {
     if (typeof path !== "string" || !path || path.startsWith("/") || path.includes("\\") || path.split("/").some(part => part === ".." || part === ".")) throw new Error("Invalid repository path: " + path);
     const absolute = realpathSync(join(root, path));
     if (absolute !== root && !absolute.startsWith(root + sep)) throw new Error("Path escapes repository: " + path);
     return absolute;
   }
+  /** Expand a mapped path into C# sources, excluding bin and obj directories. */
   function sources(path) {
     const absolute = safe(path);
     if (statSync(absolute).isDirectory()) return readdirSync(absolute).filter(name => !["bin", "obj"].includes(name)).flatMap(name => sources(path.replace(/\/$/, "") + "/" + name));
