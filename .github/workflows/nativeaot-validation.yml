@@ -83,6 +83,8 @@ jobs:
         if: matrix.target.libc != 'musl'
         shell: pwsh
         run: |
+          python build/nativeaot-validation-tests.py
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT validation regression checks failed.' }
           python build/nativeaot-platform-validation.py --framework $env:FRAMEWORK --rid $env:RID --runtime-version $env:RUNTIME_VERSION --output $env:NATIVE_OUTPUT
           if ($LASTEXITCODE -ne 0) { throw 'NativeAOT target-host validation failed.' }
 
@@ -95,7 +97,7 @@ jobs:
             -v "$GITHUB_WORKSPACE:/source" -v "$RUNNER_TEMP:$RUNNER_TEMP" -w /source \
             -e FRAMEWORK -e RID -e RUNTIME_VERSION -e NATIVE_OUTPUT -e PYTHONUTF8 -e PYTHONIOENCODING \
             -e HOME=/tmp/nativeaot-home nativeaot-musl-build \
-            sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"'
+            sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-validation-tests.py; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"'
           docker image inspect nativeaot-musl-build > "$NATIVE_OUTPUT/evidence/build-image.json"
 
       - name: Run without .NET as root and nonroot

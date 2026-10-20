@@ -429,7 +429,15 @@ def compare_backends(commands, work, env, tagged, common, results):
 def compare_existing_history(args, work, env, git, compare, common):
     if args.repository:
         repo = work / "existing-history"
-        subprocess.run(["git", "clone", "--shared", "--no-checkout", str(args.repository.resolve()), str(repo)], env=env, capture_output=True, check=True, timeout=60)
+        source = args.repository.resolve()
+        subprocess.run(["git", "clone", "--shared", "--no-checkout", str(source), str(repo)], env=env, capture_output=True, check=True, timeout=60)
+        # A CI checkout may have only remote branches and a detached HEAD.
+        # Normal cloning transfers local heads, losing those calculation inputs.
+        references = git(source, "for-each-ref", "--format=%(objectname) %(refname)", "refs/heads", "refs/remotes")
+        for reference in references.splitlines():
+            commit, name = reference.split(" ", 1)
+            if not name.endswith("/HEAD"):
+                git(repo, "update-ref", name, commit)
         git(repo, "checkout", "--detach", "HEAD")
         compare("existing-history-json", [repo, *common])
         compare("existing-history-config", [repo, "--show-config"])
