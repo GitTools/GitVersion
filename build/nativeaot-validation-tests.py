@@ -163,6 +163,14 @@ class ValidationTests(unittest.TestCase):
 
 
 class DistributionValidationTests(unittest.TestCase):
+    def test_windows_batch_parity_quotes_pipe_format_as_one_argument(self):
+        arguments = ["C:/native-tools/dotnet-gitversion.cmd", "--format", "{Major:0000}|{CommitDate:MMMM}|{FullSemVer:u}"]
+        command = PARITY.process_command(arguments, windows=True)
+        self.assertIn('"{Major:0000}|{CommitDate:MMMM}|{FullSemVer:u}"', command)
+        self.assertEqual(arguments, PARITY.process_command(arguments, windows=False))
+        executable = ["C:/native-tools/gitversion.exe", *arguments[1:]]
+        self.assertEqual(executable, PARITY.process_command(executable, windows=True))
+
     def test_configuration_report_checks_file_identity_and_exact_contract(self):
         config = self.work / "GitVersion.yml"
         config.write_text("workflow: GitHubFlow/v1\n")
