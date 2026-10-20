@@ -16,6 +16,7 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
+WINDOWS_EXECUTABLE = "gitversion.exe"
 
 
 def run(command, env, log):
@@ -87,7 +88,7 @@ def check_report(report, args, initial):
     for key, value in expected.items():
         if report[key] != value:
             raise RuntimeError(f"Parity input mismatch: {key}")
-    executable = "gitversion.exe" if args.rid.startswith("win-") else "gitversion"
+    executable = WINDOWS_EXECUTABLE if args.rid.startswith("win-") else "gitversion"
     for flavor in ("native", "managed"):
         digest = hashlib.sha256((args.output / flavor / executable).read_bytes()).hexdigest()
         if report[flavor + "_sha256"] != digest:
@@ -105,7 +106,7 @@ def inspect_dependencies(args, env, evidence):
         tools = [tool for tool in tools if tool.parent.name.lower() == architecture]
         if not tools:
             raise RuntimeError("Cannot inspect native Windows imports: dumpbin is missing")
-        command = [str(sorted(tools)[-1]), "/dependents", str(native / "gitversion.exe")]
+        command = [str(max(tools)), "/dependents", str(native / WINDOWS_EXECUTABLE)]
     else:
         command = ["otool", "-L", str(native / "gitversion")] if args.rid.startswith("osx-") else ["ldd", str(native / "gitversion")]
     log = evidence / "native-dependencies.log"
@@ -137,7 +138,7 @@ def main():
         run([args.dotnet, "--info"], env, evidence / "dotnet-info.log")
         publish_pair(args, env, evidence, initial)
         inspect_dependencies(args, env, evidence)
-        executable = "gitversion.exe" if args.rid.startswith("win-") else "gitversion"
+        executable = WINDOWS_EXECUTABLE if args.rid.startswith("win-") else "gitversion"
         run([sys.executable, str(ROOT / "build/nativeaot-parity.py"), "--managed", str(args.output / "managed" / executable), "--native", str(args.output / "native" / executable),
              "--framework", args.framework, "--rid", args.rid, "--runtime-version", args.runtime_version, "--repository", str(ROOT)], env, evidence / "parity.json")
         report = json.loads((evidence / "parity.json").read_text(encoding="utf-8"))
