@@ -30,11 +30,6 @@ jobs:
         target:
           - {rid: win-x64, runner: windows-2025-vs2026, arch: x64, libc: none}
           - {rid: win-arm64, runner: windows-11-vs2026-arm, arch: arm64, libc: none}
-          - {rid: linux-x64, runner: ubuntu-24.04, arch: x64, libc: glibc}
-          - {rid: linux-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: glibc}
-          - {rid: linux-musl-x64, runner: ubuntu-24.04, arch: x64, libc: musl}
-          - {rid: linux-musl-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: musl}
-          - {rid: osx-arm64, runner: macos-15, arch: arm64, libc: none}
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
