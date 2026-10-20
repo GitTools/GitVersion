@@ -128,7 +128,14 @@ runtime's libc support does not remove a native executable's linker imports.
 The workflow therefore builds glibc executables on UBI 8.10, tests them there
 and on Ubuntu 22.04/24.04 without .NET, and selects Alpine 3.21 for net10 or 3.23
 for net11 alongside 3.24. It uses macOS 15 for native ARM64 publication/parity.
-Completed baseline results must still be recorded before closing those gates.
+Baseline execution is recorded separately from the earlier newer-host matrix.
+The [completed baseline matrix](https://github.com/GitTools/GitVersion/actions/runs/39483650846)
+validated commit `4f2871a9822606eadee54dc4a4790cd60509019c`: all 14 jobs passed
+99/99 parity, including native macOS 15 ARM64 execution. Forty Linux executions
+without .NET passed six checks each (240 total): glibc on UBI 8.10 and Ubuntu
+22.04/24.04, and musl on each framework's Alpine floor plus 3.24, both CPU
+architectures and both root/nonroot users. These are the tested userspace
+baselines, subject to the kernel and full-OS limitations below.
 Local ARM64 bring-up passed strict net10 publication and all 99 parity cases on
 the UBI 8 baseline. That executable also passed all six no-.NET checks on UBI 8,
 Ubuntu 22.04 and Ubuntu 24.04 as root and UID 65532; the original Ubuntu 22.04
