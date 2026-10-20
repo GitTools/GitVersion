@@ -60,7 +60,9 @@ jobs:
       - name: Select isolated validation output
         shell: pwsh
         run: |
-          $directory = Join-Path $env:RUNNER_TEMP ('nativeaot-{0}-{1}' -f $env:RID, $env:FRAMEWORK)
+          # Server Core only has C:. Keep installed tool paths identical inside it.
+          $base = if ($IsWindows) { 'C:\nativeaot-validation' } else { $env:RUNNER_TEMP }
+          $directory = Join-Path $base ('nativeaot-{0}-{1}' -f $env:RID, $env:FRAMEWORK)
           "NATIVE_OUTPUT=$directory" >> $env:GITHUB_ENV
 
       - name: Setup Python
