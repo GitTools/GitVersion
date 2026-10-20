@@ -59,7 +59,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
         return YamlSerializer.Serialize(OrderProperties(configuration), SerializerOptions);
     }
 
-    public string SerializeProperty(IGitVersionConfiguration configuration, string path)
+    public string SerializeProperty(IGitVersionConfiguration configuration, string path) // NOSONAR: IConfigurationSerializer requires an instance method.
     {
         var value = ConfigurationPropertyQuery.GetValue(configuration, path);
         // Public configuration enums use their names in YAML. Avoid resolving a
