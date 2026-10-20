@@ -81,7 +81,8 @@ def check_execution(native, command=None, cwd=None, env=None):
         git(repo, "checkout", "--detach", "1.2.3")
         for option in ["--version", "--help", "--cli-schema"]:
             run = subprocess.run(command + [option], cwd=cwd, env=env, capture_output=True, timeout=60)
-            require(run.returncode == 0 and run.stdout.strip(), f"startup failed: {option}")
+            require(run.returncode == 0 and run.stdout.strip(),
+                    f"startup failed: {option}; exit={run.returncode}; stdout={run.stdout!r}; stderr={run.stderr!r}")
             checks.append("startup-" + option[2:])
         log = work / "calculation.log"
         run = subprocess.run(command + [str(repo), "--no-cache", "--no-fetch", "--log-file", str(log)], cwd=cwd, env=env, capture_output=True, timeout=60)

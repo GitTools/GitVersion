@@ -86,7 +86,7 @@ def feed_config(feed, path, rid):
 
 
 def pack(args, env, evidence, initial):
-    version = f"0.0.0-nativeaot-validation.sha{initial['sha'][:12]}.{args.framework.replace('.', '')}"
+    version = f"0.0.0-aot.{initial['sha'][:8]}.{args.framework.replace('.', '')}"
     feed = args.output / "feed"
     feed.mkdir()
     common = [args.dotnet, "pack", str(ROOT / "src/GitVersion.App/GitVersion.App.csproj"), "-c", "Release", "-o", str(feed),
