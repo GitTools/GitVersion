@@ -14,6 +14,8 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+import xml.etree.ElementTree as ET
+import zipfile
 
 
 def load(name, filename):
@@ -25,6 +27,10 @@ def load(name, filename):
 
 VALIDATION = load("validation", "nativeaot-platform-validation.py")
 PARITY = load("parity", "nativeaot-parity.py")
+TOOLS = load("tools", "nativeaot-tool-validation.py")
+CONTAINERS = load("containers", "nativeaot-container-validation.py")
+ISOLATION = load("isolation", "nativeaot-hosted-isolation.py")
+CAPTURE = load("capture", "nativeaot-capture-validation.py")
 
 
 class ValidationTests(unittest.TestCase):
@@ -57,6 +63,17 @@ class ValidationTests(unittest.TestCase):
             with self.subTest(payload=name), patch.object(VALIDATION, "run"), patch.object(VALIDATION, "check_native_graph"), patch.object(VALIDATION, "source_identity", return_value=self.source), patch.object(VALIDATION.Path, "read_text", return_value="{}"), patch.object(VALIDATION.shutil, "copyfile"), self.assertRaises(RuntimeError):
                 VALIDATION.publish_pair(self.args, {}, self.work, self.source)
             path.unlink()
+
+    def test_report_binds_installed_command_hashes(self):
+        installed = self.work / "installed-tool"
+        installed.write_bytes(b"installed executable")
+        report = self.report | {"native_sha256": hashlib.sha256(installed.read_bytes()).hexdigest()}
+        with self.assertRaises(RuntimeError):
+            VALIDATION.check_report(report, self.args, self.source)
+        VALIDATION.check_report(report, self.args, self.source, {"native": installed, "managed": self.work / "managed/gitversion"})
+        installed.write_bytes(b"changed after installation")
+        with self.assertRaises(RuntimeError):
+            VALIDATION.check_report(report, self.args, self.source, {"native": installed, "managed": self.work / "managed/gitversion"})
 
     def test_rejects_mismatched_identity_and_binaries(self):
         VALIDATION.check_report(self.report, self.args, self.source)
@@ -143,6 +160,142 @@ class ValidationTests(unittest.TestCase):
         PARITY.compare_existing_history(SimpleNamespace(repository=source), self.work, env, git, compare, [])
         self.assertEqual(["existing-history-json", "existing-history-config"], cases)
         self.assertEqual("", git(source, "for-each-ref", "--format=%(refname)", "refs/heads"))
+
+
+class DistributionValidationTests(unittest.TestCase):
+    def test_capture_gate_requires_all_native_checks_and_credential_request(self):
+        report = {"Passed": True, "Checks": sorted(CAPTURE.EXPECTED_CHECKS), "Error": None}
+        CAPTURE.check_report(report, 1)
+        for invalid in (report | {"Passed": False}, report | {"Checks": report["Checks"][:-1]},
+                        report | {"Checks": [report["Checks"][0]] * len(report["Checks"])}, report | {"Error": "failure"}):
+            with self.assertRaises(RuntimeError):
+                CAPTURE.check_report(invalid, 1)
+        with self.assertRaises(RuntimeError):
+            CAPTURE.check_report(report, 0)
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.work = Path(self.temporary.name)
+
+    def packages(self, mapping="linux-arm64", runner="executable", revision="revision", extra=None):
+        version, rid = "0.0.0-test", "linux-arm64"
+        for identity in ("GitVersion.Tool", "GitVersion.Tool.linux-arm64"):
+            with zipfile.ZipFile(self.work / f"{identity}.{version}.nupkg", "w") as archive:
+                archive.writestr(identity + ".nuspec", f'<package><metadata><id>{identity}</id><version>{version}</version><repository commit="{revision}"/></metadata></package>')
+                if identity == "GitVersion.Tool":
+                    settings = f'<DotNetCliTool><Commands><Command Name="dotnet-gitversion"/></Commands><RuntimeIdentifierPackages><RuntimeIdentifierPackage RuntimeIdentifier="{mapping}" Id="GitVersion.Tool.{mapping}"/></RuntimeIdentifierPackages></DotNetCliTool>'
+                    archive.writestr("tools/any/any/DotnetToolSettings.xml", settings)
+                else:
+                    settings = f'<DotNetCliTool><Commands><Command Name="dotnet-gitversion" Runner="{runner}" EntryPoint="gitversion"/></Commands></DotNetCliTool>'
+                    archive.writestr(f"tools/any/{rid}/DotnetToolSettings.xml", settings)
+                    archive.writestr(f"tools/any/{rid}/gitversion", b"native payload")
+                    if extra:
+                        archive.writestr(extra, b"forbidden payload")
+        return TOOLS.package_contract(self.work, version, rid, "revision")
+
+    def test_tool_package_requires_matching_rid_source_and_native_runner(self):
+        metadata = self.packages()
+        self.assertIn({"payload_sha256": hashlib.sha256(b"native payload").hexdigest()}, metadata)
+        for invalid in ({"mapping": "linux-x64"}, {"runner": "dotnet"}, {"revision": "different-source"},
+                        {"extra": "tools/any/linux-arm64/Other.DLL"}, {"extra": "tools/any/linux-arm64/libgit2.so"}):
+            with self.subTest(invalid=invalid), self.assertRaises(RuntimeError):
+                self.packages(**invalid)
+
+    def test_native_packages_cannot_resolve_from_public_feed(self):
+        config = self.work / "NuGet.Config"
+        TOOLS.feed_config(self.work, config, "win-arm64")
+        root = ET.parse(config).getroot()
+        mappings = {source.get("key"): {package.get("pattern") for package in source} for source in root.findall("packageSourceMapping/packageSource")}
+        self.assertEqual({"local": {"GitVersion.Tool", "GitVersion.Tool.win-arm64"}, "microsoft-host": {"Microsoft.NETCore.App.Host.*"}}, mappings)
+        self.assertEqual(str(self.work), root.find("packageSources/add[@key='local']").get("value"))
+
+    def test_container_report_requires_exact_payload_user_and_complete_checks(self):
+        report = {"passed": True, "dotnet_installed": False, "native_sha256": "expected", "machine": "aarch64", "system": "Linux", "uid": 65532, "checks": sorted(CONTAINERS.SMOKE_CASES)}
+        CONTAINERS.check_report(report, "expected", "linux-arm64", "65532:65532")
+        for invalid in ({"native_sha256": "other"}, {"dotnet_installed": True}, {"machine": "x86_64"}, {"system": "Windows"}, {"uid": 0},
+                        {"checks": report["checks"][:-1]}, {"checks": [report["checks"][0]] * 6}):
+            with self.subTest(invalid=invalid), self.assertRaises(RuntimeError):
+                CONTAINERS.check_report(report | invalid, "expected", "linux-arm64", "65532:65532")
+        windows = report | {"machine": "AMD64", "system": "Windows", "uid": None, "user": "user manager\\ContainerUser"}
+        CONTAINERS.check_report(windows, "expected", "win-x64", "ContainerUser")
+        with self.assertRaises(RuntimeError):
+            CONTAINERS.check_report(windows, "expected", "win-x64", "ContainerAdministrator")
+
+    def test_container_gate_requires_matching_inputs_and_both_sdk_installers(self):
+        platform_report = {"passed": True, "source": {"sha": "revision"}, "framework": "net10.0", "rid": "linux-arm64", "runtime_version": "10.0.13"}
+        modes = [{"mode": mode, "execution": {"passed": True, "checks": sorted(CONTAINERS.SMOKE_CASES)}} for mode in ("path", "global", "manifest")]
+        tools = platform_report | {"installers": [{"sdk": sdk, "parity_cases": 99, "installations": modes} for sdk in ("10.0.402", "11.0.100-test")]}
+        CONTAINERS.validate_gates(platform_report, tools, "11.0.100-test")
+        for invalid in ({"source": {"sha": "other"}}, {"rid": "linux-x64"}, {"framework": "net11.0"}, {"installers": tools["installers"][:1]},
+                        {"installers": [tools["installers"][0]] * 2}, {"installers": [tools["installers"][0] | {"installations": modes[:-1]}, tools["installers"][1]]}):
+            with self.subTest(invalid=invalid), self.assertRaises(RuntimeError):
+                CONTAINERS.validate_gates(platform_report, tools | invalid, "11.0.100-test")
+
+    def test_runtime_images_follow_framework_specific_os_policy(self):
+        net10 = set(CONTAINERS.runtime_images("net10.0", "linux-arm64"))
+        net11 = set(CONTAINERS.runtime_images("net11.0", "linux-arm64"))
+        self.assertEqual({"registry.fedoraproject.org/fedora:43"}, net10 - net11)
+        self.assertEqual({"registry.fedoraproject.org/fedora:45"}, net11 - net10)
+        self.assertEqual(15, len(net10))
+        self.assertEqual(net10, set(CONTAINERS.runtime_images("net10.0", "linux-x64")))
+        self.assertEqual({"alpine:3.21", "alpine:3.22", "alpine:3.23", "alpine:3.24"}, set(CONTAINERS.runtime_images("net10.0", "linux-musl-arm64")))
+        self.assertEqual({"alpine:3.23", "alpine:3.24"}, set(CONTAINERS.runtime_images("net11.0", "linux-musl-x64")))
+        self.assertEqual(["mcr.microsoft.com/windows/servercore:ltsc2022", "mcr.microsoft.com/windows/servercore:ltsc2025"], CONTAINERS.runtime_images("net10.0", "win-x64"))
+
+    def test_container_mount_preserves_installed_tool_absolute_paths(self):
+        directory = self.work / "tool-validation"
+        command = directory / "sdk-10/tools/dotnet-gitversion"
+        arguments = CONTAINERS.container_command(self.work, "runtime-check", "65532:65532", command, False)
+        self.assertIn(f"{directory}:{directory}:ro", arguments)
+        self.assertEqual(["--native", str(command)], arguments[-2:])
+
+    def test_runtime_detection_distinguishes_ipc_state_from_installed_sdk(self):
+        home = self.work / "home"
+        ipc = home / ".dotnet/shm"
+        ipc.mkdir(parents=True)
+        self.assertIs(False, TOOLS.SMOKE.contains_runtime(home / ".dotnet"))
+        (home / ".dotnet/sdk").mkdir()
+        self.assertIs(True, TOOLS.SMOKE.contains_runtime(home / ".dotnet"))
+
+    def test_hosted_isolation_requires_explicit_disposable_macos_context(self):
+        enabled = {"GITHUB_ACTIONS": "true", "NATIVEAOT_EPHEMERAL_RUNNER": "github-hosted"}
+        ISOLATION.require_disposable_runner("Darwin", enabled)
+        for system, environment in [("Windows", enabled), ("Darwin", {}), ("Darwin", enabled | {"NATIVEAOT_EPHEMERAL_RUNNER": "self-hosted"}), ("Darwin", enabled | {"GITHUB_ACTIONS": "false"})]:
+            with self.subTest(system=system, environment=environment), self.assertRaises(RuntimeError):
+                ISOLATION.require_disposable_runner(system, environment)
+
+    def test_hosted_isolation_restores_sdk_after_execution_and_move_failures(self):
+        paths = [self.work / name for name in ("sdk", "shared")]
+        for path in paths:
+            path.mkdir()
+            (path / "payload").write_text(path.name)
+
+        def success():
+            self.assertTrue(all(not path.exists() for path in paths))
+            return "native checks passed"
+
+        self.assertEqual("native checks passed", ISOLATION.with_quarantined(paths, success))
+        self.assertEqual(["sdk", "shared"], [(path / "payload").read_text() for path in paths])
+
+        def execute():
+            self.assertTrue(all(not path.exists() for path in paths))
+            raise RuntimeError("native execution failed")
+
+        with self.assertRaisesRegex(RuntimeError, "native execution failed"):
+            ISOLATION.with_quarantined(paths, execute)
+        self.assertEqual(["sdk", "shared"], [(path / "payload").read_text() for path in paths])
+        calls = []
+
+        def move(source, destination):
+            calls.append(source)
+            if len(calls) == 2:
+                raise PermissionError("second move failed")
+            source.rename(destination)
+
+        with self.assertRaisesRegex(PermissionError, "second move failed"):
+            ISOLATION.with_quarantined(paths, lambda: self.fail("execution ran after failed isolation"), move)
+        self.assertEqual(["sdk", "shared"], [(path / "payload").read_text() for path in paths])
 
 
 if __name__ == "__main__":

@@ -75,9 +75,9 @@ from the native closure, and requires all 99 unique parity cases on that host.
 records source fingerprints, executable hashes, toolchain information and logs.
 Compilation alone does not satisfy the gate.
 
-Linux also executes six independent smoke checks in UBI 8.10, Ubuntu 22.04/24.04,
-or Alpine 3.21/3.23 (according to framework) and 3.24
-containers without any installed .NET runtime/SDK. The executable and scripts
+Linux also executes six independent smoke checks in the userspace images listed
+in `nativeaot-runtime-images.json`, without any installed .NET runtime/SDK.
+The executable and scripts
 are mounted read-only, networking is disabled, and Git history/configuration
 checks run in a temporary writable filesystem, both as root and UID 65532.
 The runtime image sets `HOME=/tmp/nativeaot-home`: .NET 11's named-mutex
@@ -94,6 +94,48 @@ container image identity. It does not upload executables, create preview
 archives, publish packages/images, change existing release jobs or promote a
 NativeAOT distribution channel. A configured job is not evidence that it passed:
 record completed run URLs and target-specific reports before closing a gate.
+
+The expanded workflow adds these gates; their reports must pass on the current
+head before the corresponding validation gap is closed:
+
+- `nativeaot-capture-validation.py` publishes a separate NativeAOT console harness
+  that calls the real internal `GitCliExecutor`. Eleven checks cover CR/LF and
+  empty/unterminated output, separate streams and exit codes, 10,000 interleaved
+  lines on each pipe, quoted arguments, deterministic environment, UTF-8 under
+  two console encodings, process-start failure and a failing credential helper
+  against a loopback HTTP 401 fixture. This harness reuses the existing friend
+  assembly identity, is invoked explicitly by this workflow, and is outside
+  ordinary solution/test/release entry points. No production access is widened.
+- `nativeaot-tool-validation.py` packs a unique local-only pointer/RID package
+  after standalone parity. It verifies package identity, source commit and
+  native payload, then installs with SDK 10.0.402 and the pinned SDK 11. Each
+  SDK exercises tool-path, isolated global and local-manifest dispatch with all
+  six smoke checks; each tool-path installation also passes the full 99-case
+  same-source JIT comparison. Package-source mapping restricts GitVersion packages
+  to the isolated local feed; only Microsoft host packs may use NuGet.org.
+- Linux containers cover UBI 8/9/10, Ubuntu 22.04/24.04/26.04, Debian 13,
+  Azure Linux 3, CentOS Stream 9/10, openSUSE 16 and SLES BCI 15.7/16. Fedora is
+  43/44 for net10 or 44/45 for net11; Alpine is 3.21–3.24 for net10 or
+  3.23/3.24 for net11. Fedora 45 explicitly installs its OpenSSL 3 compatibility
+  libraries, required by the pinned runtimes alongside Fedora's OpenSSL 4.
+  Every image runs the standalone command and the SDKs'
+  installed tool-path/global commands, both as root and UID 65532. Installed
+  directories keep their absolute paths so SDK symlink dispatch is preserved.
+- Windows x64 runs those five commands as ContainerAdministrator and
+  ContainerUser in Server Core 2022/2025 without modern .NET. Containers use
+  process isolation on the hosted Server 2025 kernel, with only Python, Git,
+  validation scripts and native tools mounted. Hyper-V isolation is not used.
+- macOS 15 temporarily makes known SDK/shared runtime contents unavailable on
+  the disposable hosted runner, executes the same five commands, and restores
+  those contents even on failure. This demonstrates independence from shared
+  .NET resolution; it does not establish a clean macOS installation. The helper
+  refuses to quarantine SDK contents outside an explicitly selected hosted Mac.
+
+These are disposable validation packages/images. They are never uploaded as
+artifacts or published. The evidence includes input fingerprints, payload
+checksums, actual SDK/OS/CPU/user identities, container identities and individual
+checks. Unavailable images, failed container infrastructure and incomplete
+reports fail the gate; they are not counted as successful native execution.
 
 ### OS support targets
 
@@ -114,9 +156,9 @@ those matrices still apply.
 | Windows desktop | Windows 10 1607 Enterprise, with matrix qualifications | Windows 10 1607 Enterprise, with matrix qualifications |
 | Nano Server x64 | 2019 | 2019 |
 
-Other supported Linux targets (Azure Linux, CentOS Stream, Debian, Fedora,
-openSUSE and SLES) remain in the linked policy's scope and need target-specific
-validation. Their compatibility is not inferred from an Ubuntu test or a shared
+The additional supported Linux userspaces are explicitly selected by the
+expanded container policy above. Their compatibility requires passing
+target-specific reports; it is not inferred from an Ubuntu test or a shared
 libc version. Platforms/architectures outside the preview's existing RIDs are
 not introduced by this validation change.
 
@@ -223,10 +265,12 @@ to pass, including existing repository history.
 This is a bounded regression corpus, not exhaustive proof of every Git topology,
 credential failure, process signal, culture, output mode or repository size.
 
-Clean Windows/macOS machines without modern .NET remain unvalidated; their
-hosted runners have SDKs installed. The tested host versions do not establish
-minimum OS/native-library compatibility floors. Global/local native-tool
-packaging and dispatcher behavior across all RIDs, a distributable native Docker
+Clean macOS installation, Windows desktop and older Server/Core/Nano versions
+remain separate full-OS gates. Server Core 2022/2025 containers and macOS shared
+runtime isolation cover the narrower scopes above. Older Windows kernels require
+VMs on the available hosts, and Linux containers do not validate older kernels.
+Tool installation across every RID/framework requires successful reports from
+the expanded matrix. A distributable native Docker
 image, signing/notarization, third-party distribution notices, release provenance
 and release pipeline integration remain separate gates. The disposable Linux
 validation images establish root/nonroot execution only; they are not release

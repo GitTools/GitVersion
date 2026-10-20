@@ -1,0 +1,9 @@
+<Project>
+    <!-- Standalone native validation executable; do not inherit the Cake build host. -->
+    <PropertyGroup>
+        <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+</Project>

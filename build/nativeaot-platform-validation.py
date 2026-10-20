@@ -79,7 +79,7 @@ def publish_pair(args, env, evidence, initial):
     run(common + ["-o", str(args.output / "managed"), "-p:GitVersionManagedOnly=false", "-p:PublishAot=false", "-p:PublishTrimmed=false", "-p:PublishSingleFile=false"], env, evidence / "managed-publish.log")
 
 
-def check_report(report, args, initial):
+def check_report(report, args, initial, executables=None):
     cases = report["cases"]
     if report["failed"] or report["passed"] != 99 or len(cases) != 99 or len({case["case"] for case in cases}) != 99:
         raise RuntimeError("Parity did not complete the full unique 99-case corpus")
@@ -91,7 +91,8 @@ def check_report(report, args, initial):
             raise RuntimeError(f"Parity input mismatch: {key}")
     executable = WINDOWS_EXECUTABLE if args.rid.startswith("win-") else "gitversion"
     for flavor in ("native", "managed"):
-        digest = hashlib.sha256((args.output / flavor / executable).read_bytes()).hexdigest()
+        path = executables[flavor] if executables is not None else args.output / flavor / executable
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
         if report[flavor + "_sha256"] != digest:
             raise RuntimeError(f"Parity executable mismatch: {flavor}")
 

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- Reuse the existing friend assembly for access to the real internal executor. -->
+        <AssemblyName>GitVersion.Git.Managed.Tests</AssemblyName>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>false</IsTestProject>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../../src/GitVersion.Git.Managed/GitVersion.Git.Managed.csproj" />
+    </ItemGroup>
+</Project>
