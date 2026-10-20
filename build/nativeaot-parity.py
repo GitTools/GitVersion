@@ -32,9 +32,10 @@ def main():
     dotnet = shutil.which(args.dotnet) or args.dotnet
     commands = {"managed": ([dotnet, str(managed)] if managed.suffix == ".dll" else [str(managed)]), "native": [str(native)]}
     env = dict(os.environ)
+    # Snapshot keys because matching entries are removed from the child environment.
     for key in list(env):
-        if key.startswith(("GITVERSION_", "GITHUB_", "APPVEYOR", "GITLAB_", "TEAMCITY_", "JENKINS_", "BITBUCKET_", "BUILDKITE_", "DRONE_", "TRAVIS_")) or key in {
-            "CI", "TF_BUILD", "BuildRunner", "ContinuaCI.Version", "ENVRUN_DATABASE", "JB_SPACE_PROJECT_KEY", "JB_SPACE_GIT_BRANCH", "CODEBUILD_WEBHOOK_HEAD_REF", "CODEBUILD_SOURCE_VERSION", "Git_Branch", "GIT_BRANCH", "GIT_LOCAL_BRANCH", "BRANCH_NAME", "BUILD_SOURCEBRANCH", "BUILD_BUILDNUMBER", "CI_COMMIT_TAG", "CI_COMMIT_REF_NAME", "CI_COMMIT_REFSPEC", "CI_MERGE_REQUEST_REF_PATH", "GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CONFIG", "GIT_CONFIG_COUNT",
+        if key.startswith(("GITVERSION_", "GITHUB_", "APPVEYOR", "GITLAB_", "TEAMCITY_", "JENKINS_", "BITBUCKET_", "BUILDKITE_", "DRONE_", "TRAVIS_", "CODEBUILD_")) or key in {
+            "CI", "TF_BUILD", "BUILDKITE", "DRONE", "TRAVIS", "BuildRunner", "ContinuaCI.Version", "ENVRUN_DATABASE", "JB_SPACE_PROJECT_KEY", "JB_SPACE_GIT_BRANCH", "Git_Branch", "GIT_BRANCH", "GIT_LOCAL_BRANCH", "BRANCH_NAME", "BUILD_SOURCEBRANCH", "BUILD_BUILDNUMBER", "CI_COMMIT_TAG", "CI_COMMIT_REF_NAME", "CI_COMMIT_REFSPEC", "CI_MERGE_REQUEST_REF_PATH", "GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CONFIG", "GIT_CONFIG_COUNT",
         }:
             del env[key]
     env.update(GITVERSION_GIT_BACKEND="managed", GITVERSION_ARGUMENT_PARSER_VERSION="v7", GITVERSION_CONFIGURATION_VERSION="v7")
