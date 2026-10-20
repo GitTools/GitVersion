@@ -163,6 +163,27 @@ class ValidationTests(unittest.TestCase):
 
 
 class DistributionValidationTests(unittest.TestCase):
+    def test_windows_batch_dispatcher_binds_native_payload_and_rejects_other_commands(self):
+        payload = self.work / ".store/gitversion.tool/fixture/gitversion.exe"
+        payload.parent.mkdir(parents=True)
+        payload.write_bytes(b"native-payload")
+        shim = self.work / "dotnet-gitversion.cmd"
+        shim.write_text('@echo off\n"%~dp0.store/gitversion.tool/fixture/gitversion.exe" %*\n')
+        self.assertEqual(payload.resolve(), TOOLS.SMOKE.native_payload(shim))
+        for content in ('@echo off\n"%~dp0../gitversion.exe" %*\n', '@echo off\ndotnet gitversion.dll %*\n',
+                        '@echo off\n"%~dp0.store/gitversion.tool/fixture/gitversion.exe" %*\nextra-command\n'):
+            shim.write_text(content)
+            with self.assertRaises(RuntimeError):
+                TOOLS.SMOKE.native_payload(shim)
+
+    def test_linux_tool_install_uses_native_sdk_without_unsupported_arch_option(self):
+        for rid in ("linux-x64", "linux-arm64", "linux-musl-x64", "linux-musl-arm64"):
+            args = SimpleNamespace(dotnet="dotnet", rid=rid)
+            self.assertNotIn("--arch", TOOLS.installation_command(args, "0.0.0-test", self.work / "NuGet.Config"))
+        for rid, architecture in (("win-x64", "x64"), ("win-arm64", "arm64"), ("osx-arm64", "arm64")):
+            command = TOOLS.installation_command(SimpleNamespace(dotnet="dotnet", rid=rid), "0.0.0-test", self.work / "NuGet.Config")
+            self.assertEqual(architecture, command[command.index("--arch") + 1])
+
     def test_capture_gate_requires_all_native_checks_and_credential_request(self):
         report = {"Passed": True, "Checks": sorted(CAPTURE.EXPECTED_CHECKS), "Error": None}
         CAPTURE.check_report(report, 1)
