@@ -54,6 +54,8 @@ public static class VersionedDocs
                 context.DotNetBuild(Path.Combine(root, "src", project, project + ".csproj"), new()
                 {
                     Configuration = "Debug",
+                    // API docs need one coherent assembly set, not competing TFM builds in one directory.
+                    Framework = $"net{Constants.DotnetLtsLatest}",
                     OutputDirectory = assemblies
                 });
             }

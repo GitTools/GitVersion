@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
+        <WarningsAsErrors>$(WarningsAsErrors);NU5118</WarningsAsErrors>
         <ToolCommandName>dotnet-gitversion</ToolCommandName>
         <PackageId>GitVersion.Tool</PackageId>
         <RollForward>LatestMajor</RollForward>
@@ -46,4 +47,16 @@
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
     </ItemGroup>
+    <Target Name="DeduplicateToolSettings" AfterTargets="PackTool"
+            Condition="'$(PackAsTool)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(TargetFrameworks)' != ''">
+        <PropertyGroup>
+            <PrimaryToolTargetFramework>$(TargetFrameworks.Split(';')[0])</PrimaryToolTargetFramework>
+        </PropertyGroup>
+        <!-- The RID dispatcher is framework-independent; retain its settings from the first TFM only.
+             RID implementation packages still need their settings for every supported framework. -->
+        <ItemGroup Condition="'$(TargetFramework)' != '$(PrimaryToolTargetFramework)'">
+            <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
+                                    Condition="'%(TfmSpecificPackageFile.Filename)%(TfmSpecificPackageFile.Extension)' == 'DotnetToolSettings.xml' and '%(TfmSpecificPackageFile.PackagePath)' == 'tools/any/any/'" />
+        </ItemGroup>
+    </Target>
 </Project>

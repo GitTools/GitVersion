@@ -1,0 +1,33 @@
+@{
+    IDocument containingAssembly = Model.Get<IDocument>("ContainingAssembly");
+    if (containingAssembly != null)
+    {
+        <li class="header">Assembly</li>
+        <li>@Context.GetTypeLink(containingAssembly, false)</li>
+    }
+
+    IDocument containingNamespace = Model.Get<IDocument>("ContainingNamespace");
+    if (containingNamespace != null)
+    {
+        <li class="header">Namespace</li>
+        <li>@Context.GetTypeLink(containingNamespace, false)</li>
+        <li><hr class="divider" /></li>
+
+        // Use the generated page documents. MemberTypes can contain reference-only
+        // symbols whose missing namespace metadata produces /api/global links.
+        var types = Documents.FromPipeline(Docs.Api)
+            .Where(x => x.Bool("IsResult") && x.String("Kind") == "NamedType")
+            .Where(x => x.Get<IDocument>("ContainingNamespace") != null
+                && x.Get<IDocument>("ContainingNamespace").String("SymbolId") == containingNamespace.String("SymbolId"))
+            .GroupBy(x => x.String("SpecificKind"));
+        foreach (var typeGroup in types)
+        {
+            <li class="header">@typeGroup.Key Types</li>
+            foreach (IDocument type in typeGroup.OrderBy(x => x.String("Name")))
+            {
+                string selectedClass = type.String("SymbolId") == Model.String("SymbolId") ? "selected" : null;
+                <li class="@selectedClass"><a href="@Context.GetLink(type)">@type.String("DisplayName")</a></li>
+            }
+        }
+    }
+}
