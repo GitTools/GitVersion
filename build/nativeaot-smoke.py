@@ -25,7 +25,8 @@ def contains_runtime(path):
 def operating_system():
     release = Path("/etc/os-release")
     if release.is_file():
-        fields = dict(line.split("=", 1) for line in release.read_text(encoding="utf-8").splitlines() if "=" in line)
+        pairs = (line.split("=", 1) for line in release.read_text(encoding="utf-8").splitlines() if "=" in line)
+        fields = {key: value for key, value in pairs}
         return {key: fields.get(key, "").strip("\"'") for key in ("ID", "VERSION_ID")}
     return {"release": platform.release(), "version": platform.version()}
 
