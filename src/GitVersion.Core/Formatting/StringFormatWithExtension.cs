@@ -1,3 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
+using GitVersion.OutputVariables;
+
 namespace GitVersion.Formatting;
 
 internal static class StringFormatWithExtension
@@ -6,7 +9,7 @@ internal static class StringFormatWithExtension
 
     private static readonly IInputSanitizer InputSanitizer = new InputSanitizer();
 
-    private static readonly IMemberResolver MemberResolver = new MemberResolver();
+    private static readonly IMemberResolver ObjectMemberResolver = new MemberResolver();
 
     /// <summary>
     /// Provides extension methods for formatting strings using a source object and environment context.
@@ -34,11 +37,26 @@ internal static class StringFormatWithExtension
         /// "{env:BUILD_NUMBER}".FormatWith(new { }, env);
         /// "{env:BUILD_NUMBER ?? \"0\"}".FormatWith(new { }, env);
         /// </example>
+        [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
         public string FormatWith(object source, IEnvironment environment)
         {
             ArgumentNullException.ThrowIfNull(source);
 
             return template.FormatWith(member => EvaluateMemberFromObject(source, member), environment);
+        }
+
+        /// <summary>Formats computed version values using their statically known public member graph.</summary>
+        public string FormatWith(SemanticVersionFormatValues source, IEnvironment environment)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            return template.FormatWith(member => EvaluateVersionMember(source, typeof(SemanticVersionFormatValues), member), environment);
+        }
+
+        /// <summary>Formats output variables using their statically known public member graph.</summary>
+        public string FormatWith(GitVersionVariables source, IEnvironment environment)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            return template.FormatWith(member => EvaluateVersionMember(source, typeof(GitVersionVariables), member), environment);
         }
 
         /// <summary>
@@ -125,10 +143,18 @@ internal static class StringFormatWithExtension
         return string.Empty;
     }
 
+    private static string? EvaluateVersionMember(object source, Type type, string member)
+    {
+        var safeMember = InputSanitizer.SanitizeMemberName(member);
+        var memberPath = MemberResolver.ResolveVersionMemberPath(type, safeMember);
+        return ExpressionCompiler.CompileGetter(type, memberPath)(source)?.ToString();
+    }
+
+    [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
     private static string? EvaluateMemberFromObject(object source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
-        var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
+        var memberPath = ObjectMemberResolver.ResolveMemberPath(source.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
 
         var value = getter(source);

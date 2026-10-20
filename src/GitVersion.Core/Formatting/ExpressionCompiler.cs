@@ -11,7 +11,7 @@ internal class ExpressionCompiler : IExpressionCompiler
 
         foreach (var member in memberPath)
         {
-            body = Expression.PropertyOrField(body, member.Name);
+            body = Expression.MakeMemberAccess(body, member);
         }
 
         body = Expression.Convert(body, typeof(object));

@@ -8,6 +8,7 @@ internal class ConfigurationMigrationService(IConfigurationSerializer configurat
     private static readonly YamlSerializerOptions ValidationOptions = new()
     {
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        TypeInfoResolver = ConfigurationYamlContext.Default,
         Converters = [VersionStrategiesConverter.Instance]
     };
 
