@@ -64,6 +64,33 @@ provenance still require the normal release review before public distribution.
 
 ## Evidence and remaining gates
 
+### Target-host validation matrix
+
+`.github/workflows/nativeaot-validation.yml` validates both frameworks on native
+Windows x64/ARM64, Linux glibc x64/ARM64, Linux musl x64/ARM64 and macOS ARM64
+runners. It checks out the exact PR head, pins the SDK and runtime/compiler patch,
+publishes the native and ordinary managed flavors sequentially, rejects libgit2
+from the native closure, and requires all 99 unique parity cases on that host.
+`nativeaot-platform-validation.py` rejects a mismatched host OS, CPU or libc and
+records source fingerprints, executable hashes, toolchain information and logs.
+Compilation alone does not satisfy the gate.
+
+Linux also executes six independent smoke checks in Ubuntu 24.04 or Alpine 3.24
+containers without any installed .NET runtime/SDK. The executable and scripts
+are mounted read-only, networking is disabled, and Git history/configuration
+checks run in a temporary writable filesystem, both as root and UID 65532.
+The tagged calculation must independently produce `1.2.3`; this is not a
+native-versus-itself parity comparison. These checks establish the tested
+container environment only, rather than every installation or minimum OS floor.
+
+The workflow retains JSON reports and logs for seven days, including Linux
+container image identity. It does not upload executables, create preview
+archives, publish packages/images, change existing release jobs or promote a
+NativeAOT distribution channel. A configured job is not evidence that it passed:
+record completed run URLs and target-specific reports before closing a gate.
+
+### Earlier local validation
+
 Local macOS ARM64 validation on 2026-10-20 published net10.0/10.0.13 and
 net11.0/11.0.0-rc.2.26504.105 with strict linker/compiler warning policies.
 Both native executables passed all 99 corpus cases against ordinary JIT builds

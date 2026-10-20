@@ -1,0 +1,125 @@
+name: NativeAOT validation
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'build/nativeaot*'
+      - 'build/publish-nativeaot.ps1'
+      - 'global.json'
+      - '.github/workflows/nativeaot-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    name: Native / ${{ matrix.target.rid }} / ${{ matrix.framework }}
+    runs-on: ${{ matrix.target.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        framework: [net10.0, net11.0]
+        target:
+          - {rid: win-x64, runner: windows-2025-vs2026, arch: x64, libc: none}
+          - {rid: win-arm64, runner: windows-11-vs2026-arm, arch: arm64, libc: none}
+          - {rid: linux-x64, runner: ubuntu-24.04, arch: x64, libc: glibc}
+          - {rid: linux-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: glibc}
+          - {rid: linux-musl-x64, runner: ubuntu-24.04, arch: x64, libc: musl}
+          - {rid: linux-musl-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: musl}
+          - {rid: osx-arm64, runner: macos-26, arch: arm64, libc: none}
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      PYTHONDONTWRITEBYTECODE: '1'
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+      FRAMEWORK: ${{ matrix.framework }}
+      RID: ${{ matrix.target.rid }}
+      RUNTIME_VERSION: ${{ matrix.framework == 'net10.0' && '10.0.13' || '11.0.0-rc.2.26504.105' }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout exact validation head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Select isolated validation output
+        shell: pwsh
+        run: |
+          $directory = Join-Path $env:RUNNER_TEMP ('nativeaot-{0}-{1}' -f $env:RID, $env:FRAMEWORK)
+          "NATIVE_OUTPUT=$directory" >> $env:GITHUB_ENV
+
+      - name: Setup Python
+        if: matrix.target.libc != 'musl'
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+          architecture: ${{ matrix.target.arch }}
+
+      - name: Setup pinned SDK
+        if: matrix.target.libc != 'musl'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Install glibc NativeAOT toolchain
+        if: matrix.target.libc == 'glibc'
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Publish and execute target-host parity
+        if: matrix.target.libc != 'musl'
+        shell: pwsh
+        run: |
+          python build/nativeaot-platform-validation.py --framework $env:FRAMEWORK --rid $env:RID --runtime-version $env:RUNTIME_VERSION --output $env:NATIVE_OUTPUT
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT target-host validation failed.' }
+
+      - name: Publish and execute musl parity on native CPU
+        if: matrix.target.libc == 'musl'
+        shell: bash
+        run: |
+          docker build -f build/nativeaot-build.Dockerfile -t nativeaot-musl-build .
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/source" -v "$RUNNER_TEMP:$RUNNER_TEMP" -w /source \
+            -e FRAMEWORK -e RID -e RUNTIME_VERSION -e NATIVE_OUTPUT -e PYTHONUTF8 -e PYTHONIOENCODING \
+            -e HOME=/tmp/nativeaot-home nativeaot-musl-build \
+            sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"'
+          docker image inspect nativeaot-musl-build > "$NATIVE_OUTPUT/evidence/build-image.json"
+
+      - name: Run without .NET as root and nonroot
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBC: ${{ matrix.target.libc }}
+        run: |
+          base=ubuntu:24.04
+          if [ "$LIBC" = musl ]; then base=alpine:3.24; fi
+          docker build -f build/nativeaot-runtime.Dockerfile --build-arg "BASE=$base" -t nativeaot-runtime-check .
+          docker image inspect nativeaot-runtime-check > "$NATIVE_OUTPUT/evidence/runtime-image.json"
+          for uid in 0 65532; do
+            docker run --rm --network none --read-only --tmpfs /tmp:rw,exec,size=512m --user "$uid:$uid" \
+              -v "$NATIVE_OUTPUT/native:/native:ro" -v "$GITHUB_WORKSPACE/build:/validation:ro" \
+              nativeaot-runtime-check python3 /validation/nativeaot-smoke.py --native /native/gitversion \
+              > "$NATIVE_OUTPUT/evidence/no-dotnet-uid-$uid.json"
+          done
+
+      - name: Retain validation evidence only
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nativeaot-evidence-${{ matrix.target.rid }}-${{ matrix.framework }}
+          path: ${{ env.NATIVE_OUTPUT }}/evidence/
+          if-no-files-found: warn
+          retention-days: 7
