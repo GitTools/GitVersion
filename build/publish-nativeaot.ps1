@@ -28,13 +28,37 @@ function Invoke-Checked([string]$Command, [string[]]$Arguments) {
     if ($LASTEXITCODE -ne 0) { throw "$Command failed with exit code $LASTEXITCODE" }
 }
 
+function Invoke-SourceGit([string[]]$Arguments) {
+    $start = [Diagnostics.ProcessStartInfo]::new('git')
+    $start.UseShellExecute = $false
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    foreach ($argument in $Arguments) { $start.ArgumentList.Add($argument) }
+    foreach ($name in @('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR',
+        'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES', 'GIT_CONFIG', 'GIT_CONFIG_COUNT')) {
+        $start.Environment.Remove($name) | Out-Null
+    }
+    $start.Environment['GIT_CONFIG_GLOBAL'] = if ($IsWindows) { 'NUL' } else { '/dev/null' }
+    $start.Environment['GIT_CONFIG_NOSYSTEM'] = '1'
+    $process = [Diagnostics.Process]::Start($start)
+    try {
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        if (!$process.WaitForExit(60000)) {
+            $process.Kill($true)
+            throw 'Source identity Git command timed out.'
+        }
+        if ($process.ExitCode -ne 0) { throw "Source identity Git command failed: $($stderr.GetAwaiter().GetResult())" }
+        return ($stdout.GetAwaiter().GetResult().TrimEnd() -split '\r?\n')
+    }
+    finally { $process.Dispose() }
+}
+
 function Get-SourceIdentity {
-    $head = & git -C $repo rev-parse HEAD
-    if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source revision.' }
+    $head = Invoke-SourceGit @('-C', $repo, 'rev-parse', 'HEAD')
     # Include dirty and new implementation files, plus imported build inputs. Never
     # hash ignored obj/bin output; that changes as the two flavors are built.
-    $paths = & git -C $repo -c core.quotepath=false ls-files --cached --others --exclude-standard -- src global.json .editorconfig .globalconfig LICENSE Directory.Build.props Directory.Build.targets Directory.Packages.props NuGet.Config nuget.config .config build/nativeaot-parity.py build/publish-nativeaot.ps1
-    if ($LASTEXITCODE -ne 0) { throw 'Cannot enumerate source inputs.' }
+    $paths = Invoke-SourceGit @('-C', $repo, '-c', 'core.quotepath=false', 'ls-files', '--cached', '--others', '--exclude-standard', '--', 'src', 'global.json', '.editorconfig', '.globalconfig', 'LICENSE', 'Directory.Build.props', 'Directory.Build.targets', 'Directory.Packages.props', 'NuGet.Config', 'nuget.config', '.config', 'build/nativeaot-parity.py', 'build/publish-nativeaot.ps1')
     $hash = [Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
     try {
         foreach ($path in ($paths | Sort-Object -Unique -CaseSensitive)) {
@@ -99,7 +123,11 @@ try {
     & $Python (Join-Path $PSScriptRoot 'nativeaot-parity.py') --managed $managed --native $native --dotnet $Dotnet --framework $Framework --rid $RuntimeIdentifier --runtime-version $RuntimeVersion --repository $ParityRepository > $parityPath
     if ($LASTEXITCODE -ne 0) { throw "Output parity failed. See $parityPath" }
     $parity = Get-Content $parityPath -Raw | ConvertFrom-Json
-    if ($parity.failed -ne 0 -or $parity.passed -le 0 -or !($parity.cases | Where-Object { $_.case -eq 'existing-history-json' -and $_.passed })) {
+    $expectedParityCases = 99
+    if ($parity.failed -ne 0 -or $parity.passed -ne $expectedParityCases -or $parity.cases.Count -ne $expectedParityCases -or
+        @($parity.cases | Where-Object { !$_.passed }).Count -ne 0 -or
+        @($parity.cases.case | Sort-Object -Unique).Count -ne $expectedParityCases -or
+        !($parity.cases | Where-Object { $_.case -eq 'existing-history-json' -and $_.passed })) {
         throw 'Parity report is incomplete or unsuccessful.'
     }
     if ($parity.framework -cne $Framework -or $parity.rid -cne $RuntimeIdentifier -or $parity.runtime_version -cne $RuntimeVersion -or

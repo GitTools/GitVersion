@@ -95,6 +95,11 @@ missing Git, file logging, build agents including local AppVeyor HTTP capture,
 backend rejection and existing repository history. Outputs, exit codes,
 diagnostic text and side effects must agree. Only wall-clock log timestamps
 and captured file-log scope durations are normalized; messages remain exact.
+Cache writers start empty and compare exact cache file bytes; cache readers
+start from the same managed-written seed. Backend process-start failures and
+timeouts are failed report cases. Source identity queries ignore inherited Git
+repository/configuration selectors, and packaging requires all 99 unique cases
+to pass, including existing repository history.
 This is a bounded regression corpus, not exhaustive proof of every Git topology,
 credential failure, process signal, culture, output mode or repository size.
 
