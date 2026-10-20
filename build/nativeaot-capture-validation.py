@@ -32,6 +32,7 @@ class AuthenticationRequired(BaseHTTPRequestHandler):
         self.end_headers()
 
     def log_message(self, *_):
+        # Keep fixture access logs out of the machine-readable validation output.
         pass
 
 

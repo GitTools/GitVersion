@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using GitVersion.Git;
+using GitVersion.NativeCapture.Validation;
 using Microsoft.Extensions.Logging.Abstractions;
 
 var checks = new List<string>();
@@ -87,8 +87,3 @@ static void Verify(GitCliResult actual, int exitCode, string output, string erro
         throw new InvalidOperationException($"Capture mismatch: exit={actual.ExitCode}, stdout length={actual.StandardOutput.Length}, stderr length={actual.StandardError.Length}; expected exit={exitCode}, lengths={output.Length}/{errors.Length}.");
     }
 }
-
-internal sealed record CaptureReport(bool Passed, List<string> Checks, string? Error);
-
-[JsonSerializable(typeof(CaptureReport))]
-internal partial class CaptureJsonContext : JsonSerializerContext;

@@ -7,7 +7,8 @@ RUN set -eu; \
       python=python3; \
       ssl=openssl-libs; \
       if [ "$(. /etc/os-release; echo "${VERSION_ID%%.*}")" = 8 ]; then python=python3.11; fi; \
-      if [ "$(. /etc/os-release; echo "$ID")" = fedora ] && [ "$(. /etc/os-release; echo "$VERSION_ID")" -ge 45 ]; then ssl=openssl3-libs; fi; \
+      if [ "$(. /etc/os-release; echo "$ID")" = fedora ] && \
+         [ "$(. /etc/os-release; echo "$VERSION_ID")" -ge 45 ]; then ssl=openssl3-libs; fi; \
       dnf install -y "$python" "$ssl" ca-certificates git libgcc libicu libstdc++ zlib; \
       dnf clean all; \
       if [ "$python" = python3.11 ]; then ln -s /usr/bin/python3.11 /usr/local/bin/python3; fi; \
@@ -16,7 +17,8 @@ RUN set -eu; \
     elif command -v zypper >/dev/null; then \
       python=python3; \
       if [ "$(. /etc/os-release; echo "${VERSION_ID%%.*}")" = 15 ]; then python=python311; fi; \
-      zypper --non-interactive install --no-recommends "$python" ca-certificates git libicu-devel libopenssl-devel libstdc++6 zlib; \
+      zypper --non-interactive install --no-recommends \
+        "$python" ca-certificates git libicu-devel libopenssl-devel libstdc++6 zlib; \
       zypper clean --all; \
       if [ "$python" = python311 ]; then ln -s /usr/bin/python3.11 /usr/local/bin/python3; fi; \
     else \
