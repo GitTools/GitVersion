@@ -9,7 +9,7 @@ RUN if [ -f /etc/alpine-release ]; then \
       icu=libicu74; ssl=libssl3t64; \
       if [ "$(. /etc/os-release; echo "$VERSION_ID")" = 22.04 ]; then icu=libicu70; ssl=libssl3; fi; \
       apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates git libgcc-s1 "$icu" "$ssl" libstdc++6 python3 zlib1g && \
+        "$icu" "$ssl" ca-certificates git libgcc-s1 libstdc++6 python3 zlib1g && \
       rm -rf /var/lib/apt/lists/*; \
     fi
 ENV HOME=/tmp/nativeaot-home PYTHONUTF8=1 PYTHONDONTWRITEBYTECODE=1
