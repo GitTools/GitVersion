@@ -16,8 +16,7 @@
         // Use the generated page documents. MemberTypes can contain reference-only
         // symbols whose missing namespace metadata produces /api/global links.
         var types = Documents.FromPipeline(Docs.Api)
-            .Where(x => x.Bool("IsResult") && x.String("Kind") == "NamedType"
-                && x.Get<IDocument>("ContainingType") == null)
+            .Where(x => x.Bool("IsResult") && x.String("Kind") == "NamedType")
             .Where(x => x.Get<IDocument>("ContainingNamespace") != null
                 && x.Get<IDocument>("ContainingNamespace").String("SymbolId") == containingNamespace.String("SymbolId"))
             .GroupBy(x => x.String("SpecificKind"));
