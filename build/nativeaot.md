@@ -79,6 +79,11 @@ Linux also executes six independent smoke checks in Ubuntu 24.04 or Alpine 3.24
 containers without any installed .NET runtime/SDK. The executable and scripts
 are mounted read-only, networking is disabled, and Git history/configuration
 checks run in a temporary writable filesystem, both as root and UID 65532.
+The runtime image sets `HOME=/tmp/nativeaot-home`: .NET 11's named-mutex
+implementation initializes IPC state under `$HOME/.dotnet`, even in a native
+executable. This directory is runtime state, not an installed .NET runtime/SDK.
+A read-only container must provide a writable home as well as temporary storage;
+the test retains GitVersion's existing cross-process repository lock.
 The tagged calculation must independently produce `1.2.3`; this is not a
 native-versus-itself parity comparison. These checks establish the tested
 container environment only, rather than every installation or minimum OS floor.

@@ -39,8 +39,10 @@ def main():
             run = subprocess.run([str(native), option], env=env, capture_output=True, timeout=60)
             require(run.returncode == 0 and run.stdout.strip(), f"startup failed: {option}")
             checks.append("startup-" + option[2:])
-        run = subprocess.run([str(native), str(repo), "--no-cache", "--no-fetch"], env=env, capture_output=True, timeout=60)
-        require(run.returncode == 0, run.stderr.decode())
+        log = work / "calculation.log"
+        run = subprocess.run([str(native), str(repo), "--no-cache", "--no-fetch", "--log-file", str(log)], env=env, capture_output=True, timeout=60)
+        diagnostic = run.stderr.decode() + (log.read_text(encoding="utf-8") if log.exists() else "")
+        require(run.returncode == 0, diagnostic)
         require(json.loads(run.stdout)["FullSemVer"] == "1.2.3", "tagged history calculation changed")
         checks.append("tagged-native-default")
         config = work / "GitVersion.yml"
