@@ -6,6 +6,8 @@
         <AssemblyName>gitversion</AssemblyName>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GitVersionManagedOnly Condition="'$(GitVersionManagedOnly)' == ''">false</GitVersionManagedOnly>
+        <DefineConstants Condition="'$(GitVersionManagedOnly)' == 'true'">$(DefineConstants);GITVERSION_MANAGED_ONLY</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
@@ -46,6 +48,10 @@
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
     </ItemGroup>
+    <Target Name="ValidateNativeAotBackend" BeforeTargets="PrepareForBuild"
+            Condition="'$(PublishAot)' == 'true' and '$(GitVersionManagedOnly)' != 'true'">
+        <Error Text="NativeAOT requires the managed-only CLI. Set GitVersionManagedOnly=true when publishing with PublishAot=true." />
+    </Target>
     <Target Name="DeduplicateToolSettings" AfterTargets="PackTool"
             Condition="'$(PackAsTool)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(TargetFrameworks)' != ''">
         <PropertyGroup>

@@ -61,7 +61,7 @@ internal static class ConfigurationPropertyQuery
         // Traverse declared public properties rather than displayed YAML: serialization omits
         // nulls, and a mapping alone cannot distinguish a fixed object from a dynamic map.
         object? current = configuration;
-        var type = configuration.GetType();
+        var type = typeof(GitVersionConfiguration);
         for (var index = offset; index < segments.Length; index++)
         {
             var property = GetPublicProperty(type, segments[index], path);
@@ -88,7 +88,7 @@ internal static class ConfigurationPropertyQuery
     }
 
     private static PropertyInfo GetPublicProperty(Type type, string name, string path) =>
-        type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        ConfigurationModelMetadata.GetProperties(type)
             .SingleOrDefault(candidate => candidate.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name == name
                                           && candidate.GetCustomAttribute<JsonIgnoreAttribute>() is null)
         ?? throw Unknown(path);

@@ -11,7 +11,7 @@ internal static class ConfigurationInputValidator
 
     private static void ValidateObject(IReadOnlyDictionary<object, object?> document, Type type, string prefix, ConfigurationVersion version)
     {
-        var properties = type.GetProperties().Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() is not null)
+        var properties = ConfigurationModelMetadata.GetProperties(type).Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() is not null)
             .ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name);
         foreach (var (key, value) in document)
         {

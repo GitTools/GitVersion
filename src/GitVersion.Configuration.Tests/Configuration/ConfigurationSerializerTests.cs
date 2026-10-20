@@ -6,6 +6,120 @@ public class ConfigurationSerializerTests
 {
     private readonly ConfigurationSerializer serializer = new();
 
+    [TestCase("[ConfiguredNextVersion, Mainline]")]
+    [TestCase("ConfiguredNextVersion, Mainline")]
+    [TestCase("[configured-next-version, mainline]")]
+    public void DeserializesStrategyListsUsingGeneratedMetadata(string yaml)
+    {
+        var strategies = this.serializer.Deserialize<VersionCalculation.VersionStrategies[]>(yaml);
+
+        strategies.ShouldBe([VersionCalculation.VersionStrategies.ConfiguredNextVersion, VersionCalculation.VersionStrategies.Mainline]);
+        this.serializer.Deserialize<VersionCalculation.VersionStrategies[]>(ConfigurationSerializer.SerializeLegacy(strategies))
+            .ShouldBe(strategies);
+    }
+
+    [Test]
+    public void LegacySerializationRoundTripsTheGeneratedConfigurationModelGraph()
+    {
+        var configuration = new GitVersionConfiguration
+        {
+            TagPrefixPattern = "[vV]?",
+            VersionStrategies = [VersionCalculation.VersionStrategies.TaggedCommit, VersionCalculation.VersionStrategies.Mainline],
+            Ignore = new()
+            {
+                BeforeString = "2026-01-02T03:04:05Z",
+                Paths = ["src/.*", "Unicode/é"],
+                Shas = ["abc123"]
+            },
+            PreventIncrement = new() { OfMergedBranch = true, WhenCurrentCommitTagged = false },
+            Branches = new()
+            {
+                ["feature/custom"] = new()
+                {
+                    Increment = IncrementStrategy.Minor,
+                    PreventIncrement = new() { WhenBranchMerged = true },
+                    SourceBranches = ["main", "release"]
+                }
+            }
+        };
+
+        var yaml = ConfigurationSerializer.SerializeLegacy(configuration);
+        var roundTrip = ConfigurationSerializer.DeserializeLegacyConfiguration(yaml).ShouldNotBeNull();
+
+        roundTrip.TagPrefixPattern.ShouldBe("[vV]?");
+        roundTrip.VersionStrategies.ShouldBe(configuration.VersionStrategies);
+        roundTrip.Ignore.Before.ShouldBe(configuration.Ignore.Before);
+        roundTrip.Ignore.Paths.ShouldBe(configuration.Ignore.Paths, ignoreOrder: true);
+        roundTrip.Ignore.Shas.ShouldBe(configuration.Ignore.Shas, ignoreOrder: true);
+        roundTrip.PreventIncrement.OfMergedBranch.ShouldBe(true);
+        roundTrip.PreventIncrement.WhenCurrentCommitTagged.ShouldBe(false);
+        roundTrip.Branches["feature/custom"].Increment.ShouldBe(IncrementStrategy.Minor);
+        roundTrip.Branches["feature/custom"].PreventIncrement.WhenBranchMerged.ShouldBe(true);
+        roundTrip.Branches["feature/custom"].SourceBranches.ShouldBe(["main", "release"], ignoreOrder: true);
+        yaml.ShouldNotContain("calculation:");
+        yaml.ShouldNotContain("is-empty:");
+        yaml.ShouldNotContain("  before:");
+    }
+
+    [Test]
+    public void LegacySerializationPreservesExplicitNullsInUntypedDocuments()
+    {
+        Dictionary<object, object?> document = new()
+        {
+            ["next-version"] = null,
+            ["branches"] = new Dictionary<object, object?>
+            {
+                ["feature"] = new Dictionary<object, object?> { ["pre-release-weight"] = null }
+            }
+        };
+
+        var yaml = ConfigurationSerializer.SerializeLegacy(document);
+        var roundTrip = this.serializer.Deserialize<Dictionary<object, object?>>(yaml);
+
+        roundTrip.ContainsKey("next-version").ShouldBeTrue();
+        roundTrip["next-version"].ShouldBeNull();
+        var branches = roundTrip["branches"].ShouldBeOfType<Dictionary<object, object?>>();
+        var feature = branches["feature"].ShouldBeOfType<Dictionary<object, object?>>();
+        feature.ContainsKey("pre-release-weight").ShouldBeTrue();
+        feature["pre-release-weight"].ShouldBeNull();
+    }
+
+    [Test]
+    public void LegacySerializationConvertsObjectKeyedMapsInsideStringMapsAndSequences()
+    {
+        Dictionary<string, object?> document = new()
+        {
+            ["values"] = new List<object?>
+            {
+                new Dictionary<object, object?> { ["name"] = "café", ["nullable"] = null },
+                new Dictionary<string, object?>
+                {
+                    ["nested"] = new Dictionary<object, object?> { ["enabled"] = false }
+                }
+            }
+        };
+
+        var yaml = ConfigurationSerializer.SerializeLegacy(document);
+        var roundTrip = this.serializer.Deserialize<Dictionary<object, object?>>(yaml);
+        var values = roundTrip["values"].ShouldBeOfType<List<object?>>();
+        var first = values[0].ShouldBeOfType<Dictionary<object, object?>>();
+        first["name"].ShouldBe("café");
+        first.ContainsKey("nullable").ShouldBeTrue();
+        first["nullable"].ShouldBeNull();
+        values[1].ShouldBeOfType<Dictionary<object, object?>>()
+            ["nested"].ShouldBeOfType<Dictionary<object, object?>>()
+            ["enabled"].ShouldBe(false);
+    }
+
+    [Test]
+    public void LegacySerializationRejectsNonStringObjectKeys()
+    {
+        Dictionary<object, object?> document = new() { [42] = "invalid" };
+
+        Should.Throw<SharpYaml.YamlException>(() => ConfigurationSerializer.SerializeLegacy(document))
+            .Message.ShouldContain("mapping keys must be strings");
+    }
+
     [Test]
     public void SerializesV7CalculationAndOutputSectionsAndRoundTrips()
     {
