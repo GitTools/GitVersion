@@ -101,6 +101,7 @@ def main():
                 results.append({"case": name, "passed": True})
             except (AssertionError, subprocess.SubprocessError, ValueError, OSError, KeyError, TypeError) as error:
                 results.append({"case": name, "passed": False, "error": str(error), "results": actual})
+            return actual
 
         tagged = repository("tagged", True)
         untagged = repository("untagged", False)
@@ -190,8 +191,32 @@ def main():
         compare("custom-information-format", [tagged, *common, "--config", custom])
         compare("dotenv", [tagged, *common, "--output", "dotenv"])
         compare("selected-variable", [tagged, *common, "--show-variable", "FullSemVer"])
-        compare("cache-write-and-cross-read", [tagged, "--no-fetch"])
-        compare("cache-hit", [tagged, "--no-fetch"])
+        cache = tagged / ".git" / "gitversion_cache"
+
+        def reset_cache():
+            shutil.rmtree(cache, ignore_errors=True)
+
+        def capture_cache():
+            files = {str(path.relative_to(cache)): path.read_bytes().hex() for path in cache.rglob("*") if path.is_file()}
+            if not files:
+                raise AssertionError("calculation did not write a cache entry")
+            return files
+
+        # Compare independent writers first, then restore the same managed-written
+        # cache before each reader. A native write cannot mask a native read defect.
+        cache_writes = compare("cache-write-and-cross-read", [tagged, "--no-fetch"], prepare=reset_cache, capture=capture_cache)
+        cache_seed = cache_writes.get("managed", {}).get("side_effects", {})
+
+        def restore_cache():
+            if not cache_seed:
+                raise AssertionError("managed calculation did not provide a cache seed")
+            reset_cache()
+            for filename, content in cache_seed.items():
+                path = cache / filename
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(bytes.fromhex(content))
+
+        compare("cache-hit", [tagged, "--no-fetch"], prepare=restore_cache, capture=capture_cache)
         compare("v6-configuration", [tagged, *common, "--config", legacy], extra_env={"GITVERSION_CONFIGURATION_VERSION": "v6"})
         compare("v6-argument-parser", [tagged, "/nocache", "/nofetch", "/output", "json"], extra_env={"GITVERSION_ARGUMENT_PARSER_VERSION": "v6"})
         for culture in ["de_DE.UTF-8", "tr_TR.UTF-8"]:
@@ -326,19 +351,27 @@ def main():
             compare("buildserver-" + agent, [tagged, *common, "--output", "buildserver", "--verbosity", "Quiet"], extra_env=selection, prepare=reset_agent_files, capture=capture_agent_files, assert_result=assert_agent_selected)
         # Native defaults select the managed backend, while the ordinary CLI's
         # release default remains libgit2. Compare actual calculations explicitly.
-        baseline = subprocess.run(commands["managed"] + [str(tagged), *common], cwd=work, env=env, capture_output=True, timeout=60)
         for label, selector in [("unset", None), ("blank", " "), ("case-insensitive", " Managed ")]:
             native_env = dict(env)
             if selector is None:
                 native_env.pop("GITVERSION_GIT_BACKEND", None)
             else:
                 native_env["GITVERSION_GIT_BACKEND"] = selector
-            calculated = subprocess.run(commands["native"] + [str(tagged), *common], cwd=work, env=native_env, capture_output=True, timeout=60)
-            results.append({"case": "native-backend-" + label, "passed": baseline.returncode == 0 and (calculated.returncode, calculated.stdout, calculated.stderr) == (baseline.returncode, baseline.stdout, baseline.stderr)})
+            name = "native-backend-" + label
+            try:
+                baseline = subprocess.run(commands["managed"] + [str(tagged), *common], cwd=work, env=env, capture_output=True, timeout=60)
+                calculated = subprocess.run(commands["native"] + [str(tagged), *common], cwd=work, env=native_env, capture_output=True, timeout=60)
+                results.append({"case": name, "passed": baseline.returncode == 0 and (calculated.returncode, calculated.stdout, calculated.stderr) == (baseline.returncode, baseline.stdout, baseline.stderr)})
+            except (subprocess.SubprocessError, OSError) as error:
+                results.append({"case": name, "passed": False, "error": str(error)})
         # Capability rejection intentionally differs from the dual-backend CLI.
         for selector in ["libgit2", "unknown"]:
-            rejected = subprocess.run(commands["native"] + ["--version"], env=env | {"GITVERSION_GIT_BACKEND": selector}, capture_output=True, text=True, timeout=30)
-            results.append({"case": "unavailable-backend-rejected-" + selector, "passed": rejected.returncode == 1 and "only the managed Git backend" in rejected.stderr})
+            name = "unavailable-backend-rejected-" + selector
+            try:
+                rejected = subprocess.run(commands["native"] + ["--version"], env=env | {"GITVERSION_GIT_BACKEND": selector}, capture_output=True, text=True, timeout=30)
+                results.append({"case": name, "passed": rejected.returncode == 1 and "only the managed Git backend" in rejected.stderr})
+            except (subprocess.SubprocessError, OSError) as error:
+                results.append({"case": name, "passed": False, "error": str(error)})
         if args.repository:
             repo = work / "existing-history"
             subprocess.run(["git", "clone", "--shared", "--no-checkout", str(args.repository.resolve()), str(repo)], env=env, capture_output=True, check=True, timeout=60)
