@@ -58,6 +58,13 @@ internal sealed class RandomAccessStream(SafeFileHandle handle, long length) : S
     }
 
     /// <inheritdoc/>
+    public override int ReadByte()
+    {
+        Span<byte> buffer = stackalloc byte[1];
+        return Read(buffer) == 0 ? -1 : buffer[0];
+    }
+
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin)
     {
         var newPosition = origin switch
