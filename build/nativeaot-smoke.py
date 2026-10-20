@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import tempfile
@@ -43,9 +44,22 @@ def runtime_roots():
     return sorted({path for path in candidates if contains_runtime(path)})
 
 
+def native_payload(command):
+    if command.suffix.lower() != ".cmd":
+        return command.resolve()
+    # The SDK's executable runner uses a relative batch dispatcher on Windows.
+    match = re.fullmatch(r'@echo off\n"%~dp0([^"\n]+)" %\*\n', command.read_text(encoding="utf-8"))
+    if match is None:
+        raise RuntimeError("Unexpected native tool batch dispatcher")
+    payload = (command.parent / match[1]).resolve()
+    if not payload.is_relative_to((command.parent / ".store").resolve()) or payload.name != "gitversion.exe":
+        raise RuntimeError("Native tool batch dispatcher escapes its installed payload")
+    return payload
+
+
 def check_execution(native, command=None, cwd=None, env=None):
     command = command or [str(native.absolute())]
-    native = native.resolve()
+    native = native_payload(native)
     spec = importlib.util.spec_from_file_location("parity", Path(__file__).with_name("nativeaot-parity.py"))
     parity = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(parity)

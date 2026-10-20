@@ -118,7 +118,7 @@ def validate_image(output, evidence, image, index, rid, tools, native_hash):
     reports = []
     for user in (["ContainerAdministrator", "ContainerUser"] if windows else ["0:0", "65532:65532"]):
         for name, source, executable, expected in payloads(output, tools, windows, native_hash):
-            if hashlib.sha256(source.read_bytes()).hexdigest() != expected:
+            if hashlib.sha256(TOOLS.SMOKE.native_payload(source).read_bytes()).hexdigest() != expected:
                 raise RuntimeError("Container input differs from the validated executable")
             log = evidence / f"no-dotnet-image-{index}-{user.replace(':', '-')}-{name}.json"
             run(container_command(output, tag, user, executable, windows), log, timeout=180)
