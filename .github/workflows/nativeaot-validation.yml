@@ -33,7 +33,7 @@ jobs:
           - {rid: linux-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: glibc}
           - {rid: linux-musl-x64, runner: ubuntu-24.04, arch: x64, libc: musl}
           - {rid: linux-musl-arm64, runner: ubuntu-24.04-arm, arch: arm64, libc: musl}
-          - {rid: osx-arm64, runner: macos-26, arch: arm64, libc: none}
+          - {rid: osx-arm64, runner: macos-15, arch: arm64, libc: none}
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
@@ -63,24 +63,20 @@ jobs:
           "NATIVE_OUTPUT=$directory" >> $env:GITHUB_ENV
 
       - name: Setup Python
-        if: matrix.target.libc != 'musl'
+        if: runner.os != 'Linux'
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
           architecture: ${{ matrix.target.arch }}
 
       - name: Setup pinned SDK
-        if: matrix.target.libc != 'musl'
+        if: runner.os != 'Linux'
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
 
-      - name: Install glibc NativeAOT toolchain
-        if: matrix.target.libc == 'glibc'
-        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
-
       - name: Publish and execute target-host parity
-        if: matrix.target.libc != 'musl'
+        if: runner.os != 'Linux'
         shell: pwsh
         run: |
           python build/nativeaot-validation-tests.py
@@ -88,17 +84,21 @@ jobs:
           python build/nativeaot-platform-validation.py --framework $env:FRAMEWORK --rid $env:RID --runtime-version $env:RUNTIME_VERSION --output $env:NATIVE_OUTPUT
           if ($LASTEXITCODE -ne 0) { throw 'NativeAOT target-host validation failed.' }
 
-      - name: Publish and execute musl parity on native CPU
-        if: matrix.target.libc == 'musl'
+      - name: Publish and execute Linux baseline parity on native CPU
+        if: runner.os == 'Linux'
         shell: bash
+        env:
+          LIBC: ${{ matrix.target.libc }}
         run: |
-          docker build -f build/nativeaot-build.Dockerfile -t nativeaot-musl-build .
+          dockerfile=build/nativeaot-build.Dockerfile
+          if [ "$LIBC" = glibc ]; then dockerfile=build/nativeaot-glibc-build.Dockerfile; fi
+          docker build -f "$dockerfile" -t nativeaot-linux-build .
           docker run --rm --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE:/source" -v "$RUNNER_TEMP:$RUNNER_TEMP" -w /source \
             -e FRAMEWORK -e RID -e RUNTIME_VERSION -e NATIVE_OUTPUT -e PYTHONUTF8 -e PYTHONIOENCODING \
-            -e HOME=/tmp/nativeaot-home nativeaot-musl-build \
+            -e HOME=/tmp/nativeaot-home nativeaot-linux-build \
             sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-validation-tests.py; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"'
-          docker image inspect nativeaot-musl-build > "$NATIVE_OUTPUT/evidence/build-image.json"
+          docker image inspect nativeaot-linux-build > "$NATIVE_OUTPUT/evidence/build-image.json"
 
       - name: Run without .NET as root and nonroot
         if: runner.os == 'Linux'
@@ -106,15 +106,23 @@ jobs:
         env:
           LIBC: ${{ matrix.target.libc }}
         run: |
-          base=ubuntu:24.04
-          if [ "$LIBC" = musl ]; then base=alpine:3.24; fi
-          docker build -f build/nativeaot-runtime.Dockerfile --build-arg "BASE=$base" -t nativeaot-runtime-check .
-          docker image inspect nativeaot-runtime-check > "$NATIVE_OUTPUT/evidence/runtime-image.json"
-          for uid in 0 65532; do
-            docker run --rm --network none --read-only --tmpfs /tmp:rw,exec,size=512m --user "$uid:$uid" \
-              -v "$NATIVE_OUTPUT/native:/native:ro" -v "$GITHUB_WORKSPACE/build:/validation:ro" \
-              nativeaot-runtime-check python3 /validation/nativeaot-smoke.py --native /native/gitversion \
-              > "$NATIVE_OUTPUT/evidence/no-dotnet-uid-$uid.json"
+          bases=(registry.access.redhat.com/ubi8/ubi:8.10 ubuntu:22.04 ubuntu:24.04)
+          if [ "$LIBC" = musl ]; then
+            floor=alpine:3.21
+            if [ "$FRAMEWORK" = net11.0 ]; then floor=alpine:3.23; fi
+            bases=("$floor" alpine:3.24)
+          fi
+          index=0
+          for base in "${bases[@]}"; do
+            docker build -f build/nativeaot-runtime.Dockerfile --build-arg "BASE=$base" -t nativeaot-runtime-check .
+            docker image inspect nativeaot-runtime-check > "$NATIVE_OUTPUT/evidence/runtime-image-$index.json"
+            for uid in 0 65532; do
+              docker run --rm --network none --read-only --tmpfs /tmp:rw,exec,size=512m --user "$uid:$uid" \
+                -v "$NATIVE_OUTPUT/native:/native:ro" -v "$GITHUB_WORKSPACE/build:/validation:ro" \
+                nativeaot-runtime-check python3 /validation/nativeaot-smoke.py --native /native/gitversion \
+                > "$NATIVE_OUTPUT/evidence/no-dotnet-image-$index-uid-$uid.json"
+            done
+            index=$((index + 1))
           done
 
       - name: Retain validation evidence only
