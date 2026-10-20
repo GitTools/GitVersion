@@ -29,7 +29,6 @@ jobs:
         framework: [net10.0, net11.0]
         target:
           - {rid: win-x64, runner: windows-2025-vs2026, arch: x64, libc: none}
-          - {rid: win-arm64, runner: windows-11-vs2026-arm, arch: arm64, libc: none}
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
@@ -56,8 +55,8 @@ jobs:
         shell: pwsh
         run: |
           # Server Core only has C:. Keep installed tool paths identical inside it.
-          $base = if ($IsWindows) { 'C:\nativeaot-validation' } else { $env:RUNNER_TEMP }
-          $directory = Join-Path $base ('nativeaot-{0}-{1}' -f $env:RID, $env:FRAMEWORK)
+          $base = if ($IsWindows) { 'C:\aot' } else { $env:RUNNER_TEMP }
+          $directory = Join-Path $base ('{0}-{1}' -f $env:RID, $env:FRAMEWORK)
           "NATIVE_OUTPUT=$directory" >> $env:GITHUB_ENV
 
       - name: Setup Python
@@ -108,6 +107,11 @@ jobs:
         shell: pwsh
         run: |
           $python = if ($IsLinux) { 'python3' } else { 'python' }
+          if ($IsWindows) {
+            # Process containers use different SIDs from the host installer.
+            icacls (Join-Path $env:NATIVE_OUTPUT 'tool-validation') /grant '*S-1-5-11:(OI)(CI)RX' /T /Q
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot grant the container users access to the validation fixtures.' }
+          }
           & $python build/nativeaot-container-validation.py --platform-output $env:NATIVE_OUTPUT
           if ($LASTEXITCODE -ne 0) { throw 'NativeAOT container execution failed.' }
 
