@@ -250,6 +250,12 @@ class DistributionValidationTests(unittest.TestCase):
         self.assertIn(f"{directory}:{directory}:ro", arguments)
         self.assertEqual(["--native", str(command)], arguments[-2:])
 
+    def test_windows_output_requires_container_system_drive(self):
+        from pathlib import PureWindowsPath
+        CONTAINERS.require_windows_output(PureWindowsPath("C:/nativeaot-validation/net10"))
+        with self.assertRaises(RuntimeError):
+            CONTAINERS.require_windows_output(PureWindowsPath("D:/a/_temp/nativeaot"))
+
     def test_runtime_detection_distinguishes_ipc_state_from_installed_sdk(self):
         home = self.work / "home"
         ipc = home / ".dotnet/shm"
