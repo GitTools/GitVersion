@@ -32,6 +32,11 @@ internal class ConfigurationSerializer : IConfigurationSerializer
             return (T)(object)DeserializeConfiguration(input, ConfigurationVersionSelector.Resolve(), "configuration document")!;
         }
 
+        if (typeof(T) == typeof(GitVersion.VersionCalculation.VersionStrategies[]))
+        {
+            return YamlSerializer.Deserialize<T>(input, GeneratedContext)!;
+        }
+
         return YamlSerializer.Deserialize<T>(input, SerializerOptions)!;
     }
 
@@ -57,15 +62,114 @@ internal class ConfigurationSerializer : IConfigurationSerializer
     public string SerializeProperty(IGitVersionConfiguration configuration, string path)
     {
         var value = ConfigurationPropertyQuery.GetValue(configuration, path);
-        // Use the same scalar conversion as full YAML display, including public enum names.
-        var scalar = value is null ? null : Deserialize<object>(SerializeLegacy(value));
-        return JsonSerializer.Serialize(scalar);
+        // Public configuration enums use their names in YAML. Avoid resolving a
+        // runtime enum converter merely to display that same name as JSON.
+        var scalar = value is Enum enumeration ? enumeration.ToString() : value;
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream))
+        {
+            switch (scalar)
+            {
+                case null:
+                    writer.WriteNullValue();
+                    break;
+                case string text:
+                    writer.WriteStringValue(text);
+                    break;
+                case bool boolean:
+                    writer.WriteBooleanValue(boolean);
+                    break;
+                case int integer:
+                    writer.WriteNumberValue(integer);
+                    break;
+                case long integer:
+                    writer.WriteNumberValue(integer);
+                    break;
+                default:
+                    throw new ConfigurationException($"Unsupported scalar value for configuration property '{path}'.");
+            }
+        }
+        return Encoding.UTF8.GetString(stream.ToArray());
     }
 
     public static IGitVersionConfiguration? ReadConfiguration(string input)
         => DeserializeConfiguration(input, ConfigurationVersionSelector.Resolve(), "configuration document");
 
-    internal static string SerializeLegacy(object graph) => YamlSerializer.Serialize(graph, SerializerOptions);
+    // Typed model contracts must use generated metadata; primitives and untyped
+    // containers use SharpYaml's built-in converters. Keeping these paths
+    // separate also avoids asking a model-only context for untyped graph metadata.
+    internal static string SerializeLegacy(object graph) => graph switch
+    {
+        GitVersionConfiguration configuration => SerializeModel(configuration),
+        BranchConfiguration branch => SerializeModel(branch),
+        PreventIncrementConfiguration preventIncrement => SerializeModel(preventIncrement),
+        IgnoreConfiguration ignore => SerializeModel(ignore),
+        GitVersion.VersionCalculation.VersionStrategies[] strategies => YamlSerializer.Serialize(strategies, GeneratedContext),
+        _ => YamlSerializer.Serialize(ConvertToYamlGraph(graph), SerializerOptions)
+    };
+
+    private static object? ConvertToYamlGraph(object? value) => value switch
+    {
+        IReadOnlyDictionary<object, object?> dictionary => ConvertToYamlDictionary(dictionary),
+        IReadOnlyDictionary<string, object?> dictionary => dictionary.ToDictionary(item => item.Key, item => ConvertToYamlGraph(item.Value)),
+        IList list => list.Cast<object?>().Select(ConvertToYamlGraph).ToList(),
+        _ => value
+    };
+
+    private static Dictionary<string, object?> ConvertToYamlDictionary(IReadOnlyDictionary<object, object?> source)
+    {
+        // SharpYaml has reflection-free built-in contracts for string-keyed
+        // untyped graphs. The configuration mapper uses object keys internally;
+        // never ask NativeAOT to construct a dictionary converter for that type.
+        Dictionary<string, object?> result = [];
+        foreach (var (key, value) in source)
+        {
+            if (key is not string name)
+            {
+                throw new YamlException("Configuration mapping keys must be strings.");
+            }
+            result.Add(name, ConvertToYamlGraph(value));
+        }
+        return result;
+    }
+
+    private static string SerializeModel<T>(T model)
+    {
+        var yaml = YamlSerializer.Serialize(model, GeneratedContext);
+        var document = YamlSerializer.Deserialize<Dictionary<string, object?>>(yaml, SerializerOptions) ?? [];
+        // SharpYaml 3.16's generated writer applies WhenWritingNull to reference
+        // properties but emits null Nullable<T> properties. Restore the model's
+        // existing omission contract before merging defaults or displaying YAML.
+        // This applies only to typed model properties; explicit nulls in input
+        // documents and values in dynamic maps must be preserved.
+        OmitNullModelProperties(document);
+        return YamlSerializer.Serialize(document, SerializerOptions);
+    }
+
+    private static void OmitNullModelProperties(Dictionary<string, object?> model)
+    {
+        foreach (var (name, value) in model.ToArray())
+        {
+            if (value is null)
+            {
+                model.Remove(name);
+            }
+            else if (value is Dictionary<string, object?> nested)
+            {
+                if (name is "prevent-increment" or "ignore")
+                {
+                    OmitNullModelProperties(nested);
+                }
+                else if (name == "branches")
+                {
+                    foreach (var branch in nested.Values.OfType<Dictionary<string, object?>>())
+                    {
+                        OmitNullModelProperties(branch);
+                    }
+                }
+            }
+        }
+    }
 
     internal static GitVersionConfiguration? DeserializeLegacyConfiguration(string input)
         => DeserializeConfiguration(input, ConfigurationVersion.V6, "internal effective configuration");
@@ -80,7 +184,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
             var graph = YamlSerializer.Deserialize<Dictionary<string, object?>>(input, SerializerOptions);
             var objectGraph = ConvertToObjectDictionary(graph);
             var normalized = ConfigurationDocumentMapper.Normalize(objectGraph, version, source);
-            var normalizedYaml = YamlSerializer.Serialize(normalized, SerializerOptions);
+            var normalizedYaml = SerializeLegacy(normalized);
             return YamlSerializer.Deserialize<GitVersionConfiguration>(normalizedYaml, GeneratedContext);
         }
         catch (Exception exception) when (exception is not YamlException and not ConfigurationException)

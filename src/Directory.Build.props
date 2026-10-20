@@ -52,6 +52,18 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
+    <!-- Analyze only the shipped CLI graph when explicitly selecting the managed-only flavor.
+         Keep test, schema, MSBuild-task and ordinary release builds unchanged. -->
+    <PropertyGroup Condition="'$(GitVersionManagedOnly)' == 'true' and
+                              ('$(MSBuildProjectName)' == 'GitVersion.App' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Core' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Configuration' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Output' or
+                               '$(MSBuildProjectName)' == 'GitVersion.BuildAgents' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Git.Managed')">
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
