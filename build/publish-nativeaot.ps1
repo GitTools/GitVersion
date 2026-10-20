@@ -58,7 +58,7 @@ function Get-SourceIdentity {
     $head = Invoke-SourceGit @('-C', $repo, 'rev-parse', 'HEAD')
     # Include dirty and new implementation files, plus imported build inputs. Never
     # hash ignored obj/bin output; that changes as the two flavors are built.
-    $paths = Invoke-SourceGit @('-C', $repo, '-c', 'core.quotepath=false', 'ls-files', '--cached', '--others', '--exclude-standard', '--', 'src', 'global.json', '.editorconfig', '.globalconfig', 'LICENSE', 'Directory.Build.props', 'Directory.Build.targets', 'Directory.Packages.props', 'NuGet.Config', 'nuget.config', '.config', 'build/nativeaot-parity.py', 'build/publish-nativeaot.ps1')
+    $paths = Invoke-SourceGit @('-C', $repo, '-c', 'core.quotepath=false', 'ls-files', '--cached', '--others', '--exclude-standard', '--', 'src', 'global.json', '.editorconfig', '.globalconfig', 'LICENSE', 'Directory.Build.props', 'Directory.Build.targets', 'Directory.Packages.props', 'NuGet.Config', 'nuget.config', '.config', 'build/nativeaot-parity.py', 'build/nativeaot-cases.json', 'build/publish-nativeaot.ps1')
     $hash = [Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
     try {
         foreach ($path in ($paths | Sort-Object -Unique -CaseSensitive)) {
@@ -111,7 +111,7 @@ try {
     }
     $native = Join-Path $nativeOutput $executable
     if (-not (Test-Path $native -PathType Leaf)) { throw "Native executable missing: $native" }
-    if (Test-Path (Join-Path $nativeOutput 'gitversion.dll')) { throw 'Native output unexpectedly contains a managed CLI assembly.' }
+    if (Get-ChildItem $nativeOutput -Recurse -File | Where-Object Extension -IEQ '.dll') { throw 'Native output unexpectedly contains a DLL payload.' }
 
     Invoke-Checked $Dotnet ($common + @('-o', $managedOutput,
         '-p:GitVersionManagedOnly=false', '-p:PublishAot=false', '-p:PublishTrimmed=false', '-p:PublishSingleFile=false'))
@@ -123,11 +123,12 @@ try {
     & $Python (Join-Path $PSScriptRoot 'nativeaot-parity.py') --managed $managed --native $native --dotnet $Dotnet --framework $Framework --rid $RuntimeIdentifier --runtime-version $RuntimeVersion --repository $ParityRepository > $parityPath
     if ($LASTEXITCODE -ne 0) { throw "Output parity failed. See $parityPath" }
     $parity = Get-Content $parityPath -Raw | ConvertFrom-Json
-    $expectedParityCases = 99
-    if ($parity.failed -ne 0 -or $parity.passed -ne $expectedParityCases -or $parity.cases.Count -ne $expectedParityCases -or
+    $expectedCaseNames = @(Get-Content (Join-Path $PSScriptRoot 'nativeaot-cases.json') -Raw | ConvertFrom-Json)
+    $expectedParityCases = $expectedCaseNames.Count
+    if ($expectedParityCases -ne 99 -or $parity.failed -ne 0 -or $parity.passed -ne $expectedParityCases -or $parity.cases.Count -ne $expectedParityCases -or
         @($parity.cases | Where-Object { -not $_.passed }).Count -ne 0 -or
         @($parity.cases.case | Sort-Object -Unique).Count -ne $expectedParityCases -or
-        -not ($parity.cases | Where-Object { $_.case -eq 'existing-history-json' -and $_.passed })) {
+        @(Compare-Object $expectedCaseNames @($parity.cases.case) -CaseSensitive).Count -ne 0) {
         throw 'Parity report is incomplete or unsuccessful.'
     }
     if ($parity.framework -cne $Framework -or $parity.rid -cne $RuntimeIdentifier -or $parity.runtime_version -cne $RuntimeVersion -or

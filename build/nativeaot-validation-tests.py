@@ -37,9 +37,26 @@ class ValidationTests(unittest.TestCase):
             (self.work / flavor).mkdir()
             (self.work / flavor / "gitversion").write_bytes(flavor.encode())
         self.source = {"sha": "source-revision"}
+        names = json.loads(Path(__file__).with_name("nativeaot-cases.json").read_text(encoding="utf-8"))
         self.report = {"source_sha": self.source["sha"], "framework": self.args.framework, "rid": self.args.rid, "runtime_version": self.args.runtime_version,
                        "native_sha256": hashlib.sha256(b"native").hexdigest(), "managed_sha256": hashlib.sha256(b"managed").hexdigest(),
-                       "passed": 99, "failed": 0, "cases": [{"case": "existing-history-json" if i == 0 else f"case-{i}", "passed": True} for i in range(99)]}
+                       "passed": 99, "failed": 0, "cases": [{"case": name, "passed": True} for name in names]}
+
+    def test_rejects_substituted_corpus_case(self):
+        for name in ("existing-history-config", "startup-version", "tagged-default-json"):
+            self.assertIn(name, {case["case"] for case in self.report["cases"]})
+            report = self.report | {"cases": [case | {"case": "unrelated-passing-case"} if case["case"] == name else case for case in self.report["cases"]]}
+            with self.subTest(replaced=name), self.assertRaises(RuntimeError):
+                VALIDATION.check_report(report, self.args, self.source)
+
+    def test_native_output_rejects_any_dll(self):
+        self.args.dotnet = "dotnet"
+        for name in ("Unrelated.dll", "Other.DLL"):
+            path = self.work / "native" / name
+            path.write_bytes(b"managed assembly payload")
+            with self.subTest(payload=name), patch.object(VALIDATION, "run"), patch.object(VALIDATION, "check_native_graph"), patch.object(VALIDATION, "source_identity", return_value=self.source), patch.object(VALIDATION.Path, "read_text", return_value="{}"), patch.object(VALIDATION.shutil, "copyfile"), self.assertRaises(RuntimeError):
+                VALIDATION.publish_pair(self.args, {}, self.work, self.source)
+            path.unlink()
 
     def test_rejects_mismatched_identity_and_binaries(self):
         VALIDATION.check_report(self.report, self.args, self.source)
