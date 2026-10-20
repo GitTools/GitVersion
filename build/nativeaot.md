@@ -113,6 +113,10 @@ head before the corresponding validation gap is closed:
   six smoke checks; each tool-path installation also passes the full 99-case
   same-source JIT comparison. Package-source mapping restricts GitVersion packages
   to the isolated local feed; only Microsoft host packs may use NuGet.org.
+  Linux uses the native SDK architecture because its `--arch` shim path rejects
+  Linux RIDs. Windows `.cmd` dispatchers are verified to select the packaged
+  native executable inside `.store`; payload checksums follow that executable,
+  while tool-path parity additionally binds the dispatcher file itself.
 - Linux containers cover UBI 8/9/10, Ubuntu 22.04/24.04/26.04, Debian 13,
   Azure Linux 3, CentOS Stream 9/10, openSUSE 16 and SLES BCI 15.7/16. Fedora is
   43/44 for net10 or 44/45 for net11; Alpine is 3.21–3.24 for net10 or

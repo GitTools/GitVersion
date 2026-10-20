@@ -98,6 +98,15 @@ def pack(args, env, evidence, initial):
     return version, feed, package_contract(feed, version, args.rid, initial["sha"])
 
 
+def installation_command(args, version, config):
+    command = [args.dotnet, "tool", "install", PACKAGE_ID, "--version", version, "--configfile", str(config), "--no-http-cache"]
+    # Linux --arch takes the SDK's unsupported cross-architecture shim path.
+    # The platform gate already requires a native CPU/libc host and SDK.
+    if not args.rid.startswith("linux-"):
+        command += ["--arch", "arm64" if args.rid.endswith("arm64") else "x64"]
+    return command
+
+
 def validate_installer(args, env, evidence, initial, version, feed, sdk):
     work = args.output / ("sdk-" + sdk)
     work.mkdir()
@@ -119,19 +128,22 @@ def validate_installer(args, env, evidence, initial, version, feed, sdk):
         raise RuntimeError("Tool installation did not use the requested SDK")
     local = work / "local"
     run([args.dotnet, "new", "tool-manifest", "--output", str(local)], "manifest")
-    install = [args.dotnet, "tool", "install", PACKAGE_ID, "--version", version, "--arch", "arm64" if args.rid.endswith("arm64") else "x64",
-               "--configfile", str(config), "--no-http-cache"]
+    install = installation_command(args, version, config)
     run(install + ["--tool-path", str(work / "tools")], "path-install")
     run(install + ["--global"], "global-install")
     run(install, "local-install", local)
     suffix = ".exe" if args.rid.startswith("win-") else ""
-    installed = work / "tools" / (TOOL_COMMAND + suffix)
-    global_tool = work / "home/.dotnet/tools" / (TOOL_COMMAND + suffix)
+    shim_suffix = ".cmd" if args.rid.startswith("win-") else ""
+    installed = work / "tools" / (TOOL_COMMAND + shim_suffix)
+    global_tool = work / "home/.dotnet/tools" / (TOOL_COMMAND + shim_suffix)
     payload = work / "cache" / f"{PACKAGE_ID}.{args.rid}".lower() / version / f"tools/any/{args.rid}" / ("gitversion" + suffix)
     with zipfile.ZipFile(feed / f"{PACKAGE_ID}.{args.rid}.{version}.nupkg") as archive:
         expected = hashlib.sha256(archive.read(f"tools/any/{args.rid}/gitversion{suffix}")).hexdigest()
     if hashlib.sha256(payload.read_bytes()).hexdigest() != expected:
         raise RuntimeError("Local tool installation selected a different native payload")
+    for shim in (installed, global_tool):
+        if hashlib.sha256(SMOKE.native_payload(shim).read_bytes()).hexdigest() != expected:
+            raise RuntimeError("Installed dispatcher selected a different native payload")
     reports = []
     for mode, native, command, cwd in [("path", installed, None, work), ("global", global_tool, None, work),
                                        ("manifest", payload, [args.dotnet, "tool", "run", TOOL_COMMAND, "--"], local)]:
