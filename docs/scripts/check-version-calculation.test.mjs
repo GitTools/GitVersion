@@ -5,6 +5,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { inspect } from "./check-version-calculation.mjs";
 const ids = ["overview","strategies","inheritance","increments","selection","mainline","deployment"];
+/**
+ * Create a temporary repository with valid mappings and register cleanup after the test.
+ * @param {import("node:test").TestContext} t Test context that owns the fixture.
+ * @returns {{root: string, manifest: object, write: function, boundary: string}} Fixture paths, map, and file writer.
+ */
 function fixture(t) {
   const root = mkdtempSync(join(tmpdir(),"algorithm-docs-"));
   t.after(() => rmSync(root,{recursive:true,force:true}));

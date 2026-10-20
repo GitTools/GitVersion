@@ -4,6 +4,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const expectedSections = ["overview", "strategies", "inheritance", "increments", "selection", "mainline", "deployment"];
 const defaultRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+/**
+ * Validate documentation mappings and calculation-source coverage without comparing source contents.
+ * @param {string} root Repository root containing the mapped files.
+ * @param {object} manifest Documentation map with section, source, test, and diagram paths.
+ * @returns {{id: string, heading: string, files: number}[]} Validated section summaries.
+ * @throws {Error} If the map is invalid, a path is missing or unsafe, or coverage is incomplete.
+ */
 export function inspect(root, manifest) {
   root = realpathSync(root);
   function safe(path) {
