@@ -72,9 +72,17 @@ passed all 99 comparisons. After including #5389, the helper passed its complete
 publish/closure/parity sequence for both TFMs and created local preview archives. Payload/outer
 checksums and Unix permissions were verified, and the extracted executable
 matched full output on existing repository history. All seven regression suites
-passed on both TFMs: 76,092 tests, no failures or skips. Executables were built
+passed on both TFMs: 76,092 tests, no failures or skips. Initial executables were built
 from commit `2788dd4ee`; the later documentation-only rebase preserves the
 validated `src/` SHA256 `f86fc1b69f259cfc969f150d7db912110ea57df10d58ace7cc9334aecffe6556`.
+Those counts and that fingerprint describe the initial validation. The CI
+follow-up isolates legacy model overloads under `Formatting/VersionModels/`,
+outside the experimental CLI's shared `Formatting/*.cs` links. Its new CLI build
+and generator test pass, as do 168 formatter tests per TFM and strict native
+publication plus all 99 parity cases per TFM. The parity cases also pass with
+inherited Buildkite, Drone, Travis and CodeBuild variables set; the runner clears
+those selectors before selecting each fixture's adapter. This follow-up's tested
+`src/` SHA256 is `af9f5020adc6d244d465855f94cb61e717cf1c501dc38955fc7f7e07fc1df423`.
 Research's startup/size numbers came from incomplete binaries and are not
 performance claims for this implementation.
 

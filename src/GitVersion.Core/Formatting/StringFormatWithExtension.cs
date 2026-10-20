@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using GitVersion.OutputVariables;
 
 namespace GitVersion.Formatting;
 
-internal static class StringFormatWithExtension
+internal static partial class StringFormatWithExtension
 {
     private static readonly IExpressionCompiler ExpressionCompiler = new ExpressionCompiler();
 
@@ -43,20 +42,6 @@ internal static class StringFormatWithExtension
             ArgumentNullException.ThrowIfNull(source);
 
             return template.FormatWith(member => EvaluateMemberFromObject(source, member), environment);
-        }
-
-        /// <summary>Formats computed version values using their statically known public member graph.</summary>
-        public string FormatWith(SemanticVersionFormatValues source, IEnvironment environment)
-        {
-            ArgumentNullException.ThrowIfNull(source);
-            return template.FormatWith(member => EvaluateVersionMember(source, typeof(SemanticVersionFormatValues), member), environment);
-        }
-
-        /// <summary>Formats output variables using their statically known public member graph.</summary>
-        public string FormatWith(GitVersionVariables source, IEnvironment environment)
-        {
-            ArgumentNullException.ThrowIfNull(source);
-            return template.FormatWith(member => EvaluateVersionMember(source, typeof(GitVersionVariables), member), environment);
         }
 
         /// <summary>
@@ -141,13 +126,6 @@ internal static class StringFormatWithExtension
         }
 
         return string.Empty;
-    }
-
-    private static string? EvaluateVersionMember(object source, Type type, string member)
-    {
-        var safeMember = InputSanitizer.SanitizeMemberName(member);
-        var memberPath = MemberResolver.ResolveVersionMemberPath(type, safeMember);
-        return ExpressionCompiler.CompileGetter(type, memberPath)(source)?.ToString();
     }
 
     [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
