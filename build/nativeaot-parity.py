@@ -140,14 +140,18 @@ def create_fixtures(work, repository):
     return tagged, untagged, config, custom, invalid, malformed, legacy
 
 
-def compare_configuration(compare, tagged, untagged, configuration_files, common):
-    config, custom, invalid, malformed, legacy = configuration_files
+def compare_startup_and_validation(compare, config, custom, invalid, malformed, legacy):
     for option in ["--help", "--version", "--cli-schema"]:
         compare("startup-" + option[2:], [option])
     for path, valid in [(config, True), (custom, True), (invalid, False), (malformed, False)]:
         for format_args in [[], ["--format", "json"]]:
             compare("validate-" + path.stem + ("-json" if format_args else "-text"), ["config", "validate", "--config", path, *format_args], expected_exit=0 if valid else 1)
     compare("migrate-v6", ["config", "migrate", "--config", legacy])
+
+
+def compare_configuration(compare, tagged, untagged, configuration_files, common):
+    config, custom, invalid, malformed, legacy = configuration_files
+    compare_startup_and_validation(compare, config, custom, invalid, malformed, legacy)
     for repo in [untagged, tagged]:
         compare(repo.name + "-default-json", [repo, *common])
         compare(repo.name + "-effective-defaults", [repo, "--show-config"])
