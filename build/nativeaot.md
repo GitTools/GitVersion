@@ -75,7 +75,8 @@ from the native closure, and requires all 99 unique parity cases on that host.
 records source fingerprints, executable hashes, toolchain information and logs.
 Compilation alone does not satisfy the gate.
 
-Linux also executes six independent smoke checks in Ubuntu 24.04 or Alpine 3.24
+Linux also executes six independent smoke checks in UBI 8.10, Ubuntu 22.04/24.04,
+or Alpine 3.21/3.23 (according to framework) and 3.24
 containers without any installed .NET runtime/SDK. The executable and scripts
 are mounted read-only, networking is disabled, and Git history/configuration
 checks run in a temporary writable filesystem, both as root and UID 65532.
@@ -94,7 +95,52 @@ archives, publish packages/images, change existing release jobs or promote a
 NativeAOT distribution channel. A configured job is not evidence that it passed:
 record completed run URLs and target-specific reports before closing a gate.
 
-The [completed native matrix on 2026-10-20](https://github.com/GitTools/GitVersion/actions/runs/39480323312)
+### OS support targets
+
+The compatibility target is the OS versions supported by the corresponding
+.NET major version, within this preview's seven existing RIDs. This is a target,
+not a claim that each OS has passed. The [.NET 10 OS matrix][dotnet10-os] and
+[.NET 11 OS matrix][dotnet11-os] were checked on 2026-10-20; these references pin
+the policy snapshot. Edition, architecture, lifecycle and ESU qualifications in
+those matrices still apply.
+
+| Target family | net10.0 oldest listed target | net11.0 oldest listed target |
+| --- | --- | --- |
+| macOS | 15 | 15 |
+| Ubuntu | 22.04 | 22.04 |
+| RHEL and compatible derivatives | 8 | 8 |
+| Alpine | 3.21 | 3.23 |
+| Windows Server / Server Core x64 | 2012 with ESU | 2016 |
+| Windows desktop | Windows 10 1607 Enterprise, with matrix qualifications | Windows 10 1607 Enterprise, with matrix qualifications |
+| Nano Server x64 | 2019 | 2019 |
+
+Other supported Linux targets (Azure Linux, CentOS Stream, Debian, Fedora,
+openSUSE and SLES) remain in the linked policy's scope and need target-specific
+validation. Their compatibility is not inferred from an Ubuntu test or a shared
+libc version. Platforms/architectures outside the preview's existing RIDs are
+not introduced by this validation change.
+
+A confirmed older-OS failure explains why a baseline build is necessary: the
+Ubuntu 24.04-built ARM64 net10 executable fails startup on Ubuntu 22.04 with a
+missing `GLIBC_2.38` symbol version. [NativeAOT's deployment guidance][nativeaot-os]
+requires building on an appropriately old Linux baseline; the portable .NET
+runtime's libc support does not remove a native executable's linker imports.
+The workflow therefore builds glibc executables on UBI 8.10, tests them there
+and on Ubuntu 22.04/24.04 without .NET, and selects Alpine 3.21 for net10 or 3.23
+for net11 alongside 3.24. It uses macOS 15 for native ARM64 publication/parity.
+Completed baseline results must still be recorded before closing those gates.
+Local ARM64 bring-up passed strict net10 publication and all 99 parity cases on
+the UBI 8 baseline. That executable also passed all six no-.NET checks on UBI 8,
+Ubuntu 22.04 and Ubuntu 24.04 as root and UID 65532; the original Ubuntu 22.04
+startup failure was reproduced before the repair. Existing musl net10 output
+also passed the six checks on Alpine 3.21 under both users. These local checks
+do not substitute for the complete committed-head, two-framework CI matrix.
+Linux containers exercise older userspace libraries on the runner's kernel;
+they do not prove execution on each distribution's older kernel or full VM.
+Older Windows/Server Core/Nano versions require appropriate clean VMs or
+containers; the current Windows runners do not establish their compatibility.
+
+The earlier [completed native matrix on 2026-10-20](https://github.com/GitTools/GitVersion/actions/runs/39480323312)
 validated commit `7677a27b324484e7bc2a26a079e67c8cbe455e5e`, rebased onto
 `main` at `bde36696007d412195a0f2dd5f43d6ae820de025`. All 14 jobs passed:
 
@@ -181,3 +227,7 @@ images. No artifact is eligible for a platform solely because this helper
 accepts its RID. Keep the PR as a draft and retain existing release defaults
 until those gates pass and a separate release decision explicitly promotes a
 NativeAOT channel.
+
+[dotnet10-os]: https://github.com/dotnet/core/blob/ffed591b0fb8f9aab50ecc28f2c765049fb28d8f/release-notes/10.0/supported-os.md
+[dotnet11-os]: https://github.com/dotnet/core/blob/ffed591b0fb8f9aab50ecc28f2c765049fb28d8f/release-notes/11.0/supported-os.md
+[nativeaot-os]: https://learn.microsoft.com/dotnet/core/deploying/native-aot/
