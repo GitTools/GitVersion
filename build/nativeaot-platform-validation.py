@@ -17,6 +17,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 WINDOWS_EXECUTABLE = "gitversion.exe"
+EXPECTED_CASES = frozenset(json.loads(Path(__file__).with_name("nativeaot-cases.json").read_text(encoding="utf-8")))
 
 
 def run(command, env, log):
@@ -71,7 +72,7 @@ def publish_pair(args, env, evidence, initial):
     assets = json.loads(assets_path.read_text(encoding="utf-8"))
     check_native_graph(assets, args.runtime_version, args.rid)
     shutil.copyfile(assets_path, evidence / "native-project.assets.json")
-    if any("libgit2" in path.name.lower() for path in native.rglob("*")) or (native / "gitversion.dll").exists():
+    if any("libgit2" in path.name.lower() or path.suffix.lower() == ".dll" for path in native.rglob("*")):
         raise RuntimeError("Native output includes a forbidden managed/backend payload")
     if source_identity(env) != initial:
         raise RuntimeError("Source inputs changed during native publication")
@@ -82,7 +83,7 @@ def check_report(report, args, initial):
     cases = report["cases"]
     if report["failed"] or report["passed"] != 99 or len(cases) != 99 or len({case["case"] for case in cases}) != 99:
         raise RuntimeError("Parity did not complete the full unique 99-case corpus")
-    if not all(case["passed"] for case in cases) or not any(case["case"] == "existing-history-json" for case in cases):
+    if not all(case["passed"] for case in cases) or {case["case"] for case in cases} != EXPECTED_CASES:
         raise RuntimeError("Parity contains an unsuccessful or missing required case")
     expected = {"source_sha": initial["sha"], "framework": args.framework, "rid": args.rid, "runtime_version": args.runtime_version}
     for key, value in expected.items():
