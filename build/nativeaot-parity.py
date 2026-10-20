@@ -38,7 +38,8 @@ def main():
             "CI", "TF_BUILD", "BUILDKITE", "DRONE", "TRAVIS", "BuildRunner", "ContinuaCI.Version", "ENVRUN_DATABASE", "JB_SPACE_PROJECT_KEY", "JB_SPACE_GIT_BRANCH", "Git_Branch", "GIT_BRANCH", "GIT_LOCAL_BRANCH", "BRANCH_NAME", "BUILD_SOURCEBRANCH", "BUILD_BUILDNUMBER", "CI_COMMIT_TAG", "CI_COMMIT_REF_NAME", "CI_COMMIT_REFSPEC", "CI_MERGE_REQUEST_REF_PATH", "GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CONFIG", "GIT_CONFIG_COUNT",
         }:
             del env[key]
-    env.update(GITVERSION_GIT_BACKEND="managed", GITVERSION_ARGUMENT_PARSER_VERSION="v7", GITVERSION_CONFIGURATION_VERSION="v7")
+    env.update(GITVERSION_GIT_BACKEND="managed", GITVERSION_ARGUMENT_PARSER_VERSION="v7", GITVERSION_CONFIGURATION_VERSION="v7",
+               GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
     results = []
     requests = []
 
@@ -344,11 +345,12 @@ def main():
             git(repo, "checkout", "--detach", "HEAD")
             compare("existing-history-json", [repo, *common])
             compare("existing-history-config", [repo, "--show-config"])
-        source = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-        source_files = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "src"], capture_output=True, text=True, check=True).stdout.splitlines()
+        root = Path(__file__).resolve().parent.parent
+        source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, env=env, capture_output=True, text=True, check=True, timeout=60).stdout.strip()
+        source_files = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "src"], cwd=root, env=env, capture_output=True, text=True, check=True, timeout=60).stdout.splitlines()
         source_digest = hashlib.sha256()
         for filename in sorted(source_files):
-            path = Path(filename)
+            path = root / filename
             if path.is_file():
                 source_digest.update(filename.encode() + b"\0" + path.read_bytes())
         report = {"source_sha": source, "source_tree_sha256": source_digest.hexdigest(), "framework": args.framework, "rid": args.rid, "runtime_version": args.runtime_version, "managed_sha256": hashlib.sha256(managed.read_bytes()).hexdigest(), "native_sha256": hashlib.sha256(native.read_bytes()).hexdigest(), "normalization": "Wall-clock log timestamps are replaced; captured file-log scope durations (Took: ...ms) are also replaced. Exit, stdout, diagnostic messages/paths, other generated-file content and captured HTTP requests must otherwise match exactly. Same fixtures/configuration/path used for both processes. Backend rejection is a separate native-only capability check.", "limitations": ["Culture cases request de-DE/tr-TR via child process locale variables with invariant globalization disabled; they do not validate installed OS locale data or every supported culture.", "Missing Git uses an empty child-only PATH; credential-helper authentication failure is not covered by this harness.", "Raw concurrent Git stdout/stderr capture belongs to GitCliExecutorTests; this harness exercises CLI clone/fetch and process-start failure."], "passed": sum(result["passed"] for result in results), "failed": sum(not result["passed"] for result in results), "cases": results}
