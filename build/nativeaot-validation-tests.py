@@ -101,7 +101,7 @@ class ValidationTests(unittest.TestCase):
             with patch.object(sys, "argv", arguments), patch.object(VALIDATION, "require_target_host"), patch.object(VALIDATION, "source_identity", return_value=self.source), patch.object(VALIDATION, "publish_pair"), patch.object(VALIDATION, "inspect_dependencies"), patch.object(VALIDATION, "run", side_effect=run), redirect_stdout(io.StringIO()):
                 self.assertEqual(1, VALIDATION.main())
             result = json.loads((output / "evidence/platform.json").read_text())
-            self.assertIs(result["passed"], False)
+            self.assertIs(False, result["passed"])
             self.assertTrue(result["error"].startswith(kind + ":"))
 
     def test_existing_history_preserves_remote_only_branches(self):
