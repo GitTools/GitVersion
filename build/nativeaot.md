@@ -94,6 +94,41 @@ archives, publish packages/images, change existing release jobs or promote a
 NativeAOT distribution channel. A configured job is not evidence that it passed:
 record completed run URLs and target-specific reports before closing a gate.
 
+The [completed native matrix on 2026-10-20](https://github.com/GitTools/GitVersion/actions/runs/39480323312)
+validated commit `7677a27b324484e7bc2a26a079e67c8cbe455e5e`, rebased onto
+`main` at `bde36696007d412195a0f2dd5f43d6ae820de025`. All 14 jobs passed:
+
+| Native target | Host | net10.0 / 10.0.13 | net11.0 / 11.0.0-rc.2.26504.105 |
+| --- | --- | --- | --- |
+| win-x64 | Windows Server 2025 | 99/99 | 99/99 |
+| win-arm64 | Windows 11 ARM64 | 99/99 | 99/99 |
+| linux-x64 | Ubuntu 24.04 x64 | 99/99 | 99/99 |
+| linux-arm64 | Ubuntu 24.04 ARM64 | 99/99 | 99/99 |
+| linux-musl-x64 | Alpine 3.24 x64 container | 99/99 | 99/99 |
+| linux-musl-arm64 | Alpine 3.24 ARM64 container | 99/99 | 99/99 |
+| osx-arm64 | macOS 26 ARM64 | 99/99 | 99/99 |
+
+Each job also passed the seven validation-gate regression tests, strict native
+publication, native dependency inspection and libgit2 closure rejection. All
+reports identify that exact commit and SDK `11.0.100-rc.2.26504.105`.
+Linux's four targets additionally passed all six no-.NET smoke checks for both
+frameworks as UID 0 and UID 65532: 16 executions, 96 checks. The tests exposed
+and repaired remote-only branch loss in the existing-history fixture and the
+cold .NET 11 container's need for writable runtime IPC storage.
+
+A local macOS ARM64 net10.0 experiment on the same commit also exercised the
+existing SDK's native tool-packaging path. Strict managed-only AOT packing
+created a RID payload package and pointer package with the unique version
+`0.0.0-nativeaot-local-validation` in an isolated feed. Tool-path, local-manifest
+and isolated global installation selected the ARM64 native executable; each
+calculated tagged version `1.2.3` and rejected libgit2. The installed tool-path
+payload passed all 99 comparisons against a same-source ordinary JIT build.
+Installation used explicit `--arch arm64` and required the SDK's Microsoft
+host-pack dependency in that feed. No packages were published and the user's
+global tools were not changed. This validates that local macOS/net10 path only;
+it does not establish installation on a clean host, the other RIDs/framework,
+signing or production dispatcher/release integration.
+
 ### Earlier local validation
 
 Local macOS ARM64 validation on 2026-10-20 published net10.0/10.0.13 and
@@ -135,11 +170,14 @@ to pass, including existing repository history.
 This is a bounded regression corpus, not exhaustive proof of every Git topology,
 credential failure, process signal, culture, output mode or repository size.
 
-Windows x64/ARM64, Linux glibc x64/ARM64, Alpine/musl x64/ARM64, and
-installation on a machine without .NET remain separate execution gates until
-recorded on their target hosts. Global/local tool packaging and dispatcher
-behavior, a native Docker image, nonroot container behavior, OS compatibility
-floors, signing/notarization, third-party notices and release pipeline integration
-are unvalidated. No artifact is eligible for a platform solely because this
-helper accepts its RID. Keep existing release defaults until those gates pass
-and a separate release decision explicitly promotes a NativeAOT channel.
+Clean Windows/macOS machines without modern .NET remain unvalidated; their
+hosted runners have SDKs installed. The tested host versions do not establish
+minimum OS/native-library compatibility floors. Global/local native-tool
+packaging and dispatcher behavior across all RIDs, a distributable native Docker
+image, signing/notarization, third-party distribution notices, release provenance
+and release pipeline integration remain separate gates. The disposable Linux
+validation images establish root/nonroot execution only; they are not release
+images. No artifact is eligible for a platform solely because this helper
+accepts its RID. Keep the PR as a draft and retain existing release defaults
+until those gates pass and a separate release decision explicitly promotes a
+NativeAOT channel.
