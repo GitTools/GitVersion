@@ -19,6 +19,7 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
 {
     private readonly ILogger<GitCliExecutor> logger = logger.NotNull();
 
+    /// <summary>Runs Git and captures UTF-8 stdout and stderr with normalized line endings and the exit code.</summary>
     public GitCliResult Execute(string? workingDirectory, IReadOnlyList<string> arguments)
     {
         var startInfo = new ProcessStartInfo
@@ -27,6 +28,8 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
             CreateNoWindow = true
         };
 
@@ -66,6 +69,7 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
 
         var standardOutput = new StringBuilder();
         var standardError = new StringBuilder();
+#if !NET11_0_OR_GREATER
         using var standardOutputClosed = new ManualResetEventSlim();
         using var standardErrorClosed = new ManualResetEventSlim();
         process.OutputDataReceived += (_, e) =>
@@ -90,6 +94,7 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
                 standardError.AppendLine(e.Data);
             }
         };
+#endif
 
         try
         {
@@ -101,11 +106,21 @@ internal sealed class GitCliExecutor(ILogger<GitCliExecutor> logger) : IGitCliEx
                 "The 'git' executable could not be started. Ensure Git is installed and available on the PATH.", ex);
         }
 
+#if NET11_0_OR_GREATER
+        // Read both pipes together while retaining the line normalization of the event-based path.
+        foreach (var line in process.ReadAllLines())
+        {
+            var destination = line.StandardError ? standardError : standardOutput;
+            destination.AppendLine(line.Content);
+        }
+        process.WaitForExit();
+#else
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         process.WaitForExit();
         standardOutputClosed.Wait();
         standardErrorClosed.Wait();
+#endif
 
         var result = new GitCliResult(process.ExitCode, standardOutput.ToString(), standardError.ToString());
         if (!result.IsSuccess)

@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "2a74e1f445844478fae2d9208887a689248a7f17a3d2df4546b271832575482e",
-        "reason": "Reviewed the relocation of the unchanged Git CLI repository-not-found and HTTP-status expressions into RegexPatterns.Git and its cache registry. The HTTP matcher retains case-insensitive multiline and CRLF matching. Tagged-commit shortcuts, effective configurations, incremented candidates, deployment dispatch and the final numeric tag floor are unchanged; the calculation overview and flowchart remain accurate."
+        "sourceDigest": "76bd8644491c445662f36f7e9da3a60da29aff96973e240fe25fa5d4930ca67a",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "559ba763298167c6a65fc8360e1a02362b22848e774ebf566ebc8ff945306c02",
-        "reason": "Reviewed the shared-source change that centralizes the two Git CLI diagnostic expressions without changing their matching behavior. No strategy implementation, enabled flag, eligibility condition, candidate ignore filter or per-configuration fallback rule changed. The seven strategy descriptions and independent candidate-production flowchart remain accurate."
+        "sourceDigest": "4890b15305cdef7f4e4a113edf3fb765b559edd5c35bf9602901066c4bc84a02",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "d22715228eeea007a0e25256403543ebd3b039ac5ab6a231cfc25c88325a4bdb",
-        "reason": "Reviewed the Git CLI diagnostic regex relocation against the inheritance explanation and mapped finder. Explicit increments, allowed source branches, pull-request target selection, recursive cycle guards and orphaned-branch fallback are unchanged. The inheritance prose and flowchart still describe the current implementation."
+        "sourceDigest": "0b117094ec85e566997b849c0d70ac211a52b59e4489e0baca21933ab1d8a161",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "1b530522026aa1f9b939dd2cd67b242999fc5ed048ff57f448beb6fa663a609a",
-        "reason": "Reviewed the shared regex registry change: existing version-bump patterns and cache mappings are unchanged, and the two added patterns only recognize Git network failures. History filtering, message modes, no-bump/major/minor/patch precedence, reset accumulation and branch-increment minimum rules remain unchanged. The candidate-increment explanation and commit-message examples remain accurate."
+        "sourceDigest": "9e4ff0c6d532289d74d41b0a93fd555d45a9a077b3a3b18221eda438fb56d0fb",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "fe6d0ab883de2ec786c61c72335ba0f9ff7a3032e333103842454d3e3087d906",
-        "reason": "Reviewed the diagnostic-regex refactor against candidate selection and its examples. Maximum incremented SemVer, latest-source timestamp tie-breaking, stable-winner prerelease filtering and the distinct semantic/counting sources are unchanged. The selection prose, flowchart and competing-candidate/source examples remain accurate."
+        "sourceDigest": "bac3b16714c0d34e5b06a5e251db99b057075e43d89b2dd1f71aaf0dfc9f396e",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "2e8ddeb42ce66ceca319fc85bca5293aab4be0742f9d08d55234b31a2689d6dc",
-        "reason": "Reviewed the shared Git diagnostic-pattern relocation against Mainline traversal and rule families. Commit/tag/branch traversal, recursive iterations and operand/operator folding are unchanged. The recognized merge between two main branches still reaches the documented unsupported path. The Mainline explanation and flowchart remain accurate."
+        "sourceDigest": "be0058dfb670a7a7c3652f9c91609138213208cde6aa03d0c53451ef1f7a1a7c",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "4b869ee493bebc6458d3d3ba779b7f16f13f6745fdd9adc0550dd914bb0dd062",
-        "reason": "Reviewed the Git CLI diagnostic regex centralization against all three deployment calculators. ManualDeployment preserves prerelease state, ContinuousDelivery requires a numbered prerelease and adds source distance minus one, and ContinuousDeployment removes the prerelease tag; tagged shortcuts and the final numeric tag floor are unchanged. The mode table, flowchart and same-history examples remain accurate."
+        "sourceDigest": "ae993d1b643c6cadda5a2e80e6f8772ee59306fd404cf2093f443eb174183db3",
+        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
       }
     }
   ]
