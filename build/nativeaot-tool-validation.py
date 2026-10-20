@@ -187,7 +187,7 @@ def main():
             raise RuntimeError("Source inputs changed during tool validation")
         result = {"passed": True, "source": initial, "framework": args.framework, "rid": args.rid, "runtime_version": args.runtime_version,
                   "package_version": version, "packages": packages, "installers": installers, "public_packages_published": False}
-    except (OSError, ValueError, RuntimeError, KeyError, TypeError, subprocess.SubprocessError, zipfile.BadZipFile, ET.ParseError) as error:
+    except (OSError, ValueError, RuntimeError, AssertionError, KeyError, TypeError, subprocess.SubprocessError, zipfile.BadZipFile, ET.ParseError) as error:
         result = {"passed": False, "error": f"{type(error).__name__}: {error}"}
     (evidence / "tool-validation.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result))

@@ -163,6 +163,27 @@ class ValidationTests(unittest.TestCase):
 
 
 class DistributionValidationTests(unittest.TestCase):
+    def test_configuration_report_checks_file_identity_and_exact_contract(self):
+        config = self.work / "GitVersion.yml"
+        config.write_text("workflow: GitHubFlow/v1\n")
+        nested = self.work / "nested"
+        nested.mkdir()
+        report = {"schemaVersion": 1, "valid": True, "configurationVersion": "v7", "file": str(nested / ".." / config.name), "diagnostics": []}
+        TOOLS.SMOKE.check_configuration_report(report, config)
+        other = self.work / "other.yml"
+        other.write_text(config.read_text())
+        for invalid in (report | {"file": str(other)}, report | {"valid": False}, report | {"unexpected": True}):
+            with self.assertRaises(AssertionError):
+                TOOLS.SMOKE.check_configuration_report(invalid, config)
+
+    def test_nonroot_tools_execute_as_their_installer_without_relaxing_permissions(self):
+        self.assertEqual("1001:1001", CONTAINERS.execution_user("65532:65532", "sdk0-path", False, 1001, 1001))
+        self.assertEqual("65532:65532", CONTAINERS.execution_user("65532:65532", "standalone", False, 1001, 1001))
+        self.assertEqual("0:0", CONTAINERS.execution_user("0:0", "sdk0-path", False, 1001, 1001))
+        self.assertEqual("ContainerUser", CONTAINERS.execution_user("ContainerUser", "sdk0-path", True, 0, 0))
+        with self.assertRaises(RuntimeError):
+            CONTAINERS.execution_user("65532:65532", "sdk0-path", False, 0, 0)
+
     def test_windows_batch_dispatcher_binds_native_payload_and_rejects_other_commands(self):
         payload = self.work / ".store/gitversion.tool/fixture/gitversion.exe"
         payload.parent.mkdir(parents=True)
