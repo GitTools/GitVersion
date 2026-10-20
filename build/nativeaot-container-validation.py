@@ -105,6 +105,15 @@ def container_command(output, image, user, executable, windows):
     return command + ["--native", str(executable)]
 
 
+def execution_user(requested, name, windows, uid, gid):
+    if windows or requested == "0:0" or name == "standalone":
+        return requested
+    # SDK per-user tools retain their installer-only executable permissions.
+    if uid == 0:
+        raise RuntimeError("Nonroot tool execution requires installation by a nonroot user")
+    return f"{uid}:{gid}"
+
+
 def validate_image(output, evidence, image, index, rid, tools, native_hash):
     windows = rid.startswith("win-")
     tag = image if windows else "nativeaot-runtime-check"
@@ -118,13 +127,16 @@ def validate_image(output, evidence, image, index, rid, tools, native_hash):
     reports = []
     for user in (["ContainerAdministrator", "ContainerUser"] if windows else ["0:0", "65532:65532"]):
         for name, source, executable, expected in payloads(output, tools, windows, native_hash):
-            if hashlib.sha256(TOOLS.SMOKE.native_payload(source).read_bytes()).hexdigest() != expected:
+            native = TOOLS.SMOKE.native_payload(source)
+            if hashlib.sha256(native.read_bytes()).hexdigest() != expected:
                 raise RuntimeError("Container input differs from the validated executable")
-            log = evidence / f"no-dotnet-image-{index}-{user.replace(':', '-')}-{name}.json"
-            run(container_command(output, tag, user, executable, windows), log, timeout=180)
+            owner = native.stat()
+            selected_user = execution_user(user, name, windows, owner.st_uid, owner.st_gid)
+            log = evidence / f"no-dotnet-image-{index}-{selected_user.replace(':', '-')}-{name}.json"
+            run(container_command(output, tag, selected_user, executable, windows), log, timeout=180)
             report = json.loads(log.read_text(encoding="utf-8"))
-            check_report(report, expected, rid, user)
-            reports.append({"user": user, "payload": name, "checks": len(report["checks"])})
+            check_report(report, expected, rid, selected_user)
+            reports.append({"user": selected_user, "payload": name, "checks": len(report["checks"])})
     return identity | {"passed": True, "executions": reports}
 
 
