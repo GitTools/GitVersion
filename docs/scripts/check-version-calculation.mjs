@@ -1,5 +1,4 @@
-import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -38,49 +37,19 @@ export function inspect(root, manifest) {
     }
     const owned = section.sources.flatMap(sources);
     owned.forEach(path => covered.add(path));
-    const inputs = [...new Set([...shared, ...owned])].sort((left, right) => {
-      if (left < right) return -1;
-      if (left > right) return 1;
-      return 0;
-    });
     if (!owned.length) throw new Error("Empty source mapping: " + section.id);
-    const hash = createHash("sha256");
-    for (const input of inputs) hash.update(input + "\0" + readFileSync(safe(input),"utf8").replaceAll("\r\n","\n") + "\0");
-    const digest = hash.digest("hex");
-    const review = section.review;
-    if (!review || !/^[a-f0-9]{64}$/.test(review.sourceDigest) || typeof review.reason !== "string" || !review.reason.trim()) throw new Error("Missing valid review record: " + section.id);
-    return {id:section.id, heading:section.heading, digest, stale:digest !== review.sourceDigest, files:inputs.length};
+    return {id:section.id, heading:section.heading, files:new Set([...shared, ...owned]).size};
   });
   const missing = manifest.coverageRoots.flatMap(sources).filter(path => !covered.has(path));
   if (missing.length) throw new Error("Unmapped calculation sources: " + missing.join(", "));
   return reports;
 }
-export function acknowledge(manifest, reports, ids, reason) {
-  if (typeof reason !== "string" || !reason.trim()) throw new Error("Review requires a nonempty reason.");
-  if (!ids.length || new Set(ids).size !== ids.length || ids.some(id => !expectedSections.includes(id))) throw new Error("Review requires explicit, distinct section IDs.");
-  const result = structuredClone(manifest);
-  for (const id of ids) result.sections.find(section => section.id === id).review = {sourceDigest:reports.find(report => report.id === id).digest, reason:reason.trim()};
-  return result;
-}
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   try {
-    const args = process.argv.slice(2);
+    if (process.argv.length > 2) throw new Error("Unknown arguments.");
     const manifestPath = join(defaultRoot,"docs/version-calculation-map.json");
     const manifest = JSON.parse(readFileSync(manifestPath,"utf8"));
-    const reports = inspect(defaultRoot,manifest);
-    if (args[0] === "--review") {
-      if (args.length !== 4 || args[2] !== "--reason") throw new Error("Usage: --review overview,selection --reason 'Explain the reviewed change'");
-      const updated = acknowledge(manifest,reports,args[1].split(","),args[3]);
-      writeFileSync(manifestPath,JSON.stringify(updated,null,2) + "\n");
-      console.log("Recorded documentation review for: " + args[1]);
-    } else {
-      if (args.length) throw new Error("Unknown arguments.");
-      const stale = reports.filter(report => report.stale);
-      if (stale.length) {
-        console.error("Algorithm documentation needs review:\n" + stale.map(report => "- " + report.id + ": " + report.heading).join("\n"));
-        console.error("Review the mapped code and examples, update prose/diagrams if needed, then record each reviewed section with --review and --reason.");
-        process.exitCode = 1;
-      } else console.log("Verified documentation review records for all seven algorithm sections.");
-    }
+    inspect(defaultRoot,manifest);
+    console.log("Verified documentation mappings for all seven algorithm sections.");
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

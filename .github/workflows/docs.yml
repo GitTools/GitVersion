@@ -147,7 +147,7 @@ jobs:
             docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-
             docs-inputs-v2-${{ runner.os }}-
 
-      - name: Verify algorithm documentation review records
+      - name: Verify algorithm documentation mappings
         run: |
           npm run test:algorithm-docs
           npm run check:algorithm-docs

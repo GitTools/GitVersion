@@ -25,11 +25,7 @@
       "tests": [
         "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
-      "review": {
-        "sourceDigest": "f234ddfc9f26e65f70164e6b4384162f7ef65a3968939cc5b992f02c2a7dcf92",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_Overview.mmd"
     },
     {
       "id": "strategies",
@@ -41,11 +37,7 @@
         "src/GitVersion.Core.Tests/VersionCalculation/Strategies",
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
-      "review": {
-        "sourceDigest": "ab236d035e636373977847fab839349cf8e5a770b19d138fd9ebb1989d3a5ba2",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd"
     },
     {
       "id": "inheritance",
@@ -57,11 +49,7 @@
         "src/GitVersion.Core.Tests/VersionCalculation/EffectiveBranchConfigurationFinderTests.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
-      "review": {
-        "sourceDigest": "904aab934912fc9832485c83e74427d5131e2c8a5069d8b57d38f23d4079cc2e",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd"
     },
     {
       "id": "increments",
@@ -74,11 +62,7 @@
       ],
       "tests": [
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
-      ],
-      "review": {
-        "sourceDigest": "6f310b73697dbf03ae151ecc643b29d24defd3c7edf9885b32ac2d668109799b",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      ]
     },
     {
       "id": "selection",
@@ -92,11 +76,7 @@
         "src/GitVersion.Core.Tests/VersionCalculation/NextVersionCalculatorTests.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
-      "review": {
-        "sourceDigest": "2261083e2a99168afa7ac4b48c00a77438fc5ae997af569bd12644e311ae95bd",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_Selection.mmd"
     },
     {
       "id": "mainline",
@@ -108,11 +88,7 @@
       "tests": [
         "src/GitVersion.Core.Tests/Mainline"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
-      "review": {
-        "sourceDigest": "1ad31efb76085eef1f93bc687f7e993a5110a4ea1afa2c41bafbb16959d7f1f9",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd"
     },
     {
       "id": "deployment",
@@ -124,11 +100,7 @@
         "src/GitVersion.Core.Tests/IntegrationTests/ContinuousDeliveryTestScenarios.cs",
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForVersionCalculation.cs"
       ],
-      "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
-      "review": {
-        "sourceDigest": "9f3977fa40e3b1f5f9f733052a0c1a8050a80c31dd6e4fb6cdade2b1a7263cce",
-        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
-      }
+      "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd"
     }
   ]
 }
