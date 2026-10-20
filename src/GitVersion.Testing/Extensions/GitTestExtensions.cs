@@ -80,11 +80,24 @@ public static class GitTestExtensions
     public static void ExecuteGitCmd(string gitCmd, string workingDirectory, Action<string>? writer = null)
     {
         var output = new StringBuilder();
+        var outputLock = new System.Threading.Lock();
         try
         {
             ProcessHelper.Run(
-                o => output.AppendLine(o),
-                e => output.AppendLineFormat("ERROR: {0}", e),
+                o =>
+                {
+                    lock (outputLock)
+                    {
+                        output.AppendLine(o);
+                    }
+                },
+                e =>
+                {
+                    lock (outputLock)
+                    {
+                        output.AppendLineFormat("ERROR: {0}", e);
+                    }
+                },
                 null,
                 "git",
                 gitCmd,
