@@ -27,7 +27,7 @@ def operating_system():
     release = Path("/etc/os-release")
     if release.is_file():
         pairs = (line.split("=", 1) for line in release.read_text(encoding="utf-8").splitlines() if "=" in line)
-        fields = {key: value for key, value in pairs}
+        fields = dict(pairs)
         return {key: fields.get(key, "").strip("\"'") for key in ("ID", "VERSION_ID")}
     return {"release": platform.release(), "version": platform.version()}
 
@@ -55,6 +55,14 @@ def native_payload(command):
     if not payload.is_relative_to((command.parent / ".store").resolve()) or payload.name != "gitversion.exe":
         raise RuntimeError("Native tool batch dispatcher escapes its installed payload")
     return payload
+
+
+def check_configuration_report(report, config):
+    filename = report.get("file")
+    expected = {"schemaVersion": 1, "valid": True, "configurationVersion": "v7", "file": filename, "diagnostics": []}
+    require(report == expected and isinstance(filename, str), f"Configuration validation contract changed: {report!r}")
+    # Windows may return a canonical path for a temporary directory's 8.3 alias.
+    require(Path(filename).samefile(config), f"Configuration validation selected a different file: {report!r}; expected {config}")
 
 
 def check_execution(native, command=None, cwd=None, env=None):
@@ -86,7 +94,7 @@ def check_execution(native, command=None, cwd=None, env=None):
         run = subprocess.run(command + ["config", "validate", "--config", str(config), "--format", "json"], cwd=cwd, env=env, capture_output=True, timeout=60)
         require(run.returncode == 0, "configuration validation failed")
         validation = json.loads(run.stdout)
-        require(validation == {"schemaVersion": 1, "valid": True, "configurationVersion": "v7", "file": str(config), "diagnostics": []}, "configuration validation contract changed")
+        check_configuration_report(validation, config)
         checks.append("configuration-validation")
         run = subprocess.run(command + ["--version"], cwd=cwd, env=env | {"GITVERSION_GIT_BACKEND": "libgit2"}, capture_output=True, timeout=60)
         require(run.returncode == 1 and b"only the managed Git backend" in run.stderr, "unsupported backend was not rejected")

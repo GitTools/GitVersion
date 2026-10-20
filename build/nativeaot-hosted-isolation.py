@@ -99,7 +99,7 @@ def main():
             raise RuntimeError("Source inputs changed during hosted runtime isolation")
         result = {"passed": True, "source": validated["source"], "scope": "known SDK/shared runtime contents unavailable; hosted OS unchanged",
                   "quarantined": [str(path) for path in parts], "restored": True, "executions": reports}
-    except (OSError, ValueError, RuntimeError, KeyError, subprocess.SubprocessError) as error:
+    except (OSError, ValueError, RuntimeError, AssertionError, KeyError, subprocess.SubprocessError) as error:
         result = {"passed": False, "error": f"{type(error).__name__}: {error}"}
     (evidence / "hosted-isolation.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result))
