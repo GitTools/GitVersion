@@ -27,8 +27,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Overview.mmd",
       "review": {
-        "sourceDigest": "76bd8644491c445662f36f7e9da3a60da29aff96973e240fe25fa5d4930ca67a",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "f234ddfc9f26e65f70164e6b4384162f7ef65a3968939cc5b992f02c2a7dcf92",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -43,8 +43,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Strategies.mmd",
       "review": {
-        "sourceDigest": "4890b15305cdef7f4e4a113edf3fb765b559edd5c35bf9602901066c4bc84a02",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "ab236d035e636373977847fab839349cf8e5a770b19d138fd9ebb1989d3a5ba2",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -59,8 +59,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Inheritance.mmd",
       "review": {
-        "sourceDigest": "0b117094ec85e566997b849c0d70ac211a52b59e4489e0baca21933ab1d8a161",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "904aab934912fc9832485c83e74427d5131e2c8a5069d8b57d38f23d4079cc2e",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -76,8 +76,8 @@
         "src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamplesForTrunkBased.cs"
       ],
       "review": {
-        "sourceDigest": "9e4ff0c6d532289d74d41b0a93fd555d45a9a077b3a3b18221eda438fb56d0fb",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "6f310b73697dbf03ae151ecc643b29d24defd3c7edf9885b32ac2d668109799b",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -94,8 +94,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Selection.mmd",
       "review": {
-        "sourceDigest": "bac3b16714c0d34e5b06a5e251db99b057075e43d89b2dd1f71aaf0dfc9f396e",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "2261083e2a99168afa7ac4b48c00a77438fc5ae997af569bd12644e311ae95bd",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -110,8 +110,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_Mainline.mmd",
       "review": {
-        "sourceDigest": "be0058dfb670a7a7c3652f9c91609138213208cde6aa03d0c53451ef1f7a1a7c",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "1ad31efb76085eef1f93bc687f7e993a5110a4ea1afa2c41bafbb16959d7f1f9",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     },
     {
@@ -126,8 +126,8 @@
       ],
       "diagram": "docs/diagrams/VersionCalculation_DeploymentModes.mmd",
       "review": {
-        "sourceDigest": "ae993d1b643c6cadda5a2e80e6f8772ee59306fd404cf2093f443eb174183db3",
-        "reason": "Reviewed the process-capture refactor and explicit UTF-8 decoding of Git stdout and stderr. Parent console code pages no longer change decoded Git text; line normalization, separate streams, exit codes, arguments and environment handling are preserved for net10 and net11. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged, so the existing algorithm prose, diagrams and examples remain accurate."
+        "sourceDigest": "9f3977fa40e3b1f5f9f733052a0c1a8050a80c31dd6e4fb6cdade2b1a7263cce",
+        "reason": "Reviewed the RandomAccessStream.ReadByte allocation fix and its packed-object offset caller. The override uses the existing span read, preserving unsigned bytes, declared and physical EOF, position updates, independent stream positions, seeking and shared-handle ownership on net10 and net11. Only the temporary one-byte array is removed. Candidate discovery, inheritance, increments, version/source selection, Mainline traversal and deployment rules are unchanged; existing algorithm prose, diagrams and examples remain accurate."
       }
     }
   ]
