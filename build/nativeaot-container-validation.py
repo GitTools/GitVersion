@@ -83,9 +83,15 @@ def run(command, log, timeout=1800):
         raise RuntimeError(f"Command failed ({result.returncode}); see {log}")
 
 
+def require_windows_output(output):
+    if output.drive.upper() != "C:":
+        raise RuntimeError("Windows native tool validation must use C: to preserve installed paths in Server Core")
+
+
 def container_command(output, image, user, executable, windows):
     command = ["docker", "run", "--rm", "--network", "none", "--user", str(user), "-e", "PYTHONUTF8=1", "-e", "PYTHONDONTWRITEBYTECODE=1"]
     if windows:
+        require_windows_output(output)
         git_root = Path(shutil.which("git")).resolve().parent.parent
         python_root = Path(sys.executable).parent
         command += ["--isolation=process", "-v", f"{python_root}:C:/python:ro", "-v", f"{git_root}:C:/git:ro",
