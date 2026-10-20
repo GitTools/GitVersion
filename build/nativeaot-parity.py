@@ -83,11 +83,25 @@ def create_repository(work, git, name, tagged):
     return repo
 
 
+def process_command(command, windows=None):
+    windows = os.name == "nt" if windows is None else windows
+    if not windows or Path(command[0]).suffix.lower() != ".cmd":
+        return command
+    # list2cmdline quotes whitespace for the CRT, but cmd also needs pipes quoted.
+    encoded = []
+    for argument in command:
+        quoted = subprocess.list2cmdline([str(argument)])
+        if not quoted.startswith('"') and any(symbol in str(argument) for symbol in "&|<>^"):
+            quoted = '"' + quoted + '"'
+        encoded.append(quoted)
+    return " ".join(encoded)
+
+
 def run_flavor(command, arguments, work, env, requests, prepare, capture):
     if prepare:
         prepare()
     start = len(requests)
-    run = subprocess.run(command + [str(a) for a in arguments], cwd=work, env=env, capture_output=True, timeout=60)
+    run = subprocess.run(process_command(command + [str(a) for a in arguments]), cwd=work, env=env, capture_output=True, timeout=60)
     # Compatibility-mode warnings include wall-clock timestamps. Keep
     # their severity/message/path and all other diagnostics unchanged.
     stderr = re.sub(r"(?m)\b(INFO|WARN|EROR|DBUG) \[\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}:\d{2}\]", r"\1 [timestamp]", run.stderr.decode("utf-8"))
