@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/**'
       - 'build/nativeaot*'
+      - 'build/nativeaot*/**'
       - 'build/publish-nativeaot.ps1'
       - 'global.json'
       - '.github/workflows/nativeaot-validation.yml'
@@ -21,7 +22,7 @@ jobs:
   native:
     name: Native / ${{ matrix.target.rid }} / ${{ matrix.framework }}
     runs-on: ${{ matrix.target.runner }}
-    timeout-minutes: 60
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -74,6 +75,7 @@ jobs:
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
+          dotnet-version: '10.0.402'
 
       - name: Publish and execute target-host parity
         if: runner.os != 'Linux'
@@ -83,6 +85,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'NativeAOT validation regression checks failed.' }
           python build/nativeaot-platform-validation.py --framework $env:FRAMEWORK --rid $env:RID --runtime-version $env:RUNTIME_VERSION --output $env:NATIVE_OUTPUT
           if ($LASTEXITCODE -ne 0) { throw 'NativeAOT target-host validation failed.' }
+          python build/nativeaot-capture-validation.py --platform-output $env:NATIVE_OUTPUT
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT pipe-capture validation failed.' }
+          python build/nativeaot-tool-validation.py --platform-output $env:NATIVE_OUTPUT
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT native-tool validation failed.' }
 
       - name: Publish and execute Linux baseline parity on native CPU
         if: runner.os == 'Linux'
@@ -97,33 +103,25 @@ jobs:
             -v "$GITHUB_WORKSPACE:/source" -v "$RUNNER_TEMP:$RUNNER_TEMP" -w /source \
             -e FRAMEWORK -e RID -e RUNTIME_VERSION -e NATIVE_OUTPUT -e PYTHONUTF8 -e PYTHONIOENCODING \
             -e HOME=/tmp/nativeaot-home nativeaot-linux-build \
-            sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-validation-tests.py; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"'
+            sh -ec 'mkdir -p "$HOME"; python3 build/nativeaot-validation-tests.py; python3 build/nativeaot-platform-validation.py --framework "$FRAMEWORK" --rid "$RID" --runtime-version "$RUNTIME_VERSION" --output "$NATIVE_OUTPUT"; python3 build/nativeaot-capture-validation.py --platform-output "$NATIVE_OUTPUT"; python3 build/nativeaot-tool-validation.py --platform-output "$NATIVE_OUTPUT"'
           docker image inspect nativeaot-linux-build > "$NATIVE_OUTPUT/evidence/build-image.json"
 
-      - name: Run without .NET as root and nonroot
-        if: runner.os == 'Linux'
-        shell: bash
-        env:
-          LIBC: ${{ matrix.target.libc }}
+      - name: Run standalone and installed tools without .NET in containers
+        if: runner.os == 'Linux' || matrix.target.rid == 'win-x64'
+        shell: pwsh
         run: |
-          bases=(registry.access.redhat.com/ubi8/ubi:8.10 ubuntu:22.04 ubuntu:24.04)
-          if [ "$LIBC" = musl ]; then
-            floor=alpine:3.21
-            if [ "$FRAMEWORK" = net11.0 ]; then floor=alpine:3.23; fi
-            bases=("$floor" alpine:3.24)
-          fi
-          index=0
-          for base in "${bases[@]}"; do
-            docker build -f build/nativeaot-runtime.Dockerfile --build-arg "BASE=$base" -t nativeaot-runtime-check .
-            docker image inspect nativeaot-runtime-check > "$NATIVE_OUTPUT/evidence/runtime-image-$index.json"
-            for uid in 0 65532; do
-              docker run --rm --network none --read-only --tmpfs /tmp:rw,exec,size=512m --user "$uid:$uid" \
-                -v "$NATIVE_OUTPUT/native:/native:ro" -v "$GITHUB_WORKSPACE/build:/validation:ro" \
-                nativeaot-runtime-check python3 /validation/nativeaot-smoke.py --native /native/gitversion \
-                > "$NATIVE_OUTPUT/evidence/no-dotnet-image-$index-uid-$uid.json"
-            done
-            index=$((index + 1))
-          done
+          $python = if ($IsLinux) { 'python3' } else { 'python' }
+          & $python build/nativeaot-container-validation.py --platform-output $env:NATIVE_OUTPUT
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT container execution failed.' }
+
+      - name: Run with hosted macOS SDK and shared runtime contents unavailable
+        if: runner.os == 'macOS'
+        shell: pwsh
+        env:
+          NATIVEAOT_EPHEMERAL_RUNNER: ${{ runner.environment }}
+        run: |
+          python build/nativeaot-hosted-isolation.py --platform-output $env:NATIVE_OUTPUT
+          if ($LASTEXITCODE -ne 0) { throw 'NativeAOT hosted runtime isolation failed.' }
 
       - name: Retain validation evidence only
         if: always()

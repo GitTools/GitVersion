@@ -1,0 +1,25 @@
+{
+  "glibc": [
+    "registry.access.redhat.com/ubi8/ubi:8.10",
+    "registry.access.redhat.com/ubi9/ubi:9.6",
+    "registry.access.redhat.com/ubi10/ubi:10.0",
+    "ubuntu:22.04",
+    "ubuntu:24.04",
+    "ubuntu:26.04",
+    "debian:13-slim",
+    "mcr.microsoft.com/azurelinux/base/core:3.0",
+    "quay.io/centos/centos:stream9",
+    "quay.io/centos/centos:stream10",
+    "opensuse/leap:16.0",
+    "registry.suse.com/bci/bci-base:15.7",
+    "registry.suse.com/bci/bci-base:16.0"
+  ],
+  "net10.0": {
+    "glibc": ["registry.fedoraproject.org/fedora:43", "registry.fedoraproject.org/fedora:44"],
+    "musl": ["alpine:3.21", "alpine:3.22", "alpine:3.23", "alpine:3.24"]
+  },
+  "net11.0": {
+    "glibc": ["registry.fedoraproject.org/fedora:44", "registry.fedoraproject.org/fedora:45"],
+    "musl": ["alpine:3.23", "alpine:3.24"]
+  }
+}
