@@ -123,7 +123,9 @@ head before the corresponding validation gap is closed:
   3.23/3.24 for net11. Fedora 45 explicitly installs its OpenSSL 3 compatibility
   libraries, required by the pinned runtimes alongside Fedora's OpenSSL 4.
   Every image runs the standalone command and the SDKs'
-  installed tool-path/global commands, both as root and UID 65532. Installed
+  installed tool-path/global commands, as root and nonroot. Standalone execution
+  uses UID 65532; SDK per-user commands use their actual nonroot installer UID,
+  retaining the SDK's installer-only executable permissions. Installed
   directories keep their absolute paths so SDK symlink dispatch is preserved.
 - Windows x64 runs those five commands as ContainerAdministrator and
   ContainerUser in Server Core 2022/2025 without modern .NET. Containers use
