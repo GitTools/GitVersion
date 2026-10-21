@@ -72,28 +72,33 @@ public class ManagedRepositoryContractTests : TestBase
                         FirstParentOnly = firstParent,
                         SortBy = sort
                     };
-                    var actual = repository.Commits.QueryBy(filter).ToArray();
-                    var args = new List<string> { "rev-list", "main" };
-                    if (firstParent)
-                    {
-                        args.Add("--first-parent");
-                    }
-
-                    if (excluded != null)
-                    {
-                        args.Add("^" + excluded);
-                    }
-
-                    actual.Select(c => c.Sha).Order().ShouldBe(Lines(fixture.Repository.Run([.. args])).Order());
-                    if (sort.HasFlag(CommitSortStrategies.Topological))
-                    {
-                        AssertTopological(actual);
-                    }
-
-                    repository.Commits.QueryBy(filter with { SortBy = sort | CommitSortStrategies.Reverse }).Select(c => c.Sha).ShouldBe(actual.Reverse().Select(c => c.Sha));
+                    AssertQueryByContract(fixture.Repository, repository, filter, excluded);
                 }
             }
         }
+    }
+
+    private static void AssertQueryByContract(FixtureGit.IRepository git, IGitRepository repository, CommitFilter filter, string? excluded)
+    {
+        var actual = repository.Commits.QueryBy(filter).ToArray();
+        var args = new List<string> { "rev-list", "main" };
+        if (filter.FirstParentOnly)
+        {
+            args.Add("--first-parent");
+        }
+
+        if (excluded != null)
+        {
+            args.Add("^" + excluded);
+        }
+
+        actual.Select(c => c.Sha).Order().ShouldBe(Lines(git.Run([.. args])).Order());
+        if (filter.SortBy.HasFlag(CommitSortStrategies.Topological))
+        {
+            AssertTopological(actual);
+        }
+
+        repository.Commits.QueryBy(filter with { SortBy = filter.SortBy | CommitSortStrategies.Reverse }).Select(c => c.Sha).ShouldBe(actual.Reverse().Select(c => c.Sha));
     }
 
     [Test]
