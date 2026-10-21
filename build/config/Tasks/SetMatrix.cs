@@ -27,7 +27,8 @@ public class SetMatrix : FrostingTask<BuildContext>
                     var groups = new[]
                     {
                         new { name = "Core integration", id = "core-integration", filter = "FullyQualifiedName~GitVersion.Tests.IntegrationTests&FullyQualifiedName!~Mainline" },
-                        new { name = "Core integration GitFlow", id = "core-integration-gitflow", filter = "FullyQualifiedName~GitVersion.Tests.IntegrationTests&FullyQualifiedName~Mainline&FullyQualifiedName~GitFlow" },
+                        new { name = "Core integration GitFlow True cases", id = "core-integration-gitflow-true", filter = "FullyQualifiedName~GitVersion.Tests.IntegrationTests&FullyQualifiedName~Mainline&FullyQualifiedName~GitFlow&FullyQualifiedName~True" },
+                        new { name = "Core integration GitFlow other cases", id = "core-integration-gitflow-other", filter = "FullyQualifiedName~GitVersion.Tests.IntegrationTests&FullyQualifiedName~Mainline&FullyQualifiedName~GitFlow&FullyQualifiedName!~True" },
                         new { name = "Core integration other", id = "core-integration-other", filter = "FullyQualifiedName~GitVersion.Tests.IntegrationTests&FullyQualifiedName~Mainline&FullyQualifiedName!~GitFlow" },
                         new { name = "Core remaining", id = "core-other", filter = "FullyQualifiedName!~GitVersion.Tests.IntegrationTests" }
                     };

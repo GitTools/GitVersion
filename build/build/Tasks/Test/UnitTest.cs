@@ -126,6 +126,9 @@ public class UnitTest : FrostingTask<BuildContext>
         if (!string.IsNullOrWhiteSpace(filter))
         {
             args.Append("--filter").AppendQuoted(filter);
+            // NUnit otherwise drops name filters above 2000 cases and executes
+            // excluded tests without including their outcomes in MTP's reports.
+            args.Append("--settings").AppendQuoted(context.MakeAbsolute(Paths.Build.CombineWithFilePath("test.runsettings")).FullPath);
         }
         if (context.BuildSystem().IsRunningOnGitHubActions)
         {
