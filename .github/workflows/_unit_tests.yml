@@ -66,7 +66,8 @@ jobs:
             if dotnet tool install dotnet-stack --tool-path "$RUNNER_TEMP/stack-tools" > "$TEST_RESULTS/stack-install.log" 2>&1; then
               (
                 sleep 900
-                core_pid=$(ps -axo pid=,comm= | awk '$2 ~ /\/GitVersion.Core.Tests$/ {print $1; exit}')
+                ps -axo pid=,command= > "$TEST_RESULTS/processes-at-snapshot.txt"
+                core_pid=$(awk '$2 ~ /(^|\/)dotnet$/ && $3 == "exec" && $4 ~ /\/GitVersion.Core.Tests.dll$/ {print $1; exit}' "$TEST_RESULTS/processes-at-snapshot.txt")
                 if [[ -n "$core_pid" ]]; then
                   "$RUNNER_TEMP/stack-tools/dotnet-stack" report -p "$core_pid" > "$TEST_RESULTS/core-stacks.txt" 2>&1 || true
                 else
