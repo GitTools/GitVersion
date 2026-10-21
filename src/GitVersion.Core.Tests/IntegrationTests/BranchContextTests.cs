@@ -3,9 +3,9 @@ using GitVersion.Configuration;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
-using LibGit2Sharp;
 using CommitFilter = GitVersion.Git.CommitFilter;
 
 namespace GitVersion.Tests.IntegrationTests;
@@ -604,7 +604,7 @@ public class BranchContextTests : TestBase
             var path = Path.Combine(scratch, "checkout");
             Repository.Clone(remote.RepositoryPath, path);
             using var repository = new Repository(path);
-            var target = repository.CreateBranch("support/1.0", repository.Lookup<LibGit2Sharp.Commit>(originalTarget.Sha));
+            var target = repository.CreateBranch("support/1.0", repository.Lookup<GitVersion.Testing.Git.Commit>(originalTarget.Sha));
             Commands.Checkout(repository, repository.CreateBranch("feature/work", target.Tip));
             var source = repository.MakeACommit();
             Commands.Checkout(repository, target);

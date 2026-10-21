@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <Using Include="Microsoft.Extensions.Logging" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\..\src\GitVersion.Git.Managed\**\*.cs"
+                 Exclude="..\..\src\GitVersion.Git.Managed\obj\**;..\..\src\GitVersion.Git.Managed\bin\**;..\..\src\GitVersion.Git.Managed\GitVersionManagedGitModule.cs;..\..\src\GitVersion.Git.Managed\Adapter\ManagedGitRepositoryInfo.cs"
+                 Link="Managed\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+</Project>

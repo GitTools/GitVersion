@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 var modules = new IGitVersionModule[]
 {
     new CoreModule(),
-    new LibGit2SharpCoreModule(),
+    new ManagedCoreModule(),
     new GitVersion.Generated.CommandsModule()
 };
 

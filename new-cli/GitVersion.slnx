@@ -31,7 +31,7 @@
   <Project Path="GitVersion.Cli/GitVersion.Cli.csproj" />
   <Project Path="GitVersion.Common.Command/GitVersion.Common.Command.csproj" />
   <Project Path="GitVersion.Common/GitVersion.Common.csproj" />
-  <Project Path="GitVersion.Core.Libgit2Sharp/GitVersion.Core.Libgit2Sharp.csproj" />
+  <Project Path="GitVersion.Core.Managed/GitVersion.Core.Managed.csproj" />
   <Project Path="GitVersion.Core.Tester/GitVersion.Core.Tester.csproj" />
   <Project Path="GitVersion.Core/GitVersion.Core.csproj" />
 </Solution>

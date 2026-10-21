@@ -1,7 +1,7 @@
 using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
+using GitVersion.Testing.Git;
 
 namespace GitVersion.Tests.IntegrationTests;
 
