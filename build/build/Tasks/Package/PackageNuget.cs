@@ -42,9 +42,8 @@ public class PackageNuget : FrostingTask<BuildContext>
         settings.ArgumentCustomization = arg => arg.Append("-p:IsPackaging=true");
         context.DotNetPack("./src/GitVersion.MsBuild", settings);
 
-        foreach (var package in context.GetFiles($"{Paths.Nuget}/GitVersion.Tool*.nupkg") + context.GetFiles($"{Paths.Nuget}/GitVersion.MsBuild*.nupkg"))
-        {
-            PackageContentsValidation.Validate(package.FullPath);
-        }
+        PackageContentsValidation.ValidatePackages(
+            context.GetFiles($"{Paths.Nuget}/GitVersion.Tool*.nupkg").Select(package => package.FullPath),
+            context.GetFiles($"{Paths.Nuget}/GitVersion.MsBuild*.nupkg").Select(package => package.FullPath));
     }
 }
