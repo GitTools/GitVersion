@@ -9,4 +9,6 @@ public static class Arguments
     public const string TestResults = "test_results";
     public const string DockerRegistry = "docker_registry";
     public const string DockerDistro = "docker_distro";
+    public const string NativeContainer = "native_container";
+    public const string PackageDirectory = "package_directory";
 }
