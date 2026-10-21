@@ -52,6 +52,17 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
+    <!-- Keep the shipped CLI graph AOT-compatible in every build.
+         Test, schema and MSBuild-task projects are outside this analysis scope. -->
+    <PropertyGroup Condition="('$(MSBuildProjectName)' == 'GitVersion.App' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Core' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Configuration' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Output' or
+                               '$(MSBuildProjectName)' == 'GitVersion.BuildAgents' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Git.Managed')">
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>

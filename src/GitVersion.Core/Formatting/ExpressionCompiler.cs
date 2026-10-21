@@ -11,7 +11,13 @@ internal class ExpressionCompiler : IExpressionCompiler
 
         foreach (var member in memberPath)
         {
-            body = Expression.PropertyOrField(body, member.Name);
+            var isStatic = member switch
+            {
+                FieldInfo field => field.IsStatic,
+                PropertyInfo property => property.GetMethod is { IsStatic: true },
+                _ => false
+            };
+            body = Expression.MakeMemberAccess(isStatic ? null : body, member);
         }
 
         body = Expression.Convert(body, typeof(object));

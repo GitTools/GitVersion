@@ -85,7 +85,7 @@ internal sealed class VariableProvider(IEnvironment environment) : IVariableProv
         };
     }
 
-    private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName) where T : notnull
+    private string? CheckAndFormatString(string? formatString, SemanticVersionFormatValues source, string? defaultValue, string formatVarName)
     {
         string? formattedString;
 

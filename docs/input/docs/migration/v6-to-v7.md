@@ -320,6 +320,9 @@ actionable errors; explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.
 
+For the subsequent NativeAOT distribution changes, see the
+[v7.0 to v7.1 migration guide](/docs/migration/v7.0-to-v7.1).
+
 [docker-usage]: /docs/usage/docker
 
 [cli-arguments]: /docs/usage/cli/arguments

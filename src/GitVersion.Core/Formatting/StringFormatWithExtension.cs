@@ -1,12 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace GitVersion.Formatting;
 
-internal static class StringFormatWithExtension
+internal static partial class StringFormatWithExtension
 {
     private static readonly IExpressionCompiler ExpressionCompiler = new ExpressionCompiler();
 
     private static readonly IInputSanitizer InputSanitizer = new InputSanitizer();
 
-    private static readonly IMemberResolver MemberResolver = new MemberResolver();
+    private static readonly IMemberResolver ObjectMemberResolver = new MemberResolver();
 
     /// <summary>
     /// Provides extension methods for formatting strings using a source object and environment context.
@@ -34,6 +36,7 @@ internal static class StringFormatWithExtension
         /// "{env:BUILD_NUMBER}".FormatWith(new { }, env);
         /// "{env:BUILD_NUMBER ?? \"0\"}".FormatWith(new { }, env);
         /// </example>
+        [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
         public string FormatWith(object source, IEnvironment environment)
         {
             ArgumentNullException.ThrowIfNull(source);
@@ -125,10 +128,11 @@ internal static class StringFormatWithExtension
         return string.Empty;
     }
 
+    [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
     private static string? EvaluateMemberFromObject(object source, string member)
     {
         var safeMember = InputSanitizer.SanitizeMemberName(member);
-        var memberPath = MemberResolver.ResolveMemberPath(source.GetType(), safeMember);
+        var memberPath = ObjectMemberResolver.ResolveMemberPath(source.GetType(), safeMember);
         var getter = ExpressionCompiler.CompileGetter(source.GetType(), memberPath);
 
         var value = getter(source);
