@@ -24,40 +24,38 @@ internal class GitVersionApp(
 
     /// <summary>Executes the requested operation, reports failures on stderr, and always stops the application host.</summary>
     /// <param name="cancellationToken">Cancels any eligible telemetry request before version calculation.</param>
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public async Task<int> RunAsync(CancellationToken cancellationToken)
     {
         try
         {
             var gitVersionOptions = this.options.Value;
             if (gitVersionOptions.IsCliSchema)
             {
-                SysEnv.ExitCode = 0;
-                return;
+                return 0;
             }
             if (gitVersionOptions.ConfigurationInfo.Validate)
             {
-                SysEnv.ExitCode = configurationValidationExecutor.Execute(gitVersionOptions);
-                return;
+                return configurationValidationExecutor.Execute(gitVersionOptions);
             }
             selections.Log(logger);
             if (gitVersionOptions.IsHelp || gitVersionOptions.IsVersion)
             {
-                SysEnv.ExitCode = 0;
+                return 0;
             }
             else if (gitVersionOptions.ConfigurationMigrationInfo.IsMigration)
             {
-                SysEnv.ExitCode = this.configurationMigrationExecutor.Execute(gitVersionOptions);
+                return this.configurationMigrationExecutor.Execute(gitVersionOptions);
             }
             else
             {
                 await telemetry.ReportAsync(cancellationToken).ConfigureAwait(false);
-                SysEnv.ExitCode = this.gitVersionExecutor.Value.Execute(gitVersionOptions);
+                return this.gitVersionExecutor.Value.Execute(gitVersionOptions);
             }
         }
         catch (Exception exception)
         {
             await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
-            SysEnv.ExitCode = 1;
+            return 1;
         }
         finally
         {
