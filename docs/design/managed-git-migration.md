@@ -39,7 +39,7 @@ LibGit2Sharp wraps the native `libgit2` library and has been a recurring source 
   (linux x64/arm/arm64/musl/ppc64le, osx x64/arm64, win x64/x86/arm64) into `runtimes/<rid>/native/`
   of every published artifact — and `GitVersion.MsBuild` ships that payload **per TFM** (net8.0/net9.0/net10.0).
 - **Platform lag**: new RIDs, libcs and OS versions require waiting on libgit2 + LibGit2Sharp + NativeBinaries releases
-  (GitVersion is previously pinned to LibGit2Sharp 0.32.0).
+  (GitVersion was previously pinned to LibGit2Sharp 0.32.0).
 - **Feature lag**: libgit2 trails git itself (SHA-256 repos, reftable, partial clone), and its global native state
   complicates concurrent use inside MSBuild.
 
