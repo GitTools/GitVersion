@@ -11,13 +11,12 @@ internal sealed class ConfigurationValidationExecutor(
     IConfigurationFileLocator locator,
     ConfigurationResolver resolver)
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     private const string ErrorSeverity = "error";
 
     public int Execute(GitVersionOptions options)
     {
         var info = options.ConfigurationInfo;
-        var diagnostics = new List<Diagnostic>();
+        var diagnostics = new List<ConfigurationValidationDiagnostic>();
         string? file = null;
         string? version = null;
         try
@@ -116,7 +115,7 @@ internal sealed class ConfigurationValidationExecutor(
         return parser.GetOverrideConfiguration();
     }
 
-    private int WriteResult(bool json, string? version, string? file, List<Diagnostic> diagnostics)
+    private int WriteResult(bool json, string? version, string? file, List<ConfigurationValidationDiagnostic> diagnostics)
     {
         var valid = diagnostics.All(diagnostic => diagnostic.Severity != ErrorSeverity);
         foreach (var diagnostic in diagnostics)
@@ -128,11 +127,10 @@ internal sealed class ConfigurationValidationExecutor(
         Console.Error.WriteLine($"{(valid ? "Configuration is valid." : "Configuration is invalid.")} {file}");
         if (json)
         {
-            console.WriteLine(JsonSerializer.Serialize(new { schemaVersion = 1, valid, configurationVersion = version, file, diagnostics }, JsonOptions));
+            var result = new ConfigurationValidationResult(1, valid, version, file, diagnostics);
+            console.WriteLine(JsonSerializer.Serialize(result, ConfigurationValidationJsonContext.Default.ConfigurationValidationResult));
         }
 
         return valid ? 0 : 1;
     }
-
-    private sealed record Diagnostic(string Code, string Severity, string Path, string Message, int? Line = null, int? Column = null);
 }

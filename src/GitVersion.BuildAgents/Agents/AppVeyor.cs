@@ -17,12 +17,9 @@ internal class AppVeyor(IEnvironment environment, ILogger<AppVeyor> logger, IFil
 
         using var httpClient = GetHttpClient(apiUrl);
 
-        var body = new
-        {
-            version = $"{variables.FullSemVer}.build.{buildNumber}"
-        };
+        var body = new AppVeyorBuildNumberRequest($"{variables.FullSemVer}.build.{buildNumber}");
 
-        var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+        var stringContent = new StringContent(JsonSerializer.Serialize(body, AppVeyorJsonContext.Default.AppVeyorBuildNumberRequest), Encoding.UTF8, "application/json");
 
         try
         {
@@ -42,13 +39,9 @@ internal class AppVeyor(IEnvironment environment, ILogger<AppVeyor> logger, IFil
         var apiUrl = this.environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new InvalidOperationException("APPVEYOR_API_URL environment variable not set");
         var httpClient = GetHttpClient(apiUrl);
 
-        var body = new
-        {
-            name = $"GitVersion_{name}",
-            value = $"{value}"
-        };
+        var body = new AppVeyorVariableRequest($"GitVersion_{name}", $"{value}");
 
-        var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+        var stringContent = new StringContent(JsonSerializer.Serialize(body, AppVeyorJsonContext.Default.AppVeyorVariableRequest), Encoding.UTF8, "application/json");
         var response = httpClient.PostAsync("api/build/variables", stringContent).GetAwaiter().GetResult();
         response.EnsureSuccessStatusCode();
 
