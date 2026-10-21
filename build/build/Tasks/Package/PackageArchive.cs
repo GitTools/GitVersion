@@ -13,7 +13,7 @@ public class PackageArchive : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(Paths.Native);
 
         var platform = context.Platform;
-        var runtimes = context.NativeRuntimes[platform];
+        var runtimes = context.PackageRuntimes;
 
         foreach (var runtime in runtimes)
         {
