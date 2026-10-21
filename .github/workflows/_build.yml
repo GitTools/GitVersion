@@ -7,11 +7,17 @@ env:
 
 jobs:
   build:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
+        include:
+          - { name: windows-2025-vs2026, os: windows-2025-vs2026, rid: windows, artifact: Windows, container: '' }
+          - { name: macos-26, os: macos-26, rid: osx-arm64, artifact: macOS, container: '' }
+          - { name: ubuntu-24.04, os: ubuntu-24.04, rid: linux-x64, artifact: linux-x64, container: glibc }
+          - { name: linux-arm64, os: ubuntu-24.04-arm, rid: linux-arm64, artifact: linux-arm64, container: glibc }
+          - { name: linux-musl-x64, os: ubuntu-24.04, rid: linux-musl-x64, artifact: linux-musl-x64, container: musl }
+          - { name: linux-musl-arm64, os: ubuntu-24.04-arm, rid: linux-musl-arm64, artifact: linux-musl-arm64, container: musl }
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,26 +35,108 @@ jobs:
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
 
       - name: '[Build]'
+        if: matrix.container == ''
         shell: pwsh
         run: dotnet run/build.dll --target=Package
+
+      - name: Build native Linux packages
+        if: matrix.container != ''
+        shell: bash
+        env:
+          NATIVE_CONTAINER: ${{ matrix.container }}
+        run: |
+          docker build --target "$NATIVE_CONTAINER" -t gitversion-native-package build/nativeaot
+          docker run --rm -v "$PWD:/workspace" -w /workspace \
+            -e CI -e GITHUB_ACTIONS -e GITHUB_REF -e GITHUB_REF_TYPE -e GITHUB_SHA \
+            -e GITHUB_REPOSITORY -e GITHUB_RUN_ID -e GITHUB_RUN_NUMBER -e GITHUB_EVENT_NAME \
+            -e GITHUB_HEAD_REF -e GITHUB_BASE_REF -e GITHUB_WORKFLOW -e GITHUB_JOB \
+            gitversion-native-package /bin/sh -ec \
+            'git config --global --add safe.directory /workspace; dotnet run/build.dll --target=Package'
 
       - name: 'Upload nuget packages'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: matrix.os == 'windows-2025-vs2026'
         with:
-          name: nuget
+          name: nuget-${{ matrix.rid }}
           path: ${{ github.workspace }}/artifacts/packages/nuget
+
+      - name: Upload RID-specific tool packages
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: matrix.os != 'windows-2025-vs2026'
+        with:
+          name: nuget-${{ matrix.rid }}
+          path: ${{ github.workspace }}/artifacts/packages/nuget/GitVersion.Tool.${{ matrix.rid }}.*.nupkg
+          if-no-files-found: error
 
       - name: 'Upload native packages'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: matrix.os == 'windows-2025-vs2026'
         with:
-          name: native-${{ runner.os }}
+          name: native-${{ matrix.artifact }}
           path: ${{ github.workspace }}/artifacts/packages/native/*.zip
+          if-no-files-found: error
 
       - name: 'Upload native packages'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: matrix.os != 'windows-2025-vs2026'
         with:
-          name: native-${{ runner.os }}
+          name: native-${{ matrix.artifact }}
           path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
+          if-no-files-found: error
+
+  collect:
+    name: Collect platform packages
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Download platform NuGet packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: nuget-*
+          merge-multiple: true
+          path: packages/nuget
+
+      - name: Require every advertised tool RID
+        shell: pwsh
+        run: |
+          $packages = @(Get-ChildItem packages/nuget/GitVersion.Tool*.nupkg)
+          foreach ($id in @('GitVersion.Tool', 'GitVersion.Tool.win-x64', 'GitVersion.Tool.win-arm64',
+                            'GitVersion.Tool.linux-x64', 'GitVersion.Tool.linux-arm64',
+                            'GitVersion.Tool.linux-musl-x64', 'GitVersion.Tool.linux-musl-arm64',
+                            'GitVersion.Tool.osx-arm64')) {
+            $matching = @($packages | Where-Object { $_.Name -match ('^' + [regex]::Escape($id) + '\.\d') })
+            if ($matching.Count -ne 1) { throw "Expected one package for $id; found $($matching.Count)." }
+          }
+
+      - name: Upload complete NuGet set
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nuget
+          path: packages/nuget
+
+      - name: Download Linux archives
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: native-linux-*
+          merge-multiple: true
+          path: packages/native
+
+      - name: Require every Linux archive
+        shell: pwsh
+        run: |
+          foreach ($rid in @('linux-x64', 'linux-arm64', 'linux-musl-x64', 'linux-musl-arm64')) {
+            $matching = @(Get-ChildItem "packages/native/gitversion-$rid-*.tar.gz")
+            if ($matching.Count -ne 1) { throw "Expected one archive for $rid; found $($matching.Count)." }
+          }
+
+      - name: Upload complete Linux archive set
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-Linux
+          path: packages/native
+          if-no-files-found: error

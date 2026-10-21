@@ -6,9 +6,14 @@
         <AssemblyName>gitversion</AssemblyName>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishAot Condition="'$(PublishAot)' == ''">true</PublishAot>
+        <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+        <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
+        <!-- Native tool payloads use tools/any/<rid>; one binary serves every supported SDK. -->
+        <TargetFrameworks>net10.0</TargetFrameworks>
         <WarningsAsErrors>$(WarningsAsErrors);NU5118</WarningsAsErrors>
         <ToolCommandName>dotnet-gitversion</ToolCommandName>
         <PackageId>GitVersion.Tool</PackageId>
@@ -46,18 +51,6 @@
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
     </ItemGroup>
-    <Target Name="DeduplicateToolSettings" AfterTargets="PackTool"
-            Condition="'$(PackAsTool)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(TargetFrameworks)' != ''">
-        <PropertyGroup>
-            <PrimaryToolTargetFramework>$(TargetFrameworks.Split(';')[0])</PrimaryToolTargetFramework>
-        </PropertyGroup>
-        <!-- The RID dispatcher is framework-independent; retain its settings from the first TFM only.
-             RID implementation packages still need their settings for every supported framework. -->
-        <ItemGroup Condition="'$(TargetFramework)' != '$(PrimaryToolTargetFramework)'">
-            <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
-                                    Condition="'%(TfmSpecificPackageFile.Filename)%(TfmSpecificPackageFile.Extension)' == 'DotnetToolSettings.xml' and '%(TfmSpecificPackageFile.PackagePath)' == 'tools/any/any/'" />
-        </ItemGroup>
-    </Target>
     <!-- Check before bundling: single-file archives can hide native dependencies. -->
     <Target Name="ValidateManagedGitPublishClosure" AfterTargets="ComputeFilesToPublish" BeforeTargets="GenerateSingleFileBundle">
         <Error Condition="$([System.String]::Copy('%(ResolvedFileToPublish.Filename)').ToLowerInvariant().Contains('libgit2'))"
