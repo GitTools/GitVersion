@@ -1,17 +1,17 @@
 namespace GitVersion.VersionCalculation;
 
-/// <summary>Automatically discovers and registers all concrete <see cref="IVersionStrategy"/> implementations found in the current assembly.</summary>
+/// <summary>Registers the built-in <see cref="IVersionStrategy"/> implementations.</summary>
 public class VersionStrategyModule : IGitVersionModule
 {
-    /// <summary>Scans the assembly for <see cref="IVersionStrategy"/> implementations and registers each as a singleton.</summary>
+    /// <summary>Registers the built-in version strategies as singletons.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
-        var versionStrategies = IGitVersionModule.FindAllDerivedTypes<IVersionStrategy>(Assembly.GetAssembly(GetType()))
-            .Where(x => x is { IsAbstract: false, IsInterface: false });
-
-        foreach (var versionStrategy in versionStrategies)
-        {
-            services.AddSingleton(typeof(IVersionStrategy), versionStrategy);
-        }
+        services.AddSingleton<IVersionStrategy, ConfiguredNextVersionVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, FallbackVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, MainlineVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, MergeMessageVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, TaggedCommitVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, TrackReleaseBranchesVersionStrategy>();
+        services.AddSingleton<IVersionStrategy, VersionInBranchNameVersionStrategy>();
     }
 }
