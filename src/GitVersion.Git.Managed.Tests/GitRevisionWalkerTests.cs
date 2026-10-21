@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 namespace GitVersion.Git.Managed.Tests;
 
 /// <summary>
-/// Validates <see cref="GitRevisionWalker"/> ordering and merge-base results against libgit2
-/// (via LibGit2Sharp) on the same fixture repositories — the parity GitVersion's version
-/// calculation depends on.
+/// Validates <see cref="GitRevisionWalker"/> ordering against recorded LibGit2Sharp baselines
+/// and merge-base results against Git CLI on the same fixture repositories, preserving
+/// the history semantics GitVersion's version calculation depends on.
 /// </summary>
 [TestFixture]
 public class GitRevisionWalkerTests
