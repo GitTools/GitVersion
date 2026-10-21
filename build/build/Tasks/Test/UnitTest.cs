@@ -1,4 +1,5 @@
 using Cake.Common.Tools.DotNet.Execute;
+using Cake.Common.Tools.DotNet.Restore;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -7,7 +8,7 @@ namespace Build.Tasks;
 [TaskDescription("Run the unit tests")]
 [DotnetArgument]
 [TaskArgument(Arguments.TestResults)]
-[IsDependentOn(typeof(Build))]
+[IsDependentOn(typeof(Clean))]
 public class UnitTest : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context) => context.EnabledUnitTests;
@@ -20,6 +21,15 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             throw new CakeException("No test projects were found.");
         }
+
+        // Build each selected target below with real source paths. An upfront solution
+        // build compiles both frameworks with CI paths, then recompiles them for tests.
+        context.DotNetRestore("./src/GitVersion.slnx", new DotNetRestoreSettings
+        {
+            Verbosity = DotNetVerbosity.Minimal,
+            Sources = [Constants.NugetOrgUrl],
+            MSBuildSettings = context.MsBuildSettings
+        });
 
         var failures = new List<string>();
         foreach (var framework in frameworks)
@@ -69,7 +79,7 @@ public class UnitTest : FrostingTask<BuildContext>
         var settings = new DotNetBuildSettings
         {
             Framework = $"net{framework}",
-            // Build restores the solution. Rebuild with real source paths for snapshots and annotations.
+            // The solution is restored once; build with real paths for snapshots and annotations.
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
             MSBuildSettings = new()
