@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Xml.Linq;
 
 namespace Build.Tasks;
 
@@ -7,13 +8,22 @@ internal static class PackageContentsValidation
     public static void Validate(string packagePath)
     {
         using var archive = ZipFile.OpenRead(packagePath);
+        var nuspec = archive.Entries.Single(entry => entry.FullName.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase));
+        using var nuspecStream = nuspec.Open();
+        var packageId = XDocument.Load(nuspecStream).Descendants().Single(element => element.Name.LocalName == "id").Value;
+        var nativeTool = packageId.StartsWith("GitVersion.Tool.", StringComparison.OrdinalIgnoreCase);
+        if (nativeTool && !archive.Entries.Any(entry => entry.FullName.Split('/') is ["tools", "any", _, "gitversion" or "gitversion.exe"]))
+        {
+            throw new CakeException($"Native CLI executable is missing from {packagePath}.");
+        }
         foreach (var entry in archive.Entries)
         {
             var path = entry.FullName.Replace('\\', '/');
-            if (path.Contains("libgit2", StringComparison.OrdinalIgnoreCase)
+            if (nativeTool && path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+                || path.Contains("libgit2", StringComparison.OrdinalIgnoreCase)
                 || path.Contains("runtimes/", StringComparison.OrdinalIgnoreCase) && path.Contains("/native/", StringComparison.OrdinalIgnoreCase))
             {
-                throw new CakeException($"Native Git or runtime payload '{path}' is forbidden in {packagePath}.");
+                throw new CakeException($"Unsupported payload '{path}' in {packagePath}.");
             }
 
             if (!path.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase)

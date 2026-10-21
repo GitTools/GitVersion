@@ -35,6 +35,8 @@ public class PackageNuget : FrostingTask<BuildContext>
             {
                 Configuration = context.MsBuildConfiguration,
                 Framework = $"net{version}",
+                // MSBuild embeds managed CLI dependencies; it does not launch the native tool.
+                ArgumentCustomization = arg => arg.Append("-p:PublishAot=false"),
                 MSBuildSettings = context.MsBuildSettings
             });
         }

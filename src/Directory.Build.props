@@ -52,10 +52,9 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
-    <!-- Analyze only the shipped CLI graph when explicitly publishing with NativeAOT.
-         Keep test, schema, MSBuild-task and ordinary release builds unchanged. -->
-    <PropertyGroup Condition="'$(PublishAot)' == 'true' and
-                              ('$(MSBuildProjectName)' == 'GitVersion.App' or
+    <!-- Keep the shipped CLI graph AOT-compatible in every build.
+         Test, schema and MSBuild-task projects are outside this analysis scope. -->
+    <PropertyGroup Condition="('$(MSBuildProjectName)' == 'GitVersion.App' or
                                '$(MSBuildProjectName)' == 'GitVersion.Core' or
                                '$(MSBuildProjectName)' == 'GitVersion.Configuration' or
                                '$(MSBuildProjectName)' == 'GitVersion.Output' or
