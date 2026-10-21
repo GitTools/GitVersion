@@ -12,8 +12,7 @@
     "src/GitVersion.Core/Configuration",
     "src/GitVersion.Core/GitVersionContext.cs",
     "src/GitVersion.Configuration",
-    "src/GitVersion.Git.Managed",
-    "src/GitVersion.LibGit2Sharp"
+    "src/GitVersion.Git.Managed"
   ],
   "sections": [
     {
