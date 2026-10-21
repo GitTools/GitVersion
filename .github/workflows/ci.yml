@@ -68,8 +68,9 @@ jobs:
         id: flags
         shell: bash
         run: |
-          echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
-          echo "run_full_validation=${{ github.repository == 'GitTools/GitVersion' && (github.ref_name == 'main' || github.event_name == 'merge_group' || github.event_name == 'repository_dispatch') }}" >> "$GITHUB_OUTPUT"
+          # Disposable #5391 validation; force all distros without publishing.
+          echo "can_publish=false" >> "$GITHUB_OUTPUT"
+          echo "run_full_validation=true" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build & Package
@@ -173,8 +174,8 @@ jobs:
 
   release:
     name: Release
-    needs: [ publish, docker_linux_manifests ]
-    if: ${{ always() && needs.publish.result == 'success' && (needs.docker_linux_manifests.result == 'success' || needs.docker_linux_manifests.result == 'skipped') }}
+    needs: [ publish, docker_linux_manifests, publish_flags ]
+    if: fromJson(needs.publish_flags.outputs.can_publish) # Always false for this validation.
     runs-on: windows-2025-vs2026
     permissions:
       contents: write
