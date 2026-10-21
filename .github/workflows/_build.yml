@@ -46,12 +46,12 @@ jobs:
           NATIVE_CONTAINER: ${{ matrix.container }}
         run: |
           docker build --target "$NATIVE_CONTAINER" -t gitversion-native-package build/nativeaot
-          docker run --rm -v "$PWD:/workspace" -w /workspace \
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/workspace" -w /workspace \
             -e CI -e GITHUB_ACTIONS -e GITHUB_REF -e GITHUB_REF_TYPE -e GITHUB_SHA \
             -e GITHUB_REPOSITORY -e GITHUB_RUN_ID -e GITHUB_RUN_NUMBER -e GITHUB_EVENT_NAME \
             -e GITHUB_HEAD_REF -e GITHUB_BASE_REF -e GITHUB_WORKFLOW -e GITHUB_JOB \
             gitversion-native-package /bin/sh -ec \
-            'git config --global --add safe.directory /workspace; dotnet run/build.dll --target=Package'
+            'mkdir -p "$HOME"; git config --global --add safe.directory /workspace; dotnet run/build.dll --target=Package'
 
       - name: 'Upload nuget packages'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
