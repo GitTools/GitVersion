@@ -2,7 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk@sha256:65f3c7c6a25a239ab3e6719f2896147e7b68242ff2d8818dd70498bde6ef8bea AS sdk
 
 # Build against the oldest supported glibc baseline, not the hosted runner's libc.
-FROM registry.access.redhat.com/ubi8/ubi:8.10@sha256:73071333d0cd7c526b6d7d01f0c9b709fd4a96c47853b1c9071e0a11284bd1da AS glibc
+# UBI 8.10
+FROM registry.access.redhat.com/ubi8/ubi@sha256:73071333d0cd7c526b6d7d01f0c9b709fd4a96c47853b1c9071e0a11284bd1da AS glibc
 RUN dnf install -y clang gcc-c++ git libicu openssl-libs zlib-devel && dnf clean all
 COPY --from=sdk /usr/share/dotnet /usr/share/dotnet
 ENV PATH=/usr/share/dotnet:$PATH DOTNET_ROOT=/usr/share/dotnet DOTNET_ROLL_FORWARD=Major
