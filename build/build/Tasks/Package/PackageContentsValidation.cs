@@ -24,7 +24,8 @@ internal static class PackageContentsValidation
         using var archive = ZipFile.OpenRead(packagePath);
         var nuspec = archive.Entries.Single(entry => entry.FullName.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase));
         using var nuspecStream = nuspec.Open();
-        var packageId = XDocument.Load(nuspecStream).Descendants().Single(element => element.Name.LocalName == "id").Value;
+        var metadata = XDocument.Load(nuspecStream).Root!.Elements().Single(element => element.Name.LocalName == "metadata");
+        var packageId = metadata.Elements().Single(element => element.Name.LocalName == "id").Value;
         var nativeTool = packageId.StartsWith("GitVersion.Tool.", StringComparison.OrdinalIgnoreCase);
         if (nativeTool && !archive.Entries.Any(entry => entry.FullName.Split('/') is ["tools", "any", _, "gitversion" or "gitversion.exe"]))
         {
