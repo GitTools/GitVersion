@@ -2,8 +2,8 @@
 namespace GitVersion.Git.Managed.Tests;
 
 /// <summary>
-/// Validates <see cref="GitTreeDiff"/> against libgit2's default <c>TreeChanges</c> path
-/// list, which is what GitVersion exposes as <c>ICommit.DiffPaths</c>.
+/// Validates <see cref="GitTreeDiff"/> changed paths against Git CLI results,
+/// including first-parent merge diffs, as exposed by <c>ICommit.DiffPaths</c>.
 /// </summary>
 [TestFixture]
 public class GitTreeDiffTests
