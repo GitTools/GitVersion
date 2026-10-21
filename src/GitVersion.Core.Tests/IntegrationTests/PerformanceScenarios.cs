@@ -2,6 +2,8 @@ using GitVersion.Configuration;
 
 namespace GitVersion.Tests.IntegrationTests;
 
+// Measure calculation time without concurrent fixtures spawning Git processes.
+[NonParallelizable]
 public class PerformanceScenarios : TestBase
 {
     [Test]
