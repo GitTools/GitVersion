@@ -320,23 +320,8 @@ actionable errors; explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.
 
-## Native CLI distribution
-
-Standalone CLI archives and RID-specific `GitVersion.Tool` packages are compiled
-with NativeAOT by default. Standalone executables do not require a shared .NET
-runtime; .NET tool installation and command discovery still require a supported
-.NET SDK. Native executables retain their operating system's native dependencies.
-
-Libraries and `GitVersion.MsBuild` remain managed assemblies. The MSBuild package
-retains its matching managed CLI dependencies; it does not load a native tool
-executable as a task assembly. Test hosts and development builds also remain
-managed, with AOT compatibility analysis enabled for the shipped CLI projects.
-
-Native publication must run on a compatible host. Release packaging builds
-Windows and macOS tools on their respective hosts and Linux tools in native
-glibc/musl containers for each CPU architecture, then collects the complete
-seven-RID tool set. The top-level tool package dispatches to the matching native
-RID package.
+For the subsequent NativeAOT distribution changes, see the
+[v7.0 to v7.1 migration guide](/docs/migration/v7.0-to-v7.1).
 
 [docker-usage]: /docs/usage/docker
 
