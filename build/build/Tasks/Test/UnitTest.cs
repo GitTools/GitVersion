@@ -8,6 +8,8 @@ namespace Build.Tasks;
 [TaskDescription("Run the unit tests")]
 [DotnetArgument]
 [TaskArgument(Arguments.TestResults)]
+[TaskArgument(Arguments.TestProjects)]
+[TaskArgument(Arguments.TestFilter)]
 [IsDependentOn(typeof(Clean))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -20,6 +22,18 @@ public class UnitTest : FrostingTask<BuildContext>
         if (projects.Length == 0)
         {
             throw new CakeException("No test projects were found.");
+        }
+
+        var requested = context.Argument(Arguments.TestProjects, string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (requested.Length > 0)
+        {
+            var unknown = requested.Except(projects.Select(project => project.GetFilenameWithoutExtension().FullPath), StringComparer.OrdinalIgnoreCase).ToArray();
+            if (unknown.Length > 0)
+            {
+                throw new CakeException($"Unknown test projects: {string.Join(", ", unknown)}.");
+            }
+            projects = [.. projects.Where(project => requested.Contains(project.GetFilenameWithoutExtension().FullPath, StringComparer.OrdinalIgnoreCase))];
         }
 
         // Build each selected target below with real source paths. An upfront solution
@@ -108,6 +122,11 @@ public class UnitTest : FrostingTask<BuildContext>
         // CI publishes coverage from the LTS target; other targets validate runtime compatibility.
         var collectCoverage = framework == Constants.DotnetLtsLatest;
         var args = new ProcessArgumentBuilder().AppendArguments(resultsDirectory, collectCoverage);
+        var filter = context.Argument(Arguments.TestFilter, string.Empty);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            args.Append("--filter").AppendQuoted(filter);
+        }
         if (context.BuildSystem().IsRunningOnGitHubActions)
         {
             args = args.AppendGitHubArguments();
