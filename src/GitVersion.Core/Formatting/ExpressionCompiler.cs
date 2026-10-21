@@ -14,7 +14,7 @@ internal class ExpressionCompiler : IExpressionCompiler
             var isStatic = member switch
             {
                 FieldInfo field => field.IsStatic,
-                PropertyInfo property => property.GetMethod?.IsStatic == true,
+                PropertyInfo property => property.GetMethod is { IsStatic: true },
                 _ => false
             };
             body = Expression.MakeMemberAccess(isStatic ? null : body, member);
