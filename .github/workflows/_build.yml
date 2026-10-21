@@ -41,17 +41,8 @@ jobs:
 
       - name: Build native Linux packages
         if: matrix.container != ''
-        shell: bash
-        env:
-          NATIVE_CONTAINER: ${{ matrix.container }}
-        run: |
-          docker build --target "$NATIVE_CONTAINER" -t gitversion-native-package build/nativeaot
-          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/workspace" -w /workspace \
-            -e CI -e GITHUB_ACTIONS -e GITHUB_REF -e GITHUB_REF_TYPE -e GITHUB_SHA \
-            -e GITHUB_REPOSITORY -e GITHUB_RUN_ID -e GITHUB_RUN_NUMBER -e GITHUB_EVENT_NAME \
-            -e GITHUB_HEAD_REF -e GITHUB_BASE_REF -e GITHUB_WORKFLOW -e GITHUB_JOB \
-            gitversion-native-package /bin/sh -ec \
-            'mkdir -p "$HOME"; git config --global --add safe.directory /workspace; dotnet run/build.dll --target=Package'
+        shell: pwsh
+        run: dotnet run/build.dll --target=PackageLinux --native_container=${{ matrix.container }}
 
       - name: 'Upload nuget packages'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -94,49 +85,41 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Restore State
+        uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
+
       - name: Download platform NuGet packages
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: nuget-*
           merge-multiple: true
-          path: packages/nuget
-
-      - name: Require every advertised tool RID
-        shell: pwsh
-        run: |
-          $packages = @(Get-ChildItem packages/nuget/GitVersion.Tool*.nupkg)
-          foreach ($id in @('GitVersion.Tool', 'GitVersion.Tool.win-x64', 'GitVersion.Tool.win-arm64',
-                            'GitVersion.Tool.linux-x64', 'GitVersion.Tool.linux-arm64',
-                            'GitVersion.Tool.linux-musl-x64', 'GitVersion.Tool.linux-musl-arm64',
-                            'GitVersion.Tool.osx-arm64')) {
-            $matching = @($packages | Where-Object { $_.Name -match ('^' + [regex]::Escape($id) + '\.\d') })
-            if ($matching.Count -ne 1) { throw "Expected one package for $id; found $($matching.Count)." }
-          }
-
-      - name: Upload complete NuGet set
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: nuget
-          path: packages/nuget
+          path: artifacts/packages/nuget
 
       - name: Download Linux archives
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: native-linux-*
           merge-multiple: true
-          path: packages/native
+          path: artifacts/packages/native
 
-      - name: Require every Linux archive
+      - name: Validate collected packages
         shell: pwsh
-        run: |
-          foreach ($rid in @('linux-x64', 'linux-arm64', 'linux-musl-x64', 'linux-musl-arm64')) {
-            $matching = @(Get-ChildItem "packages/native/gitversion-$rid-*.tar.gz")
-            if ($matching.Count -ne 1) { throw "Expected one archive for $rid; found $($matching.Count)." }
-          }
+        run: dotnet run/build.dll --target=PackageValidateCollected
+
+      - name: Upload complete NuGet set
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nuget
+          path: artifacts/packages/nuget
 
       - name: Upload complete Linux archive set
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: native-Linux
-          path: packages/native
+          path: artifacts/packages/native
           if-no-files-found: error
