@@ -1,6 +1,9 @@
 on:
   workflow_call:
     outputs:
+      build_matrix:
+        description: 'Native packaging build matrix'
+        value: ${{ jobs.set_matrix.outputs.build_matrix }}
       docker_distros:
         description: 'List of Docker distros'
         value: ${{ jobs.set_matrix.outputs.docker_distros }}
@@ -70,6 +73,7 @@ jobs:
     name: Set Matrix
     runs-on: ubuntu-24.04
     outputs:
+      build_matrix: ${{ steps.set_matrix.outputs.build_matrix }}
       docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
       dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}
     steps:

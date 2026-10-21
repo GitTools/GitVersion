@@ -78,6 +78,8 @@ jobs:
     permissions:
       contents: read
     uses: $/.github/workflows/_build.yml # NOSONAR -- $/ resolves to the running commit.
+    with:
+      build_matrix: ${{ needs.prepare.outputs.build_matrix }}
 
   unit_test:
     name: Test
