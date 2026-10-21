@@ -198,10 +198,11 @@ CLI mutator, later also the managed reader). The version-to-default mapping is e
 | **v7.1** | `managed` | `libgit2` fails; explicit `managed` remains accepted |
 | v7.x (later) | `managed` | Explicit `managed` remains a compatibility no-op |
 
-Historical v7.0 validation: both backends shipped side by side during that window so users can validate `managed` against
-their real repositories and report issues before libgit2 is dropped. For that whole window, the CI
-unit-test matrix runs the full suite against both backends (`git_backend` dimension in `_unit_tests.yml`) —
-both legs must stay green.
+The v7.0 transition design retains both backends so users can validate `managed`
+against their repositories before the v7.1 removal. The dual-backend CI matrix
+was used during implementation of that transition. This v7.1 branch removes the
+`git_backend` dimension and runs the managed implementation across the existing
+OS/TFM matrix; both adapters are no longer present side by side.
 
 ### Phase A — CLI mutator first (reads stay on libgit2) · ~2–3 weeks
 Replace `GitRepository.mutating.cs` + mutating collection members with `GitVersion.Git.CommandLine`
