@@ -11,6 +11,7 @@ public class VersionFormatTests
 
     [TestCase("{Major}.{Minor:00}.{Patch}", "12.03.4")]
     [TestCase("{Major.Length}", "2")]
+    [TestCase("before{Major.Empty}after", "beforeafter")]
     [TestCase("{Length}", "2")]
     [TestCase("{CommitDate:yyyy}", "2025")]
     [TestCase("{BranchName ?? \"no branch\"}", "no branch")]
@@ -33,6 +34,7 @@ public class VersionFormatTests
 
     [TestCase("{Major}.{Minor:00}.{Patch}", "12.03.4")]
     [TestCase("{Major.Length}", "2")]
+    [TestCase("before{Major.Empty}after", "beforeafter")]
     [TestCase("{BranchName ?? \"no branch\"}", "no branch")]
     [TestCase("{Unknown ?? \"missing\"}", "missing")]
     public void FormatVariablesPreservesObjectFormatting(string template, string expected)
