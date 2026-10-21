@@ -4,6 +4,20 @@ namespace Build.Tasks;
 
 internal static class PackageContentsValidation
 {
+    public static void ValidatePackages(IEnumerable<string> toolPackages, IEnumerable<string> msBuildPackages)
+    {
+        var tools = toolPackages.ToArray();
+        var msBuild = msBuildPackages.ToArray();
+        if (tools.Length == 0 || msBuild.Length == 0)
+        {
+            throw new CakeException("Expected both GitVersion.Tool and GitVersion.MsBuild NuGet packages for validation.");
+        }
+        foreach (var package in tools.Concat(msBuild))
+        {
+            Validate(package);
+        }
+    }
+
     public static void Validate(string packagePath)
     {
         using var archive = ZipFile.OpenRead(packagePath);
