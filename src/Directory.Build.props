@@ -52,9 +52,9 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
-    <!-- Analyze only the shipped CLI graph when explicitly selecting the managed-only flavor.
+    <!-- Analyze only the shipped CLI graph when explicitly publishing with NativeAOT.
          Keep test, schema, MSBuild-task and ordinary release builds unchanged. -->
-    <PropertyGroup Condition="'$(GitVersionManagedOnly)' == 'true' and
+    <PropertyGroup Condition="'$(PublishAot)' == 'true' and
                               ('$(MSBuildProjectName)' == 'GitVersion.App' or
                                '$(MSBuildProjectName)' == 'GitVersion.Core' or
                                '$(MSBuildProjectName)' == 'GitVersion.Configuration' or
