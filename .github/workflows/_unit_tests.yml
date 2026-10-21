@@ -45,6 +45,9 @@ jobs:
         id: unit_tests
         timeout-minutes: 30
         shell: bash
+        env:
+          TEST_PROJECTS: ${{ matrix.test_projects }}
+          TEST_FILTER: ${{ matrix.test_filter }}
         run: |
           # Explicit bash uses pipefail on every runner. Keep the log outside Cake's Clean target.
           preserve_reports() {
@@ -55,8 +58,15 @@ jobs:
             fi
           }
           trap preserve_reports EXIT
+          test_arguments=()
+          if [[ -n "$TEST_PROJECTS" ]]; then
+            test_arguments+=("--test_projects=$TEST_PROJECTS")
+          fi
+          if [[ -n "$TEST_FILTER" ]]; then
+            test_arguments+=("--test_filter=$TEST_FILTER")
+          fi
           dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }} --test_results="$TEST_RESULTS" \
-            --test_projects="${{ matrix.test_projects }}" --test_filter="${{ matrix.test_filter }}" \
+            "${test_arguments[@]}" \
             2>&1 | tee "$RUNNER_TEMP/unit-tests.log"
 
       - name: Explain failed or incomplete test run
