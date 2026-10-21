@@ -1,4 +1,4 @@
-using LibGit2Sharp;
+using GitVersion.Testing.Git;
 
 namespace GitVersion.Testing;
 

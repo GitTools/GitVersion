@@ -1,4 +1,3 @@
-using LibGit2Sharp;
 
 namespace GitVersion.Git.Managed.Tests;
 
@@ -10,7 +9,7 @@ namespace GitVersion.Git.Managed.Tests;
 public class GitTreeDiffTests
 {
     [Test]
-    public void ChangedPathsMatchLibGit2ForEveryCommit()
+    public void ChangedPathsMatchGitCliForEveryCommit()
     {
         using var repository = new GitTestRepository();
         repository.WriteFile("a.txt", "one\n");
@@ -33,7 +32,7 @@ public class GitTreeDiffTests
     }
 
     [Test]
-    public void ChangedPathsMatchLibGit2WhenAFileBecomesADirectory()
+    public void ChangedPathsMatchGitCliWhenAFileBecomesADirectory()
     {
         using var repository = new GitTestRepository();
         repository.WriteFile("thing", "file\n");
@@ -135,7 +134,6 @@ public class GitTreeDiffTests
         var options = new GitRevisionWalkOptions();
         options.Include.Add(repository.ResolveId("HEAD"));
 
-        using var libgit2 = new Repository(repository.RepositoryPath);
 
         foreach (var commit in walker.Walk(options))
         {
@@ -145,12 +143,10 @@ public class GitTreeDiffTests
 
             var actual = treeDiff.GetChangedPaths(commit.Tree, parentTree);
 
-            // The adapter's DiffPaths: Compare<TreeChanges>(commit.Tree, firstParent?.Tree).Paths
-            var libgit2Commit = libgit2.Lookup<Commit>(commit.Sha.ToString())!;
-            var expected = libgit2.Diff
-                .Compare<TreeChanges>(libgit2Commit.Tree, libgit2Commit.Parents.FirstOrDefault()?.Tree)
-                .Select(element => element.Path)
-                .ToList();
+            var arguments = commit.Parents.Count > 0
+                ? new[] { "diff", "--no-renames", "--name-only", "-z", commit.Parents[0].ToString(), commit.Sha.ToString() }
+                : new[] { "diff-tree", "--root", "--no-commit-id", "--no-renames", "--name-only", "-z", "-r", commit.Sha.ToString() };
+            var expected = repository.Run(arguments).Split('\0', StringSplitOptions.RemoveEmptyEntries);
 
             actual.ShouldBe(expected, $"commit: {commit.Message.TrimEnd()}");
         }

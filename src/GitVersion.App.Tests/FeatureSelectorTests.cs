@@ -49,7 +49,7 @@ public class FeatureSelectorTests
     public void CompositionRegistersSelectedImplementations(
         [Values("v7")] string parser,
         [Values("v7")] string configuration,
-        [Values("libgit2", "managed")] string backend)
+        [Values("managed")] string backend)
     {
         using var scope = new SelectorScope(parser, configuration, backend);
         using var fixture = new EmptyRepositoryFixture();
@@ -59,14 +59,14 @@ public class FeatureSelectorTests
         host.Services.GetRequiredService<IArgumentParser>().GetType()
             .ShouldBe(typeof(ArgumentParser));
         host.Services.GetRequiredService<IGitRepository>().GetType().Assembly
-            .ShouldBe(backend == "libgit2" ? typeof(GitVersionLibGit2SharpModule).Assembly : typeof(GitVersionManagedGitModule).Assembly);
+            .ShouldBe(typeof(GitVersionManagedGitModule).Assembly);
     }
 
     [Test]
     public void SelectionLogUsesCapturedValues()
     {
         FeatureSelections selections;
-        using (new SelectorScope("v7", "v7", "libgit2"))
+        using (new SelectorScope("v7", "v7", " managed "))
         {
             selections = FeatureSelections.Resolve();
         }
@@ -75,7 +75,7 @@ public class FeatureSelectorTests
         var messages = new List<string>();
         selections.Log(new TestLogger<FeatureSelections>(messages.Add));
 
-        messages.ShouldBe(new[] { "Argument parser version: v7; Configuration version: v7; Git backend: libgit2" });
+        messages.ShouldBe(new[] { "Argument parser version: v7; Configuration version: v7; Git backend: managed" });
     }
 
     [TestCase("v6")]

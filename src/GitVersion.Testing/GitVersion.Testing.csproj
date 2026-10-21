@@ -5,7 +5,6 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="LibGit2Sharp" />
         <PackageReference Include="Shouldly" />
         <PackageReference Include="System.IO.Abstractions" />
     </ItemGroup>
@@ -19,5 +18,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+      <ProjectReference Include="..\GitVersion.Git.Managed\GitVersion.Git.Managed.csproj" />
     </ItemGroup>
 </Project>

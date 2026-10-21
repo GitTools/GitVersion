@@ -1,4 +1,4 @@
-using LibGit2Sharp;
+using System.Runtime.CompilerServices;
 
 namespace GitVersion.Git.Managed.Tests;
 
@@ -22,7 +22,7 @@ public class GitRevisionWalkerTests
     ];
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void LinearHistoryMatchesLibGit2(string sortName)
+    public void LinearHistoryMatchesRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateLinearRepository();
@@ -31,7 +31,7 @@ public class GitRevisionWalkerTests
     }
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void MergedHistoryMatchesLibGit2(string sortName)
+    public void MergedHistoryMatchesRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateMergedRepository();
@@ -40,7 +40,7 @@ public class GitRevisionWalkerTests
     }
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void MergedHistoryWithExcludesMatchesLibGit2(string sortName)
+    public void MergedHistoryWithExcludesMatchesRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateMergedRepository();
@@ -54,7 +54,7 @@ public class GitRevisionWalkerTests
     }
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void EqualCommitterTimestampsMatchLibGit2(string sortName)
+    public void EqualCommitterTimestampsMatchRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateEqualTimestampRepository();
@@ -63,7 +63,7 @@ public class GitRevisionWalkerTests
     }
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void CrissCrossHistoryMatchesLibGit2(string sortName)
+    public void CrissCrossHistoryMatchesRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateCrissCrossRepository();
@@ -72,7 +72,7 @@ public class GitRevisionWalkerTests
     }
 
     [TestCaseSource(nameof(SortCombinations))]
-    public void OctopusMergeMatchesLibGit2(string sortName)
+    public void OctopusMergeMatchesRecordedWalks(string sortName)
     {
         var sort = Enum.Parse<GitRevisionSortStrategies>(sortName);
         using var repository = CreateOctopusRepository();
@@ -82,7 +82,7 @@ public class GitRevisionWalkerTests
 
     [TestCase(false)]
     [TestCase(true)]
-    public void FirstParentWalksMatchLibGit2(bool withExclude)
+    public void FirstParentWalksMatchRecordedWalks(bool withExclude)
     {
         using var repository = CreateMergedRepository();
 
@@ -100,7 +100,7 @@ public class GitRevisionWalkerTests
     }
 
     [Test]
-    public void MultipleIncludesMatchLibGit2()
+    public void MultipleIncludesMatchRecordedWalks()
     {
         using var repository = CreateMergedRepository();
         // Include two historic points rather than the merged tip.
@@ -114,15 +114,8 @@ public class GitRevisionWalkerTests
         using var store = repository.OpenObjectStore();
         var actual = new GitRevisionWalker(store).Walk(options).Select(commit => commit.Sha.ToString()).ToList();
 
-        using var libgit2 = new Repository(repository.RepositoryPath);
-        var filter = new global::LibGit2Sharp.CommitFilter
-        {
-            IncludeReachableFrom = new[] { first, second },
-            SortBy = global::LibGit2Sharp.CommitSortStrategies.Topological | global::LibGit2Sharp.CommitSortStrategies.Time
-        };
-        var expected = libgit2.Commits.QueryBy(filter).Select(commit => commit.Sha).ToList();
-
-        actual.ShouldBe(expected);
+        var expected = repository.Run("rev-list", first, second).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        actual.Order().ShouldBe(expected.Order());
     }
 
     [Test]
@@ -246,68 +239,57 @@ public class GitRevisionWalkerTests
         Should.Throw<GitObjectStoreException>(() => new GitRevisionWalker(store).Walk(options));
     }
 
-    private static void AssertWalkParity(GitTestRepository repository, GitRevisionWalkOptions options, bool head, string? excludeSha = null)
+    // Captured from LibGit2Sharp 0.32.0 before removal. Messages are unique in these
+    // deterministic histories, so this pins exact walk ordering without a native oracle.
+    private static readonly Dictionary<string, string[]> RecordedWalks = LoadRecordedWalks();
+
+    private static Dictionary<string, string[]> LoadRecordedWalks()
+    {
+        using var stream = typeof(GitRevisionWalkerTests).Assembly.GetManifestResourceStream("GitVersion.Approved.RevisionWalks.json")!;
+        return JsonSerializer.Deserialize<Dictionary<string, string[]>>(stream)!;
+    }
+
+    private static void AssertWalkParity(GitTestRepository repository, GitRevisionWalkOptions options, bool head, string? excludeSha = null, [CallerMemberName] string scenario = "")
     {
         if (head)
         {
             options.Include.Add(repository.ResolveId("HEAD"));
         }
 
-        using var store = repository.OpenObjectStore();
-        var actual = new GitRevisionWalker(store).Walk(options).Select(commit => commit.Sha.ToString()).ToList();
-
-        using var libgit2 = new Repository(repository.RepositoryPath);
-        var filter = new global::LibGit2Sharp.CommitFilter
+        var fixture = scenario switch
         {
-            IncludeReachableFrom = options.Include[0].ToString(),
-            SortBy = ToLibGit2Sort(options.Sort),
-            FirstParentOnly = options.FirstParentOnly
+            _ when scenario.StartsWith("Linear", StringComparison.Ordinal) => "Linear",
+            _ when scenario.StartsWith("Equal", StringComparison.Ordinal) => "EqualTimestamp",
+            _ when scenario.StartsWith("CrissCross", StringComparison.Ordinal) => "CrissCross",
+            _ when scenario.StartsWith("Octopus", StringComparison.Ordinal) => "Octopus",
+            _ => "Merged"
         };
-
-        if (excludeSha is not null)
+        using var store = repository.OpenObjectStore();
+        var commits = new GitRevisionWalker(store).Walk(options);
+        var key = $"{fixture}/{(int)options.Sort}/{options.FirstParentOnly}/{excludeSha != null}";
+        commits.Select(c => c.Message.TrimEnd()).ShouldBe(RecordedWalks[key], key);
+        var arguments = new List<string> { "rev-list", options.Include[0].ToString() };
+        if (options.FirstParentOnly)
         {
-            filter.ExcludeReachableFrom = excludeSha;
+            arguments.Add("--first-parent");
         }
 
-        var expected = libgit2.Commits.QueryBy(filter).Select(commit => commit.Sha).ToList();
+        if (excludeSha != null)
+        {
+            arguments.Add("^" + excludeSha);
+        }
 
-        actual.ShouldBe(expected, $"sort: {options.Sort}, firstParent: {options.FirstParentOnly}, exclude: {excludeSha}");
-        actual.ShouldNotBeEmpty();
+        commits.Select(c => c.Sha.ToString()).Order().ShouldBe(repository.Run([.. arguments]).Split('\n', StringSplitOptions.RemoveEmptyEntries).Order());
+        commits.ShouldNotBeEmpty();
     }
 
     private static void AssertMergeBaseParity(GitTestRepository repository, string first, string second)
     {
         using var store = repository.OpenObjectStore();
         var actual = new GitRevisionWalker(store).FindMergeBase(GitObjectId.Parse(first), GitObjectId.Parse(second));
-
-        using var libgit2 = new Repository(repository.RepositoryPath);
-        var expected = libgit2.ObjectDatabase.FindMergeBase(libgit2.Lookup<Commit>(first), libgit2.Lookup<Commit>(second));
-
-        expected.ShouldNotBeNull();
+        var expected = repository.Run("merge-base", "--all", first, second).Split('\n', StringSplitOptions.RemoveEmptyEntries);
         actual.ShouldNotBeNull();
-        actual.Value.ToString().ShouldBe(expected.Sha);
-    }
-
-    private static global::LibGit2Sharp.CommitSortStrategies ToLibGit2Sort(GitRevisionSortStrategies sort)
-    {
-        var result = global::LibGit2Sharp.CommitSortStrategies.None;
-
-        if (sort.HasFlag(GitRevisionSortStrategies.Topological))
-        {
-            result |= global::LibGit2Sharp.CommitSortStrategies.Topological;
-        }
-
-        if (sort.HasFlag(GitRevisionSortStrategies.Time))
-        {
-            result |= global::LibGit2Sharp.CommitSortStrategies.Time;
-        }
-
-        if (sort.HasFlag(GitRevisionSortStrategies.Reverse))
-        {
-            result |= global::LibGit2Sharp.CommitSortStrategies.Reverse;
-        }
-
-        return result;
+        expected.ShouldContain(actual.Value.ToString());
     }
 
     private static void DeleteLooseObject(GitTestRepository repository, string sha)

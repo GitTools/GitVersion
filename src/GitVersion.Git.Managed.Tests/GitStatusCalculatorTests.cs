@@ -1,10 +1,9 @@
-using LibGit2Sharp;
 
 namespace GitVersion.Git.Managed.Tests;
 
 /// <summary>
-/// Validates <see cref="GitStatusCalculator"/> against the exact expression the
-/// LibGit2Sharp adapter uses for <c>IGitRepository.UncommittedChangesCount</c>.
+/// Validates <see cref="GitStatusCalculator"/> against explicit scenario counts
+/// and Git CLI status, counting each dirty path once.
 /// </summary>
 [TestFixture]
 public class GitStatusCalculatorTests
@@ -206,9 +205,9 @@ public class GitStatusCalculatorTests
     private static void AssertParity(GitTestRepository repository, int expectedCount)
     {
         var actual = ManagedCount(repository);
-        var expected = LibGit2Count(repository);
+        var expected = GitCliCount(repository);
 
-        actual.ShouldBe(expected, "managed count should match the libgit2 adapter");
+        actual.ShouldBe(expected, "managed count should match Git CLI status");
         actual.ShouldBe(expectedCount, "scenario expectation");
     }
 
@@ -223,19 +222,6 @@ public class GitStatusCalculatorTests
             : calculator.CountChangesInEmptyRepository();
     }
 
-    private static int LibGit2Count(GitTestRepository repository)
-    {
-        // The exact expression from GitVersion.LibGit2Sharp's GetUncommittedChangesCountInternal.
-        using var libgit2 = new Repository(repository.RepositoryPath);
-
-        if (libgit2.Head?.Tip == null)
-        {
-            var status = libgit2.RetrieveStatus();
-            return status.Untracked.Count() + status.Staged.Count();
-        }
-
-        return libgit2.Diff
-            .Compare<TreeChanges>(libgit2.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory)
-            .Count;
-    }
+    private static int GitCliCount(GitTestRepository repository) => repository.Run("status", "--porcelain=v1", "-z", "--untracked-files=all", "--no-renames")
+            .Split('\0', StringSplitOptions.RemoveEmptyEntries).Length;
 }

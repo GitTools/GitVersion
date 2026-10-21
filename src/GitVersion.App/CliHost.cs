@@ -38,9 +38,7 @@ internal static class CliHost
         services.AddModule(new GitVersionOutputModule());
         services.AddModule(new GitVersionTelemetryModule());
 
-        services.AddModule(selections.GitBackend == GitBackend.Managed
-            ? new GitVersionManagedGitModule()
-            : new GitVersionLibGit2SharpModule());
+        services.AddModule(new GitVersionManagedGitModule());
 
         services.AddModule(new GitVersionAppModule(args));
     }
