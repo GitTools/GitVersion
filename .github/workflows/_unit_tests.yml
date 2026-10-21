@@ -50,6 +50,9 @@ jobs:
         run: |
           # Explicit bash uses pipefail on every runner. Keep the log outside Cake's Clean target.
           preserve_reports() {
+            if [[ -n "${stack_watcher:-}" ]]; then
+              kill "$stack_watcher" 2>/dev/null || true
+            fi
             mkdir -p "$TEST_RESULTS"
             cp "$RUNNER_TEMP/unit-tests.log" "$TEST_RESULTS/test.log"
             if [[ -f "$GITHUB_STEP_SUMMARY" ]]; then
@@ -57,6 +60,22 @@ jobs:
             fi
           }
           trap preserve_reports EXIT
+          # Disposable macOS/net10 timeout diagnosis; never transfer this hook to the PR.
+          if [[ "${{ matrix.os }}" == "macos-26" && "${{ matrix.dotnet_version }}" == "10.0" ]]; then
+            mkdir -p "$TEST_RESULTS"
+            if dotnet tool install dotnet-stack --tool-path "$RUNNER_TEMP/stack-tools" > "$TEST_RESULTS/stack-install.log" 2>&1; then
+              (
+                sleep 900
+                core_pid=$(ps -axo pid=,comm= | awk '$2 ~ /\/GitVersion.Core.Tests$/ {print $1; exit}')
+                if [[ -n "$core_pid" ]]; then
+                  "$RUNNER_TEMP/stack-tools/dotnet-stack" report -p "$core_pid" > "$TEST_RESULTS/core-stacks.txt" 2>&1 || true
+                else
+                  echo 'Core test process not found at snapshot time.' > "$TEST_RESULTS/core-stacks.txt"
+                fi
+              ) &
+              stack_watcher=$!
+            fi
+          fi
           dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }} --test_results="$TEST_RESULTS" \
             2>&1 | tee "$RUNNER_TEMP/unit-tests.log"
 
