@@ -1,6 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Helpers;
-using LibGit2Sharp;
+using GitVersion.Testing.Git;
 
 namespace GitVersion.Tests;
 
@@ -36,7 +36,7 @@ public class GitVersionTaskDirectoryTests : TestBase
 
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
+        exception.ShouldNotBeAssignableTo<DirectoryNotFoundException>();
     }
 
     [Test]
@@ -55,6 +55,6 @@ public class GitVersionTaskDirectoryTests : TestBase
 
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
+        exception.ShouldNotBeAssignableTo<DirectoryNotFoundException>();
     }
 }

@@ -1,8 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Testing.Extensions;
-using LgCommit = LibGit2Sharp.Commit;
-using LgSignature = LibGit2Sharp.Signature;
-using LgTreeDefinition = LibGit2Sharp.TreeDefinition;
+using LgCommit = GitVersion.Testing.Git.Commit;
+using LgSignature = GitVersion.Testing.Git.Signature;
 
 namespace GitVersion.Tests;
 
@@ -93,7 +92,7 @@ public class RepositoryStoreEqualTimestampTests : TestBase
     /// Builds a reproducible, randomly shaped history in which every commit carries the same timestamp, so the
     /// walk has to break ties between commits which are not ordered by time.
     /// </summary>
-    private static LibGit2Sharp.IRepository CreateRandomDagWithEqualTimestamps(EmptyRepositoryFixture fixture, int seed)
+    private static GitVersion.Testing.Git.IRepository CreateRandomDagWithEqualTimestamps(EmptyRepositoryFixture fixture, int seed)
     {
         var repository = fixture.Repository;
 
@@ -109,7 +108,7 @@ public class RepositoryStoreEqualTimestampTests : TestBase
         }
 
         var signature = new LgSignature("test", "test@test.io", DateTimeOffset.Now.AddHours(-1));
-        var tree = repository.ObjectDatabase.CreateTree(new LgTreeDefinition());
+        var tree = repository.ObjectDatabase.CreateEmptyTree();
 
         var created = new List<LgCommit>();
         for (var i = 0; i < 14; i++)
@@ -119,11 +118,11 @@ public class RepositoryStoreEqualTimestampTests : TestBase
             var parents = created.OrderBy(_ => Next(int.MaxValue)).Take(parentCount);
 
             created.Add(repository.ObjectDatabase.CreateCommit(
-                signature, signature, $"commit {i}", tree, parents, prettifyMessage: false));
+                signature, signature, $"commit {i}", tree, parents));
         }
 
         var tip = repository.ObjectDatabase.CreateCommit(
-            signature, signature, "tip", tree, created, prettifyMessage: false);
+            signature, signature, "tip", tree, created);
         repository.Refs.Add("refs/heads/main", tip.Id, allowOverwrite: true);
 
         return repository;

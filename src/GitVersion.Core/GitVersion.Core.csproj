@@ -32,7 +32,6 @@
         <InternalsVisibleTo Include="GitVersion.BuildAgents" />
         <InternalsVisibleTo Include="GitVersion.Configuration" />
         <InternalsVisibleTo Include="GitVersion.Git.Managed" />
-        <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
         <InternalsVisibleTo Include="GitVersion.MsBuild" />
         <InternalsVisibleTo Include="GitVersion.Output" />
 

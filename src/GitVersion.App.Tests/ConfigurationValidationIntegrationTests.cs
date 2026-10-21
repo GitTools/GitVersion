@@ -252,9 +252,7 @@ public class ConfigurationValidationIntegrationTests
     }
 
     [TestCase("managed", "{}", true)]
-    [TestCase("libgit2", "{}", true)]
     [TestCase("managed", "calculation: [", false)]
-    [TestCase("libgit2", "calculation: [", false)]
     public async Task ExplicitValidationNeverConstructsGitOrCalculationServices(string backend, string content, bool valid)
     {
         Write(content);

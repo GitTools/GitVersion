@@ -90,10 +90,9 @@ public class UnitTest : FrostingTask<BuildContext>
             throw new CakeException($"Test assembly not found for {project} / net{framework}: {targetPath}");
         }
 
-        var backend = context.EnvironmentVariable("GITVERSION_GIT_BACKEND") ?? "default";
         var attempt = context.EnvironmentVariable("GITHUB_RUN_ATTEMPT") ?? "local";
         var root = new DirectoryPath(context.Argument(Arguments.TestResults,
-            Paths.TestOutput.Combine(backend).Combine($"attempt-{attempt}").FullPath));
+            Paths.TestOutput.Combine($"attempt-{attempt}").FullPath));
         var resultsDirectory = context.MakeAbsolute(root.Combine(project.GetFilenameWithoutExtension().FullPath).Combine($"net{framework}"));
         context.CleanDirectory(resultsDirectory);
         // CI publishes coverage from the LTS target; other targets validate runtime compatibility.

@@ -4,8 +4,8 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.Tests;
-using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
 

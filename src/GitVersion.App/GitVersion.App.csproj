@@ -30,7 +30,6 @@
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Git.Managed\GitVersion.Git.Managed.csproj" />
-        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
@@ -58,5 +57,10 @@
             <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
                                     Condition="'%(TfmSpecificPackageFile.Filename)%(TfmSpecificPackageFile.Extension)' == 'DotnetToolSettings.xml' and '%(TfmSpecificPackageFile.PackagePath)' == 'tools/any/any/'" />
         </ItemGroup>
+    </Target>
+    <!-- Check before bundling: single-file archives can hide native dependencies. -->
+    <Target Name="ValidateManagedGitPublishClosure" AfterTargets="ComputeFilesToPublish" BeforeTargets="GenerateSingleFileBundle">
+        <Error Condition="$([System.String]::Copy('%(ResolvedFileToPublish.Filename)').ToLowerInvariant().Contains('libgit2'))"
+               Text="LibGit2Sharp/native Git payload remains in publish inputs: %(ResolvedFileToPublish.Identity)" />
     </Target>
 </Project>
