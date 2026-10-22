@@ -53,6 +53,7 @@ public static class DockerContextExtensions
 
             var workDir = Paths.Build.Combine("docker");
             var tags = context.GetDockerTags(dockerImage, arch);
+
             var suffix = arch.ToSuffix();
             var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{suffix})";
             var baseNameSuffix = $"{registry}/{Constants.DockerBaseImageName}:{distro}-runtime-{targetFramework}-{suffix}";
