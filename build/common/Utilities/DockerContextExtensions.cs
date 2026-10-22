@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Xunit;
 using DockerBuildXBuildSettings = Common.Addins.Cake.Docker.DockerBuildXBuildSettings;
 using DockerBuildXImageToolsCreateSettings = Common.Addins.Cake.Docker.DockerBuildXImageToolsCreateSettings;
@@ -54,28 +53,11 @@ public static class DockerContextExtensions
 
             var workDir = Paths.Build.Combine("docker");
             var tags = context.GetDockerTags(dockerImage, arch);
-            using var baseImages = JsonDocument.Parse(System.IO.File.ReadAllText(
-                context.MakeAbsolute(workDir.CombineWithFilePath("base-images.json")).FullPath));
-
-            string ResolveBaseImage(string kind)
-            {
-                var tag = $"{distro}-{kind}-{targetFramework}";
-                if (!baseImages.RootElement.TryGetProperty(registry, out var images) ||
-                    !images.TryGetProperty(tag, out var value) || value.GetString() is not { } digest)
-                {
-                    throw new InvalidOperationException($"No pinned base image for {registry}/{Constants.DockerBaseImageName}:{tag}. Update build/docker/base-images.json.");
-                }
-
-                return $"{registry}/{Constants.DockerBaseImageName}:{tag}@{digest}";
-            }
-
-            var sdkImage = ResolveBaseImage("sdk");
-            var runtimeImage = ResolveBaseImage("runtime");
-
             var suffix = arch.ToSuffix();
             var imageSuffix = $"({distro}-{context.Version.NugetVersion}-{targetFramework}-{suffix})";
+            var baseNameSuffix = $"{registry}/{Constants.DockerBaseImageName}:{distro}-runtime-{targetFramework}-{suffix}";
             var description = $"org.opencontainers.image.description=GitVersion images {imageSuffix}";
-            var baseName = $"org.opencontainers.image.base.name={runtimeImage}";
+            var baseName = $"org.opencontainers.image.base.name={baseNameSuffix}";
             var version = $"org.opencontainers.image.version={context.Version.NugetVersion}";
             var revision = $"org.opencontainers.image.revision={context.Version.GitVersion.Sha}";
             var source = $"org.opencontainers.image.source=https://github.com/GitTools/GitVersion/blob/{context.Version.GitVersion.Sha}/build/docker/Dockerfile";
@@ -92,8 +74,9 @@ public static class DockerContextExtensions
                 BuildArg =
                 [
                     "nugetFolder=/nuget",
-                    $"SDK_IMAGE={sdkImage}",
-                    $"RUNTIME_IMAGE={runtimeImage}",
+                    $"REGISTRY={registry}",
+                    $"DOTNET_VERSION={targetFramework}",
+                    $"DISTRO={distro}",
                     $"VERSION={context.Version.NugetVersion}"
                 ],
                 Label =

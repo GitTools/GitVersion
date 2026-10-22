@@ -1,8 +1,9 @@
-ARG SDK_IMAGE=docker.io/gittools/build-images:ubuntu.26.04-sdk-10.0@sha256:4e350fb8f690367fa3fd4885d5f5e94b0c302019a80b104fe3451d42c6098cd5
-ARG RUNTIME_IMAGE=docker.io/gittools/build-images:ubuntu.26.04-runtime-10.0@sha256:3ef40b72012d1d05abdcbc4c8861d62ca6118b7696e6900a9fb6bc455d8f1df1
+ARG REGISTRY='docker.io'
+ARG DISTRO='ubuntu.26.04'
+ARG DOTNET_VERSION='10.0'
 ARG VERSION='7.0.0'
 
-FROM ${SDK_IMAGE} AS installer
+FROM $REGISTRY/gittools/build-images:$DISTRO-sdk-$DOTNET_VERSION AS installer
 USER root
 ARG nugetFolder
 ARG VERSION
@@ -12,7 +13,7 @@ COPY $nugetFolder/ ./
 RUN dotnet tool install GitVersion.Tool --version "$VERSION" --tool-path /tools --add-source . \
     && chmod -R a+rX /tools
 
-FROM ${RUNTIME_IMAGE}
+FROM $REGISTRY/gittools/build-images:$DISTRO-runtime-$DOTNET_VERSION
 USER root
 
 WORKDIR /tools
