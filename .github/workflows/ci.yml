@@ -178,7 +178,6 @@ jobs:
     runs-on: windows-2025-vs2026
     permissions:
       contents: write
-      packages: write
       id-token: write
       attestations: write
       issues: write
