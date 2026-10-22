@@ -332,7 +332,7 @@ internal sealed class MainlineVersionStrategy(
         }
 
         commit.AddChildIteration(childIteration);
-        if (done && !isMainlineMerge)
+        if (done)
         {
             return true;
         }
