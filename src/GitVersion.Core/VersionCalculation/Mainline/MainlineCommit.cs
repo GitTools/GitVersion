@@ -44,7 +44,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    public MainlineIteration? ChildIteration { get; private set; }
+    private Lazy<MainlineIteration>? childIteration;
+
+    public MainlineIteration? ChildIteration => this.childIteration?.Value;
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
@@ -115,7 +117,29 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
+    public void AddChildIteration(MainlineIteration iteration)
+    {
+        iteration.NotNull();
+        this.childIteration = new(() => iteration);
+    }
+
+    internal void CopyTo(MainlineIteration iteration)
+    {
+        var copy = iteration.CreateCommit(value, BranchName, Configuration);
+        copy.AddSemanticVersions(SemanticVersions);
+        if (this.childIteration is { } child)
+        {
+            // Share recorded history, materializing new parent links only when
+            // inspected. Never copy calculated increments or effective context.
+            copy.childIteration = new(() =>
+            {
+                var source = child.Value;
+                var nested = new MainlineIteration(source.Id, source.BranchName, source.Configuration, iteration, copy);
+                nested.CopyHistoryFrom(source);
+                return nested;
+            });
+        }
+    }
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

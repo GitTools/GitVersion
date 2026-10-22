@@ -22,6 +22,8 @@ internal sealed class MainlineVersionStrategy(
     private readonly IIncrementStrategyFinder incrementStrategyFinder = incrementStrategyFinder.NotNull();
     private readonly IEnvironment environment = environment.NotNull();
     private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
+    private readonly Dictionary<(ReferenceName Branch, ICommit Tip),
+        (MainlineIteration History, ILookup<ICommit, SemanticVersionWithTag> Tags)> mainlineHistoryCache = new();
 
     private GitVersionContext Context => this.contextLazy.Value;
 
@@ -85,6 +87,7 @@ internal sealed class MainlineVersionStrategy(
 
     internal MainlineIteration BuildIteration(EffectiveBranchConfiguration configuration, out string? targetLabel)
     {
+        this.mainlineHistoryCache.Clear();
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
 
         var iteration = CreateIteration(
@@ -305,15 +308,6 @@ internal sealed class MainlineVersionStrategy(
         }
 
         var sourceTip = isMainlineMerge ? item.Parents.Skip(1).Single() : item.Parents[1];
-        // A mainline needs its complete ancestry. Other merges consume only the
-        // commits newly introduced to the receiver, sharing its traversal set.
-        var childCommits = isMainlineMerge
-            ? this.repositoryStore.GetCommitLog(null, sourceTip, Context.Configuration.Ignore)
-            : mergedCommitsInReverseOrderLazy.Value;
-        var childLabel = isMainlineMerge
-            ? new EffectiveConfiguration(Context.Configuration, childConfiguration)
-                .GetBranchSpecificLabel(childBranchName, null, this.environment, sourceTip)
-            : targetLabel;
         var childIteration = CreateIteration(
             branchName: childBranchName,
             configuration: childConfiguration,
@@ -321,13 +315,37 @@ internal sealed class MainlineVersionStrategy(
             parentCommit: commit
         );
 
-        var done = IterateOverCommitsRecursive(
-            commitsInReverseOrder: childCommits,
-            iteration: childIteration,
-            targetBranch: targetBranch,
-            targetLabel: childLabel,
-            taggedSemanticVersions: state.TaggedSemanticVersions,
-            traversedCommits: isMainlineMerge ? null : traversedCommits);
+        var cacheKey = (childBranchName, sourceTip);
+        var canCache = isMainlineMerge && childConfiguration.Increment != IncrementStrategy.Inherit;
+        var done = false;
+        if (canCache && this.mainlineHistoryCache.TryGetValue(cacheKey, out var cached)
+            && ReferenceEquals(cached.Tags, state.TaggedSemanticVersions))
+        {
+            childIteration.CopyHistoryFrom(cached.History);
+        }
+        else
+        {
+            // A mainline needs its complete ancestry. Other merges consume only
+            // newly introduced commits, sharing the receiver's traversal set.
+            var childCommits = isMainlineMerge
+                ? this.repositoryStore.GetCommitLog(null, sourceTip, Context.Configuration.Ignore)
+                : mergedCommitsInReverseOrderLazy.Value;
+            var childLabel = isMainlineMerge
+                ? new EffectiveConfiguration(Context.Configuration, childConfiguration)
+                    .GetBranchSpecificLabel(childBranchName, null, this.environment, sourceTip)
+                : targetLabel;
+            done = IterateOverCommitsRecursive(
+                commitsInReverseOrder: childCommits,
+                iteration: childIteration,
+                targetBranch: targetBranch,
+                targetLabel: childLabel,
+                taggedSemanticVersions: state.TaggedSemanticVersions,
+                traversedCommits: isMainlineMerge ? null : traversedCommits);
+            if (canCache)
+            {
+                this.mainlineHistoryCache[cacheKey] = (childIteration, state.TaggedSemanticVersions);
+            }
+        }
 
         commit.AddChildIteration(childIteration);
         if (done && !isMainlineMerge)
@@ -341,12 +359,12 @@ internal sealed class MainlineVersionStrategy(
         return false;
     }
 
-    private static BaseVersion GetMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
+    internal static BaseVersion GetMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
     {
         // The source tip can be ignored; the last recorded commit may be an
         // earlier tag and must not be mistaken for a released source tip.
         var tip = iteration.ParentCommit.NotNull().Value.Parents[1];
-        var cacheKey = (iteration.BranchName, tip);
+        var cacheKey = iteration.HistoryIdentity;
         // Inherited configurations depend on their enclosing iteration.
         var canCache = iteration.Configuration.Increment != IncrementStrategy.Inherit;
         if (canCache && context.MainlineVersions.TryGetValue(cacheKey, out var cachedVersion))
@@ -450,7 +468,7 @@ internal sealed class MainlineVersionStrategy(
 
     internal static BaseVersion DetermineBaseVersionRecursive(MainlineIteration iteration, string? targetLabel,
         IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-        Dictionary<(ReferenceName Branch, ICommit Tip), BaseVersion>? mainlineVersions = null)
+        Dictionary<object, BaseVersion>? mainlineVersions = null)
     {
         iteration.NotNull();
 
@@ -489,7 +507,7 @@ internal sealed class MainlineVersionStrategy(
 
     private static IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, string? targetLabel,
         IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-        Dictionary<(ReferenceName Branch, ICommit Tip), BaseVersion> mainlineVersions)
+        Dictionary<object, BaseVersion> mainlineVersions)
     {
         MainlineContext context = new(incrementStrategyFinder, configuration, environment, currentCommit)
         {

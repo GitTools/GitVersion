@@ -173,7 +173,9 @@ attaches a child iteration to its merge commit, with parent links back to the
 receiver. Construction records commits, configurations and tags; it does not
 calculate source versions. Feature merges contain newly introduced history,
 while merged mainlines contain their complete ancestry and use their own label
-to recognize released tags.
+to recognize released tags. Recorded histories can be reused within the same
+eligible-tag context without sharing calculated increments or the parent links
+of another merge.
 
 The rule families distinguish these events on trunk/main and non-trunk
 branches:

@@ -14,6 +14,8 @@ internal record MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
 
+    internal object HistoryIdentity { get; private set; } = new();
+
     private EffectiveConfiguration? effectiveConfiguration;
 
     public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
@@ -86,5 +88,14 @@ internal record MainlineIteration
 
         this.commitLookup.TryGetValue(commit, out var result);
         return result;
+    }
+
+    internal void CopyHistoryFrom(MainlineIteration source)
+    {
+        HistoryIdentity = source.HistoryIdentity;
+        foreach (var commit in source.Commits.Reverse())
+        {
+            commit.CopyTo(this);
+        }
     }
 }
