@@ -168,10 +168,12 @@ history, and applies matching commit rules. Those rules produce baseline
 operands and increment operators, which are folded into a candidate for the
 shared selection process.
 
-History construction precedes version calculation. Each iteration's optional
-commit selection is fixed at construction. A support contribution can carry
-both newly introduced history and a separate full history for independent
-version comparison; the calculation phase consumes those completed iterations.
+History construction precedes version calculation. Every recognized merge
+attaches a child iteration to its merge commit, with parent links back to the
+receiver. Construction records commits, configurations and tags; it does not
+calculate source versions. Feature merges contain newly introduced history,
+while merged mainlines contain their complete ancestry and use their own label
+to recognize released tags.
 
 The rule families distinguish these events on trunk/main and non-trunk
 branches:
@@ -196,13 +198,14 @@ Configuration keys such as `main` and `support` have no privileged role. Their
 regex patterns recognize the branches, including a deleted source ref whose
 name remains in the merge message. Merge-message tracking must be enabled.
 
-Build the source's complete Mainline history during traversal, independently
-of the receiver, using the source's own branch label to recognize released tags.
-During calculation, compare its computed numeric version
+During `DetermineBaseVersion`, calculate the merged mainline's child iteration
+independently of the receiver, then compare its computed numeric version
 with the receiver's merge candidate and keep the higher version. Do not replay
 the source's increments onto the receiver, even when the source started on an
 older major/minor release line. Repeated and round-trip merges compare versions
-again rather than adding previously calculated progress a second time.
+again rather than adding previously calculated progress a second time. Version
+results for explicit source configurations are reused within the calculation
+phase; inherited configurations retain their enclosing iteration's context.
 
 The receiver's `prevent-increment.of-merged-branch` controls its own merge
 increment. The source's `prevent-increment.when-branch-merged` suppresses its

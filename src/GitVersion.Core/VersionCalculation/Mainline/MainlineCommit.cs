@@ -19,9 +19,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public VersionField? MergedBranchIncrement { get; set; }
 
-    public Lazy<BaseVersion>? MergedMainlineVersion { get; set; }
-
-    public bool PreventMergedMainlineVersion { get; set; }
+    public bool IsMergedMainline(IGitVersionConfiguration configuration)
+        => HasChildIteration && GetEffectiveConfiguration(configuration).IsMainBranch
+            && ChildIteration.GetEffectiveConfiguration(configuration).IsMainBranch;
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 

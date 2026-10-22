@@ -17,6 +17,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public string? TargetLabel { get; init; }
 
+    public Dictionary<(ReferenceName Branch, ICommit Tip), BaseVersion> MainlineVersions { get; init; } = [];
+
     public SemanticVersion? SemanticVersion { get; set; }
 
     public SemanticVersionSource? SemVerSource { get; set; }
