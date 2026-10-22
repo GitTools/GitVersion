@@ -102,11 +102,6 @@
     "remark-validate-links": "13.1.0"
   },
   "overrides": {
-    "got": "11.8.5",
-    "ajv": "6.14.0",
-    "yaml": "2.8.3",
-    "unified-args": {
-      "chokidar": "4.0.3"
-    }
+    "got": "11.8.5"
   }
 }
