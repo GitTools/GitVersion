@@ -7,6 +7,49 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineIterationConstructionTests
 {
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(true, true)]
+    public void UnsupportedMergeIsRejectedOnlyWithinCalculationHistory(bool addReleaseTag, bool tagMerge)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("support/1.x");
+        fixture.MakeACommit();
+        var first = fixture.Repository.Head.Tip;
+        fixture.Checkout("main");
+        fixture.BranchTo("support/2.x");
+        fixture.MakeACommit();
+        var second = fixture.Repository.Head.Tip;
+        fixture.Checkout("main");
+        fixture.MakeACommit();
+        var receiver = fixture.Repository.Head.Tip;
+        var merge = fixture.Repository.ObjectDatabase.CreateCommit(receiver.Author, receiver.Committer,
+            "Merge branch 'support/1.x'", receiver.Tree, [receiver, first, second], false);
+        fixture.Repository.Refs.UpdateTarget(fixture.Repository.Refs[fixture.Repository.Head.CanonicalName], merge.Sha);
+        if (addReleaseTag)
+        {
+            if (!tagMerge)
+            {
+                fixture.MakeACommit();
+            }
+            fixture.ApplyTag("2.0.0");
+        }
+        fixture.MakeACommit();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment).Build();
+
+        if (addReleaseTag)
+        {
+            fixture.GetVersion(configuration).FullSemVer.ShouldBe("2.0.1");
+        }
+        else
+        {
+            Should.Throw<NotSupportedException>(() => fixture.GetVersion(configuration));
+        }
+    }
+
     [Test]
     public void IgnoredSourceTipDoesNotTurnAnAncestorTagIntoTheReleasedTip()
     {
@@ -30,7 +73,7 @@ public class MainlineIterationConstructionTests
     public void MergedHistoryIsAttachedBeforeVersionCalculation(string sourceBranch, int expectedPatch)
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeATaggedCommit("1.0.0");
+        var branchPoint = fixture.MakeATaggedCommit("1.0.0");
         fixture.BranchTo(sourceBranch);
         string[] sourceCommits = [fixture.MakeACommit(), fixture.MakeACommit(), fixture.MakeACommit()];
         fixture.Checkout("main");
@@ -68,6 +111,9 @@ public class MainlineIterationConstructionTests
         var child = merge.ChildIteration.ShouldNotBeNull();
         child.ParentIteration.ShouldBeSameAs(iteration);
         child.ParentCommit.ShouldBeSameAs(merge);
+        child.Commits.Count.ShouldBe(3);
+        child.BranchedFrom.ShouldBeSameAs(iteration.Commits.Single(commit => commit.Value.Sha == branchPoint));
+        child.GetHistory().Count().ShouldBe(4);
         foreach (var sha in sourceCommits)
         {
             var commit = child.Commits.Single(commit => commit.Value.Sha == sha);

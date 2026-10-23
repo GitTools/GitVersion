@@ -18,7 +18,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        if (context.GetPredecessor(commit) is { } predecessor && predecessor.BranchName != commit.BranchName)
         {
             context.Label = null;
         }
@@ -26,7 +26,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
         var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
 
-        if (commit.Successor is not null)
+        if (!context.IsLastCommit(commit))
         {
             yield break;
         }

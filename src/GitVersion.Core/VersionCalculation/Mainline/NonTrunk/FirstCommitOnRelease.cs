@@ -23,8 +23,8 @@ internal sealed class FirstCommitOnRelease : IIncrementer
            && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
            && commit.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
            && context.SemanticVersion is null
-           && (commit.Predecessor is null
-               || commit.BranchName != commit.Predecessor?.BranchName);
+           && (context.GetPredecessor(commit) is null
+               || commit.BranchName != context.GetPredecessor(commit)?.BranchName);
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)

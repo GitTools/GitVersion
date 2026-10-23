@@ -46,7 +46,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
             if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
             {
-                increment = increment.Consolidate(commit.Increment);
+                increment = increment.Consolidate(context.CommitIncrement);
             }
             context.Increment = increment;
 

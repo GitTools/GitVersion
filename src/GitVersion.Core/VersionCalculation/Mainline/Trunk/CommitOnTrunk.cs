@@ -17,7 +17,7 @@ internal sealed class CommitOnTrunk : IIncrementer
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        if (context.GetPredecessor(commit) is { } predecessor && predecessor.BranchName != commit.BranchName)
         {
             context.Label = null;
         }

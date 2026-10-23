@@ -6,28 +6,24 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 [DebuggerDisplay(
-    @"\{ BranchName = {" + nameof(BranchName) + "}, Increment = {" + nameof(Increment) + "}, " +
+    @"\{ BranchName = {" + nameof(BranchName) + "}, " +
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
+internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
-        => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
-
-    public VersionField Increment { get; set; }
-
-    public VersionField? MergedBranchIncrement { get; set; }
-
     public bool IsMergedMainline(IGitVersionConfiguration configuration)
-        => HasChildIteration && GetEffectiveConfiguration(configuration).IsMainBranch
+        => ChildIteration is not null && (HasChildIteration || ChildIteration.BranchedFrom is not null)
+            && GetEffectiveConfiguration(configuration).IsMainBranch
             && ChildIteration.GetEffectiveConfiguration(configuration).IsMainBranch;
+
+    public bool HasUnsupportedMerge { get; internal set; }
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    internal IBranchConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasSuccessor => Successor is not null;
 
@@ -44,9 +40,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    private Lazy<MainlineIteration>? childIteration;
-
-    public MainlineIteration? ChildIteration => this.childIteration?.Value;
+    public MainlineIteration? ChildIteration { get; private set; }
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
@@ -117,29 +111,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration)
-    {
-        iteration.NotNull();
-        this.childIteration = new(() => iteration);
-    }
-
-    internal void CopyTo(MainlineIteration iteration)
-    {
-        var copy = iteration.CreateCommit(value, BranchName, Configuration);
-        copy.AddSemanticVersions(SemanticVersions);
-        if (this.childIteration is { } child)
-        {
-            // Share recorded history, materializing new parent links only when
-            // inspected. Never copy calculated increments or effective context.
-            copy.childIteration = new(() =>
-            {
-                var source = child.Value;
-                var nested = new MainlineIteration(source.Id, source.BranchName, source.Configuration, iteration, copy);
-                nested.CopyHistoryFrom(source);
-                return nested;
-            });
-        }
-    }
+    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

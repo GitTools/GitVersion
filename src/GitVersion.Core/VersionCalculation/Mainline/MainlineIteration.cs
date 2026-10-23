@@ -10,11 +10,11 @@ namespace GitVersion.VersionCalculation.Mainline;
     "Depth = {" + nameof(Depth) + "}, " +
     "NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
-internal record MainlineIteration
+internal sealed class MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
 
-    internal object HistoryIdentity { get; private set; } = new();
+    public MainlineCommit? BranchedFrom { get; internal set; }
 
     private EffectiveConfiguration? effectiveConfiguration;
 
@@ -27,7 +27,7 @@ internal record MainlineIteration
 
         var branchConfiguration = Configuration;
 
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Commits.FirstOrDefault() is not { } commit)
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || (Commits.FirstOrDefault() ?? BranchedFrom) is not { } commit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
@@ -90,12 +90,22 @@ internal record MainlineIteration
         return result;
     }
 
-    internal void CopyHistoryFrom(MainlineIteration source)
+    internal IEnumerable<MainlineCommit> GetHistory(MainlineCommit? tip = null)
     {
-        HistoryIdentity = source.HistoryIdentity;
-        foreach (var commit in source.Commits.Reverse())
+        if (BranchedFrom is { } branchPoint)
         {
-            commit.CopyTo(this);
+            foreach (var commit in branchPoint.Iteration.GetHistory(branchPoint))
+            {
+                yield return commit;
+            }
+        }
+        foreach (var commit in Commits)
+        {
+            yield return commit;
+            if (ReferenceEquals(commit, tip))
+            {
+                yield break;
+            }
         }
     }
 }

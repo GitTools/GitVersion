@@ -171,11 +171,13 @@ shared selection process.
 History construction precedes version calculation. Every recognized merge
 attaches a child iteration to its merge commit, with parent links back to the
 receiver. Construction records commits, configurations and tags; it does not
-calculate source versions. Feature merges contain newly introduced history,
-while merged mainlines contain their complete ancestry and use their own label
-to recognize released tags. Recorded histories can be reused within the same
-eligible-tag context without sharing calculated increments or the parent links
-of another merge.
+calculate source versions. Every child records its newly introduced commits
+and a reference to the recorded commit where its history branches off. Shared
+ancestry is referenced rather than copied. During calculation, feature merges
+aggregate their introduced history, while merged mainlines follow the ancestry
+reference to calculate an independent source version using their own label.
+Eligible tags delimit calculation history; increment state and the position
+within that history belong to the calculation context.
 
 The rule families distinguish these events on trunk/main and non-trunk
 branches:

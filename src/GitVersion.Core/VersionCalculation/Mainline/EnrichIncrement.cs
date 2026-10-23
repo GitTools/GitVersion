@@ -20,7 +20,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
-        commit.Increment = commitMessageIncrement.Increment;
+        context.CommitIncrement = commitMessageIncrement.Increment;
         if (commitMessageIncrement.VersionBumpNeedsToBeReset)
         {
             context.Increment = VersionField.None;
@@ -28,14 +28,15 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         }
 
         context.Increment = context.Increment.Consolidate(commitMessageIncrement.Increment);
-        context.Increment = context.Increment.Consolidate(commit.MergedBranchIncrement);
+        var mergedBranchIncrement = GetMergedBranchIncrement(commit, context);
+        context.Increment = context.Increment.Consolidate(mergedBranchIncrement);
         if (!context.SuppressBranchIncrement
-            && (commit.MergedBranchIncrement is null || !effectiveConfiguration.PreventIncrementOfMergedBranch))
+            && (mergedBranchIncrement is null || !effectiveConfiguration.PreventIncrementOfMergedBranch))
         {
             context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
         }
 
-        if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        if (context.GetPredecessor(commit) is { } predecessor && predecessor.BranchName != commit.BranchName)
         {
             context.Label = null;
         }
@@ -44,11 +45,15 @@ internal sealed class EnrichIncrement : IContextPreEnricher
 
         if (effectiveConfiguration.IsMainBranch)
         {
-            context.BaseVersionSource = commit.Predecessor?.Value;
+            context.BaseVersionSource = context.GetPredecessor(commit)?.Value;
         }
 
-        context.ForceIncrement |= effectiveConfiguration.IsMainBranch || commit.IsPredecessorTheLastCommitOnTrunk(context.Configuration);
+        context.ForceIncrement |= effectiveConfiguration.IsMainBranch
+            || context.GetPredecessor(commit)?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
     }
+
+    private static VersionField? GetMergedBranchIncrement(MainlineCommit commit, MainlineContext context)
+        => context.SemanticVersion is null && commit.IsMergedMainline(context.Configuration) ? VersionField.None : null;
 
     private static CommitMessageIncrement GetIncrementForcedByCommit(
         MainlineContext context, ICommit commit, EffectiveConfiguration configuration)
