@@ -18,6 +18,9 @@ env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
 
+permissions:
+  contents: read
+
 jobs:
   manifest:
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}

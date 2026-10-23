@@ -8,6 +8,9 @@ on:
         description: 'List of .NET versions'
         value: ${{ jobs.set_matrix.outputs.dotnet_versions }}
 
+permissions:
+  contents: read
+
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"

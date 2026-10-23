@@ -1,6 +1,9 @@
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"

@@ -5,6 +5,9 @@ on:
   repository_dispatch:
     types: [ publish-release ]
 
+permissions:
+  contents: read
+
 defaults:
   run:
     shell: pwsh
