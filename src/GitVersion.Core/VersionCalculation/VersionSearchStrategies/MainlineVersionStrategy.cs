@@ -23,7 +23,7 @@ internal sealed class MainlineVersionStrategy(
     private readonly IEnvironment environment = environment.NotNull();
     private readonly Dictionary<string, Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>>> commitsWasBranchedFromCache = new();
     private readonly Dictionary<ICommit, MainlineCommit> recordedCommits = new();
-    private readonly List<(MainlineIteration Iteration, ICommit Tip)> mergedIterations = [];
+    private readonly Dictionary<ICommit, MainlineIteration> introducedCommitOwners = new();
 
     private GitVersionContext Context => this.contextLazy.Value;
 
@@ -88,7 +88,7 @@ internal sealed class MainlineVersionStrategy(
     internal MainlineIteration BuildIteration(EffectiveBranchConfiguration configuration, out string? targetLabel)
     {
         this.recordedCommits.Clear();
-        this.mergedIterations.Clear();
+        this.introducedCommitOwners.Clear();
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
 
         var iteration = CreateIteration(
@@ -124,26 +124,44 @@ internal sealed class MainlineVersionStrategy(
             commitsInReverseOrder: commitsInReverseOrder,
             iteration: iteration,
             targetBranch: configuration.Branch,
-            taggedSemanticVersions: taggedSemanticVersions
+            taggedSemanticVersions: taggedSemanticVersions,
+            targetLabel: targetLabel
         );
 
-        ResolveBranchPoints();
         return iteration;
     }
 
-    private void ResolveBranchPoints()
+    private MainlineCommit? ResolveBranchPoint(MainlineIteration child, ICommit tip)
     {
-        foreach (var (child, tip) in this.mergedIterations)
+        for (var ancestor = tip; ancestor is not null; ancestor = ancestor.Parents.FirstOrDefault())
         {
-            var ancestor = tip;
-            while (ancestor is not null)
+            if (!this.recordedCommits.ContainsKey(ancestor) && Context.Configuration.Ignore.Filter([ancestor]).Any())
             {
-                if (this.recordedCommits.TryGetValue(ancestor, out var recorded) && !ReferenceEquals(recorded.Iteration, child))
-                {
-                    child.BranchedFrom = recorded;
-                    break;
-                }
-                ancestor = ancestor.Parents.FirstOrDefault();
+                CaptureAncestor(ancestor, child);
+            }
+            if (this.recordedCommits.TryGetValue(ancestor, out var recorded) && !ReferenceEquals(recorded.Iteration, child))
+            {
+                return recorded;
+            }
+        }
+        return null;
+    }
+
+    private void CaptureAncestor(ICommit ancestor, MainlineIteration child)
+    {
+        while (!this.recordedCommits.ContainsKey(ancestor))
+        {
+            // The shared commit may belong to an older merged branch whose
+            // own recording stopped at a release. Resume its owner, preserving
+            // the nearest branch point instead of jumping to an older tag.
+            var owner = this.introducedCommitOwners.GetValueOrDefault(ancestor) ?? child.ParentIteration;
+            while (owner is not null && owner.CapturePreviousCommit is null)
+            {
+                owner = owner.ParentIteration;
+            }
+            if (owner?.CapturePreviousCommit?.Invoke() != true)
+            {
+                return;
             }
         }
     }
@@ -164,7 +182,8 @@ internal sealed class MainlineVersionStrategy(
 
     private void IterateOverCommitsRecursive(
         IEnumerable<ICommit> commitsInReverseOrder, MainlineIteration iteration, IBranch targetBranch,
-        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, HashSet<ICommit>? traversedCommits = null)
+        ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions, string? targetLabel,
+        HashSet<ICommit>? traversedCommits = null)
     {
         traversedCommits ??= [];
 
@@ -176,28 +195,63 @@ internal sealed class MainlineVersionStrategy(
             branch: branch,
             taggedSemanticVersions: taggedSemanticVersions,
             commitsWasBranchedFromLazy: new(() => currentBranch is null ? [] : GetCommitsWasBranchedFrom(currentBranch)),
-            traversedCommits: traversedCommits
+            traversedCommits: traversedCommits,
+            commits: commitsInReverseOrder.GetEnumerator()
         );
 
-        foreach (var item in commitsInReverseOrder)
+        iteration.CapturePreviousCommit = () => CapturePreviousCommit(iteration, targetBranch, state, targetLabel);
+        var foundTag = false;
+        while (CapturePreviousCommit(iteration, targetBranch, state, targetLabel))
         {
-            if (state.ChildCommits.Contains(item) || !traversedCommits.Add(item))
+            var commit = iteration.Commits.First();
+            var label = targetLabel ?? new EffectiveConfiguration(Context.Configuration, commit.Configuration)
+                .GetBranchSpecificLabel(commit.BranchName, null, this.environment, Context.CurrentCommit);
+            foundTag |= commit.SemanticVersions.Any(version => version.IsMatchForBranchSpecificLabel(label));
+            if (foundTag && commit.Configuration.Increment != IncrementStrategy.Inherit)
+            {
+                break;
+            }
+        }
+        // Record the receiver first so nested merges reference its history
+        // instead of taking ownership of commits on its ancestry.
+        state.IsRecording = false;
+        BuildPendingChildren(state);
+    }
+
+    private bool CapturePreviousCommit(MainlineIteration iteration, IBranch targetBranch, TraversalState state, string? targetLabel)
+    {
+        // Only expand a merge when walking past it. A release on the merge
+        // itself is a boundary too, and does not require its source history.
+        _ = iteration.Commits.FirstOrDefault()?.ChildIteration;
+        while (state.Commits.MoveNext())
+        {
+            var item = state.Commits.Current;
+            if (state.ChildCommits.Contains(item) || !state.TraversedCommits.Add(item))
             {
                 continue;
             }
 
             ApplyBranchedFromTransition(item, iteration, targetBranch, state);
-
             var commit = ProcessCommit(item, iteration, state);
-
             if (item.IsMergeCommit)
             {
-                HandleMergeCommit(item, commit, iteration, targetBranch, state);
+                MergeContext mergeContext = new(state.Configuration, state.BranchName, state.TaggedSemanticVersions);
+                commit.SetChildFactory(() => HandleMergeCommit(item, commit, iteration, targetBranch, state, targetLabel, mergeContext));
             }
+            if (!state.IsRecording)
+            {
+                BuildPendingChildren(state);
+            }
+            return true;
         }
-        // Record the receiver first so nested merges reference its history
-        // instead of taking ownership of commits on its ancestry.
-        foreach (var buildChild in state.PendingChildren)
+        state.Commits.Dispose();
+        iteration.CapturePreviousCommit = null;
+        return false;
+    }
+
+    private static void BuildPendingChildren(TraversalState state)
+    {
+        while (state.PendingChildren.TryDequeue(out var buildChild))
         {
             buildChild();
         }
@@ -269,23 +323,23 @@ internal sealed class MainlineVersionStrategy(
         return commit;
     }
 
-    private void HandleMergeCommit(
+    private MainlineIteration? HandleMergeCommit(
         ICommit item, MainlineCommit commit, MainlineIteration iteration, IBranch targetBranch,
-        TraversalState state)
+        TraversalState state, string? targetLabel, MergeContext mergeContext)
     {
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
             () => this.repositoryStore.GetCommitLog(item.Parents[0], item.Parents[1], Context.Configuration.Ignore)
         );
 
-        if ((state.Configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
+        if ((mergeContext.Configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
             || !MergeMessage.TryParse(item, Context.Configuration, out var mergeMessage))
         {
-            return;
+            return null;
         }
 
-        if (mergeMessage.MergedBranch is null || mergeMessage.MergedBranch.EquivalentTo(state.BranchName.WithoutOrigin))
+        if (mergeMessage.MergedBranch is null || mergeMessage.MergedBranch.EquivalentTo(mergeContext.BranchName.WithoutOrigin))
         {
-            return;
+            return null;
         }
 
         var childConfiguration = Context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
@@ -296,15 +350,15 @@ internal sealed class MainlineVersionStrategy(
             // Report unsupported history only if calculation reaches this merge;
             // an eligible release tag can make older merges irrelevant.
             commit.HasUnsupportedMerge = true;
-            return;
+            return null;
         }
         var sourceTip = item.Parents[1];
-        if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch != true)
+        if (childConfiguration.IsMainBranch == true && mergeContext.Configuration.IsMainBranch != true)
         {
             mergedCommitsInReverseOrderLazy = new(
                 () => this.repositoryStore.GetCommitLog(item.Parents[1], item.Parents[0], Context.Configuration.Ignore)
             );
-            childConfiguration = state.Configuration;
+            childConfiguration = mergeContext.Configuration;
             childBranchName = iteration.BranchName;
             sourceTip = item.Parents[0];
         }
@@ -316,17 +370,33 @@ internal sealed class MainlineVersionStrategy(
             parentCommit: commit
         );
 
-        this.mergedIterations.Add((childIteration, sourceTip));
-        var tags = state.TaggedSemanticVersions;
-        state.PendingChildren.Add(() => IterateOverCommitsRecursive(
+        childIteration.SetBranchPointFactory(() => ResolveBranchPoint(childIteration, sourceTip));
+        var tags = mergeContext.TaggedSemanticVersions;
+        void BuildChild() => IterateOverCommitsRecursive(
                 commitsInReverseOrder: mergedCommitsInReverseOrderLazy.Value,
                 iteration: childIteration,
                 targetBranch: targetBranch,
                 taggedSemanticVersions: tags,
-                traversedCommits: state.TraversedCommits));
+                targetLabel: targetLabel,
+                traversedCommits: state.TraversedCommits);
 
-        commit.AddChildIteration(childIteration);
         state.ChildCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
+        foreach (var introduced in mergedCommitsInReverseOrderLazy.Value)
+        {
+            if (!this.recordedCommits.ContainsKey(introduced))
+            {
+                this.introducedCommitOwners[introduced] = childIteration;
+            }
+        }
+        if (state.IsRecording)
+        {
+            state.PendingChildren.Enqueue(BuildChild);
+        }
+        else
+        {
+            BuildChild();
+        }
+        return childIteration;
     }
 
     internal static BaseVersion GetMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
@@ -374,17 +444,23 @@ internal sealed class MainlineVersionStrategy(
         IBranch? branch,
         ILookup<ICommit, SemanticVersionWithTag> taggedSemanticVersions,
         Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> commitsWasBranchedFromLazy,
-        HashSet<ICommit> traversedCommits)
+        HashSet<ICommit> traversedCommits,
+        IEnumerator<ICommit> commits)
     {
         public IBranchConfiguration Configuration { get; set; } = configuration;
         public ReferenceName BranchName { get; set; } = branchName;
         public IBranch? Branch { get; set; } = branch;
         public ILookup<ICommit, SemanticVersionWithTag> TaggedSemanticVersions { get; set; } = taggedSemanticVersions;
         public HashSet<ICommit> TraversedCommits { get; } = traversedCommits;
+        public IEnumerator<ICommit> Commits { get; } = commits;
         public HashSet<ICommit> ChildCommits { get; } = [];
-        public List<Action> PendingChildren { get; } = [];
+        public Queue<Action> PendingChildren { get; } = new();
+        public bool IsRecording { get; set; } = true;
         public Lazy<IReadOnlyDictionary<ICommit, List<(IBranch Branch, IBranchConfiguration Value)>>> CommitsWasBranchedFromLazy { get; set; } = commitsWasBranchedFromLazy;
     }
+
+    private sealed record MergeContext(IBranchConfiguration Configuration, ReferenceName BranchName,
+        ILookup<ICommit, SemanticVersionWithTag> TaggedSemanticVersions);
 
     private Dictionary<ICommit, List<(IBranch, IBranchConfiguration)>> GetCommitsWasBranchedFrom(
         IBranch branch, params IBranch[] excludedBranches)
@@ -499,11 +575,12 @@ internal sealed class MainlineVersionStrategy(
             var commit = commits[index];
             context.Predecessor = index > 0 ? commits[index - 1] : null;
             context.HasSuccessor = index < commits.Length - 1;
-            var isMainlineMerge = commit.IsMergedMainline(context.Configuration);
             foreach (var item in TrunkContextPreEnricherCollection)
             {
                 item.Enrich(iteration, commit, context);
             }
+
+            var isMainlineMerge = context.SemanticVersion is null && commit.IsMergedMainline(context.Configuration);
 
             ThrowIfUnsupportedMerge(commit, context);
 
@@ -544,7 +621,7 @@ internal sealed class MainlineVersionStrategy(
     {
         List<MainlineCommit> commits = [];
         var foundTag = false;
-        foreach (var commit in (includeAncestry ? iteration.GetHistory() : iteration.Commits).Reverse())
+        foreach (var commit in iteration.GetCommitsInReverseOrder(includeAncestry))
         {
             commits.Add(commit);
             var label = context.TargetLabel ?? new EffectiveConfiguration(context.Configuration, commit.Configuration)

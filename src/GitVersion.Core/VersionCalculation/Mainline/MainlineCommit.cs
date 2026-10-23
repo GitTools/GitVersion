@@ -40,7 +40,9 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    public MainlineIteration? ChildIteration { get; private set; }
+    public MainlineIteration? ChildIteration => this.childIteration?.Value;
+
+    private Lazy<MainlineIteration?>? childIteration;
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
@@ -111,7 +113,9 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
+    public void AddChildIteration(MainlineIteration iteration) => this.childIteration = new(() => iteration.NotNull());
+
+    internal void SetChildFactory(Func<MainlineIteration?> factory) => this.childIteration = new(factory);
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

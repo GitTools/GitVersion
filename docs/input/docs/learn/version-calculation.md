@@ -168,12 +168,13 @@ history, and applies matching commit rules. Those rules produce baseline
 operands and increment operators, which are folded into a candidate for the
 shared selection process.
 
-History construction precedes version calculation. Every recognized merge
-attaches a child iteration to its merge commit, with parent links back to the
-receiver. Construction records commits, configurations and tags; it does not
-calculate source versions. Every child records its newly introduced commits
-and a reference to the recorded commit where its history branches off. Shared
-ancestry is referenced rather than copied. During calculation, feature merges
+History construction records commits, configurations and tags up to an eligible
+release boundary, without calculating source versions. Recognized merges attach
+child iterations with parent links back to the receiver. Merges on or older than
+the release boundary are expanded only if another calculation needs their history.
+Every child records its newly introduced commits and a reference to the recorded
+commit where its history branches off. Shared ancestry is referenced rather than
+copied, and older history is recorded on demand. During calculation, feature merges
 aggregate their introduced history, while merged mainlines follow the ancestry
 reference to calculate an independent source version using their own label.
 Eligible tags delimit calculation history; increment state and the position

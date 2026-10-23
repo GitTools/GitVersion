@@ -14,7 +14,17 @@ internal sealed class MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
 
-    public MainlineCommit? BranchedFrom { get; internal set; }
+    public MainlineCommit? BranchedFrom
+    {
+        get => this.branchedFrom?.Value;
+        internal set => this.branchedFrom = new(() => value);
+    }
+
+    private Lazy<MainlineCommit?>? branchedFrom;
+
+    internal void SetBranchPointFactory(Func<MainlineCommit?> factory) => this.branchedFrom = new(factory);
+
+    internal Func<bool>? CapturePreviousCommit { get; set; }
 
     private EffectiveConfiguration? effectiveConfiguration;
 
@@ -91,20 +101,25 @@ internal sealed class MainlineIteration
     }
 
     internal IEnumerable<MainlineCommit> GetHistory(MainlineCommit? tip = null)
+        => GetCommitsInReverseOrder(includeAncestry: true, tip).Reverse();
+
+    internal IEnumerable<MainlineCommit> GetCommitsInReverseOrder(bool includeAncestry, MainlineCommit? tip = null)
     {
-        if (BranchedFrom is { } branchPoint)
-        {
-            foreach (var commit in branchPoint.Iteration.GetHistory(branchPoint))
-            {
-                yield return commit;
-            }
-        }
-        foreach (var commit in Commits)
+        var commit = tip ?? Commits.LastOrDefault();
+        while (commit is not null)
         {
             yield return commit;
-            if (ReferenceEquals(commit, tip))
+            if (commit.Predecessor is null)
             {
-                yield break;
+                CapturePreviousCommit?.Invoke();
+            }
+            commit = commit.Predecessor;
+        }
+        if (includeAncestry && BranchedFrom is { } branchPoint)
+        {
+            foreach (var ancestor in branchPoint.Iteration.GetCommitsInReverseOrder(true, branchPoint))
+            {
+                yield return ancestor;
             }
         }
     }

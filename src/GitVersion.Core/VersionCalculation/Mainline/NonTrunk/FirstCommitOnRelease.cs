@@ -19,10 +19,9 @@ internal sealed class FirstCommitOnRelease : IIncrementer
     // A  58 minutes ago (main)
 
     public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => !commit.HasChildIteration
+        => context.SemanticVersion is null && !commit.HasChildIteration
            && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
            && commit.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
-           && context.SemanticVersion is null
            && (context.GetPredecessor(commit) is null
                || commit.BranchName != context.GetPredecessor(commit)?.BranchName);
 
