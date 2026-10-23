@@ -102,6 +102,9 @@
     "remark-validate-links": "13.1.0"
   },
   "overrides": {
-    "got": "11.8.5"
+    "got": "11.8.5",
+    "unified-args": {
+      "chokidar": "4.0.3"
+    }
   }
 }
