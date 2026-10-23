@@ -24,6 +24,7 @@ RUN mkdir -p /home/gittools \
     && git config --system --add safe.directory '*'
 
 ENV HOME=/home/gittools
+ENV GITVERSION_CONTAINER_KIND=docker
 USER 10001:10001
 
 ENTRYPOINT ["/tools/entrypoint.sh"]
