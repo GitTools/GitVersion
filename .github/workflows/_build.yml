@@ -34,6 +34,8 @@ jobs:
 
       - name: '[Build]'
         shell: pwsh
+        env:
+          GITVERSION_TELEMETRY_PROJECT_KEY: ${{ vars.GITVERSION_TELEMETRY_PROJECT_KEY }}
         run: dotnet run/build.dll --target=Package
 
       - name: 'Upload nuget packages'
