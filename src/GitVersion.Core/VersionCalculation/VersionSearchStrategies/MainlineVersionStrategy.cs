@@ -381,12 +381,9 @@ internal sealed class MainlineVersionStrategy(
                 traversedCommits: state.TraversedCommits);
 
         state.ChildCommits.AddRange(mergedCommitsInReverseOrderLazy.Value);
-        foreach (var introduced in mergedCommitsInReverseOrderLazy.Value)
+        foreach (var introduced in mergedCommitsInReverseOrderLazy.Value.Where(introduced => !this.recordedCommits.ContainsKey(introduced)))
         {
-            if (!this.recordedCommits.ContainsKey(introduced))
-            {
-                this.introducedCommitOwners[introduced] = childIteration;
-            }
+            this.introducedCommitOwners[introduced] = childIteration;
         }
         if (state.IsRecording)
         {
