@@ -7,6 +7,66 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class MainlineBranchMergeScenarios : TestBase
 {
+    [Test]
+    public void StackedMergeKeepsTaggedMainlineVersionWhenNamedBranchIsRemoved()
+    {
+        // Regression for #5405: a surviving ref named by a nested merge must not reset main's tagged baseline.
+        using var fixture = new EmptyRepositoryFixture();
+        var tag = fixture.MakeATaggedCommit("1.0.0");
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithBranch(MainBranch, b => b.WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.Patch)).Build();
+
+        MergePullRequest(1);
+        fixture.BranchTo("part1");
+        fixture.MakeACommit("Part 1");
+        fixture.BranchTo("part2");
+        fixture.MakeACommit("Part 2");
+        fixture.Checkout(MainBranch);
+        MergePullRequest(2);
+        fixture.Checkout("part1");
+        fixture.Repository.MergeNoFF(MainBranch, "Merge branch 'main' into part1");
+        var part1Tip = fixture.Repository.Head.Tip;
+        fixture.Checkout("part2");
+        fixture.Repository.MergeNoFF("part1", "Merge branch 'part1' into part2");
+        fixture.Checkout(MainBranch);
+        fixture.Repository.MergeNoFF("part2", "Merged PR 3");
+        fixture.Repository.Branches.Remove("part2");
+        var countSource = MergePullRequest(4);
+        var mainTip = fixture.Repository.Head.Tip.Sha;
+
+        AssertVersion();
+        fixture.Repository.Branches.Remove("part1");
+        AssertVersion();
+        fixture.Repository.Branches.Add("part1", part1Tip);
+        AssertVersion();
+
+        void AssertVersion()
+        {
+            var version = fixture.GetVersion(configuration);
+
+            // Both stacked commits remain in the receiver history and contribute one patch each.
+            version.FullSemVer.ShouldBe("1.0.8");
+            version.Sha.ShouldBe(mainTip);
+            version.SemVerSourceSha.ShouldBe(tag);
+            version.CommitCountSourceSha.ShouldBe(countSource);
+            version.CommitCountSourceDistance.ShouldBe("1");
+        }
+
+        string MergePullRequest(int number)
+        {
+            var branch = $"pr{number}";
+            fixture.BranchTo(branch);
+            fixture.MakeACommit($"Change {number}");
+            var change = fixture.Repository.Head.Tip.Sha;
+            fixture.Checkout(MainBranch);
+            fixture.Repository.MergeNoFF(branch, $"Merged PR {number}");
+            fixture.Repository.Branches.Remove(branch);
+            return change;
+        }
+    }
+
     [TestCase(false, false, "1.0.0", "2.0.0", "2.0.0")]
     [TestCase(true, false, "1.0.0", "2.0.0", "2.0.0")]
     [TestCase(false, true, "1.0.0", "2.0.0", "2.0.0")]
