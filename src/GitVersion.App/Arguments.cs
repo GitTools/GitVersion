@@ -34,6 +34,7 @@ internal class Arguments
 
     public bool NoFetch;
     public bool NoCache;
+    internal bool TelemetryOptOut;
     public bool NoNormalize;
     public bool AllowShallow;
 

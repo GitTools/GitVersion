@@ -44,6 +44,14 @@
         <EmbeddedResource Include="legacy_help.md" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(GitVersionTelemetryCampaignStart)' != ''">
+        <AssemblyMetadata Include="TelemetryCampaignStart" Value="$(GitVersionTelemetryCampaignStart)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(GitVersionTelemetryProjectKey)' != ''">
+        <AssemblyMetadata Include="TelemetryProjectKey" Value="$(GitVersionTelemetryProjectKey)" />
+    </ItemGroup>
+
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
     </ItemGroup>
