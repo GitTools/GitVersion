@@ -505,11 +505,7 @@ internal sealed class MainlineVersionStrategy(
                 item.Enrich(iteration, commit, context);
             }
 
-            if (commit.HasUnsupportedMerge
-                && (commit.Configuration.Increment == IncrementStrategy.Inherit || context.SemanticVersion is null))
-            {
-                throw new NotSupportedException("GitVersion does not support more than one merge source in a single commit yet");
-            }
+            ThrowIfUnsupportedMerge(commit, context);
 
             foreach (var incrementer in TrunkIncrementerCollection
                 .Where(element => element.MatchPrecondition(iteration, commit, context)))
@@ -524,6 +520,15 @@ internal sealed class MainlineVersionStrategy(
             {
                 item.Enrich(commit, context);
             }
+        }
+    }
+
+    private static void ThrowIfUnsupportedMerge(MainlineCommit commit, MainlineContext context)
+    {
+        if (commit.HasUnsupportedMerge
+            && (commit.Configuration.Increment == IncrementStrategy.Inherit || context.SemanticVersion is null))
+        {
+            throw new NotSupportedException("GitVersion does not support more than one merge source in a single commit yet");
         }
     }
 
