@@ -10,9 +10,19 @@ namespace GitVersion.VersionCalculation.Mainline;
     "Depth = {" + nameof(Depth) + "}, " +
     "NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
-internal record MainlineIteration
+internal sealed class MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
+
+    public ICommit? BranchedFrom { get; internal set; }
+
+    public ICommit? BranchedTo { get; }
+
+    public MainlineCommit? GetBranchedFrom()
+        => BranchedFrom is { } commit ? ParentIteration?.FindCommit(commit) : null;
+
+    public MainlineCommit? GetBranchedTo()
+        => BranchedTo is { } commit ? ParentIteration?.FindCommit(commit) : null;
 
     private EffectiveConfiguration? effectiveConfiguration;
 
@@ -25,7 +35,7 @@ internal record MainlineIteration
 
         var branchConfiguration = Configuration;
 
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Commits.FirstOrDefault() is not { } commit)
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || (Commits.FirstOrDefault() ?? GetBranchedFrom()) is not { } commit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
@@ -37,8 +47,6 @@ internal record MainlineIteration
     }
 
     public MainlineIteration? ParentIteration { get; }
-
-    public MainlineCommit? ParentCommit { get; }
 
     public string Id { get; }
 
@@ -52,16 +60,21 @@ internal record MainlineIteration
     private readonly Stack<MainlineCommit> commits = new();
 
     private readonly Dictionary<ICommit, MainlineCommit> commitLookup = [];
+    // An ancestor can belong to an older merged iteration. Share its recorded
+    // node through an index instead of copying that iteration's history.
+    private readonly Dictionary<ICommit, MainlineCommit> historyLookup;
 
     public MainlineIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
-        MainlineIteration? parentIteration, MainlineCommit? parentCommit)
+        MainlineIteration? parentIteration, ICommit? branchedFrom, ICommit? branchedTo)
     {
         Id = id.NotNullOrEmpty();
         Depth = (parentIteration?.Depth ?? 0) + 1;
         BranchName = branchName.NotNull();
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
-        ParentCommit = parentCommit;
+        BranchedFrom = branchedFrom;
+        BranchedTo = branchedTo;
+        this.historyLookup = parentIteration?.historyLookup ?? [];
     }
 
     public MainlineCommit CreateCommit(
@@ -75,6 +88,7 @@ internal record MainlineIteration
         if (value is not null)
         {
             this.commitLookup.Add(value, commit);
+            this.historyLookup.TryAdd(value, commit);
         }
 
         return commit;
@@ -84,7 +98,26 @@ internal record MainlineIteration
     {
         commit.NotNull();
 
-        this.commitLookup.TryGetValue(commit, out var result);
-        return result;
+        return this.commitLookup.GetValueOrDefault(commit) ?? this.historyLookup.GetValueOrDefault(commit);
+    }
+
+    internal IEnumerable<MainlineCommit> GetHistory(MainlineCommit? tip = null)
+        => GetCommitsInReverseOrder(includeAncestry: true, tip).Reverse();
+
+    internal IEnumerable<MainlineCommit> GetCommitsInReverseOrder(bool includeAncestry, MainlineCommit? tip = null)
+    {
+        var commit = tip ?? Commits.LastOrDefault();
+        while (commit is not null)
+        {
+            yield return commit;
+            commit = commit.Predecessor;
+        }
+        if (includeAncestry && GetBranchedFrom() is { } branchPoint)
+        {
+            foreach (var ancestor in branchPoint.Iteration.GetCommitsInReverseOrder(true, branchPoint))
+            {
+                yield return ancestor;
+            }
+        }
     }
 }

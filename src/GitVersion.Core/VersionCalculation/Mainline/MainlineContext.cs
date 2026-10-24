@@ -17,6 +17,17 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public string? TargetLabel { get; init; }
 
+    public Dictionary<MainlineIteration, BaseVersion> MainlineVersions { get; init; } = [];
+
+    public MainlineCommit? Predecessor { get; set; }
+
+    public bool? HasSuccessor { get; set; }
+
+    public MainlineCommit? GetPredecessor(MainlineCommit commit)
+        => HasSuccessor.HasValue ? Predecessor : commit.Predecessor;
+
+    public bool IsLastCommit(MainlineCommit commit) => !(HasSuccessor ?? commit.HasSuccessor);
+
     public SemanticVersion? SemanticVersion { get; set; }
 
     public SemanticVersionSource? SemVerSource { get; set; }
@@ -24,6 +35,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
     public string? Label { get; set; }
 
     public VersionField Increment { get; set; }
+
+    public VersionField CommitIncrement { get; set; }
 
     public bool SuppressBranchIncrement { get; set; }
 

@@ -5,7 +5,8 @@ namespace GitVersion.VersionCalculation.Mainline.Trunk;
 internal abstract class MergeCommitOnTrunkBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => commit.HasChildIteration && commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch && context.SemanticVersion is null;
+        => context.SemanticVersion is null && commit.HasChildIteration && !commit.IsMergedMainline(context.Configuration)
+            && commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -19,13 +20,14 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionStrategy.DetermineBaseVersionRecursive(
+            var baseVersion = MainlineVersionCalculator.DetermineBaseVersionRecursive(
                    iteration: commit.ChildIteration!,
                    targetLabel: context.TargetLabel,
                    incrementStrategyFinder: context.IncrementStrategyFinder,
                    configuration: context.Configuration,
                    environment: context.Environment,
-                   currentCommit: context.CurrentCommit
+                   currentCommit: context.CurrentCommit,
+                   mainlineVersions: context.MainlineVersions
                );
 
             context.Label ??= baseVersion.Operator?.Label;
@@ -44,7 +46,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
             if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
             {
-                increment = increment.Consolidate(commit.Increment);
+                increment = increment.Consolidate(context.CommitIncrement);
             }
             context.Increment = increment;
 

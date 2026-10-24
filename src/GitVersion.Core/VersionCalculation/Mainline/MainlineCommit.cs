@@ -6,22 +6,24 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 [DebuggerDisplay(
-    @"\{ BranchName = {" + nameof(BranchName) + "}, Increment = {" + nameof(Increment) + "}, " +
+    @"\{ BranchName = {" + nameof(BranchName) + "}, " +
     "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
     "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
+internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
-        => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
+    public bool IsMergedMainline(IGitVersionConfiguration configuration)
+        => ChildIteration is not null && (HasChildIteration || ChildIteration.BranchedFrom is not null)
+            && GetEffectiveConfiguration(configuration).IsMainBranch
+            && ChildIteration.GetEffectiveConfiguration(configuration).IsMainBranch;
 
-    public VersionField Increment { get; set; }
+    public bool HasUnsupportedMerge { get; internal set; }
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    internal IBranchConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasSuccessor => Successor is not null;
 
@@ -45,10 +47,6 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
-    public MainlineCommit? ParentCommit => Iteration.ParentCommit;
-
-    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
-    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
@@ -81,12 +79,12 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
             last = i.Configuration;
         }
 
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Iteration.GetBranchedTo() is not { } parentCommit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
 
-        var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
+        var parentConfiguration = parentCommit.GetEffectiveConfiguration(configuration);
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
 
         return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
