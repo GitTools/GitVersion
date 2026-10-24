@@ -7,6 +7,8 @@ public static class Arguments
     public const string Architecture = "arch";
     public const string DotnetVersion = "dotnet_version";
     public const string TestResults = "test_results";
+    public const string TestProjects = "test_projects";
+    public const string TestFilter = "test_filter";
     public const string DockerRegistry = "docker_registry";
     public const string DockerDistro = "docker_distro";
 }

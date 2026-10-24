@@ -1,7 +1,7 @@
 on:
   workflow_call:
     inputs:
-      dotnet_versions:
+      test_matrix:
         required: true
         type: string
       publish_coverage:
@@ -16,23 +16,17 @@ permissions:
 
 jobs:
   unit_test:
-    name: ${{ matrix.os }} - net${{ matrix.dotnet_version }} - ${{ matrix.git_backend }}
+    name: ${{ matrix.name }}
     permissions:
       id-token: write
     strategy:
       fail-fast: false
-      matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
-        dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
-        # Run the suite against both Git backends until libgit2 is removed,
-        # see https://github.com/GitTools/GitVersion/issues/5031
-        git_backend: [ libgit2, managed ]
+      matrix: ${{ fromJson(inputs.test_matrix) }}
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     env:
-      GITVERSION_GIT_BACKEND: ${{ matrix.git_backend }}
-      TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/${{ matrix.git_backend }}/attempt-${{ github.run_attempt }}
+      TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/attempt-${{ github.run_attempt }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
@@ -51,6 +45,9 @@ jobs:
         id: unit_tests
         timeout-minutes: 30
         shell: bash
+        env:
+          TEST_PROJECTS: ${{ matrix.test_projects }}
+          TEST_FILTER: ${{ matrix.test_filter }}
         run: |
           # Explicit bash uses pipefail on every runner. Keep the log outside Cake's Clean target.
           preserve_reports() {
@@ -61,7 +58,15 @@ jobs:
             fi
           }
           trap preserve_reports EXIT
+          test_arguments=()
+          if [[ -n "$TEST_PROJECTS" ]]; then
+            test_arguments+=("--test_projects=$TEST_PROJECTS")
+          fi
+          if [[ -n "$TEST_FILTER" ]]; then
+            test_arguments+=("--test_filter=$TEST_FILTER")
+          fi
           dotnet run/build.dll --target=UnitTest --dotnet_version=${{ matrix.dotnet_version }} --test_results="$TEST_RESULTS" \
+            "${test_arguments[@]}" \
             2>&1 | tee "$RUNNER_TEMP/unit-tests.log"
 
       - name: Explain failed or incomplete test run
@@ -83,7 +88,7 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: test-results-${{ matrix.os }}-net${{ matrix.dotnet_version }}-${{ matrix.git_backend }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: test-results-${{ matrix.os }}-net${{ matrix.dotnet_version }}-${{ matrix.group }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/test-results/
           if-no-files-found: warn
           retention-days: 7
@@ -94,7 +99,6 @@ jobs:
         with:
           files: artifacts/test-results/**/results.xml
           report_type: 'test_results'
-          flags: ${{ matrix.git_backend }}
           use_oidc: true
 
       - name: Upload Coverage
@@ -103,5 +107,4 @@ jobs:
         with:
           directory: artifacts/test-results
           report_type: 'coverage'
-          flags: ${{ matrix.git_backend }}
           use_oidc: true

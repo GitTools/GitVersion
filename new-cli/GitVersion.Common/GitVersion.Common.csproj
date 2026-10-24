@@ -11,6 +11,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\..\src\GitVersion.Core\Core\Abstractions\IEnvironment.cs" Link="Infrastructure\%(Filename)%(Extension)" />
+        <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\LockedFileException.cs" Link="Exceptions\LockedFileException.cs" />
         <Compile Include="..\..\src\GitVersion.Core\Core\Exceptions\WarningException.cs" Link="Exceptions\%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\Core\RegexPatterns.cs" Link="%(Filename)%(Extension)" />
         <Compile Include="..\..\src\GitVersion.Core\FeatureSelector.cs" Link="%(Filename)%(Extension)" />
@@ -24,5 +25,6 @@
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.Core" />
+        <InternalsVisibleTo Include="GitVersion.Core.Managed" />
     </ItemGroup>
 </Project>

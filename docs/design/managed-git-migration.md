@@ -1,5 +1,25 @@
 # Replacing LibGit2Sharp with a managed Git implementation
 
+## Implementation status after #5040
+
+The established CLI and experimental CLI now use the managed backend exclusively.
+Both LibGit2Sharp adapter projects and all package dependencies are removed.
+Repository scenario fixtures use Git CLI writes and reads; calculation assertions
+open the managed reader. The previous ordered revision-walk oracle is retained as
+recorded expectations captured from LibGit2Sharp 0.32.0. Other migration scenarios
+use explicit expectations or Git CLI oracles, without shipping a native test dependency.
+Ordinary package verification rejects native Git payloads before single-file bundling
+and checks Tool/RID/MSBuild nupkgs for native entries or LibGit2Sharp dependencies.
+
+Release sequencing remains v7.0 managed default, then v7.1 removal. Explicit
+`managed` remains a no-op throughout v7.x; `libgit2` produces an actionable removal
+error from v7.1. Removing the compatibility variable belongs to #5136 in v8.
+Parser/configuration removal is separate (#5188). NativeAOT remains separate (#3981).
+
+The survey and phase estimates below describe the migration's original baseline,
+not remaining dependencies in the current source tree.
+
+
 Research and migration plan for [#236][236] — researched 2026-07, based on a full survey of the `next/v7` tree.
 
 ## 1. Motivation
@@ -19,7 +39,7 @@ LibGit2Sharp wraps the native `libgit2` library and has been a recurring source 
   (linux x64/arm/arm64/musl/ppc64le, osx x64/arm64, win x64/x86/arm64) into `runtimes/<rid>/native/`
   of every published artifact — and `GitVersion.MsBuild` ships that payload **per TFM** (net8.0/net9.0/net10.0).
 - **Platform lag**: new RIDs, libcs and OS versions require waiting on libgit2 + LibGit2Sharp + NativeBinaries releases
-  (GitVersion is currently pinned to LibGit2Sharp 0.31.0).
+  (GitVersion was previously pinned to LibGit2Sharp 0.32.0).
 - **Feature lag**: libgit2 trails git itself (SHA-256 repos, reftable, partial clone), and its global native state
   complicates concurrent use inside MSBuild.
 
@@ -174,14 +194,15 @@ CLI mutator, later also the managed reader). The version-to-default mapping is e
 
 | Release | Default backend | Opt-in / opt-out |
 |---|---|---|
-| **v7.0** | `libgit2` | `GITVERSION_GIT_BACKEND=managed` to test the new backend |
-| **v7.1** | `managed` | `GITVERSION_GIT_BACKEND=libgit2` to fall back |
-| v7.x (later) | `managed` | libgit2 removed (Phase E) once the fallback has gone several releases unused/regression-free |
+| **v7.0** | `managed` | `GITVERSION_GIT_BACKEND=libgit2` for the temporary fallback |
+| **v7.1** | `managed` | `libgit2` fails; explicit `managed` remains accepted |
+| v7.x (later) | `managed` | Explicit `managed` remains a compatibility no-op |
 
-Both backends ship side by side throughout the v7.0–v7.x window so users can validate `managed` against
-their real repositories and report issues before libgit2 is dropped. For that whole window, the CI
-unit-test matrix runs the full suite against both backends (`git_backend` dimension in `_unit_tests.yml`) —
-both legs must stay green.
+The v7.0 transition design retains both backends so users can validate `managed`
+against their repositories before the v7.1 removal. The dual-backend CI matrix
+was used during implementation of that transition. This v7.1 branch removes the
+`git_backend` dimension and runs the managed implementation across the existing
+OS/TFM matrix; both adapters are no longer present side by side.
 
 ### Phase A — CLI mutator first (reads stay on libgit2) · ~2–3 weeks
 Replace `GitRepository.mutating.cs` + mutating collection members with `GitVersion.Git.CommandLine`
@@ -215,7 +236,7 @@ backend selection via `GITVERSION_GIT_BACKEND=managed|libgit2` (initially `libgi
 parser/configuration selectors default to `v7`. All selectors trim values,
 ignore case, treat blanks as unset and reject unknown values. Effective
 selections are logged without mixing logs into machine-readable stdout.
-The dual-backend CI matrix stays green throughout the v7.0 window.
+The dual-backend CI matrix was the v7.0 validation gate. After #5040, CI runs only the managed implementation across the existing OS/TFM matrix.
 
 ### Phase D — fixture migration (parallel with B) · ~2–3 weeks
 `GitVersion.Testing` moves to pure git-CLI writes via the existing `ExecuteGitCmd` pattern:

@@ -5,8 +5,8 @@ using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.Tests;
-using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
 
 namespace GitVersion.MsBuild.Tests.Tasks;

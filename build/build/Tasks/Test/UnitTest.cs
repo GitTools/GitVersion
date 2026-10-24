@@ -1,4 +1,5 @@
 using Cake.Common.Tools.DotNet.Execute;
+using Cake.Common.Tools.DotNet.Restore;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -7,7 +8,9 @@ namespace Build.Tasks;
 [TaskDescription("Run the unit tests")]
 [DotnetArgument]
 [TaskArgument(Arguments.TestResults)]
-[IsDependentOn(typeof(Build))]
+[TaskArgument(Arguments.TestProjects)]
+[TaskArgument(Arguments.TestFilter)]
+[IsDependentOn(typeof(Clean))]
 public class UnitTest : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context) => context.EnabledUnitTests;
@@ -20,6 +23,27 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             throw new CakeException("No test projects were found.");
         }
+
+        var requested = context.Argument(Arguments.TestProjects, string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (requested.Length > 0)
+        {
+            var unknown = requested.Except(projects.Select(project => project.GetFilenameWithoutExtension().FullPath), StringComparer.OrdinalIgnoreCase).ToArray();
+            if (unknown.Length > 0)
+            {
+                throw new CakeException($"Unknown test projects: {string.Join(", ", unknown)}.");
+            }
+            projects = [.. projects.Where(project => requested.Contains(project.GetFilenameWithoutExtension().FullPath, StringComparer.OrdinalIgnoreCase))];
+        }
+
+        // Build each selected target below with real source paths. An upfront solution
+        // build compiles both frameworks with CI paths, then recompiles them for tests.
+        context.DotNetRestore("./src/GitVersion.slnx", new DotNetRestoreSettings
+        {
+            Verbosity = DotNetVerbosity.Minimal,
+            Sources = [Constants.NugetOrgUrl],
+            MSBuildSettings = context.MsBuildSettings
+        });
 
         var failures = new List<string>();
         foreach (var framework in frameworks)
@@ -69,7 +93,7 @@ public class UnitTest : FrostingTask<BuildContext>
         var settings = new DotNetBuildSettings
         {
             Framework = $"net{framework}",
-            // Build restores the solution. Rebuild with real source paths for snapshots and annotations.
+            // The solution is restored once; build with real paths for snapshots and annotations.
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
             MSBuildSettings = new()
@@ -90,15 +114,22 @@ public class UnitTest : FrostingTask<BuildContext>
             throw new CakeException($"Test assembly not found for {project} / net{framework}: {targetPath}");
         }
 
-        var backend = context.EnvironmentVariable("GITVERSION_GIT_BACKEND") ?? "default";
         var attempt = context.EnvironmentVariable("GITHUB_RUN_ATTEMPT") ?? "local";
         var root = new DirectoryPath(context.Argument(Arguments.TestResults,
-            Paths.TestOutput.Combine(backend).Combine($"attempt-{attempt}").FullPath));
+            Paths.TestOutput.Combine($"attempt-{attempt}").FullPath));
         var resultsDirectory = context.MakeAbsolute(root.Combine(project.GetFilenameWithoutExtension().FullPath).Combine($"net{framework}"));
         context.CleanDirectory(resultsDirectory);
         // CI publishes coverage from the LTS target; other targets validate runtime compatibility.
         var collectCoverage = framework == Constants.DotnetLtsLatest;
         var args = new ProcessArgumentBuilder().AppendArguments(resultsDirectory, collectCoverage);
+        var filter = context.Argument(Arguments.TestFilter, string.Empty);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            args.Append("--filter").AppendQuoted(filter);
+            // NUnit otherwise drops name filters above 2000 cases and executes
+            // excluded tests without including their outcomes in MTP's reports.
+            args.Append("--settings").AppendQuoted(context.MakeAbsolute(Paths.Build.CombineWithFilePath("test.runsettings")).FullPath);
+        }
         if (context.BuildSystem().IsRunningOnGitHubActions)
         {
             args = args.AppendGitHubArguments();

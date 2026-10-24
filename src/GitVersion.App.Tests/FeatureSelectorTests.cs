@@ -52,7 +52,7 @@ public class FeatureSelectorTests
     public void CompositionRegistersSelectedImplementations(
         [Values("v6", "v7")] string parser,
         [Values("v6", "v7")] string configuration,
-        [Values("libgit2", "managed")] string backend)
+        [Values("managed")] string backend)
     {
         using var scope = new SelectorScope(parser, configuration, backend);
         using var fixture = new EmptyRepositoryFixture();
@@ -62,14 +62,14 @@ public class FeatureSelectorTests
         host.Services.GetRequiredService<IArgumentParser>().GetType()
             .ShouldBe(parser == "v6" ? typeof(LegacyArgumentParser) : typeof(ArgumentParser));
         host.Services.GetRequiredService<IGitRepository>().GetType().Assembly
-            .ShouldBe(backend == "libgit2" ? typeof(GitVersionLibGit2SharpModule).Assembly : typeof(GitVersionManagedGitModule).Assembly);
+            .ShouldBe(typeof(GitVersionManagedGitModule).Assembly);
     }
 
     [Test]
     public void SelectionLogUsesCapturedValues()
     {
         FeatureSelections selections;
-        using (new SelectorScope("v6", "v6", "libgit2"))
+        using (new SelectorScope("v6", "v6", " managed "))
         {
             selections = FeatureSelections.Resolve();
         }
@@ -78,7 +78,7 @@ public class FeatureSelectorTests
         var messages = new List<string>();
         selections.Log(new TestLogger<FeatureSelections>(messages.Add));
 
-        messages.ShouldBe(new[] { "Argument parser version: v6; Configuration version: v6; Git backend: libgit2" });
+        messages.ShouldBe(new[] { "Argument parser version: v6; Configuration version: v6; Git backend: managed" });
     }
 
     private sealed class SelectorScope : IDisposable
