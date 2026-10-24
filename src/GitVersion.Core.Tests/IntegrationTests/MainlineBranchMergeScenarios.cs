@@ -47,7 +47,7 @@ public class MainlineBranchMergeScenarios : TestBase
             var version = fixture.GetVersion(configuration);
 
             // Both stacked commits remain in the receiver history and contribute one patch each.
-            version.FullSemVer.ShouldBe("1.0.8");
+            fixture.AssertFullSemver("1.0.8", configuration);
             version.Sha.ShouldBe(mainTip);
             version.SemVerSourceSha.ShouldBe(tag);
             version.CommitCountSourceSha.ShouldBe(countSource);
