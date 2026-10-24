@@ -92,9 +92,10 @@ public class MainlineBranchMergeScenarios : TestBase
             fixture.Repository.Branches.Remove(source);
         }
 
-        var version = fixture.GetVersion(GetConfiguration());
+        var configuration = GetConfiguration();
+        var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe(expected);
+        fixture.AssertFullSemver(expected, configuration);
         version.SemVerSourceSha.ShouldBe(rightVersion == leftVersion && reverse ? leftTag : rightTag);
         version.SemVerSourceIncrement.ShouldBe("None");
         version.CommitCountSourceSha.ShouldBe(reverse ? leftTag : rightTag);
@@ -119,9 +120,10 @@ public class MainlineBranchMergeScenarios : TestBase
         }
         fixture.MergeNoFF(reverse ? "production/right" : "production/left");
 
-        var version = fixture.GetVersion(GetConfiguration());
+        var configuration = GetConfiguration();
+        var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe("2.0.0");
+        fixture.AssertFullSemver("2.0.0", configuration);
         version.SemVerSourceSha.ShouldBe(winningTag);
     }
 
@@ -144,7 +146,7 @@ public class MainlineBranchMergeScenarios : TestBase
         }
         fixture.MergeNoFF(reverse ? "production/right" : "production/left");
 
-        fixture.GetVersion(GetConfiguration()).FullSemVer.ShouldBe("1.0.3");
+        fixture.AssertFullSemver("1.0.3", GetConfiguration());
     }
 
     [TestCase(true, false, "3.0.0")]
@@ -167,7 +169,7 @@ public class MainlineBranchMergeScenarios : TestBase
             .WithBranch("left", b => b.WithPreventIncrementOfMergedBranch(preventReceiver))
             .WithBranch("right", b => b.WithPreventIncrementWhenBranchMerged(preventSource)).Build();
 
-        fixture.GetVersion(configuration).FullSemVer.ShouldBe(expected);
+        fixture.AssertFullSemver(expected, configuration);
     }
 
     [Test]
@@ -185,7 +187,7 @@ public class MainlineBranchMergeScenarios : TestBase
         var configuration = GetConfigurationBuilder()
             .WithBranch("right", b => b.WithPreventIncrementWhenBranchMerged(true)).Build();
 
-        fixture.GetVersion(configuration).FullSemVer.ShouldBe("3.0.0");
+        fixture.AssertFullSemver("3.0.0", configuration);
     }
 
     [Test]
@@ -201,7 +203,7 @@ public class MainlineBranchMergeScenarios : TestBase
         fixture.Checkout("production/left");
         fixture.Repository.MergeNoFF("production/right", "Merge branch 'production/right' +semver: major");
 
-        fixture.GetVersion(GetConfiguration()).FullSemVer.ShouldBe("3.0.0");
+        fixture.AssertFullSemver("3.0.0", GetConfiguration());
     }
 
     [Test]
@@ -216,8 +218,8 @@ public class MainlineBranchMergeScenarios : TestBase
         fixture.MakeATaggedCommit("1.2.0");
         fixture.MergeNoFF("support/one");
 
-        fixture.GetVersion(GitFlowConfigurationBuilder.New.WithVersionStrategies(VersionStrategies.Mainline)
-            .WithDeploymentMode(DeploymentMode.ContinuousDeployment).Build()).FullSemVer.ShouldBe("1.2.0");
+        fixture.AssertFullSemver("1.2.0", GitFlowConfigurationBuilder.New.WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment).Build());
     }
 
     [Test]
@@ -240,7 +242,7 @@ public class MainlineBranchMergeScenarios : TestBase
             fixture.Checkout("production/right");
             fixture.MergeNoFF("production/left");
 
-            fixture.GetVersion(configuration).FullSemVer.ShouldBe($"2.0.{i}");
+            fixture.AssertFullSemver($"2.0.{i}", configuration);
         }
 
         fixture.GetVersion(configuration).CommitCountSourceDistance.ShouldBe("3");
@@ -267,7 +269,7 @@ public class MainlineBranchMergeScenarios : TestBase
 
         var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe("2.0.0");
+        fixture.AssertFullSemver("2.0.0", configuration);
         version.SemVerSourceSha.ShouldBe(sourceTag);
     }
 
@@ -293,7 +295,7 @@ public class MainlineBranchMergeScenarios : TestBase
 
         var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe(expected);
+        fixture.AssertFullSemver(expected, configuration);
         version.SemVerSourceSha.ShouldBe(receiverTag);
         version.CommitCountSourceSha.ShouldBe(receiverTag);
         version.CommitCountSourceDistance.ShouldBe("2");
@@ -319,7 +321,7 @@ public class MainlineBranchMergeScenarios : TestBase
 
         var version = fixture.GetVersion(configuration);
 
-        version.FullSemVer.ShouldBe(expected);
+        fixture.AssertFullSemver(expected, configuration);
         version.SemVerSourceSha.ShouldBe(tag);
         version.CommitCountSourceDistance.ShouldBe("2");
     }
