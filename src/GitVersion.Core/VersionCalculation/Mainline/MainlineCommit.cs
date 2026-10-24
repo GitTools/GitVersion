@@ -40,19 +40,13 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    public MainlineIteration? ChildIteration => this.childIteration?.Value;
-
-    private Lazy<MainlineIteration?>? childIteration;
+    public MainlineIteration? ChildIteration { get; private set; }
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
 
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
-    public MainlineCommit? ParentCommit => Iteration.ParentCommit;
-
-    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
-    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
@@ -85,12 +79,12 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
             last = i.Configuration;
         }
 
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Iteration.GetBranchedTo() is not { } parentCommit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
 
-        var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
+        var parentConfiguration = parentCommit.GetEffectiveConfiguration(configuration);
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
 
         return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
@@ -113,9 +107,7 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration) => this.childIteration = new(() => iteration.NotNull());
-
-    internal void SetChildFactory(Func<MainlineIteration?> factory) => this.childIteration = new(factory);
+    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

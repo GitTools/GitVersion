@@ -1,6 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
 using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.Mainline;
 
 namespace GitVersion.Tests.VersionCalculation;
 
@@ -86,13 +87,17 @@ public class MainlineIterationConstructionTests
         var context = services.GetRequiredService<Lazy<GitVersionContext>>();
         var finder = services.GetRequiredService<IIncrementStrategyFinder>();
         var environment = services.GetRequiredService<IEnvironment>();
-        var strategy = new MainlineVersionStrategy(context, store,
-            services.GetRequiredService<ITaggedSemanticVersionService>(), finder, environment);
+        var builder = new MainlineIterationBuilder(context, store,
+            services.GetRequiredService<ITaggedSemanticVersionService>(), environment);
 
-        var iteration = strategy.BuildIteration(configuration.GetEffectiveBranchConfiguration(repository.Head), out var label);
-        var version = MainlineVersionStrategy.DetermineBaseVersionRecursive(iteration, label, finder,
+        var label = configuration.GetEffectiveBranchConfiguration(repository.Head).Value
+            .GetBranchSpecificLabel(repository.Head.Name, null, environment, context.Value.CurrentCommit);
+        var iteration = builder.BuildIteration(repository.Head, label);
+        var constructionCalls = store.ReceivedCalls().ToArray();
+        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
             configuration, environment, context.Value.CurrentCommit);
 
+        store.ReceivedCalls().ShouldBe(constructionCalls);
         version.GetIncrementedVersion().Patch.ShouldBe(expectedPatch);
         version.GetIncrementedVersion().Minor.ShouldBe(0);
         version.GetIncrementedVersion().Major.ShouldBe(2);
@@ -148,18 +153,21 @@ public class MainlineIterationConstructionTests
         var context = services.GetRequiredService<Lazy<GitVersionContext>>();
         var finder = services.GetRequiredService<IIncrementStrategyFinder>();
         var environment = services.GetRequiredService<IEnvironment>();
-        var strategy = new MainlineVersionStrategy(context, services.GetRequiredService<IRepositoryStore>(),
-            services.GetRequiredService<ITaggedSemanticVersionService>(), finder, environment);
+        var builder = new MainlineIterationBuilder(context, services.GetRequiredService<IRepositoryStore>(),
+            services.GetRequiredService<ITaggedSemanticVersionService>(), environment);
 
-        var iteration = strategy.BuildIteration(configuration.GetEffectiveBranchConfiguration(repository.Head), out var label);
-        iteration.Commits.ShouldNotContain(commit => commit.Value.Sha == oldMerge);
-        var version = MainlineVersionStrategy.DetermineBaseVersionRecursive(iteration, label, finder,
+        var label = configuration.GetEffectiveBranchConfiguration(repository.Head).Value
+            .GetBranchSpecificLabel(repository.Head.Name, null, environment, context.Value.CurrentCommit);
+        var iteration = builder.BuildIteration(repository.Head, label);
+        iteration.Commits.Any(commit => commit.Value.Sha == oldMerge).ShouldBe(!tagSource);
+        var recordedHistory = iteration.Commits.ToArray();
+        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
             configuration, environment, context.Value.CurrentCommit).GetIncrementedVersion();
 
         version.Major.ShouldBe(2);
         version.Minor.ShouldBe(1);
         version.Patch.ShouldBe(0);
-        iteration.Commits.Any(commit => commit.Value.Sha == oldMerge).ShouldBe(!tagSource);
+        iteration.Commits.ShouldBe(recordedHistory);
     }
 
     [TestCase(false, false)]
@@ -256,30 +264,37 @@ public class MainlineIterationConstructionTests
             .Returns(call => realFinder.GetIncrementForcedByCommit(call.ArgAt<ICommit>(0), call.ArgAt<IGitVersionConfiguration>(1)));
         var context = services.GetRequiredService<Lazy<GitVersionContext>>();
         var environment = services.GetRequiredService<IEnvironment>();
-        var strategy = new MainlineVersionStrategy(context, services.GetRequiredService<IRepositoryStore>(),
-            services.GetRequiredService<ITaggedSemanticVersionService>(), finder, environment);
+        var builder = new MainlineIterationBuilder(context, services.GetRequiredService<IRepositoryStore>(),
+            services.GetRequiredService<ITaggedSemanticVersionService>(), environment);
 
-        var iteration = strategy.BuildIteration(configuration.GetEffectiveBranchConfiguration(repository.Head), out var label);
+        var label = configuration.GetEffectiveBranchConfiguration(repository.Head).Value
+            .GetBranchSpecificLabel(repository.Head.Name, null, environment, context.Value.CurrentCommit);
+        var iteration = builder.BuildIteration(repository.Head, label);
 
         finder.DidNotReceive().GetIncrementForcedByCommit(Arg.Any<ICommit>(), Arg.Any<IGitVersionConfiguration>());
         var merge = iteration.Commits.Single(commit => commit.Value.Sha == mergeSha);
         var child = merge.ChildIteration.ShouldNotBeNull();
         child.ParentIteration.ShouldBeSameAs(iteration);
-        child.ParentCommit.ShouldBeSameAs(merge);
+        child.BranchedTo.ShouldBeSameAs(merge.Value);
+        child.GetBranchedTo().ShouldBeSameAs(merge);
         child.Commits.Count.ShouldBe(3);
-        child.BranchedFrom.ShouldBeSameAs(iteration.Commits.Single(commit => commit.Value.Sha == branchPoint));
+        child.GetBranchedFrom().ShouldBeSameAs(iteration.Commits.Single(commit => commit.Value.Sha == branchPoint));
         child.GetHistory().Count().ShouldBe(4);
         foreach (var sha in sourceCommits)
         {
             var commit = child.Commits.Single(commit => commit.Value.Sha == sha);
             commit.ParentIteration.ShouldBeSameAs(iteration);
-            commit.ParentCommit.ShouldBeSameAs(merge);
+            commit.Iteration.GetBranchedTo().ShouldBeSameAs(merge);
         }
         iteration.Commits.ShouldContain(commit => commit.Value.Sha == receiverTip);
+        var receiverHistory = iteration.Commits.ToArray();
+        var sourceHistory = child.Commits.ToArray();
 
-        var version = MainlineVersionStrategy.DetermineBaseVersionRecursive(iteration, label, finder,
+        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
             configuration, environment, context.Value.CurrentCommit);
 
+        iteration.Commits.ShouldBe(receiverHistory);
+        child.Commits.ShouldBe(sourceHistory);
         finder.Received().GetIncrementForcedByCommit(Arg.Any<ICommit>(), Arg.Any<IGitVersionConfiguration>());
         var calculated = version.GetIncrementedVersion();
         calculated.Major.ShouldBe(1);

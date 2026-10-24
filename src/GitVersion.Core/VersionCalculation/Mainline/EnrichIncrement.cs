@@ -16,7 +16,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             && iteration.Configuration.IsMainBranch == true
             && effectiveConfiguration.IsMainBranch
             && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged
-            && iteration.ParentCommit?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
+            && iteration.GetBranchedTo()?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
         var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);

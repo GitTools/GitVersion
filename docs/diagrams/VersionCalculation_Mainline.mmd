@@ -1,8 +1,8 @@
 flowchart TD
-    Enabled["Mainline enabled"] --> Tags["Gather eligible tags and branch context"]
+    Enabled["Mainline enabled"] --> Tags["MainlineIterationBuilder:<br/>gather eligible tags and branch context"]
     Tags --> Traverse["Traverse to an eligible release boundary;<br/>defer older history and merge expansion"]
-    Traverse --> State["Record introduced commits for every child;<br/>reference its shared branch point"]
-    State --> Calculate["DetermineBaseVersion:<br/>select tag boundaries and follow ancestry references;<br/>record older history only when needed"]
+    Traverse --> State["Record introduced commits for every child;<br/>resolve raw branch-point and merge references;<br/>complete required shared ancestry"]
+    State --> Calculate["MainlineVersionCalculator:<br/>select tag boundaries and follow recorded ancestry;<br/>history construction is complete"]
     Calculate --> Pre["Enrich version and increment context"]
     Pre --> Rules["Apply matching trunk/non-trunk rules"]
     Rules --> Post["Clean up context after each commit"]

@@ -168,17 +168,20 @@ history, and applies matching commit rules. Those rules produce baseline
 operands and increment operators, which are folded into a candidate for the
 shared selection process.
 
-History construction records commits, configurations and tags up to an eligible
+`MainlineIterationBuilder` records commits, configurations and tags up to an eligible
 release boundary, without calculating source versions. Recognized merges attach
-child iterations with parent links back to the receiver. Merges on or older than
-the release boundary are expanded only if another calculation needs their history.
-Every child records its newly introduced commits and a reference to the recorded
-commit where its history branches off. Shared ancestry is referenced rather than
-copied, and older history is recorded on demand. During calculation, feature merges
+child iterations with raw Git references to their branch point and receiving merge.
+The builder records the receiver first, then completes any older shared ancestry
+required by a merged mainline's own label and release boundary. Merges on or older
+than a release boundary are expanded only when that ancestry is required.
+Every child records its newly introduced commits; branch-point lookup resolves
+shared recorded nodes without copying history. Construction finishes before
+`MainlineVersionCalculator` runs. During calculation, feature merges
 aggregate their introduced history, while merged mainlines follow the ancestry
 reference to calculate an independent source version using their own label.
 Eligible tags delimit calculation history; increment state and the position
-within that history belong to the calculation context.
+within that history belong to the calculation context. Calculation reads the
+recorded history without fetching or attaching additional commits.
 
 The rule families distinguish these events on trunk/main and non-trunk
 branches:
@@ -493,4 +496,4 @@ explanation when those decision rules change.
 
 [increment-selection]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/IncrementStrategyFinder.cs
 
-[mainline-traversal]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs
+[mainline-traversal]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/Mainline/MainlineIterationBuilder.cs
