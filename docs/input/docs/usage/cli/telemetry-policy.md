@@ -117,7 +117,8 @@ Markers and hints can be omitted, inherited or spoofed; these fields are best-ef
 not authenticated provenance or reliable measurements of every wrapper/container installation.
 
 Schema-1 events did not include `container`, `os_distribution`, `os_version` or `gitversion_version`.
-The dashboard labels those absent values as unknown rather than inferring or backfilling them.
+When analyzing historical schema-1 events, treat those absent values as unknown rather than inferring or
+backfilling them. The current maintainer dashboard is scoped to schema-2 events.
 
 ### How CLI options are represented
 
@@ -159,10 +160,14 @@ the campaign. Transport/ingestion loss, opt-outs, quota drops and forged events 
 There is no global client-side volume guarantee or authentication of genuine clients using a public write key.
 
 Only `sampling_probability` is transmitted. The dashboard derives an inverse-probability weight as
-`1 / sampling_probability` when the probability is positive; it is not a separate event property.
+`1 / sampling_probability` only for a valid probability greater than zero and at most one; it is not a separate
+event property. Missing or invalid probabilities contribute no estimated invocation count.
 For example, probabilities of `0.01` and `0.0001` produce calculated weights of `100` and `10000`.
-Controlled test events must be excluded from adoption estimates. Historical synthetic events may still
-contain the former `sampling_weight` property; the dashboard ignores it and derives the value from probability.
+Controlled test events must be excluded from adoption estimates. Older events may contain the former
+`sampling_weight` property; dashboards must ignore it and derive weights from probability.
+The maintainer dashboard's default reporting range is the last three calendar months. That range does not
+enable collection or extend the per-assembly collection window. Empty projects have no usage estimates;
+explicit no-event labels are display states, not telemetry observations.
 
 Cake automatically embeds the UTC build date only for official tagged releases and prereleases. Collection is allowed
 only on dates `start <= today < start + three calendar months` for that assembly. All packages from one Cake
