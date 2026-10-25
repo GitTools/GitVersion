@@ -53,7 +53,7 @@ The policy's [runtime and caller detection table][telemetry-detection] lists eve
 neither proves how the process was launched. The markers can be absent or spoofed.
 The event records an invocation before calculation, without its final exit code, success/failure,
 duration or error details. Parsing failures produce no event. Older schema-1 events lack the new runtime
-and tool-version fields; the dashboard displays them as unknown.
+and tool-version fields; interpret those missing values as unknown rather than inferring them.
 There is no event queue, cookie or retry. A sampled invocation awaits a single HTTP request before
 version calculation starts. The request deadline is 300 ms for direct runs and 1 second for selected
 automated runs, allowing time for a cold connection to the EU endpoint from hosted CI agents.
@@ -79,18 +79,21 @@ branch/tag information, output variables or arbitrary type names become event pr
 
 For aggregate invocation estimates, calculate `1/sampling_probability` in the dashboard for each event
 and sum the calculated weights; segment by probability when calculating uncertainty. Only the probability
-is transmitted. Missing or non-positive probabilities must produce no calculated weight, rather than a
-division error or an invented estimate. The runtime dashboard uses `calculated_sampling_weight`, derived
-from probability even for older synthetic events that still contain the former event property.
+is transmitted. Missing, invalid, non-positive or greater-than-one probabilities must produce no calculated
+weight, rather than a division error or an invented estimate. Derive `calculated_sampling_weight` from
+probability even when older events contain the former `sampling_weight` property; ignore that old property.
 For example, this PostHog SQL derives the weight alongside observed counts without reading a weight property:
 
 ```sql
 SELECT
-    properties.sampling_probability AS sampling_probability,
-    if(sampling_probability > 0, 1.0 / sampling_probability, null) AS calculated_sampling_weight,
+    toFloat(properties.sampling_probability) AS sampling_probability,
+    if(sampling_probability > 0 AND sampling_probability <= 1,
+       1.0 / nullIf(sampling_probability, 0), null) AS calculated_sampling_weight,
     count() AS sampled_invocations
 FROM events
 WHERE event = 'gitversion_cli_invocation'
+  AND toInt(properties.schema_version) = 2
+  AND {filters}
 GROUP BY sampling_probability
 ORDER BY sampling_probability
 ```
@@ -99,7 +102,10 @@ Independent sampling has variance: an estimate based on sampled count `n`
 and fixed probability `p` has estimated variance `n*(1-p)/p^2` before transport or ingestion loss.
 These are invocation estimates, **not unique users**. Offline loss, CI detection gaps, opt-outs, quota drops
 and forged events cause bias; do not claim these estimates represent all GitVersion usage.
-The current dashboard contains controlled test events only and must not be used for adoption estimates.
+Maintainer dashboards use a rolling three-calendar-month view of schema-2 events, with shared date and
+property filters applied through `{filters}`. This reporting range does not change an assembly's collection
+window or enable telemetry. Show received sample counts separately from estimates, and label empty results
+explicitly when a project has no events. Controlled test events must not be used for adoption estimates.
 
 There is no global client-side volume guarantee. A per-process guard prevents duplicate sends only within
 that reporter. Rate caps cannot prevent aggregate traffic from reaching the Free quota. Maintainers can lower
