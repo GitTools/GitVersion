@@ -17,6 +17,42 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public string? TargetLabel { get; init; }
 
+    public MainlineBranchPointResolver? BranchPointResolver { get; set; }
+
+    // Independent source calculations also need side histories stored in other iterations.
+    public bool IncludeSharedHistory { get; init; }
+
+    public bool HasChildHistory(MainlineCommit commit)
+    {
+        if (commit.HasChildIteration)
+        {
+            return true;
+        }
+        return IncludeSharedHistory && commit.ChildIteration is { BranchedFrom: not null } child
+            && new MainlineHistory(Configuration, Environment, CurrentCommit, BranchPointResolver)
+                .Select(child, TargetLabel, false, includeSharedHistory: true).Commits.Length > 0;
+    }
+
+    public MainlineContext CreateChildContext()
+        => new(IncrementStrategyFinder, Configuration, Environment, CurrentCommit)
+        {
+            TargetLabel = TargetLabel,
+            BranchPointResolver = BranchPointResolver,
+            IncludeSharedHistory = IncludeSharedHistory,
+            MainlineVersions = MainlineVersions
+        };
+
+    public Dictionary<MainlineIteration, BaseVersion> MainlineVersions { get; init; } = [];
+
+    public MainlineCommit? Predecessor { get; set; }
+
+    public bool? HasSuccessor { get; set; }
+
+    public MainlineCommit? GetPredecessor(MainlineCommit commit)
+        => HasSuccessor.HasValue ? Predecessor : commit.Predecessor;
+
+    public bool IsLastCommit(MainlineCommit commit) => !(HasSuccessor ?? commit.HasSuccessor);
+
     public SemanticVersion? SemanticVersion { get; set; }
 
     public SemanticVersionSource? SemVerSource { get; set; }
@@ -24,6 +60,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
     public string? Label { get; set; }
 
     public VersionField Increment { get; set; }
+
+    public VersionField CommitIncrement { get; set; }
 
     public bool SuppressBranchIncrement { get; set; }
 
