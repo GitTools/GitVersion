@@ -7,7 +7,6 @@ internal abstract class CommitOnNonTrunkWithStableTagBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-           && !commit.HasChildIteration
            && context.SemanticVersion?.IsPreRelease == false;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(

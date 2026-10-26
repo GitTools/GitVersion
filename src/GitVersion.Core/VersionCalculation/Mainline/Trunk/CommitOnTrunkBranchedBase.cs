@@ -7,8 +7,9 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
+            && iteration.NumberOfCommits != 0
             && commit.BranchName != iteration.BranchName
-            && commit.Successor is null;
+            && context.IsLastCommit(commit);
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
