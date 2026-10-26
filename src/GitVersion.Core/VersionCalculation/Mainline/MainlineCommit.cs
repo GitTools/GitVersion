@@ -6,22 +6,23 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 [DebuggerDisplay(
-    @"\{ BranchName = {" + nameof(BranchName) + "}, Increment = {" + nameof(Increment) + "}, " +
-    "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
-    "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
+    @"\{ BranchName = {" + nameof(BranchName) + "}, " +
+    "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
+internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
-        => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
+    public bool IsMergedMainline(IGitVersionConfiguration configuration)
+        => ChildIteration is not null && (HasChildIteration || ChildIteration.BranchedFrom is not null)
+            && GetEffectiveConfiguration(configuration).IsMainBranch
+            && ChildIteration.GetEffectiveConfiguration(configuration).IsMainBranch;
 
-    public VersionField Increment { get; set; }
+    public bool HasUnsupportedMerge { get; internal set; }
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    internal IBranchConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasSuccessor => Successor is not null;
 
@@ -38,17 +39,17 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    public MainlineIteration? ChildIteration { get; private set; }
+    public MainlineIteration? ChildIteration => this.childIteration?.Value;
+
+    private Lazy<MainlineIteration?>? childIteration;
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
 
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
-    public MainlineCommit? ParentCommit => Iteration.ParentCommit;
-
-    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
-    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
+    [MemberNotNullWhen(true, nameof(ParentIteration))]
+    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.BranchedTo is not null;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
@@ -86,7 +87,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
 
-        var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
+        var parentConfiguration = Iteration.GetBranchedTo()?.GetEffectiveConfiguration(configuration)!;
         branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
 
         return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
@@ -109,7 +110,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
+    public void AddChildIteration(MainlineIteration iteration) => this.childIteration = new(() => iteration.NotNull());
+
+    internal void SetChildFactory(Func<MainlineIteration?> factory) => this.childIteration = new(factory);
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

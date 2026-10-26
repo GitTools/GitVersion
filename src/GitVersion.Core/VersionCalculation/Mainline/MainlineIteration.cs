@@ -10,9 +10,36 @@ namespace GitVersion.VersionCalculation.Mainline;
     "Depth = {" + nameof(Depth) + "}, " +
     "NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
-internal record MainlineIteration
+internal sealed class MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
+
+    public ICommit? BranchedFrom { get; }
+
+    public MainlineCommit? GetBranchedFrom()
+    {
+        if (BranchedFrom is null)
+        {
+            return null;
+        }
+        MainlineCommit? result = null;
+        for (MainlineIteration? i = this; i != null && result == null; i = i.ParentIteration)
+        {
+            result = i.FindCommit(BranchedFrom!);
+        }
+        return result;
+    }
+
+    public ICommit? BranchedTo { get; }
+
+    public MainlineCommit? GetBranchedTo()
+    {
+        if (ParentIteration is not null)
+        {
+            return ParentIteration.FindCommit(BranchedTo!);
+        }
+        return null;
+    }
 
     private EffectiveConfiguration? effectiveConfiguration;
 
@@ -22,10 +49,10 @@ internal record MainlineIteration
         {
             return this.effectiveConfiguration;
         }
-
         var branchConfiguration = Configuration;
 
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Commits.FirstOrDefault() is not { } commit)
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit || (Commits.FirstOrDefault()
+            ?? ParentIteration?.FindCommit(BranchedFrom)) is not { } commit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
@@ -37,8 +64,6 @@ internal record MainlineIteration
     }
 
     public MainlineIteration? ParentIteration { get; }
-
-    public MainlineCommit? ParentCommit { get; }
 
     public string Id { get; }
 
@@ -54,14 +79,15 @@ internal record MainlineIteration
     private readonly Dictionary<ICommit, MainlineCommit> commitLookup = [];
 
     public MainlineIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
-        MainlineIteration? parentIteration, MainlineCommit? parentCommit)
+        MainlineIteration? parentIteration, ICommit? branchedFrom, ICommit? branchedTo)
     {
         Id = id.NotNullOrEmpty();
         Depth = (parentIteration?.Depth ?? 0) + 1;
         BranchName = branchName.NotNull();
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
-        ParentCommit = parentCommit;
+        BranchedFrom = branchedFrom;
+        BranchedTo = branchedTo;
     }
 
     public MainlineCommit CreateCommit(
@@ -86,5 +112,27 @@ internal record MainlineIteration
 
         this.commitLookup.TryGetValue(commit, out var result);
         return result;
+    }
+
+    internal IEnumerable<MainlineCommit> GetHistory(MainlineCommit? tip = null)
+        => GetCommitsInReverseOrder(includeAncestry: true, tip).Reverse();
+
+    internal IEnumerable<MainlineCommit> GetCommitsInReverseOrder(
+        bool includeAncestry, MainlineCommit? tip = null)
+    {
+        var commit = tip ?? Commits.LastOrDefault();
+        while (commit is not null)
+        {
+            yield return commit;
+            commit = commit.Predecessor;
+        }
+
+        if (includeAncestry && GetBranchedFrom() is { } branchedFrom)
+        {
+            foreach (var ancestor in branchedFrom.Iteration.GetCommitsInReverseOrder(true, branchedFrom))
+            {
+                yield return ancestor;
+            }
+        }
     }
 }
