@@ -165,6 +165,69 @@ Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 * pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
   4 characters)
 
+## Support merges with Mainline
+
+The `GitFlow/v1` preset can use Mainline to calculate versions from history:
+
+```yaml
+workflow: GitFlow/v1
+calculation:
+  strategies:
+    - Mainline
+```
+
+Mainline supports merging any pair of branches marked `is-main-branch: true`,
+including main/support, two support branches, and custom configuration entries.
+Each branch's version is calculated independently, using its own ordered
+increments and eligible tags. The higher numeric version wins. Neither the
+`main` configuration key nor the direction of the merge gives a branch priority.
+Older support-line increments are not replayed onto a newer main version.
+Repeated merges and round trips compare versions without adding work twice.
+
+For an untagged history with two commits on main followed by two commits on
+support, merging support into main produces `0.0.4-3` in ContinuousDelivery or
+`0.0.4` in ContinuousDeployment. Tagging the second support commit `0.0.4`
+preserves that result. A further support commit after the tag advances the merged
+version to `0.0.5-4` or `0.0.5`, respectively. The counting source remains main's
+pre-merge tip; the distance includes the new support commits and the merge commit.
+
+If main advances one commit after the fork while support advances three commits,
+the numeric result is `0.0.5`, with or without a `0.0.5` tag on support's tip.
+The existing counting rule gives `0.0.5-4` in ContinuousDelivery and `0.0.5` in
+ContinuousDeployment. This numeric comparison does not change the counting source
+or prerelease suffix calculation.
+
+For example, branch from `1.0.0`, tag support at `1.0.5`, tag main at `2.0.0`,
+then merge support into main with `git merge --no-ff support/1.x`. With default
+merge-prevention settings, the core version is `2.0.0`. The default
+ContinuousDelivery mode gives `2.0.0-2`; ContinuousDeployment gives `2.0.0`.
+Main's `2.0.0` tag supplies the semantic and counting sources. The two commits
+beyond that counting source are support's commit and the merge commit.
+
+The receiver's `prevent-increment.of-merged-branch` suppresses its own branch
+increment at the merge; GitFlow enables this for both main and support. The
+source's `prevent-increment.when-branch-merged` suppresses its calculated
+contribution. Enabled bump messages on the merge itself still apply to the
+receiver's candidate before comparison. Source increments are already included
+in its independent version and are not applied again to the receiver. Eligible
+source tags normally consume the tip's pending increment and bump message;
+`prevent-increment.when-current-commit-tagged: false` retains them. The shared
+final tag floor can still select a higher reachable tag when source increments
+are prevented.
+
+Reversing the tagged example also gives core version `2.0.0`, or `2.0.0-2` in
+ContinuousDelivery. Main's higher tag supplies the semantic version while
+support's pre-merge tip remains the counting source. The distance is two in
+either direction. Equal numeric candidates keep the receiver's semantic source.
+Counting source selection and deployment-mode processing are independent of
+which branch supplies the higher numeric version.
+
+Branch regex patterns can match names such as `trunk` and `maintenance/1.x`.
+Deleting a source ref still works if the merge message identifies the source
+and merge-message tracking is enabled. Merges with multiple source parents
+remain unsupported. The [regression scenarios][support-merge-tests] assert
+versions, source metadata, increment controls, and repeated/nested histories.
+
 ## Nightly Builds
 
 **develop**, **feature** and **pull-request** builds are considered nightly
@@ -182,3 +245,5 @@ commits forward from the tag to get RC1, RC2 etc??
 [gitflow-model]: https://nvie.com/posts/a-successful-git-branching-model/
 
 [git-flow-extensions]: https://github.com/CJ-Systems/gitflow-cjs
+
+[support-merge-tests]: https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/MainlineSupportMergeScenarios.cs

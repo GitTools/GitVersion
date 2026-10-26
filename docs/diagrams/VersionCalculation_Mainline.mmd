@@ -1,10 +1,13 @@
 flowchart TD
-    Enabled["Mainline enabled"] --> Tags["Gather eligible tags and branch context"]
-    Tags --> Traverse["Traverse commits;<br/>inspect branch points and merges"]
-    Traverse --> State["Build commit state and recursive iterations"]
-    State --> Pre["Enrich version and increment context"]
+    Enabled["Mainline enabled"] --> Tags["MainlineIterationBuilder:<br/>gather eligible tags and branch context"]
+    Tags --> Traverse["Record introduced history recursively;<br/>bound nested ownership to the enclosing range"]
+    Traverse --> State["Reference raw branch points and merge ranges;<br/>continue to required source release boundaries"]
+    State --> Calculate["MainlineVersionCalculator:<br/>select tag boundaries and follow recorded ancestry;<br/>history construction is complete"]
+    Calculate --> Pre["Select shared introduced nodes for independent sources;<br/>enrich version and increment context"]
     Pre --> Rules["Apply matching trunk/non-trunk rules"]
     Rules --> Post["Clean up context after each commit"]
     Post --> Fold["Fold baseline operands<br/>and increment operators"]
-    Fold --> Candidate["Mainline candidate enters shared selection"]
-    Traverse --> Unsupported["Recognized merge between two main branches:<br/>currently unsupported"]
+    Fold --> Source{"Merge between mainlines with<br/>source contribution enabled?"}
+    Source -->|No| Candidate["Mainline candidate enters shared selection"]
+    Source -->|Yes| Floor["Compare receiver merge candidate with source version;<br/>keep the higher numeric version and receiver counting anchor"]
+    Floor --> Candidate
