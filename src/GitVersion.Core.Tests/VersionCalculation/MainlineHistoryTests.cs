@@ -1,0 +1,305 @@
+using GitVersion.Configuration;
+using GitVersion.Git;
+using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.Mainline;
+
+namespace GitVersion.Tests.VersionCalculation;
+
+[TestFixture]
+public class MainlineHistoryTests
+{
+    [TestCase(false)]
+    [TestCase(true)]
+    public void UntrackedMergeRetainsBothParentsEvenWhenTheMergeIsIgnored(bool ignoreMerge)
+    {
+        var branch = Branch(true);
+        var a = Commit();
+        var b = Commit(a);
+        var c = Commit(a);
+        var merge = Commit(b);
+        merge.Parents.Returns([b, c]);
+        var tip = Commit(merge);
+        var values = new[] { a, b, c, merge, tip };
+        for (var index = 0; index < values.Length; index++)
+        {
+            values[index].When.Returns(DateTimeOffset.UnixEpoch.AddSeconds(index));
+        }
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
+            IgnoreConfigurationBuilder.New.WithShas(ignoreMerge ? new[] { merge.Sha } : Array.Empty<string>()).Build()).Build();
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var nodes = values.Where(value => !ignoreMerge || !value.Equals(merge)).Reverse()
+            .Select(value => iteration.CreateCommit(value, iteration.BranchName, branch)).Reverse().ToArray();
+        nodes[0].AddSemanticVersions(new SemanticVersion(1, 0, 0));
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), tip).Select(iteration, "", false);
+
+        selected.Commits.ShouldBe(nodes);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+    }
+
+    [Test]
+    public void IndependentSourceCanCalculateSharedFeatureHistoryWithoutCopyingIt()
+    {
+        var branch = Branch(true);
+        var a = Commit();
+        var featureValue = Commit(a);
+        var sourceValue = Commit(a);
+        var featureMerge = Commit(sourceValue);
+        featureMerge.Parents.Returns([sourceValue, featureValue]);
+        var mergeValue = Commit(a);
+        mergeValue.Parents.Returns([a, featureMerge]);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var shared = root.CreateCommit(featureValue, root.BranchName, branch);
+        root.CreateCommit(a, root.BranchName, branch);
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, root, a, mergeValue);
+        merge.AddChildIteration(source);
+        var nestedMerge = source.CreateCommit(featureMerge, source.BranchName, branch);
+        source.CreateCommit(sourceValue, source.BranchName, branch);
+        var feature = new MainlineIteration("feature", new("refs/heads/feature/shared"), Branch(false), source, a, featureMerge);
+        nestedMerge.AddChildIteration(feature);
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), mergeValue)
+        {
+            BranchPointResolver = new MainlineBranchPointResolver(root)
+        };
+
+        context.HasChildHistory(nestedMerge).ShouldBeFalse();
+        (context with { IncludeSharedHistory = true }).HasChildHistory(nestedMerge).ShouldBeTrue();
+        var selected = new MainlineHistory(configuration, context.Environment, mergeValue, context.BranchPointResolver)
+            .Select(feature, "", false, includeSharedHistory: true);
+        selected.Commits.ShouldBe([shared]);
+        selected.Commits[0].ShouldBeSameAs(shared);
+        feature.Commits.ShouldBeEmpty();
+        shared.Iteration.ShouldBeSameAs(root);
+    }
+
+    [Test]
+    public void MainlineSelectionFollowsFirstParentsWithoutReplayingSideHistory()
+    {
+        var branch = Branch(true);
+        var a = Commit();
+        var b = Commit(a);
+        var receiverTip = Commit(a);
+        var sourceTip = Commit(b);
+        var mergeValue = Commit(receiverTip);
+        mergeValue.Parents.Returns([receiverTip, sourceTip]);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var receiver = root.CreateCommit(receiverTip, root.BranchName, branch);
+        var shared = root.CreateCommit(b, root.BranchName, branch);
+        var initial = root.CreateCommit(a, root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, root, a, mergeValue);
+        var sourceCommit = source.CreateCommit(sourceTip, source.BranchName, branch);
+        merge.AddChildIteration(source);
+        var history = History(mergeValue);
+
+        history.Select(root, "", false).Commits.ShouldBe([initial, receiver, merge]);
+        var independent = history.Select(source, "", true);
+        independent.Commits.ShouldBe([initial, shared, sourceCommit]);
+        independent.Commits[1].ShouldBeSameAs(shared);
+        root.Commits.ShouldBe([initial, shared, receiver, merge]);
+        source.Commits.ShouldBe([sourceCommit]);
+        receiver.Predecessor.ShouldBeSameAs(shared);
+    }
+
+    [Test]
+    public void ChildContextKeepsCacheButResetsCalculationState()
+    {
+        var commit = Commit();
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var predecessor = iteration.CreateCommit(commit, iteration.BranchName, branch);
+        var version = new SemanticVersion(3, 0, 0);
+        var parent = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(),
+            GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), commit)
+        {
+            TargetLabel = "beta",
+            BranchPointResolver = new MainlineBranchPointResolver(iteration),
+            IncludeSharedHistory = true,
+            SemanticVersion = version,
+            SemVerSource = new SemanticVersionSource("tag", version, commit, VersionField.None),
+            Increment = VersionField.Major,
+            CommitIncrement = VersionField.Minor,
+            BaseVersionSource = commit,
+            Predecessor = predecessor,
+            HasSuccessor = true,
+            Label = "previous",
+            ForceIncrement = true,
+            SuppressBranchIncrement = true
+        };
+        var cached = new BaseVersion("cached", version);
+        parent.MainlineVersions.Add(iteration, cached);
+        parent.AddAlternativeSemanticVersion(version, new SemanticVersionSource("tag", version, commit, VersionField.None));
+
+        var child = parent.CreateChildContext();
+
+        child.ShouldNotBeSameAs(parent);
+        child.TargetLabel.ShouldBe("beta");
+        child.BranchPointResolver.ShouldBeSameAs(parent.BranchPointResolver);
+        child.IncludeSharedHistory.ShouldBeTrue();
+        child.CurrentCommit.ShouldBeSameAs(commit);
+        child.MainlineVersions.ShouldBeSameAs(parent.MainlineVersions);
+        child.MainlineVersions[iteration].ShouldBeSameAs(cached);
+        child.Increment.ShouldBe(VersionField.None);
+        child.CommitIncrement.ShouldBe(VersionField.None);
+        child.SemanticVersion.ShouldBeNull();
+        child.SemVerSource.ShouldBeNull();
+        child.BaseVersionSource.ShouldBeNull();
+        child.Predecessor.ShouldBeNull();
+        child.HasSuccessor.ShouldBeNull();
+        child.Label.ShouldBeNull();
+        child.ForceIncrement.ShouldBeFalse();
+        child.SuppressBranchIncrement.ShouldBeFalse();
+        child.AlternativeSemanticVersions.ShouldBeEmpty();
+        parent.Increment.ShouldBe(VersionField.Major);
+        parent.AlternativeSemanticVersions.ShouldBe([version]);
+    }
+
+    [Test]
+    public void SelectionStopsAtTheEligibleReleaseInChronologicalOrder()
+    {
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var tip = iteration.CreateCommit(Commit(), iteration.BranchName, branch);
+        var release = iteration.CreateCommit(Commit(), iteration.BranchName, branch);
+        release.AddSemanticVersions(new SemanticVersion(2, 0, 0));
+        var initial = iteration.CreateCommit(Commit(), iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        tip.Value.Parents.Returns([release.Value]);
+        release.Value.Parents.Returns([initial.Value]);
+        var recorded = iteration.Commits.ToArray();
+
+        var selected = History(tip.Value).Select(iteration, "", false);
+
+        selected.Commits.ShouldBe([release, tip]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        iteration.Commits.ShouldBe(recorded);
+    }
+
+    [Test]
+    public void SharedAncestryUsesExistingNodesOnlyForIndependentCalculation()
+    {
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(Commit(), root.BranchName, branch);
+        merge.AddSemanticVersions(new SemanticVersion(3, 0, 0));
+        var shared = root.CreateCommit(Commit(), root.BranchName, branch);
+        var initial = root.CreateCommit(Commit(), root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        shared.Value.Parents.Returns([initial.Value]);
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch,
+            root, shared.Value, merge.Value);
+        var history = History(merge.Value);
+
+        history.Select(source, "", false).Commits.ShouldBeEmpty();
+        var independent = history.Select(source, "", true);
+
+        independent.Commits.ShouldBe([initial, shared]);
+        independent.Commits[1].ShouldBeSameAs(shared);
+        independent.HasBoundary.ShouldBeTrue();
+        source.Commits.ShouldBeEmpty();
+        root.Commits.ShouldBe([initial, shared, merge]);
+    }
+
+    [Test]
+    public void SelectionPreservesOwnedConfigurationTransitionsAndTheRequestedTip()
+    {
+        var branch = Branch(true);
+        var newestValue = Commit();
+        var oldestValue = Commit();
+        newestValue.Parents.Returns([oldestValue]);
+        var iteration = new MainlineIteration("source", new("refs/heads/support/1.x"), branch,
+            null, null, null);
+        var newest = iteration.CreateCommit(newestValue, iteration.BranchName, branch);
+        var transition = iteration.CreateCommit(null, new("refs/heads/main"), branch);
+        var oldest = iteration.CreateCommit(oldestValue, iteration.BranchName, branch);
+        var history = History(newestValue);
+
+        history.Select(iteration, "", false).Commits.ShouldBe([oldest, transition, newest]);
+        history.Select(iteration, "", false, tip: oldest).Commits.ShouldBe([oldest]);
+        iteration.Commits.ShouldBe([oldest, transition, newest]);
+    }
+
+    [Test]
+    public void MissingBranchPointIsReportedWithoutRecordingIt()
+    {
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(Commit(), root.BranchName, branch);
+        var missing = Commit();
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch,
+            root, missing, merge.Value);
+
+        var selected = History(merge.Value).Select(source, "", true);
+
+        selected.MissingCommit.ShouldBeSameAs(missing);
+        selected.HasBoundary.ShouldBeFalse();
+        selected.Commits.ShouldBeEmpty();
+        source.Commits.ShouldBeEmpty();
+        root.Commits.ShouldBe([merge]);
+        root.FindCommit(missing).ShouldBeNull();
+    }
+
+    [Test]
+    public void ReleasedSourceDoesNotRequireUnrecordedAncestry()
+    {
+        var missing = Commit();
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(Commit(), root.BranchName, branch);
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, root, missing, merge.Value);
+        var release = source.CreateCommit(Commit(), source.BranchName, branch);
+        release.AddSemanticVersions(new SemanticVersion(2, 0, 0));
+        merge.AddChildIteration(source);
+
+        var selected = History(merge.Value).Select(source, "", true);
+
+        selected.Commits.ShouldBe([release]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        root.FindCommit(missing).ShouldBeNull();
+        source.Commits.ShouldBe([release]);
+    }
+
+    [TestCase(false, TestName = "FeatureReleaseDelimitsReceiverHistory")]
+    [TestCase(true, TestName = "MainlineReleaseDoesNotDelimitReceiverHistory")]
+    public void OnlyFeatureReleaseBoundariesPropagateToTheReceiver(bool mainlineSource)
+    {
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(Commit(), root.BranchName, branch);
+        var initial = root.CreateCommit(Commit(), root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var childBranch = Branch(mainlineSource);
+        var child = new MainlineIteration("child", new("refs/heads/source"), childBranch, root, initial.Value, merge.Value);
+        var childTip = child.CreateCommit(Commit(initial.Value), child.BranchName, childBranch);
+        childTip.AddSemanticVersions(new SemanticVersion(2, 0, 0));
+        merge.Value.Parents.Returns([initial.Value, childTip.Value]);
+        merge.AddChildIteration(child);
+
+        var selected = History(merge.Value).Select(root, "", false);
+
+        selected.Commits.ShouldBe(mainlineSource ? [initial, merge] : [merge]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+    }
+
+    private static MainlineHistory History(ICommit currentCommit)
+        => new(GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), currentCommit);
+
+    private static BranchConfiguration Branch(bool mainline)
+        => new() { Increment = IncrementStrategy.Patch, IsMainBranch = mainline, Label = "" };
+
+    private static ICommit Commit(ICommit? parent = null)
+    {
+        var commit = GitRepositoryTestingExtensions.CreateMockCommit();
+        commit.Equals(commit).Returns(true);
+        ICommit[] parents = parent is null ? [] : [parent];
+        commit.Parents.Returns(parents);
+        return commit;
+    }
+}
