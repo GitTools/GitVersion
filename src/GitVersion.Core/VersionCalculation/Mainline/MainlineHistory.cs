@@ -23,7 +23,8 @@ internal sealed class MainlineHistory(
             return selection;
         }
 
-        if (iteration.Configuration.IsMainBranch == true || !includeAncestry || iteration.BranchedFrom is null)
+        // Git-based selection has already traversed its requested ancestry.
+        if (UsesBranchHistory(iteration, includeSharedHistory) || !includeAncestry || iteration.BranchedFrom is null)
         {
             return Result(commits, false);
         }
@@ -32,7 +33,8 @@ internal sealed class MainlineHistory(
             return Result(commits, false, iteration.BranchedFrom);
         }
 
-        var ancestry = Select(branchPoint.Iteration, targetLabel, true, branchPoint);
+        var ancestry = Select(branchPoint.Iteration, targetLabel, true, branchPoint,
+            includeSharedHistory: includeSharedHistory);
         commits.AddRange(ancestry.Commits.Reverse());
         return Result(commits, ancestry.HasBoundary, ancestry.MissingCommit);
     }
@@ -80,14 +82,17 @@ internal sealed class MainlineHistory(
     private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetCommits(
         MainlineIteration iteration, string? targetLabel, bool includeAncestry, MainlineCommit? tip, bool includeSharedHistory)
     {
-        if (iteration.Configuration.IsMainBranch == true
-            || includeSharedHistory && iteration is { ParentIteration: not null, BranchedFrom: not null })
+        if (UsesBranchHistory(iteration, includeSharedHistory))
         {
             return GetMainlineCommits(iteration, targetLabel, includeAncestry, tip);
         }
         return iteration.GetCommitsInReverseOrder(false, tip)
             .Select<MainlineCommit, (MainlineCommit?, ICommit?)>(commit => (commit, null));
     }
+
+    private static bool UsesBranchHistory(MainlineIteration iteration, bool includeSharedHistory)
+        => iteration.Configuration.IsMainBranch == true
+            || includeSharedHistory && iteration is { ParentIteration: not null, BranchedFrom: not null };
 
     private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetMainlineCommits(
         MainlineIteration iteration, string? targetLabel, bool includeAncestry, MainlineCommit? tip)
