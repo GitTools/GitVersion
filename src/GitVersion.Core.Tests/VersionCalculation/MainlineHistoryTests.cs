@@ -8,6 +8,86 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineHistoryTests
 {
+    [Test]
+    public void SharedHistoryModeSurvivesRecursiveAncestrySelection()
+    {
+        var a = Commit();
+        var sharedValue = Commit(a);
+        var branchPointValue = Commit(sharedValue);
+        var sourceValue = Commit(branchPointValue);
+        var mergeValue = Commit(a);
+        mergeValue.Parents.Returns([a, branchPointValue]);
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var shared = root.CreateCommit(sharedValue, root.BranchName, branch);
+        var initial = root.CreateCommit(a, root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var older = new MainlineIteration("older", new("refs/heads/feature/older"), Branch(false), root, a, mergeValue);
+        var branchPoint = older.CreateCommit(branchPointValue, older.BranchName, older.Configuration);
+        merge.AddChildIteration(older);
+        var source = new MainlineIteration("source", new("refs/heads/source"), Branch(false), null, branchPointValue, null);
+        var sourceCommit = source.CreateCommit(sourceValue, source.BranchName, source.Configuration);
+        var history = new MainlineHistory(GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), sourceValue,
+            new MainlineBranchPointResolver(root));
+
+        history.Select(source, "", true).Commits.ShouldBe([initial, branchPoint, sourceCommit]);
+        var selected = history.Select(source, "", true, includeSharedHistory: true);
+
+        selected.Commits.ShouldBe([initial, shared, branchPoint, sourceCommit]);
+        selected.Commits[1].ShouldBeSameAs(shared);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        source.Commits.ShouldBe([sourceCommit]);
+        older.Commits.ShouldBe([branchPoint]);
+        root.Commits.ShouldBe([initial, shared, merge]);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void InheritedMainlineWithoutMatchingReleaseDoesNotDuplicateAncestry(bool addUnmatchedPrerelease)
+    {
+        var a = Commit();
+        var sharedValue = Commit(a);
+        var branchPointValue = Commit(sharedValue);
+        var olderMergeValue = Commit(sharedValue);
+        olderMergeValue.Parents.Returns([sharedValue, branchPointValue]);
+        var receiverValue = Commit(olderMergeValue);
+        var sourceValue = Commit(branchPointValue);
+        var mergeValue = Commit(receiverValue);
+        mergeValue.Parents.Returns([receiverValue, sourceValue]);
+        var branch = Branch(true);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var receiver = root.CreateCommit(receiverValue, root.BranchName, branch);
+        var olderMerge = root.CreateCommit(olderMergeValue, root.BranchName, branch);
+        var shared = root.CreateCommit(sharedValue, root.BranchName, branch);
+        var initial = root.CreateCommit(a, root.BranchName, branch);
+        if (addUnmatchedPrerelease)
+        {
+            initial.AddSemanticVersions(new SemanticVersion(1, 0, 0) { PreReleaseTag = new("alpha", 1, false) });
+        }
+        var older = new MainlineIteration("older", new("refs/heads/feature/older"), Branch(false), root, a, olderMergeValue);
+        var branchPoint = older.CreateCommit(branchPointValue, older.BranchName, older.Configuration);
+        olderMerge.AddChildIteration(older);
+        var sourceBranch = new BranchConfiguration { Increment = IncrementStrategy.Inherit, Label = "beta" };
+        var source = new MainlineIteration("source", new("refs/heads/source"), sourceBranch, root, branchPointValue, mergeValue);
+        var sourceCommit = source.CreateCommit(sourceValue, source.BranchName, sourceBranch);
+        merge.AddChildIteration(source);
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        source.GetEffectiveConfiguration(configuration).IsMainBranch.ShouldBeTrue();
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), mergeValue)
+            .Select(source, "beta", true, includeSharedHistory: true);
+
+        selected.Commits.ShouldBe([initial, shared, branchPoint, sourceCommit]);
+        selected.HasBoundary.ShouldBeFalse();
+        selected.MissingCommit.ShouldBeNull();
+        source.Commits.ShouldBe([sourceCommit]);
+        older.Commits.ShouldBe([branchPoint]);
+        root.Commits.ShouldBe([initial, shared, olderMerge, receiver, merge]);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void UntrackedMergeRetainsBothParentsEvenWhenTheMergeIsIgnored(bool ignoreMerge)
