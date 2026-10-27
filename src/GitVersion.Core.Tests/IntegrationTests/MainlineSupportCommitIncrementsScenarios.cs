@@ -9,6 +9,29 @@ public class MainlineSupportCommitIncrementsScenarios : TestBase
 {
     [TestCase(IncrementStrategy.Patch)]
     [TestCase(IncrementStrategy.Inherit)]
+    public void EntirelyIgnoredFeatureRetainsReceiverHistory(IncrementStrategy sourceIncrement)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var release = fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("feature/ignored");
+        fixture.MakeACommit("Ignored feature +semver: major");
+        var ignored = fixture.Repository.Head.Tip.Sha;
+        fixture.Checkout(MainBranch);
+        fixture.MakeACommit();
+        fixture.MergeNoFF("feature/ignored");
+        var configuration = GetConfigurationBuilder()
+            .WithBranch("feature", branch => branch.WithIncrement(sourceIncrement))
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [ignored] }).Build();
+
+        var version = fixture.GetVersion(configuration);
+
+        version.FullSemVer.ShouldBe("1.0.2");
+        version.SemVerSourceSha.ShouldBe(release);
+        version.SemVerSourceIncrement.ShouldBe("Patch");
+    }
+
+    [TestCase(IncrementStrategy.Patch)]
+    [TestCase(IncrementStrategy.Inherit)]
     public void EntirelyIgnoredSourceRetainsReceiverHistory(IncrementStrategy sourceIncrement)
     {
         using var fixture = new EmptyRepositoryFixture();

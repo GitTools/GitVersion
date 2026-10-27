@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -34,9 +35,9 @@ internal sealed class MainlineIteration
 
     public MainlineCommit? GetBranchedTo()
     {
-        if (ParentIteration is not null)
+        if (HasParentIteration)
         {
-            return ParentIteration.FindCommit(BranchedTo!);
+            return ParentIteration.FindCommit(BranchedTo);
         }
         return null;
     }
@@ -52,7 +53,7 @@ internal sealed class MainlineIteration
         var branchConfiguration = Configuration;
 
         if (branchConfiguration.Increment != IncrementStrategy.Inherit || (Commits.FirstOrDefault()
-            ?? ParentIteration?.FindCommit(BranchedFrom)) is not { } commit)
+            ?? (HasParentIteration ? ParentIteration.FindCommit(BranchedFrom) : null)) is not { } commit)
         {
             return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         }
@@ -64,6 +65,9 @@ internal sealed class MainlineIteration
     }
 
     public MainlineIteration? ParentIteration { get; }
+
+    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(BranchedFrom), nameof(BranchedTo))]
+    public bool HasParentIteration => ParentIteration is not null && BranchedFrom is not null && BranchedTo is not null;
 
     public string Id { get; }
 
@@ -81,6 +85,17 @@ internal sealed class MainlineIteration
     public MainlineIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
         MainlineIteration? parentIteration, ICommit? branchedFrom, ICommit? branchedTo)
     {
+        if (parentIteration is not null)
+        {
+            if (branchedFrom is null)
+            {
+                throw new ArgumentException("The parameter cannot be null when parent iteration is specified.", nameof(branchedFrom));
+            }
+            if (branchedTo is null)
+            {
+                throw new ArgumentException("The parameter cannot be null when parent iteration is specified.", nameof(branchedTo));
+            }
+        }
         Id = id.NotNullOrEmpty();
         Depth = (parentIteration?.Depth ?? 0) + 1;
         BranchName = branchName.NotNull();

@@ -8,6 +8,132 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineHistoryTests
 {
+    [TestCase(false)]
+    [TestCase(true)]
+    public void IgnoredMergeRetainsSourceHistory(bool mainline)
+    {
+        var branch = Branch(mainline);
+        var initialValue = Commit();
+        var sourceValue = Commit(initialValue);
+        var mergeValue = Commit(initialValue);
+        mergeValue.Parents.Returns([initialValue, sourceValue]);
+        var tipValue = Commit(mergeValue);
+        var root = new MainlineIteration("root", new("refs/heads/feature/receiver"), branch, null, null, null);
+        var tip = root.CreateCommit(tipValue, root.BranchName, branch);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var initial = root.CreateCommit(initialValue, root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var child = new MainlineIteration("child", new("refs/heads/feature/source"), branch, root, initialValue, mergeValue);
+        var source = child.CreateCommit(sourceValue, child.BranchName, branch);
+        merge.AddChildIteration(child);
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
+            new IgnoreConfiguration { Shas = [mergeValue.Sha] }).Build();
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), tipValue).Select(root, "", false);
+
+        selected.Commits.ShouldBe([initial, source, tip]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        root.Commits.ShouldBe([initial, merge, tip]);
+        child.Commits.ShouldBe([source]);
+        source.Iteration.ShouldBeSameAs(child);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void IgnoredBranchPointStillConnectsToUnignoredAncestry(bool mainline)
+    {
+        var branch = Branch(true);
+        var initialValue = Commit();
+        var ignoredValue = Commit(initialValue);
+        var sourceValue = Commit(ignoredValue);
+        var mergeValue = Commit(ignoredValue);
+        mergeValue.Parents.Returns([ignoredValue, sourceValue]);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var ignored = root.CreateCommit(ignoredValue, root.BranchName, branch);
+        var initial = root.CreateCommit(initialValue, root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var sourceBranch = Branch(mainline);
+        var child = new MainlineIteration("child", new("refs/heads/source"), sourceBranch, root, ignoredValue, mergeValue);
+        var source = child.CreateCommit(sourceValue, child.BranchName, sourceBranch);
+        merge.AddChildIteration(child);
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
+            new IgnoreConfiguration { Shas = [ignoredValue.Sha] }).Build();
+        var resolver = new MainlineBranchPointResolver(root);
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), mergeValue, resolver).Select(child, "", true);
+
+        selected.Commits.ShouldBe([initial, source]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        resolver.Resolve(child).ShouldBeSameAs(ignored);
+        root.Commits.ShouldBe([initial, ignored, merge]);
+        child.Commits.ShouldBe([source]);
+        child.BranchedFrom.ShouldBeSameAs(ignoredValue);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void IgnoredCommitsAreExcludedWithoutChangingRecordedHistory(bool mainline)
+    {
+        var branch = Branch(mainline);
+        var initialValue = Commit();
+        var ignoredReleaseValue = Commit(initialValue);
+        var retainedValue = Commit(ignoredReleaseValue);
+        var ignoredTipValue = Commit(retainedValue);
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
+            new IgnoreConfiguration { Shas = [ignoredReleaseValue.Sha, ignoredTipValue.Sha] }).Build();
+        var iteration = new MainlineIteration("root", new("refs/heads/source"), branch, null, null, null);
+        var ignoredTip = iteration.CreateCommit(ignoredTipValue, iteration.BranchName, branch);
+        var ignoredTransition = iteration.CreateCommit(null, iteration.BranchName, branch);
+        var retained = iteration.CreateCommit(retainedValue, iteration.BranchName, branch);
+        var ignoredRelease = iteration.CreateCommit(ignoredReleaseValue, iteration.BranchName, branch);
+        ignoredRelease.AddSemanticVersions(new SemanticVersion(2, 0, 0));
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), ignoredTipValue).Select(iteration, "", false);
+
+        selected.Commits.ShouldBe([initial, retained]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        iteration.Commits.ShouldBe([initial, ignoredRelease, retained, ignoredTransition, ignoredTip]);
+        retained.Predecessor.ShouldBeSameAs(ignoredRelease);
+        ignoredTransition.Predecessor.ShouldBeSameAs(retained);
+        ignoredTransition.Successor.ShouldBeSameAs(ignoredTip);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void EntirelyIgnoredFeatureHasNoCalculationHistory(bool includeSharedHistory)
+    {
+        var branch = Branch(true);
+        var initialValue = Commit();
+        var sourceValue = Commit(initialValue);
+        var mergeValue = Commit(initialValue);
+        mergeValue.Parents.Returns([initialValue, sourceValue]);
+        var root = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
+        var initial = root.CreateCommit(initialValue, root.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var feature = new MainlineIteration("feature", new("refs/heads/feature/ignored"), Branch(false), root, initialValue, mergeValue);
+        var source = feature.CreateCommit(sourceValue, feature.BranchName, feature.Configuration);
+        merge.AddChildIteration(feature);
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
+            new IgnoreConfiguration { Shas = [sourceValue.Sha] }).Build();
+        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), mergeValue)
+        {
+            BranchPointResolver = new MainlineBranchPointResolver(root),
+            IncludeSharedHistory = includeSharedHistory
+        };
+
+        context.HasChildHistory(merge).ShouldBeFalse();
+        feature.Commits.ShouldBe([source]);
+        feature.BranchedFrom.ShouldBeSameAs(initialValue);
+        feature.ParentIteration.ShouldBeSameAs(root);
+    }
+
     [Test]
     public void SharedHistoryModeSurvivesRecursiveAncestrySelection()
     {

@@ -101,7 +101,7 @@ public class MainlineBranchPointResolverTests
 
     private static MainlineIteration Iteration(string id, string branch, MainlineIteration? parent = null, ICommit? branchedFrom = null)
         => new(id, new($"refs/heads/{branch}"), new BranchConfiguration { Increment = IncrementStrategy.Patch },
-            parent, branchedFrom, null);
+            parent, branchedFrom ?? (parent is null ? null : Commit()), parent is null ? null : Commit());
 
     private static ICommit Commit()
     {
