@@ -11,6 +11,8 @@ internal sealed class MainlineHistory(
 {
     private MainlineBranchPointResolver? branchPointResolver = branchPointResolver;
 
+    private readonly Dictionary<ICommit, ICommit[]> unignoredCache = [];
+
     internal sealed record Selection(MainlineCommit[] Commits, bool HasBoundary, ICommit? MissingCommit = null);
 
     internal Selection Select(MainlineIteration iteration, string? targetLabel, bool includeAncestry,
@@ -217,7 +219,21 @@ internal sealed class MainlineHistory(
 
     private IEnumerable<ICommit> GetUnignored(ICommit? commit)
     {
-        Stack<ICommit> pending = commit is null ? new() : new([commit]);
+        if (commit is null)
+        {
+            return [];
+        }
+        if (!this.unignoredCache.TryGetValue(commit, out var result))
+        {
+            result = [.. FindUnignored(commit)];
+            this.unignoredCache.Add(commit, result);
+        }
+        return result;
+    }
+
+    private IEnumerable<ICommit> FindUnignored(ICommit commit)
+    {
+        Stack<ICommit> pending = new([commit]);
         HashSet<ICommit> visited = [];
         while (pending.TryPop(out var current))
         {
