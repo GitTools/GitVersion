@@ -10,6 +10,7 @@ internal sealed class MainlineIterationBuilder(
     ITaggedSemanticVersionService taggedSemanticVersionService,
     IEnvironment environment)
 {
+    private static readonly IIgnoreConfiguration NoIgnoredCommits = new UnfilteredConfiguration();
     private int iterationCounter;
     private readonly HashSet<ICommit> recordedCommits = [];
     private readonly HashSet<ICommit> unresolvedBranchPoints = [];
@@ -21,7 +22,7 @@ internal sealed class MainlineIterationBuilder(
     {
         this.recordedCommits.Clear();
         this.unresolvedBranchPoints.Clear();
-        var commitsInReverseOrder = Context.Configuration.Ignore.Filter(Context.CurrentBranchCommits);
+        var commitsInReverseOrder = Context.CurrentBranchCommits;
         var branchConfiguration = Context.Configuration.GetBranchConfiguration(Context.CurrentBranch);
         var iteration = CreateIteration(
             branchName: Context.CurrentBranch.Name,
@@ -226,7 +227,7 @@ internal sealed class MainlineIterationBuilder(
             return;
         }
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
-            () => repositoryStore.GetCommitLog(item.Parents[0], item.Parents[1], Context.Configuration.Ignore)
+            () => repositoryStore.GetCommitLog(item.Parents[0], item.Parents[1], NoIgnoredCommits)
         );
 
         if ((state.Configuration.TrackMergeMessage ?? Context.Configuration.TrackMergeMessage) != true
@@ -246,10 +247,17 @@ internal sealed class MainlineIterationBuilder(
         if (childConfiguration.IsMainBranch == true && state.Configuration.IsMainBranch != true)
         {
             mergedCommitsInReverseOrderLazy = new(
-                () => repositoryStore.GetCommitLog(item.Parents[1], item.Parents[0], Context.Configuration.Ignore)
+                () => repositoryStore.GetCommitLog(item.Parents[1], item.Parents[0], NoIgnoredCommits)
             );
             childConfiguration = state.Configuration;
             childBranchName = iteration.BranchName;
+        }
+
+        // A merge can have no source-only history, particularly after swapping
+        // a mainline source with an unchanged receiver. There is no child to build.
+        if (mergedCommitsInReverseOrderLazy.Value.Count == 0)
+        {
+            return;
         }
 
         var branchedFrom = mergedCommitsInReverseOrderLazy.Value
@@ -326,6 +334,18 @@ internal sealed class MainlineIterationBuilder(
         this.commitsWasBranchedFromCache[cacheKey] = result;
 
         return result;
+    }
+
+    // Construction retains Git topology; commit ignore rules belong to calculation.
+    private sealed class UnfilteredConfiguration : IIgnoreConfiguration
+    {
+        private static readonly IReadOnlySet<string> Empty = new HashSet<string>();
+        public DateTimeOffset? Before => null;
+        public IReadOnlySet<string> Branches => Empty;
+        public IReadOnlySet<string> Paths => Empty;
+        public IReadOnlySet<string> Shas => Empty;
+        public IReadOnlySet<string> Tags => Empty;
+        public bool IsEmpty => true;
     }
 
     private sealed class TraversalState(

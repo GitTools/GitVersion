@@ -8,12 +8,26 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineIterationTests
 {
+    [TestCase(true, false, "branchedFrom")]
+    [TestCase(false, true, "branchedTo")]
+    [TestCase(true, true, "branchedFrom")]
+    public void ChildIterationRequiresBothBranchReferences(bool missingFrom, bool missingTo, string parameterName)
+    {
+        var configuration = new BranchConfiguration();
+        var parent = new MainlineIteration("parent", new("refs/heads/main"), configuration, null, null, null);
+
+        var exception = Should.Throw<ArgumentException>(() => new MainlineIteration("child", new("refs/heads/source"),
+            configuration, parent, missingFrom ? null : CreateCommit(), missingTo ? null : CreateCommit()));
+
+        exception.ParamName.ShouldBe(parameterName);
+    }
+
     [Test]
     public void ChildIsDeeperThanParent()
     {
         var configuration = new BranchConfiguration();
         var parent = new MainlineIteration("id0", new("canonical0"), configuration, null, null, null);
-        var child = new MainlineIteration("id1", new("canonical1"), configuration, parent, null, null);
+        var child = new MainlineIteration("id1", new("canonical1"), configuration, parent, CreateCommit(), CreateCommit());
 
         parent.Depth.ShouldBe(1);
         child.Depth.ShouldBe(2);
@@ -61,7 +75,7 @@ public class MainlineIterationTests
         var configuration = new BranchConfiguration { Increment = IncrementStrategy.Patch };
         var root = new MainlineIteration("root", new("refs/heads/main"), configuration, null, null, null);
         var merge = root.CreateCommit(CreateCommit(), root.BranchName, configuration);
-        var oldSource = new MainlineIteration("old", new("refs/heads/feature/old"), configuration, root, null, merge.Value);
+        var oldSource = new MainlineIteration("old", new("refs/heads/feature/old"), configuration, root, CreateCommit(), merge.Value);
         var branchPoint = oldSource.CreateCommit(CreateCommit(), oldSource.BranchName, configuration);
         var initial = oldSource.CreateCommit(CreateCommit(), oldSource.BranchName, configuration);
         merge.AddChildIteration(oldSource);
@@ -126,7 +140,7 @@ public class MainlineIterationTests
         var merge = receiver.CreateCommit(CreateCommit(), receiver.BranchName, branch);
         var initial = receiver.CreateCommit(CreateCommit(), receiver.BranchName, branch);
         initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
-        merge.AddChildIteration(new MainlineIteration("empty", new("refs/heads/support/1.x"), branch, receiver, null, merge.Value));
+        merge.AddChildIteration(new MainlineIteration("empty", new("refs/heads/support/1.x"), branch, null, null, merge.Value));
 
         var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(receiver, "", Substitute.For<IIncrementStrategyFinder>(),
             configuration, new TestEnvironment(), merge.Value);
@@ -147,7 +161,7 @@ public class MainlineIterationTests
         var receiver = new MainlineIteration("receiver", new("refs/heads/main"), branch, null, null, null);
         var merge = receiver.CreateCommit(mergeValue, receiver.BranchName, branch);
         merge.AddSemanticVersions(new SemanticVersion(2, 0, 0));
-        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, receiver, null, merge.Value);
+        var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, receiver, receiverTip, merge.Value);
         source.CreateCommit(tip, source.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         merge.AddChildIteration(source);
 
@@ -169,9 +183,9 @@ public class MainlineIterationTests
         mergeValue.Parents.Returns([receiverTip, tip]);
         var receiver = new MainlineIteration("receiver", new("refs/heads/main"), branch, null, null, null);
         var merge = receiver.CreateCommit(mergeValue, receiver.BranchName, branch);
-        var first = new MainlineIteration("first", new("refs/heads/support/1.x"), branch, receiver, null, merge.Value);
+        var first = new MainlineIteration("first", new("refs/heads/support/1.x"), branch, receiver, receiverTip, merge.Value);
         first.CreateCommit(tip, first.BranchName, branch).AddSemanticVersions(new SemanticVersion(2, 0, 0));
-        var second = new MainlineIteration("second", first.BranchName, branch, receiver, null, merge.Value);
+        var second = new MainlineIteration("second", first.BranchName, branch, receiver, receiverTip, merge.Value);
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), tip);
 

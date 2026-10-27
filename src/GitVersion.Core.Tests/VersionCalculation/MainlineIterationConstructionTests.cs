@@ -8,6 +8,58 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineIterationConstructionTests
 {
+    [TestCase("support/1.x", IncrementStrategy.Patch)]
+    [TestCase("support/1.x", IncrementStrategy.Inherit)]
+    [TestCase("feature/ignored", IncrementStrategy.Patch)]
+    [TestCase("feature/ignored", IncrementStrategy.Inherit)]
+    public void IgnoredCommitsRemainInConstructedIterations(string sourceBranch, IncrementStrategy sourceIncrement)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var release = fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo(sourceBranch);
+        fixture.MakeACommit("Ignored source +semver: major");
+        var ignoredSource = fixture.Repository.Head.Tip.Sha;
+        fixture.Checkout("main");
+        var ignoredReceiver = fixture.MakeACommit();
+        var receiverTip = fixture.MakeACommit();
+        fixture.MergeNoFF(sourceBranch);
+        var mergeSha = fixture.Repository.Head.Tip.Sha;
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithBranch(sourceBranch.StartsWith("support") ? "support" : "feature", b => b.WithIncrement(sourceIncrement))
+            .WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [ignoredSource, ignoredReceiver] }).Build();
+        var provider = Substitute.For<IConfigurationProvider>();
+        provider.Provide(Arg.Any<IReadOnlyDictionary<object, object?>?>()).Returns(configuration);
+        using var repository = fixture.Repository.ToGitRepository();
+        using var services = (ServiceProvider)fixture.ConfigureServices((collection, _) =>
+        {
+            collection.AddSingleton(provider);
+            collection.AddSingleton(Options.Create(new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath }));
+            collection.AddSingleton(repository);
+        });
+        services.DiscoverRepository();
+        var context = services.GetRequiredService<Lazy<GitVersionContext>>();
+        var environment = services.GetRequiredService<IEnvironment>();
+        var iteration = new MainlineIterationBuilder(context, services.GetRequiredService<IRepositoryStore>(),
+            services.GetRequiredService<ITaggedSemanticVersionService>(), environment).BuildIteration(repository.Head, "");
+
+        var merge = iteration.Commits.Single(commit => commit.Value.Sha == mergeSha);
+        var source = merge.ChildIteration.ShouldNotBeNull();
+        source.ParentIteration.ShouldBeSameAs(iteration);
+        source.BranchedTo.ShouldBeSameAs(merge.Value);
+        source.BranchedFrom.ShouldNotBeNull().Sha.ShouldBe(release);
+        source.Commits.Select(commit => commit.Value.Sha).ShouldBe([ignoredSource]);
+        iteration.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, ignoredReceiver, receiverTip, mergeSha]);
+        var resolver = new MainlineBranchPointResolver(iteration);
+        resolver.Resolve(source).ShouldBeSameAs(iteration.FindCommit(source.BranchedFrom));
+        var selected = new MainlineHistory(configuration, environment, context.Value.CurrentCommit, resolver)
+            .Select(iteration, "", false);
+        selected.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, receiverTip, mergeSha]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        source.Commits.Single().Iteration.ShouldBeSameAs(source);
+    }
+
     [Test]
     public void ReleasedReceiverWithoutOutstandingReferencesDoesNotEnumerateOlderCommits()
     {

@@ -24,13 +24,14 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public bool HasChildHistory(MainlineCommit commit)
     {
-        if (commit.HasChildIteration)
+        if (commit.HasChildIteration && Configuration.Ignore.IsEmpty)
         {
             return true;
         }
-        return IncludeSharedHistory && commit.ChildIteration is { BranchedFrom: not null } child
+        return commit.ChildIteration is { } child
+            && (commit.HasChildIteration || IncludeSharedHistory && child.BranchedFrom is not null)
             && new MainlineHistory(Configuration, Environment, CurrentCommit, BranchPointResolver)
-                .Select(child, TargetLabel, false, includeSharedHistory: true).Commits.Length > 0;
+                .Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
     }
 
     public MainlineContext CreateChildContext()
