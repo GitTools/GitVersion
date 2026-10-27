@@ -53,7 +53,7 @@ internal sealed class MainlineIteration
     public MainlineIteration? ParentIteration { get; }
 
     [MemberNotNullWhen(true, nameof(ParentIteration), nameof(BranchedFrom), nameof(BranchedTo))]
-    public bool HasParentIteration => ParentIteration is not null && BranchedFrom is not null && BranchedTo is not null;
+    public bool HasParentIteration => ParentIteration is not null;
 
     public string Id { get; }
 
