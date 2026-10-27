@@ -9,14 +9,15 @@ internal sealed class EnrichIncrement : IContextPreEnricher
 {
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
         // An eligible tag on a merged mainline already releases that commit's bump message.
         var isTaggedMergedMainline = context.SemanticVersion is not null
             && iteration.Configuration.IsMainBranch == true
             && effectiveConfiguration.IsMainBranch
             && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged
-            && iteration.GetBranchedTo()?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
+            && iteration.GetBranchedTo() is { } receivingMerge
+            && context.GetEffectiveConfiguration(receivingMerge).IsMainBranch;
         var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
             : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
@@ -49,11 +50,12 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         }
 
         context.ForceIncrement |= effectiveConfiguration.IsMainBranch
-            || context.GetPredecessor(commit)?.GetEffectiveConfiguration(context.Configuration).IsMainBranch == true;
+            || context.GetPredecessor(commit) is { } previous
+                && context.GetEffectiveConfiguration(previous).IsMainBranch;
     }
 
     private static VersionField? GetMergedBranchIncrement(MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && commit.IsMergedMainline(context.Configuration) ? VersionField.None : null;
+        => context.SemanticVersion is null && context.IsMergedMainline(commit) ? VersionField.None : null;
 
     private static CommitMessageIncrement GetIncrementForcedByCommit(
         MainlineContext context, ICommit commit, EffectiveConfiguration configuration)

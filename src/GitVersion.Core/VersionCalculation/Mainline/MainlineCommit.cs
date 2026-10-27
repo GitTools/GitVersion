@@ -11,23 +11,15 @@ namespace GitVersion.VersionCalculation.Mainline;
 )]
 internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsMergedMainline(IGitVersionConfiguration configuration)
-        => ChildIteration?.GetEffectiveConfiguration(configuration).IsMainBranch == true
-            && GetEffectiveConfiguration(configuration).IsMainBranch;
-
     public bool HasUnsupportedMerge => !IsDummy && Value.Parents.Count > 2;
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    public IBranchConfiguration Configuration { get; } = Configuration.NotNull();
 
     public bool HasExplicitIncrement => Configuration.Increment != IncrementStrategy.Inherit;
-
-    // Applies global defaults without inheriting from predecessor or parent iterations.
-    public EffectiveConfiguration GetOwnConfiguration(IGitVersionConfiguration configuration)
-        => new(configuration, Configuration);
 
     public bool HasSuccessor => Successor is not null;
 
@@ -51,56 +43,9 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
 
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
-    [MemberNotNullWhen(true, nameof(ParentIteration))]
-    private bool HasParentIteration => Iteration.HasParentIteration;
-
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
     private readonly HashSet<SemanticVersion> semanticVersions = [];
-
-    private EffectiveConfiguration? effectiveConfiguration;
-
-    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
-    {
-        if (this.effectiveConfiguration is not null)
-        {
-            return this.effectiveConfiguration;
-        }
-
-        var branchConfiguration = Configuration;
-
-        var last = Configuration;
-        for (var i = this; i is not null; i = i.Predecessor)
-        {
-            if (branchConfiguration.Increment != IncrementStrategy.Inherit)
-            {
-                break;
-            }
-
-            if (i.Configuration != last)
-            {
-                branchConfiguration = branchConfiguration.Inherit(i.Configuration);
-            }
-
-            last = i.Configuration;
-        }
-
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
-        {
-            return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        }
-
-        var parentConfiguration = Iteration.GetBranchedTo()?.GetEffectiveConfiguration(configuration)!;
-        branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
-
-        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-    }
-
-    public VersionField GetIncrementForcedByBranch(IGitVersionConfiguration configuration)
-    {
-        var result = GetEffectiveConfiguration(configuration);
-        return result.Increment.ToVersionField();
-    }
 
     public void AddSemanticVersions(params SemanticVersion[] values)
         => AddSemanticVersions((IEnumerable<SemanticVersion>)values);

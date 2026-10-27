@@ -148,8 +148,9 @@ public class MainlineHistoryTests
         selected.Commits.ShouldBe([boundary, release, tip]);
         selected.HasBoundary.ShouldBeTrue();
         selected.MissingCommit.ShouldBeNull();
-        release.GetEffectiveConfiguration(configuration).Increment.ShouldBe(IncrementStrategy.Patch);
-        release.GetEffectiveConfiguration(configuration).Label.ShouldBe("beta");
+        var configurations = new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(release.Iteration));
+        configurations.GetEffectiveConfiguration(release).Increment.ShouldBe(IncrementStrategy.Patch);
+        configurations.GetEffectiveConfiguration(release).Label.ShouldBe("beta");
         iteration.Commits.ShouldBe([initial, boundary, release, tip]);
     }
 
@@ -346,7 +347,7 @@ public class MainlineHistoryTests
         var sourceCommit = source.CreateCommit(sourceValue, source.BranchName, sourceBranch);
         merge.AddChildIteration(source);
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        source.GetEffectiveConfiguration(configuration).IsMainBranch.ShouldBeTrue();
+        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(source)).GetEffectiveConfiguration(source).IsMainBranch.ShouldBeTrue();
 
         var selected = new MainlineHistory(configuration, new TestEnvironment(), mergeValue)
             .Select(source, "beta", true, includeSharedHistory: true);

@@ -19,6 +19,26 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public MainlineBranchPointResolver? BranchPointResolver { get; set; }
 
+    private MainlineConfigurationResolver? ConfigurationResolver { get; set; }
+
+    internal MainlineConfigurationResolver GetConfigurationResolver(MainlineIteration iteration)
+    {
+        BranchPointResolver ??= new MainlineBranchPointResolver(iteration);
+        return ConfigurationResolver ??= new MainlineConfigurationResolver(Configuration, BranchPointResolver);
+    }
+
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
+        => GetConfigurationResolver(iteration).GetEffectiveConfiguration(iteration);
+
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).GetEffectiveConfiguration(commit);
+
+    public bool IsMergedMainline(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).IsMergedMainline(commit);
+
+    public VersionField GetIncrementForcedByBranch(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).GetIncrementForcedByBranch(commit);
+
     // Independent source calculations also need side histories stored in other iterations.
     public bool IncludeSharedHistory { get; init; }
 
@@ -28,9 +48,10 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
         {
             return true;
         }
+        var configurations = GetConfigurationResolver(commit.Iteration);
         return commit.ChildIteration is { } child
             && (commit.HasChildIteration || IncludeSharedHistory && child.BranchedFrom is not null)
-            && new MainlineHistory(Configuration, Environment, CurrentCommit, BranchPointResolver)
+            && new MainlineHistory(Configuration, Environment, CurrentCommit, BranchPointResolver, configurations)
                 .Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
     }
 
@@ -39,6 +60,7 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
         {
             TargetLabel = TargetLabel,
             BranchPointResolver = BranchPointResolver,
+            ConfigurationResolver = ConfigurationResolver,
             IncludeSharedHistory = IncludeSharedHistory,
             MainlineVersions = MainlineVersions
         };

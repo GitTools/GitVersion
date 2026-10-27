@@ -7,9 +7,10 @@ namespace GitVersion.VersionCalculation.Mainline;
 // Selects calculation history without changing the recorded iteration graph.
 internal sealed class MainlineHistory(
     IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-    MainlineBranchPointResolver? branchPointResolver = null)
+    MainlineBranchPointResolver? branchPointResolver = null, MainlineConfigurationResolver? configurationResolver = null)
 {
     private MainlineBranchPointResolver? branchPointResolver = branchPointResolver;
+    private MainlineConfigurationResolver? configurationResolver = configurationResolver;
 
     private readonly Dictionary<ICommit, ICommit[]> unignoredCache = [];
 
@@ -19,6 +20,7 @@ internal sealed class MainlineHistory(
         MainlineCommit? tip = null, bool includeSharedHistory = false)
     {
         this.branchPointResolver ??= new MainlineBranchPointResolver(iteration);
+        this.configurationResolver ??= new MainlineConfigurationResolver(configuration, this.branchPointResolver);
         List<MainlineCommit> commits = [];
         if (SelectLocal(iteration, targetLabel, includeAncestry, tip, commits, includeSharedHistory) is { } selection)
         {
@@ -69,7 +71,7 @@ internal sealed class MainlineHistory(
     private Selection? SelectChild(MainlineCommit commit, string? targetLabel, bool includeSharedHistory)
     {
         if (commit.ChildIteration is not { } child
-            || commit.IsMergedMainline(configuration))
+            || this.configurationResolver!.IsMergedMainline(commit))
         {
             return null;
         }
@@ -204,7 +206,7 @@ internal sealed class MainlineHistory(
     }
 
     private string? GetBranchSpecificLabel(MainlineCommit commit)
-        => commit.GetOwnConfiguration(configuration)
+        => this.configurationResolver!.GetOwnConfiguration(commit)
             .GetBranchSpecificLabel(commit.BranchName, null, environment, currentCommit);
 
     private static ICommit? GetTip(MainlineIteration iteration, bool includeAncestry, MainlineCommit? tip)
