@@ -52,7 +52,7 @@ internal sealed class MainlineHistory(
                 return Result(commits, false, missing);
             }
             commits.Add(commit);
-            var label = targetLabel ?? commit.GetBranchSpecificLabel(configuration, environment, currentCommit);
+            var label = targetLabel ?? GetBranchSpecificLabel(commit);
             foundTag |= commit.SemanticVersions.Any(version => version.IsMatchForBranchSpecificLabel(label));
             if (foundTag && commit.HasExplicitIncrement)
             {
@@ -93,7 +93,7 @@ internal sealed class MainlineHistory(
     private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetIterationCommits(
         MainlineIteration iteration, string? targetLabel, MainlineCommit? tip, bool includeSharedHistory)
     {
-        foreach (var commit in iteration.GetCommitsInReverseOrder(false, tip))
+        foreach (var commit in MainlineBranchPointResolver.GetLocalCommitsInReverseOrder(iteration, tip))
         {
             if (configuration.Ignore.IsEmpty || configuration.Ignore.Filter([commit.Value]).Any())
             {
@@ -198,10 +198,14 @@ internal sealed class MainlineHistory(
 
     private bool HasRelease(MainlineCommit commit, string? targetLabel)
     {
-        var label = targetLabel ?? commit.GetBranchSpecificLabel(configuration, environment, currentCommit);
+        var label = targetLabel ?? GetBranchSpecificLabel(commit);
         return commit.HasExplicitIncrement
             && commit.SemanticVersions.Any(version => version.IsMatchForBranchSpecificLabel(label));
     }
+
+    private string? GetBranchSpecificLabel(MainlineCommit commit)
+        => commit.GetOwnConfiguration(configuration)
+            .GetBranchSpecificLabel(commit.BranchName, null, environment, currentCommit);
 
     private static ICommit? GetTip(MainlineIteration iteration, bool includeAncestry, MainlineCommit? tip)
     {

@@ -25,9 +25,9 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
 
     public bool HasExplicitIncrement => Configuration.Increment != IncrementStrategy.Inherit;
 
-    public string? GetBranchSpecificLabel(IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
-        => new EffectiveConfiguration(configuration, Configuration)
-            .GetBranchSpecificLabel(BranchName, null, environment, currentCommit);
+    // Applies global defaults without inheriting from predecessor or parent iterations.
+    public EffectiveConfiguration GetOwnConfiguration(IGitVersionConfiguration configuration)
+        => new(configuration, Configuration);
 
     public bool HasSuccessor => Successor is not null;
 

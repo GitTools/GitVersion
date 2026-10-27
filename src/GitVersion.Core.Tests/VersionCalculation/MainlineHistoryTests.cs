@@ -10,6 +10,32 @@ public class MainlineHistoryTests
 {
     [TestCase(false)]
     [TestCase(true)]
+    public void ExplicitEmptyLabelOverridesTheRecordedBranchLabel(bool mainline)
+    {
+        var initialValue = Commit();
+        var releaseValue = Commit(initialValue);
+        var tipValue = Commit(releaseValue);
+        var branch = new BranchConfiguration { Increment = IncrementStrategy.Patch, IsMainBranch = mainline, Label = "beta" };
+        var iteration = new MainlineIteration("root", new("refs/heads/source"), branch, null, null, null);
+        var tip = iteration.CreateCommit(tipValue, iteration.BranchName, branch);
+        var release = iteration.CreateCommit(releaseValue, iteration.BranchName, branch);
+        release.AddSemanticVersions(new SemanticVersion(2, 0, 0) { PreReleaseTag = new("beta", 1, false) });
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var history = History(tipValue);
+
+        var explicitLabel = history.Select(iteration, "", false);
+        var recordedLabel = history.Select(iteration, null, false);
+
+        explicitLabel.Commits.ShouldBe([initial, release, tip]);
+        explicitLabel.HasBoundary.ShouldBeTrue();
+        recordedLabel.Commits.ShouldBe([release, tip]);
+        recordedLabel.HasBoundary.ShouldBeTrue();
+        iteration.Commits.ShouldBe([initial, release, tip]);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
     public void RepeatedIgnoredAncestrySelectionReusesTraversal(bool retainAncestor)
     {
         var cutoff = new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.Zero);
@@ -530,10 +556,11 @@ public class MainlineHistoryTests
         root.Commits.ShouldBe([initial, shared, merge]);
     }
 
-    [Test]
-    public void SelectionPreservesOwnedConfigurationTransitionsAndTheRequestedTip()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void SelectionPreservesOwnedConfigurationTransitionsAndTheRequestedTip(bool mainline)
     {
-        var branch = Branch(true);
+        var branch = Branch(mainline);
         var newestValue = Commit();
         var oldestValue = Commit();
         newestValue.Parents.Returns([oldestValue]);
