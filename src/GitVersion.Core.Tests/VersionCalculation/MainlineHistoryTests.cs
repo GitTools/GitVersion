@@ -8,6 +8,94 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineHistoryTests
 {
+    [TestCase(false)]
+    [TestCase(true)]
+    public void RepeatedIgnoredAncestrySelectionReusesTraversal(bool retainAncestor)
+    {
+        var cutoff = new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.Zero);
+        var initialValue = Commit();
+        initialValue.When.Returns(cutoff.AddDays(retainAncestor ? 1 : -2));
+        var ignoredTipValue = Commit(initialValue);
+        ignoredTipValue.When.Returns(cutoff.AddDays(-1));
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var ignoredTip = iteration.CreateCommit(ignoredTipValue, iteration.BranchName, branch);
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(new IgnoreConfiguration { Before = cutoff }).Build();
+        var history = new MainlineHistory(configuration, new TestEnvironment(), ignoredTipValue);
+
+        var first = history.Select(iteration, "", false);
+        first.Commits.ShouldBe(retainAncestor ? [initial] : []);
+        first.HasBoundary.ShouldBe(retainAncestor);
+        first.MissingCommit.ShouldBeNull();
+        ignoredTipValue.ClearReceivedCalls();
+
+        var repeated = history.Select(iteration, "", false);
+
+        repeated.Commits.ShouldBe(retainAncestor ? [initial] : []);
+        repeated.HasBoundary.ShouldBe(retainAncestor);
+        repeated.MissingCommit.ShouldBeNull();
+        _ = ignoredTipValue.DidNotReceive().Parents;
+        _ = ignoredTipValue.DidNotReceive().When;
+        iteration.Commits.ShouldBe([initial, ignoredTip]);
+    }
+
+    [Test]
+    public void SharedIgnoredParentIsTraversedOncePerHistorySelection()
+    {
+        var start = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var initialValue = Commit();
+        initialValue.When.Returns(start);
+        var ignoredValue = Commit(initialValue);
+        ignoredValue.When.Returns(start.AddDays(1));
+        var leftValue = Commit(ignoredValue);
+        leftValue.When.Returns(start.AddDays(2));
+        var rightValue = Commit(ignoredValue);
+        rightValue.When.Returns(start.AddDays(3));
+        var mergeValue = Commit(leftValue);
+        mergeValue.Parents.Returns([leftValue, rightValue]);
+        mergeValue.When.Returns(start.AddDays(4));
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var merge = iteration.CreateCommit(mergeValue, iteration.BranchName, branch);
+        var right = iteration.CreateCommit(rightValue, iteration.BranchName, branch);
+        var left = iteration.CreateCommit(leftValue, iteration.BranchName, branch);
+        var ignored = iteration.CreateCommit(ignoredValue, iteration.BranchName, branch);
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [ignoredValue.Sha] }).Build();
+        ignoredValue.ClearReceivedCalls();
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), mergeValue).Select(iteration, "", false);
+
+        selected.Commits.ShouldBe([initial, left, right, merge]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        _ = ignoredValue.Received(1).Parents;
+        iteration.Commits.ShouldBe([initial, ignored, left, right, merge]);
+    }
+
+    [Test]
+    public void IgnoredAncestryResultsDoNotLeakBetweenHistoryInstances()
+    {
+        var initialValue = Commit();
+        var tipValue = Commit(initialValue);
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var tip = iteration.CreateCommit(tipValue, iteration.BranchName, branch);
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(new IgnoreConfiguration { Shas = [tipValue.Sha] }).Build();
+        var filteredHistory = new MainlineHistory(configuration, new TestEnvironment(), tipValue);
+        var unfilteredHistory = History(tipValue);
+
+        filteredHistory.Select(iteration, "", false).Commits.ShouldBe([initial]);
+        unfilteredHistory.Select(iteration, "", false).Commits.ShouldBe([initial, tip]);
+        filteredHistory.Select(iteration, "", false).Commits.ShouldBe([initial]);
+        iteration.Commits.ShouldBe([initial, tip]);
+    }
+
     [TestCase(false, "beta")]
     [TestCase(true, "beta")]
     [TestCase(false, null)]
