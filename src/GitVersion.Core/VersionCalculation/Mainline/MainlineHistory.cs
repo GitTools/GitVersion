@@ -50,10 +50,9 @@ internal sealed class MainlineHistory(
                 return Result(commits, false, missing);
             }
             commits.Add(commit);
-            var label = targetLabel ?? new EffectiveConfiguration(configuration, commit.Configuration)
-                .GetBranchSpecificLabel(commit.BranchName, null, environment, currentCommit);
+            var label = targetLabel ?? commit.GetBranchSpecificLabel(configuration, environment, currentCommit);
             foundTag |= commit.SemanticVersions.Any(version => version.IsMatchForBranchSpecificLabel(label));
-            if (foundTag && commit.Configuration.Increment != IncrementStrategy.Inherit)
+            if (foundTag && commit.HasExplicitIncrement)
             {
                 return Result(commits, true);
             }
@@ -197,9 +196,8 @@ internal sealed class MainlineHistory(
 
     private bool HasRelease(MainlineCommit commit, string? targetLabel)
     {
-        var label = targetLabel ?? new EffectiveConfiguration(configuration, commit.Configuration)
-            .GetBranchSpecificLabel(commit.BranchName, null, environment, currentCommit);
-        return commit.Configuration.Increment != IncrementStrategy.Inherit
+        var label = targetLabel ?? commit.GetBranchSpecificLabel(configuration, environment, currentCommit);
+        return commit.HasExplicitIncrement
             && commit.SemanticVersions.Any(version => version.IsMatchForBranchSpecificLabel(label));
     }
 

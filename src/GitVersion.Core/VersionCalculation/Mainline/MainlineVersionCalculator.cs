@@ -180,7 +180,7 @@ internal static class MainlineVersionCalculator
     private static void ThrowIfUnsupportedMerge(MainlineCommit commit, MainlineContext context)
     {
         if (commit.HasUnsupportedMerge
-            && (commit.Configuration.Increment == IncrementStrategy.Inherit || context.SemanticVersion is null))
+            && (!commit.HasExplicitIncrement || context.SemanticVersion is null))
         {
             throw new NotSupportedException("GitVersion does not support more than one merge source in a single commit yet");
         }
