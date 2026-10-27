@@ -15,5 +15,5 @@ internal sealed class CommitOnTrunkBranchedToNonTrunk : CommitOnTrunkBranchedBas
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => base.MatchPrecondition(iteration, commit, context)
-           && !iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
+           && !context.GetEffectiveConfiguration(iteration).IsMainBranch;
 }

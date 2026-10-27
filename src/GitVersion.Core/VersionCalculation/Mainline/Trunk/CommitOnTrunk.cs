@@ -11,8 +11,8 @@ internal sealed class CommitOnTrunk : IIncrementer
     // A  58 minutes ago <<--
 
     public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && (!context.HasChildHistory(commit) || commit.IsMergedMainline(context.Configuration))
-            && commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
+        => context.SemanticVersion is null && (!context.HasChildHistory(commit) || context.IsMergedMainline(commit))
+            && context.GetEffectiveConfiguration(commit).IsMainBranch;
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -22,7 +22,7 @@ internal sealed class CommitOnTrunk : IIncrementer
             context.Label = null;
         }
 
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
         context.ForceIncrement = true;
 
