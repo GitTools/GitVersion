@@ -49,7 +49,7 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
     [MemberNotNullWhen(true, nameof(ParentIteration))]
-    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.BranchedTo is not null;
+    private bool HasParentIteration => Iteration.HasParentIteration;
 
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
@@ -119,7 +119,7 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
     {
         if (HasPredecessor)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Cannot append to a commit that already has a predecessor.");
         }
 
         MainlineCommit commit = new(Iteration, referenceValue, branchName, configuration);
