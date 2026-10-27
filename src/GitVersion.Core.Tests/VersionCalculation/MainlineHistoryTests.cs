@@ -8,6 +8,37 @@ namespace GitVersion.Tests.VersionCalculation;
 [TestFixture]
 public class MainlineHistoryTests
 {
+    [TestCase(false, "beta")]
+    [TestCase(true, "beta")]
+    [TestCase(false, null)]
+    [TestCase(true, null)]
+    public void InheritedReleaseStopsAtFirstExplicitIncrement(bool mainline, string? label)
+    {
+        var explicitBranch = new BranchConfiguration { Increment = IncrementStrategy.Patch, IsMainBranch = mainline, Label = "beta" };
+        var inheritedBranch = new BranchConfiguration { Increment = IncrementStrategy.Inherit, IsMainBranch = mainline, Label = label };
+        var initialValue = Commit();
+        var boundaryValue = Commit(initialValue);
+        var releaseValue = Commit(boundaryValue);
+        var tipValue = Commit(releaseValue);
+        var iteration = new MainlineIteration("root", new("refs/heads/source"), inheritedBranch, null, null, null);
+        var tip = iteration.CreateCommit(tipValue, iteration.BranchName, inheritedBranch);
+        var release = iteration.CreateCommit(releaseValue, iteration.BranchName, inheritedBranch);
+        release.AddSemanticVersions(new SemanticVersion(2, 0, 0) { PreReleaseTag = new(label ?? "source", 1, false) });
+        var boundary = iteration.CreateCommit(boundaryValue, iteration.BranchName, explicitBranch);
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, explicitBranch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0) { PreReleaseTag = new("beta", 1, false) });
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel("source").Build();
+
+        var selected = new MainlineHistory(configuration, new TestEnvironment(), tipValue).Select(iteration, null, false);
+
+        selected.Commits.ShouldBe([boundary, release, tip]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        release.GetEffectiveConfiguration(configuration).Increment.ShouldBe(IncrementStrategy.Patch);
+        release.GetEffectiveConfiguration(configuration).Label.ShouldBe("beta");
+        iteration.Commits.ShouldBe([initial, boundary, release, tip]);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void IgnoredMergeRetainsSourceHistory(bool mainline)

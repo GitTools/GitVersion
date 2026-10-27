@@ -140,7 +140,6 @@ public class MainlineIterationTests
         var merge = receiver.CreateCommit(CreateCommit(), receiver.BranchName, branch);
         var initial = receiver.CreateCommit(CreateCommit(), receiver.BranchName, branch);
         initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
-        merge.AddChildIteration(new MainlineIteration("empty", new("refs/heads/support/1.x"), branch, null, null, merge.Value));
 
         var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(receiver, "", Substitute.For<IIncrementStrategyFinder>(),
             configuration, new TestEnvironment(), merge.Value);
