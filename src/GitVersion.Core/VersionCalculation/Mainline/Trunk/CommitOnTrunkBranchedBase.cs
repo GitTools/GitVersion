@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation.Mainline.Trunk;
 internal abstract class CommitOnTrunkBranchedBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
+        => context.GetEffectiveConfiguration(commit).IsMainBranch
             && iteration.NumberOfCommits != 0
             && commit.BranchName != iteration.BranchName
             && context.IsLastCommit(commit);
@@ -16,8 +16,8 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
     {
         context.BaseVersionSource = commit.Value;
 
-        var effectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
-        if (iteration.GetEffectiveConfiguration(context.Configuration).IsReleaseBranch
+        var effectiveConfiguration = context.GetEffectiveConfiguration(iteration);
+        if (context.GetEffectiveConfiguration(iteration).IsReleaseBranch
             && iteration.BranchName.TryGetSemanticVersion(effectiveConfiguration, out var element))
         {
             context.AddAlternativeSemanticVersion(element.Value,
@@ -25,11 +25,11 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
         }
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? commit.GetIncrementForcedByBranch(context.Configuration)
+            ? context.GetIncrementForcedByBranch(commit)
             : iteration.Configuration.Increment.ToVersionField();
         context.Increment = incrementForcedByBranch;
 
-        var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
+        var iterationEffectiveConfiguration = context.GetEffectiveConfiguration(iteration);
         context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, context.CurrentCommit) ?? context.Label;
         context.ForceIncrement = true;
 

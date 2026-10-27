@@ -73,14 +73,12 @@ internal static class MainlineVersionCalculator
         // The source tip can be ignored; the last recorded commit may be an
         // earlier tag and must not be mistaken for a released source tip.
         var tip = iteration.BranchedTo.NotNull().Parents[1];
-        var configuration = iteration.GetEffectiveConfiguration(context.Configuration);
+        var configuration = context.GetEffectiveConfiguration(iteration);
         var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, tip);
-        MainlineContext sourceContext = new(context.IncrementStrategyFinder, context.Configuration, context.Environment, context.CurrentCommit)
+        var sourceContext = context.CreateChildContext() with
         {
             TargetLabel = label,
-            BranchPointResolver = context.BranchPointResolver,
-            IncludeSharedHistory = true,
-            MainlineVersions = context.MainlineVersions
+            IncludeSharedHistory = true
         };
         var version = ApplyIncrements([.. GetIncrements(iteration, sourceContext, includeAncestry: true)]);
         // A released source tip contributes its tag, not its next pending increment.
@@ -157,7 +155,7 @@ internal static class MainlineVersionCalculator
                 item.Enrich(iteration, commit, context);
             }
 
-            var isMainlineMerge = context.SemanticVersion is null && commit.IsMergedMainline(context.Configuration);
+            var isMainlineMerge = context.SemanticVersion is null && context.IsMergedMainline(commit);
 
             ThrowIfUnsupportedMerge(commit, context);
 
@@ -189,15 +187,16 @@ internal static class MainlineVersionCalculator
     private static IBaseVersionIncrement WithMergedMainlineVersion(IBaseVersionIncrement increment, MainlineCommit commit,
         bool isMainlineMerge, MainlineContext context)
         => increment is BaseVersionOperator operation && isMainlineMerge && context.SemanticVersion is null
-            && !commit.ChildIteration!.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged
-            ? new MergedMainlineIncrement(operation, GetMergedMainlineVersion(commit.ChildIteration, context))
+            && commit.ChildIteration is { } child
+            && !context.GetEffectiveConfiguration(child).PreventIncrementWhenBranchMerged
+            ? new MergedMainlineIncrement(operation, GetMergedMainlineVersion(child, context))
             : increment;
 
     private static (MainlineCommit[] Commits, bool HasBoundary) GetCalculationCommits(MainlineIteration iteration,
         MainlineContext context, bool includeAncestry)
     {
-        context.BranchPointResolver ??= new MainlineBranchPointResolver(iteration);
-        var history = new MainlineHistory(context.Configuration, context.Environment, context.CurrentCommit, context.BranchPointResolver);
+        var configurations = context.GetConfigurationResolver(iteration);
+        var history = new MainlineHistory(context.Configuration, context.Environment, context.CurrentCommit, context.BranchPointResolver, configurations);
         var selection = history.Select(iteration, context.TargetLabel, includeAncestry,
             includeSharedHistory: context.IncludeSharedHistory);
         if (selection.MissingCommit is { } missing)

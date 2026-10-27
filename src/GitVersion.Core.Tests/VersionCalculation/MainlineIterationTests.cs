@@ -114,7 +114,7 @@ public class MainlineIterationTests
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
         version.BaseVersionSource.ShouldBeSameAs(tip);
         shared.Successor.ShouldBeSameAs(later);
-        merge.IsMergedMainline(configuration).ShouldBeTrue();
+        context.IsMergedMainline(merge).ShouldBeTrue();
     }
 
     [Test]
@@ -127,8 +127,59 @@ public class MainlineIterationTests
         var sourceBranch = new BranchConfiguration { Increment = IncrementStrategy.Inherit, IsMainBranch = true, Label = "" };
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), sourceBranch, parent, branchPoint.Value, branchPoint.Value);
 
-        source.GetEffectiveConfiguration(configuration).Increment.ShouldBe(IncrementStrategy.Minor);
+        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(source)).GetEffectiveConfiguration(source).Increment.ShouldBe(IncrementStrategy.Minor);
         source.Commits.ShouldBeEmpty();
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void EmptyInheritedSourceResolvesSiblingOrNestedBranchPoint(bool nested)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.WithVersionStrategies(VersionStrategies.Mainline).Build();
+        var receiverBranch = new BranchConfiguration { Increment = IncrementStrategy.Patch, IsMainBranch = true, Label = "stable" };
+        var sourceBranch = new BranchConfiguration { Increment = IncrementStrategy.Inherit, IsMainBranch = true };
+        var recordedBranch = new BranchConfiguration { Increment = IncrementStrategy.Minor, IsMainBranch = true, Label = "beta" };
+        var initialValue = CreateCommit();
+        var branchPointValue = CreateCommit();
+        branchPointValue.Parents.Returns([initialValue]);
+        var olderMergeValue = CreateCommit();
+        olderMergeValue.Parents.Returns([initialValue, branchPointValue]);
+        var mergeValue = CreateCommit();
+        mergeValue.Parents.Returns([olderMergeValue, branchPointValue]);
+        var root = new MainlineIteration("root", new("refs/heads/main"), receiverBranch, null, null, null);
+        var merge = root.CreateCommit(mergeValue, root.BranchName, receiverBranch);
+        var olderMerge = root.CreateCommit(olderMergeValue, root.BranchName, receiverBranch);
+        var initial = root.CreateCommit(initialValue, root.BranchName, receiverBranch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var owner = new MainlineIteration("older", new("refs/heads/support/older"), recordedBranch, root, initialValue, olderMergeValue);
+        olderMerge.AddChildIteration(owner);
+        if (nested)
+        {
+            var innerMerge = owner.CreateCommit(CreateCommit(), owner.BranchName, recordedBranch);
+            var child = new MainlineIteration("nested", new("refs/heads/feature/older"), recordedBranch, owner, initialValue, innerMerge.Value);
+            innerMerge.AddChildIteration(child);
+            owner = child;
+        }
+        var branchPoint = owner.CreateCommit(branchPointValue, owner.BranchName, recordedBranch);
+        var taggedVersion = new SemanticVersion(2, 0, 0) { PreReleaseTag = new("beta", 1, false) };
+        branchPoint.AddSemanticVersions(taggedVersion);
+        var source = new MainlineIteration("source", new("refs/heads/support/source"), sourceBranch, root, branchPointValue, mergeValue);
+        merge.AddChildIteration(source);
+
+        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), mergeValue);
+        var effective = context.GetEffectiveConfiguration(source);
+
+        effective.Increment.ShouldBe(IncrementStrategy.Minor);
+        effective.Label.ShouldBe("beta");
+        var version = MainlineVersionCalculator.GetMergedMainlineVersion(source, context);
+        version.SemanticVersion.ShouldBe(taggedVersion);
+        version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.2");
+        version.BaseVersionSource.ShouldBeSameAs(branchPointValue);
+        version.GetSemVerSource()!.Commit.ShouldBeSameAs(branchPointValue);
+        version.GetSemVerSource()!.Increment.ShouldBe(VersionField.None);
+        source.Commits.ShouldBeEmpty();
+        branchPoint.Iteration.ShouldBeSameAs(owner);
+        root.Commits.ShouldBe([initial, olderMerge, merge]);
     }
 
     [Test]
@@ -144,7 +195,7 @@ public class MainlineIterationTests
         var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(receiver, "", Substitute.For<IIncrementStrategyFinder>(),
             configuration, new TestEnvironment(), merge.Value);
 
-        merge.IsMergedMainline(configuration).ShouldBeFalse();
+        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(merge.Iteration)).IsMergedMainline(merge).ShouldBeFalse();
         version.GetIncrementedVersion().Patch.ShouldBe(1);
     }
 
