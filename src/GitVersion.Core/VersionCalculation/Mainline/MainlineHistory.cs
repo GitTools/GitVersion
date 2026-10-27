@@ -86,8 +86,27 @@ internal sealed class MainlineHistory(
         {
             return GetMainlineCommits(iteration, targetLabel, includeAncestry, tip);
         }
-        return iteration.GetCommitsInReverseOrder(false, tip)
-            .Select<MainlineCommit, (MainlineCommit?, ICommit?)>(commit => (commit, null));
+        return GetIterationCommits(iteration, targetLabel, tip, includeSharedHistory);
+    }
+
+    private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetIterationCommits(
+        MainlineIteration iteration, string? targetLabel, MainlineCommit? tip, bool includeSharedHistory)
+    {
+        foreach (var commit in iteration.GetCommitsInReverseOrder(false, tip))
+        {
+            if (configuration.Ignore.IsEmpty || configuration.Ignore.Filter([commit.Value]).Any())
+            {
+                yield return (commit, null);
+            }
+            else if (commit.ChildIteration is { } child)
+            {
+                // Ignoring the merge must not also discard its source commits.
+                foreach (var source in GetCommits(child, targetLabel, false, null, includeSharedHistory))
+                {
+                    yield return source;
+                }
+            }
+        }
     }
 
     private static bool UsesBranchHistory(MainlineIteration iteration, bool includeSharedHistory)
@@ -189,10 +208,6 @@ internal sealed class MainlineHistory(
         if (tip is not null)
         {
             return tip.Value;
-        }
-        if (iteration is { ParentIteration: not null, BranchedFrom: null, NumberOfCommits: 0 })
-        {
-            return null;
         }
         if (iteration.ParentIteration is not null && iteration.BranchedTo is { } merge && merge.Parents.Count >= 2)
         {
