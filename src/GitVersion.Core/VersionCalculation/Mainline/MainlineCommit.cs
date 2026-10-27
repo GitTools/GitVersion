@@ -6,23 +6,28 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 [DebuggerDisplay(
-    @"\{ BranchName = {" + nameof(BranchName) + "}, " +
-    "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, Message = {" + nameof(Message) + @"} \}"
+    @"\{ BranchName = {" + nameof(BranchName) + "}, HasSuccessor = {" + nameof(HasSuccessor) + "}, " +
+    "HasPredecessor = {" + nameof(HasPredecessor) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
 internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
     public bool IsMergedMainline(IGitVersionConfiguration configuration)
-        => ChildIteration is not null && (HasChildIteration || ChildIteration.BranchedFrom is not null)
-            && GetEffectiveConfiguration(configuration).IsMainBranch
-            && ChildIteration.GetEffectiveConfiguration(configuration).IsMainBranch;
+        => ChildIteration?.GetEffectiveConfiguration(configuration).IsMainBranch == true
+            && GetEffectiveConfiguration(configuration).IsMainBranch;
 
-    public bool HasUnsupportedMerge { get; internal set; }
+    public bool HasUnsupportedMerge => !IsDummy && Value.Parents.Count > 2;
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    internal IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+
+    public bool HasExplicitIncrement => Configuration.Increment != IncrementStrategy.Inherit;
+
+    public string? GetBranchSpecificLabel(IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
+        => new EffectiveConfiguration(configuration, Configuration)
+            .GetBranchSpecificLabel(BranchName, null, environment, currentCommit);
 
     public bool HasSuccessor => Successor is not null;
 
@@ -39,9 +44,7 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
 
     public string Message => IsDummy ? "<<DUMMY>>" : Value.Message;
 
-    public MainlineIteration? ChildIteration => this.childIteration?.Value;
-
-    private Lazy<MainlineIteration?>? childIteration;
+    public MainlineIteration? ChildIteration { get; private set; }
 
     [MemberNotNullWhen(true, nameof(ChildIteration))]
     public bool HasChildIteration => ChildIteration is not null && ChildIteration.Commits.Count != 0;
@@ -110,9 +113,7 @@ internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value
         }
     }
 
-    public void AddChildIteration(MainlineIteration iteration) => this.childIteration = new(() => iteration.NotNull());
-
-    internal void SetChildFactory(Func<MainlineIteration?> factory) => this.childIteration = new(factory);
+    public void AddChildIteration(MainlineIteration iteration) => ChildIteration = iteration.NotNull();
 
     public MainlineCommit Append(
         ICommit? referenceValue, ReferenceName branchName, IBranchConfiguration configuration)

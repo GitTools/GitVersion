@@ -223,7 +223,6 @@ internal sealed class MainlineIterationBuilder(
     {
         if (item.Parents.Count > 2)
         {
-            commit.HasUnsupportedMerge = true;
             return;
         }
         Lazy<IReadOnlyCollection<ICommit>> mergedCommitsInReverseOrderLazy = new(
