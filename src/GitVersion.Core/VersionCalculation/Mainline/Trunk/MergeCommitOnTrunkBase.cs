@@ -5,8 +5,8 @@ namespace GitVersion.VersionCalculation.Mainline.Trunk;
 internal abstract class MergeCommitOnTrunkBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && context.HasChildHistory(commit) && !commit.IsMergedMainline(context.Configuration)
-            && commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
+        => context.SemanticVersion is null && context.HasChildHistory(commit) && !context.IsMergedMainline(commit)
+            && context.GetEffectiveConfiguration(commit).IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -27,17 +27,17 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
             var increment = VersionField.None;
 
-            if (!commit.GetEffectiveConfiguration(context.Configuration).PreventIncrementOfMergedBranch)
+            if (!context.GetEffectiveConfiguration(commit).PreventIncrementOfMergedBranch)
             {
                 increment = increment.Consolidate(context.Increment);
             }
 
-            if (!commit.ChildIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
+            if (!context.GetEffectiveConfiguration(commit.ChildIteration).PreventIncrementWhenBranchMerged)
             {
                 increment = increment.Consolidate(baseVersion.Operator?.Increment);
             }
 
-            if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+            if (context.GetEffectiveConfiguration(commit).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
             {
                 increment = increment.Consolidate(context.CommitIncrement);
             }

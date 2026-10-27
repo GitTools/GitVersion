@@ -28,28 +28,6 @@ internal sealed class MainlineIteration
         return null;
     }
 
-    private EffectiveConfiguration? effectiveConfiguration;
-
-    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
-    {
-        if (this.effectiveConfiguration is not null)
-        {
-            return this.effectiveConfiguration;
-        }
-        var branchConfiguration = Configuration;
-
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || (Commits.FirstOrDefault()
-            ?? (HasParentIteration ? ParentIteration.FindCommit(BranchedFrom) : null)) is not { } commit)
-        {
-            return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        }
-
-        var parentConfiguration = commit.GetEffectiveConfiguration(configuration);
-        branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
-
-        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-    }
-
     public MainlineIteration? ParentIteration { get; }
 
     [MemberNotNullWhen(true, nameof(ParentIteration), nameof(BranchedFrom), nameof(BranchedTo))]
