@@ -72,9 +72,19 @@ internal sealed class MainlineBranchPointResolver
     internal IEnumerable<MainlineCommit> GetHistory(MainlineIteration iteration, MainlineCommit? tip = null)
         => GetCommitsInReverseOrder(iteration, tip).Reverse();
 
+    internal static IEnumerable<MainlineCommit> GetLocalCommitsInReverseOrder(MainlineIteration iteration, MainlineCommit? tip = null)
+    {
+        var commit = tip ?? iteration.Commits.LastOrDefault();
+        while (commit is not null)
+        {
+            yield return commit;
+            commit = commit.Predecessor;
+        }
+    }
+
     private IEnumerable<MainlineCommit> GetCommitsInReverseOrder(MainlineIteration iteration, MainlineCommit? tip)
     {
-        foreach (var commit in iteration.GetCommitsInReverseOrder(false, tip))
+        foreach (var commit in GetLocalCommitsInReverseOrder(iteration, tip))
         {
             yield return commit;
         }

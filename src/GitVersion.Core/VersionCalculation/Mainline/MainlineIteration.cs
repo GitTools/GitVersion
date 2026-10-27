@@ -17,20 +17,6 @@ internal sealed class MainlineIteration
 
     public ICommit? BranchedFrom { get; }
 
-    public MainlineCommit? GetBranchedFrom()
-    {
-        if (BranchedFrom is null)
-        {
-            return null;
-        }
-        MainlineCommit? result = null;
-        for (MainlineIteration? i = this; i != null && result == null; i = i.ParentIteration)
-        {
-            result = i.FindCommit(BranchedFrom!);
-        }
-        return result;
-    }
-
     public ICommit? BranchedTo { get; }
 
     public MainlineCommit? GetBranchedTo()
@@ -127,27 +113,5 @@ internal sealed class MainlineIteration
 
         this.commitLookup.TryGetValue(commit, out var result);
         return result;
-    }
-
-    internal IEnumerable<MainlineCommit> GetHistory(MainlineCommit? tip = null)
-        => GetCommitsInReverseOrder(includeAncestry: true, tip).Reverse();
-
-    internal IEnumerable<MainlineCommit> GetCommitsInReverseOrder(
-        bool includeAncestry, MainlineCommit? tip = null)
-    {
-        var commit = tip ?? Commits.LastOrDefault();
-        while (commit is not null)
-        {
-            yield return commit;
-            commit = commit.Predecessor;
-        }
-
-        if (includeAncestry && GetBranchedFrom() is { } branchedFrom)
-        {
-            foreach (var ancestor in branchedFrom.Iteration.GetCommitsInReverseOrder(true, branchedFrom))
-            {
-                yield return ancestor;
-            }
-        }
     }
 }
