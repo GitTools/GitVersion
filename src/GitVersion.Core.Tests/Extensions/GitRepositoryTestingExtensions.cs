@@ -5,8 +5,8 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests;
 
@@ -78,7 +78,7 @@ public static class GitRepositoryTestingExtensions
             => DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
     }
 
-    extension(LibGit2Sharp.RemoteCollection remotes)
+    extension(GitVersion.Testing.Git.RemoteCollection remotes)
     {
         public void RenameRemote(string oldName, string newName)
         {

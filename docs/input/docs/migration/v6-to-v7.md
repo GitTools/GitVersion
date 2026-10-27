@@ -278,7 +278,7 @@ migrate` to retain schema validation.
 GitVersion v7.0 uses the managed Git backend by default. The `GITVERSION_GIT_BACKEND` environment variable accepts `managed` or the temporary `libgit2` fallback.
 
 :::{.alert .alert-info}
-In v7.0, use `GITVERSION_GIT_BACKEND=libgit2` only if you need the temporary native backend fallback. LibGit2Sharp and its native binaries are scheduled for removal in v7.1. Explicit `managed` remains accepted throughout v7.x; the selector is removed in v8.
+In v7.0, use `GITVERSION_GIT_BACKEND=libgit2` only if you need the temporary native backend fallback. From v7.1, LibGit2Sharp and its native binaries are removed. Selecting `libgit2` fails with guidance to unset the variable or select `managed`. Explicit `managed` remains accepted throughout v7.x; the selector is removed in v8.
 :::
 
 - `libgit2` — the temporary native backend fallback in v7.0.
@@ -295,7 +295,7 @@ The environment variables relevant to migrating from v6 to v7:
 | Variable                            | Purpose                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `GITVERSION_CONFIGURATION_VERSION`   | Selects the configuration layout: `v7` (default) or temporary flat `v6` fallback.                                   |
-| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `managed` (default) or temporary `libgit2` fallback. See [Git backend][git-backend]. |
+| `GITVERSION_GIT_BACKEND`             | Compatibility setting: `managed` is accepted; `libgit2` was available only in v7.0 and fails from v7.1. See [Git backend][git-backend]. |
 | `GITVERSION_ARGUMENT_PARSER_VERSION` | Selects the argument parser: `v7` (default, POSIX syntax) or temporary `v6` fallback (`/switch` and `-switch`). |
 | `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
 | `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |
@@ -315,7 +315,7 @@ retain their normal output channel. For migration, place logging options before 
 `gitversion --log-file console config migrate --config GitVersion.yml`.
 
 In v7.1, legacy parser and flat configuration runtime support are scheduled
-for removal alongside libgit2. Retired `v6`/`libgit2` selections will report
+for removal separately from the completed libgit2 removal. Retired `v6`/`libgit2` selections report
 actionable errors; explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.

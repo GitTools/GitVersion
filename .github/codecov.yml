@@ -16,9 +16,6 @@ component_management:
     - component_id: gitversion-core
       name: GitVersion.Core
       paths: [ src/GitVersion.Core/** ]
-    - component_id: gitversion-libgit2sharp
-      name: GitVersion.LibGit2Sharp
-      paths: [ src/GitVersion.LibGit2Sharp/** ]
     - component_id: gitversion-msbuild
       name: GitVersion.MsBuild
       paths: [ src/GitVersion.MsBuild/** ]

@@ -4,8 +4,8 @@ using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Output;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.Tests;
-using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
 
@@ -206,7 +206,7 @@ public class PullRequestInBuildAgentTest
 
         var result = await programFixture.Run();
 
-        result.ExitCode.ShouldBe(0);
+        result.ExitCode.ShouldBe(0, result.Log);
         result.Output.ShouldNotBeNull();
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest5.3");

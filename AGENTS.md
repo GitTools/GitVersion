@@ -29,7 +29,7 @@ The repo has two parallel solution trees:
 | `GitVersion.Configuration` | Configuration loading and validation   |
 | `GitVersion.App`           | CLI entry point                        |
 | `GitVersion.BuildAgents`   | Platform-specific build agent adapters |
-| `GitVersion.LibGit2Sharp`  | Git repository access                  |
+| `GitVersion.Git.Managed`  | Managed Git reads and Git CLI writes   |
 | `*Tests` projects          | Unit and integration tests             |
 
 Build-agent adapters live in `src/GitVersion.BuildAgents/Agents/`. They write `GitVersion_`-prefixed environment variables — preserve that prefix when reading or writing outputs.
@@ -45,7 +45,7 @@ Build-agent adapters live in `src/GitVersion.BuildAgents/Agents/`. They write `G
 | `GitVersion.Normalization`       | Normalization plugin                       |
 | `GitVersion.Output`              | Output plugin                              |
 | `GitVersion.Common`              | Shared utilities                           |
-| `GitVersion.Core.Libgit2Sharp`   | Git repository access                      |
+| `GitVersion.Core.Managed`        | Managed Git repository access              |
 | `GitVersion.Cli.Generator`       | Source generator for CLI commands          |
 | `GitVersion.Cli.Generator.Tests` | Generator tests                            |
 

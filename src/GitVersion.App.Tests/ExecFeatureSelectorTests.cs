@@ -9,7 +9,7 @@ public class ExecFeatureSelectorTests
     public void SelectorCombinationsCalculateAndLogWithoutPollutingOutput(
         [Values("v6", "v7")] string parser,
         [Values("v6", "v7")] string configuration,
-        [Values("libgit2", "managed")] string backend,
+        [Values("managed")] string backend,
         [Values("json", "variable", "config")] string output,
         [Values(false, true)] bool buildServer)
     {
@@ -85,7 +85,9 @@ public class ExecFeatureSelectorTests
 
     [TestCase("GITVERSION_ARGUMENT_PARSER_VERSION", "true", "'v6' and 'v7'")]
     [TestCase("GITVERSION_CONFIGURATION_VERSION", "v8", "'v6' and 'v7'")]
-    [TestCase("GITVERSION_GIT_BACKEND", "manged", "'libgit2' and 'managed'")]
+    [TestCase("GITVERSION_GIT_BACKEND", "manged", "'managed'")]
+    [TestCase("GITVERSION_GIT_BACKEND", "libgit2", "removed in v7.1")]
+    [TestCase("GITVERSION_GIT_BACKEND", " LiBgIt2 ", "removed in v7.1")]
     [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "true", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
     [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "false", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
     [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
@@ -108,7 +110,7 @@ public class ExecFeatureSelectorTests
     [Combinatorial]
     public void MigrationRetainsYamlStdoutWithEitherConfigurationAndBackend(
         [Values("v6", "v7")] string configuration,
-        [Values("libgit2", "managed")] string backend)
+        [Values("managed")] string backend)
     {
         var directory = Directory.CreateTempSubdirectory();
         try

@@ -1,0 +1,555 @@
+{
+  "Linear/0/False/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/0/True/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/2/False/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/2/True/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/1/False/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/1/True/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/3/False/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/3/True/False": [
+    "commit 5",
+    "commit 4",
+    "commit 3",
+    "commit 2",
+    "commit 1",
+    "commit 0"
+  ],
+  "Linear/5/False/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Linear/5/True/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Linear/6/False/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Linear/6/True/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Linear/7/False/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Linear/7/True/False": [
+    "commit 0",
+    "commit 1",
+    "commit 2",
+    "commit 3",
+    "commit 4",
+    "commit 5"
+  ],
+  "Merged/0/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1",
+    "main 0"
+  ],
+  "Merged/0/False/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1"
+  ],
+  "Merged/0/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "Merged/0/True/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1"
+  ],
+  "Merged/2/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1",
+    "main 0"
+  ],
+  "Merged/2/False/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1"
+  ],
+  "Merged/2/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "Merged/2/True/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1"
+  ],
+  "Merged/1/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "feature 2",
+    "feature 1",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "Merged/1/False/True": [
+    "Merge branch \u0027feature\u0027",
+    "feature 2",
+    "feature 1",
+    "main 2",
+    "main 1"
+  ],
+  "Merged/1/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "Merged/1/True/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1"
+  ],
+  "Merged/3/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1",
+    "main 0"
+  ],
+  "Merged/3/False/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "feature 2",
+    "feature 1"
+  ],
+  "Merged/3/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "Merged/3/True/True": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1"
+  ],
+  "Merged/5/False/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "feature 1",
+    "feature 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/5/False/True": [
+    "main 1",
+    "main 2",
+    "feature 1",
+    "feature 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/5/True/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/5/True/True": [
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/6/False/False": [
+    "main 0",
+    "feature 1",
+    "feature 2",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/6/False/True": [
+    "feature 1",
+    "feature 2",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/6/True/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/6/True/True": [
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/7/False/False": [
+    "main 0",
+    "feature 1",
+    "feature 2",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/7/False/True": [
+    "feature 1",
+    "feature 2",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/7/True/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "Merged/7/True/True": [
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/0/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "feature 2",
+    "main 1",
+    "feature 1",
+    "main 0"
+  ],
+  "EqualTimestamp/0/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "EqualTimestamp/2/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 0",
+    "feature 1",
+    "main 1",
+    "feature 2",
+    "main 2"
+  ],
+  "EqualTimestamp/2/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 0",
+    "main 1",
+    "main 2"
+  ],
+  "EqualTimestamp/1/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "feature 2",
+    "feature 1",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "EqualTimestamp/1/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "EqualTimestamp/3/False/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "feature 2",
+    "main 1",
+    "feature 1",
+    "main 0"
+  ],
+  "EqualTimestamp/3/True/False": [
+    "Merge branch \u0027feature\u0027",
+    "main 2",
+    "main 1",
+    "main 0"
+  ],
+  "EqualTimestamp/5/False/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "feature 1",
+    "feature 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/5/True/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/6/False/False": [
+    "main 2",
+    "feature 2",
+    "main 1",
+    "feature 1",
+    "main 0",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/6/True/False": [
+    "main 2",
+    "main 1",
+    "main 0",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/7/False/False": [
+    "main 0",
+    "feature 1",
+    "main 1",
+    "feature 2",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "EqualTimestamp/7/True/False": [
+    "main 0",
+    "main 1",
+    "main 2",
+    "Merge branch \u0027feature\u0027"
+  ],
+  "CrissCross/0/False/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "main 1",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/0/True/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/2/False/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "main 1",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/2/True/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/1/False/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "main 1",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/1/True/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/3/False/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "main 1",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/3/True/False": [
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev",
+    "dev 1",
+    "root"
+  ],
+  "CrissCross/5/False/False": [
+    "root",
+    "dev 1",
+    "main 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "CrissCross/5/True/False": [
+    "root",
+    "dev 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "CrissCross/6/False/False": [
+    "root",
+    "dev 1",
+    "main 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "CrissCross/6/True/False": [
+    "root",
+    "dev 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "CrissCross/7/False/False": [
+    "root",
+    "dev 1",
+    "main 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "CrissCross/7/True/False": [
+    "root",
+    "dev 1",
+    "Merge commit \u0027f7ad7beb31a7ab0a53c4a8ec27aba4ecde8e0fff\u0027 into dev"
+  ],
+  "Octopus/0/False/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "b2 1",
+    "b1 1",
+    "root"
+  ],
+  "Octopus/0/True/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "root"
+  ],
+  "Octopus/2/False/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "b2 1",
+    "b1 1",
+    "root"
+  ],
+  "Octopus/2/True/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "root"
+  ],
+  "Octopus/1/False/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "b2 1",
+    "b1 1",
+    "main 1",
+    "root"
+  ],
+  "Octopus/1/True/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "root"
+  ],
+  "Octopus/3/False/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "b2 1",
+    "b1 1",
+    "root"
+  ],
+  "Octopus/3/True/False": [
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027",
+    "main 1",
+    "root"
+  ],
+  "Octopus/5/False/False": [
+    "root",
+    "main 1",
+    "b1 1",
+    "b2 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ],
+  "Octopus/5/True/False": [
+    "root",
+    "main 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ],
+  "Octopus/6/False/False": [
+    "root",
+    "b1 1",
+    "b2 1",
+    "main 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ],
+  "Octopus/6/True/False": [
+    "root",
+    "main 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ],
+  "Octopus/7/False/False": [
+    "root",
+    "b1 1",
+    "b2 1",
+    "main 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ],
+  "Octopus/7/True/False": [
+    "root",
+    "main 1",
+    "Merge branches \u0027b1\u0027 and \u0027b2\u0027"
+  ]
+}

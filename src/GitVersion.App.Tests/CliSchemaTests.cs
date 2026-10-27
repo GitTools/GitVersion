@@ -122,8 +122,6 @@ public class CliSchemaTests
         CliSchemaExporterTests.ValidateSchema(result.Output!);
     }
 
-    [TestCase("v6", "libgit2")]
-    [TestCase("v7", "libgit2")]
     [TestCase("v6", "managed")]
     [TestCase("v7", "managed")]
     public void ProcessExportsSameDocumentWithoutRepositoryOrFiles(string configuration, string backend)

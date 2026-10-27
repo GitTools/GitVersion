@@ -1,6 +1,6 @@
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
-using LibGit2Sharp;
+using GitVersion.Testing.Git;
 using Shouldly;
 
 namespace GitVersion.Testing;
@@ -75,7 +75,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         SequenceDiagram.Destroy(branch, sourceBranch);
     }
 
-    public static void Init(string path, string branchName = "main") => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}", ".");
+    public static void Init(string path, string branchName = "main") => Repository.Init(path, initialBranch: branchName);
 
     public string MakeATaggedCommit(string tag)
     {

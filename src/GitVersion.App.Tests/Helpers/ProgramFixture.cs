@@ -64,8 +64,8 @@ public sealed class ProgramFixture
 
         var host = builder.Build();
         var app = host.Services.GetRequiredService<GitVersionApp>();
-        await app.RunAsync(CancellationToken.None);
+        var exitCode = await app.RunAsync(CancellationToken.None);
 
-        return new(SysEnv.ExitCode, this.output.Value, this.logger.Value);
+        return new(exitCode, this.output.Value, this.logger.Value);
     }
 }

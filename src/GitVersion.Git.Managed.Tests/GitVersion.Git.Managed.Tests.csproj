@@ -8,4 +8,7 @@
         <Using Include="GitVersion.Git" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Approved/RevisionWalks.json" LogicalName="GitVersion.Approved.RevisionWalks.json" />
+    </ItemGroup>
 </Project>

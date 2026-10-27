@@ -41,10 +41,6 @@ updates:
         patterns:
           - "NUnit.*"
           - "NUnit3TestAdapter"
-      LibGit2Sharp:
-        group-by: dependency-name
-        patterns:
-          - "LibGit2Sharp.*"
       JsonSchemaNet:
         group-by: dependency-name
         patterns:

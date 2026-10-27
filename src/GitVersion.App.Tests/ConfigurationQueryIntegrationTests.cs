@@ -34,7 +34,7 @@ public class ConfigurationQueryIntegrationTests
     [Test]
     [Combinatorial]
     public void QueryAndDisplayHonorFileThenRuntimeOverrides(
-        [Values("managed", "libgit2")] string backend,
+        [Values("managed")] string backend,
         [Values(false, true)] bool logToFile)
     {
         using var fixture = new EmptyRepositoryFixture();

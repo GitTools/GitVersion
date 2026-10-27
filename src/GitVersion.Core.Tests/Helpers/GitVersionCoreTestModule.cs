@@ -11,9 +11,8 @@ public class GitVersionCoreTestModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
-        services.AddModule(GitBackendSelector.Resolve() == GitBackend.Managed
-            ? new GitVersionManagedGitModule()
-            : new GitVersionLibGit2SharpModule());
+        GitBackendSelector.Resolve();
+        services.AddModule(new GitVersionManagedGitModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionOutputModule());
         services.AddModule(new GitVersionConfigurationModule());
