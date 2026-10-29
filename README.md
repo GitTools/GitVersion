@@ -23,6 +23,12 @@ works out the [Semantic Version][semver] of the commit being built.
 
 GitVersion works on Windows, Linux, and Mac.
 
+## Telemetry
+
+During maintainer-enabled campaigns, eligible official builds may collect sampled
+usage data from the established v7 POSIX CLI to help improve GitVersion.
+See the [Telemetry policy][telemetry-policy] for collected data and opt-out controls.
+
 ## Quick Links
 
 * [Documentation][docs]
@@ -64,6 +70,8 @@ from The Noun Project.
 [sonar-badge]: https://sonarcloud.io/api/project_badges/measure?project=GitTools_GitVersion&metric=alert_status
 
 [docs]: https://gitversion.net/docs/
+
+[telemetry-policy]: docs/input/docs/usage/cli/telemetry-policy.md
 
 [ai-agent-onboarding]: https://gitversion.net/7.0/docs/usage/ai-agent-onboarding
 
