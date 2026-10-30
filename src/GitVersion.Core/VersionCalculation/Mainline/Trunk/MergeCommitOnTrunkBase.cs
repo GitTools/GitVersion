@@ -20,7 +20,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionCalculator.DetermineBaseVersionRecursive(
+            var baseVersion = MainlineVersionCalculator.GetOrCreate(iteration, context).CalculateBaseVersion(
                 commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;

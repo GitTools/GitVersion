@@ -67,6 +67,47 @@ public class MainlineHistoryTests
         iteration.Commits.ShouldBe([initial, ignoredTip]);
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CalculatorSharesIgnoredAncestryCacheAcrossChildCalculations(bool retainAncestor)
+    {
+        var cutoff = new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.Zero);
+        var initialValue = Commit();
+        initialValue.When.Returns(cutoff.AddDays(retainAncestor ? 1 : -2));
+        var ignoredTipValue = Commit(initialValue);
+        ignoredTipValue.When.Returns(cutoff.AddDays(-1));
+        var branch = Branch(true);
+        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
+        var ignoredTip = iteration.CreateCommit(ignoredTipValue, iteration.BranchName, branch);
+        var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(new IgnoreConfiguration { Before = cutoff }).Build();
+        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration,
+            new TestEnvironment(), ignoredTipValue);
+        var calculator = MainlineVersionCalculator.GetOrCreate(iteration, context);
+        var history = calculator.History;
+
+        var first = history.Select(iteration, "", false);
+        first.Commits.ShouldBe(retainAncestor ? [initial] : []);
+        first.HasBoundary.ShouldBe(retainAncestor);
+        first.MissingCommit.ShouldBeNull();
+        ignoredTipValue.ClearReceivedCalls();
+
+        var child = context.CreateChildContext();
+        var childCalculator = MainlineVersionCalculator.GetOrCreate(iteration, child);
+        childCalculator.ShouldBeSameAs(calculator);
+        childCalculator.BranchPointResolver.ShouldBeSameAs(calculator.BranchPointResolver);
+        childCalculator.ConfigurationResolver.ShouldBeSameAs(calculator.ConfigurationResolver);
+        var repeated = childCalculator.History.Select(iteration, "", false);
+
+        repeated.Commits.ShouldBe(retainAncestor ? [initial] : []);
+        repeated.HasBoundary.ShouldBe(retainAncestor);
+        repeated.MissingCommit.ShouldBeNull();
+        _ = ignoredTipValue.DidNotReceive().Parents;
+        _ = ignoredTipValue.DidNotReceive().When;
+        iteration.Commits.ShouldBe([initial, ignoredTip]);
+    }
+
     [Test]
     public void SharedIgnoredParentIsTraversedOncePerHistorySelection()
     {
