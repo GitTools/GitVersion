@@ -6,8 +6,28 @@ using GitVersion.VersionCalculation.Mainline.Trunk;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal static class MainlineVersionCalculator
+internal sealed class MainlineVersionCalculator
 {
+    private readonly MainlineHistory history;
+
+    private MainlineVersionCalculator(MainlineIteration iteration, MainlineContext context)
+    {
+        BranchPointResolver = context.BranchPointResolver ?? new MainlineBranchPointResolver(iteration);
+        ConfigurationResolver = new MainlineConfigurationResolver(context.Configuration, BranchPointResolver);
+        this.history = new MainlineHistory(context.Configuration, context.Environment, context.CurrentCommit, BranchPointResolver, ConfigurationResolver);
+        context.BranchPointResolver = BranchPointResolver;
+        context.Calculator = this;
+    }
+
+    internal MainlineBranchPointResolver BranchPointResolver { get; }
+
+    internal MainlineConfigurationResolver ConfigurationResolver { get; }
+
+    internal MainlineHistory History => this.history;
+
+    internal static MainlineVersionCalculator GetOrCreate(MainlineIteration iteration, MainlineContext context)
+        => context.Calculator ?? new MainlineVersionCalculator(iteration, context);
+
     private static readonly IReadOnlyCollection<IContextPreEnricher> TrunkContextPreEnricherCollection =
     [
         new EnrichSemanticVersion(),
@@ -53,6 +73,9 @@ internal static class MainlineVersionCalculator
     ];
 
     internal static BaseVersion GetMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
+        => GetOrCreate(iteration, context).CalculateMergedMainlineVersionCached(iteration, context);
+
+    private BaseVersion CalculateMergedMainlineVersionCached(MainlineIteration iteration, MainlineContext context)
     {
         // Inherited configurations depend on their enclosing iteration.
         var canCache = iteration.Configuration.Increment != IncrementStrategy.Inherit;
@@ -68,7 +91,7 @@ internal static class MainlineVersionCalculator
         return version;
     }
 
-    private static BaseVersion CalculateMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
+    private BaseVersion CalculateMergedMainlineVersion(MainlineIteration iteration, MainlineContext context)
     {
         // The source tip can be ignored; the last recorded commit may be an
         // earlier tag and must not be mistaken for a released source tip.
@@ -104,10 +127,10 @@ internal static class MainlineVersionCalculator
             TargetLabel = targetLabel,
             MainlineVersions = mainlineVersions ?? []
         };
-        return DetermineBaseVersionRecursive(iteration, context);
+        return GetOrCreate(iteration, context).CalculateBaseVersion(iteration, context);
     }
 
-    internal static BaseVersion DetermineBaseVersionRecursive(MainlineIteration iteration, MainlineContext context)
+    internal BaseVersion CalculateBaseVersion(MainlineIteration iteration, MainlineContext context)
     {
         iteration.NotNull();
         var incrementSteps = GetIncrements(iteration, context, includeAncestry: false).ToArray();
@@ -142,7 +165,7 @@ internal static class MainlineVersionCalculator
         return result ?? throw new InvalidOperationException();
     }
 
-    private static IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, MainlineContext context, bool includeAncestry)
+    private IEnumerable<IBaseVersionIncrement> GetIncrements(MainlineIteration iteration, MainlineContext context, bool includeAncestry)
     {
         var (commits, _) = GetCalculationCommits(iteration, context, includeAncestry);
         for (var index = 0; index < commits.Length; index++)
@@ -184,20 +207,18 @@ internal static class MainlineVersionCalculator
         }
     }
 
-    private static IBaseVersionIncrement WithMergedMainlineVersion(IBaseVersionIncrement increment, MainlineCommit commit,
+    private IBaseVersionIncrement WithMergedMainlineVersion(IBaseVersionIncrement increment, MainlineCommit commit,
         bool isMainlineMerge, MainlineContext context)
         => increment is BaseVersionOperator operation && isMainlineMerge && context.SemanticVersion is null
             && commit.ChildIteration is { } child
             && !context.GetEffectiveConfiguration(child).PreventIncrementWhenBranchMerged
-            ? new MergedMainlineIncrement(operation, GetMergedMainlineVersion(child, context))
+            ? new MergedMainlineIncrement(operation, CalculateMergedMainlineVersionCached(child, context))
             : increment;
 
-    private static (MainlineCommit[] Commits, bool HasBoundary) GetCalculationCommits(MainlineIteration iteration,
+    private (MainlineCommit[] Commits, bool HasBoundary) GetCalculationCommits(MainlineIteration iteration,
         MainlineContext context, bool includeAncestry)
     {
-        var configurations = context.GetConfigurationResolver(iteration);
-        var history = new MainlineHistory(context.Configuration, context.Environment, context.CurrentCommit, context.BranchPointResolver, configurations);
-        var selection = history.Select(iteration, context.TargetLabel, includeAncestry,
+        var selection = this.history.Select(iteration, context.TargetLabel, includeAncestry,
             includeSharedHistory: context.IncludeSharedHistory);
         if (selection.MissingCommit is { } missing)
         {
