@@ -17,15 +17,12 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public string? TargetLabel { get; init; }
 
+    internal MainlineVersionCalculator? Calculator { get; set; }
+
     public MainlineBranchPointResolver? BranchPointResolver { get; set; }
 
-    private MainlineConfigurationResolver? ConfigurationResolver { get; set; }
-
     internal MainlineConfigurationResolver GetConfigurationResolver(MainlineIteration iteration)
-    {
-        BranchPointResolver ??= new MainlineBranchPointResolver(iteration);
-        return ConfigurationResolver ??= new MainlineConfigurationResolver(Configuration, BranchPointResolver);
-    }
+        => MainlineVersionCalculator.GetOrCreate(iteration, this).ConfigurationResolver;
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
         => GetConfigurationResolver(iteration).GetEffectiveConfiguration(iteration);
@@ -48,19 +45,18 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
         {
             return true;
         }
-        var configurations = GetConfigurationResolver(commit.Iteration);
+        var history = MainlineVersionCalculator.GetOrCreate(commit.Iteration, this).History;
         return commit.ChildIteration is { } child
             && (commit.HasChildIteration || IncludeSharedHistory && child.BranchedFrom is not null)
-            && new MainlineHistory(Configuration, Environment, CurrentCommit, BranchPointResolver, configurations)
-                .Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
+            && history.Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
     }
 
     public MainlineContext CreateChildContext()
         => new(IncrementStrategyFinder, Configuration, Environment, CurrentCommit)
         {
             TargetLabel = TargetLabel,
+            Calculator = Calculator,
             BranchPointResolver = BranchPointResolver,
-            ConfigurationResolver = ConfigurationResolver,
             IncludeSharedHistory = IncludeSharedHistory,
             MainlineVersions = MainlineVersions
         };
