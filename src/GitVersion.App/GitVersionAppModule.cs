@@ -38,6 +38,7 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
         }
         else
         {
+            services.AddSingleton<TelemetryRuntimeContextReader>();
             services.AddSingleton(sp => new TelemetryNotice(sp.GetRequiredService<IFileSystem>(),
                 () => SysEnv.GetFolderPath(SysEnv.SpecialFolder.LocalApplicationData), Console.Error.WriteLine));
             services.AddSingleton<ITelemetryReporter>(sp => new TelemetryReporter(
@@ -45,8 +46,7 @@ internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser =
                 sp.GetRequiredService<TelemetryCampaign>(), TimeProvider.System,
                 () => sp.GetRequiredService<ICurrentBuildAgent>(), Random.Shared.NextDouble,
                 TelemetryReporter.CreateClient, sp.GetRequiredService<TelemetryNotice>().Show,
-                () => new TelemetryRuntimeContextReader(sp.GetRequiredService<IFileSystem>(), sp.GetRequiredService<IEnvironment>(),
-                    TelemetryReporter.ClassifyOperatingSystem(), SysEnv.OSVersion.Version).Read()));
+                () => sp.GetRequiredService<TelemetryRuntimeContextReader>().Read()));
         }
 
         services.AddSingleton(sp => sp.GetRequiredService<IArgumentParser>().ParseArguments(args ?? []));

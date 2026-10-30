@@ -81,6 +81,8 @@ internal static partial class RegexPatterns
             new(SanitizeEnvVarNameRegexPattern, SanitizeEnvVarNameRegex),
             new(SanitizeMemberNameRegexPattern, SanitizeMemberNameRegex),
             new(SanitizeNameRegexPattern, SanitizeNameRegex),
+            new(Telemetry.NumericReleaseRegexPattern, Telemetry.NumericReleaseRegex),
+            new(Telemetry.ToolReleaseRegexPattern, Telemetry.ToolReleaseRegex),
             new(Git.RepositoryNotFoundRegexPattern, Git.RepositoryNotFoundRegex),
             new(Git.HttpStatusRegexPattern, Git.HttpStatusRegex),
             new(Configuration.DefaultTagPrefixRegexPattern, Configuration.DefaultTagPrefixRegex),
@@ -130,6 +132,26 @@ internal static partial class RegexPatterns
 
         private static readonly ImmutableDictionary<string, Regex> KnownRegexes =
             Descriptors.ToImmutableDictionary(d => d.Pattern, d => d.Regex);
+    }
+
+    /// <summary>Validates bounded public runtime metadata for telemetry.</summary>
+    internal static partial class Telemetry
+    {
+        /// <summary>Limits OS releases to at most four bounded numeric components.</summary>
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string NumericReleaseRegexPattern = @"\A[0-9]{1,8}(?:\.[0-9]{1,8}){0,3}\z";
+
+        /// <summary>Allows numeric tool releases and known public prerelease channels.</summary>
+        [StringSyntax(StringSyntaxAttribute.Regex)]
+        internal const string ToolReleaseRegexPattern = @"\A(?:0|[1-9][0-9]{0,7})\.(?:0|[1-9][0-9]{0,7})\.(?:0|[1-9][0-9]{0,7})(?:-(?:alpha|beta|rc|preview|dev|ci)(?:\.[0-9]{1,8})*)?\z";
+
+        /// <summary>Matches public numeric OS release identifiers.</summary>
+        [GeneratedRegex(NumericReleaseRegexPattern, RegexOptions.CultureInvariant)]
+        public static partial Regex NumericReleaseRegex { get; }
+
+        /// <summary>Matches release versions and known public prerelease channels.</summary>
+        [GeneratedRegex(ToolReleaseRegexPattern, RegexOptions.CultureInvariant)]
+        public static partial Regex ToolReleaseRegex { get; }
     }
 
     internal static partial class Git

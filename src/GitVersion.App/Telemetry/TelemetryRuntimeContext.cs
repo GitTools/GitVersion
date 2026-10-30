@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -17,8 +16,14 @@ internal sealed record TelemetryRuntimeContext(string Container, string Distribu
 }
 
 /// <summary>Reads bounded public OS metadata only for selected, eligible telemetry events.</summary>
-internal sealed partial class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string os, Version version)
+internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string os, Version version)
 {
+    /// <summary>Uses the current process OS when constructed by dependency injection.</summary>
+    public TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment)
+        : this(fileSystem, environment, TelemetryReporter.ClassifyOperatingSystem(), SysEnv.OSVersion.Version)
+    {
+    }
+
     private const string UnknownLabel = TelemetryRuntimeContext.UnknownLabel;
     private static readonly HashSet<string> Distributions = new(StringComparer.Ordinal)
     {
@@ -127,20 +132,12 @@ internal sealed partial class TelemetryRuntimeContextReader(IFileSystem fileSyst
     }
 
     /// <summary>Limits OS release data to at most four bounded numeric components.</summary>
-    private static string NormalizeRelease(string? value) => value is { Length: <= 32 } && NumericRelease().IsMatch(value) ? value : UnknownLabel;
+    private static string NormalizeRelease(string? value) => value is { Length: <= 32 } && RegexPatterns.Telemetry.NumericReleaseRegex.IsMatch(value) ? value : UnknownLabel;
 
     /// <summary>Removes build metadata and rejects private branch names or malformed tool versions.</summary>
     internal static string NormalizeToolVersion(string? value)
     {
         var release = value?.Split('+', 2)[0];
-        return release is { Length: <= 64 } && ToolRelease().IsMatch(release) ? release : UnknownLabel;
+        return release is { Length: <= 64 } && RegexPatterns.Telemetry.ToolReleaseRegex.IsMatch(release) ? release : UnknownLabel;
     }
-
-    /// <summary>Matches public numeric OS release identifiers.</summary>
-    [GeneratedRegex(@"\A[0-9]{1,8}(?:\.[0-9]{1,8}){0,3}\z", RegexOptions.CultureInvariant)]
-    private static partial Regex NumericRelease();
-
-    /// <summary>Matches release versions and known public prerelease channels.</summary>
-    [GeneratedRegex(@"\A(?:0|[1-9][0-9]{0,7})\.(?:0|[1-9][0-9]{0,7})\.(?:0|[1-9][0-9]{0,7})(?:-(?:alpha|beta|rc|preview|dev|ci)(?:\.[0-9]{1,8})*)?\z", RegexOptions.CultureInvariant)]
-    private static partial Regex ToolRelease();
 }
