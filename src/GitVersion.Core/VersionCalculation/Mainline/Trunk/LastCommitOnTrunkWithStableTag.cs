@@ -6,7 +6,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
     // A  59 minutes ago
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -16,7 +16,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        if (!context.GetEffectiveConfiguration(iteration).IsMainBranch)
         {
             yield break;
         }

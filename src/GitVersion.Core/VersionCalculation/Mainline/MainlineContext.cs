@@ -17,6 +17,61 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
 
     public string? TargetLabel { get; init; }
 
+    internal MainlineVersionCalculator? Calculator { get; set; }
+
+    public MainlineBranchPointResolver? BranchPointResolver { get; set; }
+
+    internal MainlineConfigurationResolver GetConfigurationResolver(MainlineIteration iteration)
+        => MainlineVersionCalculator.GetOrCreate(iteration, this).ConfigurationResolver;
+
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
+        => GetConfigurationResolver(iteration).GetEffectiveConfiguration(iteration);
+
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).GetEffectiveConfiguration(commit);
+
+    public bool IsMergedMainline(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).IsMergedMainline(commit);
+
+    public VersionField GetIncrementForcedByBranch(MainlineCommit commit)
+        => GetConfigurationResolver(commit.Iteration).GetIncrementForcedByBranch(commit);
+
+    // Independent source calculations also need side histories stored in other iterations.
+    public bool IncludeSharedHistory { get; init; }
+
+    public bool HasChildHistory(MainlineCommit commit)
+    {
+        if (commit.HasChildIteration && Configuration.Ignore.IsEmpty)
+        {
+            return true;
+        }
+        var history = MainlineVersionCalculator.GetOrCreate(commit.Iteration, this).History;
+        return commit.ChildIteration is { } child
+            && (commit.HasChildIteration || IncludeSharedHistory && child.BranchedFrom is not null)
+            && history.Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
+    }
+
+    public MainlineContext CreateChildContext()
+        => new(IncrementStrategyFinder, Configuration, Environment, CurrentCommit)
+        {
+            TargetLabel = TargetLabel,
+            Calculator = Calculator,
+            BranchPointResolver = BranchPointResolver,
+            IncludeSharedHistory = IncludeSharedHistory,
+            MainlineVersions = MainlineVersions
+        };
+
+    public Dictionary<MainlineIteration, BaseVersion> MainlineVersions { get; init; } = [];
+
+    public MainlineCommit? Predecessor { get; set; }
+
+    public bool? HasSuccessor { get; set; }
+
+    public MainlineCommit? GetPredecessor(MainlineCommit commit)
+        => HasSuccessor.HasValue ? Predecessor : commit.Predecessor;
+
+    public bool IsLastCommit(MainlineCommit commit) => !(HasSuccessor ?? commit.HasSuccessor);
+
     public SemanticVersion? SemanticVersion { get; set; }
 
     public SemanticVersionSource? SemVerSource { get; set; }
@@ -24,6 +79,8 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
     public string? Label { get; set; }
 
     public VersionField Increment { get; set; }
+
+    public VersionField CommitIncrement { get; set; }
 
     public bool SuppressBranchIncrement { get; set; }
 

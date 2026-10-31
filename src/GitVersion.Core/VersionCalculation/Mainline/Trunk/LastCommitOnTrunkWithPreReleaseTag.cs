@@ -8,7 +8,7 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
     // A 59 minutes ago
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -18,14 +18,14 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             yield return item;
         }
 
-        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        if (!context.GetEffectiveConfiguration(iteration).IsMainBranch)
         {
             yield break;
         }
 
-        context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
+        context.Increment = context.GetIncrementForcedByBranch(commit);
 
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
         context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
         context.ForceIncrement = false;
 

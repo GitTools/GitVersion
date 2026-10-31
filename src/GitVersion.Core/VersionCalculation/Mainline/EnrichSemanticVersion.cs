@@ -8,9 +8,9 @@ internal sealed class EnrichSemanticVersion : IContextPreEnricher
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
         var branchSpecificLabel = context.TargetLabel;
-        branchSpecificLabel ??= iteration.GetEffectiveConfiguration(context.Configuration)
+        branchSpecificLabel ??= context.GetEffectiveConfiguration(iteration)
             .GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
-        branchSpecificLabel ??= commit.GetEffectiveConfiguration(context.Configuration)
+        branchSpecificLabel ??= context.GetEffectiveConfiguration(commit)
             .GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
 
         var semanticVersions = commit.SemanticVersions.Where(

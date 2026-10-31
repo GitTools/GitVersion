@@ -5,9 +5,8 @@ namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => commit.HasChildIteration
-           && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-           && context.SemanticVersion is null;
+        => context.SemanticVersion is null && context.HasChildHistory(commit)
+           && !context.GetEffectiveConfiguration(commit).IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -21,14 +20,8 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionStrategy.DetermineBaseVersionRecursive(
-                   iteration: commit.ChildIteration,
-                   targetLabel: context.TargetLabel,
-                   incrementStrategyFinder: context.IncrementStrategyFinder,
-                   configuration: context.Configuration,
-                   environment: context.Environment,
-                   currentCommit: context.CurrentCommit
-               );
+            var baseVersion = MainlineVersionCalculator.GetOrCreate(iteration, context).CalculateBaseVersion(
+                commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;
             context.Increment = ConsolidateIncrement(commit, context, baseVersion);
@@ -40,7 +33,7 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
     private static VersionField ConsolidateIncrement(MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
     {
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
         var increment = VersionField.None;
 
         if (!effectiveConfiguration.PreventIncrementOfMergedBranch)
@@ -55,7 +48,7 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
         if (effectiveConfiguration.CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
         {
-            increment = increment.Consolidate(commit.Increment);
+            increment = increment.Consolidate(context.CommitIncrement);
         }
 
         return increment;
