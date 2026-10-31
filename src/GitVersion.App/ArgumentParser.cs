@@ -115,9 +115,10 @@ internal class ArgumentParser(
         }
     }
 
+    /// <summary>Maps configuration validation arguments, allowing the telemetry opt-out alongside validation options.</summary>
     private static Arguments MapValidationValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
     {
-        var unsupported = rootCommand.Options.Except(options.Validate.Options)
+        var unsupported = rootCommand.Options.Except(options.Validate.Options).Where(option => option != options.TelemetryOptOut)
             .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
         var format = parseResult.GetValue(options.ValidationFormat);
         string? error = null;
@@ -175,6 +176,7 @@ internal class ArgumentParser(
         return start >= 0 && end > start ? message[(start + 1)..end] : message;
     }
 
+    /// <summary>Copies parsed CLI values, including telemetry opt-out, into the execution arguments.</summary>
     private void MapParsedValues(Arguments arguments, ParseResult parseResult, CommandOptions options)
     {
         arguments.LogFilePath = parseResult.GetValue(options.LogFile) ?? arguments.LogFilePath;
@@ -182,6 +184,7 @@ internal class ArgumentParser(
         arguments.ShowConfiguration = parseResult.GetValue(options.ShowConfig);
         arguments.NoFetch = parseResult.GetValue(options.NoFetch);
         arguments.NoCache = parseResult.GetValue(options.NoCache);
+        arguments.TelemetryOptOut = parseResult.GetValue(options.TelemetryOptOut);
         arguments.NoNormalize = parseResult.GetValue(options.NoNormalize);
         arguments.AllowShallow = parseResult.GetValue(options.AllowShallow);
         arguments.UpdateWixVersionFile = parseResult.GetValue(options.UpdateWixVersionFile);
@@ -232,6 +235,7 @@ internal class ArgumentParser(
         };
     }
 
+    /// <summary>Maps a v7 configuration property query while accepting the global telemetry opt-out.</summary>
     private Arguments MapQueryValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
     {
         if (ConfigurationVersionSelector.Resolve() != ConfigurationVersion.V7)
@@ -239,7 +243,7 @@ internal class ArgumentParser(
             throw new WarningException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
         }
 
-        var unsupportedOption = rootCommand.Options.Except(options.Get.Options)
+        var unsupportedOption = rootCommand.Options.Except(options.Get.Options).Where(option => option != options.TelemetryOptOut)
             .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });
         if (unsupportedOption is not null)
         {
@@ -450,8 +454,14 @@ internal class ArgumentParser(
         }
     }
 
+    /// <summary>Builds the POSIX command tree, recursive telemetry opt-out, and bounded schema value descriptions.</summary>
     private static (RootCommand Root, CommandOptions Options, IReadOnlyDictionary<Symbol, CliSchemaValues> Values) BuildCommand()
     {
+        var telemetryOptOut = new Option<bool>("--telemetry-opt-out")
+        {
+            Description = "Disables optional sampled usage telemetry.",
+            Recursive = true
+        };
         var path = new Argument<string?>("path")
         {
             Description = "The directory containing .git. If not defined current directory is used. (Must be first argument)",
@@ -655,7 +665,8 @@ internal class ArgumentParser(
             password,
             commit,
             dynamicRepoLocation,
-            cliSchema
+            cliSchema,
+            telemetryOptOut
         };
         rootCommand.Subcommands.Add(configCommand);
 
@@ -682,7 +693,7 @@ internal class ArgumentParser(
             ConfigCommand: configCommand, Migrate: migrate,
             MigrationInputFile: migrationInputFile, MigrationOutputFile: migrationOutputFile,
             InPlace: inPlace, Force: force, Get: get, PropertyPath: propertyPath, CliSchema: cliSchema,
-            Validate: validate, ValidationFormat: validationFormat
+            Validate: validate, ValidationFormat: validationFormat, TelemetryOptOut: telemetryOptOut
         ), new Dictionary<Symbol, CliSchemaValues>
         {
             [verbosity] = new(Enum.GetNames<Verbosity>(), true, true),
@@ -822,6 +833,7 @@ internal class ArgumentParser(
         Argument<string> PropertyPath,
         Option<bool> CliSchema,
         Command Validate,
-        Option<string?> ValidationFormat
+        Option<string?> ValidationFormat,
+        Option<bool> TelemetryOptOut
     );
 }
