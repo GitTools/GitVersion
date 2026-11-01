@@ -44,7 +44,7 @@ An empty `GitVersion/telemetry-policy-v2` file under .NET's `LocalApplicationDat
 Opted-out, disabled, unconfigured and excluded commands never access this state. State failures can repeat
 the notice; concurrent first runs can each disclose. Stdout and the calculation's exit code are preserved.
 
-Runtime release files are read only for selected events after disclosure. Inside Docker, distro/release
+Runtime metadata files are read only for selected events after disclosure. Inside Docker, distro/release
 describes the image userland. macOS uses its product release and Windows its numeric OS build.
 See the policy for exact allowlists and unknown values. The MSBuild package marks its CLI child;
 GitTools/actions identification requires a compatible wrapper to set the documented child-process marker.
