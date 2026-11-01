@@ -1,7 +1,5 @@
-using GitVersion;
 using GitVersion.Agents;
 using GitVersion.VersionCalculation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Tests;
 

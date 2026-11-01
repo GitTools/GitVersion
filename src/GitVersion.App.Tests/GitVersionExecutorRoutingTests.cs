@@ -1,9 +1,7 @@
 using System.IO.Abstractions;
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GitVersion.App.Tests;
 

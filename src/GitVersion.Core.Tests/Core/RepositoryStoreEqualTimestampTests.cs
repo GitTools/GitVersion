@@ -1,5 +1,4 @@
 using GitVersion.Configuration;
-using GitVersion.Testing.Extensions;
 using LgCommit = LibGit2Sharp.Commit;
 using LgSignature = LibGit2Sharp.Signature;
 using LgTreeDefinition = LibGit2Sharp.TreeDefinition;

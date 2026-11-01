@@ -1,5 +1,3 @@
-using NSubstitute;
-
 namespace GitVersion.Git.Managed.Tests;
 
 [TestFixture]
@@ -17,7 +15,7 @@ public class GitPackMemoryCacheTests
         {
             var offset = i % 4;
             using var added = cache.Add(offset, sources[i], "blob");
-            added.ReadByte().ShouldBe((int)'o');
+            added.ReadByte().ShouldBe('o');
 
             cache.TryOpen(offset, out var opened, out var objectType).ShouldBeTrue();
             objectType.ShouldBe("blob");

@@ -1,4 +1,3 @@
-using GitVersion.App.Tests.Helpers;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
 

@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Git;
-using GitVersion.Tests;
 
 namespace GitVersion.App.Tests;
 

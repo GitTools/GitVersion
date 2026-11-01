@@ -134,7 +134,7 @@ internal class IncrementStrategyFinder(
         // is resolved once per tag configuration instead of once per commit log. A null label is not the same
         // as an empty one -- it matches every pre-release label -- so it has to stay distinct in the key.
         var targetShas = this.targetShasCache.GetOrAdd(new(tagPrefix ?? string.Empty, semanticVersionFormat, label, ignore), () =>
-            (IReadOnlySet<string>)this.taggedSemanticVersionRepository
+            this.taggedSemanticVersionRepository
                 .GetTaggedSemanticVersions(tagPrefix, semanticVersionFormat, ignore)
                 .SelectMany(versionWithTags => versionWithTags)
                 .Where(versionWithTag => versionWithTag.Value.IsMatchForBranchSpecificLabel(label))

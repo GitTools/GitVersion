@@ -1,12 +1,9 @@
 using System.IO.Abstractions;
-using System.Text.Json;
 using GitVersion.App.Tests.Helpers;
 using GitVersion.FileSystemGlobbing;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Hosting;
-using NSubstitute;
 using Serilog.Core;
 
 namespace GitVersion.App.Tests;

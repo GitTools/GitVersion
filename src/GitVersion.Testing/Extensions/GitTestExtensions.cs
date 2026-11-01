@@ -80,7 +80,7 @@ public static class GitTestExtensions
     public static void ExecuteGitCmd(string gitCmd, string workingDirectory, Action<string>? writer = null)
     {
         var output = new StringBuilder();
-        var outputLock = new System.Threading.Lock();
+        var outputLock = new Lock();
         try
         {
             ProcessHelper.Run(

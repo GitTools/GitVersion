@@ -19,7 +19,7 @@ public class VariableProviderTests : TestBase
         List<string> logMessages = [];
 
         var loggerFactory = new TestLoggerFactory(logMessages.Add);
-        var sp = ConfigureServices(services => loggerFactory.RegisterWith(services));
+        var sp = ConfigureServices(loggerFactory.RegisterWith);
 
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
@@ -449,14 +449,14 @@ public class VariableProviderTests : TestBase
     [TestCase("semantic-source-sha")]
     public void SeparateSourcesSurviveFormattingEnumerationAndJson(string? semanticSourceSha)
     {
-        var semanticVersion = new SemanticVersion(5, 0, 0)
+        var semanticVersion = new SemanticVersion(5)
         {
             BuildMetaData = new()
             {
-                SemVerSourceSemVer = new(5, 0, 0),
+                SemVerSourceSemVer = new(5),
                 SemVerSourceSha = semanticSourceSha,
                 SemVerSourceIncrement = VersionField.Minor,
-                VersionSourceSemVer = new(1, 0, 0),
+                VersionSourceSemVer = new(1),
                 VersionSourceSha = "count-source-sha",
                 VersionSourceDistance = 2,
                 VersionSourceIncrement = VersionField.None,
@@ -474,7 +474,7 @@ public class VariableProviderTests : TestBase
         variables.Single(pair => pair.Key == "CommitCountSourceSha").Value.ShouldBe("count-source-sha");
 
         var json = variables.ToJson();
-        using var document = System.Text.Json.JsonDocument.Parse(json);
+        using var document = JsonDocument.Parse(json);
         document.RootElement.GetProperty("CommitCountSourceDistance").GetInt64().ShouldBe(2);
         document.RootElement.GetProperty("SemVerSourceSha").GetString().ShouldBe(semanticSourceSha);
         var roundTrip = json.ToGitVersionVariables();
@@ -492,7 +492,7 @@ public class VariableProviderTests : TestBase
     public void CopyingEnumeratedVariablesDoesNotReuseOldSourceValues()
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var original = this.variableProvider.GetVariablesFor(new SemanticVersion(1, 0, 0), configuration, configuration.GetEffectiveConfiguration());
+        var original = this.variableProvider.GetVariablesFor(new SemanticVersion(1), configuration, configuration.GetEffectiveConfiguration());
         original.TryGetValue("SemVerSourceSha", out _).ShouldBeTrue();
 
         var copy = original with { SemVerSourceSha = "updated-source", VersionSourceDistance = "3" };

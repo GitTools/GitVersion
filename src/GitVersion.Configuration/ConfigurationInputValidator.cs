@@ -59,7 +59,7 @@ internal static class ConfigurationInputValidator
             throw Error(path, "Expected a non-null configuration value.");
         }
         type = Nullable.GetUnderlyingType(type) ?? type;
-        if (type == typeof(GitVersion.VersionCalculation.VersionStrategies[]))
+        if (type == typeof(VersionCalculation.VersionStrategies[]))
         {
             ValidateStrategies(value, path);
             return;
@@ -83,7 +83,7 @@ internal static class ConfigurationInputValidator
     {
         try
         {
-            var strategies = new ConfigurationSerializer().Deserialize<GitVersion.VersionCalculation.VersionStrategies[]>(ConfigurationSerializer.SerializeLegacy(value));
+            var strategies = new ConfigurationSerializer().Deserialize<VersionCalculation.VersionStrategies[]>(ConfigurationSerializer.SerializeLegacy(value));
             if (strategies.Any(strategy => !Enum.IsDefined(strategy)))
             {
                 throw Error(path, "Expected supported version strategies.");

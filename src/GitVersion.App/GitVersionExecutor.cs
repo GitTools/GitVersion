@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using GitVersion.Extensions;
-using GitVersion.Git;
 using Serilog;
 
 namespace GitVersion;

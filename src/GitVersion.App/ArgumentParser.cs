@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.IO.Abstractions;
-using System.Text.Json;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.FileSystemGlobbing;

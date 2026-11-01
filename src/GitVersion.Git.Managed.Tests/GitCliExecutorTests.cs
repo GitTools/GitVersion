@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging.Abstractions;
-
 namespace GitVersion.Git.Managed.Tests;
 
 [TestFixture]

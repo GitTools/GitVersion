@@ -1,7 +1,5 @@
 using System.CommandLine;
 using System.Globalization;
-using System.Reflection;
-using System.Text.Json;
 using Json.Schema;
 
 namespace GitVersion.App.Tests;

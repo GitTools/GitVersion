@@ -1,6 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace GitVersion;
 
 internal sealed record CliSchemaDocument(string Opencli, CliSchemaInfo Info, CliSchemaCommand Command, CliSchemaConventions Conventions);

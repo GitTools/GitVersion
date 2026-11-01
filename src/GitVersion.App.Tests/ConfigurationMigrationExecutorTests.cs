@@ -22,10 +22,16 @@ public class ConfigurationMigrationExecutorTests
                 new TestLogger<ConfigurationMigrationExecutor>(logMessages.Add),
                 Substitute.For<IConfigurationFileLocator>(),
                 new ConfigurationMigrationService(new ConfigurationSerializer()));
-            var options = new GitVersionOptions { WorkingDirectory = directory.FullName };
-            options.ConfigurationMigrationInfo.IsMigration = true;
-            options.ConfigurationMigrationInfo.InputFile = inputFile;
-            options.ConfigurationMigrationInfo.InPlace = true;
+            var options = new GitVersionOptions
+            {
+                WorkingDirectory = directory.FullName,
+                ConfigurationMigrationInfo =
+                {
+                    IsMigration = true,
+                    InputFile = inputFile,
+                    InPlace = true
+                }
+            };
 
             executor.Execute(options).ShouldBe(0);
 
@@ -52,10 +58,16 @@ public class ConfigurationMigrationExecutorTests
                 new TestLogger<ConfigurationMigrationExecutor>(),
                 Substitute.For<IConfigurationFileLocator>(),
                 new ConfigurationMigrationService(new ConfigurationSerializer()));
-            var options = new GitVersionOptions { WorkingDirectory = directory.FullName };
-            options.ConfigurationMigrationInfo.IsMigration = true;
-            options.ConfigurationMigrationInfo.InputFile = inputFile;
-            options.ConfigurationMigrationInfo.InPlace = true;
+            var options = new GitVersionOptions
+            {
+                WorkingDirectory = directory.FullName,
+                ConfigurationMigrationInfo =
+                {
+                    IsMigration = true,
+                    InputFile = inputFile,
+                    InPlace = true
+                }
+            };
 
             executor.Execute(options).ShouldBe(0);
 
