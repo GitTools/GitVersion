@@ -35,12 +35,14 @@
         <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
         <InternalsVisibleTo Include="GitVersion.MsBuild" />
         <InternalsVisibleTo Include="GitVersion.Output" />
+        <InternalsVisibleTo Include="GitVersion.Telemetry" />
 
         <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
         <InternalsVisibleTo Include="GitVersion.Configuration.Tests" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.Git.Managed.Tests" />
         <InternalsVisibleTo Include="GitVersion.Output.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Telemetry.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
         <InternalsVisibleTo Include="GitVersion.Testing" />

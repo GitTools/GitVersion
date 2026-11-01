@@ -124,13 +124,14 @@ passes it to Cake as a build environment variable. There is no separate boolean 
 The key is configured outside source control and embedded in eligible distributed binaries.
 
 Cake's `build/build/BuildLifetime.cs` requires `IsTaggedRelease` or `IsTaggedPreRelease` before forwarding
-the key as `GitVersionTelemetryProjectKey`. The CLI embeds it as `TelemetryProjectKey` assembly metadata.
+the key as `GitVersionTelemetryProjectKey`. The `GitVersion.Telemetry` module embeds it as
+`TelemetryProjectKey` assembly metadata.
 Missing, invalid or duplicate key metadata disables collection. Cake automatically captures the UTC build
 date (`yyyy-MM-dd`) for these official tagged releases and prereleases.
 Internal prerelease, untagged, local, fork and pull-request builds receive neither a key nor a collection date,
 even when the environment contains the key.
 Cake forwards the date as the `GitVersionTelemetryCampaignStart` MSBuild property;
-the CLI project embeds `AssemblyMetadata("TelemetryCampaignStart", value)`, which the reporter reads.
+the `GitVersion.Telemetry` module embeds `AssemblyMetadata("TelemetryCampaignStart", value)`, which the reporter reads.
 Direct `dotnet` builds default to disabled and omit the date. A controlled local build must explicitly
 supply both `GitVersionTelemetryProjectKey` and a valid `GitVersionTelemetryCampaignStart` to activate.
 Personal/read/admin keys must never be shipped.

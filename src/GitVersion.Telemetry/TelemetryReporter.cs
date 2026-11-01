@@ -24,7 +24,7 @@ internal sealed class DisabledTelemetryReporter : ITelemetryReporter
 [method: SuppressMessage("Major Code Smell", "S107:Methods should not have too many parameters",
     Justification = "Explicit dependencies keep policy, clock, sampling, build-agent resolution, disclosure and transport independently testable.")]
 internal sealed class TelemetryReporter(
-    Arguments arguments,
+    TelemetryInvocation invocation,
     IEnvironment environment,
     TelemetryCampaign campaign,
     TimeProvider clock,
@@ -67,10 +67,9 @@ internal sealed class TelemetryReporter(
         try
         {
             if (Interlocked.Exchange(ref this.attempted, 1) != 0 || cancellationToken.IsCancellationRequested ||
-                arguments.TelemetryOptOut || IsTrue("DO_NOT_TRACK") || IsTrue("GITVERSION_TELEMETRY_OPTOUT") ||
+                invocation.OptOut || IsTrue("DO_NOT_TRACK") || IsTrue("GITVERSION_TELEMETRY_OPTOUT") ||
                 !campaign.IsActive(DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime)) ||
-                arguments.IsHelp || arguments.IsVersion || arguments.IsCliSchema || arguments.ValidateConfiguration ||
-                arguments.IsConfigurationMigration || arguments.ShowConfiguration || arguments.ConfigurationPropertyPath != null)
+                invocation.Excluded)
             {
                 return;
             }
@@ -101,7 +100,7 @@ internal sealed class TelemetryReporter(
                 notice(PolicyNotice);
             }
 
-            var payload = CreatePayload(arguments, campaign.ProjectKey!, probability, ci, msbuild,
+            var payload = CreatePayload(invocation, campaign.ProjectKey!, probability, ci, msbuild,
                 runtimeContext?.Invoke(), actions);
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             timeout.CancelAfter(automated ? SendTimeout : DirectSendTimeout);
@@ -132,7 +131,7 @@ internal sealed class TelemetryReporter(
 
     /// <summary>Constructs an allowlisted event with a fresh identity, bounded dimensions, and option-presence flags.</summary>
     /// <remarks>Raw arguments and option values are never copied into the payload.</remarks>
-    internal static object CreatePayload(Arguments args, string projectKey, double probability, string ci, bool msbuild,
+    internal static object CreatePayload(TelemetryInvocation invocation, string projectKey, double probability, string ci, bool msbuild,
         TelemetryRuntimeContext? context = null, bool actions = false) => new
         {
             api_key = projectKey,
@@ -165,7 +164,7 @@ internal sealed class TelemetryReporter(
                     Architecture.Arm => "arm",
                     _ => OtherLabel
                 },
-                ["options"] = CanonicalOptions(args)
+                ["options"] = invocation.Options()
             }
         };
 
@@ -181,55 +180,6 @@ internal sealed class TelemetryReporter(
             return "linux";
         }
         return OperatingSystem.IsMacOS() ? "macos" : OtherLabel;
-    }
-
-    /// <summary>Extracts canonical option names and allowlisted output modes while discarding free-form values.</summary>
-    private static string[] CanonicalOptions(Arguments args)
-    {
-        var flags = new List<string>();
-        Add(args.NoCache, "--no-cache");
-        Add(args.NoFetch, "--no-fetch");
-        Add(args.NoNormalize, "--no-normalize");
-        Add(args.AllowShallow, "--allow-shallow");
-        Add(args.Diag, "--diagnose");
-        Add(args.ConfigurationFile != null, "--config");
-        Add(args.OverrideConfiguration.Count > 0, "--override-config");
-        Add(args.ShowVariable != null, "--show-variable");
-        Add(args.Format != null, "--format");
-        Add(args.TargetUrl != null, "--url");
-        Add(args.TargetBranch != null, "--branch");
-        Add(args.CommitId != null, "--commit");
-        Add(args.ClonePath != null, "--dynamic-repo-location");
-        Add(args.LogFilePath != null, "--log-file");
-        Add(args.OutputFile != null, "--output-file");
-        Add(args.UpdateAssemblyInfo, "--update-assembly-info");
-        Add(args.UpdateProjectFiles, "--update-project-files");
-        Add(args.EnsureAssemblyInfo, "--ensure-assembly-info");
-        Add(args.UpdateWixVersionFile, "--update-wix-version-file");
-        foreach (var output in args.Output.Order())
-        {
-            var name = output switch
-            {
-                OutputType.Json => "json",
-                OutputType.BuildServer => "buildserver",
-                OutputType.File => "file",
-                OutputType.DotEnv => "dotenv",
-                _ => null
-            };
-            if (name != null)
-            {
-                flags.Add("--output=" + name);
-            }
-        }
-        return [.. flags];
-
-        void Add(bool present, string name)
-        {
-            if (present)
-            {
-                flags.Add(name);
-            }
-        }
     }
 
     /// <summary>Creates a short-lived client with a bounded timeout and no redirects, cookies, or credentials.</summary>

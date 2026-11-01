@@ -33,6 +33,7 @@
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
+        <ProjectReference Include="..\GitVersion.Telemetry\GitVersion.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup Label="MicrosoftExtensionsUsings">
@@ -42,14 +43,6 @@
 
     <ItemGroup>
         <EmbeddedResource Include="legacy_help.md" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(GitVersionTelemetryCampaignStart)' != ''">
-        <AssemblyMetadata Include="TelemetryCampaignStart" Value="$(GitVersionTelemetryCampaignStart)" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(GitVersionTelemetryProjectKey)' != ''">
-        <AssemblyMetadata Include="TelemetryProjectKey" Value="$(GitVersionTelemetryProjectKey)" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,4 @@
+#nullable enable
+GitVersion.Telemetry.GitVersionTelemetryModule
+GitVersion.Telemetry.GitVersionTelemetryModule.GitVersionTelemetryModule(bool useLegacyParser = false) -> void
+GitVersion.Telemetry.GitVersionTelemetryModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -16,11 +15,12 @@ internal sealed record TelemetryRuntimeContext(string Container, string Distribu
 }
 
 /// <summary>Reads bounded public OS metadata only for selected, eligible telemetry events.</summary>
-internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string os, Version version)
+internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string os, Version version,
+    Func<string?>? readToolVersion = null)
 {
     /// <summary>Uses the current process OS when constructed by dependency injection.</summary>
-    public TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment)
-        : this(fileSystem, environment, TelemetryReporter.ClassifyOperatingSystem(), SysEnv.OSVersion.Version)
+    public TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, TelemetryInvocation invocation)
+        : this(fileSystem, environment, TelemetryReporter.ClassifyOperatingSystem(), SysEnv.OSVersion.Version, invocation.ToolVersion)
     {
     }
 
@@ -36,8 +36,7 @@ internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnv
     {
         var container = ReadContainer();
         var (distribution, release) = ReadOperatingSystem();
-        var toolVersion = NormalizeToolVersion(typeof(TelemetryRuntimeContextReader).Assembly
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
+        var toolVersion = NormalizeToolVersion(readToolVersion?.Invoke());
         return new(container, distribution, release, toolVersion);
     }
 

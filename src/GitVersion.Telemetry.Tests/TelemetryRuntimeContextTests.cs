@@ -3,7 +3,7 @@ using System.Text;
 using GitVersion.Telemetry;
 using GitVersion.Tests;
 
-namespace GitVersion.App.Tests;
+namespace GitVersion.Telemetry.Tests;
 
 /// <summary>Verifies public runtime metadata parsing and isolation from private machine values.</summary>
 public class TelemetryRuntimeContextTests
