@@ -92,7 +92,7 @@ The existing GitVersion build-agent resolver supplies `ci`. Its fixed labels are
 Linux distro IDs are limited to `debian`, `ubuntu`, `alpine`, `fedora`, `rhel`, `centos`, `rocky`,
 `almalinux`, `amzn`, `opensuse-leap`, `opensuse-tumbleweed`, `sles`, `arch`, `gentoo`, `nixos`, `photon`,
 `mariner` and `azurelinux`. Only numeric `VERSION_ID` values are accepted; custom distro IDs use `other`
-and do not include a version. macOS and Windows use .NET's numeric OS version, excluding the revision
+and `unknown` for the version. macOS and Windows use .NET's numeric OS version, excluding the revision
 component and using zero for an unavailable build component. On macOS this is the product release;
 on Windows it is the numeric OS build rather than a marketing name.
 Missing, malformed, non-numeric or oversized release data uses `unknown`.
