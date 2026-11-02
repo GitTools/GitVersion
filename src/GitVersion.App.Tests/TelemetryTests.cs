@@ -143,7 +143,9 @@ public class TelemetryTests : TestBase
     {
         using var repository = new EmptyRepositoryFixture();
         repository.Repository.MakeATaggedCommit("1.2.3");
-        var baseline = await new ProgramFixture(repository.RepositoryPath).Run(variable ? "--show-variable FullSemVer" : "--output json");
+        var baselineProgram = new ProgramFixture(repository.RepositoryPath);
+        baselineProgram.WithOverrides(services => services.AddSingleton<ITelemetryReporter>(new DisabledTelemetryReporter()));
+        var baseline = await baselineProgram.Run(variable ? "--show-variable FullSemVer" : "--output json");
         var program = new ProgramFixture(repository.RepositoryPath);
         var notice = new StringBuilder();
         var handler = new CaptureHandler();
