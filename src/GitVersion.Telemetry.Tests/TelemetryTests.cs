@@ -755,13 +755,6 @@ public class TelemetryTests
         }
     }
 
-    /// <summary>Keeps campaign eligibility independent of the machine's current date.</summary>
-    private sealed class FixedClock : TimeProvider
-    {
-        /// <summary>Returns a UTC instant inside the test campaign's collection window.</summary>
-        public override DateTimeOffset GetUtcNow() => new(2026, 10, 18, 0, 0, 0, TimeSpan.Zero);
-    }
-
     /// <summary>Owns isolated temporary disclosure state and captures notices from concurrent reporters.</summary>
     private sealed class NoticeFixture : IDisposable
     {
@@ -785,24 +778,6 @@ public class TelemetryTests
         }
     }
 
-    /// <summary>Captures outgoing request details and returns a chosen status without using the network.</summary>
-    private sealed class CaptureHandler(HttpStatusCode status = HttpStatusCode.OK) : HttpMessageHandler
-    {
-        internal List<string> Bodies { get; } = [];
-        internal Uri? Endpoint { get; private set; }
-        internal HttpMethod? Method { get; private set; }
-        internal string? ContentType { get; private set; }
-        /// <summary>Records the request endpoint, method, content type, and body before returning the configured response.</summary>
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            Endpoint = request.RequestUri;
-            Method = request.Method;
-            ContentType = request.Content!.Headers.ContentType!.MediaType;
-            Bodies.Add(await request.Content.ReadAsStringAsync(cancellationToken));
-            return new HttpResponseMessage(status);
-        }
-    }
-
     /// <summary>Models response latency between the direct and automated deadlines without external networking.</summary>
     private sealed class DelayedResponseHandler : HttpMessageHandler
     {
@@ -817,23 +792,6 @@ public class TelemetryTests
             Started.SetResult();
             await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
             Completed = true;
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        }
-    }
-
-    /// <summary>Simulates either an immediate network error or a request stalled until cancellation.</summary>
-    private sealed class FailureHandler(bool timeout) : HttpMessageHandler
-    {
-        internal CancellationToken Token { get; private set; }
-        /// <summary>Throws an offline error or captures the cancellation token and waits for its deadline.</summary>
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            if (!timeout)
-            {
-                throw new HttpRequestException("Offline");
-            }
-            Token = cancellationToken;
-            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
     }
