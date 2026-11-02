@@ -73,11 +73,11 @@ They describe the observed invocation; they do not identify a person, repository
 | `invocation` | Trimmed, case-insensitive `GITVERSION_INTERNAL_CALLER`: `GitVersion.MsBuild` or `gitversion-msbuild` maps to `msbuild`; `gittools-actions` maps to `gittools-actions`; all other or absent values map to `direct` |
 | `container` | Exact `GITVERSION_CONTAINER_KIND=docker`, set by the official image, or `/.dockerenv` on Linux maps to `docker`; otherwise `DOTNET_RUNNING_IN_CONTAINER=1` or case-insensitive `true` maps to `other`; no recognized hint maps to `none`, and detection errors map to `unknown` |
 | Linux `os_distribution`, `os_version` | Only `ID` and `VERSION_ID` from `/etc/os-release`; `/usr/lib/os-release` is used only when the first file is absent, never merged or used after a read failure. No shell expansion is performed |
-| macOS `os_distribution`, `os_version` | Fixed `macos` and numeric `ProductVersion` from `/System/Library/CoreServices/SystemVersion.plist`; external XML resources are not loaded; Darwin kernel/build labels are excluded |
-| Windows `os_distribution`, `os_version` | Fixed `windows` and .NET's OS version as major.minor.build; revision and marketing labels such as Windows 11 or Server edition are excluded |
+| macOS `os_distribution`, `os_version` | Fixed `macos` and the product version from .NET's `Environment.OSVersion.Version` as major.minor.build; the revision component and Darwin kernel/build labels are excluded; GitVersion does not read a plist |
+| Windows `os_distribution`, `os_version` | Fixed `windows` and .NET's `Environment.OSVersion.Version` as major.minor.build; revision and marketing labels such as Windows 11 or Server edition are excluded |
 | `gitversion_version` | The CLI assembly's informational version, with everything from `+` onward removed; only the release/prerelease syntax described below is accepted, otherwise `unknown` |
 
-Runtime files are read only after eligibility, sampling and disclosure permit an event. Files exceeding
+Linux release files are read only after eligibility, sampling and disclosure permit an event. Files exceeding
 8,192 characters are rejected using a bounded read with one extra character to detect overflow;
 oversized or unreadable data is not transmitted. OS release strings allow
 at most four numeric components, each up to eight digits, with a total limit of 32 characters.
@@ -92,8 +92,10 @@ The existing GitVersion build-agent resolver supplies `ci`. Its fixed labels are
 Linux distro IDs are limited to `debian`, `ubuntu`, `alpine`, `fedora`, `rhel`, `centos`, `rocky`,
 `almalinux`, `amzn`, `opensuse-leap`, `opensuse-tumbleweed`, `sles`, `arch`, `gentoo`, `nixos`, `photon`,
 `mariner` and `azurelinux`. Only numeric `VERSION_ID` values are accepted; custom distro IDs use `other`
-and do not include a version. macOS uses `ProductVersion`; Windows uses its numeric OS build rather than
-a marketing name. Missing, malformed, non-numeric or oversized release data uses `unknown`.
+and do not include a version. macOS and Windows use .NET's numeric OS version, excluding the revision
+component and using zero for an unavailable build component. On macOS this is the product release;
+on Windows it is the numeric OS build rather than a marketing name.
+Missing, malformed, non-numeric or oversized release data uses `unknown`.
 Inside a container these fields describe its userland, not the host OS. Docker uses the official image's
 fixed marker or the conventional `/.dockerenv` hint; the generic .NET container hint uses `other`.
 Detection is best effort and does not inspect cgroup IDs, hostnames, image tags or container IDs.

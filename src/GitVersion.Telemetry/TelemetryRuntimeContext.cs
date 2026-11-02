@@ -1,6 +1,4 @@
 using System.IO.Abstractions;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace GitVersion.Telemetry;
 
@@ -76,8 +74,7 @@ internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnv
             return osFamily switch
             {
                 "linux" => ParseLinux(ReadBounded(fileSystem.File.Exists("/etc/os-release") ? "/etc/os-release" : "/usr/lib/os-release")),
-                "macos" => ("macos", ParseMacOs(ReadBounded("/System/Library/CoreServices/SystemVersion.plist"))),
-                "windows" => ("windows", NormalizeRelease($"{osVersion.Major}.{osVersion.Minor}.{Math.Max(0, osVersion.Build)}")),
+                "macos" or "windows" => (osFamily, NormalizeRelease($"{osVersion.Major}.{osVersion.Minor}.{Math.Max(0, osVersion.Build)}")),
                 _ => ("other", UnknownLabel)
             };
         }
@@ -119,24 +116,6 @@ internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnv
         return Distributions.Contains(id)
             ? (id, NormalizeRelease(values.GetValueOrDefault("VERSION_ID")))
             : ("other", UnknownLabel);
-    }
-
-    /// <summary>Extracts macOS ProductVersion, without reading Darwin or device/build identifiers.</summary>
-    internal static string ParseMacOs(string text)
-    {
-        try
-        {
-            using var input = new StringReader(text);
-            using var reader = XmlReader.Create(input, new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, XmlResolver = null, MaxCharactersInDocument = 8192 });
-            var entries = XDocument.Load(reader).Root?.Element("dict")?.Elements().ToArray() ?? [];
-            var versions = entries.Where(x => x.Name == "key" && x.Value == "ProductVersion")
-                .Select(x => x.ElementsAfterSelf().FirstOrDefault()).ToArray();
-            return versions.Length == 1 && versions[0]?.Name == "string" ? NormalizeRelease(versions[0]?.Value) : UnknownLabel;
-        }
-        catch (Exception)
-        {
-            return UnknownLabel;
-        }
     }
 
     /// <summary>Limits OS release data to at most four bounded numeric components.</summary>

@@ -20,14 +20,6 @@ public class TelemetryRuntimeContextTests
     public void LinuxMetadataIsAllowlisted(string text, string distribution, string version) =>
         TelemetryRuntimeContextReader.ParseLinux(text).ShouldBe((distribution, version));
 
-    /// <summary>Uses Apple's product release without disclosing build labels or expanding external entities.</summary>
-    [TestCase("<plist><dict><key>ProductVersion</key><string>15.7.1</string><key>ProductBuildVersion</key><string>private</string></dict></plist>", "15.7.1")]
-    [TestCase("<!DOCTYPE plist PUBLIC 'public' 'https://example.invalid/private'><plist><dict><key>ProductVersion</key><string>26.0</string></dict></plist>", "26.0")]
-    [TestCase("<plist><dict><key>ProductVersion</key><string>private-host</string></dict></plist>", "unknown")]
-    [TestCase("<plist>", "unknown")]
-    public void MacOsUsesNumericProductVersion(string text, string expected) =>
-        TelemetryRuntimeContextReader.ParseMacOs(text).ShouldBe(expected);
-
     /// <summary>Reports the installed tool release, removing branch/SHA metadata and rejecting private prerelease labels.</summary>
     [TestCase("7.0.0+Branch.private.Sha.123", "7.0.0")]
     [TestCase("7.1.0-beta.12+Branch.release.Sha.123", "7.1.0-beta.12")]
@@ -85,14 +77,20 @@ public class TelemetryRuntimeContextTests
         fs.File.DidNotReceive().OpenText("/usr/lib/os-release");
     }
 
-    /// <summary>Reports numeric Windows major/minor/build without ambiguous marketing names or revision IDs.</summary>
-    [Test]
-    public void WindowsUsesNumericBuild()
+    /// <summary>Uses .NET's numeric OS version without reading release files or reporting revision identifiers.</summary>
+    [TestCase("macos", 15, 7, 1, "15.7.1")]
+    [TestCase("macos", 26, 0, -1, "26.0.0")]
+    [TestCase("macos", 27, 2, 0, "27.2.0")]
+    [TestCase("windows", 10, 0, 26100, "10.0.26100")]
+    [TestCase("windows", 10, 0, -1, "10.0.0")]
+    public void MacOsAndWindowsUseDotNetVersionWithoutReadingFiles(string os, int major, int minor, int build, string expected)
     {
-        var result = new TelemetryRuntimeContextReader(Substitute.For<IFileSystem>(), new TestEnvironment(),
-            "windows", new Version(10, 0, 26100, 1234)).Read();
-        result.Distribution.ShouldBe("windows");
-        result.OsVersion.ShouldBe("10.0.26100");
+        var fs = Substitute.For<IFileSystem>();
+        var version = build < 0 ? new Version(major, minor) : new Version(major, minor, build, 1234);
+        var result = new TelemetryRuntimeContextReader(fs, new TestEnvironment(), os, version).Read();
+        result.Distribution.ShouldBe(os);
+        result.OsVersion.ShouldBe(expected);
+        fs.ReceivedCalls().ShouldBeEmpty();
     }
 
     /// <summary>Provides disposable in-memory file contents to the injected filesystem.</summary>
