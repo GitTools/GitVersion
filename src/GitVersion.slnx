@@ -13,6 +13,8 @@
     <Project Path="GitVersion.LibGit2Sharp/GitVersion.LibGit2Sharp.csproj" />
     <Project Path="GitVersion.Output.Tests/GitVersion.Output.Tests.csproj" />
     <Project Path="GitVersion.Output/GitVersion.Output.csproj" />
+    <Project Path="GitVersion.Telemetry/GitVersion.Telemetry.csproj" />
+    <Project Path="GitVersion.Telemetry.Tests/GitVersion.Telemetry.Tests.csproj" />
   </Folder>
   <Folder Name="/root/">
     <File Path="../.editorconfig" />

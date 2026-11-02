@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Output;
+using GitVersion.Telemetry;
 using Serilog;
 using Serilog.Core;
 
@@ -35,6 +36,7 @@ internal static class CliHost
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionOutputModule());
+        services.AddModule(new GitVersionTelemetryModule(selections.ArgumentParser == ArgumentParserVersion.V6));
 
         services.AddModule(selections.GitBackend == GitBackend.Managed
             ? new GitVersionManagedGitModule()

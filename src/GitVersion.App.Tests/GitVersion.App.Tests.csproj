@@ -8,6 +8,7 @@
         <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.App\GitVersion.App.csproj" />
+        <ProjectReference Include="..\GitVersion.Telemetry\GitVersion.Telemetry.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Include="TestBuildFile.proj" />
@@ -19,6 +20,7 @@
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestConsoleAdapter.cs" Link="Helpers\TestConsoleAdapter.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+        <Compile Include="..\GitVersion.Telemetry.Tests\TelemetryTestDoubles.cs" Link="Helpers\TelemetryTestDoubles.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Extensions\GitVersionVariablesExtensions.cs" Link="Extensions\GitVersionVariablesExtensions.cs" />

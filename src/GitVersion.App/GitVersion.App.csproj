@@ -33,6 +33,7 @@
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
+        <ProjectReference Include="..\GitVersion.Telemetry\GitVersion.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup Label="MicrosoftExtensionsUsings">

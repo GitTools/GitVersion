@@ -18,6 +18,12 @@ See [Migration v6 to v7][migration-v6-to-v7] for upgrade guidance and the full a
 
 ## Help
 
+Optional POSIX CLI usage telemetry can be disabled with `--telemetry-opt-out`,
+`DO_NOT_TRACK=1`, or `GITVERSION_TELEMETRY_OPTOUT=true`. See [Telemetry][telemetry] for collection scope,
+sampling, privacy and the fixed campaign window.
+The first eligible direct run with a positive direct sampling probability, or the first selected automated
+run, links to the [Telemetry policy and collected data][telemetry-policy] on stderr.
+
 Below is the output from `gitversion --help` as a best effort to provide
 documentation for which arguments GitVersion supports and their meaning.
 
@@ -376,3 +382,7 @@ Will use only major and minor version numbers for assembly version. Assembly bui
 [configuration]: /docs/reference/configuration
 
 [cli-schema]: /docs/usage/cli/cli-schema
+
+[telemetry]: /docs/usage/cli/telemetry
+
+[telemetry-policy]: /docs/usage/cli/telemetry-policy

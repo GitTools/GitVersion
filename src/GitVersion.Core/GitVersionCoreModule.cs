@@ -11,6 +11,9 @@ public class GitVersionCoreModule : IGitVersionModule
     /// <summary>Registers all core services into the DI container.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton(Random.Shared);
+
         services.AddSingleton<IGitVersionCacheProvider, GitVersionCacheProvider>();
         services.AddSingleton<CacheConfigurationContentProvider>();
         services.AddSingleton<CacheRepositoryTargetProvider>();

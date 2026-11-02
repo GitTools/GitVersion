@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Telemetry\GitVersion.Telemetry.csproj" />
+        <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+    </ItemGroup>
+</Project>
