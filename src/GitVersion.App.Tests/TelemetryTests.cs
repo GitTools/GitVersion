@@ -10,6 +10,7 @@ using GitVersion.Helpers;
 using GitVersion.Telemetry;
 using GitVersion.Testing.Extensions;
 using GitVersion.Tests;
+using static GitVersion.Testing.Telemetry.TelemetryTestDoubles;
 
 namespace GitVersion.App.Tests;
 
@@ -35,27 +36,34 @@ public class TelemetryTests : TestBase
         calls.ShouldBe(0);
     }
 
-    /// <summary>Resolves production reporting without constructing runtime readers for an opted-out CLI invocation.</summary>
+    /// <summary>Resolves production services without reading runtime metadata for an opted-out CLI invocation.</summary>
     [Test]
     public async Task TelemetryModuleDefersRuntimeContextForOptedOutCli()
     {
-        var resolutions = 0;
+        var reads = 0;
+        var fileSystem = Substitute.For<IFileSystem>();
+        var environment = Substitute.For<IEnvironment>();
+        var reader = new TelemetryRuntimeContextReader(fileSystem, environment, "linux", new Version(1, 2), () =>
+        {
+            reads++;
+            return "7.0.0";
+        });
         var sp = ConfigureServices(services =>
         {
             services.AddModule(new GitVersionAppModule(["--telemetry-opt-out"]));
             services.AddModule(new GitVersionTelemetryModule());
-            services.AddSingleton<TelemetryRuntimeContextReader>(_ =>
-            {
-                resolutions++;
-                throw new InvalidOperationException("Runtime metadata must remain deferred");
-            });
+            services.AddSingleton<ITelemetryRuntimeContextReader>(reader);
         });
 
         var reporter = sp.GetRequiredService<ITelemetryReporter>();
         reporter.ShouldBeOfType<TelemetryReporter>();
-        resolutions.ShouldBe(0);
+        reads.ShouldBe(0);
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+        environment.ReceivedCalls().ShouldBeEmpty();
         await reporter.ReportAsync(CancellationToken.None);
-        resolutions.ShouldBe(0);
+        reads.ShouldBe(0);
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+        environment.ReceivedCalls().ShouldBeEmpty();
     }
 
     /// <summary>Verifies secrets and unknown values cannot escape through the payload envelope, dimensions, or options.</summary>
@@ -212,9 +220,12 @@ public class TelemetryTests : TestBase
     private static TelemetryReporter Reporter(Arguments? args = null, TestEnvironment? environment = null,
         TelemetryCampaign? campaign = null, Func<double>? random = null, Func<HttpClient>? createClient = null, Action<string>? notice = null,
         Func<ICurrentBuildAgent>? buildAgent = null, Func<TelemetryRuntimeContext>? runtimeContext = null) =>
-        new(TelemetryInvocationFactory.Create(args ?? new Arguments()), environment ?? new TestEnvironment(), campaign ?? Active,
-            new FixedClock(), buildAgent ?? (() => new LocalBuild(new TestEnvironment(), NullLogger<LocalBuild>.Instance, new FileSystem())),
-            random ?? (() => 0), createClient ?? (() => throw new InvalidOperationException("Unexpected transport")), notice ?? (_ => { }), runtimeContext);
+        new(environment ?? new TestEnvironment(),
+            new CallbackBuildAgentResolver(buildAgent ?? (() => new LocalBuild(new TestEnvironment(), NullLogger<LocalBuild>.Instance, new FileSystem()))),
+            new CallbackNotice(notice ?? (_ => { })), new CallbackRuntimeContextReader(runtimeContext ?? (() => TelemetryRuntimeContext.Unknown)),
+            new CallbackTransport(createClient ?? (() => throw new InvalidOperationException("Unexpected transport"))),
+            new FixedClock(), new CallbackRandom(random ?? (() => 0)),
+            TelemetryInvocationFactory.Create(args ?? new Arguments()), campaign ?? Active);
 
     /// <summary>Keeps campaign eligibility independent of the machine's current date.</summary>
     private sealed class FixedClock : TimeProvider

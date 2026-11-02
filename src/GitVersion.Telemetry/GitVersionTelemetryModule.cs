@@ -1,6 +1,3 @@
-using System.IO.Abstractions;
-using GitVersion.Agents;
-
 namespace GitVersion.Telemetry;
 
 /// <summary>Registers policy-controlled telemetry, with collection excluded for the legacy parser.</summary>
@@ -17,14 +14,9 @@ public class GitVersionTelemetryModule(bool useLegacyParser = false) : IGitVersi
             return;
         }
 
-        services.AddSingleton<TelemetryRuntimeContextReader>();
-        services.AddSingleton(sp => new TelemetryNotice(sp.GetRequiredService<IFileSystem>(),
-            () => SysEnv.GetFolderPath(SysEnv.SpecialFolder.LocalApplicationData), Console.Error.WriteLine));
-        services.AddSingleton<ITelemetryReporter>(sp => new TelemetryReporter(
-            sp.GetRequiredService<TelemetryInvocation>(), sp.GetRequiredService<IEnvironment>(),
-            sp.GetRequiredService<TelemetryCampaign>(), TimeProvider.System,
-            () => sp.GetRequiredService<ICurrentBuildAgent>(), Random.Shared.NextDouble,
-            TelemetryReporter.CreateClient, sp.GetRequiredService<TelemetryNotice>().Show,
-            () => sp.GetRequiredService<TelemetryRuntimeContextReader>().Read()));
+        services.AddSingleton<ITelemetryRuntimeContextReader, TelemetryRuntimeContextReader>();
+        services.AddSingleton<ITelemetryNotice, TelemetryNotice>();
+        services.AddSingleton<ITelemetryTransport, TelemetryTransport>();
+        services.AddSingleton<ITelemetryReporter, TelemetryReporter>();
     }
 }

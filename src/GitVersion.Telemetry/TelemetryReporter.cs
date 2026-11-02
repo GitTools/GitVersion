@@ -24,19 +24,19 @@ internal sealed class DisabledTelemetryReporter : ITelemetryReporter
 [method: SuppressMessage("Major Code Smell", "S107:Methods should not have too many parameters",
     Justification = "Explicit dependencies keep policy, clock, sampling, build-agent resolution, disclosure and transport independently testable.")]
 internal sealed class TelemetryReporter(
-    TelemetryInvocation invocation,
     IEnvironment environment,
-    TelemetryCampaign campaign,
+    IBuildAgentResolver buildAgentResolver,
+    ITelemetryNotice notice,
+    ITelemetryRuntimeContextReader runtimeContext,
+    ITelemetryTransport transport,
     TimeProvider clock,
-    Func<ICurrentBuildAgent> buildAgent,
-    Func<double> random,
-    Func<HttpClient> createClient,
-    Action<string> notice,
-    Func<TelemetryRuntimeContext>? runtimeContext = null) : ITelemetryReporter
+    Random random,
+    TelemetryInvocation invocation,
+    TelemetryCampaign campaign) : ITelemetryReporter
 {
     private const string OtherLabel = "other";
     private const string PolicyNotice = "GitVersion may send sampled CLI usage data to PostHog Cloud. Opt out with --telemetry-opt-out or DO_NOT_TRACK=1. Policy and collected data: https://gitversion.net/docs/usage/cli/telemetry-policy";
-    internal static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(1);
+    internal static readonly TimeSpan SendTimeout = TelemetryTransport.SendTimeout;
     private static readonly TimeSpan DirectSendTimeout = TimeSpan.FromMilliseconds(300);
     private int attempted;
     private static readonly IReadOnlyDictionary<string, string> AgentLabels = new Dictionary<string, string>(StringComparer.Ordinal)
@@ -74,7 +74,7 @@ internal sealed class TelemetryReporter(
                 return;
             }
 
-            var ci = ClassifyBuildAgent(buildAgent());
+            var ci = ClassifyBuildAgent(buildAgentResolver.Resolve());
             var caller = environment.GetEnvironmentVariable("GITVERSION_INTERNAL_CALLER")?.Trim();
             var msbuild = string.Equals(caller, "GitVersion.MsBuild", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(caller, "gitversion-msbuild", StringComparison.OrdinalIgnoreCase);
@@ -88,30 +88,29 @@ internal sealed class TelemetryReporter(
             // Direct runs disclose before sampling; ephemeral CI runs stay quiet unless selected.
             if (!automated)
             {
-                notice(PolicyNotice);
+                notice.Show(PolicyNotice);
             }
-            var draw = random();
+            var draw = random.NextDouble();
             if (!double.IsFinite(draw) || draw < 0 || draw >= probability)
             {
                 return;
             }
             if (automated)
             {
-                notice(PolicyNotice);
+                notice.Show(PolicyNotice);
             }
 
             var payload = CreatePayload(invocation, campaign.ProjectKey!, probability, ci, msbuild,
-                runtimeContext?.Invoke(), actions);
+                runtimeContext.Read(), actions);
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             timeout.CancelAfter(automated ? SendTimeout : DirectSendTimeout);
-            using var client = createClient();
             using var request = new HttpRequestMessage(HttpMethod.Post, campaign.Endpoint)
             {
                 Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
             };
             // Await one send before shutdown; don't read a response body, retry or queue to disk.
-            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token)
-                .WaitAsync(timeout.Token).ConfigureAwait(false);
+            await transport.SendAsync(request, timeout.Token)
+                .ConfigureAwait(false);
         }
         catch (Exception)
         {
@@ -182,13 +181,4 @@ internal sealed class TelemetryReporter(
         return OperatingSystem.IsMacOS() ? "macos" : OtherLabel;
     }
 
-    /// <summary>Creates a short-lived client with a bounded timeout and no redirects, cookies, or credentials.</summary>
-    internal static HttpClient CreateClient() => new(new SocketsHttpHandler
-    {
-        AllowAutoRedirect = false,
-        UseCookies = false,
-        Credentials = null,
-        ConnectTimeout = SendTimeout
-    })
-    { Timeout = SendTimeout };
 }

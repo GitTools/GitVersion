@@ -8,6 +8,7 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Telemetry;
 using GitVersion.Tests;
+using static GitVersion.Testing.Telemetry.TelemetryTestDoubles;
 
 namespace GitVersion.Telemetry.Tests;
 
@@ -84,7 +85,7 @@ public class TelemetryTests
                 services.AddModule(new GitVersionTelemetryModule());
                 services.AddSingleton(fileSystem);
             });
-            services.GetRequiredService<TelemetryNotice>().Show("Policy: https://gitversion.net/docs/usage/cli/telemetry-policy");
+            services.GetRequiredService<ITelemetryNotice>().Show("Policy: https://gitversion.net/docs/usage/cli/telemetry-policy");
             stdout.ToString().ShouldBeEmpty();
             stderr.ToString().ShouldBe("Policy: https://gitversion.net/docs/usage/cli/telemetry-policy" + System.Environment.NewLine);
         }
@@ -263,6 +264,75 @@ public class TelemetryTests
         environment.ReceivedCalls().ShouldBeEmpty();
     }
 
+    /// <summary>Constructs production services without performing deferred work for policy-rejected invocations.</summary>
+    [TestCase("disabled")]
+    [TestCase("optout")]
+    [TestCase("excluded")]
+    public async Task ProductionReporterDoesNoDeferredWorkForRejectedInvocation(string reason)
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var resolver = new GuardedBuildAgentResolver();
+        var effects = 0;
+        var clock = new FixedClock();
+        var sp = ConfigureServices(services =>
+        {
+            services.AddSingleton<TimeProvider>(clock);
+            services.AddModule(new GitVersionTelemetryModule());
+            services.AddSingleton(reason == "disabled" ? Active with { ProjectKey = null } : Active);
+            services.AddSingleton(fileSystem);
+            services.AddSingleton<IBuildAgentResolver>(resolver);
+            services.AddSingleton(new TelemetryInvocation(reason == "optout", reason == "excluded",
+                () => { effects++; return []; }, () => { effects++; return "7.0.0"; }));
+            services.AddSingleton<ITelemetryNotice>(new TelemetryNotice(fileSystem,
+                () => { effects++; return "/unused"; }, _ => effects++));
+        });
+
+        var reporter = sp.GetRequiredService<ITelemetryReporter>();
+        reporter.ShouldBeOfType<TelemetryReporter>();
+        sp.GetRequiredService<TimeProvider>().ShouldBeSameAs(clock);
+        effects.ShouldBe(0);
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+        resolver.Calls.ShouldBe(0);
+
+        await reporter.ReportAsync(CancellationToken.None);
+        effects.ShouldBe(0);
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+        resolver.Calls.ShouldBe(0);
+    }
+
+    /// <summary>Constructs the real resolver and agent services without detecting CI or reading files.</summary>
+    [Test]
+    public async Task ProductionReporterConstructionDoesNotDetectBuildAgents()
+    {
+        var environment = Substitute.For<IEnvironment>();
+        var fileSystem = Substitute.For<IFileSystem>();
+        var effects = 0;
+        var sp = ConfigureServices(services =>
+        {
+            services.AddModule(new GitVersionTelemetryModule());
+            services.AddSingleton(Active);
+            services.AddSingleton(environment);
+            services.AddSingleton(fileSystem);
+            services.AddSingleton(new TelemetryInvocation(true, false,
+                () => { effects++; return []; }, () => { effects++; throw new InvalidOperationException(); }));
+            services.AddSingleton<ITelemetryNotice>(new TelemetryNotice(fileSystem,
+                () => { effects++; throw new InvalidOperationException(); },
+                _ => { effects++; throw new IOException(); }));
+        });
+
+        var reporter = sp.GetRequiredService<ITelemetryReporter>();
+        reporter.ShouldBeOfType<TelemetryReporter>();
+        sp.GetRequiredService<TimeProvider>().ShouldBeSameAs(TimeProvider.System);
+        effects.ShouldBe(0);
+        environment.ReceivedCalls().ShouldBeEmpty();
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+
+        await reporter.ReportAsync(CancellationToken.None);
+        effects.ShouldBe(0);
+        environment.ReceivedCalls().ShouldBeEmpty();
+        fileSystem.ReceivedCalls().ShouldBeEmpty();
+    }
+
     /// <summary>Reads activation metadata from the extracted module rather than the CLI assembly.</summary>
     [Test]
     public void CampaignReadsMetadataFromTelemetryModule()
@@ -290,7 +360,7 @@ public class TelemetryTests
             }));
         });
 
-        var reader = sp.GetRequiredService<TelemetryRuntimeContextReader>();
+        var reader = sp.GetRequiredService<ITelemetryRuntimeContextReader>();
         reads.ShouldBe(0);
         reader.Read().GitVersionVersion.ShouldBe("7.2.3-beta.1");
         reads.ShouldBe(1);
@@ -639,7 +709,7 @@ public class TelemetryTests
     private static IServiceProvider ConfigureServices(Action<IServiceCollection>? configure = null)
     {
         var services = new ServiceCollection();
-        services.AddModule(new GitVersionCommonModule());
+        services.AddModule(new GitVersionCoreModule());
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddSingleton<IEnvironment, TestEnvironment>();
         services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
@@ -665,9 +735,25 @@ public class TelemetryTests
     private static TelemetryReporter Reporter(TelemetryInvocation? invocation = null, TestEnvironment? environment = null,
         TelemetryCampaign? campaign = null, Func<double>? random = null, Func<HttpClient>? createClient = null, Action<string>? notice = null,
         Func<ICurrentBuildAgent>? buildAgent = null, Func<TelemetryRuntimeContext>? runtimeContext = null) =>
-        new(invocation ?? new TelemetryInvocation(false, false, () => [], () => null), environment ?? new TestEnvironment(), campaign ?? Active,
-            new FixedClock(), buildAgent ?? (() => new LocalBuild(new TestEnvironment(), NullLogger<LocalBuild>.Instance, new FileSystem())),
-            random ?? (() => 0), createClient ?? (() => throw new InvalidOperationException("Unexpected transport")), notice ?? (_ => { }), runtimeContext);
+        new(environment ?? new TestEnvironment(),
+            new CallbackBuildAgentResolver(buildAgent ?? (() => new LocalBuild(new TestEnvironment(), NullLogger<LocalBuild>.Instance, new FileSystem()))),
+            new CallbackNotice(notice ?? (_ => { })), new CallbackRuntimeContextReader(runtimeContext ?? (() => TelemetryRuntimeContext.Unknown)),
+            new CallbackTransport(createClient ?? (() => throw new InvalidOperationException("Unexpected transport"))),
+            new FixedClock(), new CallbackRandom(random ?? (() => 0)),
+            invocation ?? new TelemetryInvocation(false, false, () => [], () => null), campaign ?? Active);
+
+    /// <summary>Detects forbidden early CI detection without permitting any transport path.</summary>
+    private sealed class GuardedBuildAgentResolver : IBuildAgentResolver
+    {
+        internal int Calls { get; private set; }
+
+        /// <summary>Records forbidden detection and fails before a sender could be created.</summary>
+        public ICurrentBuildAgent Resolve()
+        {
+            Calls++;
+            throw new InvalidOperationException("Build-agent detection must remain deferred");
+        }
+    }
 
     /// <summary>Keeps campaign eligibility independent of the machine's current date.</summary>
     private sealed class FixedClock : TimeProvider

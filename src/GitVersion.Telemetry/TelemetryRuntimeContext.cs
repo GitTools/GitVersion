@@ -14,13 +14,20 @@ internal sealed record TelemetryRuntimeContext(string Container, string Distribu
     internal static readonly TelemetryRuntimeContext Unknown = new(UnknownLabel, UnknownLabel, UnknownLabel, UnknownLabel);
 }
 
-/// <summary>Reads bounded public OS metadata only for selected, eligible telemetry events.</summary>
-internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string os, Version version,
-    Func<string?>? readToolVersion = null)
+/// <summary>Provides bounded public runtime metadata after disclosure and sampling.</summary>
+internal interface ITelemetryRuntimeContextReader
 {
-    /// <summary>Uses the current process OS when constructed by dependency injection.</summary>
+    /// <summary>Reads runtime dimensions only when the caller requests them.</summary>
+    TelemetryRuntimeContext Read();
+}
+
+/// <summary>Reads bounded public OS metadata only for selected, eligible telemetry events.</summary>
+internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, string? os, Version? version,
+    Func<string?>? readToolVersion = null) : ITelemetryRuntimeContextReader
+{
+    /// <summary>Defers current-process platform metadata until Read is called.</summary>
     public TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnvironment environment, TelemetryInvocation invocation)
-        : this(fileSystem, environment, TelemetryReporter.ClassifyOperatingSystem(), SysEnv.OSVersion.Version, invocation.ToolVersion)
+        : this(fileSystem, environment, null, null, invocation.ToolVersion)
     {
     }
 
@@ -32,21 +39,23 @@ internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnv
     };
 
     /// <summary>Returns independent container, userland OS release, and tool version dimensions.</summary>
-    internal TelemetryRuntimeContext Read()
+    public TelemetryRuntimeContext Read()
     {
-        var container = ReadContainer();
-        var (distribution, release) = ReadOperatingSystem();
+        var osFamily = os ?? TelemetryReporter.ClassifyOperatingSystem();
+        var osVersion = version ?? SysEnv.OSVersion.Version;
+        var container = ReadContainer(osFamily);
+        var (distribution, release) = ReadOperatingSystem(osFamily, osVersion);
         var toolVersion = NormalizeToolVersion(readToolVersion?.Invoke());
         return new(container, distribution, release, toolVersion);
     }
 
     /// <summary>Recognizes explicit image markers and conventional container hints without reading container IDs.</summary>
-    private string ReadContainer()
+    private string ReadContainer(string osFamily)
     {
         try
         {
             if (environment.GetEnvironmentVariable("GITVERSION_CONTAINER_KIND") == "docker" ||
-                os == "linux" && fileSystem.File.Exists("/.dockerenv"))
+                osFamily == "linux" && fileSystem.File.Exists("/.dockerenv"))
             {
                 return "docker";
             }
@@ -60,21 +69,21 @@ internal sealed class TelemetryRuntimeContextReader(IFileSystem fileSystem, IEnv
     }
 
     /// <summary>Reads the OS userland release; a container's host release is never inspected.</summary>
-    private (string Distribution, string Release) ReadOperatingSystem()
+    private (string Distribution, string Release) ReadOperatingSystem(string osFamily, Version osVersion)
     {
         try
         {
-            return os switch
+            return osFamily switch
             {
                 "linux" => ParseLinux(ReadBounded(fileSystem.File.Exists("/etc/os-release") ? "/etc/os-release" : "/usr/lib/os-release")),
                 "macos" => ("macos", ParseMacOs(ReadBounded("/System/Library/CoreServices/SystemVersion.plist"))),
-                "windows" => ("windows", NormalizeRelease($"{version.Major}.{version.Minor}.{Math.Max(0, version.Build)}")),
+                "windows" => ("windows", NormalizeRelease($"{osVersion.Major}.{osVersion.Minor}.{Math.Max(0, osVersion.Build)}")),
                 _ => ("other", UnknownLabel)
             };
         }
         catch (Exception)
         {
-            return (os is "macos" or "windows" ? os : UnknownLabel, UnknownLabel);
+            return (osFamily is "macos" or "windows" ? osFamily : UnknownLabel, UnknownLabel);
         }
     }
 
