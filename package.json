@@ -102,6 +102,8 @@
     "remark-validate-links": "13.1.0"
   },
   "overrides": {
+    "minimatch": "11.0.2",
+    "glob": "14.0.3",
     "got": "11.8.5",
     "unified-args": {
       "chokidar": "4.0.3"
