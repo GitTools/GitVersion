@@ -45,7 +45,9 @@ internal sealed class MergedMainlineIncrementer(IIncrementer incrementer) : IInc
     private static BaseVersion CalculateSourceVersion(MainlineIteration iteration, MainlineContext context)
     {
         // An ignored source tip must not be mistaken for its earlier released ancestor.
-        var tip = iteration.BranchedTo.NotNull().Parents[1];
+        var merge = iteration.BranchedTo.NotNull();
+        var tip = merge.Parents[iteration.Configuration.IsMainBranch != true
+            && iteration.ParentIteration is { } parent && iteration.BranchName == parent.BranchName ? 0 : 1];
         var configuration = context.GetEffectiveConfiguration(iteration);
         var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, tip);
         var sourceContext = context.CreateChildContext() with
