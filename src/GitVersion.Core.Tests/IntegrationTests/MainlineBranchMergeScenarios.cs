@@ -7,6 +7,36 @@ namespace GitVersion.Tests.IntegrationTests;
 [TestFixture]
 public class MainlineBranchMergeScenarios : TestBase
 {
+    [TestCase(true, "2.0.0", "None")]
+    [TestCase(false, "2.0.1", "Patch")]
+    public void InheritedMainlineSwapUsesTheReleasedFirstParent(
+        bool preventTaggedIncrement, string expected, string expectedIncrement)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("production/live");
+        var releasedTip = fixture.MakeATaggedCommit("2.0.0");
+        fixture.Checkout(MainBranch);
+        fixture.MakeATaggedCommit("1.1.0");
+        fixture.Checkout("production/live");
+        fixture.MergeNoFF(MainBranch);
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersionStrategies(VersionStrategies.Mainline)
+            .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+            .WithIsMainBranch(true)
+            .WithBranch("unknown", b => b.WithRegularExpression("^production/")
+                .WithIsMainBranch(null).WithIncrement(IncrementStrategy.Inherit).WithLabel("")
+                .WithDeploymentMode(DeploymentMode.ContinuousDeployment)
+                .WithPreventIncrementWhenCurrentCommitTagged(preventTaggedIncrement))
+            .Build();
+
+        var version = fixture.GetVersion(configuration);
+
+        fixture.AssertFullSemver(expected, configuration);
+        version.SemVerSourceSha.ShouldBe(releasedTip);
+        version.SemVerSourceIncrement.ShouldBe(expectedIncrement);
+    }
+
     [Test]
     public void StackedMergeKeepsTaggedMainlineVersionWhenNamedBranchIsRemoved()
     {
