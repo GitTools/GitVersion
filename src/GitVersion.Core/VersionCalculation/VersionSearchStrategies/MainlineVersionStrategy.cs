@@ -22,10 +22,22 @@ internal sealed class MainlineVersionStrategy(
             yield break;
         }
 
-        var targetLabel = configuration.Value.GetBranchSpecificLabel(context.CurrentBranch.Name, null, environment, context.CurrentCommit);
-        var iteration = new MainlineIterationBuilder(contextLazy, repositoryStore, taggedSemanticVersionService, environment)
-            .BuildIteration(configuration.Branch, targetLabel);
-        yield return MainlineVersionCalculator.DetermineBaseVersion(
-            iteration, targetLabel, incrementStrategyFinder, context.Configuration, environment, context.CurrentCommit);
+        var targetLabel = configuration.Value.GetBranchSpecificLabel(
+            context.CurrentBranch.Name, null, environment, context.CurrentCommit
+        );
+        MainlineIterationBuilder iterationBuilder = new(
+            contextLazy, repositoryStore, taggedSemanticVersionService, environment
+        );
+        var iteration = iterationBuilder.BuildIteration(configuration.Branch, targetLabel);
+
+        MainlineBranchPointResolver branchPointResolver = new(iteration);
+        MainlineConfigurationResolver configurationResolver = new(context.Configuration, branchPointResolver);
+        MainlineHistory history = new(
+            context.Configuration, environment, context.CurrentCommit, branchPointResolver, configurationResolver
+        );
+        MainlineVersionCalculator versionCalculator = new(
+            incrementStrategyFinder, branchPointResolver, configurationResolver, history
+        );
+        yield return versionCalculator.DetermineBaseVersion(iteration, targetLabel);
     }
 }

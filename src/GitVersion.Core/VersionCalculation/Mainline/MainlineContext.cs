@@ -4,37 +4,36 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder, IGitVersionConfiguration Configuration, IEnvironment Environment, ICommit CurrentCommit)
+internal record MainlineContext(MainlineVersionCalculator Calculator)
 {
-    public IIncrementStrategyFinder IncrementStrategyFinder { get; } = IncrementStrategyFinder.NotNull();
+    internal MainlineVersionCalculator Calculator { get; } = Calculator.NotNull();
 
-    public IGitVersionConfiguration Configuration { get; } = Configuration.NotNull();
+    public IIncrementStrategyFinder IncrementStrategyFinder => Calculator.IncrementStrategyFinder;
 
-    public IEnvironment Environment { get; } = Environment.NotNull();
+    public IGitVersionConfiguration Configuration => Calculator.History.Configuration;
+
+    public IEnvironment Environment => Calculator.History.Environment;
 
     // Keep the calculation commit unchanged while traversing ancestors and merged branches.
-    public ICommit CurrentCommit { get; } = CurrentCommit.NotNull();
+    public ICommit CurrentCommit => Calculator.History.CurrentCommit;
 
     public string? TargetLabel { get; init; }
 
-    internal MainlineVersionCalculator? Calculator { get; set; }
+    public MainlineBranchPointResolver BranchPointResolver => Calculator.BranchPointResolver;
 
-    public MainlineBranchPointResolver? BranchPointResolver { get; set; }
-
-    internal MainlineConfigurationResolver GetConfigurationResolver(MainlineIteration iteration)
-        => MainlineVersionCalculator.GetOrCreate(iteration, this).ConfigurationResolver;
+    internal MainlineConfigurationResolver ConfigurationResolver => Calculator.ConfigurationResolver;
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
-        => GetConfigurationResolver(iteration).GetEffectiveConfiguration(iteration);
+        => ConfigurationResolver.GetEffectiveConfiguration(iteration);
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
-        => GetConfigurationResolver(commit.Iteration).GetEffectiveConfiguration(commit);
+        => ConfigurationResolver.GetEffectiveConfiguration(commit);
 
     public bool IsMergedMainline(MainlineCommit commit)
-        => GetConfigurationResolver(commit.Iteration).IsMergedMainline(commit);
+        => ConfigurationResolver.IsMergedMainline(commit);
 
     public VersionField GetIncrementForcedByBranch(MainlineCommit commit)
-        => GetConfigurationResolver(commit.Iteration).GetIncrementForcedByBranch(commit);
+        => ConfigurationResolver.GetIncrementForcedByBranch(commit);
 
     // Independent source calculations also need side histories stored in other iterations.
     public bool IncludeSharedHistory { get; init; }
@@ -45,23 +44,26 @@ internal record MainlineContext(IIncrementStrategyFinder IncrementStrategyFinder
         {
             return true;
         }
-        var history = MainlineVersionCalculator.GetOrCreate(commit.Iteration, this).History;
         return commit.ChildIteration is { } child
             && (commit.HasChildIteration || IncludeSharedHistory && child.BranchedFrom is not null)
-            && history.Select(child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory).Commits.Length > 0;
+            && Calculator.History.Select(
+                child, TargetLabel, false, includeSharedHistory: IncludeSharedHistory
+            ).Commits.Length > 0;
     }
 
     public MainlineContext CreateChildContext()
-        => new(IncrementStrategyFinder, Configuration, Environment, CurrentCommit)
+        => new(Calculator)
         {
             TargetLabel = TargetLabel,
-            Calculator = Calculator,
-            BranchPointResolver = BranchPointResolver,
             IncludeSharedHistory = IncludeSharedHistory,
             MainlineVersions = MainlineVersions
         };
 
     public Dictionary<MainlineIteration, BaseVersion> MainlineVersions { get; init; } = [];
+
+    internal MainlineIncrementState Increments { get; } = new();
+
+    internal bool IsMainlineMerge { get; set; }
 
     public MainlineCommit? Predecessor { get; set; }
 

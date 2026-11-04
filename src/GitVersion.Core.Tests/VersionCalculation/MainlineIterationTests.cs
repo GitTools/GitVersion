@@ -106,9 +106,9 @@ public class MainlineIterationTests
         shared.AddSemanticVersions(new SemanticVersion(2, 0, 0));
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, receiver, shared.Value, merge.Value);
         merge.AddChildIteration(source);
-        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), mergeValue);
+        var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), mergeValue);
 
-        var version = MainlineVersionCalculator.GetMergedMainlineVersion(source, context);
+        var version = MergedMainlineIncrementer.GetSourceVersion(source, context);
 
         source.Commits.ShouldBeEmpty();
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -166,12 +166,12 @@ public class MainlineIterationTests
         var source = new MainlineIteration("source", new("refs/heads/support/source"), sourceBranch, root, branchPointValue, mergeValue);
         merge.AddChildIteration(source);
 
-        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), mergeValue);
+        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), mergeValue);
         var effective = context.GetEffectiveConfiguration(source);
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        var version = MainlineVersionCalculator.GetMergedMainlineVersion(source, context);
+        var version = MergedMainlineIncrementer.GetSourceVersion(source, context);
         version.SemanticVersion.ShouldBe(taggedVersion);
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.2");
         version.BaseVersionSource.ShouldBeSameAs(branchPointValue);
@@ -192,8 +192,8 @@ public class MainlineIterationTests
         var initial = receiver.CreateCommit(CreateCommit(), receiver.BranchName, branch);
         initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
 
-        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(receiver, "", Substitute.For<IIncrementStrategyFinder>(),
-            configuration, new TestEnvironment(), merge.Value);
+        var version = MainlineTestCalculation.Calculator(receiver, configuration, new TestEnvironment(), merge.Value)
+            .DetermineBaseVersion(receiver, "");
 
         new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(merge.Iteration)).IsMergedMainline(merge).ShouldBeFalse();
         version.GetIncrementedVersion().Patch.ShouldBe(1);
@@ -215,8 +215,8 @@ public class MainlineIterationTests
         source.CreateCommit(tip, source.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         merge.AddChildIteration(source);
 
-        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(receiver, "", Substitute.For<IIncrementStrategyFinder>(),
-            configuration, new TestEnvironment(), mergeValue);
+        var version = MainlineTestCalculation.Calculator(receiver, configuration, new TestEnvironment(), mergeValue)
+            .DetermineBaseVersion(receiver, "");
 
         version.GetIncrementedVersion().Major.ShouldBe(2);
         version.BaseVersionSource.ShouldBeSameAs(mergeValue);
@@ -237,17 +237,47 @@ public class MainlineIterationTests
         first.CreateCommit(tip, first.BranchName, branch).AddSemanticVersions(new SemanticVersion(2, 0, 0));
         var second = new MainlineIteration("second", first.BranchName, branch, receiver, receiverTip, merge.Value);
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
-        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), tip);
+        var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), tip);
 
-        var firstVersion = MainlineVersionCalculator.GetMergedMainlineVersion(first, context);
-        var secondVersion = MainlineVersionCalculator.GetMergedMainlineVersion(second, context);
+        var firstVersion = MergedMainlineIncrementer.GetSourceVersion(first, context);
+        var secondVersion = MergedMainlineIncrementer.GetSourceVersion(second, context);
 
         firstVersion.GetIncrementedVersion().Major.ShouldBe(2);
         secondVersion.GetIncrementedVersion().Major.ShouldBe(3);
         context.MainlineVersions.Count.ShouldBe(2);
-        MainlineVersionCalculator.GetMergedMainlineVersion(first, context).ShouldBeSameAs(firstVersion);
+        MergedMainlineIncrementer.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
         context.MainlineVersions.Count.ShouldBe(2);
     }
+    [Test]
+    public void MainlineMergeAtInheritedBranchBoundaryPreservesBothOperators()
+    {
+        var mainline = new BranchConfiguration { Increment = IncrementStrategy.Patch, IsMainBranch = true, Label = "" };
+        var inherited = new BranchConfiguration { Increment = IncrementStrategy.Inherit, IsMainBranch = false, Label = "feature" };
+        var configuration = GitFlowConfigurationBuilder.New.WithVersionStrategies(VersionStrategies.Mainline).Build();
+        var initialValue = CreateCommit();
+        var sourceValue = CreateCommit();
+        sourceValue.Parents.Returns([initialValue]);
+        var mergeValue = CreateCommit();
+        mergeValue.Parents.Returns([initialValue, sourceValue]);
+        var root = new MainlineIteration("feature", new("refs/heads/feature/current"), inherited, null, null, null);
+        var mainBranch = new ReferenceName("refs/heads/main");
+        var merge = root.CreateCommit(mergeValue, mainBranch, mainline);
+        var initial = root.CreateCommit(initialValue, mainBranch, mainline);
+        initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
+        var source = new MainlineIteration("source", new("refs/heads/support/source"), mainline,
+            root, initialValue, mergeValue);
+        source.CreateCommit(sourceValue, source.BranchName, mainline).AddSemanticVersions(new SemanticVersion(2, 0, 0));
+        merge.AddChildIteration(source);
+        var calculator = MainlineTestCalculation.Calculator(root, configuration, new TestEnvironment(), mergeValue);
+
+        var version = calculator.DetermineBaseVersion(root, "");
+
+        version.GetIncrementedVersion().ToString().ShouldBe("2.0.1-feature.1");
+        version.BaseVersionSource.ShouldBeSameAs(mergeValue);
+        version.GetSemVerSource().Commit.ShouldBeSameAs(sourceValue);
+        version.GetSemVerSource().Increment.ShouldBe(VersionField.Patch);
+    }
+
     private static ICommit CreateCommit()
     {
         var commit = GitRepositoryTestingExtensions.CreateMockCommit();

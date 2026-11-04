@@ -7,10 +7,16 @@ namespace GitVersion.VersionCalculation.Mainline;
 // Selects calculation history without changing the recorded iteration graph.
 internal sealed class MainlineHistory(
     IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-    MainlineBranchPointResolver? branchPointResolver = null, MainlineConfigurationResolver? configurationResolver = null)
+    MainlineBranchPointResolver branchPointResolver, MainlineConfigurationResolver configurationResolver)
 {
-    private MainlineBranchPointResolver? branchPointResolver = branchPointResolver;
-    private MainlineConfigurationResolver? configurationResolver = configurationResolver;
+    private readonly MainlineBranchPointResolver branchPointResolver = branchPointResolver.NotNull();
+    private readonly MainlineConfigurationResolver configurationResolver = configurationResolver.NotNull();
+
+    internal IGitVersionConfiguration Configuration { get; } = configuration.NotNull();
+
+    internal IEnvironment Environment { get; } = environment.NotNull();
+
+    internal ICommit CurrentCommit { get; } = currentCommit.NotNull();
 
     private readonly Dictionary<ICommit, ICommit[]> unignoredCache = [];
 
@@ -19,8 +25,6 @@ internal sealed class MainlineHistory(
     internal Selection Select(MainlineIteration iteration, string? targetLabel, bool includeAncestry,
         MainlineCommit? tip = null, bool includeSharedHistory = false)
     {
-        this.branchPointResolver ??= new MainlineBranchPointResolver(iteration);
-        this.configurationResolver ??= new MainlineConfigurationResolver(configuration, this.branchPointResolver);
         List<MainlineCommit> commits = [];
         if (SelectLocal(iteration, targetLabel, includeAncestry, tip, commits, includeSharedHistory) is { } selection)
         {
@@ -47,7 +51,8 @@ internal sealed class MainlineHistory(
         MainlineCommit? tip, List<MainlineCommit> commits, bool includeSharedHistory)
     {
         var foundTag = false;
-        foreach (var (recorded, missing) in GetCommits(iteration, targetLabel, includeAncestry, tip, includeSharedHistory))
+        foreach (var (recorded, missing) in GetCommits(
+                     iteration, targetLabel, includeAncestry, tip, includeSharedHistory))
         {
             if (recorded is not { } commit)
             {
@@ -71,7 +76,7 @@ internal sealed class MainlineHistory(
     private Selection? SelectChild(MainlineCommit commit, string? targetLabel, bool includeSharedHistory)
     {
         if (commit.ChildIteration is not { } child
-            || this.configurationResolver!.IsMergedMainline(commit))
+            || this.configurationResolver.IsMergedMainline(commit))
         {
             return null;
         }
@@ -83,7 +88,8 @@ internal sealed class MainlineHistory(
         => new([.. commits.AsEnumerable().Reverse()], hasBoundary, missing);
 
     private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetCommits(
-        MainlineIteration iteration, string? targetLabel, bool includeAncestry, MainlineCommit? tip, bool includeSharedHistory)
+        MainlineIteration iteration, string? targetLabel, bool includeAncestry,
+        MainlineCommit? tip, bool includeSharedHistory)
     {
         if (UsesBranchHistory(iteration, includeSharedHistory))
         {
@@ -97,7 +103,7 @@ internal sealed class MainlineHistory(
     {
         foreach (var commit in MainlineBranchPointResolver.GetLocalCommitsInReverseOrder(iteration, tip))
         {
-            if (configuration.Ignore.IsEmpty || configuration.Ignore.Filter([commit.Value]).Any())
+            if (Configuration.Ignore.IsEmpty || Configuration.Ignore.Filter([commit.Value]).Any())
             {
                 yield return (commit, null);
             }
@@ -149,7 +155,7 @@ internal sealed class MainlineHistory(
             {
                 continue;
             }
-            var recorded = this.branchPointResolver!.FindCommit(iteration, current);
+            var recorded = this.branchPointResolver.FindCommit(iteration, current);
             // Recognized sources have their own calculation. Untracked merges
             // retain their flattened history, including both parents.
             ICommit[] parents = [];
@@ -206,8 +212,8 @@ internal sealed class MainlineHistory(
     }
 
     private string? GetBranchSpecificLabel(MainlineCommit commit)
-        => this.configurationResolver!.GetOwnConfiguration(commit)
-            .GetBranchSpecificLabel(commit.BranchName, null, environment, currentCommit);
+        => this.configurationResolver.GetOwnConfiguration(commit)
+            .GetBranchSpecificLabel(commit.BranchName, null, Environment, CurrentCommit);
 
     private static ICommit? GetTip(MainlineIteration iteration, bool includeAncestry, MainlineCommit? tip)
     {
@@ -247,7 +253,7 @@ internal sealed class MainlineHistory(
             {
                 continue;
             }
-            if (configuration.Ignore.Filter([current]).Any())
+            if (Configuration.Ignore.Filter([current]).Any())
             {
                 yield return current;
                 continue;
