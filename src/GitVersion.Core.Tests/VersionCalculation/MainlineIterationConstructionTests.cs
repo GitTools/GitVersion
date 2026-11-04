@@ -52,7 +52,8 @@ public class MainlineIterationConstructionTests
         iteration.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, ignoredReceiver, receiverTip, mergeSha]);
         var resolver = new MainlineBranchPointResolver(iteration);
         resolver.Resolve(source).ShouldBeSameAs(iteration.FindCommit(source.BranchedFrom));
-        var selected = new MainlineHistory(configuration, environment, context.Value.CurrentCommit, resolver)
+        var selected = MainlineTestCalculation.History(
+            iteration, configuration, environment, context.Value.CurrentCommit, resolver)
             .Select(iteration, "", false);
         selected.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, receiverTip, mergeSha]);
         selected.HasBoundary.ShouldBeTrue();
@@ -314,8 +315,9 @@ public class MainlineIterationConstructionTests
             .GetBranchSpecificLabel(repository.Head.Name, null, environment, context.Value.CurrentCommit);
         var iteration = builder.BuildIteration(repository.Head, label);
         var constructionCalls = store.ReceivedCalls().ToArray();
-        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
-            configuration, environment, context.Value.CurrentCommit);
+        var version = MainlineTestCalculation.Calculator(
+            iteration, configuration, environment, context.Value.CurrentCommit, finder)
+            .DetermineBaseVersion(iteration, label);
 
         store.ReceivedCalls().ShouldBe(constructionCalls);
         version.GetIncrementedVersion().Patch.ShouldBe(expectedPatch);
@@ -381,8 +383,9 @@ public class MainlineIterationConstructionTests
         var iteration = builder.BuildIteration(repository.Head, label);
         iteration.Commits.ShouldContain(commit => commit.Value.Sha == oldMerge);
         var recordedHistory = iteration.Commits.ToArray();
-        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
-            configuration, environment, context.Value.CurrentCommit).GetIncrementedVersion();
+        var version = MainlineTestCalculation.Calculator(
+            iteration, configuration, environment, context.Value.CurrentCommit, finder)
+            .DetermineBaseVersion(iteration, label).GetIncrementedVersion();
 
         version.Major.ShouldBe(2);
         version.Minor.ShouldBe(1);
@@ -511,8 +514,9 @@ public class MainlineIterationConstructionTests
         var receiverHistory = iteration.Commits.ToArray();
         var sourceHistory = child.Commits.ToArray();
 
-        var version = MainlineVersionCalculator.DetermineBaseVersionRecursive(iteration, label, finder,
-            configuration, environment, context.Value.CurrentCommit);
+        var version = MainlineTestCalculation.Calculator(
+            iteration, configuration, environment, context.Value.CurrentCommit, finder)
+            .DetermineBaseVersion(iteration, label);
 
         iteration.Commits.ShouldBe(receiverHistory);
         child.Commits.ShouldBe(sourceHistory);

@@ -20,7 +20,7 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionCalculator.GetOrCreate(iteration, context).CalculateBaseVersion(
+            var baseVersion = context.Calculator.CalculateBaseVersion(
                 commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;
@@ -31,7 +31,8 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
         }
     }
 
-    private static VersionField ConsolidateIncrement(MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
+    private static VersionField ConsolidateIncrement(
+        MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
     {
         var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
         var increment = VersionField.None;
@@ -66,14 +67,16 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 
         if (baseVersion.SemanticVersion != SemanticVersion.Empty)
         {
-            context.AddAlternativeSemanticVersion(baseVersion.SemanticVersion, baseVersion.GetBaselineSemVerSource() with { Increment = VersionField.None });
+            context.AddAlternativeSemanticVersion(baseVersion.SemanticVersion,
+                baseVersion.GetBaselineSemVerSource() with { Increment = VersionField.None });
         }
 
         if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
         {
             context.AddAlternativeSemanticVersion(baseVersion.Operator.AlternativeSemanticVersion,
                 baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
-                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion, null, VersionField.None));
+                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion,
+                    null, VersionField.None));
         }
     }
 }

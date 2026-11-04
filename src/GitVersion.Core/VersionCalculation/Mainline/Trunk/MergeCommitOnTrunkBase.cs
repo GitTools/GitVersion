@@ -20,7 +20,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionCalculator.GetOrCreate(iteration, context).CalculateBaseVersion(
+            var baseVersion = context.Calculator.CalculateBaseVersion(
                 commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;
@@ -37,7 +37,8 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
                 increment = increment.Consolidate(baseVersion.Operator?.Increment);
             }
 
-            if (context.GetEffectiveConfiguration(commit).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+            if (context.GetEffectiveConfiguration(commit).CommitMessageIncrementing
+                != CommitMessageIncrementMode.Disabled)
             {
                 increment = increment.Consolidate(context.CommitIncrement);
             }
@@ -53,8 +54,9 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
             else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
             {
                 context.AddAlternativeSemanticVersion(baseVersion.Operator.AlternativeSemanticVersion,
-                baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
-                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion, null, VersionField.None));
+                    baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
+                        "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion,
+                        null, VersionField.None));
             }
 
             if (context.SemanticVersion is not null)

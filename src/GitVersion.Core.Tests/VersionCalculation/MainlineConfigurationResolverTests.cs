@@ -183,7 +183,7 @@ public class MainlineConfigurationResolverTests
         var root = Iteration("root", branch);
         var commit = root.CreateCommit(Commit(), root.BranchName, branch);
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var context = new MainlineContext(Substitute.For<IIncrementStrategyFinder>(), configuration, new TestEnvironment(), commit.Value)
+        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), commit.Value) with
         {
             TargetLabel = "target",
             IncludeSharedHistory = true,
@@ -196,12 +196,12 @@ public class MainlineConfigurationResolverTests
             HasSuccessor = true
         };
         context.AddAlternativeSemanticVersion(new SemanticVersion(3, 1, 0), context.SemVerSource);
-        var resolver = context.GetConfigurationResolver(root);
+        var resolver = context.ConfigurationResolver;
         var effective = context.GetEffectiveConfiguration(commit);
 
         var child = context.CreateChildContext();
 
-        child.GetConfigurationResolver(root).ShouldBeSameAs(resolver);
+        child.ConfigurationResolver.ShouldBeSameAs(resolver);
         child.BranchPointResolver.ShouldBeSameAs(context.BranchPointResolver);
         child.GetEffectiveConfiguration(commit).ShouldBeSameAs(effective);
         child.MainlineVersions.ShouldBeSameAs(context.MainlineVersions);
