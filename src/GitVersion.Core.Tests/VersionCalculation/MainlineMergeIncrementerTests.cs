@@ -129,6 +129,9 @@ public class MainlineMergeIncrementerTests
         result.Length.ShouldBe(1);
         result[0].ShouldBeSameAs(item);
         inner.IncrementCalls.ShouldBe(1);
+        inner.LastIteration.ShouldBeSameAs(fixture.Root);
+        inner.LastCommit.ShouldBeSameAs(fixture.Merge);
+        inner.LastContext.ShouldBeSameAs(fixture.Context);
         fixture.Context.MainlineVersions.ShouldBeEmpty();
     }
 
@@ -297,6 +300,9 @@ public class MainlineMergeIncrementerTests
             MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         {
             IncrementCalls++;
+            LastIteration = iteration;
+            LastCommit = commit;
+            LastContext = context;
             return increments;
         }
     }
