@@ -193,6 +193,26 @@ public class MainlineMergeIncrementerTests
         fixture.Context.Increments.Version.ShouldNotBeNull().SemanticVersion.Major.ShouldBe(9);
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void SourceLabelUsesTheHistorySelectedParent(bool swapped)
+    {
+        var fixture = Fixture(label: "ci.{Sha}", swapped: swapped);
+        var sourceLabel = "ci." + fixture.SourceValue.Sha;
+        var otherTip = fixture.Merge.Value.Parents[swapped ? 1 : 0];
+        var otherLabel = "ci." + otherTip.Sha;
+        fixture.Source.Commits.Single().AddSemanticVersions(
+            SemanticVersion.Parse($"2.0.0-{sourceLabel}.4", null),
+            SemanticVersion.Parse($"2.0.0-{otherLabel}.4", null));
+        fixture.Context.IsMainlineMerge.ShouldBeTrue();
+
+        var result = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
+
+        result.Operand.SemanticVersion.PreReleaseTag.Name.ShouldBe(sourceLabel);
+        result.Operand.BaseVersionSource.ShouldBeSameAs(fixture.SourceValue);
+        fixture.Context.TargetLabel.ShouldBe("receiver");
+    }
+
     [Test]
     public void MergeEligibilityIsResetForEachCommit()
     {
@@ -239,13 +259,13 @@ public class MainlineMergeIncrementerTests
     }
 
     private static MergeFixture Fixture(bool inherit = false, bool preventSource = false, bool attachChild = true,
-        bool preventTaggedIncrement = true, string label = "")
+        bool preventTaggedIncrement = true, string label = "", bool swapped = false)
     {
         var branch = new BranchConfiguration { Increment = IncrementStrategy.Patch, IsMainBranch = true, Label = "" };
         var sourceBranch = new BranchConfiguration
         {
-            Increment = inherit ? IncrementStrategy.Inherit : IncrementStrategy.Patch,
-            IsMainBranch = true,
+            Increment = inherit || swapped ? IncrementStrategy.Inherit : IncrementStrategy.Patch,
+            IsMainBranch = swapped ? null : true,
             Label = label,
             PreventIncrement = new()
             {
@@ -258,10 +278,11 @@ public class MainlineMergeIncrementerTests
         var sourceValue = Commit();
         sourceValue.Parents.Returns([initialValue]);
         var mergeValue = Commit();
-        mergeValue.Parents.Returns([initialValue, sourceValue]);
+        mergeValue.Parents.Returns(swapped ? [sourceValue, initialValue] : [initialValue, sourceValue]);
         var merge = root.CreateCommit(mergeValue, root.BranchName, branch);
         root.CreateCommit(initialValue, root.BranchName, branch).AddSemanticVersions(new SemanticVersion(1, 0, 0));
-        var source = new MainlineIteration("source", new("refs/heads/support/source"), sourceBranch,
+        var sourceBranchName = swapped ? root.BranchName : new ReferenceName("refs/heads/support/source");
+        var source = new MainlineIteration("source", sourceBranchName, sourceBranch,
             root, initialValue, mergeValue);
         source.CreateCommit(sourceValue, source.BranchName, sourceBranch)
             .AddSemanticVersions(SemanticVersion.Parse(label == "" ? "2.0.0" : "2.0.0-beta.4", null));
