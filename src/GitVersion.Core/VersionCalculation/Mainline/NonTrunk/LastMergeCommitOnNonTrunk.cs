@@ -7,7 +7,7 @@ internal sealed class LastMergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
     // | B  56 minutes ago  (feature/foo)
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
