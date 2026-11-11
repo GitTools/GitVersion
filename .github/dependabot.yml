@@ -11,9 +11,8 @@ updates:
       interval: cron
       cronjob: "0 12 * * *"
     cooldown:
-      semver-major-days: 7
-      semver-minor-days: 3
-      semver-patch-days: 0
+      exclude:
+        - "*"
   - package-ecosystem: nuget
     milestone: 51 # Corresponds to 7.x
     labels:
@@ -85,6 +84,9 @@ updates:
       semver-major-days: 7
       semver-minor-days: 3
       semver-patch-days: 0
+      exclude:
+        - "Microsoft.*"
+        - "System.*"
     open-pull-requests-limit: 10
 
   - package-ecosystem: github-actions
