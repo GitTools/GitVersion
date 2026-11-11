@@ -7,9 +7,9 @@ namespace GitVersion.VersionCalculation.Mainline;
 // Selects calculation history without changing the recorded iteration graph.
 internal sealed class MainlineHistory(
     IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-    MainlineBranchPointResolver branchPointResolver, MainlineConfigurationResolver configurationResolver)
+    IMainlineCommitResolver commitResolver, MainlineConfigurationResolver configurationResolver)
 {
-    private readonly MainlineBranchPointResolver branchPointResolver = branchPointResolver.NotNull();
+    private readonly IMainlineCommitResolver commitResolver = commitResolver.NotNull();
     private readonly MainlineConfigurationResolver configurationResolver = configurationResolver.NotNull();
 
     internal IGitVersionConfiguration Configuration { get; } = configuration.NotNull();
@@ -36,7 +36,7 @@ internal sealed class MainlineHistory(
         {
             return Result(commits, false);
         }
-        if (this.branchPointResolver.Resolve(iteration) is not { } branchPoint)
+        if (this.commitResolver.Resolve(iteration, iteration.BranchedFrom) is not { } branchPoint)
         {
             return Result(commits, false, iteration.BranchedFrom);
         }
@@ -101,7 +101,7 @@ internal sealed class MainlineHistory(
     private IEnumerable<(MainlineCommit? Commit, ICommit? Missing)> GetIterationCommits(
         MainlineIteration iteration, string? targetLabel, MainlineCommit? tip, bool includeSharedHistory)
     {
-        foreach (var commit in MainlineBranchPointResolver.GetLocalCommitsInReverseOrder(iteration, tip))
+        foreach (var commit in GetLocalCommitsInReverseOrder(iteration, tip))
         {
             if (Configuration.Ignore.IsEmpty || Configuration.Ignore.Filter([commit.Value]).Any())
             {
@@ -115,6 +115,16 @@ internal sealed class MainlineHistory(
                     yield return source;
                 }
             }
+        }
+    }
+
+    private static IEnumerable<MainlineCommit> GetLocalCommitsInReverseOrder(MainlineIteration iteration, MainlineCommit? tip)
+    {
+        var commit = tip ?? iteration.Commits.LastOrDefault();
+        while (commit is not null)
+        {
+            yield return commit;
+            commit = commit.Predecessor;
         }
     }
 
@@ -155,7 +165,7 @@ internal sealed class MainlineHistory(
             {
                 continue;
             }
-            var recorded = this.branchPointResolver.FindCommit(iteration, current);
+            var recorded = this.commitResolver.Resolve(iteration, current);
             // Recognized sources have their own calculation. Untracked merges
             // retain their flattened history, including both parents.
             ICommit[] parents = [];

@@ -82,12 +82,12 @@ public class MainlineHistoryTests
         var initial = iteration.CreateCommit(initialValue, iteration.BranchName, branch);
         initial.AddSemanticVersions(new SemanticVersion(1, 0, 0));
         var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(new IgnoreConfiguration { Before = cutoff }).Build();
-        var branchPointResolver = new MainlineBranchPointResolver(iteration);
-        var configurationResolver = new MainlineConfigurationResolver(configuration, branchPointResolver);
+        var commitResolver = new MainlineCommitResolver(iteration);
+        var configurationResolver = new MainlineConfigurationResolver(configuration, commitResolver);
         var history = new MainlineHistory(configuration, new TestEnvironment(), ignoredTipValue,
-            branchPointResolver, configurationResolver);
+            commitResolver, configurationResolver);
         var calculator = new MainlineVersionCalculator(Substitute.For<IIncrementStrategyFinder>(),
-            branchPointResolver, configurationResolver, history);
+            commitResolver, configurationResolver, history);
         var context = calculator.CreateContext();
         calculator.History.ShouldBeSameAs(history);
 
@@ -100,7 +100,7 @@ public class MainlineHistoryTests
         var child = context.CreateChildContext();
         var childCalculator = child.Calculator;
         childCalculator.ShouldBeSameAs(calculator);
-        childCalculator.BranchPointResolver.ShouldBeSameAs(calculator.BranchPointResolver);
+        childCalculator.CommitResolver.ShouldBeSameAs(calculator.CommitResolver);
         childCalculator.ConfigurationResolver.ShouldBeSameAs(calculator.ConfigurationResolver);
         childCalculator.History.ShouldBeSameAs(history);
         var repeated = childCalculator.History.Select(iteration, "", false);
@@ -122,11 +122,11 @@ public class MainlineHistoryTests
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var environment = new TestEnvironment();
         var finder = Substitute.For<IIncrementStrategyFinder>();
-        var branchPointResolver = new MainlineBranchPointResolver(iteration);
-        var configurationResolver = new MainlineConfigurationResolver(configuration, branchPointResolver);
+        var commitResolver = new MainlineCommitResolver(iteration);
+        var configurationResolver = new MainlineConfigurationResolver(configuration, commitResolver);
         var history = new MainlineHistory(
-            configuration, environment, commit.Value, branchPointResolver, configurationResolver);
-        var calculator = new MainlineVersionCalculator(finder, branchPointResolver, configurationResolver, history);
+            configuration, environment, commit.Value, commitResolver, configurationResolver);
+        var calculator = new MainlineVersionCalculator(finder, commitResolver, configurationResolver, history);
         var first = calculator.CreateContext("alpha");
         first.Increment = VersionField.Major;
         first.Label = "calculated";
@@ -139,7 +139,7 @@ public class MainlineHistoryTests
 
         second.ShouldNotBeSameAs(first);
         second.Calculator.ShouldBeSameAs(calculator);
-        second.BranchPointResolver.ShouldBeSameAs(branchPointResolver);
+        second.CommitResolver.ShouldBeSameAs(commitResolver);
         second.ConfigurationResolver.ShouldBeSameAs(configurationResolver);
         second.Calculator.History.ShouldBeSameAs(history);
         second.IncrementStrategyFinder.ShouldBeSameAs(finder);
@@ -247,7 +247,7 @@ public class MainlineHistoryTests
         selected.Commits.ShouldBe([boundary, release, tip]);
         selected.HasBoundary.ShouldBeTrue();
         selected.MissingCommit.ShouldBeNull();
-        var configurations = new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(release.Iteration));
+        var configurations = new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(release.Iteration));
         configurations.GetEffectiveConfiguration(release).Increment.ShouldBe(IncrementStrategy.Patch);
         configurations.GetEffectiveConfiguration(release).Label.ShouldBe("beta");
         iteration.Commits.ShouldBe([initial, boundary, release, tip]);
@@ -306,7 +306,7 @@ public class MainlineHistoryTests
         merge.AddChildIteration(child);
         var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
             new IgnoreConfiguration { Shas = [ignoredValue.Sha] }).Build();
-        var resolver = new MainlineBranchPointResolver(root);
+        var resolver = new MainlineCommitResolver(root);
 
         var selected = MainlineTestCalculation.History(root, configuration, new TestEnvironment(), mergeValue, resolver)
             .Select(child, "", true);
@@ -314,7 +314,7 @@ public class MainlineHistoryTests
         selected.Commits.ShouldBe([initial, source]);
         selected.HasBoundary.ShouldBeTrue();
         selected.MissingCommit.ShouldBeNull();
-        resolver.Resolve(child).ShouldBeSameAs(ignored);
+        resolver.Resolve(child, child.BranchedFrom).ShouldBeSameAs(ignored);
         root.Commits.ShouldBe([initial, ignored, merge]);
         child.Commits.ShouldBe([source]);
         child.BranchedFrom.ShouldBeSameAs(ignoredValue);
@@ -448,7 +448,7 @@ public class MainlineHistoryTests
         var sourceCommit = source.CreateCommit(sourceValue, source.BranchName, sourceBranch);
         merge.AddChildIteration(source);
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(source)).GetEffectiveConfiguration(source).IsMainBranch.ShouldBeTrue();
+        new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(root)).GetEffectiveConfiguration(source).IsMainBranch.ShouldBeTrue();
 
         var selected = MainlineTestCalculation.History(root, configuration, new TestEnvironment(), mergeValue)
             .Select(source, "beta", true, includeSharedHistory: true);
@@ -590,7 +590,7 @@ public class MainlineHistoryTests
 
         child.ShouldNotBeSameAs(parent);
         child.TargetLabel.ShouldBe("beta");
-        child.BranchPointResolver.ShouldBeSameAs(parent.BranchPointResolver);
+        child.CommitResolver.ShouldBeSameAs(parent.CommitResolver);
         child.IncludeSharedHistory.ShouldBeTrue();
         child.CurrentCommit.ShouldBeSameAs(commit);
         child.MainlineVersions.ShouldBeSameAs(parent.MainlineVersions);

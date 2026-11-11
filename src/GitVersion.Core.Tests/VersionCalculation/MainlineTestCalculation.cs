@@ -11,23 +11,27 @@ internal static class MainlineTestCalculation
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
         IIncrementStrategyFinder? incrementStrategyFinder = null)
     {
-        MainlineBranchPointResolver branchPointResolver = new(iteration);
-        MainlineConfigurationResolver configurationResolver = new(configuration, branchPointResolver);
-        MainlineHistory history = new(configuration, environment, currentCommit, branchPointResolver, configurationResolver);
+        MainlineCommitResolver commitResolver = new(iteration);
+        MainlineConfigurationResolver configurationResolver = new(configuration, commitResolver);
+        MainlineHistory history = new(configuration, environment, currentCommit, commitResolver, configurationResolver);
         return new(incrementStrategyFinder ?? Substitute.For<IIncrementStrategyFinder>(),
-            branchPointResolver, configurationResolver, history);
+            commitResolver, configurationResolver, history);
     }
 
     internal static MainlineContext Context(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
         => Calculator(iteration, configuration, environment, currentCommit).CreateContext();
 
+    internal static MainlineCommit[] SelectHistory(MainlineIteration root, MainlineIteration iteration)
+        => History(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(),
+            Substitute.For<ICommit>()).Select(iteration, "", true).Commits;
+
     internal static MainlineHistory History(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
-        MainlineBranchPointResolver? branchPointResolver = null)
+        IMainlineCommitResolver? commitResolver = null)
     {
-        branchPointResolver ??= new MainlineBranchPointResolver(iteration);
-        MainlineConfigurationResolver configurationResolver = new(configuration, branchPointResolver);
-        return new(configuration, environment, currentCommit, branchPointResolver, configurationResolver);
+        commitResolver ??= new MainlineCommitResolver(iteration);
+        MainlineConfigurationResolver configurationResolver = new(configuration, commitResolver);
+        return new(configuration, environment, currentCommit, commitResolver, configurationResolver);
     }
 }

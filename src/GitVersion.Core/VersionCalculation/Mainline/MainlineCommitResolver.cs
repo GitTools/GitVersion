@@ -1,18 +1,20 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
 // Built from the completed graph; resolution never changes node ownership or links.
-internal sealed class MainlineBranchPointResolver
+internal sealed class MainlineCommitResolver : IMainlineCommitResolver
 {
     private readonly List<MainlineIteration> iterations = [];
     private readonly Dictionary<ReferenceName, List<MainlineIteration>> iterationsByBranch = [];
 
-    public MainlineBranchPointResolver(MainlineIteration iteration)
+    public MainlineCommitResolver(MainlineIteration iteration)
     {
-        while (iteration.ParentIteration is { } parent)
+        iteration.NotNull();
+        if (iteration.ParentIteration is not null)
         {
-            iteration = parent;
+            throw new ArgumentException("The iteration must be the root iteration.", nameof(iteration));
         }
 
         Stack<MainlineIteration> pending = new([iteration]);
@@ -40,11 +42,13 @@ internal sealed class MainlineBranchPointResolver
         }
     }
 
-    public MainlineCommit? Resolve(MainlineIteration iteration)
-        => iteration.BranchedFrom is { } commit ? FindCommit(iteration, commit) : null;
-
-    public MainlineCommit? FindCommit(MainlineIteration iteration, ICommit commit)
+    public MainlineCommit? Resolve(MainlineIteration iteration, ICommit? commit)
     {
+        iteration.NotNull();
+        if (commit is null)
+        {
+            return null;
+        }
         if (iteration.FindCommit(commit) is { } local)
         {
             return local;
@@ -67,33 +71,5 @@ internal sealed class MainlineBranchPointResolver
             }
         }
         return null;
-    }
-
-    internal IEnumerable<MainlineCommit> GetHistory(MainlineIteration iteration, MainlineCommit? tip = null)
-        => GetCommitsInReverseOrder(iteration, tip).Reverse();
-
-    internal static IEnumerable<MainlineCommit> GetLocalCommitsInReverseOrder(MainlineIteration iteration, MainlineCommit? tip = null)
-    {
-        var commit = tip ?? iteration.Commits.LastOrDefault();
-        while (commit is not null)
-        {
-            yield return commit;
-            commit = commit.Predecessor;
-        }
-    }
-
-    private IEnumerable<MainlineCommit> GetCommitsInReverseOrder(MainlineIteration iteration, MainlineCommit? tip)
-    {
-        foreach (var commit in GetLocalCommitsInReverseOrder(iteration, tip))
-        {
-            yield return commit;
-        }
-        if (Resolve(iteration) is { } branchPoint)
-        {
-            foreach (var ancestor in GetCommitsInReverseOrder(branchPoint.Iteration, branchPoint))
-            {
-                yield return ancestor;
-            }
-        }
     }
 }

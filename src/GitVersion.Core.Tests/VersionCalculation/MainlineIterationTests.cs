@@ -45,9 +45,9 @@ public class MainlineIterationTests
         var source = child.CreateCommit(CreateCommit(), child.BranchName, configuration);
 
         child.Commits.ShouldBe([source]);
-        new MainlineBranchPointResolver(parent).GetHistory(child).ShouldBe([initial, branchPoint, source]);
-        new MainlineBranchPointResolver(parent).GetHistory(child).First().ShouldBeSameAs(initial);
-        new MainlineBranchPointResolver(parent).GetHistory(child).ElementAt(1).ShouldBeSameAs(branchPoint);
+        MainlineTestCalculation.SelectHistory(parent, child).ShouldBe([initial, branchPoint, source]);
+        MainlineTestCalculation.SelectHistory(parent, child).First().ShouldBeSameAs(initial);
+        MainlineTestCalculation.SelectHistory(parent, child).ElementAt(1).ShouldBeSameAs(branchPoint);
         branchPoint.Iteration.ShouldBeSameAs(parent);
         branchPoint.Successor.ShouldBeSameAs(later);
     }
@@ -65,7 +65,7 @@ public class MainlineIterationTests
 
         branchPoint.AddChildIteration(second);
 
-        new MainlineBranchPointResolver(root).GetHistory(second).ShouldBe([initial, branchPoint]);
+        MainlineTestCalculation.SelectHistory(root, second).ShouldBe([initial, branchPoint]);
         second.Commits.ShouldBeEmpty();
     }
 
@@ -82,9 +82,9 @@ public class MainlineIterationTests
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), configuration,
             root, branchPoint.Value, merge.Value);
 
-        new MainlineBranchPointResolver(root).Resolve(source).ShouldBeSameAs(branchPoint);
+        new MainlineCommitResolver(root).Resolve(source, source.BranchedFrom).ShouldBeSameAs(branchPoint);
         source.GetBranchedTo().ShouldBeSameAs(merge);
-        new MainlineBranchPointResolver(root).GetHistory(source).ShouldBe([initial, branchPoint]);
+        MainlineTestCalculation.SelectHistory(root, source).ShouldBe([initial, branchPoint]);
         source.Commits.ShouldBeEmpty();
         root.Commits.ShouldBe([merge]);
     }
@@ -127,7 +127,7 @@ public class MainlineIterationTests
         var sourceBranch = new BranchConfiguration { Increment = IncrementStrategy.Inherit, IsMainBranch = true, Label = "" };
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), sourceBranch, parent, branchPoint.Value, branchPoint.Value);
 
-        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(source)).GetEffectiveConfiguration(source).Increment.ShouldBe(IncrementStrategy.Minor);
+        new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(parent)).GetEffectiveConfiguration(source).Increment.ShouldBe(IncrementStrategy.Minor);
         source.Commits.ShouldBeEmpty();
     }
 
@@ -195,7 +195,7 @@ public class MainlineIterationTests
         var version = MainlineTestCalculation.Calculator(receiver, configuration, new TestEnvironment(), merge.Value)
             .DetermineBaseVersion(receiver, "");
 
-        new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(merge.Iteration)).IsMergedMainline(merge).ShouldBeFalse();
+        new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(merge.Iteration)).IsMergedMainline(merge).ShouldBeFalse();
         version.GetIncrementedVersion().Patch.ShouldBe(1);
     }
 
