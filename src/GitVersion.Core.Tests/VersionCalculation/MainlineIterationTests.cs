@@ -43,11 +43,12 @@ public class MainlineIterationTests
         var initial = parent.CreateCommit(CreateCommit(), parent.BranchName, configuration);
         var child = new MainlineIteration("child", new("refs/heads/support/1.x"), configuration, parent, branchPoint.Value, later.Value);
         var source = child.CreateCommit(CreateCommit(), child.BranchName, configuration);
+        var history = MainlineTestCalculation.SelectHistory(parent, child);
 
         child.Commits.ShouldBe([source]);
-        MainlineTestCalculation.SelectHistory(parent, child).ShouldBe([initial, branchPoint, source]);
-        MainlineTestCalculation.SelectHistory(parent, child).First().ShouldBeSameAs(initial);
-        MainlineTestCalculation.SelectHistory(parent, child).ElementAt(1).ShouldBeSameAs(branchPoint);
+        history.ShouldBe([initial, branchPoint, source]);
+        history[0].ShouldBeSameAs(initial);
+        history[1].ShouldBeSameAs(branchPoint);
         branchPoint.Iteration.ShouldBeSameAs(parent);
         branchPoint.Successor.ShouldBeSameAs(later);
     }
