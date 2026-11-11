@@ -16,14 +16,17 @@ public class ExecutionResults(int exitCode, string? output, string? logContents 
     {
         get
         {
-            if (Output.IsNullOrWhiteSpace())
+            // Process diagnostics may interleave with JSON in the combined output.
+            // In-process fixtures do not capture stdout separately, so retain their fallback.
+            var output = StandardOutput ?? Output;
+            if (output.IsNullOrWhiteSpace())
             {
                 return null;
             }
 
-            var jsonStartIndex = Output.IndexOf('{');
-            var jsonEndIndex = Output.IndexOf('}');
-            var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
+            var jsonStartIndex = output.IndexOf('{');
+            var jsonEndIndex = output.IndexOf('}');
+            var json = output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
             return json.ToGitVersionVariables();
         }
