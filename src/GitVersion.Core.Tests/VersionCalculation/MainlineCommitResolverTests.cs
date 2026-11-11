@@ -5,17 +5,91 @@ using GitVersion.VersionCalculation.Mainline;
 namespace GitVersion.Tests.VersionCalculation;
 
 [TestFixture]
-public class MainlineBranchPointResolverTests
+public class MainlineCommitResolverTests
 {
+    [Test]
+    public void ConstructorRejectsNullIteration()
+    {
+        var exception = Should.Throw<ArgumentNullException>(() => new MainlineCommitResolver(null!));
+
+        exception.ParamName.ShouldBe("iteration");
+    }
+
+    [Test]
+    public void ConstructorRejectsChildIteration()
+    {
+        var root = Iteration("root", "main");
+        var child = Iteration("child", "support/1.x", root);
+
+        var exception = Should.Throw<ArgumentException>(() => new MainlineCommitResolver(child));
+
+        exception.ParamName.ShouldBe("iteration");
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ResolveRejectsNullIterationEvenWhenCommitIsNull(bool nullCommit)
+    {
+        IMainlineCommitResolver resolver = new MainlineCommitResolver(Iteration("root", "main"));
+
+        var exception = Should.Throw<ArgumentNullException>(() => resolver.Resolve(null!, nullCommit ? null : Commit()));
+
+        exception.ParamName.ShouldBe("iteration");
+    }
+
+    [Test]
+    public void NullCommitDoesNotResolveToAnExistingBranchPoint()
+    {
+        var root = Iteration("root", "main");
+        var branchPoint = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
+        var child = Iteration("child", "support/1.x", root, branchPoint.Value);
+        IMainlineCommitResolver resolver = new MainlineCommitResolver(root);
+
+        resolver.Resolve(child, null).ShouldBeNull();
+        resolver.Resolve(child, child.BranchedFrom).ShouldBeSameAs(branchPoint);
+    }
+
+    [Test]
+    public void RequestedCommitTakesPrecedenceOverTheIterationsBranchPoint()
+    {
+        var root = Iteration("root", "main");
+        var branchPoint = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
+        var child = Iteration("child", "support/1.x", root, branchPoint.Value);
+        var local = child.CreateCommit(Commit(), child.BranchName, child.Configuration);
+        IMainlineCommitResolver resolver = new MainlineCommitResolver(root);
+
+        resolver.Resolve(child, local.Value).ShouldBeSameAs(local);
+        resolver.Resolve(child, branchPoint.Value).ShouldBeSameAs(branchPoint);
+        resolver.Resolve(child, Commit()).ShouldBeNull();
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ResolvePrefersLocalThenSameBranchNodesOverOtherBranches(bool hasLocal)
+    {
+        var root = Iteration("root", "main");
+        var merge = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
+        var value = Commit();
+        root.CreateCommit(value, root.BranchName, root.Configuration);
+        var earlier = Iteration("earlier", "support/1.x", root);
+        var sameBranch = earlier.CreateCommit(value, earlier.BranchName, earlier.Configuration);
+        merge.AddChildIteration(earlier);
+        var current = Iteration("current", "support/1.x", root);
+        var local = hasLocal ? current.CreateCommit(value, current.BranchName, current.Configuration) : null;
+        IMainlineCommitResolver resolver = new MainlineCommitResolver(root);
+
+        resolver.Resolve(current, value).ShouldBeSameAs(local ?? sameBranch);
+    }
+
     [Test]
     public void RootWithoutABranchPointRemainsUnresolved()
     {
         var root = Iteration("root", "main");
         var initial = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
-        var resolver = new MainlineBranchPointResolver(root);
+        var resolver = new MainlineCommitResolver(root);
 
-        resolver.Resolve(root).ShouldBeNull();
-        resolver.GetHistory(root).ShouldBe([initial]);
+        resolver.Resolve(root, root.BranchedFrom).ShouldBeNull();
+        MainlineTestCalculation.SelectHistory(root, root).ShouldBe([initial]);
         root.Commits.ShouldBe([initial]);
     }
 
@@ -28,9 +102,9 @@ public class MainlineBranchPointResolverTests
         var recorded = first.CreateCommit(Commit(), first.BranchName, first.Configuration);
         merge.AddChildIteration(first);
         var second = Iteration("second", "support/1.x", root, Commit());
-        var resolver = new MainlineBranchPointResolver(root);
+        var resolver = new MainlineCommitResolver(root);
 
-        resolver.Resolve(second).ShouldBeNull();
+        resolver.Resolve(second, second.BranchedFrom).ShouldBeNull();
         second.Commits.ShouldBeEmpty();
         first.Commits.ShouldBe([recorded]);
     }
@@ -50,11 +124,11 @@ public class MainlineBranchPointResolverTests
         var second = Iteration("second", "support/1.x", root, d.Value);
         var e = second.CreateCommit(Commit(), second.BranchName, second.Configuration);
         secondMerge.AddChildIteration(second);
-        var resolver = new MainlineBranchPointResolver(second);
+        var resolver = new MainlineCommitResolver(root);
 
-        resolver.Resolve(second).ShouldBeSameAs(d);
-        resolver.Resolve(first).ShouldBeSameAs(b);
-        var history = resolver.GetHistory(second).ToArray();
+        resolver.Resolve(second, second.BranchedFrom).ShouldBeSameAs(d);
+        resolver.Resolve(first, first.BranchedFrom).ShouldBeSameAs(b);
+        var history = MainlineTestCalculation.SelectHistory(root, second).ToArray();
         history.ShouldBe([a, b, c, d, e]);
         history[3].ShouldBeSameAs(d);
         history.ShouldNotContain(firstMerge);
@@ -78,10 +152,10 @@ public class MainlineBranchPointResolverTests
         var branchPoint = nested.CreateCommit(Commit(), nested.BranchName, nested.Configuration);
         innerMerge.AddChildIteration(nested);
         var source = Iteration("source", "support/1.x", root, branchPoint.Value);
-        var resolver = new MainlineBranchPointResolver(root);
+        var resolver = new MainlineCommitResolver(root);
 
-        resolver.Resolve(source).ShouldBeSameAs(branchPoint);
-        resolver.GetHistory(source).ShouldBe([branchPoint]);
+        resolver.Resolve(source, source.BranchedFrom).ShouldBeSameAs(branchPoint);
+        MainlineTestCalculation.SelectHistory(root, source).ShouldBe([branchPoint]);
         source.Commits.ShouldBeEmpty();
         branchPoint.Iteration.ShouldBeSameAs(nested);
     }
@@ -94,8 +168,8 @@ public class MainlineBranchPointResolverTests
         var foreign = otherRoot.CreateCommit(Commit(), otherRoot.BranchName, otherRoot.Configuration);
         var source = Iteration("source", "support/1.x", root, foreign.Value);
 
-        new MainlineBranchPointResolver(root).Resolve(source).ShouldBeNull();
-        new MainlineBranchPointResolver(otherRoot).FindCommit(otherRoot, foreign.Value).ShouldBeSameAs(foreign);
+        new MainlineCommitResolver(root).Resolve(source, source.BranchedFrom).ShouldBeNull();
+        new MainlineCommitResolver(otherRoot).Resolve(otherRoot, foreign.Value).ShouldBeSameAs(foreign);
         root.Commits.ShouldBeEmpty();
     }
 

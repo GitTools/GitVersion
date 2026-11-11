@@ -9,18 +9,18 @@ internal sealed class MainlineVersionCalculator
     private readonly MainlineHistory history;
 
     internal MainlineVersionCalculator(
-        IIncrementStrategyFinder incrementStrategyFinder, MainlineBranchPointResolver branchPointResolver,
+        IIncrementStrategyFinder incrementStrategyFinder, IMainlineCommitResolver commitResolver,
         MainlineConfigurationResolver configurationResolver, MainlineHistory history)
     {
         IncrementStrategyFinder = incrementStrategyFinder.NotNull();
-        BranchPointResolver = branchPointResolver.NotNull();
+        CommitResolver = commitResolver.NotNull();
         ConfigurationResolver = configurationResolver.NotNull();
         this.history = history.NotNull();
     }
 
     internal IIncrementStrategyFinder IncrementStrategyFinder { get; }
 
-    internal MainlineBranchPointResolver BranchPointResolver { get; }
+    internal IMainlineCommitResolver CommitResolver { get; }
 
     internal MainlineConfigurationResolver ConfigurationResolver { get; }
 

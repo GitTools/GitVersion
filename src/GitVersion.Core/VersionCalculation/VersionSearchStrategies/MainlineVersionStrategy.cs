@@ -30,13 +30,13 @@ internal sealed class MainlineVersionStrategy(
         );
         var iteration = iterationBuilder.BuildIteration(configuration.Branch, targetLabel);
 
-        MainlineBranchPointResolver branchPointResolver = new(iteration);
-        MainlineConfigurationResolver configurationResolver = new(context.Configuration, branchPointResolver);
+        MainlineCommitResolver commitResolver = new(iteration);
+        MainlineConfigurationResolver configurationResolver = new(context.Configuration, commitResolver);
         MainlineHistory history = new(
-            context.Configuration, environment, context.CurrentCommit, branchPointResolver, configurationResolver
+            context.Configuration, environment, context.CurrentCommit, commitResolver, configurationResolver
         );
         MainlineVersionCalculator versionCalculator = new(
-            incrementStrategyFinder, branchPointResolver, configurationResolver, history
+            incrementStrategyFinder, commitResolver, configurationResolver, history
         );
         yield return versionCalculator.DetermineBaseVersion(iteration, targetLabel);
     }

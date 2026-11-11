@@ -5,10 +5,10 @@ namespace GitVersion.VersionCalculation.Mainline;
 
 // Calculation state belongs to Step 2, not to the graph constructed in Step 1.
 internal sealed class MainlineConfigurationResolver(
-    IGitVersionConfiguration configuration, MainlineBranchPointResolver branchPointResolver)
+    IGitVersionConfiguration configuration, IMainlineCommitResolver commitResolver)
 {
     private readonly IGitVersionConfiguration configuration = configuration.NotNull();
-    private readonly MainlineBranchPointResolver branchPointResolver = branchPointResolver.NotNull();
+    private readonly IMainlineCommitResolver commitResolver = commitResolver.NotNull();
     private readonly Dictionary<MainlineCommit, EffectiveConfiguration> commitConfigurations = [];
     private readonly Dictionary<MainlineIteration, EffectiveConfiguration> iterationConfigurations = [];
 
@@ -56,7 +56,7 @@ internal sealed class MainlineConfigurationResolver(
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             var commit = iteration.Commits.FirstOrDefault()
-                ?? (iteration.HasParentIteration ? this.branchPointResolver.Resolve(iteration) : null);
+                ?? (iteration.HasParentIteration ? this.commitResolver.Resolve(iteration, iteration.BranchedFrom) : null);
             if (commit is not null)
             {
                 branchConfiguration = branchConfiguration.Inherit(GetEffectiveConfiguration(commit));

@@ -50,8 +50,8 @@ public class MainlineIterationConstructionTests
         source.BranchedFrom.ShouldNotBeNull().Sha.ShouldBe(release);
         source.Commits.Select(commit => commit.Value.Sha).ShouldBe([ignoredSource]);
         iteration.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, ignoredReceiver, receiverTip, mergeSha]);
-        var resolver = new MainlineBranchPointResolver(iteration);
-        resolver.Resolve(source).ShouldBeSameAs(iteration.FindCommit(source.BranchedFrom));
+        var resolver = new MainlineCommitResolver(iteration);
+        resolver.Resolve(source, source.BranchedFrom).ShouldBeSameAs(iteration.FindCommit(source.BranchedFrom));
         var selected = MainlineTestCalculation.History(
             iteration, configuration, environment, context.Value.CurrentCommit, resolver)
             .Select(iteration, "", false);
@@ -138,7 +138,7 @@ public class MainlineIterationConstructionTests
         var source = iteration.Commits.Single(commit => commit.Value.Sha == merge).ChildIteration.ShouldNotBeNull();
         source.Commits.Select(commit => commit.Value.Sha).ShouldBe([release, sourceTip]);
         source.Commits.First().SemanticVersions.Select(version => version.ToString()).ShouldContain(releaseVersion);
-        new MainlineBranchPointResolver(iteration).Resolve(source).ShouldNotBeNull().Value.Sha.ShouldBe(branchPoint);
+        new MainlineCommitResolver(iteration).Resolve(source, source.BranchedFrom).ShouldNotBeNull().Value.Sha.ShouldBe(branchPoint);
     }
 
     [Test]
@@ -178,7 +178,7 @@ public class MainlineIterationConstructionTests
         source.Commits.Select(commit => commit.Value.Sha).ShouldBe([sourceMerge]);
         source.Commits.Single().Value.Parents.Count().ShouldBe(2);
         source.BranchedFrom.ShouldNotBeNull().Sha.ShouldBe(branchPoint);
-        new MainlineBranchPointResolver(iteration).Resolve(source).ShouldNotBeNull().Value.Sha.ShouldBe(branchPoint);
+        new MainlineCommitResolver(iteration).Resolve(source, source.BranchedFrom).ShouldNotBeNull().Value.Sha.ShouldBe(branchPoint);
     }
 
     [Test]
@@ -221,8 +221,8 @@ public class MainlineIterationConstructionTests
 
         receiver.Iteration.ShouldBeSameAs(iteration);
         shared.Commits.ShouldBeEmpty();
-        var resolver = new MainlineBranchPointResolver(iteration);
-        resolver.FindCommit(shared, receiver.Value).ShouldBeSameAs(receiver);
+        var resolver = new MainlineCommitResolver(iteration);
+        resolver.Resolve(shared, receiver.Value).ShouldBeSameAs(receiver);
         var rebuilt = builder.BuildIteration(repository.Head, "");
         rebuilt.FindCommit(receiver.Value).ShouldNotBeSameAs(receiver);
         rebuilt.Commits.Select(commit => commit.Value.Sha).ShouldBe(iteration.Commits.Select(commit => commit.Value.Sha));
@@ -501,9 +501,9 @@ public class MainlineIterationConstructionTests
         child.BranchedTo.ShouldBeSameAs(merge.Value);
         child.GetBranchedTo().ShouldBeSameAs(merge);
         child.Commits.Count.ShouldBe(3);
-        var resolver = new MainlineBranchPointResolver(iteration);
-        resolver.Resolve(child).ShouldBeSameAs(iteration.Commits.Single(commit => commit.Value.Sha == branchPoint));
-        resolver.GetHistory(child).Count().ShouldBe(4);
+        var resolver = new MainlineCommitResolver(iteration);
+        resolver.Resolve(child, child.BranchedFrom).ShouldBeSameAs(iteration.Commits.Single(commit => commit.Value.Sha == branchPoint));
+        MainlineTestCalculation.History(iteration, configuration, environment, context.Value.CurrentCommit, resolver).Select(child, label, true).Commits.Length.ShouldBe(4);
         foreach (var sha in sourceCommits)
         {
             var commit = child.Commits.Single(commit => commit.Value.Sha == sha);

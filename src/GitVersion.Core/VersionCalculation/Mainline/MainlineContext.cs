@@ -19,7 +19,7 @@ internal record MainlineContext(MainlineVersionCalculator Calculator)
 
     public string? TargetLabel { get; init; }
 
-    public MainlineBranchPointResolver BranchPointResolver => Calculator.BranchPointResolver;
+    public IMainlineCommitResolver CommitResolver => Calculator.CommitResolver;
 
     internal MainlineConfigurationResolver ConfigurationResolver => Calculator.ConfigurationResolver;
 

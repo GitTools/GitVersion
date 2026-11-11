@@ -86,7 +86,7 @@ public class MainlineConfigurationResolverTests
         var tip = root.CreateCommit(Commit(), root.BranchName, recorded);
         root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Minor, "beta"));
         var configuration = GitFlowConfigurationBuilder.New.WithLabel("global").Build();
-        var resolver = new MainlineConfigurationResolver(configuration, new MainlineBranchPointResolver(root));
+        var resolver = new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(root));
 
         var own = resolver.GetOwnConfiguration(tip);
         var effective = resolver.GetEffectiveConfiguration(tip);
@@ -105,7 +105,7 @@ public class MainlineConfigurationResolverTests
         var branch = new BranchConfiguration { Increment = IncrementStrategy.Patch };
         var root = Iteration("root", branch);
         var commit = root.CreateCommit(Commit(), root.BranchName, branch);
-        var branchPoints = new MainlineBranchPointResolver(root);
+        var branchPoints = new MainlineCommitResolver(root);
         var first = new MainlineConfigurationResolver(GitFlowConfigurationBuilder.New.WithLabel("alpha").Build(), branchPoints);
         var second = new MainlineConfigurationResolver(GitFlowConfigurationBuilder.New.WithLabel("beta").Build(), branchPoints);
 
@@ -202,7 +202,7 @@ public class MainlineConfigurationResolverTests
         var child = context.CreateChildContext();
 
         child.ConfigurationResolver.ShouldBeSameAs(resolver);
-        child.BranchPointResolver.ShouldBeSameAs(context.BranchPointResolver);
+        child.CommitResolver.ShouldBeSameAs(context.CommitResolver);
         child.GetEffectiveConfiguration(commit).ShouldBeSameAs(effective);
         child.MainlineVersions.ShouldBeSameAs(context.MainlineVersions);
         child.TargetLabel.ShouldBe("target");
@@ -222,7 +222,7 @@ public class MainlineConfigurationResolverTests
     }
 
     private static MainlineConfigurationResolver Resolver(MainlineIteration root)
-        => new(GitFlowConfigurationBuilder.New.Build(), new MainlineBranchPointResolver(root));
+        => new(GitFlowConfigurationBuilder.New.Build(), new MainlineCommitResolver(root));
 
     private static MainlineIteration Iteration(string id, IBranchConfiguration branch,
         MainlineIteration? parent = null, ICommit? branchedFrom = null, ICommit? branchedTo = null)
