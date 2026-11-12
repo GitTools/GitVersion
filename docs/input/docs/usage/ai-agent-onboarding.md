@@ -1,7 +1,7 @@
 ---
 Title: Set up GitVersion with an AI agent
 Order: 3
-Description: Help a coding agent install GitVersion v7 and verify configuration against your repository's history.
+Description: Help a coding agent install GitVersion v7, migrate from v6.8 and verify configuration against your repository's history.
 AgentOnboarding: true
 ---
 Use this guide with Claude Code, Codex, GitHub Copilot, or Antigravity in **the repository you want to version**. The agent should recommend settings from your release process and check them against existing history before adopting them.
@@ -48,6 +48,49 @@ Do not read or expose secrets. Follow this repository's instructions.
 </div>
 
 For reproducible team use, pin the guide to a reviewed GitVersion source commit or vendor a local copy and record its revision. A URL in an instruction file does not guarantee that an agent retrieves it: explicitly ask the agent to read it and report the guide revision and tool version it used.
+
+### Give the agent a migration task
+
+For an existing v6.8 installation, use **Copy migration prompt** or select the text below. The same prompt works with Codex, Claude Code, GitHub Copilot and Antigravity. Follow the [v6.8-to-v7.0 recipe][migration-recipe] rather than starting with a new configuration.
+
+<div id="gv-agent-migration-prompt">
+
+```text
+Read the GitVersion AI-agent onboarding guide, its v6.8-to-v7.0 migration
+recipe and the linked v6-to-v7 migration guide. Read applicable repository
+and agent instructions. Help migrate this repository's existing GitVersion
+v6.8 installation to v7.0 while preserving its release policy.
+
+Inventory the exact v6.8 executable, config, tool/integration pins and consumers.
+Keep that executable and config available for a baseline. Propose a separately
+pinned, verified v7.0 artifact or a reviewed source build; do not assume a stable
+v7.0 release exists. Discover commands from each executable's own help/schema.
+Show installation commands and file changes before applying them unless I have
+already authorized them. Do not replace the v6.8 pin before comparison.
+
+Capture v6.8 JSON and resolved configuration on representative existing refs
+and full commit SHAs. Use v7's config migrate to write a separate candidate,
+preserve the original and its comments, then validate and inspect the candidate.
+Compare v6.8 with its original config against v7.0 with its migrated config
+at the same commits and branch contexts, with fetching, normalization, caches
+and build-server/file updates disabled. Verify each reported Sha matches the
+requested commit; stop and investigate any mismatch. Map renamed fields before
+comparing, explain version differences, and report missing history as untested.
+
+Audit CLI scripts, JSON/format consumers, Azure variables, MSBuild properties,
+runtime/platform requirements and Docker tags/permissions against the migration
+guide. Treat parser, configuration and Git-backend selectors independently;
+record their removal schedule and test v7 defaults without compatibility
+overrides in an isolated process. Do not change global environment settings.
+
+Return the migration diff, both version pins/invocations, an expected/actual
+comparison table, consumer changes, unresolved decisions and rollback steps.
+Apply accepted changes only within my authorization. Preserve user edits,
+secrets and Git history. Do not create refs, fetch or normalize history, install
+globally, change credentials, publish, push or configure CI unless authorized.
+```
+
+</div>
 
 ## 1. Inspect before changing anything
 
@@ -192,7 +235,7 @@ Use the verified v7 executable's branch and commit selection instead of switchin
 gitversion --target-path <repository> --config <candidate-file> --output json --no-fetch --no-normalize --no-cache --branch <existing-branch> --commit <existing-sha>
 ```
 
-Run each sample with the baseline and the candidate. When no baseline file exists, omit `--config` for the baseline and record that defaults were used. Keep the same selected file across samples rather than accidentally loading historical configuration. A commit reachable from multiple branches needs explicit branch context; a detached release tag may not reproduce the release branch's calculation.
+Run each sample with the baseline and the candidate. For a v6.8-to-v7.0 upgrade, use the [cross-version comparison recipe][migration-recipe] below: the baseline must run on v6.8 with its original configuration. When no baseline file exists, omit `--config` for the v7 baseline and record that defaults were used. Keep the same selected file across samples rather than accidentally loading historical configuration. A commit reachable from multiple branches needs explicit branch context; a detached release tag may not reproduce the release branch's calculation.
 
 Use the full commit SHA for `--commit`. After every baseline and candidate run, verify that the `Sha` reported in stdout JSON exactly matches that requested SHA. If it differs, discard the result and investigate commit selection and execution context before comparing versions. Do not change refs or history to force a match.
 
@@ -219,6 +262,64 @@ Within the user's authorization, apply the minimal accepted config change and re
 * Reproduction commands and any blockers or diagnostic findings.
 
 Check files and refs against the initial inventory and explain intentional changes. Keep user edits intact. Add MSBuild or CI integration only when requested, after CLI results agree. Avoid duplicate assembly-version writers; preserve the selected integration's output contract, including `GitVersion_` prefixes where applicable. Consult [v7 migration changes][migration] before updating consumers. Release creation, tagging, publishing and pushing require their own authorization.
+
+## Migrate an existing v6.8 repository to v7.0
+
+Use this recipe when upgrading an existing installation. Read the complete [v6-to-v7 migration guide][migration] for the selected v7 revision; configuration conversion alone does not migrate scripts or output consumers. Keep the experimental `new-cli/` tree outside this upgrade.
+
+### Preserve the v6.8 baseline and acquire v7.0 separately
+
+Record the exact v6.8 patch version, executable invocation, configuration path, integration/tool manifest pins and relevant environment variables. Keep the original config, including comments, and inventory every consumer: scripts, JSON readers, custom formats, CI variables and MSBuild properties. If no config exists, record that v6.8 defaults supply the baseline.
+
+Select and acquire v7.0 using [the artifact checks above][artifact-checks]. Keep both executables available, with independently verified versions and requirements. Use a task-local tool path, versioned archive/image or separate reviewed source checkout so acquiring v7 does not replace the team's v6.8 manifest or CI pin. A v7 prerelease or source build must be identified as such.
+
+Before converting configuration, capture resolved settings and baseline JSON with the v6.8 executable at the representative existing points in [the history sample table][history-samples]. These are command templates; replace placeholders and use absolute executable/config paths:
+
+```text
+<verified-v6.8-executable> <repository> /config <original-v6-config> /showconfig /nofetch /nonormalize /nocache
+<verified-v6.8-executable> <repository> /config <original-v6-config> /output json /nofetch /nonormalize /nocache /b <existing-branch> /c <existing-full-sha>
+```
+
+If v6.8 used defaults, omit `/config` rather than creating a baseline file. Capture stdout, stderr and exit status separately. Verify the reported `Sha` against each requested commit and retain explicit branch context. Use an isolated copy with existing history when required; do not move refs or manufacture tags to obtain expected results.
+
+### Migrate a candidate, validate it and compare both versions
+
+Use the verified v7 executable with its default POSIX parser to convert the original flat YAML into a separate, previously nonexistent candidate. The following commands use `gitversion` as the [verified v7 invocation][artifact-checks]:
+
+```text
+gitversion config migrate --config <original-v6-config> --output <new-v7-config>
+gitversion config validate --config <new-v7-config> --format json
+gitversion --target-path <repository> --config <new-v7-config> --show-config --no-fetch --no-normalize --no-cache
+gitversion --target-path <repository> --config <new-v7-config> --output json --no-fetch --no-normalize --no-cache --branch <existing-branch> --commit <existing-full-sha>
+```
+
+Do not use `--in-place` or `--force` for this comparison. Review the nested `calculation` and `output` settings, keep `workflow` at the root, and carry required comments forward when adopting the candidate. If v6.8 had no config file, retain a no-file baseline and inspect v7 defaults or a separate minimal candidate; do not invoke migration on an invented input.
+
+Run the v6.8 baseline and v7 candidate for every agreed sample at the same full SHA and branch context. Use each version's own parser and configuration layout. A v7 run with the original flat file is not a v6.8 baseline. Require successful validation and matching `Sha` values before comparing results. Do not request build-server output, update assembly/project/WiX files or run a publishing build during this phase.
+
+Compare release versions, prerelease channels, increment policy and counting fields semantically. For example, v6 `CommitsSinceVersionSource` maps to v7 `VersionSourceDistance`. In v7, `PreReleaseLabel` means the full label (`beta.99`), while `PreReleaseLabelName` means its name (`beta`); a same-named property is not always equivalent across versions. Use the migration guide's complete mapping and check consumer requirements. Explain changed calculations before tuning config; do not force parity with `next-version` or ignored history.
+
+### Audit integration changes before switching pins
+
+Use this checklist with the complete [migration guide][migration]:
+
+| Area | Required migration check |
+| --- | --- |
+| Scripts and CLI arguments | Translate legacy switches to POSIX options using the argument mapping and the selected executable's help/schema. Check logging and machine-readable output channels. |
+| JSON, custom formats and generated outputs | Replace removed `CommitsSinceVersionSource`, map all prerelease fields, and account for added source fields in strict JSON readers. |
+| Azure Pipelines and MSBuild | Migrate Azure `GitVersion.Property` consumers to `GitVersion_Property`. Apply renamed fields to MSBuild properties too, verify task-host/runtime compatibility and avoid duplicate version writers. |
+| Branch context | Check `GIT_BRANCH`/`Git_Branch` overrides and provider precedence; they no longer select or move the named branch tip. |
+| Installation and platforms | Check .NET 10/11 runtime and MSBuild host requirements, RID-specific tool packages and removed Intel macOS native artifacts. A source build uses its pinned SDK. |
+| Docker | Select a published v7 tag/digest and supported distribution/architecture. Check UID/GID `10001:10001` and writable repository mounts using the non-root migration guidance. |
+| Compatibility selectors | Audit parser, configuration and backend environment variables independently, including the retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable. |
+
+In an isolated invocation, remove inherited compatibility selectors and test the default v7 parser, nested config and managed backend. Do not unset variables in the user's global environment. The temporary `GITVERSION_ARGUMENT_PARSER_VERSION=v6`, `GITVERSION_CONFIGURATION_VERSION=v6` and `GITVERSION_GIT_BACKEND=libgit2` selections are independent v7.0 migration aids, scheduled for removal in v7.1; they do not run the old v6.8 executable. The selectors themselves are removed in v8. Record any temporary fallback and its removal plan.
+
+### Adopt with a comparison record and rollback path
+
+Return a table containing branch, full SHA, both executable/config pins, expected versions, actual values, exit status and explained differences. Mark absent scenarios untested. Include consumer changes and any decisions that need the user; do not claim output compatibility from schema validation alone.
+
+Within the user's authorization, update the tool/config and integration pins together after acceptance, preserve unrelated edits and comments, then repeat the agreed checks with the adopted invocation. CI/integration builds need their own authorized validation, including package or assembly outputs where relevant. Keep the exact v6.8 executable/config/pins and a focused rollback diff until migration is accepted. Rolling back restores those files and pins; it does not reset the repository, rewrite history or publish another release.
 
 ## Optional v6 compatibility path
 
@@ -259,6 +360,12 @@ and report the tool/config versions and history samples checked.
 ```
 
 These are optional adapters to one canonical guide. Avoid copying the full procedure into four files, changing global agent settings, or assuming a link is an automatic import. Verify discovery in the actual client, then have the agent explicitly read the guide.
+
+[migration-recipe]: #migrate-an-existing-v6.8-repository-to-v7.0
+
+[artifact-checks]: #pin-a-real-artifact-or-source-revision
+
+[history-samples]: #compare-results-against-real-history
 
 [v6-path]: #optional-v6-compatibility-path
 
