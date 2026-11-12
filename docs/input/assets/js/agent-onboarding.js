@@ -48,6 +48,11 @@
     }
 
     toolbar.appendChild(button('Copy setup prompt', () => copy(task, 'Setup prompt')));
+    const migrationPrompt = content.querySelector('#gv-agent-migration-prompt pre code');
+    if (migrationPrompt) {
+        const migrationTask = `${migrationPrompt.textContent.trim()}\n\nGuide: ${guideUrl.href}\nMarkdown: ${markdownUrl.href}`;
+        toolbar.appendChild(button('Copy migration prompt', () => copy(migrationTask, 'Migration prompt')));
+    }
     const agents = document.createElement('details');
     agents.className = 'gv-agent-options';
     const summary = document.createElement('summary');
