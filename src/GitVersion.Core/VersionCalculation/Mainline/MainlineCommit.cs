@@ -6,22 +6,20 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 [DebuggerDisplay(
-    @"\{ BranchName = {" + nameof(BranchName) + "}, Increment = {" + nameof(Increment) + "}, " +
-    "HasSuccessor = {" + nameof(HasSuccessor) + "}, HasPredecessor = {" + nameof(HasPredecessor) + "}, " +
-    "HasChildIteration = {" + nameof(HasChildIteration) + "}, Message = {" + nameof(Message) + @"} \}"
+    @"\{ BranchName = {" + nameof(BranchName) + "}, HasSuccessor = {" + nameof(HasSuccessor) + "}, " +
+    "HasPredecessor = {" + nameof(HasPredecessor) + "}, Message = {" + nameof(Message) + @"} \}"
 )]
-internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
+internal sealed class MainlineCommit(MainlineIteration Iteration, ICommit? value, ReferenceName BranchName, IBranchConfiguration Configuration)
 {
-    public bool IsPredecessorTheLastCommitOnTrunk(IGitVersionConfiguration configuration)
-        => !GetEffectiveConfiguration(configuration).IsMainBranch && Predecessor?.GetEffectiveConfiguration(configuration).IsMainBranch == true;
-
-    public VersionField Increment { get; set; }
+    public bool HasUnsupportedMerge => !IsDummy && Value.Parents.Count > 2;
 
     public MainlineIteration Iteration { get; } = Iteration.NotNull();
 
     public ReferenceName BranchName { get; } = BranchName.NotNull();
 
-    private IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+    public IBranchConfiguration Configuration { get; } = Configuration.NotNull();
+
+    public bool HasExplicitIncrement => Configuration.Increment != IncrementStrategy.Inherit;
 
     public bool HasSuccessor => Successor is not null;
 
@@ -45,58 +43,9 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
 
     public MainlineIteration? ParentIteration => Iteration.ParentIteration;
 
-    public MainlineCommit? ParentCommit => Iteration.ParentCommit;
-
-    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(ParentCommit))]
-    private bool HasParentIteration => Iteration.ParentIteration is not null && Iteration.ParentCommit is not null;
-
     public IReadOnlyCollection<SemanticVersion> SemanticVersions => this.semanticVersions;
 
     private readonly HashSet<SemanticVersion> semanticVersions = [];
-
-    private EffectiveConfiguration? effectiveConfiguration;
-
-    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
-    {
-        if (this.effectiveConfiguration is not null)
-        {
-            return this.effectiveConfiguration;
-        }
-
-        var branchConfiguration = Configuration;
-
-        var last = Configuration;
-        for (var i = this; i is not null; i = i.Predecessor)
-        {
-            if (branchConfiguration.Increment != IncrementStrategy.Inherit)
-            {
-                break;
-            }
-
-            if (i.Configuration != last)
-            {
-                branchConfiguration = branchConfiguration.Inherit(i.Configuration);
-            }
-
-            last = i.Configuration;
-        }
-
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || !HasParentIteration)
-        {
-            return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        }
-
-        var parentConfiguration = ParentCommit.GetEffectiveConfiguration(configuration);
-        branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
-
-        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-    }
-
-    public VersionField GetIncrementForcedByBranch(IGitVersionConfiguration configuration)
-    {
-        var result = GetEffectiveConfiguration(configuration);
-        return result.Increment.ToVersionField();
-    }
 
     public void AddSemanticVersions(params SemanticVersion[] values)
         => AddSemanticVersions((IEnumerable<SemanticVersion>)values);
@@ -116,7 +65,7 @@ internal record MainlineCommit(MainlineIteration Iteration, ICommit? value, Refe
     {
         if (HasPredecessor)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Cannot append to a commit that already has a predecessor.");
         }
 
         MainlineCommit commit = new(Iteration, referenceValue, branchName, configuration);

@@ -1,0 +1,13 @@
+sequenceDiagram
+    main->>main: commit
+    main->>main: tag 1.0.0
+    create participant support_1_x as support/1.x
+    main->>support_1_x: branch from main
+    support_1_x->>support_1_x: commit
+    support_1_x->>support_1_x: commit
+    support_1_x->>support_1_x: commit
+    main->>main: commit
+    support_1_x->>main: merge
+    rect rgb(211, 211, 211)
+        Note over main: 1.0.3-4
+    end

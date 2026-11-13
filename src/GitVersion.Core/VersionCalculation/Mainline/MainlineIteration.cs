@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Git;
@@ -10,35 +11,27 @@ namespace GitVersion.VersionCalculation.Mainline;
     "Depth = {" + nameof(Depth) + "}, " +
     "NumberOfCommits = {" + nameof(NumberOfCommits) + "}" + @"} \}"
 )]
-internal record MainlineIteration
+internal sealed class MainlineIteration
 {
     public IBranchConfiguration Configuration { get; }
 
-    private EffectiveConfiguration? effectiveConfiguration;
+    public ICommit? BranchedFrom { get; }
 
-    public EffectiveConfiguration GetEffectiveConfiguration(IGitVersionConfiguration configuration)
+    public ICommit? BranchedTo { get; }
+
+    public MainlineCommit? GetBranchedTo()
     {
-        if (this.effectiveConfiguration is not null)
+        if (HasParentIteration)
         {
-            return this.effectiveConfiguration;
+            return ParentIteration.FindCommit(BranchedTo);
         }
-
-        var branchConfiguration = Configuration;
-
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit || Commits.FirstOrDefault() is not { } commit)
-        {
-            return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
-        }
-
-        var parentConfiguration = commit.GetEffectiveConfiguration(configuration);
-        branchConfiguration = branchConfiguration.Inherit(parentConfiguration);
-
-        return this.effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        return null;
     }
 
     public MainlineIteration? ParentIteration { get; }
 
-    public MainlineCommit? ParentCommit { get; }
+    [MemberNotNullWhen(true, nameof(ParentIteration), nameof(BranchedFrom), nameof(BranchedTo))]
+    public bool HasParentIteration => ParentIteration is not null;
 
     public string Id { get; }
 
@@ -54,14 +47,26 @@ internal record MainlineIteration
     private readonly Dictionary<ICommit, MainlineCommit> commitLookup = [];
 
     public MainlineIteration(string id, ReferenceName branchName, IBranchConfiguration configuration,
-        MainlineIteration? parentIteration, MainlineCommit? parentCommit)
+        MainlineIteration? parentIteration, ICommit? branchedFrom, ICommit? branchedTo)
     {
+        if (parentIteration is not null)
+        {
+            if (branchedFrom is null)
+            {
+                throw new ArgumentException("The parameter cannot be null when parent iteration is specified.", nameof(branchedFrom));
+            }
+            if (branchedTo is null)
+            {
+                throw new ArgumentException("The parameter cannot be null when parent iteration is specified.", nameof(branchedTo));
+            }
+        }
         Id = id.NotNullOrEmpty();
         Depth = (parentIteration?.Depth ?? 0) + 1;
         BranchName = branchName.NotNull();
         Configuration = configuration.NotNull();
         ParentIteration = parentIteration;
-        ParentCommit = parentCommit;
+        BranchedFrom = branchedFrom;
+        BranchedTo = branchedTo;
     }
 
     public MainlineCommit CreateCommit(
