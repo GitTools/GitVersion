@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AngleSharp" Version="1.10.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.12.0" />
     <PackageVersion Include="Cake.Compression" Version="0.4.0" />
     <PackageVersion Include="Cake.Codecov" Version="6.0.0" />
     <PackageVersion Include="Cake.Coverlet" Version="6.0.1" />
