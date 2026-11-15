@@ -211,7 +211,8 @@ public class MainlineDispatchTests
                 IsReleaseBranch = releaseFloor,
                 Label = "beta"
             } : branch;
-        var name = boundary ? releaseFloor ? "refs/heads/release/4.0.0" : "refs/heads/enclosing" : "refs/heads/main";
+        var enclosingName = releaseFloor ? "refs/heads/release/4.0.0" : "refs/heads/enclosing";
+        var name = boundary ? enclosingName : "refs/heads/main";
         var root = new MainlineIteration("root", new(name), enclosing, null, null, null);
         var initialValue = Commit();
         var sourceValue = emptySource ? initialValue : Commit();
