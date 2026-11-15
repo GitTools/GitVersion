@@ -5,7 +5,7 @@
   <PropertyGroup>
     <MicrosoftBuildVersion>18.9.6</MicrosoftBuildVersion>
     <MicrosoftBuildVersion Condition=" '$(TargetFramework)' == 'net11.0' ">18.12.2</MicrosoftBuildVersion>
-    <MicrosoftCodeAnalysisVersion>5.9.0</MicrosoftCodeAnalysisVersion>
+    <MicrosoftCodeAnalysisVersion>5.12.0</MicrosoftCodeAnalysisVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- common packages -->
