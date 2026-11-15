@@ -32,7 +32,7 @@ public class MainlineMergeIncrementerTests
                 : new SemanticVersionSource("existing", alternative, alternativeCommit, VersionField.None)
         };
 
-        var result = MergedMainlineIncrementer.Resolve(receiver, operation, source, receiver.SemanticVersion);
+        var result = MergedMainlineVersionPolicy.Resolve(receiver, operation, source, receiver.SemanticVersion);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.BaseVersionSource.ShouldBeSameAs(receiverCommit);
@@ -63,7 +63,7 @@ public class MainlineMergeIncrementerTests
         var source = new BaseVersion("source", new SemanticVersion(1, 0, 0), Commit());
         var operation = new BaseVersionOperator { ForceIncrement = true, Label = label };
 
-        var result = MergedMainlineIncrementer.Resolve(receiver, operation, source,
+        var result = MergedMainlineVersionPolicy.Resolve(receiver, operation, source,
             baselineText is null ? null : SemanticVersion.Parse(baselineText, null));
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
@@ -79,7 +79,7 @@ public class MainlineMergeIncrementerTests
         state.Add(new BaseVersionOperator { Increment = VersionField.Patch, BaseVersionSource = commit });
         var operation = new BaseVersionOperator { Increment = VersionField.Patch, BaseVersionSource = commit };
 
-        var result = MergedMainlineIncrementer.Resolve(state.Version.ShouldNotBeNull(), operation,
+        var result = MergedMainlineVersionPolicy.Resolve(state.Version.ShouldNotBeNull(), operation,
             new BaseVersion("lower", new SemanticVersion(0, 1, 0)), state.ReleaseBaseline);
 
         result.SemanticVersion.ToString().ShouldBe("1.0.1");
@@ -90,61 +90,14 @@ public class MainlineMergeIncrementerTests
 
     [TestCase(false)]
     [TestCase(true)]
-    public void DecoratorDelegatesMatchingToItsWrappedIncrementer(bool matches)
-    {
-        var fixture = Fixture();
-        var inner = new StubIncrementer(matches);
-        var decorator = new MergedMainlineIncrementer(inner);
-
-        decorator.MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context).ShouldBe(matches);
-
-        inner.MatchCalls.ShouldBe(1);
-        inner.LastIteration.ShouldBeSameAs(fixture.Root);
-        inner.LastCommit.ShouldBeSameAs(fixture.Merge);
-        inner.LastContext.ShouldBeSameAs(fixture.Context);
-        inner.IncrementCalls.ShouldBe(0);
-    }
-
-    [TestCase("not-mainline")]
-    [TestCase("tagged")]
-    [TestCase("prevent-source")]
-    [TestCase("no-child")]
-    [TestCase("operand")]
-    public void InapplicableIncrementsPassThroughWithoutCalculatingASource(string reason)
-    {
-        var fixture = Fixture(preventSource: reason == "prevent-source", attachChild: reason != "no-child");
-        fixture.Context.IsMainlineMerge = reason != "not-mainline";
-        if (reason == "tagged")
-        {
-            fixture.Context.SemanticVersion = new SemanticVersion(9, 0, 0);
-        }
-        IBaseVersionIncrement item = reason == "operand"
-            ? new BaseVersionOperand("tag", new SemanticVersion(1, 0, 0))
-            : new BaseVersionOperator { Increment = VersionField.Patch };
-        var inner = new StubIncrementer(true, item);
-
-        var result = new MergedMainlineIncrementer(inner)
-            .GetIncrements(fixture.Root, fixture.Merge, fixture.Context).ToArray();
-
-        result.Length.ShouldBe(1);
-        result[0].ShouldBeSameAs(item);
-        inner.IncrementCalls.ShouldBe(1);
-        inner.LastIteration.ShouldBeSameAs(fixture.Root);
-        inner.LastCommit.ShouldBeSameAs(fixture.Merge);
-        inner.LastContext.ShouldBeSameAs(fixture.Context);
-        fixture.Context.MainlineVersions.ShouldBeEmpty();
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
     public void SourceCacheUsesOnlyExplicitIterationConfiguration(bool inherit)
     {
         var fixture = Fixture(inherit: inherit);
         var parentVersion = new BaseVersion("parent", new SemanticVersion(9, 0, 0));
         fixture.Context.Increments.Add(parentVersion);
 
-        var first = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
-        var second = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
+        var first = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
+        var second = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
 
         first.SemanticVersion.ToString().ShouldBe("2.0.0");
         second.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -169,7 +122,7 @@ public class MainlineMergeIncrementerTests
     {
         var fixture = Fixture(preventTaggedIncrement: preventTaggedIncrement);
 
-        var result = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.Operator.ShouldNotBeNull().Increment.ShouldBe(increment);
@@ -184,7 +137,7 @@ public class MainlineMergeIncrementerTests
         var fixture = Fixture(label: "beta");
         fixture.Context.Increments.Add(new BaseVersion("receiver", new SemanticVersion(9, 0, 0)));
 
-        var result = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.SemanticVersion.ToString().ShouldBe("2.0.0-beta.4");
         result.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.5");
@@ -206,7 +159,7 @@ public class MainlineMergeIncrementerTests
             SemanticVersion.Parse($"2.0.0-{otherLabel}.4", null));
         fixture.Context.IsMainlineMerge.ShouldBeTrue();
 
-        var result = MergedMainlineIncrementer.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.Operand.SemanticVersion.PreReleaseTag.Name.ShouldBe(sourceLabel);
         result.Operand.BaseVersionSource.ShouldBeSameAs(fixture.SourceValue);
@@ -299,34 +252,6 @@ public class MainlineMergeIncrementerTests
 
     private sealed record MergeFixture(MainlineIteration Root, MainlineCommit Merge, MainlineIteration Source,
         MainlineContext Context, ICommit SourceValue);
-
-    private sealed class StubIncrementer(bool matches, params IBaseVersionIncrement[] increments) : IIncrementer
-    {
-        internal int MatchCalls { get; private set; }
-        internal int IncrementCalls { get; private set; }
-        internal MainlineIteration? LastIteration { get; private set; }
-        internal MainlineCommit? LastCommit { get; private set; }
-        internal MainlineContext? LastContext { get; private set; }
-
-        public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        {
-            MatchCalls++;
-            LastIteration = iteration;
-            LastCommit = commit;
-            LastContext = context;
-            return matches;
-        }
-
-        public IEnumerable<IBaseVersionIncrement> GetIncrements(
-            MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        {
-            IncrementCalls++;
-            LastIteration = iteration;
-            LastCommit = commit;
-            LastContext = context;
-            return increments;
-        }
-    }
 
     private static ICommit Commit()
     {

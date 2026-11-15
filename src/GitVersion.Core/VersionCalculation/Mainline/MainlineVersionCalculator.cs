@@ -41,10 +41,10 @@ internal sealed class MainlineVersionCalculator
         new RemoveIncrement()
     ];
     private static readonly IReadOnlyCollection<IIncrementer> TrunkIncrementerCollection =
-        MergedMainlineIncrementer.Decorate(
     [
         // Trunk
         new CommitOnTrunk(),
+        new MergedMainlineIncrementer(),
 
         new CommitOnTrunkWithPreReleaseTag(),
         new LastCommitOnTrunkWithPreReleaseTag(),
@@ -56,7 +56,9 @@ internal sealed class MainlineVersionCalculator
         new LastMergeCommitOnTrunk(),
 
         new CommitOnTrunkBranchedToTrunk(),
+        new MergedMainlineBranchedToTrunk(),
         new CommitOnTrunkBranchedToNonTrunk(),
+        new MergedMainlineBranchedToNonTrunk(),
 
         // NonTrunk
         new FirstCommitOnRelease(),
@@ -73,7 +75,7 @@ internal sealed class MainlineVersionCalculator
 
         new CommitOnNonTrunkBranchedToTrunk(),
         new CommitOnNonTrunkBranchedToNonTrunk()
-    ]);
+    ];
 
     internal BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel)
         => CalculateBaseVersion(iteration, CreateContext(targetLabel));

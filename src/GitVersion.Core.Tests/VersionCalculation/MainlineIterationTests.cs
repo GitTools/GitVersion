@@ -109,7 +109,7 @@ public class MainlineIterationTests
         merge.AddChildIteration(source);
         var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), mergeValue);
 
-        var version = MergedMainlineIncrementer.GetSourceVersion(source, context);
+        var version = MergedMainlineVersionPolicy.GetSourceVersion(source, context);
 
         source.Commits.ShouldBeEmpty();
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -172,7 +172,7 @@ public class MainlineIterationTests
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        var version = MergedMainlineIncrementer.GetSourceVersion(source, context);
+        var version = MergedMainlineVersionPolicy.GetSourceVersion(source, context);
         version.SemanticVersion.ShouldBe(taggedVersion);
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.2");
         version.BaseVersionSource.ShouldBeSameAs(branchPointValue);
@@ -240,13 +240,13 @@ public class MainlineIterationTests
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), tip);
 
-        var firstVersion = MergedMainlineIncrementer.GetSourceVersion(first, context);
-        var secondVersion = MergedMainlineIncrementer.GetSourceVersion(second, context);
+        var firstVersion = MergedMainlineVersionPolicy.GetSourceVersion(first, context);
+        var secondVersion = MergedMainlineVersionPolicy.GetSourceVersion(second, context);
 
         firstVersion.GetIncrementedVersion().Major.ShouldBe(2);
         secondVersion.GetIncrementedVersion().Major.ShouldBe(3);
         context.MainlineVersions.Count.ShouldBe(2);
-        MergedMainlineIncrementer.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
+        MergedMainlineVersionPolicy.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
         context.MainlineVersions.Count.ShouldBe(2);
     }
     [Test]
