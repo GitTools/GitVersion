@@ -116,14 +116,14 @@ fixture.AssertFullSemver("1.0.1-my-feature.1", configuration);
 Test stack: NUnit 4.x, Shouldly assertions, NSubstitute mocks, `EmptyRepositoryFixture` / `BaseGitFlowRepositoryFixture`, config builders (`GitFlowConfigurationBuilder`, `GitHubFlowConfigurationBuilder`, `EmptyConfigurationBuilder`).
 
 <!-- jbcontext-instructions-start -->
-# Tools
+## Tools
 
-## Semantic Code Search (jbcontext)
+### Semantic Code Search (jbcontext)
 
 You have access to the jbcontext MCP `code_search` tool for searching the codebase semantically.
 This tool can search for code snippets related in meaning to the search query and search objective.
 
-### When to use
+#### When to use
 
 `code_search` is a **code-discovery** tool. Reach for it only when a task requires finding or understanding code whose location you don't already know.
 
@@ -133,7 +133,7 @@ Skip it - go straight to the right tool - when:
 - the relevant file is already open or identified;
 - the task doesn't involve locating code at all - git operations (rebase, merge, commit), running tests or builds, shell/statusline/config setup, or reviewing a diff you already have.
 
-### Single-Shot Policy
+#### Single-Shot Policy
 
 When the relevant file or subsystem *is* still unknown, use `code_search` as the semantic bootstrap:
 
