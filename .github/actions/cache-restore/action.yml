@@ -30,4 +30,5 @@ runs:
       uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
       with:
         global-json-file: global.json
+        # Supply the .NET 10 test runtime; global.json selects the build SDK.
         dotnet-version: '10.0.x'
