@@ -32,10 +32,10 @@ The install command requires the .NET 10 SDK or later; NuGet selects the package
 platform automatically. GitVersion ships dedicated packages for Windows x64 and
 ARM64, Linux x64 and ARM64 (including musl), and Apple Silicon macOS.
 
-The .NET 11 target currently uses RC2 and requires a compatible .NET 11 runtime.
+The .NET 11 target requires the .NET 11 GA runtime or a compatible servicing release.
 The .NET 10 target remains available. Standalone self-contained archives continue
 to use .NET 10; the Docker build matrix covers both .NET 10 and .NET 11 using the
-published GitTools base images. .NET 11 support remains under validation until GA.
+published GitTools base images.
 
 To run call
 
