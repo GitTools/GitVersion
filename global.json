@@ -6,7 +6,7 @@
     ],
     "sdk": {
         "version": "11.0.100",
-        "allowPrerelease": true
+        "allowPrerelease": false
     },
     "test": {
         "runner": "Microsoft.Testing.Platform"
