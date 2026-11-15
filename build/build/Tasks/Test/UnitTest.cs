@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNet.Execute;
+using Cake.Common.Tools.DotNet.Test;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -111,11 +111,21 @@ public class UnitTest : FrostingTask<BuildContext>
                 .Append("--diagnostic-verbosity").Append("Trace");
         }
 
-        // Direct execution preserves annotation commands that SDK 10.0.401's dotnet test suppressed.
+        // SDK 11 forwards GitHub annotations in native MTP mode.
         // Collect process failures so subsequent projects still run; build/start exceptions propagate.
         var exitCode = 0;
-        context.DotNetExecute(targetPath, args, new DotNetExecuteSettings
+        context.DotNetTest(project.FullPath, new DotNetTestSettings
         {
+            Framework = $"net{framework}",
+            Configuration = context.MsBuildConfiguration,
+            NoBuild = true,
+            PathType = DotNetTestPathType.Project,
+            // The arguments overload inserts the VSTest separator, which native MTP must not use.
+            ArgumentCustomization = builder =>
+            {
+                args.CopyTo(builder);
+                return builder;
+            },
             HandleExitCode = code =>
             {
                 exitCode = code;
