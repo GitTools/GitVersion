@@ -196,6 +196,9 @@ State the computed version clearly, e.g. **Next release: `6.8.0`**.
 
 ## Phase 3 — Readiness checklist
 
+For beta releases, use the final-release milestone throughout these checks
+(for example, `7.0.0` for `7.0.0-beta.1`), not a separate beta milestone.
+
 Before querying milestones, confirm that the target does not already have a GitHub
 release. An existing release is a hard stop unless the user explicitly asks to
 repair or update that release:
@@ -501,6 +504,23 @@ applied, and any remaining blocker/warning. Avoid replaying raw API output.
 
 Only proceed after the user explicitly confirms readiness.
 
+For a beta, prepare a nonempty notes file from the reviewed final-release milestone
+(for example, `7.0.0` for `7.0.0-beta.1`) and have the user review it before
+publication. Beta publication only attaches assets; it preserves these notes and
+leaves the milestone open. Create a draft with the reviewed notes, inspect it,
+then publish after the user's approval:
+
+```bash
+gh release create <VERSION> --repo GitTools/GitVersion --title "<VERSION>" \
+  --draft --prerelease --notes-file <REVIEWED_NOTES_FILE> --target main
+gh release view <VERSION> --repo GitTools/GitVersion
+# After approval:
+gh release edit <VERSION> --repo GitTools/GitVersion --draft=false \
+  --discussion-category "Announcements"
+```
+
+For a stable release, use the existing command below; CI generates its notes:
+
 ```bash
 gh release create <VERSION> \
   --repo GitTools/GitVersion \
@@ -529,6 +549,9 @@ gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
 ---
 
 ## Phase 5 — Monitor downstream PRs
+
+For beta releases, mark downstream promotion as skipped and skip this phase:
+CI deliberately suppresses the `publish-release` dispatch for prerelease tags.
 
 Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to complete, after which it fires a `publish-release` dispatch to Homebrew, winget, and GitTools Actions. You will monitor all three automatically using `/loop`.
 
@@ -682,7 +705,19 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
 - If `RENDERED` is roughly `EXPECTED` or slightly higher → ✅ notes are complete. `RENDERED` naturally runs a bit above `EXPECTED`: an issue resolved by a PR gets two references in the body (`#issue` and `!pr`, e.g. "resolved in !5008"), so a milestone with several issue+PR pairs will render more distinct references than the raw item count.
 - If `RENDERED` is far below `EXPECTED` (e.g. 2 vs 86, or ~half with entire label sections like `Dependencies`/`Bug` missing) → ❌ GRM ran against a stale milestone index and dropped items (see the Phase 3 settle check).
 
-  **Fix:** regenerate the release notes in place after the milestone listing is
+  **Beta recovery:** after the final-release milestone listing is consistent,
+  rebuild the reviewed notes file from its closed items (for example, milestone
+  `7.0.0` for beta tag `7.0.0-beta.1`), as in Phase 4. After the user approves
+  the replacement notes, update only the beta release's body:
+
+  ```bash
+  gh release edit <BETA_VERSION> --repo GitTools/GitVersion --notes-file <REVIEWED_NOTES_FILE>
+  ```
+
+  Re-run the reconciliation above. Do not run the stable recovery command below
+  for a beta; it targets the milestone's release rather than the beta tag.
+
+  **Stable recovery:** regenerate the release notes in place after the milestone listing is
   consistent. `allow-update-to-published: true` in `GitReleaseManager.yml` lets
   GitReleaseManager update the published release:
 
@@ -699,7 +734,7 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
 
 ### 6e. Docs schema published (major/minor releases only)
 
-Skip this check entirely for patch releases. For major or minor releases, the schema URL uses **`Major.Minor` only** (e.g. `6.8`, never the full `6.8.0` patch version — confirmed from `build/docs/Tasks/GenerateSchemas.cs`, which generates `$"{gitVersion.Major}.{gitVersion.Minor}"`):
+Skip this check entirely for prereleases (CI intentionally skips docs promotion) and patch releases. For stable major or minor releases, the schema URL uses **`Major.Minor` only** (e.g. `6.8`, never the full `6.8.0` patch version — confirmed from `build/docs/Tasks/GenerateSchemas.cs`, which generates `$"{gitVersion.Major}.{gitVersion.Minor}"`):
 
 ```bash
 MAJOR_MINOR=$(echo "<VERSION>" | cut -d. -f1,2)

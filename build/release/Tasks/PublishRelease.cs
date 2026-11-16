@@ -43,6 +43,14 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
             return;
         }
 
+        if (context.IsTaggedPreRelease)
+        {
+            // Keep the beta's reviewed notes and prerelease flag, and leave the
+            // final milestone open. GRM milestone-based create targets that tag.
+            context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, milestone, assets);
+            return;
+        }
+
         context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
         {
             Milestone = milestone,
