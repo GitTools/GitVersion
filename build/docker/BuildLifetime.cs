@@ -1,5 +1,4 @@
 using Common.Lifetime;
-using Common.Utilities;
 using Docker.Tasks;
 using Docker.Utilities;
 
@@ -13,7 +12,6 @@ public class BuildLifetime : DockerBuildLifetime<BuildContext>
         {
             // README publication uses the Docker Hub HTTP API, not the Docker daemon.
             context.UseDocker = false;
-            context.DockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.DockerHub);
         }
 
         base.Setup(context, info);
