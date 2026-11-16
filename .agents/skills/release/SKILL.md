@@ -501,6 +501,23 @@ applied, and any remaining blocker/warning. Avoid replaying raw API output.
 
 Only proceed after the user explicitly confirms readiness.
 
+For a beta, prepare a nonempty notes file from the reviewed final-release milestone
+(for example, `7.0.0` for `7.0.0-beta.1`) and have the user review it before
+publication. Beta publication only attaches assets; it preserves these notes and
+leaves the milestone open. Create a draft with the reviewed notes, inspect it,
+then publish after the user's approval:
+
+```bash
+gh release create <VERSION> --repo GitTools/GitVersion --title "<VERSION>" \
+  --draft --prerelease --notes-file <REVIEWED_NOTES_FILE> --target main
+gh release view <VERSION> --repo GitTools/GitVersion
+# After approval:
+gh release edit <VERSION> --repo GitTools/GitVersion --draft=false \
+  --discussion-category "Announcements"
+```
+
+For a stable release, use the existing command below; CI generates its notes:
+
 ```bash
 gh release create <VERSION> \
   --repo GitTools/GitVersion \
