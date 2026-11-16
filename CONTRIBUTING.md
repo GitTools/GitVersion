@@ -175,6 +175,9 @@ command to create a beta from the final-release milestone.
 
 The release dispatch validates the published release, tag, commit SHA, and main ancestry before building.
 All release CI jobs check out that SHA, and version calculation must match the selected tag.
+Beta commits must include `build/release/protocol.json` with `betaPublishing: 1`; preflight rejects older
+commits before their build tooling runs. This protocol declares support for beta isolation and consistent
+release-label arguments in host, Docker, native, global-tool, and MSBuild artifact checks.
 Unit tests must pass before publishing packages or Docker images. Beta uploads preserve the reviewed
 release notes and prerelease flag, attach assets to the beta tag, and leave the final milestone and
 its issue comments untouched. Beta Docker images use prerelease-qualified tags, without stable version

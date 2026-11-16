@@ -50,7 +50,15 @@ public class ArtifactsExecutableTest : FrostingTask<BuildContext>
         var settings = new GitVersionSettings
         {
             OutputTypes = [GitVersionOutput.Json],
-            ToolPath = outputDirectory.Combine(packageToTest).Combine("tools").CombineWithFilePath("gitversion.exe").FullPath
+            ToolPath = outputDirectory.Combine(packageToTest).Combine("tools").CombineWithFilePath("gitversion.exe").FullPath,
+            ArgumentCustomization = args =>
+            {
+                foreach (var argument in context.Publication?.GitVersionArguments ?? [])
+                {
+                    args.AppendQuoted(argument);
+                }
+                return args;
+            }
         };
         var gitVersion = context.GitVersion(settings);
 

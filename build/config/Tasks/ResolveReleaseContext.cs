@@ -88,6 +88,17 @@ public partial class ResolveReleaseContext : AsyncFrostingTask<BuildContext>
         {
             throw new InvalidOperationException("Beta releases require reviewed release notes before publishing.");
         }
+
+        if (selection.Prerelease)
+        {
+            using var content = await GetJsonAsync(client, $"{repository}/contents/build/release/protocol.json?ref={selection.TargetCommitish}");
+            var encoded = content.RootElement.GetProperty("content").GetString()!;
+            using var protocol = JsonDocument.Parse(Convert.FromBase64String(encoded));
+            if (protocol.RootElement.GetProperty("betaPublishing").GetInt32() != 1)
+            {
+                throw new InvalidOperationException("The selected commit does not support this beta publication protocol.");
+            }
+        }
     }
 
     private static async Task<JsonDocument> GetJsonAsync(HttpClient client, string path)

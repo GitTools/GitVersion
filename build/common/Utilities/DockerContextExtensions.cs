@@ -182,6 +182,10 @@ public static class DockerContextExtensions
             ArgumentNullException.ThrowIfNull(context.Version?.GitVersion.FullSemVer);
             var settings = context.GetDockerRunSettings(arch, useSdkHome);
             context.Information($"Testing image: {image}");
+            if (!useSdkHome && context.Publication is { } publication)
+            {
+                args = [.. args, .. publication.GitVersionArguments];
+            }
             var output = context.DockerRun(settings, image, command, args);
             context.Information("Output : " + output);
 
@@ -282,6 +286,16 @@ public static class DockerContextExtensions
             if (!string.IsNullOrWhiteSpace(gitBackend))
             {
                 settings.Env = [.. settings.Env ?? [], $"GITVERSION_GIT_BACKEND={gitBackend}"];
+            }
+
+            if (context.Publication is { } publication)
+            {
+                settings.Env =
+                [
+                    .. settings.Env ?? [],
+                    $"GITVERSION_RELEASE_COMMIT={publication.TargetCommitish}",
+                    $"GITVERSION_RELEASE_LABEL={publication.PrereleaseLabel}"
+                ];
             }
 
             // SDK artifact tests need writable CLI configuration. Final-image tests

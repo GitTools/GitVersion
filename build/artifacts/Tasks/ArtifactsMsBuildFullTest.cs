@@ -34,6 +34,10 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
                 .AppendQuoted($"-p:GitVersionMsBuildVersion={context.Version.NugetVersion}")
                 .AppendQuoted($"-p:TargetFramework=net{netVersion}")
                 .AppendQuoted($"-p:RestoreAdditionalProjectSources={nugetSource.FullPath}");
+            if (context.Publication is { } publication)
+            {
+                arguments.AppendQuoted($"-p:GitVersion_CommandLineArguments={string.Join(' ', publication.GitVersionArguments)}");
+            }
             var exitCode = context.StartProcess("dotnet", new ProcessSettings
             {
                 Arguments = arguments,

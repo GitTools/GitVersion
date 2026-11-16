@@ -4,6 +4,10 @@ public sealed record ReleasePublication(string Name, string Milestone, bool Prer
 {
     public bool CloseMilestone => !Prerelease;
 
+    public string[] GitVersionArguments => PrereleaseLabel is { } label
+        ? ["--no-normalize", "--commit", TargetCommitish, "--override-config", $"calculation.branches.main.label={label}"]
+        : ["--no-normalize", "--commit", TargetCommitish];
+
     public string? PrereleaseLabel
     {
         get

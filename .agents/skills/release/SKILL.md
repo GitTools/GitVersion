@@ -59,6 +59,12 @@ git rev-list --left-right --count HEAD...origin/main
 - If the branch is behind, fast-forward it before continuing. If it is ahead, stop
   and ask the user whether those commits are intended for this release.
 
+After this preflight, capture `VERIFIED_SHA` with `git rev-parse HEAD` and check it
+equals `git rev-parse origin/main`. Verify CI and reviews for this exact SHA, show
+the full SHA in the readiness report, and obtain approval for that commit before
+using it as `<VERIFIED_SHA>` below. Do not silently replace it if main advances;
+a different candidate requires a new readiness check and approval.
+
 ### Downstream publishing forks are current
 
 For a prerelease, skip this subsection: beta publication does not dispatch the stable
@@ -510,6 +516,19 @@ applied, and any remaining blocker/warning. Avoid replaying raw API output.
 
 Only proceed after the user explicitly confirms readiness.
 
+Before either release-creation command, inspect the remote tag:
+
+```bash
+git ls-remote --exit-code origin 'refs/tags/<VERSION>' 'refs/tags/<VERSION>^{}'
+```
+
+For a beta, substitute its full beta version. An existing lightweight tag's SHA,
+or an annotated tag's peeled `^{}` commit SHA, must equal the approved
+`<VERIFIED_SHA>`; stop on a mismatch, without moving or replacing the tag.
+Exit code 2 with no refs means the tag does not exist and may be created at the
+approved SHA; any other failure must be investigated. `--target` does not move an
+existing tag. Repeat this check immediately before publishing an existing draft.
+
 **Prerelease alternative:** GitReleaseManager 0.20's milestone-based `create` uses
 the milestone as the tag even when `--name` differs. Do not run it against `7.0.0`
 to create `7.0.0-beta.1`. Prepare a local notes preview from the verified final milestone,
@@ -519,14 +538,18 @@ publication. With approval to create the draft, use:
 ```bash
 gh release create <BETA_VERSION> --repo GitTools/GitVersion \
   --draft --prerelease --latest=false --title "<BETA_VERSION>" \
-  --notes-file <REVIEWED_NOTES_FILE> --target <VERIFIED_SHA> \
-  --discussion-category "Announcements"
+  --notes-file <REVIEWED_NOTES_FILE> --target <VERIFIED_SHA>
 ```
 
 Publishing this draft requires separate explicit approval. The beta CI path verifies
 the release/tag/SHA, retains its reviewed notes and prerelease flag, uploads assets to
 the beta tag, and leaves the final-version milestone open. Do not use the empty-notes
 stable-release command below for a beta. Skip Phase 5 for prereleases.
+
+After separate publication approval and the repeated tag check, publish the beta
+draft with `gh release edit <BETA_VERSION> --repo GitTools/GitVersion --draft=false
+--prerelease --latest=false --target <VERIFIED_SHA> --discussion-category "Announcements"`.
+The discussion category belongs on publication, not on draft creation.
 
 ```bash
 gh release create <VERSION> \
@@ -711,7 +734,14 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
 - If `RENDERED` is roughly `EXPECTED` or slightly higher → ✅ notes are complete. `RENDERED` naturally runs a bit above `EXPECTED`: an issue resolved by a PR gets two references in the body (`#issue` and `!pr`, e.g. "resolved in !5008"), so a milestone with several issue+PR pairs will render more distinct references than the raw item count.
 - If `RENDERED` is far below `EXPECTED` (e.g. 2 vs 86, or ~half with entire label sections like `Dependencies`/`Bug` missing) → ❌ GRM ran against a stale milestone index and dropped items (see the Phase 3 settle check).
 
-  **Fix:** regenerate the release notes in place after the milestone listing is
+  **Prerelease recovery:** rebuild the local notes preview from the final-version
+  milestone, reconcile its count and categories, and obtain approval for the
+  reviewed replacement. Apply it with `gh release edit <BETA_VERSION> --repo
+  GitTools/GitVersion --notes-file <REVIEWED_NOTES_FILE> --prerelease --latest=false`,
+  then repeat the reconciliation. Do not run milestone-based GRM `create` against
+  either the beta tag or the final-version tag to recover beta notes.
+
+  **Stable-release fix:** regenerate the release notes in place after the milestone listing is
   consistent. `allow-update-to-published: true` in `GitReleaseManager.yml` lets
   GitReleaseManager update the published release:
 

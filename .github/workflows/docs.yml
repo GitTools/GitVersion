@@ -195,7 +195,9 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
 
   publish:
-    if: (github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && !contains(github.event.client_payload.tag, '-')
+    if: >-
+      (github.event_name == 'repository_dispatch' && github.event.client_payload.tag != '' && !contains(github.event.client_payload.tag, '-')) ||
+      (github.event_name == 'workflow_dispatch' && !(github.ref_type == 'tag' && contains(github.ref_name, '-')))
     name: Publish docs
     needs: [ validate ]
     runs-on: ubuntu-24.04

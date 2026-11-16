@@ -50,6 +50,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         var publication = string.IsNullOrEmpty(releaseTag)
             ? null
             : ReleasePublication.Create(releaseTag, context.ExecuteCommand("git", "rev-parse HEAD").Single());
+        context.Publication = publication;
         if (publication is not null)
         {
             // Pin the local calculation branch as well as HEAD. --commit uses
@@ -66,10 +67,9 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
                 args.Prepend(gitVersionPath.FullPath);
                 if (publication is not null)
                 {
-                    args.Append("--no-normalize").Append("--commit").AppendQuoted(publication.TargetCommitish);
-                    if (publication.PrereleaseLabel is not null)
+                    foreach (var argument in publication.GitVersionArguments)
                     {
-                        args.Append("--override-config").AppendQuoted($"calculation.branches.main.label={publication.PrereleaseLabel}");
+                        args.AppendQuoted(argument);
                     }
                 }
                 return args;

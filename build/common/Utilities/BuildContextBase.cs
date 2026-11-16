@@ -5,6 +5,7 @@ public class BuildContextBase : FrostingContext
     protected BuildContextBase(ICakeContext context) : base(context) => Platform = context.Environment.Platform.Family;
     public PlatformFamily Platform { get; set; }
     public BuildVersion? Version { get; set; }
+    public ReleasePublication? Publication { get; set; }
     public bool IsOriginalRepo { get; set; }
     public string BranchName { get; set; } = string.Empty;
     public string RepositoryName { get; set; } = string.Empty;
