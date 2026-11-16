@@ -722,7 +722,7 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
 
 ### 6e. Docs schema published (major/minor releases only)
 
-Skip this check entirely for patch releases. For major or minor releases, the schema URL uses **`Major.Minor` only** (e.g. `6.8`, never the full `6.8.0` patch version — confirmed from `build/docs/Tasks/GenerateSchemas.cs`, which generates `$"{gitVersion.Major}.{gitVersion.Minor}"`):
+Skip this check entirely for beta releases (CI intentionally skips docs promotion) and patch releases. For stable major or minor releases, the schema URL uses **`Major.Minor` only** (e.g. `6.8`, never the full `6.8.0` patch version — confirmed from `build/docs/Tasks/GenerateSchemas.cs`, which generates `$"{gitVersion.Major}.{gitVersion.Minor}"`):
 
 ```bash
 MAJOR_MINOR=$(echo "<VERSION>" | cut -d. -f1,2)
