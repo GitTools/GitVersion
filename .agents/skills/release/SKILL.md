@@ -705,7 +705,19 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
 - If `RENDERED` is roughly `EXPECTED` or slightly higher → ✅ notes are complete. `RENDERED` naturally runs a bit above `EXPECTED`: an issue resolved by a PR gets two references in the body (`#issue` and `!pr`, e.g. "resolved in !5008"), so a milestone with several issue+PR pairs will render more distinct references than the raw item count.
 - If `RENDERED` is far below `EXPECTED` (e.g. 2 vs 86, or ~half with entire label sections like `Dependencies`/`Bug` missing) → ❌ GRM ran against a stale milestone index and dropped items (see the Phase 3 settle check).
 
-  **Fix:** regenerate the release notes in place after the milestone listing is
+  **Beta recovery:** after the final-release milestone listing is consistent,
+  rebuild the reviewed notes file from its closed items (for example, milestone
+  `7.0.0` for beta tag `7.0.0-beta.1`), as in Phase 4. After the user approves
+  the replacement notes, update only the beta release's body:
+
+  ```bash
+  gh release edit <BETA_VERSION> --repo GitTools/GitVersion --notes-file <REVIEWED_NOTES_FILE>
+  ```
+
+  Re-run the reconciliation above. Do not run the stable recovery command below
+  for a beta; it targets the milestone's release rather than the beta tag.
+
+  **Stable recovery:** regenerate the release notes in place after the milestone listing is
   consistent. `allow-update-to-published: true` in `GitReleaseManager.yml` lets
   GitReleaseManager update the published release:
 
