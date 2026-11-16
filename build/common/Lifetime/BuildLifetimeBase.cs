@@ -56,6 +56,16 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         var gitVersion = context.GitVersion(gitVersionSettings);
 
         context.Version = BuildVersion.Calculate(gitVersion);
+
+        if (context.IsReleaseBranchOriginalRepo && context.IsTagged)
+        {
+            var tags = context.ExecuteCommand("git", "tag --points-at HEAD").ToArray();
+            if (!tags.Contains(context.Version.NugetVersion, StringComparer.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Calculated package version '{context.Version.NugetVersion}' does not match a tag on HEAD ({string.Join(", ", tags)}).");
+            }
+        }
     }
     public override void Teardown(T context, ITeardownContext info)
     {

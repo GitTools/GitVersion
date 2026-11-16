@@ -5,7 +5,7 @@ calculation:
   next-version: 7.0.0
   branches:
     main:
-      label: alpha
+      label: beta
     support:
       label: beta
 output: {}
