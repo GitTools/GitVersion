@@ -13,10 +13,8 @@ public class DockerHubReadmePublish : FrostingTask<BuildContext>;
 [TaskDescription("Publish the DockerHub updated README.md")]
 public class DockerHubReadmePublishInternal : AsyncFrostingTask<BuildContext>
 {
-    public override bool ShouldRun(BuildContext context)
-    {
-        return context.ShouldRun(context.IsTaggedRelease, $"{nameof(DockerHubReadmePublish)} works only for tagged releases.");
-    }
+    public override bool ShouldRun(BuildContext context) =>
+        context.ShouldRun(context.IsTaggedRelease, $"{nameof(DockerHubReadmePublish)} works only for tagged releases.");
 
     public override async Task RunAsync(BuildContext context)
     {
