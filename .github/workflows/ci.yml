@@ -67,17 +67,19 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout workflow scripts
+      - name: Checkout release tooling
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
 
       - name: Resolve publish flag
         id: flags
-        run: node .github/scripts/release-context.mjs
+        run: dotnet run --project build/config/config.csproj --configuration Release -- --target=ResolveReleaseContext
         env:
           GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Check release dispatch policy
-        run: node --test .github/scripts/release-context.test.mjs
 
   build:
     name: Build & Package

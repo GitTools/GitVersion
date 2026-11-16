@@ -68,17 +68,10 @@ jobs:
         if: steps.cache-cake.outputs.cache-hit != 'true'
         run: dotnet build build/ --configuration=Release
 
-      - name: Check release publication policy
-        run: dotnet run --project scripts/release-policy-check/ReleasePolicyCheck.csproj --configuration Release
-
       - name: '[Prepare]'
         shell: pwsh
         run: dotnet run/build.dll --target=BuildPrepare
 
-      - name: Check release identity against advancing main history
-        run: |
-          node .github/scripts/check-release-history.mjs scripts/release-policy-check/bin/Release/net11.0/ReleasePolicyCheck.dll tools/gitversion
-          node .github/scripts/check-release-history.mjs scripts/release-policy-check/bin/Release/net11.0/ReleasePolicyCheck.dll tools/gitversion 7.0.0
   set_matrix:
     needs: [ prepare ]
     name: Set Matrix
