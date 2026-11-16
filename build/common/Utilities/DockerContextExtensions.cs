@@ -200,11 +200,8 @@ public static class DockerContextExtensions
                 return [];
             }
 
-            var tags = new List<string>
-            {
-                $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
-                $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}"
-            };
+            var tags = ReleasePublication.DockerVersionTags(context.Version.Version!, context.Version.SemVersion!, context.Version.IsPreRelease)
+                .Select(version => $"{name}:{version}-{distro}-{targetFramework}").ToList();
 
             if (distro == Constants.DockerDistroLatest && targetFramework == Constants.DotnetLtsLatest)
             {

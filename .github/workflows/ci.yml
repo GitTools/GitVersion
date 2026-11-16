@@ -33,6 +33,7 @@ on:
 
 env:
   DOTNET_ROLL_FORWARD: "Major"
+  GITVERSION_RELEASE_TAG: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.tag || '' }}
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: 1
@@ -46,6 +47,7 @@ permissions:
 jobs:
   prepare:
     name: Prepare
+    needs: [ publish_flags ]
     permissions:
       contents: read
     uses: $/.github/workflows/_prepare.yml # NOSONAR -- $/ resolves to the running commit.
@@ -58,18 +60,24 @@ jobs:
     outputs:
       can_publish: ${{ steps.flags.outputs.can_publish }}
       run_full_validation: ${{ steps.flags.outputs.run_full_validation }}
+      prerelease: ${{ steps.flags.outputs.prerelease }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
         with:
           egress-policy: audit
 
+      - name: Checkout workflow scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Resolve publish flag
         id: flags
-        shell: bash
-        run: |
-          echo "can_publish=${{ github.repository == 'GitTools/GitVersion' && github.ref_name == 'main' }}" >> "$GITHUB_OUTPUT"
-          echo "run_full_validation=${{ github.repository == 'GitTools/GitVersion' && (github.ref_name == 'main' || github.event_name == 'merge_group' || github.event_name == 'repository_dispatch') }}" >> "$GITHUB_OUTPUT"
+        run: node .github/scripts/release-context.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Check release dispatch policy
+        run: node --test .github/scripts/release-context.test.mjs
 
   build:
     name: Build & Package
@@ -119,7 +127,7 @@ jobs:
       dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
 
   docker_linux_images:
-    needs: [ prepare, build, publish_flags ]
+    needs: [ prepare, build, publish_flags, unit_test ]
     name: Docker Images (${{ matrix.arch }})
     permissions:
       contents: read
@@ -160,7 +168,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [ artifacts_windows_test, artifacts_linux_test, publish_flags ]
+    needs: [ artifacts_windows_test, artifacts_linux_test, publish_flags, unit_test ]
     permissions:
       contents: read
       id-token: write
@@ -173,7 +181,7 @@ jobs:
 
   release:
     name: Release
-    needs: [ publish, docker_linux_manifests ]
+    needs: [ publish, docker_linux_manifests, publish_flags ]
     if: ${{ always() && needs.publish.result == 'success' && (needs.docker_linux_manifests.result == 'success' || needs.docker_linux_manifests.result == 'skipped') }}
     runs-on: windows-2025-vs2026
     permissions:
@@ -195,6 +203,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.sha || github.sha }}
 
       - name: Restore State
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
@@ -226,7 +235,7 @@ jobs:
         run: dotnet run/release.dll --target=PublishRelease
 
       - name: '[Publish Release]'
-        if: github.event_name == 'repository_dispatch'
+        if: github.event_name == 'repository_dispatch' && needs.publish_flags.outputs.prerelease == 'false'
         uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           token: ${{ github.token }}
@@ -234,7 +243,7 @@ jobs:
           event-type: publish-release
           client-payload: |
             {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}",
+              "ref": "${{ github.event.client_payload.ref }}",
+              "sha": "${{ github.event.client_payload.sha }}",
               "tag": "${{ github.event.client_payload.tag }}"
             }

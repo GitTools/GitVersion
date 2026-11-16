@@ -26,7 +26,7 @@ jobs:
         shell: pwsh
         run: |
           # Finding the version from release tag
-          $TAG="${{ github.ref }}".Replace("refs/tags/", "")
+          $TAG=$env:GITHUB_REF.Replace("refs/tags/", "")
           "tag=$TAG" >> $env:GITHUB_OUTPUT
 
       - uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1

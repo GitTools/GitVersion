@@ -164,6 +164,23 @@ We use Cake for our build and deployment process. The way the release process is
    and other distribution channels.
 9. The issues and pull requests will get updated with message specifying in which release it was included.
 
+### Beta releases
+
+Keep the delivery scope and its closed items in the final release milestone (for example `7.0.0`).
+Prepare and review the beta notes from that scope in a GitHub draft whose tag and name are the full
+beta version (for example `7.0.0-beta.1`). Mark it as a prerelease and target the selected commit on main.
+Publishing the draft remains a separate maintainer action. GitReleaseManager 0.20 uses the milestone
+as the tag even when a different release name is supplied, so do not use its milestone-based `create`
+command to create a beta from the final-release milestone.
+
+The release dispatch validates the published release, tag, commit SHA, and main ancestry before building.
+All release CI jobs check out that SHA, and version calculation must match the selected tag.
+Unit tests must pass before publishing packages or Docker images. Beta uploads preserve the reviewed
+release notes and prerelease flag, attach assets to the beta tag, and leave the final milestone and
+its issue comments untouched. Beta Docker images use prerelease-qualified tags, without stable version
+aliases or `latest` tags. Homebrew, winget, GitTools Actions updates, and stable documentation publication
+are dispatched only for stable releases.
+
 ### Running the release with the `release` agent skill
 
 Steps 2–9 above are automated by the `release` agent skill, kept at [`.agents/skills/release/SKILL.md`][agents-skills-release-skill-md]

@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   homebrew:
+    if: ${{ !contains(github.event.client_payload.tag || inputs.tag-name, '-') }}
     permissions:
       contents: none
     name: Update GitTools Actions

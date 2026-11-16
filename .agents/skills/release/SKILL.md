@@ -61,6 +61,9 @@ git rev-list --left-right --count HEAD...origin/main
 
 ### Downstream publishing forks are current
 
+For a prerelease, skip this subsection: beta publication does not dispatch the stable
+Homebrew, winget, or GitTools Actions updates.
+
 The publish workflows use bot-owned forks to open their downstream PRs:
 
 - `.github/workflows/homebrew.yml` authenticates as `gittools-bot`, so Homebrew
@@ -195,6 +198,12 @@ State the computed version clearly, e.g. **Next release: `6.8.0`**.
 ---
 
 ## Phase 3 — Readiness checklist
+
+For prereleases such as `7.0.0-beta.1`, use the final-version milestone (`7.0.0`)
+as the notes scope in checks 3a–3d and the index-settle check. Keep its items in place;
+do not create or populate a separate beta milestone, close the final milestone, or
+post final-release closure comments. The GitHub release/tag still uses the full beta
+version. This overrides the exact-version milestone requirement below for prereleases.
 
 Before querying milestones, confirm that the target does not already have a GitHub
 release. An existing release is a hard stop unless the user explicitly asks to
@@ -501,13 +510,31 @@ applied, and any remaining blocker/warning. Avoid replaying raw API output.
 
 Only proceed after the user explicitly confirms readiness.
 
+**Prerelease alternative:** GitReleaseManager 0.20's milestone-based `create` uses
+the milestone as the tag even when `--name` differs. Do not run it against `7.0.0`
+to create `7.0.0-beta.1`. Prepare a local notes preview from the verified final milestone,
+reconcile its included item count and categories, and have the notes reviewed before
+publication. With approval to create the draft, use:
+
+```bash
+gh release create <BETA_VERSION> --repo GitTools/GitVersion \
+  --draft --prerelease --latest=false --title "<BETA_VERSION>" \
+  --notes-file <REVIEWED_NOTES_FILE> --target <VERIFIED_SHA> \
+  --discussion-category "Announcements"
+```
+
+Publishing this draft requires separate explicit approval. The beta CI path verifies
+the release/tag/SHA, retains its reviewed notes and prerelease flag, uploads assets to
+the beta tag, and leaves the final-version milestone open. Do not use the empty-notes
+stable-release command below for a beta. Skip Phase 5 for prereleases.
+
 ```bash
 gh release create <VERSION> \
   --repo GitTools/GitVersion \
   --title "<VERSION>" \
   --notes "" \
   --discussion-category "Announcements" \
-  --target main
+  --target <VERIFIED_SHA>
 ```
 
 > **Announcements discussion:** `--discussion-category "Announcements"` links the release to a discussion in the repo's **Announcements** category so users can follow up in one place. The category must already exist (it does — verify with `gh api graphql -f query='{repository(owner:"GitTools",name:"GitVersion"){discussionCategories(first:20){nodes{name}}}}'` if unsure). Omit the flag only if the user explicitly doesn't want a discussion for this release.
@@ -529,6 +556,8 @@ gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
 ---
 
 ## Phase 5 — Monitor downstream PRs
+
+Skip this phase for prereleases: stable downstream updates are intentionally suppressed.
 
 Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to complete, after which it fires a `publish-release` dispatch to Homebrew, winget, and GitTools Actions. You will monitor all three automatically using `/loop`.
 
@@ -698,6 +727,9 @@ echo "expected≈$EXPECTED  rendered=$RENDERED"
   proceed on a timeout; wait for an explicit answer.
 
 ### 6e. Docs schema published (major/minor releases only)
+
+For prereleases, stable docs publication is intentionally suppressed; direct testers
+to the development and migration documentation instead of requiring stable schema publication.
 
 Skip this check entirely for patch releases. For major or minor releases, the schema URL uses **`Major.Minor` only** (e.g. `6.8`, never the full `6.8.0` patch version — confirmed from `build/docs/Tasks/GenerateSchemas.cs`, which generates `$"{gitVersion.Major}.{gitVersion.Minor}"`):
 

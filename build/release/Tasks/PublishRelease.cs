@@ -36,22 +36,32 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
 
         var assets = string.Join(",", archives);
 
-        var milestone = context.Version?.Milestone;
-
-        if (milestone is null)
+        var version = context.Version?.SemVersion;
+        if (version is null)
         {
             return;
         }
 
-        context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
-        {
-            Milestone = milestone,
-            Name = milestone,
-            Prerelease = false,
-            TargetCommitish = Constants.DefaultBranch
-        });
+        var sha = context.ExecuteCommand("git", "rev-parse HEAD").Single();
+        var publication = ReleasePublication.Create(version, sha);
 
-        context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, milestone, assets);
-        context.GitReleaseManagerClose(token, Constants.RepoOwner, Constants.Repository, milestone);
+        // GRM 0.20 uses Milestone as the tag, even when Name differs. A beta
+        // therefore keeps the reviewed notes on its already-published release.
+        if (!publication.Prerelease)
+        {
+            context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
+            {
+                Milestone = publication.Milestone,
+                Name = publication.Name,
+                Prerelease = publication.Prerelease,
+                TargetCommitish = publication.TargetCommitish
+            });
+        }
+
+        context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, publication.Name, assets);
+        if (publication.CloseMilestone)
+        {
+            context.GitReleaseManagerClose(token, Constants.RepoOwner, Constants.Repository, publication.Milestone);
+        }
     }
 }

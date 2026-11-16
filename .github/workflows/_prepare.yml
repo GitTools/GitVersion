@@ -14,6 +14,7 @@ permissions:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
+  GITVERSION_RELEASE_TAG: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.tag || '' }}
 
 jobs:
   prepare:
@@ -32,6 +33,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.sha || github.sha }}
 
       - name: Cache cake frosting
         id: cache-cake
@@ -64,9 +68,17 @@ jobs:
         if: steps.cache-cake.outputs.cache-hit != 'true'
         run: dotnet build build/ --configuration=Release
 
+      - name: Check release publication policy
+        run: dotnet run --project scripts/release-policy-check/ReleasePolicyCheck.csproj --configuration Release
+
       - name: '[Prepare]'
         shell: pwsh
         run: dotnet run/build.dll --target=BuildPrepare
+
+      - name: Check release identity against advancing main history
+        run: |
+          node .github/scripts/check-release-history.mjs scripts/release-policy-check/bin/Release/net11.0/ReleasePolicyCheck.dll tools/gitversion
+          node .github/scripts/check-release-history.mjs scripts/release-policy-check/bin/Release/net11.0/ReleasePolicyCheck.dll tools/gitversion 7.0.0
   set_matrix:
     needs: [ prepare ]
     name: Set Matrix
@@ -82,6 +94,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.sha || github.sha }}
 
       - name: Restore State
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.
