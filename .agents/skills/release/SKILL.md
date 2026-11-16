@@ -196,6 +196,9 @@ State the computed version clearly, e.g. **Next release: `6.8.0`**.
 
 ## Phase 3 — Readiness checklist
 
+For beta releases, use the final-release milestone throughout these checks
+(for example, `7.0.0` for `7.0.0-beta.1`), not a separate beta milestone.
+
 Before querying milestones, confirm that the target does not already have a GitHub
 release. An existing release is a hard stop unless the user explicitly asks to
 repair or update that release:
@@ -546,6 +549,9 @@ gh api repos/GitTools/GitVersion/releases/tags/<VERSION> --jq '.discussion_url'
 ---
 
 ## Phase 5 — Monitor downstream PRs
+
+For beta releases, mark downstream promotion as skipped and skip this phase:
+CI deliberately suppresses the `publish-release` dispatch for prerelease tags.
 
 Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to complete, after which it fires a `publish-release` dispatch to Homebrew, winget, and GitTools Actions. You will monitor all three automatically using `/loop`.
 
