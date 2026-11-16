@@ -175,7 +175,7 @@ jobs:
     name: Release
     needs: [ publish, docker_linux_manifests ]
     if: ${{ always() && needs.publish.result == 'success' && (needs.docker_linux_manifests.result == 'success' || needs.docker_linux_manifests.result == 'skipped') }}
-    runs-on: windows-2025-vs2026
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       packages: write
