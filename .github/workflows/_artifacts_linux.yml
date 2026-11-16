@@ -17,7 +17,6 @@ on:
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
   DOTNET_ROLL_FORWARD: "Major"
-  GITVERSION_RELEASE_TAG: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.tag || '' }}
 
 permissions:
   contents: read
@@ -41,7 +40,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.sha || github.sha }}
 
       - name: Restore State
         uses: $/.github/actions/cache-restore # NOSONAR -- $/ resolves to the running commit.

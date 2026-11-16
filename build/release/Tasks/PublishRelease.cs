@@ -36,32 +36,30 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
 
         var assets = string.Join(",", archives);
 
-        var version = context.Version?.SemVersion;
-        if (version is null)
+        var milestone = context.Version?.Milestone;
+
+        if (milestone is null)
         {
             return;
         }
 
-        var sha = context.ExecuteCommand("git", "rev-parse HEAD").Single();
-        var publication = ReleasePublication.Create(version, sha);
-
-        // GRM 0.20 uses Milestone as the tag, even when Name differs. A beta
-        // therefore keeps the reviewed notes on its already-published release.
-        if (!publication.Prerelease)
+        if (context.IsTaggedPreRelease)
         {
-            context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
-            {
-                Milestone = publication.Milestone,
-                Name = publication.Name,
-                Prerelease = publication.Prerelease,
-                TargetCommitish = publication.TargetCommitish
-            });
+            // Keep the beta's reviewed notes and prerelease flag, and leave the
+            // final milestone open. GRM milestone-based create targets that tag.
+            context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, milestone, assets);
+            return;
         }
 
-        context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, publication.Name, assets);
-        if (publication.CloseMilestone)
+        context.GitReleaseManagerCreate(token, Constants.RepoOwner, Constants.Repository, new GitReleaseManagerCreateSettings
         {
-            context.GitReleaseManagerClose(token, Constants.RepoOwner, Constants.Repository, publication.Milestone);
-        }
+            Milestone = milestone,
+            Name = milestone,
+            Prerelease = false,
+            TargetCommitish = Constants.DefaultBranch
+        });
+
+        context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, milestone, assets);
+        context.GitReleaseManagerClose(token, Constants.RepoOwner, Constants.Repository, milestone);
     }
 }

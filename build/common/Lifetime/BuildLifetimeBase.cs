@@ -46,55 +46,16 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
             throw new FileNotFoundException("Failed to locate the Release build of gitversion.dll in ./tools/gitversion. Try running \"./build.ps1 -Stage build -Target BuildPrepare\"");
         }
 
-        var releaseTag = context.EnvironmentVariable("GITVERSION_RELEASE_TAG");
-        var publication = string.IsNullOrEmpty(releaseTag)
-            ? null
-            : ReleasePublication.Create(releaseTag, context.ExecuteCommand("git", "rev-parse HEAD").Single());
-        context.Publication = publication;
-        if (publication is not null)
-        {
-            // Pin the local calculation branch as well as HEAD. --commit uses
-            // history timestamps, so a later tip with the same timestamp must
-            // not become the current commit. Remote refs remain unchanged.
-            context.ExecuteCommand("git", $"update-ref refs/heads/{Constants.DefaultBranch} {publication.TargetCommitish}");
-        }
         var gitVersionSettings = new GitVersionSettings
         {
             OutputTypes = [GitVersionOutput.Json, GitVersionOutput.BuildServer],
             ToolPath = context.Tools.Resolve(["dotnet.exe", "dotnet"]),
-            ArgumentCustomization = args =>
-            {
-                args.Prepend(gitVersionPath.FullPath);
-                if (publication is not null)
-                {
-                    foreach (var argument in publication.GitVersionArguments)
-                    {
-                        args.AppendQuoted(argument);
-                    }
-                }
-                return args;
-            }
+            ArgumentCustomization = args => args.Prepend(gitVersionPath.FullPath)
         };
-        if (!string.IsNullOrEmpty(releaseTag))
-        {
-            // Keep main's configuration while calculating the checked-out tag.
-            // --no-normalize prevents a later main tip replacing this revision.
-            gitVersionSettings.EnvironmentVariables = new Dictionary<string, string>
-            {
-                ["GITHUB_REF"] = $"refs/heads/{Constants.DefaultBranch}",
-                ["GITHUB_REF_TYPE"] = "branch",
-                ["GITHUB_SHA"] = publication!.TargetCommitish
-            };
-        }
 
         var gitVersion = context.GitVersion(gitVersionSettings);
 
         context.Version = BuildVersion.Calculate(gitVersion);
-
-        if (!string.IsNullOrEmpty(releaseTag) && context.Version.SemVersion != releaseTag)
-        {
-            throw new InvalidOperationException($"Calculated version {context.Version.SemVersion} does not match selected release tag {releaseTag}.");
-        }
     }
     public override void Teardown(T context, ITeardownContext info)
     {

@@ -14,7 +14,6 @@ permissions:
 
 jobs:
   homebrew:
-    if: ${{ !contains(github.event.client_payload.tag || inputs.tag-name, '-') }}
     name: Bump winget manifest
     runs-on: ubuntu-24.04
     steps:
