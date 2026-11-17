@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation.Mainline.Trunk;
 internal abstract class CommitOnTrunkWithPreReleaseTagBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.GetEffectiveConfiguration(commit).IsMainBranch
+        => context.EffectiveConfiguration.IsMainBranch
             && context.SemanticVersion?.IsPreRelease == true;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(

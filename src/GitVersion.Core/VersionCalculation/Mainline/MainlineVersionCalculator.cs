@@ -31,6 +31,7 @@ internal sealed class MainlineVersionCalculator
 
     private static readonly IReadOnlyCollection<IContextPreEnricher> TrunkContextPreEnricherCollection =
     [
+        new ConfigurationPreEnricher(),
         new EnrichSemanticVersion(),
         new EnrichIncrement(),
         new EnrichMergeState()

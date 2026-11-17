@@ -11,6 +11,19 @@ internal sealed class MainlineConfigurationResolver(
     private readonly IMainlineCommitResolver commitResolver = commitResolver.NotNull();
     private readonly Dictionary<MainlineCommit, EffectiveConfiguration> commitConfigurations = [];
     private readonly Dictionary<MainlineIteration, EffectiveConfiguration> iterationConfigurations = [];
+    private readonly Dictionary<IBranchConfiguration, EffectiveConfiguration> configurations = new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<IBranchConfiguration, Dictionary<EffectiveConfiguration, EffectiveConfiguration>> inheritedConfigurations
+        = new(ReferenceEqualityComparer.Instance);
+
+    public EffectiveConfiguration GetEffectiveConfiguration(IBranchConfiguration branchConfiguration)
+    {
+        if (!this.configurations.TryGetValue(branchConfiguration, out var result))
+        {
+            result = new EffectiveConfiguration(this.configuration, branchConfiguration);
+            this.configurations.Add(branchConfiguration, result);
+        }
+        return result;
+    }
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
     {
@@ -18,30 +31,63 @@ internal sealed class MainlineConfigurationResolver(
         {
             return cached;
         }
-
-        var branchConfiguration = commit.Configuration;
-        var last = branchConfiguration;
-        for (var current = commit; current is not null; current = current.Predecessor)
+        if (commit.Configuration.Increment != IncrementStrategy.Inherit)
         {
-            if (branchConfiguration.Increment != IncrementStrategy.Inherit)
+            return GetEffectiveConfiguration(commit.Configuration);
+        }
+        return ResolveInheritedConfiguration(commit);
+    }
+
+    private EffectiveConfiguration ResolveInheritedConfiguration(MainlineCommit commit)
+    {
+        List<MainlineCommit> pending = [];
+        var current = commit;
+        EffectiveConfiguration result;
+        while (true)
+        {
+            if (this.commitConfigurations.TryGetValue(current, out var currentConfiguration))
             {
+                result = currentConfiguration;
                 break;
             }
-            if (current.Configuration != last)
+            if (current.Configuration.Increment != IncrementStrategy.Inherit)
             {
-                branchConfiguration = branchConfiguration.Inherit(current.Configuration);
+                result = GetEffectiveConfiguration(current.Configuration);
+                this.commitConfigurations.Add(current, result);
+                break;
             }
-            last = current.Configuration;
+            pending.Add(current);
+            if (current.Predecessor is { } predecessor)
+            {
+                current = predecessor;
+                continue;
+            }
+            if (current.Iteration.HasParentIteration)
+            {
+                var receivingMerge = current.Iteration.GetBranchedTo().NotNull();
+                result = GetEffectiveConfiguration(receivingMerge);
+                result = GetInheritedConfiguration(current.Configuration, result);
+            }
+            else
+            {
+                result = GetEffectiveConfiguration(current.Configuration);
+            }
+            this.commitConfigurations.Add(current, result);
+            pending.RemoveAt(pending.Count - 1);
+            break;
         }
 
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit && commit.Iteration.HasParentIteration)
+        var previousConfiguration = current.Configuration;
+        for (var index = pending.Count - 1; index >= 0; index--)
         {
-            var receivingMerge = commit.Iteration.GetBranchedTo().NotNull();
-            branchConfiguration = branchConfiguration.Inherit(GetEffectiveConfiguration(receivingMerge));
+            current = pending[index];
+            if (!ReferenceEquals(current.Configuration, previousConfiguration))
+            {
+                result = GetInheritedConfiguration(current.Configuration, result);
+            }
+            this.commitConfigurations.Add(current, result);
+            previousConfiguration = current.Configuration;
         }
-
-        var result = new EffectiveConfiguration(this.configuration, branchConfiguration);
-        this.commitConfigurations.Add(commit, result);
         return result;
     }
 
@@ -53,29 +99,44 @@ internal sealed class MainlineConfigurationResolver(
         }
 
         var branchConfiguration = iteration.Configuration;
+        EffectiveConfiguration result;
+        MainlineCommit? commit = null;
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
-            var commit = iteration.Commits.FirstOrDefault()
-                ?? (iteration.HasParentIteration ? this.commitResolver.Resolve(iteration, iteration.BranchedFrom) : null);
-            if (commit is not null)
+            commit = iteration.Commits.FirstOrDefault();
+            if (commit is null && iteration.HasParentIteration)
             {
-                branchConfiguration = branchConfiguration.Inherit(GetEffectiveConfiguration(commit));
+                commit = this.commitResolver.Resolve(iteration, iteration.BranchedFrom);
             }
         }
-
-        var result = new EffectiveConfiguration(this.configuration, branchConfiguration);
+        if (commit is not null)
+        {
+            var inheritedConfiguration = GetEffectiveConfiguration(commit);
+            result = ReferenceEquals(branchConfiguration, commit.Configuration)
+                ? inheritedConfiguration
+                : GetInheritedConfiguration(branchConfiguration, inheritedConfiguration);
+        }
+        else
+        {
+            result = GetEffectiveConfiguration(branchConfiguration);
+        }
         this.iterationConfigurations.Add(iteration, result);
         return result;
     }
 
-    // Release selection uses recorded settings and global defaults, without ancestry inheritance.
-    public EffectiveConfiguration GetOwnConfiguration(MainlineCommit commit)
-        => new(this.configuration, commit.Configuration);
-
-    public bool IsMergedMainline(MainlineCommit commit)
-        => commit.ChildIteration is { } child && GetEffectiveConfiguration(child).IsMainBranch
-            && GetEffectiveConfiguration(commit).IsMainBranch;
-
-    public VersionField GetIncrementForcedByBranch(MainlineCommit commit)
-        => GetEffectiveConfiguration(commit).Increment.ToVersionField();
+    private EffectiveConfiguration GetInheritedConfiguration(
+        IBranchConfiguration branchConfiguration, EffectiveConfiguration inheritedConfiguration)
+    {
+        if (!this.inheritedConfigurations.TryGetValue(branchConfiguration, out var inherited))
+        {
+            inherited = new Dictionary<EffectiveConfiguration, EffectiveConfiguration>(ReferenceEqualityComparer.Instance);
+            this.inheritedConfigurations.Add(branchConfiguration, inherited);
+        }
+        if (!inherited.TryGetValue(inheritedConfiguration, out var result))
+        {
+            result = new EffectiveConfiguration(this.configuration, branchConfiguration, inheritedConfiguration);
+            inherited.Add(inheritedConfiguration, result);
+        }
+        return result;
+    }
 }

@@ -20,15 +20,15 @@ internal sealed class FirstCommitOnRelease : IIncrementer
 
     public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && !context.HasChildHistory(commit)
-           && !context.GetEffectiveConfiguration(commit).IsMainBranch
-           && context.GetEffectiveConfiguration(commit).IsReleaseBranch
+           && !context.EffectiveConfiguration.IsMainBranch
+           && context.EffectiveConfiguration.IsReleaseBranch
            && (context.GetPredecessor(commit) is null
                || commit.BranchName != context.GetPredecessor(commit)?.BranchName);
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         if (!commit.BranchName.TryGetSemanticVersion(effectiveConfiguration, out var element))
         {
             yield break;

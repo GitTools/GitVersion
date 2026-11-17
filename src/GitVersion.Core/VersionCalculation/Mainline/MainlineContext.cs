@@ -29,11 +29,11 @@ internal record MainlineContext(MainlineVersionCalculator Calculator)
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
         => ConfigurationResolver.GetEffectiveConfiguration(commit);
 
-    public bool IsMergedMainline(MainlineCommit commit)
-        => ConfigurationResolver.IsMergedMainline(commit);
+    public EffectiveConfiguration EffectiveConfiguration { get; set; } = null!;
 
-    public VersionField GetIncrementForcedByBranch(MainlineCommit commit)
-        => ConfigurationResolver.GetIncrementForcedByBranch(commit);
+    public EffectiveConfiguration IterationConfiguration { get; set; } = null!;
+
+    public EffectiveConfiguration? ChildConfiguration { get; set; }
 
     // Independent source calculations also need side histories stored in other iterations.
     public bool IncludeSharedHistory { get; init; }

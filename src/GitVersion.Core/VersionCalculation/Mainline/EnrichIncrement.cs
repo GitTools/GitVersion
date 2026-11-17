@@ -9,7 +9,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
 {
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
         // An eligible tag on a merged mainline already releases that commit's bump message.
         var isTaggedMergedMainline = context.SemanticVersion is not null
@@ -29,7 +29,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         }
 
         context.Increment = context.Increment.Consolidate(commitMessageIncrement.Increment);
-        var mergedBranchIncrement = GetMergedBranchIncrement(commit, context);
+        var mergedBranchIncrement = GetMergedBranchIncrement(context);
         context.Increment = context.Increment.Consolidate(mergedBranchIncrement);
         if (!context.SuppressBranchIncrement
             && (mergedBranchIncrement is null || !effectiveConfiguration.PreventIncrementOfMergedBranch))
@@ -54,8 +54,9 @@ internal sealed class EnrichIncrement : IContextPreEnricher
                 && context.GetEffectiveConfiguration(previous).IsMainBranch;
     }
 
-    private static VersionField? GetMergedBranchIncrement(MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && context.IsMergedMainline(commit) ? VersionField.None : null;
+    private static VersionField? GetMergedBranchIncrement(MainlineContext context)
+        => context.SemanticVersion is null && context.EffectiveConfiguration.IsMainBranch
+            && context.ChildConfiguration?.IsMainBranch == true ? VersionField.None : null;
 
     private static CommitMessageIncrement GetIncrementForcedByCommit(
         MainlineContext context, ICommit commit, EffectiveConfiguration configuration)

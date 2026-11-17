@@ -171,10 +171,12 @@ public class MainlineMergeIncrementerTests
     {
         var fixture = Fixture();
         var enricher = new EnrichMergeState();
+        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         enricher.Enrich(fixture.Root, fixture.Merge, fixture.Context);
         fixture.Context.IsMainlineMerge.ShouldBeTrue();
         var ordinary = fixture.Root.CreateCommit(Commit(), fixture.Root.BranchName, fixture.Root.Configuration);
 
+        new ConfigurationPreEnricher().Enrich(fixture.Root, ordinary, fixture.Context);
         enricher.Enrich(fixture.Root, ordinary, fixture.Context);
 
         fixture.Context.IsMainlineMerge.ShouldBeFalse();
@@ -246,6 +248,7 @@ public class MainlineMergeIncrementerTests
         var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(),
             new TestEnvironment(), mergeValue) with
         { TargetLabel = "receiver" };
+        new ConfigurationPreEnricher().Enrich(root, merge, context);
         new EnrichMergeState().Enrich(root, merge, context);
         return new(root, merge, source, context, sourceValue);
     }

@@ -23,6 +23,7 @@ public class MainlineDispatchTests
             "prerelease-tag" => SemanticVersion.Parse("4.0.0-beta.5", null),
             _ => null
         };
+        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         new EnrichMergeState().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         IIncrementer[] components =
         [
@@ -120,6 +121,7 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, attachChild: tag != "none");
         fixture.Context.SemanticVersion = tag == "none" ? null : SemanticVersion.Parse(tag, null);
+        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         new EnrichMergeState().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         IIncrementer[] transitions =
         [
@@ -258,6 +260,7 @@ public class MainlineDispatchTests
         context.HasSuccessor = false;
         context.BaseVersionSource = initialValue;
         context.Increment = VersionField.Patch;
+        new ConfigurationPreEnricher().Enrich(root, merge, context);
         new EnrichMergeState().Enrich(root, merge, context);
         return new(root, merge, initial, context, sourceValue);
     }

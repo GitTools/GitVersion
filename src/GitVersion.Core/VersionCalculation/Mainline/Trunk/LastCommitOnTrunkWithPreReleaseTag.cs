@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
@@ -18,14 +19,14 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             yield return item;
         }
 
-        if (!context.GetEffectiveConfiguration(iteration).IsMainBranch)
+        if (!context.IterationConfiguration.IsMainBranch)
         {
             yield break;
         }
 
-        context.Increment = context.GetIncrementForcedByBranch(commit);
+        context.Increment = context.EffectiveConfiguration.Increment.ToVersionField();
 
-        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
         context.ForceIncrement = false;
 

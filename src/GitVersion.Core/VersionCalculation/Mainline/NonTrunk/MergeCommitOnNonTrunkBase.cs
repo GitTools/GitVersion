@@ -6,7 +6,7 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && context.HasChildHistory(commit)
-           && !context.GetEffectiveConfiguration(commit).IsMainBranch;
+           && !context.EffectiveConfiguration.IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -24,7 +24,7 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
                 commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;
-            context.Increment = ConsolidateIncrement(commit, context, baseVersion);
+            context.Increment = ConsolidateIncrement(context, baseVersion);
             ApplyBaseVersion(context, baseVersion);
 
             yield break;
@@ -32,9 +32,9 @@ internal abstract class MergeCommitOnNonTrunkBase : IIncrementer
     }
 
     private static VersionField ConsolidateIncrement(
-        MainlineCommit commit, MainlineContext context, BaseVersion baseVersion)
+        MainlineContext context, BaseVersion baseVersion)
     {
-        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         var increment = VersionField.None;
 
         if (!effectiveConfiguration.PreventIncrementOfMergedBranch)

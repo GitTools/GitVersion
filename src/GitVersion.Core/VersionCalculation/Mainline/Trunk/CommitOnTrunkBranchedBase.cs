@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation.Mainline.Trunk;
 internal abstract class CommitOnTrunkBranchedBase : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.GetEffectiveConfiguration(commit).IsMainBranch
+        => context.EffectiveConfiguration.IsMainBranch
             && iteration.NumberOfCommits != 0
             && commit.BranchName != iteration.BranchName
             && context.IsLastCommit(commit);
@@ -16,7 +16,7 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
     {
         context.BaseVersionSource = commit.Value;
 
-        var effectiveConfiguration = context.GetEffectiveConfiguration(iteration);
+        var effectiveConfiguration = context.IterationConfiguration;
         if (effectiveConfiguration.IsReleaseBranch
             && iteration.BranchName.TryGetSemanticVersion(effectiveConfiguration, out var element))
         {
@@ -25,11 +25,11 @@ internal abstract class CommitOnTrunkBranchedBase : IIncrementer
         }
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? context.GetIncrementForcedByBranch(commit)
+            ? context.EffectiveConfiguration.Increment.ToVersionField()
             : iteration.Configuration.Increment.ToVersionField();
         context.Increment = incrementForcedByBranch;
 
-        var iterationEffectiveConfiguration = context.GetEffectiveConfiguration(iteration);
+        var iterationEffectiveConfiguration = context.IterationConfiguration;
         context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(
             iteration.BranchName, null, context.Environment, context.CurrentCommit) ?? context.Label;
         context.ForceIncrement = true;

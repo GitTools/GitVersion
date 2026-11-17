@@ -20,7 +20,15 @@ internal static class MainlineTestCalculation
 
     internal static MainlineContext Context(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
-        => Calculator(iteration, configuration, environment, currentCommit).CreateContext();
+    {
+        var calculator = Calculator(iteration, configuration, environment, currentCommit);
+        var context = calculator.CreateContext();
+        if (calculator.CommitResolver.Resolve(iteration, currentCommit) is { } commit)
+        {
+            new ConfigurationPreEnricher().Enrich(iteration, commit, context);
+        }
+        return context;
+    }
 
     internal static MainlineCommit[] SelectHistory(MainlineIteration root, MainlineIteration iteration)
         => History(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(),

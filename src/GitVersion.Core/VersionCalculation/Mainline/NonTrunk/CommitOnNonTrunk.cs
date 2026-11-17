@@ -12,7 +12,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
 
     public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && !context.HasChildHistory(commit)
-           && !context.GetEffectiveConfiguration(commit).IsMainBranch;
+           && !context.EffectiveConfiguration.IsMainBranch;
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -22,7 +22,7 @@ internal sealed class CommitOnNonTrunk : IIncrementer
             context.Label = null;
         }
 
-        var effectiveConfiguration = context.GetEffectiveConfiguration(commit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
 
         if (!context.IsLastCommit(commit))

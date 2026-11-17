@@ -4,7 +4,7 @@ internal sealed class MergedMainlineBranchedToTrunk : CommitOnTrunkBranchedBase
 {
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => context.IsMainlineMerge && base.MatchPrecondition(iteration, commit, context)
-            && context.GetEffectiveConfiguration(iteration).IsMainBranch;
+            && context.IterationConfiguration.IsMainBranch;
 
     protected override IBaseVersionIncrement CreateIncrement(
         BaseVersionOperator operation, MainlineCommit commit, MainlineContext context)

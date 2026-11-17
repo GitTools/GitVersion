@@ -4,7 +4,7 @@ internal sealed class RemoveIncrement : IContextPostEnricher
 {
     public void Enrich(MainlineCommit commit, MainlineContext context)
     {
-        if (!context.GetEffectiveConfiguration(commit).IsMainBranch)
+        if (!context.EffectiveConfiguration.IsMainBranch)
         {
             return;
         }

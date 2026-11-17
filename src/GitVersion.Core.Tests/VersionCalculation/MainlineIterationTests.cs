@@ -115,7 +115,8 @@ public class MainlineIterationTests
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
         version.BaseVersionSource.ShouldBeSameAs(tip);
         shared.Successor.ShouldBeSameAs(later);
-        context.IsMergedMainline(merge).ShouldBeTrue();
+        new EnrichMergeState().Enrich(receiver, merge, context);
+        context.IsMainlineMerge.ShouldBeTrue();
     }
 
     [Test]
@@ -196,7 +197,10 @@ public class MainlineIterationTests
         var version = MainlineTestCalculation.Calculator(receiver, configuration, new TestEnvironment(), merge.Value)
             .DetermineBaseVersion(receiver, "");
 
-        new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(merge.Iteration)).IsMergedMainline(merge).ShouldBeFalse();
+        var context = MainlineTestCalculation.Context(merge.Iteration, configuration, new TestEnvironment(), merge.Value);
+        new ConfigurationPreEnricher().Enrich(merge.Iteration, merge, context);
+        new EnrichMergeState().Enrich(merge.Iteration, merge, context);
+        context.IsMainlineMerge.ShouldBeFalse();
         version.GetIncrementedVersion().Patch.ShouldBe(1);
     }
 

@@ -76,7 +76,8 @@ internal sealed class MainlineHistory(
     private Selection? SelectChild(MainlineCommit commit, string? targetLabel, bool includeSharedHistory)
     {
         if (commit.ChildIteration is not { } child
-            || this.configurationResolver.IsMergedMainline(commit))
+            || (this.configurationResolver.GetEffectiveConfiguration(child).IsMainBranch
+                && this.configurationResolver.GetEffectiveConfiguration(commit).IsMainBranch))
         {
             return null;
         }
@@ -222,7 +223,7 @@ internal sealed class MainlineHistory(
     }
 
     private string? GetBranchSpecificLabel(MainlineCommit commit)
-        => this.configurationResolver.GetOwnConfiguration(commit)
+        => this.configurationResolver.GetEffectiveConfiguration(commit.Configuration)
             .GetBranchSpecificLabel(commit.BranchName, null, Environment, CurrentCommit);
 
     private static ICommit? GetTip(MainlineIteration iteration, bool includeAncestry, MainlineCommit? tip)

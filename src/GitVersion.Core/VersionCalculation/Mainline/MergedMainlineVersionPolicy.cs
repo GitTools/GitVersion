@@ -8,7 +8,7 @@ internal static class MergedMainlineVersionPolicy
     internal static IBaseVersionIncrement CreateIncrement(
         BaseVersionOperator operation, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && commit.ChildIteration is { } child
-            && !context.GetEffectiveConfiguration(child).PreventIncrementWhenBranchMerged
+            && !context.ChildConfiguration.NotNull().PreventIncrementWhenBranchMerged
             ? Resolve(context.Increments.Version ?? new BaseVersion(), operation,
                 GetSourceVersion(child, context), context.Increments.ReleaseBaseline)
             : operation;

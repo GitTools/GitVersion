@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Mainline;
@@ -25,7 +26,7 @@ public class MainlineConfigurationResolverTests
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        resolver.GetIncrementForcedByBranch(local).ShouldBe(VersionField.Minor);
+        resolver.GetEffectiveConfiguration(local).Increment.ToVersionField().ShouldBe(VersionField.Minor);
         child.Configuration.Increment.ShouldBe(IncrementStrategy.Inherit);
         child.Commits.ShouldBe([local]);
         branchPoint.Iteration.ShouldBeSameAs(root);
@@ -45,7 +46,7 @@ public class MainlineConfigurationResolverTests
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        resolver.GetIncrementForcedByBranch(tip).ShouldBe(VersionField.Minor);
+        resolver.GetEffectiveConfiguration(tip).Increment.ToVersionField().ShouldBe(VersionField.Minor);
         resolver.GetEffectiveConfiguration(tip).ShouldBeSameAs(effective);
         tip.Configuration.ShouldBeSameAs(inherited);
         tip.Configuration.Increment.ShouldBe(IncrementStrategy.Inherit);
@@ -79,7 +80,7 @@ public class MainlineConfigurationResolverTests
 
     [TestCase(null)]
     [TestCase("")]
-    public void OwnConfigurationKeepsRecordedLabelsSeparateFromInheritedSettings(string? label)
+    public void RecordedConfigurationKeepsLabelsSeparateFromInheritedSettings(string? label)
     {
         var recorded = new BranchConfiguration { Increment = IncrementStrategy.Inherit, Label = label };
         var root = Iteration("root", recorded);
@@ -88,7 +89,7 @@ public class MainlineConfigurationResolverTests
         var configuration = GitFlowConfigurationBuilder.New.WithLabel("global").Build();
         var resolver = new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(root));
 
-        var own = resolver.GetOwnConfiguration(tip);
+        var own = resolver.GetEffectiveConfiguration(tip.Configuration);
         var effective = resolver.GetEffectiveConfiguration(tip);
 
         own.Increment.ShouldBe(IncrementStrategy.Inherit);
@@ -141,7 +142,10 @@ public class MainlineConfigurationResolverTests
         var child = Iteration("child", sourceBranch, root, Commit(), merge.Value);
         merge.AddChildIteration(child);
 
-        Resolver(root).IsMergedMainline(merge).ShouldBe(expected);
+        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
+        new ConfigurationPreEnricher().Enrich(root, merge, context);
+        new EnrichMergeState().Enrich(root, merge, context);
+        context.IsMainlineMerge.ShouldBe(expected);
     }
 
     [Test]
@@ -158,7 +162,10 @@ public class MainlineConfigurationResolverTests
         merge.HasChildIteration.ShouldBeFalse();
         child.Configuration.IsMainBranch.ShouldBeNull();
         resolver.GetEffectiveConfiguration(child).IsMainBranch.ShouldBeTrue();
-        resolver.IsMergedMainline(merge).ShouldBeTrue();
+        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
+        new ConfigurationPreEnricher().Enrich(root, merge, context);
+        new EnrichMergeState().Enrich(root, merge, context);
+        context.IsMainlineMerge.ShouldBeTrue();
         child.Commits.ShouldBeEmpty();
     }
 
@@ -172,8 +179,11 @@ public class MainlineConfigurationResolverTests
         resolver.GetEffectiveConfiguration(root).Increment.ShouldBe(IncrementStrategy.Major);
         resolver.GetEffectiveConfiguration(root).Label.ShouldBe("alpha");
 
-        resolver.IsMergedMainline(commit).ShouldBeFalse();
-        resolver.GetIncrementForcedByBranch(commit).ShouldBe(VersionField.Major);
+        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), commit.Value);
+        new ConfigurationPreEnricher().Enrich(root, commit, context);
+        new EnrichMergeState().Enrich(root, commit, context);
+        context.IsMainlineMerge.ShouldBeFalse();
+        resolver.GetEffectiveConfiguration(commit).Increment.ToVersionField().ShouldBe(VersionField.Major);
     }
 
     [Test]
@@ -219,6 +229,140 @@ public class MainlineConfigurationResolverTests
         context.AlternativeSemanticVersions.ShouldBe([new SemanticVersion(3, 1, 0)]);
         context.Label.ShouldBe("calculated");
         context.Increment.ShouldBe(VersionField.Major);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CommitsWithUnchangedSettingsReuseEffectiveConfiguration(bool inherit)
+    {
+        var branch = new CountingBranchConfiguration
+        {
+            Increment = inherit ? IncrementStrategy.Inherit : IncrementStrategy.Minor,
+            IsMainBranch = true
+        };
+        var root = Iteration("root", branch);
+        for (var index = 0; index < 100; index++)
+        {
+            root.CreateCommit(Commit(), root.BranchName, branch);
+        }
+        if (inherit)
+        {
+            root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Minor, "beta"));
+        }
+        var resolver = Resolver(root);
+        var first = resolver.GetEffectiveConfiguration(root.Commits.Last());
+
+        foreach (var commit in root.Commits.Where(commit => ReferenceEquals(commit.Configuration, branch)))
+        {
+            resolver.GetEffectiveConfiguration(commit).ShouldBeSameAs(first);
+        }
+        resolver.GetEffectiveConfiguration(root).ShouldBeSameAs(first);
+        first.Increment.ShouldBe(IncrementStrategy.Minor);
+        branch.InheritanceCount.ShouldBe(1);
+    }
+
+    [Test]
+    public void InheritedSettingsKeepNearestOverridesAcrossConfigurationTransitions()
+    {
+        var inherited = new BranchConfiguration
+        {
+            Increment = IncrementStrategy.Inherit,
+            PreventIncrement = new PreventIncrementConfiguration { OfMergedBranch = true }
+        };
+        var root = Iteration("root", inherited);
+        var tip = root.CreateCommit(Commit(), root.BranchName, inherited);
+        root.CreateCommit(null, root.BranchName, new BranchConfiguration
+        {
+            Increment = IncrementStrategy.Inherit,
+            Label = "nearest",
+            PreventIncrement = new PreventIncrementConfiguration { OfMergedBranch = false }
+        });
+        root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "oldest"));
+        var resolver = Resolver(root);
+
+        var result = resolver.GetEffectiveConfiguration(tip);
+
+        result.Increment.ShouldBe(IncrementStrategy.Major);
+        result.Label.ShouldBe("nearest");
+        result.IsMainBranch.ShouldBeTrue();
+        result.PreventIncrementOfMergedBranch.ShouldBeTrue();
+        tip.Configuration.Label.ShouldBeNull();
+        tip.Configuration.Increment.ShouldBe(IncrementStrategy.Inherit);
+    }
+
+    [Test]
+    public void SharedInheritedSettingsKeepReceivingConfigurationsSeparate()
+    {
+        var receiver = Branch(IncrementStrategy.Minor, "beta");
+        var root = Iteration("root", receiver);
+        var firstMerge = root.CreateCommit(Commit(), root.BranchName, receiver);
+        var secondMerge = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "alpha"));
+        var inherited = new BranchConfiguration { Increment = IncrementStrategy.Inherit };
+        var firstChild = Iteration("first", inherited, root, Commit(), firstMerge.Value);
+        var secondChild = Iteration("second", inherited, root, Commit(), secondMerge.Value);
+        var firstTip = firstChild.CreateCommit(Commit(), firstChild.BranchName, inherited);
+        var secondTip = secondChild.CreateCommit(Commit(), secondChild.BranchName, inherited);
+        firstMerge.AddChildIteration(firstChild);
+        secondMerge.AddChildIteration(secondChild);
+        var resolver = Resolver(root);
+
+        var first = resolver.GetEffectiveConfiguration(firstTip);
+        var second = resolver.GetEffectiveConfiguration(secondTip);
+
+        first.Increment.ShouldBe(IncrementStrategy.Minor);
+        first.Label.ShouldBe("beta");
+        second.Increment.ShouldBe(IncrementStrategy.Major);
+        second.Label.ShouldBe("alpha");
+        second.ShouldNotBeSameAs(first);
+        resolver.GetEffectiveConfiguration(firstTip).ShouldBeSameAs(first);
+        resolver.GetEffectiveConfiguration(secondTip).ShouldBeSameAs(second);
+    }
+
+    [Test]
+    public void ConfigurationPreEnrichmentRefreshesCurrentIterationAndChildSettings()
+    {
+        var branch = Branch(IncrementStrategy.Minor, "beta");
+        var root = Iteration("root", branch);
+        var merge = root.CreateCommit(Commit(), root.BranchName, branch);
+        var child = Iteration("child", Branch(IncrementStrategy.Patch, "source"), root, Commit(), merge.Value);
+        merge.AddChildIteration(child);
+        var ordinary = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "alpha"));
+        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
+        var enricher = new ConfigurationPreEnricher();
+
+        enricher.Enrich(root, merge, context);
+
+        context.EffectiveConfiguration.Increment.ShouldBe(IncrementStrategy.Minor);
+        context.IterationConfiguration.Increment.ShouldBe(IncrementStrategy.Minor);
+        context.ChildConfiguration.ShouldNotBeNull().Increment.ShouldBe(IncrementStrategy.Patch);
+        var nested = context.CreateChildContext();
+        nested.EffectiveConfiguration.ShouldBeNull();
+        nested.IterationConfiguration.ShouldBeNull();
+        nested.ChildConfiguration.ShouldBeNull();
+
+        enricher.Enrich(root, ordinary, context);
+
+        context.EffectiveConfiguration.Increment.ShouldBe(IncrementStrategy.Major);
+        context.EffectiveConfiguration.Label.ShouldBe("alpha");
+        context.IterationConfiguration.Increment.ShouldBe(IncrementStrategy.Minor);
+        context.ChildConfiguration.ShouldBeNull();
+    }
+
+    private sealed record CountingBranchConfiguration : BranchConfiguration
+    {
+        public int InheritanceCount { get; private set; }
+
+        public override IBranchConfiguration Inherit(IBranchConfiguration configuration)
+        {
+            InheritanceCount++;
+            return base.Inherit(configuration);
+        }
+
+        public override IBranchConfiguration Inherit(EffectiveConfiguration configuration)
+        {
+            InheritanceCount++;
+            return base.Inherit(configuration);
+        }
     }
 
     private static MainlineConfigurationResolver Resolver(MainlineIteration root)

@@ -16,7 +16,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (!context.GetEffectiveConfiguration(iteration).IsMainBranch)
+        if (!context.IterationConfiguration.IsMainBranch)
         {
             yield break;
         }
