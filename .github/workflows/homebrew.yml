@@ -46,6 +46,7 @@ jobs:
           HOMEBREW_GIT_NAME: GitTools Bot
           HOMEBREW_GIT_EMAIL: gittoolsbot@outlook.com
           HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_NO_INSTALL_FROM_API: "1"
         run: |
           version="${{ steps.get-version.outputs.version }}"
           url="https://github.com/GitTools/GitVersion/archive/refs/tags/${version}.tar.gz"
@@ -53,6 +54,8 @@ jobs:
 
           git config --global user.name "GitTools Bot"
           git config --global user.email "gittoolsbot@outlook.com"
+
+          brew tap --force homebrew/core
 
           # No --fork-org: that flag requires an *organization* login, but the
           # publish runs as the gittools-bot *user*. Omitting it makes brew fork
