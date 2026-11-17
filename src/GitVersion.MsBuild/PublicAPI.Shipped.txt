@@ -17,8 +17,14 @@ GitVersion.MsBuild.Tasks.GetVersion.BranchName.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.BranchName.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.BuildMetaData.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceDistance.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceDistance.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CommitCountSourceSha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.CommitDate.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.CommitDate.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.CustomVersion.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.EscapedBranchName.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.FullBuildMetaData.get -> string!
@@ -48,6 +54,12 @@ GitVersion.MsBuild.Tasks.GetVersion.PreReleaseNumber.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.PreReleaseNumber.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.SemVer.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.SemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceIncrement.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceIncrement.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSemVer.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSemVer.set -> void
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSha.get -> string!
+GitVersion.MsBuild.Tasks.GetVersion.SemVerSourceSha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.Sha.get -> string!
 GitVersion.MsBuild.Tasks.GetVersion.Sha.set -> void
 GitVersion.MsBuild.Tasks.GetVersion.ShortSha.get -> string!
