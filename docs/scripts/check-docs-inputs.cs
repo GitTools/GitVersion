@@ -72,4 +72,72 @@ try
     });
 }
 finally { File.Delete(temporary); }
+
+var packagesRoot = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+try
+{
+    var legacy = Path.Combine(packagesRoot, "legacy");
+    var legacyNet8 = Path.Combine(legacy, "tools", "net8.0", "any");
+    var legacyNet9 = Path.Combine(legacy, "tools", "net9.0", "any");
+    Directory.CreateDirectory(legacyNet8);
+    Directory.CreateDirectory(legacyNet9);
+    Check("LegacyToolDoesNotRequireRuntimePackage", () => Equal("none", DocsInputs.GetRuntimePackage(legacy, "linux-x64") ?? "none"));
+    Check("LegacyToolUsesNewestAnyBundle", () =>
+    {
+        var bundle = DocsInputs.GetToolBundle(legacy, "6.8.2");
+        Equal("net9.0", bundle.Framework);
+        Equal(legacyNet9, bundle.Bundle);
+    });
+    Check("LegacyToolHonorsFrameworkOverride", () =>
+    {
+        var bundle = DocsInputs.GetToolBundle(legacy, "6.8.2", "net8.0");
+        Equal("net8.0", bundle.Framework);
+        Equal(legacyNet8, bundle.Bundle);
+    });
+
+    var parent = Path.Combine(packagesRoot, "parent");
+    var settings = Path.Combine(parent, "tools", "any", "any", "DotnetToolSettings.xml");
+    Directory.CreateDirectory(Path.GetDirectoryName(settings)!);
+    File.WriteAllText(settings, """
+        <DotNetCliTool Version="2">
+          <RuntimeIdentifierPackages>
+            <RuntimeIdentifierPackage RuntimeIdentifier="win-x64" Id="GitVersion.Tool.win-x64" />
+            <RuntimeIdentifierPackage RuntimeIdentifier="linux-x64" Id="GitVersion.Tool.linux-x64" />
+          </RuntimeIdentifierPackages>
+        </DotNetCliTool>
+        """);
+    Check("RuntimePackageSelectsMatchingHost", () => Equal("GitVersion.Tool.linux-x64", DocsInputs.GetRuntimePackage(parent, "linux-x64")!));
+    Check("RuntimePackageRejectsUnsupportedHost", () => Reject(() => DocsInputs.GetRuntimePackage(parent, "linux-arm64")));
+    Check("ParentToolDoesNotContainFrameworkPayload", () => Reject(() => DocsInputs.GetToolBundle(parent, "7.0.0")));
+
+    var child = Path.Combine(packagesRoot, "child");
+    var childNet10 = Path.Combine(child, "tools", "net10.0", "linux-x64");
+    var childNet11 = Path.Combine(child, "tools", "net11.0", "linux-x64");
+    Directory.CreateDirectory(childNet10);
+    Directory.CreateDirectory(childNet11);
+    Directory.CreateDirectory(Path.Combine(child, "tools", "net11.0", "any"));
+    Check("RuntimeToolUsesNewestRidBundle", () =>
+    {
+        var bundle = DocsInputs.GetToolBundle(child, "7.0.0", runtimeIdentifier: "linux-x64");
+        Equal("net11.0", bundle.Framework);
+        Equal(childNet11, bundle.Bundle);
+    });
+    Check("RuntimeToolHonorsFrameworkOverride", () =>
+    {
+        var bundle = DocsInputs.GetToolBundle(child, "7.0.0", "net10.0", "linux-x64");
+        Equal("net10.0", bundle.Framework);
+        Equal(childNet10, bundle.Bundle);
+    });
+    Check("RuntimeToolRejectsMissingRidBundle", () => Reject(() => DocsInputs.GetToolBundle(child, "7.0.0", runtimeIdentifier: "win-x64")));
+    Check("RuntimeToolRejectsMissingFramework", () => Reject(() => DocsInputs.GetToolBundle(child, "7.0.0", "net12.0", "linux-x64")));
+    File.WriteAllText(settings, """
+        <DotNetCliTool Version="2">
+          <RuntimeIdentifierPackages>
+            <RuntimeIdentifierPackage RuntimeIdentifier="linux-x64" Id="" />
+          </RuntimeIdentifierPackages>
+        </DotNetCliTool>
+        """);
+    Check("RuntimePackageRejectsEmptyPackageId", () => Reject(() => DocsInputs.GetRuntimePackage(parent, "linux-x64")));
+}
+finally { Directory.Delete(packagesRoot, true); }
 Console.WriteLine($"Passed: {checks}, Failed: 0");

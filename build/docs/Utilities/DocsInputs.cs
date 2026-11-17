@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Path = System.IO.Path;
 
 namespace Docs.Utilities;
@@ -98,6 +100,42 @@ public sealed class DocsInputs(string repositoryRoot, Action<string> log)
         return result;
     }
 
+    public static string? GetRuntimePackage(string tool, string runtimeIdentifier)
+    {
+        var settings = Path.Combine(tool, "tools", "any", "any", "DotnetToolSettings.xml");
+        if (!File.Exists(settings))
+        {
+            return null;
+        }
+
+        var packages = XDocument.Load(settings).Descendants("RuntimeIdentifierPackage").ToArray();
+        if (packages.Length == 0)
+        {
+            return null;
+        }
+
+        var package = packages.Where(p => (string?)p.Attribute("RuntimeIdentifier") == runtimeIdentifier)
+            .Select(p => (string?)p.Attribute("Id")).SingleOrDefault();
+        return !string.IsNullOrWhiteSpace(package) ? package
+            : throw new InvalidOperationException($"The tool package has no runtime package for {runtimeIdentifier}.");
+    }
+
+    public static (string Framework, string Bundle) GetToolBundle(string tool, string version, string? framework = null,
+        string runtimeIdentifier = "any")
+    {
+        framework ??= Directory.GetDirectories(Path.Combine(tool, "tools"))
+            .Select(Path.GetFileName).Where(n => n is not null && Matches(n, @"^net\d+\.\d+$"))
+            .OrderByDescending(n => Version.Parse(n![3..])).FirstOrDefault()
+            ?? throw new InvalidOperationException($"No supported tool framework found for {version}.");
+        var bundle = Path.Combine(tool, "tools", framework, runtimeIdentifier);
+        if (!Directory.Exists(bundle))
+        {
+            throw new InvalidOperationException($"{version} has no {framework}/{runtimeIdentifier} tool bundle.");
+        }
+
+        return (framework, bundle);
+    }
+
     public async Task<PreparedEdition[]> Prepare()
     {
         var manifest = ReadManifest(Path.Combine(repositoryRoot, "docs", "versions.json"));
@@ -156,18 +194,16 @@ public sealed class DocsInputs(string repositoryRoot, Action<string> log)
         var contentRoot = Directory.GetDirectories(source).Single();
         var packages = new List<DocsPackage>();
         var tool = await Package("gitversion.tool", version, packages);
+        var runtimeIdentifier = RuntimeInformation.RuntimeIdentifier;
+        var runtimePackage = GetRuntimePackage(tool, runtimeIdentifier);
+        if (runtimePackage is not null)
+        {
+            tool = await Package(runtimePackage.ToLowerInvariant(), version, packages);
+        }
         var core = await Package("gitversion.core", version, packages);
         var msbuild = await Package("gitversion.msbuild", version, packages);
-        var framework = edition.Framework ?? Directory.GetDirectories(Path.Combine(tool, "tools"))
-            .Select(Path.GetFileName).Where(n => n is not null && Matches(n, @"^net\d+\.\d+$"))
-            .OrderByDescending(n => Version.Parse(n![3..])).FirstOrDefault()
-            ?? throw new InvalidOperationException($"No supported tool framework found for {version}.");
+        var (framework, bundle) = GetToolBundle(tool, version, edition.Framework, runtimePackage is null ? "any" : runtimeIdentifier);
         edition = edition with { Framework = framework };
-        var bundle = Path.Combine(tool, "tools", edition.Framework!, "any");
-        if (!Directory.Exists(bundle))
-        {
-            throw new InvalidOperationException($"{version} has no {edition.Framework} tool bundle.");
-        }
         // A separate staging area preserves the original package content and its checksum.
         var assemblies = Path.Combine(repositoryRoot, "artifacts", "docs", "inputs", edition.Id, "assemblies");
         if (Directory.Exists(assemblies))
