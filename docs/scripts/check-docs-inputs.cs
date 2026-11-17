@@ -3,6 +3,12 @@
 
 using Docs.Utilities;
 
+const string LegacyVersion = "6.8.2";
+const string StableVersion = "7.0.0";
+const string LegacyFramework = "net8.0";
+const string ToolsDirectory = "tools";
+const string LinuxRuntimeIdentifier = "linux-x64";
+
 var checks = 0;
 void Check(string name, Action action)
 {
@@ -21,7 +27,7 @@ void Reject(Action action)
     throw new InvalidOperationException("Expected invalid input to be rejected.");
 }
 
-Check("LatestPatchUsesNumericOrder", () => Equal("6.8.12", DocsInputs.LatestPatch("6.8", ["6.8.9", "6.8.12", "6.8.2"])));
+Check("LatestPatchUsesNumericOrder", () => Equal("6.8.12", DocsInputs.LatestPatch("6.8", ["6.8.9", "6.8.12", LegacyVersion])));
 Check("LatestPatchExcludesOtherTrainsAndPrereleases", () => Equal("5.12.0", DocsInputs.LatestPatch("5.12", ["5.12.0", "5.12.1-rc.1", "5.13.0", "6.12.9"])));
 Check("LatestPatchRejectsMissingRelease", () => Reject(() => DocsInputs.LatestPatch("6.8", ["6.9.0", "6.8.0-beta.1"])));
 Check("LatestPatchRejectsEmptyFeed", () => Reject(() => DocsInputs.LatestPatch("5.12", [])));
@@ -40,7 +46,7 @@ try
     Check("ManifestRejectsOverlappingAlias", () => { Manifest(current + "," + release[..^1] + ",\"aliases\":[\"/6.8\"]}"); Reject(() => DocsInputs.ReadManifest(temporary)); });
     Check("ManifestRejectsPathTraversal", () => { Manifest(current + "," + release.Replace("/6.8", "/../6.8")); Reject(() => DocsInputs.ReadManifest(temporary)); });
     Check("ManifestRejectsReservedPaths", () => { Manifest(current + "," + release.Replace("/6.8", "/docs")); Reject(() => DocsInputs.ReadManifest(temporary)); });
-    Check("ManifestRejectsPatchSelector", () => { Manifest(current + "," + release.Replace("6.8", "6.8.2")); Reject(() => DocsInputs.ReadManifest(temporary)); });
+    Check("ManifestRejectsPatchSelector", () => { Manifest(current + "," + release.Replace("6.8", LegacyVersion)); Reject(() => DocsInputs.ReadManifest(temporary)); });
     Check("ManifestAllowsFrameworkDiscovery", () => { Manifest(release.Replace(",\"framework\":\"net8.0\"", "")); Equal("1", DocsInputs.ReadManifest(temporary).Versions.Length.ToString()); });
     Check("DiscoverySortsNumericallyAndKeepsOlderMinors", () =>
     {
@@ -56,7 +62,7 @@ try
     Check("DiscoveryHonorsExplicitOverrides", () =>
     {
         Manifest(release.Replace("6.8", "7.0"));
-        Equal("net8.0", DocsInputs.ResolveEditions(DocsInputs.ReadManifest(temporary), ["7.0.0"])[0].Framework!);
+        Equal(LegacyFramework, DocsInputs.ResolveEditions(DocsInputs.ReadManifest(temporary), [StableVersion])[0].Framework!);
     });
     Check("DevelopmentEditionRemainsVisibleBeforeRelease", () =>
     {
@@ -68,7 +74,7 @@ try
     Check("DevelopmentEditionSwitchesToStableInputs", () =>
     {
         Manifest(release.Replace("6.8", "7.0").Replace("release", "development"));
-        Equal("release", DocsInputs.ResolveEditions(DocsInputs.ReadManifest(temporary), ["7.0.0"])[0].Status);
+        Equal("release", DocsInputs.ResolveEditions(DocsInputs.ReadManifest(temporary), [StableVersion])[0].Status);
     });
 }
 finally { File.Delete(temporary); }
@@ -77,26 +83,26 @@ var packagesRoot = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 try
 {
     var legacy = Path.Combine(packagesRoot, "legacy");
-    var legacyNet8 = Path.Combine(legacy, "tools", "net8.0", "any");
-    var legacyNet9 = Path.Combine(legacy, "tools", "net9.0", "any");
+    var legacyNet8 = Path.Combine(legacy, ToolsDirectory, LegacyFramework, "any");
+    var legacyNet9 = Path.Combine(legacy, ToolsDirectory, "net9.0", "any");
     Directory.CreateDirectory(legacyNet8);
     Directory.CreateDirectory(legacyNet9);
-    Check("LegacyToolDoesNotRequireRuntimePackage", () => Equal("none", DocsInputs.GetRuntimePackage(legacy, "linux-x64") ?? "none"));
+    Check("LegacyToolDoesNotRequireRuntimePackage", () => Equal("none", DocsInputs.GetRuntimePackage(legacy, LinuxRuntimeIdentifier) ?? "none"));
     Check("LegacyToolUsesNewestAnyBundle", () =>
     {
-        var bundle = DocsInputs.GetToolBundle(legacy, "6.8.2");
+        var bundle = DocsInputs.GetToolBundle(legacy, LegacyVersion);
         Equal("net9.0", bundle.Framework);
         Equal(legacyNet9, bundle.Bundle);
     });
     Check("LegacyToolHonorsFrameworkOverride", () =>
     {
-        var bundle = DocsInputs.GetToolBundle(legacy, "6.8.2", "net8.0");
-        Equal("net8.0", bundle.Framework);
+        var bundle = DocsInputs.GetToolBundle(legacy, LegacyVersion, LegacyFramework);
+        Equal(LegacyFramework, bundle.Framework);
         Equal(legacyNet8, bundle.Bundle);
     });
 
     var parent = Path.Combine(packagesRoot, "parent");
-    var settings = Path.Combine(parent, "tools", "any", "any", "DotnetToolSettings.xml");
+    var settings = Path.Combine(parent, ToolsDirectory, "any", "any", "DotnetToolSettings.xml");
     Directory.CreateDirectory(Path.GetDirectoryName(settings)!);
     File.WriteAllText(settings, """
         <DotNetCliTool Version="2">
@@ -106,30 +112,30 @@ try
           </RuntimeIdentifierPackages>
         </DotNetCliTool>
         """);
-    Check("RuntimePackageSelectsMatchingHost", () => Equal("GitVersion.Tool.linux-x64", DocsInputs.GetRuntimePackage(parent, "linux-x64")!));
+    Check("RuntimePackageSelectsMatchingHost", () => Equal("GitVersion.Tool.linux-x64", DocsInputs.GetRuntimePackage(parent, LinuxRuntimeIdentifier)!));
     Check("RuntimePackageRejectsUnsupportedHost", () => Reject(() => DocsInputs.GetRuntimePackage(parent, "linux-arm64")));
-    Check("ParentToolDoesNotContainFrameworkPayload", () => Reject(() => DocsInputs.GetToolBundle(parent, "7.0.0")));
+    Check("ParentToolDoesNotContainFrameworkPayload", () => Reject(() => DocsInputs.GetToolBundle(parent, StableVersion)));
 
     var child = Path.Combine(packagesRoot, "child");
-    var childNet10 = Path.Combine(child, "tools", "net10.0", "linux-x64");
-    var childNet11 = Path.Combine(child, "tools", "net11.0", "linux-x64");
+    var childNet10 = Path.Combine(child, ToolsDirectory, "net10.0", LinuxRuntimeIdentifier);
+    var childNet11 = Path.Combine(child, ToolsDirectory, "net11.0", LinuxRuntimeIdentifier);
     Directory.CreateDirectory(childNet10);
     Directory.CreateDirectory(childNet11);
-    Directory.CreateDirectory(Path.Combine(child, "tools", "net11.0", "any"));
+    Directory.CreateDirectory(Path.Combine(child, ToolsDirectory, "net11.0", "any"));
     Check("RuntimeToolUsesNewestRidBundle", () =>
     {
-        var bundle = DocsInputs.GetToolBundle(child, "7.0.0", runtimeIdentifier: "linux-x64");
+        var bundle = DocsInputs.GetToolBundle(child, StableVersion, runtimeIdentifier: LinuxRuntimeIdentifier);
         Equal("net11.0", bundle.Framework);
         Equal(childNet11, bundle.Bundle);
     });
     Check("RuntimeToolHonorsFrameworkOverride", () =>
     {
-        var bundle = DocsInputs.GetToolBundle(child, "7.0.0", "net10.0", "linux-x64");
+        var bundle = DocsInputs.GetToolBundle(child, StableVersion, "net10.0", LinuxRuntimeIdentifier);
         Equal("net10.0", bundle.Framework);
         Equal(childNet10, bundle.Bundle);
     });
-    Check("RuntimeToolRejectsMissingRidBundle", () => Reject(() => DocsInputs.GetToolBundle(child, "7.0.0", runtimeIdentifier: "win-x64")));
-    Check("RuntimeToolRejectsMissingFramework", () => Reject(() => DocsInputs.GetToolBundle(child, "7.0.0", "net12.0", "linux-x64")));
+    Check("RuntimeToolRejectsMissingRidBundle", () => Reject(() => DocsInputs.GetToolBundle(child, StableVersion, runtimeIdentifier: "win-x64")));
+    Check("RuntimeToolRejectsMissingFramework", () => Reject(() => DocsInputs.GetToolBundle(child, StableVersion, "net12.0", LinuxRuntimeIdentifier)));
     File.WriteAllText(settings, """
         <DotNetCliTool Version="2">
           <RuntimeIdentifierPackages>
@@ -137,7 +143,7 @@ try
           </RuntimeIdentifierPackages>
         </DotNetCliTool>
         """);
-    Check("RuntimePackageRejectsEmptyPackageId", () => Reject(() => DocsInputs.GetRuntimePackage(parent, "linux-x64")));
+    Check("RuntimePackageRejectsEmptyPackageId", () => Reject(() => DocsInputs.GetRuntimePackage(parent, LinuxRuntimeIdentifier)));
 }
 finally { Directory.Delete(packagesRoot, true); }
 Console.WriteLine($"Passed: {checks}, Failed: 0");

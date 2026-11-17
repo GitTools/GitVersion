@@ -19,6 +19,7 @@ public sealed record PreparedEdition(DocsEdition Edition, string Release, string
 /// <summary>Resolves release metadata once and prepares immutable, cached documentation inputs.</summary>
 public sealed class DocsInputs(string repositoryRoot, Action<string> log)
 {
+    private const string ToolsDirectory = "tools";
     public static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { WriteIndented = true };
     private readonly string cache = Path.Combine(repositoryRoot, "artifacts", "docs", "cache");
     private readonly HttpClient http = CreateClient();
@@ -102,7 +103,7 @@ public sealed class DocsInputs(string repositoryRoot, Action<string> log)
 
     public static string? GetRuntimePackage(string tool, string runtimeIdentifier)
     {
-        var settings = Path.Combine(tool, "tools", "any", "any", "DotnetToolSettings.xml");
+        var settings = Path.Combine(tool, ToolsDirectory, "any", "any", "DotnetToolSettings.xml");
         if (!File.Exists(settings))
         {
             return null;
@@ -123,11 +124,11 @@ public sealed class DocsInputs(string repositoryRoot, Action<string> log)
     public static (string Framework, string Bundle) GetToolBundle(string tool, string version, string? framework = null,
         string runtimeIdentifier = "any")
     {
-        framework ??= Directory.GetDirectories(Path.Combine(tool, "tools"))
+        framework ??= Directory.GetDirectories(Path.Combine(tool, ToolsDirectory))
             .Select(Path.GetFileName).Where(n => n is not null && Matches(n, @"^net\d+\.\d+$"))
             .OrderByDescending(n => Version.Parse(n![3..])).FirstOrDefault()
             ?? throw new InvalidOperationException($"No supported tool framework found for {version}.");
-        var bundle = Path.Combine(tool, "tools", framework, runtimeIdentifier);
+        var bundle = Path.Combine(tool, ToolsDirectory, framework, runtimeIdentifier);
         if (!Directory.Exists(bundle))
         {
             throw new InvalidOperationException($"{version} has no {framework}/{runtimeIdentifier} tool bundle.");
@@ -212,7 +213,7 @@ public sealed class DocsInputs(string repositoryRoot, Action<string> log)
         }
 
         CopyTree(bundle, assemblies);
-        var msbuildBundle = Path.Combine(msbuild, "tools", edition.Framework!);
+        var msbuildBundle = Path.Combine(msbuild, ToolsDirectory, edition.Framework!);
         var msbuildAssembly = Path.Combine(msbuildBundle, "GitVersion.MsBuild.dll");
         if (!File.Exists(msbuildAssembly))
         {
