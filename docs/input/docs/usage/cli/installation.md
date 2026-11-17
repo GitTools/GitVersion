@@ -30,7 +30,7 @@ versions of [`GitVersion.Tool` on NuGet][tool].
 GitVersion v7 uses RID-specific tool packages targeting .NET 10 and .NET 11.
 The install command requires the .NET 10 SDK or later; NuGet selects the package for the current
 platform automatically. GitVersion ships dedicated packages for Windows x64 and
-ARM64, Linux x64 and ARM64 (including musl), and Apple Silicon macOS.
+ARM64, Linux x64 and ARM64 (including musl), and Intel and Apple Silicon macOS.
 
 The .NET 11 target requires the .NET 11 GA runtime or a compatible servicing release.
 The .NET 10 target remains available. Standalone self-contained archives continue
