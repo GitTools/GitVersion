@@ -24,7 +24,7 @@ permissions:
 jobs:
   manifest:
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       id-token: write

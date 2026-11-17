@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
+        os: [ windows-2025-vs2026, ubuntu-26.04, macos-26 ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -70,7 +70,7 @@ jobs:
   set_matrix:
     needs: [ prepare ]
     name: Set Matrix
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       docker_distros: ${{ steps.set_matrix.outputs.docker_distros }}
       dotnet_versions: ${{ steps.set_matrix.outputs.dotnet_versions }}

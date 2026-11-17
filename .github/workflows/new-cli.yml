@@ -38,7 +38,7 @@ env:
 
 jobs:
   format:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: Build & Test (new-cli)
     steps:
       - name: Harden the runner (Audit all outbound calls)

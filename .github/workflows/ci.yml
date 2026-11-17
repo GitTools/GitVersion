@@ -52,7 +52,7 @@ jobs:
 
   publish_flags:
     name: Publish Flags
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     outputs:
@@ -108,9 +108,9 @@ jobs:
       matrix:
         include:
           - arch: amd64
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
           - arch: arm64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
     uses: $/.github/workflows/_artifacts_linux.yml # NOSONAR -- $/ resolves to the running commit.
     with:
       runner: ${{ matrix.runner }}
@@ -130,9 +130,9 @@ jobs:
       matrix:
         include:
           - arch: amd64
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
           - arch: arm64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
 
     uses: $/.github/workflows/_docker.yml # NOSONAR -- $/ resolves to the running commit.
     with:
@@ -175,7 +175,7 @@ jobs:
     name: Release
     needs: [ publish, docker_linux_manifests ]
     if: ${{ always() && needs.publish.result == 'success' && (needs.docker_linux_manifests.result == 'success' || needs.docker_linux_manifests.result == 'skipped') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
       packages: write

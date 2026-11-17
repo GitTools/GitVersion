@@ -1,3 +1,10 @@
+self-hosted-runner:
+  # Official hosted labels missing from actionlint's built-in catalog.
+  # Remove when actionlint recognizes Ubuntu 26.04 runners.
+  labels:
+    - ubuntu-26.04
+    - ubuntu-26.04-arm
+
 paths:
   .github/workflows/**/*.{yml,yaml}:
     ignore:
