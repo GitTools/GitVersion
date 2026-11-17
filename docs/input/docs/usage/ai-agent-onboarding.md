@@ -309,7 +309,7 @@ Use this checklist with the complete [migration guide][migration]:
 | JSON, custom formats and generated outputs | Replace removed `CommitsSinceVersionSource`, map all prerelease fields, and account for added source fields in strict JSON readers. |
 | Azure Pipelines and MSBuild | Migrate Azure `GitVersion.Property` consumers to `GitVersion_Property`. Apply renamed fields to MSBuild properties too, verify task-host/runtime compatibility and avoid duplicate version writers. |
 | Branch context | Check `GIT_BRANCH`/`Git_Branch` overrides and provider precedence; they no longer select or move the named branch tip. |
-| Installation and platforms | Check .NET 10/11 runtime and MSBuild host requirements, RID-specific tool packages and removed Intel macOS native artifacts. A source build uses its pinned SDK. |
+| Installation and platforms | Check .NET 10/11 runtime and MSBuild host requirements, RID-specific tool packages and Intel/Apple Silicon macOS support. A source build uses its pinned SDK. |
 | Docker | Select a published v7 tag/digest and supported distribution/architecture. Check UID/GID `10001:10001` and writable repository mounts using the non-root migration guidance. |
 | Compatibility selectors | Audit parser, configuration and backend environment variables independently, including the retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable. |
 

@@ -122,9 +122,9 @@ The pre-release output variables now use SemVer terminology consistently. Update
 `PreReleaseLabel` and `PreReleaseLabelWithDash` retain their names but change from the label name (`beta`) to the full label (`beta.99`). Consumers that require only the name must use `PreReleaseLabelName` and `PreReleaseLabelNameWithDash`.
 :::
 
-## Intel macOS artifacts removed
+## Intel macOS support
 
-GitVersion v7 no longer ships native `osx-x64` artifacts. Apple Silicon (`osx-arm64`) is now the only supported macOS target. Intel Mac users should continue using the last GitVersion v6 release that shipped an `osx-x64` artifact.
+GitVersion v7 ships tool packages and standalone archives for Intel (`osx-x64`) and Apple Silicon (`osx-arm64`) macOS.
 
 ## .NET 8 and .NET 9 target frameworks removed
 
@@ -151,8 +151,8 @@ Existing images for retired distributions are not deleted, but will no longer re
 
 GitVersion v7 packages `GitVersion.Tool` per runtime identifier. Install it with
 the .NET 10 SDK as before; NuGet automatically selects the dedicated package for
-Windows x64 and ARM64, Linux x64 and ARM64 (including musl), or Apple Silicon
-macOS.
+Windows x64 and ARM64, Linux x64 and ARM64 (including musl), or Intel and Apple
+Silicon macOS.
 
 ## `CommitsSinceVersionSource` output variable removed
 
