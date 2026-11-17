@@ -38,6 +38,39 @@ internal sealed class MainlineConfigurationResolver(
         return ResolveInheritedConfiguration(commit);
     }
 
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
+    {
+        if (this.iterationConfigurations.TryGetValue(iteration, out var cached))
+        {
+            return cached;
+        }
+
+        var branchConfiguration = iteration.Configuration;
+        EffectiveConfiguration result;
+        MainlineCommit? commit = null;
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+        {
+            commit = iteration.Commits.FirstOrDefault();
+            if (commit is null && iteration.HasParentIteration)
+            {
+                commit = this.commitResolver.Resolve(iteration, iteration.BranchedFrom);
+            }
+        }
+        if (commit is not null)
+        {
+            var inheritedConfiguration = GetEffectiveConfiguration(commit);
+            result = ReferenceEquals(branchConfiguration, commit.Configuration)
+                ? inheritedConfiguration
+                : GetInheritedConfiguration(branchConfiguration, inheritedConfiguration);
+        }
+        else
+        {
+            result = GetEffectiveConfiguration(branchConfiguration);
+        }
+        this.iterationConfigurations.Add(iteration, result);
+        return result;
+    }
+
     private EffectiveConfiguration ResolveInheritedConfiguration(MainlineCommit commit)
     {
         List<MainlineCommit> pending = [];
@@ -88,39 +121,6 @@ internal sealed class MainlineConfigurationResolver(
             this.commitConfigurations.Add(current, result);
             previousConfiguration = current.Configuration;
         }
-        return result;
-    }
-
-    public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
-    {
-        if (this.iterationConfigurations.TryGetValue(iteration, out var cached))
-        {
-            return cached;
-        }
-
-        var branchConfiguration = iteration.Configuration;
-        EffectiveConfiguration result;
-        MainlineCommit? commit = null;
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
-        {
-            commit = iteration.Commits.FirstOrDefault();
-            if (commit is null && iteration.HasParentIteration)
-            {
-                commit = this.commitResolver.Resolve(iteration, iteration.BranchedFrom);
-            }
-        }
-        if (commit is not null)
-        {
-            var inheritedConfiguration = GetEffectiveConfiguration(commit);
-            result = ReferenceEquals(branchConfiguration, commit.Configuration)
-                ? inheritedConfiguration
-                : GetInheritedConfiguration(branchConfiguration, inheritedConfiguration);
-        }
-        else
-        {
-            result = GetEffectiveConfiguration(branchConfiguration);
-        }
-        this.iterationConfigurations.Add(iteration, result);
         return result;
     }
 
