@@ -54,7 +54,7 @@ env:
 jobs:
   prepare:
     name: Prepare Build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -100,7 +100,7 @@ jobs:
   validate:
     name: Validates Html
     needs: [ prepare ]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       checks: write
@@ -195,7 +195,7 @@ jobs:
     if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
     name: Publish docs
     needs: [ validate ]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     env:

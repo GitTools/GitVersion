@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   actionlint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: Actionlint
     permissions:
       contents: read

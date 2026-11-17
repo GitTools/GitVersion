@@ -25,7 +25,7 @@ jobs:
           !(github.event.pull_request.user.login == 'mergify[bot]' &&
             github.event.pull_request.head.repo.full_name == github.repository &&
             startsWith(github.event.pull_request.head.ref, 'mergify/merge-queue/')) }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4

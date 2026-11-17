@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
+        os: [ windows-2025-vs2026, ubuntu-26.04, macos-26 ]
         dotnet_version: ${{ fromJson(inputs.dotnet_versions) }}
         # Run the suite against both Git backends until libgit2 is removed,
         # see https://github.com/GitTools/GitVersion/issues/5031
