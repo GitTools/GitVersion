@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - main
-      - v7.1
       - 'fix/*'
       - 'feature/*'
       - 'poc/*'
@@ -23,7 +22,6 @@ on:
   pull_request:
     branches:
       - main
-      - v7.1
       - 'support/*'
       - 'next/*'
 

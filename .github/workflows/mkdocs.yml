@@ -16,7 +16,6 @@ on:
   pull_request:
     branches:
       - main
-      - v7.1
       - 'support/*'
       - 'next/*'
     paths:

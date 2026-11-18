@@ -14,7 +14,6 @@ on:
   push:
     branches:
       - main
-      - v7.1
     paths:
       - build/**
       - src/**
@@ -34,7 +33,6 @@ on:
   pull_request:
     branches:
       - main
-      - v7.1
     paths:
       - build/**
       - src/**
