@@ -144,21 +144,8 @@ internal static class ConfigurationExtensions
             environment.NotNull();
             currentCommit.NotNull();
 
-            var label = configuration.Label;
-
-            if (label is null)
-            {
-                return label;
-            }
-
-            var effectiveBranchName = branchNameOverride ?? branchName;
-            var labelPlaceholders = BuildLabelPlaceholders(configuration.RegularExpression, effectiveBranchName);
-            // Preserve existing named captures, including those named Sha or ShortSha.
-            labelPlaceholders.TryAdd("Sha", currentCommit.Sha);
-            labelPlaceholders.TryAdd("ShortSha", currentCommit.Id.ToString(7));
-
-            return label.FormatWith(labelPlaceholders, environment)
-                .RegexReplace(RegexPatterns.SanitizeLabelRegexPattern, "-");
+            return FormatBranchSpecificLabel(configuration.Label, configuration.RegularExpression,
+                branchNameOverride ?? branchName, environment, currentCommit);
         }
 
         public TaggedSemanticVersions GetTaggedSemanticVersion()
@@ -183,35 +170,52 @@ internal static class ConfigurationExtensions
             }
             return taggedSemanticVersion;
         }
+    }
 
-        private static Dictionary<string, object> BuildLabelPlaceholders(string? regularExpression, string? effectiveBranchName)
+    internal static string? FormatBranchSpecificLabel(string? label, string? regularExpression,
+        string? branchName, IEnvironment environment, ICommit currentCommit)
+    {
+        if (label is null)
         {
-            var placeholders = new Dictionary<string, object>();
+            return label;
+        }
 
-            if (regularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
-            {
-                return placeholders;
-            }
+        var labelPlaceholders = BuildLabelPlaceholders(regularExpression, branchName);
+        // Preserve existing named captures, including those named Sha or ShortSha.
+        labelPlaceholders.TryAdd("Sha", currentCommit.Sha);
+        labelPlaceholders.TryAdd("ShortSha", currentCommit.Id.ToString(7));
 
-            var regex = RegexPatterns.Cache.GetOrAdd(regularExpression);
-            var match = regex.Match(effectiveBranchName);
+        return label.FormatWith(labelPlaceholders, environment)
+            .RegexReplace(RegexPatterns.SanitizeLabelRegexPattern, "-");
+    }
 
-            if (!match.Success)
-            {
-                return placeholders;
-            }
+    private static Dictionary<string, object> BuildLabelPlaceholders(string? regularExpression, string? effectiveBranchName)
+    {
+        var placeholders = new Dictionary<string, object>();
 
-            var namedGroups = regex.GetGroupNames()
-                .Where(name => !int.TryParse(name, out _));
-
-            foreach (var groupName in namedGroups)
-            {
-                var groupValue = match.Groups[groupName].Value;
-
-                placeholders[groupName] = groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
-            }
-
+        if (regularExpression.IsNullOrWhiteSpace() || effectiveBranchName.IsNullOrEmpty())
+        {
             return placeholders;
         }
+
+        var regex = RegexPatterns.Cache.GetOrAdd(regularExpression);
+        var match = regex.Match(effectiveBranchName);
+
+        if (!match.Success)
+        {
+            return placeholders;
+        }
+
+        var namedGroups = regex.GetGroupNames()
+            .Where(name => !int.TryParse(name, out _));
+
+        foreach (var groupName in namedGroups)
+        {
+            var groupValue = match.Groups[groupName].Value;
+
+            placeholders[groupName] = groupValue.RegexReplace(RegexPatterns.SanitizeNameRegexPattern, "-");
+        }
+
+        return placeholders;
     }
 }

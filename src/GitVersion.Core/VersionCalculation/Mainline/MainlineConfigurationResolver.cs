@@ -12,18 +12,9 @@ internal sealed class MainlineConfigurationResolver(
     private readonly Dictionary<MainlineCommit, EffectiveConfiguration> commitConfigurations = [];
     private readonly Dictionary<MainlineIteration, EffectiveConfiguration> iterationConfigurations = [];
     private readonly Dictionary<IBranchConfiguration, EffectiveConfiguration> configurations = new(ReferenceEqualityComparer.Instance);
+    // An inherited branch configuration is reusable only with equivalent receiving settings.
     private readonly Dictionary<IBranchConfiguration, Dictionary<EffectiveConfiguration, EffectiveConfiguration>> inheritedConfigurations
         = new(ReferenceEqualityComparer.Instance);
-
-    public EffectiveConfiguration GetEffectiveConfiguration(IBranchConfiguration branchConfiguration)
-    {
-        if (!this.configurations.TryGetValue(branchConfiguration, out var result))
-        {
-            result = new EffectiveConfiguration(this.configuration, branchConfiguration);
-            this.configurations.Add(branchConfiguration, result);
-        }
-        return result;
-    }
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
     {
@@ -33,7 +24,7 @@ internal sealed class MainlineConfigurationResolver(
         }
         if (commit.Configuration.Increment != IncrementStrategy.Inherit)
         {
-            return GetEffectiveConfiguration(commit.Configuration);
+            return GetOrCreateConfiguration(commit.Configuration);
         }
         return ResolveInheritedConfiguration(commit);
     }
@@ -65,7 +56,7 @@ internal sealed class MainlineConfigurationResolver(
         }
         else
         {
-            result = GetEffectiveConfiguration(branchConfiguration);
+            result = GetOrCreateConfiguration(branchConfiguration);
         }
         this.iterationConfigurations.Add(iteration, result);
         return result;
@@ -85,7 +76,7 @@ internal sealed class MainlineConfigurationResolver(
             }
             if (current.Configuration.Increment != IncrementStrategy.Inherit)
             {
-                result = GetEffectiveConfiguration(current.Configuration);
+                result = GetOrCreateConfiguration(current.Configuration);
                 this.commitConfigurations.Add(current, result);
                 break;
             }
@@ -103,7 +94,7 @@ internal sealed class MainlineConfigurationResolver(
             }
             else
             {
-                result = GetEffectiveConfiguration(current.Configuration);
+                result = GetOrCreateConfiguration(current.Configuration);
             }
             this.commitConfigurations.Add(current, result);
             pending.RemoveAt(pending.Count - 1);
@@ -129,13 +120,24 @@ internal sealed class MainlineConfigurationResolver(
     {
         if (!this.inheritedConfigurations.TryGetValue(branchConfiguration, out var inherited))
         {
-            inherited = new Dictionary<EffectiveConfiguration, EffectiveConfiguration>(ReferenceEqualityComparer.Instance);
+            inherited = [];
             this.inheritedConfigurations.Add(branchConfiguration, inherited);
         }
         if (!inherited.TryGetValue(inheritedConfiguration, out var result))
         {
-            result = new EffectiveConfiguration(this.configuration, branchConfiguration, inheritedConfiguration);
+            var resolvedConfiguration = branchConfiguration.Inherit(inheritedConfiguration);
+            result = new EffectiveConfiguration(this.configuration, resolvedConfiguration);
             inherited.Add(inheritedConfiguration, result);
+        }
+        return result;
+    }
+
+    private EffectiveConfiguration GetOrCreateConfiguration(IBranchConfiguration branchConfiguration)
+    {
+        if (!this.configurations.TryGetValue(branchConfiguration, out var result))
+        {
+            result = new EffectiveConfiguration(this.configuration, branchConfiguration);
+            this.configurations.Add(branchConfiguration, result);
         }
         return result;
     }

@@ -78,28 +78,6 @@ public class MainlineConfigurationResolverTests
         source.Predecessor.ShouldBeNull();
     }
 
-    [TestCase(null)]
-    [TestCase("")]
-    public void RecordedConfigurationKeepsLabelsSeparateFromInheritedSettings(string? label)
-    {
-        var recorded = new BranchConfiguration { Increment = IncrementStrategy.Inherit, Label = label };
-        var root = Iteration("root", recorded);
-        var tip = root.CreateCommit(Commit(), root.BranchName, recorded);
-        root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Minor, "beta"));
-        var configuration = GitFlowConfigurationBuilder.New.WithLabel("global").Build();
-        var resolver = new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(root));
-
-        var own = resolver.GetEffectiveConfiguration(tip.Configuration);
-        var effective = resolver.GetEffectiveConfiguration(tip);
-
-        own.Increment.ShouldBe(IncrementStrategy.Inherit);
-        own.Label.ShouldBe(label ?? "global");
-        effective.Increment.ShouldBe(IncrementStrategy.Minor);
-        effective.Label.ShouldBe(label ?? "beta");
-        tip.HasExplicitIncrement.ShouldBeFalse();
-        tip.Configuration.Label.ShouldBe(label);
-    }
-
     [Test]
     public void ConfigurationCachesAreIsolatedBetweenCalculations()
     {
@@ -288,6 +266,52 @@ public class MainlineConfigurationResolverTests
         result.PreventIncrementOfMergedBranch.ShouldBeTrue();
         tip.Configuration.Label.ShouldBeNull();
         tip.Configuration.Increment.ShouldBe(IncrementStrategy.Inherit);
+    }
+
+    [Test]
+    public void EquivalentInheritedConfigurationsReuseEffectiveConfiguration()
+    {
+        var root = Iteration("root", Branch(IncrementStrategy.Minor, "beta"));
+        var firstMerge = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Minor, "beta"));
+        var secondMerge = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Minor, "beta"));
+        var inherited = new BranchConfiguration { Increment = IncrementStrategy.Inherit };
+        var firstChild = Iteration("first", inherited, root, Commit(), firstMerge.Value);
+        var secondChild = Iteration("second", inherited, root, Commit(), secondMerge.Value);
+        var firstTip = firstChild.CreateCommit(Commit(), firstChild.BranchName, inherited);
+        var secondTip = secondChild.CreateCommit(Commit(), secondChild.BranchName, inherited);
+        firstMerge.AddChildIteration(firstChild);
+        secondMerge.AddChildIteration(secondChild);
+        var resolver = Resolver(root);
+
+        var first = resolver.GetEffectiveConfiguration(firstTip);
+        var second = resolver.GetEffectiveConfiguration(secondTip);
+
+        first.Increment.ShouldBe(IncrementStrategy.Minor);
+        first.Label.ShouldBe("beta");
+        second.ShouldBeSameAs(first);
+        resolver.GetEffectiveConfiguration(secondChild).ShouldBeSameAs(first);
+        inherited.Increment.ShouldBe(IncrementStrategy.Inherit);
+        inherited.Label.ShouldBeNull();
+    }
+
+    [Test]
+    public void CommitInheritanceReusesCachedPredecessorWithoutReapplyingSettings()
+    {
+        var inherited = new CountingBranchConfiguration { Increment = IncrementStrategy.Inherit, Label = "nearest" };
+        var root = Iteration("root", inherited);
+        var tip = root.CreateCommit(Commit(), root.BranchName, inherited);
+        var predecessor = root.CreateCommit(Commit(), root.BranchName, inherited);
+        root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "oldest"));
+        var resolver = Resolver(root);
+        var cached = resolver.GetEffectiveConfiguration(predecessor);
+        inherited.InheritanceCount.ShouldBe(1);
+
+        var result = resolver.GetEffectiveConfiguration(tip);
+
+        result.ShouldBeSameAs(cached);
+        result.Increment.ShouldBe(IncrementStrategy.Major);
+        result.Label.ShouldBe("nearest");
+        inherited.InheritanceCount.ShouldBe(1);
     }
 
     [Test]

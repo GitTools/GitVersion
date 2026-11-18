@@ -253,6 +253,50 @@ public class MainlineHistoryTests
         iteration.Commits.ShouldBe([initial, boundary, release, tip]);
     }
 
+    [TestCase(false, false)]
+    [TestCase(false, true)]
+    [TestCase(true, false)]
+    [TestCase(true, true)]
+    public void RecordedReleaseLabelsUseRecordedRegexAndGlobalFallback(bool branchLabel, bool branchRegex)
+    {
+        var explicitBranch = new BranchConfiguration
+        {
+            Increment = IncrementStrategy.Major,
+            Label = "inherited",
+            RegularExpression = "(?<name>wrong)"
+        };
+        var recorded = new BranchConfiguration
+        {
+            Increment = IncrementStrategy.Inherit,
+            Label = branchLabel ? "branch-{name}" : null,
+            RegularExpression = branchRegex ? "^feature/(?<name>.+)$" : null
+        };
+        var initialValue = Commit();
+        var releaseValue = Commit(initialValue);
+        var tipValue = Commit(releaseValue);
+        var iteration = new MainlineIteration("root", new("refs/heads/feature/example"), recorded, null, null, null);
+        var tip = iteration.CreateCommit(tipValue, iteration.BranchName, recorded);
+        var release = iteration.CreateCommit(releaseValue, iteration.BranchName, recorded);
+        release.AddSemanticVersions(new SemanticVersion(2, 0, 0)
+        {
+            PreReleaseTag = new(branchLabel ? "branch-example" : "global-example", 1, false)
+        });
+        var boundary = iteration.CreateCommit(initialValue, iteration.BranchName, explicitBranch);
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel("global-{name}")
+            .WithRegularExpression("^feature/(?<name>.+)$").Build();
+        var resolver = new MainlineConfigurationResolver(configuration, new MainlineCommitResolver(iteration));
+        resolver.GetEffectiveConfiguration(release).Label.ShouldBe(branchLabel ? "branch-{name}" : "inherited");
+
+        var selected = MainlineTestCalculation.History(iteration, configuration, new TestEnvironment(), tipValue)
+            .Select(iteration, null, false);
+
+        selected.Commits.ShouldBe([boundary, release, tip]);
+        selected.HasBoundary.ShouldBeTrue();
+        selected.MissingCommit.ShouldBeNull();
+        recorded.Label.ShouldBe(branchLabel ? "branch-{name}" : null);
+        recorded.Increment.ShouldBe(IncrementStrategy.Inherit);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void IgnoredMergeRetainsSourceHistory(bool mainline)

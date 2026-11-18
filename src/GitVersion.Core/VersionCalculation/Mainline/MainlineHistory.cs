@@ -223,8 +223,11 @@ internal sealed class MainlineHistory(
     }
 
     private string? GetBranchSpecificLabel(MainlineCommit commit)
-        => this.configurationResolver.GetEffectiveConfiguration(commit.Configuration)
-            .GetBranchSpecificLabel(commit.BranchName, null, Environment, CurrentCommit);
+        // Release boundaries use recorded branch settings, not labels inherited from earlier history.
+        => ConfigurationExtensions.FormatBranchSpecificLabel(
+            commit.Configuration.Label ?? Configuration.Label,
+            commit.Configuration.RegularExpression ?? Configuration.RegularExpression,
+            commit.BranchName.WithoutOrigin, Environment, CurrentCommit);
 
     private static ICommit? GetTip(MainlineIteration iteration, bool includeAncestry, MainlineCommit? tip)
     {
