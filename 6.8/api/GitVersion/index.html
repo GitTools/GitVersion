@@ -175,6 +175,25 @@
             
             
             
+        <h2 id="InterfaceTypes">Interface Types</h2>
+        <div class="box gv-api-table">
+            <div class="box-body no-padding table-responsive">
+                <table class="table table-hover two-cols">
+                    <thead><tr><th scope="col">Interface</th> <th scope="col">Summary</th> </tr></thead>
+                    <tbody>
+                        <tr><td><a href="/6.8/api/GitVersion/IConverterContext">IConverterContext</a></td> <td>Marker interface for context objects passed to <code><a href="/6.8/api/GitVersion/IVersionConverter_1">IVersionConverter&lt;T&gt;</a></code> implementations.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IEnvironment">IEnvironment</a></td> <td>Provides access to environment variables in the current process.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IGitPreparer">IGitPreparer</a></td> <td>Prepares the Git repository so that GitVersion can calculate the version (fetches, clones, and normalises refs as needed).</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionCalculateTool">I<wbr>Git<wbr>Version<wbr>Calculate<wbr>Tool</a></td> <td>Orchestrates the end-to-end version calculation and returns the resulting version variables.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionContextFactory">I<wbr>Git<wbr>Version<wbr>Context<wbr>Factory</a></td> <td>Creates a <code><a href="/6.8/api/GitVersion/GitVersionContext">GitVersionContext</a></code> for the current repository and branch.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionModule">IGitVersionModule</a></td> <td>Represents a self-contained IoC registration module that adds a cohesive set of services to the DI container.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionOutputTool">I<wbr>Git<wbr>Version<wbr>Output<wbr>Tool</a></td> <td></td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IRepositoryStore">IRepositoryStore</a></td> <td>Provides high-level read access to a Git repository, exposing the objects and queries needed for version calculation.</td> </tr>
+                        <tr><td><a href="/6.8/api/GitVersion/IVersionConverter_1">IVersionConverter</a><wbr>&lt;<a href="/6.8/api/GitVersion/IVersionConverter_1#typeparam-T">T</a>&gt;<wbr></td> <td>Converts <code><a href="/6.8/api/GitVersion.OutputVariables/GitVersionVariables">GitVersionVariables</a></code> to a specific output format (e.g. JSON, environment variables, build-server properties).</td> </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <h2 id="ClassTypes">Class Types</h2>
         <div class="box gv-api-table">
             <div class="box-body no-padding table-responsive">
@@ -209,25 +228,6 @@
                         <tr><td><a href="/6.8/api/GitVersion/VersionField">VersionField</a></td> <td>Identifies the position in a semantic version string that should be incremented.</td> </tr>
                         <tr><td><a href="/6.8/api/GitVersion/WarningException">WarningException</a></td> <td>Raised to report a recoverable warning condition that should be presented to the user rather than treated as a hard error.</td> </tr>
                         <tr><td><a href="/6.8/api/GitVersion/WixInfo">WixInfo</a></td> <td>Controls WiX installer version file update behaviour.</td> </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <h2 id="InterfaceTypes">Interface Types</h2>
-        <div class="box gv-api-table">
-            <div class="box-body no-padding table-responsive">
-                <table class="table table-hover two-cols">
-                    <thead><tr><th scope="col">Interface</th> <th scope="col">Summary</th> </tr></thead>
-                    <tbody>
-                        <tr><td><a href="/6.8/api/GitVersion/IConverterContext">IConverterContext</a></td> <td>Marker interface for context objects passed to <code><a href="/6.8/api/GitVersion/IVersionConverter_1">IVersionConverter&lt;T&gt;</a></code> implementations.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IEnvironment">IEnvironment</a></td> <td>Provides access to environment variables in the current process.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IGitPreparer">IGitPreparer</a></td> <td>Prepares the Git repository so that GitVersion can calculate the version (fetches, clones, and normalises refs as needed).</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionCalculateTool">I<wbr>Git<wbr>Version<wbr>Calculate<wbr>Tool</a></td> <td>Orchestrates the end-to-end version calculation and returns the resulting version variables.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionContextFactory">I<wbr>Git<wbr>Version<wbr>Context<wbr>Factory</a></td> <td>Creates a <code><a href="/6.8/api/GitVersion/GitVersionContext">GitVersionContext</a></code> for the current repository and branch.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionModule">IGitVersionModule</a></td> <td>Represents a self-contained IoC registration module that adds a cohesive set of services to the DI container.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IGitVersionOutputTool">I<wbr>Git<wbr>Version<wbr>Output<wbr>Tool</a></td> <td></td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IRepositoryStore">IRepositoryStore</a></td> <td>Provides high-level read access to a Git repository, exposing the objects and queries needed for version calculation.</td> </tr>
-                        <tr><td><a href="/6.8/api/GitVersion/IVersionConverter_1">IVersionConverter</a><wbr>&lt;<a href="/6.8/api/GitVersion/IVersionConverter_1#typeparam-T">T</a>&gt;<wbr></td> <td>Converts <code><a href="/6.8/api/GitVersion.OutputVariables/GitVersionVariables">GitVersionVariables</a></code> to a specific output format (e.g. JSON, environment variables, build-server properties).</td> </tr>
                     </tbody>
                 </table>
             </div>

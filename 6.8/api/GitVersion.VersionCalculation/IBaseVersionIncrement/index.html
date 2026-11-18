@@ -143,16 +143,6 @@
         <li class="header">Namespace</li>
         <li><a href="/6.8/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
         <li><hr class="divider"></li>
-            <li class="header">Interface Types</li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersion">IBaseVersion</a></li>
-                <li class="selected"><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersionIncrement">IBaseVersionIncrement</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IDeploymentModeCalculator">IDeploymentModeCalculator</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder">IEffectiveBranchConfigurationFinder</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IIncrementStrategyFinder">IIncrementStrategyFinder</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/INextVersionCalculator">INextVersionCalculator</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
             <li class="header">Class Types</li>
                 <li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
                 <li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersionOperand">BaseVersionOperand</a></li>
@@ -163,6 +153,16 @@
                 <li><a href="/6.8/api/GitVersion.VersionCalculation/VersionCalculationModule">VersionCalculationModule</a></li>
                 <li><a href="/6.8/api/GitVersion.VersionCalculation/VersionStrategies">VersionStrategies</a></li>
                 <li><a href="/6.8/api/GitVersion.VersionCalculation/VersionStrategyModule">VersionStrategyModule</a></li>
+            <li class="header">Interface Types</li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersion">IBaseVersion</a></li>
+                <li class="selected"><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersionIncrement">IBaseVersionIncrement</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IDeploymentModeCalculator">IDeploymentModeCalculator</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder">IEffectiveBranchConfigurationFinder</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IIncrementStrategyFinder">IIncrementStrategyFinder</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/INextVersionCalculator">INextVersionCalculator</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+                <li><a href="/6.8/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
  
                     </ul>
                     
@@ -202,10 +202,10 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersion">IBaseVersion</a></li>								
-											<li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersionOperator">BaseVersionOperator</a></li>								
 											<li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersionOperand">BaseVersionOperand</a></li>								
+											<li><a href="/6.8/api/GitVersion.VersionCalculation/IBaseVersion">IBaseVersion</a></li>								
 											<li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>								
+											<li><a href="/6.8/api/GitVersion.VersionCalculation/BaseVersionOperator">BaseVersionOperator</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -215,14 +215,14 @@
 							graph BT
 	Type["IBaseVersionIncrement"]
 class Type type-node
-	Implementing0["IBaseVersion"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/IBaseVersion"
-	Implementing1["BaseVersionOperator"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/BaseVersionOperator"
-	Implementing2["BaseVersionOperand"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/BaseVersionOperand"
-	Implementing3["BaseVersion"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionCalculation/BaseVersion"
+	Implementing0["BaseVersionOperand"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/BaseVersionOperand"
+	Implementing1["IBaseVersion"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/IBaseVersion"
+	Implementing2["BaseVersion"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionCalculation/BaseVersion"
+	Implementing3["BaseVersionOperator"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/BaseVersionOperator"
 
 						</div>
 					</div>

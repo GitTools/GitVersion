@@ -143,6 +143,17 @@
         <li class="header">Namespace</li>
         <li><a href="/7.0/api/GitVersion">GitVersion</a></li>
         <li><hr class="divider"></li>
+            <li class="header">Interface Types</li>
+                <li><a href="/7.0/api/GitVersion/IConsole">IConsole</a></li>
+                <li><a href="/7.0/api/GitVersion/IConverterContext">IConverterContext</a></li>
+                <li><a href="/7.0/api/GitVersion/IEnvironment">IEnvironment</a></li>
+                <li><a href="/7.0/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
+                <li><a href="/7.0/api/GitVersion/IGitVersionCalculateTool">IGitVersionCalculateTool</a></li>
+                <li><a href="/7.0/api/GitVersion/IGitVersionContextFactory">IGitVersionContextFactory</a></li>
+                <li class="selected"><a href="/7.0/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
+                <li><a href="/7.0/api/GitVersion/IGitVersionOutputTool">IGitVersionOutputTool</a></li>
+                <li><a href="/7.0/api/GitVersion/IRepositoryStore">IRepositoryStore</a></li>
+                <li><a href="/7.0/api/GitVersion/IVersionConverter_1">IVersionConverter&lt;T&gt;</a></li>
             <li class="header">Class Types</li>
                 <li><a href="/7.0/api/GitVersion/AssemblySettingsInfo">AssemblySettingsInfo</a></li>
                 <li><a href="/7.0/api/GitVersion/BugException">BugException</a></li>
@@ -172,17 +183,6 @@
                 <li><a href="/7.0/api/GitVersion/VersionField">VersionField</a></li>
                 <li><a href="/7.0/api/GitVersion/WarningException">WarningException</a></li>
                 <li><a href="/7.0/api/GitVersion/WixInfo">WixInfo</a></li>
-            <li class="header">Interface Types</li>
-                <li><a href="/7.0/api/GitVersion/IConsole">IConsole</a></li>
-                <li><a href="/7.0/api/GitVersion/IConverterContext">IConverterContext</a></li>
-                <li><a href="/7.0/api/GitVersion/IEnvironment">IEnvironment</a></li>
-                <li><a href="/7.0/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
-                <li><a href="/7.0/api/GitVersion/IGitVersionCalculateTool">IGitVersionCalculateTool</a></li>
-                <li><a href="/7.0/api/GitVersion/IGitVersionContextFactory">IGitVersionContextFactory</a></li>
-                <li class="selected"><a href="/7.0/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
-                <li><a href="/7.0/api/GitVersion/IGitVersionOutputTool">IGitVersionOutputTool</a></li>
-                <li><a href="/7.0/api/GitVersion/IRepositoryStore">IRepositoryStore</a></li>
-                <li><a href="/7.0/api/GitVersion/IVersionConverter_1">IVersionConverter&lt;T&gt;</a></li>
  
                     </ul>
                     
@@ -222,16 +222,16 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/7.0/api/GitVersion/GitVersionManagedGitModule">Git<wbr>Version<wbr>Managed<wbr>Git<wbr>Module</a></li>								
 											<li><a href="/7.0/api/GitVersion.Telemetry/GitVersionTelemetryModule">Git<wbr>Version<wbr>Telemetry<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion.Output/GitVersionOutputModule">Git<wbr>Version<wbr>Output<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion.Agents/GitVersionBuildAgentsModule">Git<wbr>Version<wbr>Build<wbr>Agents<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion/GitVersionCommonModule">Git<wbr>Version<wbr>Common<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>								
-											<li><a href="/7.0/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
 											<li><a href="/7.0/api/GitVersion.VersionCalculation/VersionCalculationModule">Version<wbr>Calculation<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
+											<li><a href="/7.0/api/GitVersion/GitVersionCommonModule">Git<wbr>Version<wbr>Common<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion.Output/GitVersionOutputModule">Git<wbr>Version<wbr>Output<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion/GitVersionManagedGitModule">Git<wbr>Version<wbr>Managed<wbr>Git<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion.Configuration/GitVersionConfigurationModule">Git<wbr>Version<wbr>Configuration<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion.Agents/GitVersionBuildAgentsModule">Git<wbr>Version<wbr>Build<wbr>Agents<wbr>Module</a></li>								
+											<li><a href="/7.0/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -241,26 +241,26 @@
 							graph BT
 	Type["IGitVersionModule"]
 class Type type-node
-	Implementing0["GitVersionManagedGitModule"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/GitVersionManagedGitModule"
-	Implementing1["GitVersionTelemetryModule"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Telemetry/GitVersionTelemetryModule"
-	Implementing2["VersionStrategyModule"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Implementing3["GitVersionOutputModule"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.Output/GitVersionOutputModule"
-	Implementing4["GitVersionConfigurationModule"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.Configuration/GitVersionConfigurationModule"
-	Implementing5["GitVersionBuildAgentsModule"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
-	Implementing6["GitVersionCommonModule"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion/GitVersionCommonModule"
-	Implementing7["GitVersionLibGit2SharpModule"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion/GitVersionLibGit2SharpModule"
-	Implementing8["GitVersionCoreModule"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion/GitVersionCoreModule"
-	Implementing9["VersionCalculationModule"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing0["GitVersionTelemetryModule"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Telemetry/GitVersionTelemetryModule"
+	Implementing1["VersionCalculationModule"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing2["GitVersionCoreModule"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion/GitVersionCoreModule"
+	Implementing3["GitVersionCommonModule"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion/GitVersionCommonModule"
+	Implementing4["GitVersionOutputModule"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.Output/GitVersionOutputModule"
+	Implementing5["GitVersionManagedGitModule"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion/GitVersionManagedGitModule"
+	Implementing6["GitVersionConfigurationModule"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.Configuration/GitVersionConfigurationModule"
+	Implementing7["VersionStrategyModule"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+	Implementing8["GitVersionBuildAgentsModule"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.Agents/GitVersionBuildAgentsModule"
+	Implementing9["GitVersionLibGit2SharpModule"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion/GitVersionLibGit2SharpModule"
 
 						</div>
 					</div>

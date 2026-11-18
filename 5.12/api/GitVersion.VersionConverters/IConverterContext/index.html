@@ -143,11 +143,11 @@
         <li class="header">Namespace</li>
         <li><a href="/5.12/api/GitVersion.VersionConverters">GitVersion<wbr>.VersionConverters</a></li>
         <li><hr class="divider"></li>
+            <li class="header">Class Types</li>
+                <li><a href="/5.12/api/GitVersion.VersionConverters/VersionConvertersModule">VersionConvertersModule</a></li>
             <li class="header">Interface Types</li>
                 <li class="selected"><a href="/5.12/api/GitVersion.VersionConverters/IConverterContext">IConverterContext</a></li>
                 <li><a href="/5.12/api/GitVersion.VersionConverters/IVersionConverter_1">IVersionConverter&lt;T&gt;</a></li>
-            <li class="header">Class Types</li>
-                <li><a href="/5.12/api/GitVersion.VersionConverters/VersionConvertersModule">VersionConvertersModule</a></li>
  
                     </ul>
                     
@@ -185,9 +185,9 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/5.12/api/GitVersion.VersionConverters.OutputGenerator/OutputContext">OutputContext</a></li>								
 											<li><a href="/5.12/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoContext">AssemblyInfoContext</a></li>								
 											<li><a href="/5.12/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoContext">Git<wbr>Version<wbr>Info<wbr>Context</a></li>								
-											<li><a href="/5.12/api/GitVersion.VersionConverters.OutputGenerator/OutputContext">OutputContext</a></li>								
 											<li><a href="/5.12/api/GitVersion.VersionConverters.WixUpdater/WixVersionContext">WixVersionContext</a></li>								
 									</ul>
 								</dd>				
@@ -198,12 +198,12 @@
 							graph BT
 	Type["IConverterContext"]
 class Type type-node
-	Implementing0["AssemblyInfoContext"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoContext"
-	Implementing1["GitVersionInfoContext"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoContext"
-	Implementing2["OutputContext"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionConverters.OutputGenerator/OutputContext"
+	Implementing0["OutputContext"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionConverters.OutputGenerator/OutputContext"
+	Implementing1["AssemblyInfoContext"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoContext"
+	Implementing2["GitVersionInfoContext"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoContext"
 	Implementing3["WixVersionContext"]-.-&gt;Type
 	click Implementing3 "/api/GitVersion.VersionConverters.WixUpdater/WixVersionContext"
 

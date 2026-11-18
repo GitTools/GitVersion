@@ -202,8 +202,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/7.0/api/GitVersion.Configuration/IOutputConfiguration">IOutputConfiguration</a></li>								
 											<li><a href="/7.0/api/GitVersion.Configuration/IGitVersionConfiguration">I<wbr>Git<wbr>Version<wbr>Configuration</a></li>								
+											<li><a href="/7.0/api/GitVersion.Configuration/IOutputConfiguration">IOutputConfiguration</a></li>								
 											<li><a href="/7.0/api/GitVersion.Configuration/IBranchConfiguration">IBranchConfiguration</a></li>								
 									</ul>
 								</dd>				
@@ -214,10 +214,10 @@
 							graph BT
 	Type["IOutputBranchConfiguration"]
 class Type type-node
-	Implementing0["IOutputConfiguration"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration/IOutputConfiguration"
-	Implementing1["IGitVersionConfiguration"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Configuration/IGitVersionConfiguration"
+	Implementing0["IGitVersionConfiguration"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Configuration/IGitVersionConfiguration"
+	Implementing1["IOutputConfiguration"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Configuration/IOutputConfiguration"
 	Implementing2["IBranchConfiguration"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion.Configuration/IBranchConfiguration"
 
